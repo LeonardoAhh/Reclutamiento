@@ -2,6 +2,7 @@ import { Fragment, useEffect, useRef } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { MorphMenuIcon } from "@/components/ui/MorphMenuIcon";
+import { ThemeSelect } from "@/components/ui/ThemeSelect";
 import "./Sidebar.css";
 
 import { APP_BRAND_NAME, NAV_SECTIONS } from "./navigation";
@@ -75,6 +76,7 @@ export function Sidebar({
     >
       <div className="sidebar__top">
         <SidebarBrand name={APP_BRAND_NAME} />
+        <ThemeSelect />
         <button
           type="button"
           className="sidebar__close-btn"

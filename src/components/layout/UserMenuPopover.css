@@ -65,7 +65,7 @@
 
 .dropdown-menu-item.user-menu-popover__item[data-variant="destructive"][data-highlighted] {
   background: var(--color-error);
-  color: var(--color-on-dark);
+  color: var(--color-on-error);
 }
 
 .user-menu-popover__icon {

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Avatar } from "@/components/ui/Avatar";
+import { BrandMark } from "@/components/ui/BrandMark";
 import { useAuth } from "@/hooks/useAuth";
 import { useFeedback } from "@/hooks/useFeedback";
 import { useLoader } from "@/hooks/useLoader";
@@ -57,7 +58,7 @@ export function LogoutPage() {
     <div className="logout-page">
       <header className="logout-page__header container">
         <span className="logout-page__brand">
-          <img className="logout-page__brand-icon" src="/icon.svg" alt="" />
+          <BrandMark className="logout-page__brand-icon" />
         </span>
       </header>
 

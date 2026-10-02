@@ -80,6 +80,7 @@
 
 .login-story__brand-image,
 .login-story__robot-image {
+  color: var(--color-ink);
   display: block;
   inline-size: 100%;
   block-size: auto;

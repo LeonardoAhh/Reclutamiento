@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useAnimate, useReducedMotion } from "framer-motion";
 import { wave } from "robot-toast/robots";
+import { BrandMark } from "@/components/ui/BrandMark";
 
 interface LoginStoryProps {
   username?: string | null;
@@ -39,7 +40,7 @@ export function LoginStory({ username }: LoginStoryProps) {
       <div className="login-story__animation" ref={scope} aria-hidden="true">
         <div className="login-story__scene login-story__mark">
           <div className="login-story__visual">
-            <img className="login-story__brand-image" src="/icon.svg" alt="" />
+            <BrandMark className="login-story__brand-image" />
           </div>
           <div className="login-story__copy">
             <p className="login-story__title">Tu espacio de trabajo.</p>

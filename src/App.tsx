@@ -29,6 +29,7 @@ import { DATA_UPDATE_PATH } from '@/features/data-update/types';
 import { ACCOUNT_PATH, HOME_PATH, LOGOUT_PATH, TEAM_PATH } from '@/components/layout/navigation';
 import { LogoutPage } from '@/features/account/LogoutPage';
 import { CAREER_JOURNEY_ENABLED, CAREER_PATH } from '@/features/career/types';
+import { LEAVE_REQUESTS_PATH } from '@/features/leave/requests';
 
 const CareerPage = lazy(() => import('@/features/career/CareerPage').then(({ CareerPage }) => ({ default: CareerPage })));
 
@@ -78,6 +79,7 @@ const AccountPage = lazy(() =>
   })),
 );
 const TeamPage = lazy(() => import('@/features/team/TeamPage').then(({ TeamPage }) => ({ default: TeamPage })));
+const LeaveRequestsPage = lazy(() => import('@/pages/LeaveRequestsPage').then(({ LeaveRequestsPage }) => ({ default: LeaveRequestsPage })));
 const HomePage = lazy(() =>
   import('@/pages/HomePage').then(({ HomePage }) => ({
     default: HomePage,
@@ -171,6 +173,7 @@ function App() {
               <Route path={LOGOUT_PATH} element={<AuthGuard><LogoutPage /></AuthGuard>} />
               <Route element={<ProtectedShell />}>
                 <Route path={HOME_PATH} element={<HomePage />} />
+                <Route path={LEAVE_REQUESTS_PATH} element={<LeaveRequestsPage />} />
                 <Route path={CAREER_PATH} element={CAREER_JOURNEY_ENABLED
                   ? <CareerPage /> : <Navigate to={HOME_PATH} replace />} />
                 <Route path="/resumen" element={<WithSupabaseData resources={WORKFORCE_DATA}><KpisPage /></WithSupabaseData>} />

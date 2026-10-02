@@ -1,11 +1,13 @@
-import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
-import { ArrowUpRight, Brain, Check, ChevronLeft, ChevronRight, Scale, ShieldCheck, UsersRound } from "lucide-react";
-import { wave } from "robot-toast/robots";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useId, useLayoutEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { ArrowUpRight, Brain, CalendarDays, Check, ChevronLeft, ChevronRight, RotateCcw, Scale, ShieldCheck, UsersRound } from "lucide-react";
+import { validation, wave } from "robot-toast/robots";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { CustomSelect } from "@/components/ui/CustomSelect";
+import { Calendar } from "@/components/ui/Calendar";
+import { BrandMark } from "@/components/ui/BrandMark";
 import { Modal } from "@/components/ui/Modal";
 import { useAuth } from "@/hooks/useAuth";
-import { formatEmploymentTenure, formatReadableDate } from "@/lib/dates";
+import { formatCompactDateRange, formatEmploymentTenure, formatReadableDate, localTodayIso, localDateToIso, isoToLocalDateString, TZ_MX } from "@/lib/dates";
 import { getUserTitle } from "@/lib/userIdentity";
 import { useTeamDirectory } from '@/features/team/TeamProvider';
 import { CAREER_JOURNEY_ENABLED } from '@/features/career/types';
@@ -14,8 +16,12 @@ import {
   MOTIVATION_BY_TITLE, DEFAULT_MOTIVATION, LEADERSHIP_CUE_BY_TITLE,
   DEFAULT_LEADERSHIP_CUE, EMPLOYEE_LIFECYCLE, LABOR_GUIDANCE,
   RESPONSIBLE_PROCESS_COMMITMENTS, DEVELOPMENT_SECTIONS, PRACTICE_REFLECTIONS,
-  HOME_TOPICS, LEGACY_LESSONS, type HomeLessonData, type DevelopmentSection,
+  HOME_TOPICS, LEGACY_LESSONS, LEAVE_POLICY_NOTICE, type HomeLessonData, type DevelopmentSection,
 } from "./homeContent";
+import {
+  canReviewLeaveRequests, createLeaveRequest, leaveTypeLabel, requiresNoticeException, validateLeaveDraft,
+  LEAVE_REQUESTS_PATH, LEAVE_TYPE_OPTIONS, type LeaveDraft,
+} from '@/features/leave/requests';
 import "./HomePage.css";
 
 function HomeLesson({
@@ -199,6 +205,18 @@ export function HomePage() {
   const { members } = useTeamDirectory();
   const { profile, user, username } = useAuth();
   const [activeIndex, setActiveIndex] = useState(0);
+  const [leavePolicyOpen, setLeavePolicyOpen] = useState(false);
+  const [leaveStep, setLeaveStep] = useState<'policy' | 'form' | 'saved'>('policy');
+  const [leaveDraft, setLeaveDraft] = useState<LeaveDraft>({ type: 'vacation', startDate: '', endDate: '' });
+  const [leaveSaving, setLeaveSaving] = useState(false);
+  const [leaveError, setLeaveError] = useState('');
+  const leaveFormId = useId();
+  const leaveFormRef = useRef<HTMLFormElement>(null);
+  const leaveSuccessRef = useRef<HTMLHeadingElement>(null);
+  const leaveErrorRef = useRef<HTMLParagraphElement>(null);
+  const leaveBusyRef = useRef(false);
+  const leaveSubmissionRef = useRef<{ fingerprint: string; id: string } | null>(null);
+
   const titleRef = useRef<HTMLHeadingElement>(null);
   const moveFocus = useRef(false);
   const activeTopic = HOME_TOPICS[activeIndex];
@@ -209,6 +227,60 @@ export function HomePage() {
       moveFocus.current = false;
     }
   }, [activeIndex]);
+
+  useLayoutEffect(() => {
+    if (!leavePolicyOpen) return;
+    if (leaveStep === 'form') leaveFormRef.current?.querySelector<HTMLElement>('[role="combobox"]')?.focus();
+    else if (leaveStep === 'saved') leaveSuccessRef.current?.focus();
+  }, [leavePolicyOpen, leaveStep]);
+
+  useLayoutEffect(() => {
+    if (leavePolicyOpen && leaveError) leaveErrorRef.current?.focus();
+  }, [leavePolicyOpen, leaveError]);
+
+  function leaveCalendarDate(value: string) {
+    const iso = localDateToIso(value);
+    return iso ? new Date(iso) : undefined;
+  }
+  const leaveCalendarToday = leaveCalendarDate(localTodayIso())!;
+
+  function openLeavePolicy() {
+    if (leaveStep === 'saved') {
+      setLeaveDraft({ type: 'vacation', startDate: '', endDate: '' });
+      leaveSubmissionRef.current = null;
+    }
+    setLeaveStep('policy');
+    setLeaveError('');
+    setLeavePolicyOpen(true);
+  }
+
+  function closeLeavePolicy() {
+    if (!leaveBusyRef.current) setLeavePolicyOpen(false);
+  }
+
+  async function saveLeaveRequest(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (leaveBusyRef.current) return;
+    const validation = validateLeaveDraft(leaveDraft);
+    if (validation) { setLeaveError(validation); return; }
+    const fingerprint = JSON.stringify(leaveDraft);
+    if (leaveSubmissionRef.current?.fingerprint !== fingerprint) {
+      leaveSubmissionRef.current = { fingerprint, id: crypto.randomUUID() };
+    }
+    const requestId = leaveSubmissionRef.current.id;
+    leaveBusyRef.current = true;
+    setLeaveSaving(true);
+    setLeaveError('');
+    try {
+      await createLeaveRequest(requestId, leaveDraft);
+      setLeaveStep('saved');
+    } catch (cause) {
+      setLeaveError(cause instanceof Error ? cause.message : 'No se pudo guardar la solicitud.');
+    } finally {
+      leaveBusyRef.current = false;
+      setLeaveSaving(false);
+    }
+  }
 
   function selectTopic(index: number) {
     if (index === activeIndex || index < 0 || index >= HOME_TOPICS.length) return;
@@ -228,6 +300,7 @@ export function HomePage() {
   });
   const firstName = displayName.split(/\s+/)[0] || displayName;
   const userTitle = getUserTitle(profile.role, members.find(member => member.profile_id === profile.id)?.job_title);
+  const canReviewRequests = canReviewLeaveRequests(profile, members);
   const motivation = MOTIVATION_BY_TITLE[userTitle] ?? DEFAULT_MOTIVATION;
   const leadershipCue =
     LEADERSHIP_CUE_BY_TITLE[userTitle] ?? DEFAULT_LEADERSHIP_CUE;
@@ -266,6 +339,21 @@ export function HomePage() {
         ) : null}
         <div className="home-page__hero-footer">
           <p className="home-page__message">{motivation}</p>
+          {!canReviewRequests && (
+            <button
+              type="button"
+              className="btn-secondary home-page__leave-action"
+              aria-haspopup="dialog"
+              aria-expanded={leavePolicyOpen}
+              onClick={openLeavePolicy}
+            >
+              <CalendarDays aria-hidden="true" />
+              {LEAVE_POLICY_NOTICE.buttonLabel}
+            </button>
+          )}
+          {canReviewRequests && (
+            <Link className="btn-secondary home-page__leave-action" to={LEAVE_REQUESTS_PATH}>View</Link>
+          )}
         </div>
       </section>
 
@@ -334,6 +422,118 @@ export function HomePage() {
           </nav>
         </section>
       </div>
+      <Modal
+        isOpen={leavePolicyOpen}
+        onClose={closeLeavePolicy}
+        onBack={leaveStep === 'form' && !leaveSaving ? () => { setLeaveError(''); setLeaveStep('policy'); } : undefined}
+        title={LEAVE_POLICY_NOTICE.title}
+        className={`home-page__leave-modal${leaveStep === 'form' ? ' home-page__leave-modal--form' : ''}`}
+        size={leaveStep === 'form' ? 'md' : 'sm'}
+        footerActions={leaveStep === 'policy' ?
+          <button type="button" className="btn-primary" onClick={() => setLeaveStep('form')}>Solicita</button>
+        : leaveStep === 'form' ?
+          <button type="submit" form={`${leaveFormId}-form`} className="btn-primary" disabled={leaveSaving || !leaveDraft.startDate || !leaveDraft.endDate}>
+            {leaveSaving ? 'Guardando…' : 'Hacer solicitud'}
+          </button> :
+          <button type="button" className="btn-primary" onClick={closeLeavePolicy}>Listo</button>}
+      >
+        {leaveStep === 'policy' ? <div className="modal-body home-page__leave-policy type-body-md">
+          <p>{LEAVE_POLICY_NOTICE.introduction}</p>
+          <ul>{LEAVE_POLICY_NOTICE.points.map(point => <li key={point}>{point}</li>)}</ul>
+        </div> : leaveStep === 'form' ?
+          <form ref={leaveFormRef} id={`${leaveFormId}-form`} className="modal-body home-page__leave-policy home-page__leave-form" onSubmit={saveLeaveRequest} aria-busy={leaveSaving}>
+            <fieldset className="home-page__leave-fields" disabled={leaveSaving}>
+              <legend className="sr-only">Datos de la solicitud</legend>
+              <div className="home-page__leave-aside">
+                <div className="form-group home-page__leave-type">
+                  <label htmlFor={`${leaveFormId}-type`}>Tipo</label>
+                  <CustomSelect
+                    id={`${leaveFormId}-type`}
+                    value={leaveDraft.type}
+                    options={LEAVE_TYPE_OPTIONS}
+                    showPlaceholderOption={false}
+                    disabled={leaveSaving}
+                    aria-required="true"
+                    onChange={value => {
+                      const option = LEAVE_TYPE_OPTIONS.find(option => option.value === value);
+                      if (option) { setLeaveDraft(draft => ({ ...draft, type: option.value })); setLeaveError(''); }
+                    }}
+                  />
+                </div>
+                <div className="home-page__leave-art">
+                  <div className="home-page__leave-bubble">
+                    <p role="status" aria-atomic="true">
+                      {!leaveDraft.startDate ? 'Selecciona inicio y fin' : <>
+                        <span aria-hidden="true">
+                          {!leaveDraft.endDate
+                            ? `${formatReadableDate(leaveDraft.startDate).replace(/\s+\d{4}$/, '')} · Elige fin`
+                            : formatCompactDateRange(leaveDraft.startDate, leaveDraft.endDate)}
+                        </span>
+                        <span className="sr-only">
+                          {!leaveDraft.endDate
+                            ? `Inicio ${formatReadableDate(leaveDraft.startDate)}. Elige la fecha de fin.`
+                            : `${formatReadableDate(leaveDraft.startDate)} al ${formatReadableDate(leaveDraft.endDate)}`}
+                        </span>
+                      </>}
+                    </p>
+                    {requiresNoticeException(leaveDraft) && <p className="home-page__leave-bubble-note">
+                      Requiere autorización
+                    </p>}
+                    {leaveDraft.startDate && <button type="button" className="btn-icon home-page__leave-clear" aria-label="Limpiar fechas seleccionadas" title="Limpiar fechas" disabled={leaveSaving}
+                      onClick={() => { setLeaveDraft(draft => ({ ...draft, startDate: '', endDate: '' })); setLeaveError(''); }}>
+                      <RotateCcw aria-hidden="true" />
+                    </button>}
+                  </div>
+                  <div className="home-page__leave-art-icons" aria-hidden="true">
+                    <BrandMark className="home-page__leave-brand" />
+                    <img className="home-page__leave-robot" src={validation} alt="" />
+                  </div>
+                </div>
+              </div>
+              <fieldset className="home-page__leave-dates">
+                <legend className="sr-only" id={`${leaveFormId}-dates-label`}>Fechas</legend>
+                <p id={`${leaveFormId}-dates-help`} className="sr-only">
+                  {leaveDraft.startDate && !leaveDraft.endDate
+                    ? 'Ahora elige la fecha de fin. Para un solo día, vuelve a seleccionarlo.'
+                    : 'Elige la fecha de inicio y después la de fin.'}
+                </p>
+                <div className="home-page__leave-calendar-scroll" role="region" aria-label="Calendario de la solicitud" tabIndex={0}>
+                  <Calendar
+                    mode="range"
+                    resetOnSelect
+                    selected={leaveDraft.startDate ? {
+                      from: leaveCalendarDate(leaveDraft.startDate),
+                      to: leaveCalendarDate(leaveDraft.endDate),
+                    } : undefined}
+                    defaultMonth={leaveCalendarDate(leaveDraft.startDate) ?? leaveCalendarToday}
+                    startMonth={leaveCalendarToday}
+                    timeZone={TZ_MX}
+                    navLayout="after"
+                    showOutsideDays={false}
+                    disabled={leaveSaving ? true : { before: leaveCalendarToday }}
+                    aria-labelledby={`${leaveFormId}-dates-label`}
+                    aria-describedby={`${leaveFormId}-dates-help`}
+                    onSelect={range => {
+                      setLeaveDraft(draft => ({
+                        ...draft,
+                        startDate: range?.from ? isoToLocalDateString(range.from.toISOString()) : '',
+                        endDate: range?.to ? isoToLocalDateString(range.to.toISOString()) : '',
+                      }));
+                      setLeaveError('');
+                    }}
+                  />
+                </div>
+              </fieldset>
+            </fieldset>
+            {leaveError && <p ref={leaveErrorRef} tabIndex={-1} className="form-error-text type-body-md" role="alert">{leaveError}</p>}
+          </form> :
+          <div className="modal-body home-page__leave-policy type-body-md">
+            <h3 ref={leaveSuccessRef} tabIndex={-1} className="home-page__leave-success">Se validará tu solicitud</h3>
+            <p>{leaveTypeLabel(leaveDraft.type)}: {formatReadableDate(leaveDraft.startDate)} al {formatReadableDate(leaveDraft.endDate)}.</p>
+            <p>Tu coordinador revisará la solicitud y te entregará los formatos físicos.</p>
+            <p>{LEAVE_POLICY_NOTICE.handoverReminder}</p>
+          </div>}
+      </Modal>
       {CAREER_JOURNEY_ENABLED && <Modal isOpen={showCareerMotivation} title="Tu día, tu enfoque"
       onClose={closeCareerMotivation} size="sm"
       footerActions={<button type="button" className="btn-primary" onClick={closeCareerMotivation}>Hacer que cuente</button>}>

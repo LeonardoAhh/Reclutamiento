@@ -1335,7 +1335,7 @@ button.reporte-card:hover,
   font-weight: var(--type-body-strong-weight);
   line-height: 1;
   background: var(--color-muted);
-  color: var(--color-on-dark);
+  color: var(--color-on-neutral);
 }
 
 .reporte-incidents__tab-badge--active {
@@ -1344,7 +1344,7 @@ button.reporte-card:hover,
 }
 
 .reporte-incidents__tab-badge--count {
-  color: var(--color-primary);
+  color: var(--color-on-warning);
   background: var(--color-warning);
 }
 
@@ -1503,7 +1503,7 @@ button.reporte-card:hover,
   padding: var(--spacing-xxs) var(--spacing-sm);
   font-size: var(--type-caption-sm-size);
   line-height: var(--type-caption-sm-line);
-  color: var(--color-on-dark);
+  color: var(--color-on-neutral);
 }
 
 /* Incidence type badge (Falta, Vacación, Incapacidad…) */
@@ -1520,19 +1520,19 @@ button.reporte-card:hover,
 
 .reporte-inc-badge--error {
   background: var(--color-error);
-  color: var(--color-on-dark);
+  color: var(--color-on-error);
 }
 .reporte-inc-badge--warn {
   background: var(--color-warning);
-  color: var(--color-primary);
+  color: var(--color-on-warning);
 }
 .reporte-inc-badge--ok {
   background: var(--color-success);
-  color: var(--color-on-dark);
+  color: var(--color-on-success);
 }
 .reporte-inc-badge--info {
   background: var(--color-muted);
-  color: var(--color-on-dark);
+  color: var(--color-on-neutral);
 }
 
 .reporte-incidents__card-tags {
@@ -2420,7 +2420,7 @@ button.reporte-card:hover,
 .ras__incidents-total {
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-body-strong-weight);
-  color: var(--color-primary);
+  color: var(--color-on-warning);
   background: var(--color-warning);
   border: var(--border-width) solid var(--color-warning-text);
   border-radius: var(--rounded-sm);
@@ -3204,7 +3204,7 @@ button.reporte-card:hover,
 .reporte-saved__item:hover {
   border-color: var(--color-hairline-strong);
   transform: translateY(-1px);
-  box-shadow: 0 1px 2px rgba(var(--color-ink-rgb), 0.04);
+  box-shadow: var(--shadow-xs);
 }
 
 @media (prefers-reduced-motion: reduce) {

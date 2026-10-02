@@ -1,60 +1,110 @@
-# Design System — White Precision UI
+# Design System — Graphite UI
 
 This visual system applies to product interfaces throughout the repository.
 
 ## Overview
 
-The product uses a clean white canvas (`{colors.canvas}` — #ffffff), near-black ink (`{colors.ink}` — #111111), and restrained gray grouping surfaces. Primary actions stay black; blue is reserved for links, while visible focus uses muted gray. Structure comes from whitespace, surface changes, and thin borders instead of decorative color.
+The light theme uses a soft graphite palette: an off-white canvas (`{colors.canvas}` — #f1f2f4), graphite ink (`{colors.ink}` — #2b3037), and restrained gray surfaces. Primary actions use graphite; blue remains reserved for links, while visible focus uses a neutral gray. Structure comes from whitespace, surface changes, and thin borders.
 
 Typography does the heavy lifting. **Inter** is the available substitute for Cal Sans: headings use weight 600 and tight negative tracking, while body and controls use Inter with neutral tracking. App buttons and inputs use `{rounded.md}` (8px); cards use `{rounded.lg}` (12px); avatars and icon-only controls may use `{rounded.full}`.
 
-Surfaces barely lift. The workspace and page floor are white. `{colors.canvas-soft}` (#f8f9fa) groups navigation and quiet regions; `{colors.surface-card}` (#ffffff) holds feature content; `{colors.canvas-elevated}` (#ffffff) is used for inputs, menus, dialogs, and product-detail surfaces. Hairlines preserve separation between white surfaces.
+The light and dark themes share the same hierarchy. The workspace and page floor use `{colors.canvas}`. `{colors.canvas-soft}` (#e9ecf0) groups quiet regions; `{colors.surface-card}` (#f7f8fa) holds feature content; `{colors.canvas-elevated}` (#fafbfc) is used for inputs, menus, dialogs, and product-detail surfaces. All colors belong to shared semantic tokens.
 
 **Key Characteristics:**
-- White canvas with black primary actions, blue links, and a restrained muted focus ring.
-- Light-gray surfaces group related content; white elevated surfaces hold controls and overlays.
+- Off-white canvas with graphite primary actions, accessible blue links, and a visible neutral focus ring.
+- Light-gray grouping regions and subtly brighter cards and elevated surfaces.
 - Inter 600 with negative tracking approximates Cal Sans for headings; Inter remains the UI and body face.
 - Buttons and inputs use an 8px radius, content cards 12px, marquee panels 16px, avatars and icon buttons full circles.
 - Default depth is flat or a 1px hairline. Floating menus and dialogs use only a subtle shadow.
-- Controls keep the application's 44px minimum touch target, even where the visual reference uses smaller controls.
+- Controls keep the application's 44px minimum touch target.
 
-## Colors
+## Colors — Light Graphite
 
-> The supplied white-theme reference defines the palette, type character, radii, and shallow elevation. Application accessibility and the existing 44px touch-target contract take precedence where the reference is more compact.
+> The light palette follows the approved graphite direction through shared tokens. The existing typography, radii, shallow elevation and accessible touch targets apply to both appearances.
 
 ### Brand & Accent
-- **Ink** (`{colors.primary}` / `{colors.ink}` — #111111): headings, primary CTA fill, logo, and highest-emphasis text. Pressed actions use `{colors.primary-active}` (#242424). Paired with `{colors.on-primary}` (white).
-- **Accessible Blue** (`{colors.link}` — #0066cc): link color with AA contrast on white surfaces. Darker press tone `{colors.link-deep}` (#004f9f), pale wash `{colors.link-soft}` (#e6f0ff).
-- **Focus** (`{colors.focus}` / `{colors.mute}` — #6b7280): a 2px muted outline with no offset on light surfaces. Inverted surfaces and forced-colors mode use their existing high-contrast focus colors.
-- Existing violet, cyan, pink, and magenta tokens are decorative compatibility tokens only. They must not structure application navigation, forms, tables, or cards.
+- **Primary graphite** (`{colors.primary}` — #343b43): primary CTA fill, logo and selected navigation. Pressed actions use `{colors.primary-active}` (#262c33), paired with `{colors.on-primary}` (#f7f8fa).
+- **Accessible Blue** (`{colors.link}` — #0066cc): functional links with AA contrast on light surfaces. Darker press tone `{colors.link-deep}` (#004f9f), pale wash `{colors.link-soft}` (#e6f0ff).
+- **Focus** (`{colors.focus}` / `{colors.mute}` — #586371): a 2px neutral outline with no offset on light surfaces. Inverted surfaces and forced-colors mode retain their dedicated focus colors.
+- Existing violet, cyan, pink, and magenta tokens remain localized compatibility tokens.
 
 ### Surface
-- **Canvas** (`{colors.canvas}` — #ffffff): default page and workspace floor.
-- **Canvas Soft** (`{colors.canvas-soft}` — #f8f9fa): navigation, quiet bands, and subtle grouping.
-- **Elevated** (`{colors.canvas-elevated}` — #ffffff): inputs, menus, dialogs, and detail surfaces.
-- **Card** (`{colors.surface-card}` — #ffffff): feature cards and secondary content panels, separated by a hairline.
-- **Strong** (`{colors.surface-strong}` — #e5e7eb): disabled control fill and stronger neutral separation.
-- **Dark** (`{colors.surface-dark}` — #101010): scarce inverted surfaces such as tooltips; never a general page background.
+- **Canvas** (`{colors.canvas}` — #f1f2f4): continuous page and workspace floor.
+- **Canvas Soft** (`{colors.canvas-soft}` — #e9ecf0): quiet bands and subtle grouping.
+- **Card** (`{colors.surface-card}` — #f7f8fa): feature cards and secondary content panels, separated by a hairline.
+- **Elevated** (`{colors.canvas-elevated}` — #fafbfc): inputs, menus, dialogs, and detail surfaces.
+- **Strong** (`{colors.surface-strong}` — #dde1e6): disabled control fill and stronger neutral separation.
+- **Dark** (`{colors.surface-dark}` — #23262a): scarce inverted surfaces such as tooltips and toasts.
+- Official document paper and ink retain their independent print/export tokens.
 
 ### Text
-- **Ink** (`{colors.ink}` — #111111): primary headings and high-emphasis text.
-- **Body** (`{colors.body}` — #374151): standard paragraph and navigation text.
-- **Mute** (`{colors.mute}` — #6b7280): secondary copy, labels, and metadata.
-- **Faint** (`{colors.faint}` — #767676): lowest functional text tier, including placeholders. Disabled controls may use opacity only when their state is also programmatically exposed.
+- **Ink** (`{colors.ink}` — #2b3037): primary headings and high-emphasis text.
+- **Body** (`{colors.body}` — #48515e): standard paragraph and navigation text.
+- **Mute** (`{colors.mute}` — #586371): secondary copy, labels, and metadata.
+- **Faint** (`{colors.faint}` — #606a77): lowest functional text tier, including placeholders. Disabled controls may use opacity only when their state is also programmatically exposed.
 
 ### Borders
-- **Hairline** (`{colors.hairline}` — #e5e7eb): 1px border on cards and dividers.
-- **Hairline Soft** (`{colors.hairline-soft}` — #f3f4f6): subtle division between white regions.
-- **Hairline Strong** (`{colors.hairline-strong}` — #d1d5db): emphasized neutral separation.
-- **Control Border** (`{colors.control-border}` — #6b7280): inputs, selects, secondary buttons, checkboxes, and icon buttons. It preserves non-text contrast on white.
+- **Hairline** (`{colors.hairline}` — #d4d9e0): 1px border on cards and dividers.
+- **Hairline Soft** (`{colors.hairline-soft}` — #e3e7ec): subtle division between light regions.
+- **Hairline Strong** (`{colors.hairline-strong}` — #bbc3ce): emphasized neutral separation.
+- **Control Border** (`{colors.control-border}` — #727c8a): inputs, selects, secondary buttons, checkboxes, and icon buttons.
 
 ### Semantic
-- **Error** (`{colors.error}` — #ef4444): indicators and destructive controls; `{colors.error-deep}` (#b91c1c) is used for accessible text and pressed states.
+- **Error** uses `{colors.error}` (#ef4444) for indicators and `{colors.error-deep}` (#b91c1c) for text and pressed controls.
 - **Warning** uses `{colors.warning}` (#f59e0b) for indicators and `{colors.warning-text}` (#92400e) for text.
-- **Success** uses `{colors.success}` (#10b981) for indicators and `{colors.success-text}` (#047857) for text on light backgrounds. Status must never rely on color alone.
+- **Success** uses `{colors.success}` (#10b981) for indicators and `{colors.success-text}` (#047857) for text.
+- Status must never rely on color alone.
+
+### Light Contrast
+Across the canvas, quiet, card and elevated surfaces, calculated minimum contrast is 11.21:1 for headings, 6.78:1 for reading text, 5.15:1 for secondary text and focus, 4.63:1 for placeholders and 3.57:1 for control borders. Primary button text has 10.67:1 contrast. These token pairs do not cover inherited text, opacity, images or every rendered state.
 
 ### Decorative Compatibility
-Legacy gradient tokens remain available only to avoid breaking existing illustrations. New application UI must use the white, ink, gray, link, and semantic tokens above.
+Legacy gradient tokens remain available for existing illustrations. Application UI uses the graphite, gray, link, and semantic tokens above.
+
+
+## Dark Theme — Soft Graphite
+
+The optional dark theme extends the same semantic tokens; it does not change typography, layout, radii, data, actions or permissions. Light mode uses Light Graphite. Dark mode uses graphite rather than pure black, and attenuated light text rather than pure white. Comfort depends on the display, ambient lighting and the reader; contrast compliance is not a guarantee against fatigue.
+
+### Appearance Preference
+
+- The appearance control is an unfilled Sun/Moon icon button without a border, at the right of the sidebar header opposite the brand on the left, and in the login screen. Clicking it toggles directly between Claro and Oscuro using the currently resolved theme, with no dropdown. The icon reflects the current theme; the accessible name and tooltip describe the next action. A native button supports Enter/Space, the shared minimum touch target and visible focus. Reduced-motion preferences disable the icon transition. Sistema remains the initial behavior when no valid stored preference exists; the first click chooses and persists the opposite explicit theme.
+- The browser preference is stored under `reclutamiento_color_scheme`; it is independent of account data and authentication. Sistema follows operating-system changes; other selections override them. Changes synchronize across tabs.
+- `public/theme.js` restores the preference on `html[data-color-scheme]` before the global stylesheet loads. `useTheme` subscribes to this single controller; portals inherit the same tokens.
+- If storage is unavailable, the selected theme still applies for the current visit and the selector explains that it cannot be saved.
+- The browser theme-color is read from `--color-canvas`. The existing PWA manifest remains unchanged.
+
+### Dark Semantic Palette
+
+| Role | CSS token | Dark value |
+|---|---|---|
+| Page floor | `--color-canvas` | #1b1d20 |
+| Quiet/navigation region | `--color-canvas-soft` | #202328 |
+| Content cards | `--color-surface-card` | #23262a |
+| Controls and floating surfaces | `--color-canvas-elevated` | #2b2f34 |
+| Headings | `--color-ink` | #e2e5e9 |
+| Reading text | `--color-body` | #c7ccd3 |
+| Secondary text | `--color-mute` | #a0a7b1 |
+| Placeholders | `--color-faint` | #969eaa |
+| Primary action, links, selection and focus | `--color-primary` | #cbd1d8 |
+| Text on primary fill | `--color-on-primary` | #202328 |
+| Functional control border | `--color-control-border` | #858e9b |
+| Success indicator/text | `--color-success` | #83c9a3 |
+| Warning indicator/text | `--color-warning` | #e2b76f |
+| Error indicator/text | `--color-error` | #f28b82 |
+
+Primary remains the sole structural action color in dark mode. Links retain their existing underline/interaction treatment. Semantic and existing chart/category colors remain localized and retain labels, icons or line patterns. Cards and dividers use subtle hairlines; required control boundaries use the stronger control-border token. Page layout containers and the mobile header use --workspace-surface, which aliases --color-canvas, so the workspace floor stays continuous across routes. Elevated tokens are reserved for cards, controls and floating surfaces.
+
+### Contrast and Shared Tokens
+
+Across page, card and elevated backgrounds, minimum contrast is 8.34:1 for reading text, 5.55:1 for secondary text, 4.98:1 for placeholders, 4.07:1 for control borders and 8.76:1 for focus against those backgrounds. The primary button text pair is 10.24:1. These calculated pairs do not replace verification of inherited text, hover, selected states, transparency or real rendered components.
+
+- `--color-on-neutral`, `--color-on-error`, `--color-on-success` and `--color-on-warning` describe text on solid status fills; `--color-on-dark` remains text on a dark surface.
+- `--color-on-dark-hover` describes the hover fill for a light action inside a dark surface.
+- `--color-shadow-rgb` keeps shadow channels separate from text, avoiding light halos when ink becomes light.
+- `--color-scene-light` provides theme-independent neutral illumination for the existing decorative WebGL scene; its material follows the primary token.
+- The shared brand SVG inherits currentColor. Raster photographs and existing illustrations retain their original colors.
+- Document paper, ink and official print/export tokens remain independent of appearance. Required native controls keep the existing touch target and focus treatment. Appearance changes add no animation.
 
 ## Typography
 
@@ -129,7 +179,7 @@ Images and illustrations scale within their containers and preserve intrinsic pr
 | 1 — Whisper | `{shadows.xs}` | Lightly raised cards and the desktop workspace |
 | 2 — Floating | `{shadows.sm}` | Menus, modals, and popovers |
 
-Depth is deliberately minimal. The system prefers a crisp 1px hairline and small white-to-gray surface changes; floating surfaces use a low-alpha shadow rather than a heavy drop.
+Depth is deliberately minimal. The system prefers a crisp 1px hairline and small changes between neutral surfaces; floating surfaces use a low-alpha shadow rather than a heavy drop.
 
 ### Decorative Depth
 Decorative color is optional and localized. Product UI, data, and semantic states must remain understandable without gradients or color-only signals. No glows or heavy gradients.
@@ -169,6 +219,8 @@ Cards are rectangles at 12–16px radius; normal controls are 8px; icon buttons 
 **`home-workspace`** — internal team start page
 - The greeting uses the shared `app-page-title` style. Topic headings use `{typography.heading-md}`, lesson headings use `{typography.heading-sm}`, and reading content uses `{typography.body-md}`. Employment metadata keeps `{typography.body-sm}`.
 - Content starts in one column. At the desktop breakpoint the greeting and employment details share a top-aligned row with flexible columns. At the wide breakpoint lessons use two equal columns; context paragraphs span both. Nested reading lists stay in one column inside these narrower cards.
+- The greeting footer opens the existing shared Modal titled “Vacaciones y permisos”. Its policy step keeps only “Solicita” as the footer action and retains the header close control. The form step uses the existing CustomSelect and a single inline Calendar in range mode; its borderless header arrow returns to the policy. Date guidance, the live selected range, and any short-notice note appear in a persistent speech bubble pointing to the existing validation robot; A borderless reset icon stays on the same row inside the bubble when a start date exists, with a descriptive accessible name. The desktop bubble pointer aligns with the robot rather than the logo. The bubble remains visible on mobile next to a smaller robot and announces date changes through a polite status region. Its visible range uses compact same-day, same-month and cross-month formats, while assistive technology receives the full dates; narrow widths truncate only the visible label as a fallback. At the desktop breakpoint the form uses the shared medium modal width with type and calendar in two columns; smaller screens keep one column. The desktop type column shows the existing BrandMark SVG and validation robot as a decorative scene underneath the control, using shared size/color/motion tokens. The type selector fills its column so the control and both illustrations share a horizontal center. On desktop, its label uses the same header height as the calendar month caption so both column headings align. The BrandMark is hidden in the mobile column layout, while the small robot and speech bubble remain visible; float animation respects reduced motion. Body spacing uses shared tokens and calendar touch targets remain unchanged. Range calendars give each day button a small horizontal gutter and separate week rows using the shared smallest spacing token. The first selected date and both completed endpoints use primary fill with on-primary text; intermediate dates keep a continuous tinted band, capped at week edges. Date cells preserve a consistent size, weight and alignment across open, single-day and completed ranges. Calendar dates use America/Mexico_City and shared tokens, with selected endpoints visible in both themes, keyboard navigation and the existing minimum touch target. Past dates are disabled, a live summary shows the selected range, and Guardar solicitud becomes available when both dates are chosen. Saving uses the idempotent Supabase RPC; confirmed persistence shows “Se validará tu solicitud” and the reminder to leave pending tasks, process status, vacancies and interviews ready for follow-up. Recruiter date ranges cannot overlap, enforced by the PostgreSQL exclusion constraint; short-notice requests retain an exception flag. The greeting shows the request action only to recruiters outside the reviewer role; administrators and active coordinators use their existing review-page link, since they coordinate their own absences directly. The protected requests page is available through “Ver solicitudes” to administrators and active coordinators. Its empty state reuses the shared empty-state styles with a static calendar icon, a short heading and one explanation on a tokenized card surface. There is no manual refresh action; loading occurs on entry and page changes, and only failed loads expose Reintentar. Administrators can delete any pending request; active coordinators can delete their own pending requests. Eliminar uses the shared ConfirmModal showing requester, type and dates; the dedicated RPC verifies active review access, administrator role or ownership, and pending status, without granting direct table deletion. Successful deletion confirms through the shared app toast and reloads the current page, returning to the last available page when needed. Pagination controls appear only when there is more than one page. Physical formats remain handled by the coordinator.
+- The protected leave review page keeps its data table from the tablet breakpoint upward. On mobile it presents the same requests as a list of flat, tokenized cards: requester and type lead, start and end dates form two readable columns, then validation status, any short-notice exception and the submission time follow in quieter text. A permitted delete action appears as a labeled, borderless touch target at the end of each card and opens the existing confirmation dialog. The mobile heading uses the shared subsection type scale so it fits beside the back control without clipping. Pagination, empty/loading states and permissions remain shared across layouts.
 - Existing topic selection, keyboard focus, content, profile data, and role-specific messages are preserved.
 
 **`nav-bar`** — top navigation
@@ -178,11 +230,11 @@ Cards are rectangles at 12–16px radius; normal controls are 8px; icon buttons 
 - Body-grey text `{colors.body}`, type `{typography.body-md}`, fully rounded hit area `{rounded.full}`, padding `{spacing.xs} {spacing.sm}`. Transparent until interacted.
 
 **`app-workspace`** — authenticated application shell
-- On desktop, the sidebar remains fixed on `{colors.canvas}` and the workspace is one continuous white surface shared by header and page content.
-- The workspace uses a 1px `{colors.hairline}` border, `{rounded.lg}` corners, and a Level-1 shadow. A `{spacing.sm}` inset separates it from the white page floor without creating a gray frame. It owns vertical scrolling so the sidebar remains stationary.
+- On desktop, the sidebar remains fixed on `{colors.canvas}` and the workspace is one continuous canvas surface shared by header and page content.
+- The workspace uses a 1px `{colors.hairline}` border, `{rounded.lg}` corners, and a Level-1 shadow. A `{spacing.sm}` inset separates it from the shared page floor. It owns vertical scrolling so the sidebar remains stationary.
 - Sidebar selection uses a solid `{colors.primary}` fill with `{colors.on-primary}` text and icons, without a leading border or inset indicator. Every page link is shown directly in a single flat list, with no nested navigation; section labels remain available to assistive technology as visually-hidden headings. `{colors.link}` is reserved for links, not for filling the active navigation row.
 - Sidebar links use `{typography.body-md}`, with `{typography.label-sm}` for the current section. Adjacent links have no extra gap; their 44px minimum targets set the row rhythm. `{spacing.xs}` separates the brand from navigation. Navigation and account controls use `{rounded.md}` and retain a 44px minimum target.
-- The sidebar brand is a centered SVG symbol (the product mark, in `{colors.primary}` ink) revealed once with the system `fadeUp` motion. Its accessible name keeps the original brand spelling. Reduced-motion mode shows the static mark; forced-colors mode inherits the system text color via `currentColor`.
+- The sidebar brand is an SVG symbol at the opposite end from the appearance control (the product mark, in `{colors.primary}` ink) revealed once with the system `fadeUp` motion. Its accessible name keeps the original brand spelling. Reduced-motion mode shows the static mark; forced-colors mode inherits the system text color via `currentColor`.
 - Below the desktop breakpoint the sidebar becomes an overlay and the workspace returns to a continuous, unframed page surface. The mobile bar must not cover content or safe areas.
 
 **`career-workspace`** — personal career journey
@@ -204,16 +256,16 @@ Cards are rectangles at 12–16px radius; normal controls are 8px; icon buttons 
 
 ### Buttons
 
-**`button-primary`** — the black primary app action
+**`button-primary`** — the graphite primary app action
 - Background `{colors.primary}`, text `{colors.on-primary}`, type `{typography.button-md}` at weight 600, `{rounded.md}` (8px), min-height `44px`, padding `{spacing.xs} {spacing.sm}`.
 
-**`button-secondary`** — the white secondary app action
+**`button-secondary`** — the elevated secondary app action
 - Background `{colors.canvas-elevated}`, text `{colors.ink}`, border `{colors.control-border}`, type `{typography.button-md}` at weight 600, `{rounded.md}`, min-height `44px`, padding `{spacing.xs} {spacing.sm}`.
 
-**`button-primary-sm`** — the standard black app CTA
+**`button-primary-sm`** — the standard graphite app CTA
 - Background `{colors.primary}`, text `{colors.on-primary}`, type `{typography.button-md}` at weight 600, `{rounded.md}` (8px), min-height `44px`, padding `0px 12px`.
 
-**`button-ghost-sm`** — the white secondary app button
+**`button-ghost-sm`** — the neutral secondary app button
 - Background `{colors.canvas-elevated}`, text `{colors.ink}`, 1px `{colors.control-border}`, type `{typography.button-md}` at weight 600, `{rounded.md}`, min-height `44px`, padding `0px 12px`.
 
 **`button-category-pill`** — grouped category navigation
@@ -229,7 +281,7 @@ Cards are rectangles at 12–16px radius; normal controls are 8px; icon buttons 
 
 **`auth-workspace`** — sign-in workspace
 - `/login` keeps the sign-in form in a single column on mobile and tablet. At the desktop breakpoint, a quiet `{colors.canvas-soft}` panel on the left presents a decorative Motion sequence between the brand SVG and the existing Wave robot, while the centered brand and form remain on the right. The sequence plays once and settles on Wave with its greeting visible. The brand fades out completely before Wave fades in; each fade uses half of `{duration.brand-reveal}`. Reduced-motion preference shows only the static brand.
-- On desktop the form sits in a white `{rounded.lg}` card with a hairline and Level-1 shadow within the white workspace.
+- On desktop the form sits in a `{colors.surface-card}` `{rounded.lg}` card with a hairline and Level-1 shadow within the shared canvas.
 - On mobile the outer workspace frame is removed so the flow remains continuous and can scroll with the software keyboard or increased text zoom.
 - Fields and CTA share the 44px minimum control height; the page must not autofocus a field on mobile.
 
@@ -247,7 +299,7 @@ Cards are rectangles at 12–16px radius; normal controls are 8px; icon buttons 
 ## Do's and Don'ts
 
 ### Do
-- Keep the white canvas and use gray only for quiet regions; separate white cards with a hairline.
+- Keep one continuous canvas across pages; separate card and elevated surfaces with semantic tokens and hairlines.
 - Reserve `{colors.link}` for links and use `{colors.focus}` for visible focus; decorative accents must stay local and optional.
 - Use 8px app controls, 12px cards, and full circles only for avatars or icon-only buttons.
 - Define cards and inputs with a 1px hairline (`{colors.hairline}`) before any shadow — flat is the default.
@@ -258,6 +310,6 @@ Cards are rectangles at 12–16px radius; normal controls are 8px; icon buttons 
 - Don't fill large surfaces with accent colors; decorative tokens must not become application chrome.
 - Don't use pills for ordinary app buttons or inputs.
 - Don't pile on shadows — depth is a 1px hairline plus, at most, a finely-layered low-alpha shadow stack.
-- Don't set body copy in pure black (`#000000`) — headings use #111111 and body steps to `{colors.body}`.
-- Don't add decorative systems to application chrome; product surfaces stay ink, white, and restrained gray.
+- Don't set body copy in pure black (`#000000`) — headings use `{colors.ink}` and body steps to `{colors.body}`.
+- Don't add decorative systems to application chrome; product surfaces follow graphite, neutral and semantic tokens.
 - Don't loosen the display tracking — large Inter headings carry tight negative letter-spacing by design.

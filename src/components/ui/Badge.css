@@ -30,7 +30,7 @@
 
 .badge--neutral-solid {
   background: var(--color-muted);
-  color: var(--color-on-primary);
+  color: var(--color-on-neutral);
 }
 
 .badge--coral {
@@ -60,7 +60,7 @@
 
 .badge--error-solid {
   background: var(--color-error);
-  color: var(--color-on-primary);
+  color: var(--color-on-error);
 }
 
 /* ── Project Badges ── */

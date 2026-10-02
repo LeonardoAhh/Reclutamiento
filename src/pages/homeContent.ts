@@ -43,6 +43,19 @@ export const MOTIVATION_BY_TITLE: Readonly<Record<string, string>> = {
 export const DEFAULT_MOTIVATION =
   "Tu trabajo suma. Hoy es una nueva oportunidad para avanzar con propósito.";
 
+
+export const LEAVE_POLICY_NOTICE = {
+  buttonLabel: "Solicita aqui!",
+  title: "Vacaciones y permisos",
+  introduction: "Solicita autorización para vacaciones o permisos.",
+  points: [
+    "Vacaciones: 14 días naturales de anticipación; primer periodo mínimo de 6 días continuos.",
+    "Sin fechas pasadas ni canje de faltas por vacaciones.",
+    "Menor anticipación: autorización del jefe de área, buen desempeño y sin faltas injustificadas en los últimos 30 días.",
+  ],
+  handoverReminder: "Antes de ausentarte, deja tus pendientes y el estatus de procesos, vacantes y entrevistas para darles seguimiento.",
+} as const;
+
 const RECRUITMENT_PRINCIPLES = [
   "Perfil claro antes de publicar",
   "Comunicación oportuna con cada persona",

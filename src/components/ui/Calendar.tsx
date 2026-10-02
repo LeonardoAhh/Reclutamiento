@@ -18,7 +18,7 @@ function Calendar({
     <DayPicker
       locale={es}
       showOutsideDays={showOutsideDays}
-      className={cn("p-3", className)}
+      className={cn("p-3", props.mode === "range" && "calendar--range", className)}
       classNames={{
         ...classNames,
       }}

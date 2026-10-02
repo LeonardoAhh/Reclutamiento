@@ -22,6 +22,7 @@
 }
 
 .transition-loader__mark {
+  color: var(--color-ink);
   display: block;
   inline-size: var(--design-spacing-section);
   block-size: var(--design-spacing-section);

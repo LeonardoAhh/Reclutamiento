@@ -15,7 +15,7 @@
     "main";
   grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto auto;
-  background: var(--color-surface);
+  background: var(--workspace-surface);
 }
 
 .plantilla-header {

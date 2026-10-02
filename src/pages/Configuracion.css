@@ -665,6 +665,7 @@
 
 .config-calendar-month-nav__button {
   flex: 0 0 auto;
+  border: 0;
   background: transparent;
 }
 
@@ -839,19 +840,19 @@
 .config-calendar__day--attendance {
   background: var(--color-success-text);
   border-color: var(--color-success-text);
-  color: var(--color-on-primary);
+  color: var(--color-on-success);
 }
 
 .config-calendar__day--incident {
   background: var(--color-error);
   border-color: var(--color-error);
-  color: var(--color-on-primary);
+  color: var(--color-on-error);
 }
 
 .config-calendar__day--rest {
   background: var(--color-muted);
   border-color: var(--color-muted);
-  color: var(--color-on-primary);
+  color: var(--color-on-neutral);
 }
 
 .config-calendar__day--empty .config-calendar__day-code {
@@ -915,7 +916,7 @@
   height: 100%;
   width: 100%;
   flex: 1;
-  background-color: var(--color-surface);
+  background-color: var(--workspace-surface);
 }
 
 /* Main Content Area */
@@ -968,7 +969,7 @@
   min-width: 0;
   padding: var(--spacing-xs);
   color: var(--color-muted);
-  background: var(--color-surface);
+  background: transparent;
   border-radius: var(--rounded-md);
 }
 

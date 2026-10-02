@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { RefObject } from 'react';
 import { useReducedMotion } from 'framer-motion';
+import { useTheme } from '@/hooks/useTheme';
 import * as THREE from 'three';
 import { CAREER_ROLES } from './types';
 import type { CareerRoleId } from './types';
@@ -12,7 +13,10 @@ interface CareerSceneProps {
 }
 interface Connector { id: CareerRoleId; d: string }
 interface Diagram { width: number; height: number; connectors: Connector[] }
-interface SceneApi { update: (selected: CareerRoleId, paused: boolean) => void }
+interface SceneApi {
+  update: (selected: CareerRoleId, paused: boolean) => void;
+  updateTheme: () => void;
+}
 
 export function CareerScene({ nodesRef, selected, paused }: CareerSceneProps) {
   const hostRef = useRef<HTMLDivElement>(null);
@@ -21,6 +25,7 @@ export function CareerScene({ nodesRef, selected, paused }: CareerSceneProps) {
   const [state, setState] = useState<'loading' | 'ready' | 'fallback'>('loading');
   const [diagram, setDiagram] = useState<Diagram>({ width: 1, height: 1, connectors: [] });
   const reducedMotion = useReducedMotion();
+  const { resolvedTheme } = useTheme();
 
   useEffect(() => {
     const host = hostRef.current;
@@ -51,8 +56,8 @@ export function CareerScene({ nodesRef, selected, paused }: CareerSceneProps) {
     const radius = pixels('--design-spacing-xs') / 2;
     const geometry = new THREE.SphereGeometry(radius, 16, 12);
     const material = new THREE.MeshStandardMaterial({ color: rootStyles.getPropertyValue('--color-primary').trim() });
-    const ambient = new THREE.AmbientLight(rootStyles.getPropertyValue('--color-canvas').trim());
-    const light = new THREE.DirectionalLight(rootStyles.getPropertyValue('--color-canvas').trim());
+    const ambient = new THREE.AmbientLight(rootStyles.getPropertyValue('--color-scene-light').trim());
+    const light = new THREE.DirectionalLight(rootStyles.getPropertyValue('--color-scene-light').trim());
     light.position.set(1, 1, 1);
     scene.add(ambient, light);
     const particles = CAREER_ROLES.slice(1).map(() => {
@@ -124,6 +129,10 @@ export function CareerScene({ nodesRef, selected, paused }: CareerSceneProps) {
       const selectedIndex = CAREER_ROLES.findIndex(role => role.id === selectedId);
       particles.forEach((particle, index) => particle.scale.setScalar(index + 1 === selectedIndex ? 2 : 1));
       restart();
+    }, updateTheme: () => {
+      const styles = getComputedStyle(document.documentElement);
+      material.color.set(styles.getPropertyValue('--color-primary').trim());
+      draw();
     } };
     const observer = new ResizeObserver(measure);
     observer.observe(host);
@@ -146,6 +155,10 @@ export function CareerScene({ nodesRef, selected, paused }: CareerSceneProps) {
       renderer?.dispose(); renderer?.forceContextLoss(); canvas.remove();
     };
   }, [nodesRef, reducedMotion]);
+
+  useEffect(() => {
+    apiRef.current?.updateTheme();
+  }, [resolvedTheme]);
 
   useEffect(() => {
     selection.current = { selected, paused };

@@ -28,7 +28,7 @@
 .btn-danger.animated-submit-button[data-state="loading"]:disabled {
   background: var(--color-error);
   border-color: var(--color-error);
-  color: var(--color-on-primary);
+  color: var(--color-on-error);
 }
 
 .animated-submit-button__content {

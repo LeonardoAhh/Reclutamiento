@@ -17,3 +17,125 @@
 .rdp-selected {
   font-weight: var(--type-body-strong-weight);
 }
+
+
+/* Range selection and navigation use the shared theme and touch tokens. */
+.rdp-root {
+  --rdp-range_start-color: var(--color-on-primary);
+  --rdp-range_end-color: var(--color-on-primary);
+  --rdp-range_middle-color: var(--color-ink);
+  --rdp-nav_button-height: var(--touch-target-min);
+  --rdp-nav_button-width: var(--touch-target-min);
+  --rdp-nav-height: var(--touch-target-min);
+  --rdp-disabled-opacity: var(--opacity-disabled);
+  --rdp-nav_button-disabled-opacity: var(--opacity-disabled);
+  --rdp-weekday-padding: var(--design-spacing-xs) 0;
+  --rdp-dropdown-gap: var(--design-spacing-xs);
+  --rdp-months-gap: var(--design-spacing-lg);
+  color: var(--color-body);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.rdp-selected {
+  font-size: inherit;
+}
+
+.rdp-month_caption {
+  font-size: var(--type-label-sm-size);
+  font-weight: var(--type-label-sm-weight);
+}
+
+.rdp-weekday {
+  color: var(--color-muted);
+  opacity: 1;
+}
+
+.rdp-day_button:not(:disabled):hover {
+  background: var(--color-surface-soft);
+}
+
+.rdp-range_start .rdp-day_button:not(:disabled):hover,
+.rdp-range_end .rdp-day_button:not(:disabled):hover {
+  background: var(--color-primary-active);
+}
+
+.rdp-selected.rdp-range_middle .rdp-day_button {
+  border: var(--border-width) solid transparent;
+}
+
+.rdp-root button:focus-visible {
+  position: relative;
+  z-index: 1;
+}
+
+/* Range calendars keep endpoints distinct and a continuous band between them. */
+.rdp-root.calendar--range {
+  --rdp-day-width: calc(var(--touch-target-min) + var(--design-spacing-xxs));
+  --rdp-day-height: var(--touch-target-min);
+  --rdp-day_button-width: var(--touch-target-min);
+  --rdp-day_button-height: var(--touch-target-min);
+  --rdp-day_button-border: var(--focus-ring-width) solid transparent;
+}
+
+.calendar--range .rdp-month_caption {
+  align-items: center;
+  padding-inline-start: var(--design-spacing-xxs);
+  margin-block-end: var(--design-spacing-xxs);
+}
+
+.calendar--range .rdp-nav {
+  gap: var(--design-spacing-xxs);
+}
+
+.calendar--range .rdp-month_grid {
+  border-collapse: separate;
+  border-spacing: 0 var(--design-spacing-xxs);
+}
+
+.calendar--range .rdp-day {
+  padding: 0;
+  vertical-align: middle;
+}
+
+.calendar--range .rdp-day_button {
+  margin-inline: auto;
+}
+
+.calendar--range .rdp-selected:not(.rdp-range_middle) .rdp-day_button {
+  border: var(--rdp-selected-border);
+  border-radius: var(--rounded-md);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.calendar--range .rdp-selected:not(.rdp-range_middle) .rdp-day_button:not(:disabled):hover {
+  border-color: var(--color-primary-active);
+  background: var(--color-primary-active);
+  color: var(--color-on-primary);
+}
+
+.calendar--range .rdp-range_middle .rdp-day_button {
+  border: var(--focus-ring-width) solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-ink);
+}
+
+.calendar--range .rdp-range_middle .rdp-day_button:not(:disabled):hover {
+  background: var(--color-primary-tint);
+  color: var(--color-ink);
+}
+
+.calendar--range .rdp-week > .rdp-range_middle:first-child {
+  border-start-start-radius: var(--rounded-md);
+  border-end-start-radius: var(--rounded-md);
+}
+
+.calendar--range .rdp-week > .rdp-range_middle:last-child {
+  border-start-end-radius: var(--rounded-md);
+  border-end-end-radius: var(--rounded-md);
+}

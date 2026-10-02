@@ -72,3 +72,10 @@ create policy "candidates_modify_recruiter"
   using ((auth.jwt() ->> 'role') in ('admin', 'reclutador'))
   with check ((auth.jwt() ->> 'role') in ('admin', 'reclutador'));
 ```
+
+
+`059_leave_requests.sql` crea las solicitudes de vacaciones y permisos, la RPC idempotente de captura, RLS de lectura propia o de coordinador/administrador, y exclusión de fechas coincidentes entre reclutadores. Aplica únicamente esta migración si las anteriores se ejecutaron manualmente. Los registros permanecen pendientes y los formatos se gestionan físicamente.
+
+`060_delete_own_leave_request.sql` permite retirar solicitudes propias pendientes desde la revisión, con acceso de coordinador/administrador y validación de identidad en la RPC. No habilita borrados directos ni elimina solicitudes al aplicar la migración. Se aplica después de 059.
+
+`061_leave_request_admin_delete.sql` habilita la eliminación de cualquier solicitud pendiente para administradores y conserva la eliminación propia para coordinadores activos. Mantiene la confirmación del cliente, RLS y el bloqueo de borrados directos; la RPC anterior queda como llamada compatible. Se aplica después de 060 y no elimina solicitudes al desplegarse.

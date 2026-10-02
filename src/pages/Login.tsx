@@ -7,6 +7,8 @@ import {
 import { AnimatedSubmitButton } from "@/components/ui/AnimatedSubmitButton";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import { Checkbox } from "@/components/ui/Checkbox";
+import { BrandMark } from "@/components/ui/BrandMark";
+import { ThemeSelect } from "@/components/ui/ThemeSelect";
 import { useAuth } from "@/hooks/useAuth";
 import { emailToUsername, usernameToEmail } from "@/lib/auth";
 import { DESKTOP_MEDIA_QUERY } from "@/lib/layout";
@@ -139,8 +141,9 @@ export function Login() {
     <main className="login">
       <div className="login__form-panel">
         <div className="login__content">
+          <ThemeSelect />
           <div className="login__brand">
-            <img className="login__brand-icon" src="/icon.svg" alt="" />
+            <BrandMark className="login__brand-icon" />
             <span className="login__brand-name">ViñoPlastic</span>
           </div>
 

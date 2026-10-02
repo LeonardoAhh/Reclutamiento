@@ -55,7 +55,7 @@ const STYLES = {
         color: "var(--color-warning)",
     },
     triggerIconNormal: {
-        background: "var(--color-primary-tint, rgba(0,0,0,0.05))",
+        background: "var(--color-primary-tint)",
         color: "var(--color-primary)",
     },
     triggerText: {

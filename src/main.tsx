@@ -4,7 +4,6 @@ import { BrowserRouter } from 'react-router-dom';
 import { MotionConfig } from 'framer-motion';
 import { AuthProvider } from '@/hooks/useAuth';
 import { LoaderProvider } from '@/hooks/useLoader';
-import '@/styles/global.css';
 import './bones/registry';
 import App from './App';
 import { registerServiceWorker } from './pwa';

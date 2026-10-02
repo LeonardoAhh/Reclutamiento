@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { BrandMarkPath } from '@/components/ui/BrandMark';
 import './TransitionLoader.css';
 
 interface TransitionLoaderProps {
@@ -31,13 +32,15 @@ export function TransitionLoader({
         initial={reduceMotion ? false : { opacity: 0, y: 'var(--design-spacing-md)' }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <motion.img
+        <motion.svg
           className="transition-loader__mark"
-          src="/icon.svg"
-          alt=""
+          viewBox="0 0 1800 1800"
+          fill="none"
           initial={reduceMotion ? false : { scale: 0 }}
           animate={{ scale: 1 }}
-        />
+        >
+          <BrandMarkPath />
+        </motion.svg>
         <span className="transition-loader__brand">ViñoPlastic</span>
         <span className="transition-loader__message">{message}</span>
         <span className="transition-loader__track">

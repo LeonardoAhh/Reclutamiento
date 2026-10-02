@@ -43,17 +43,27 @@
 
 .sidebar__top {
   position: relative;
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(var(--touch-target-min), 1fr) auto auto;
+  column-gap: var(--design-spacing-xxs);
   align-items: center;
-  justify-content: center;
   margin-block-end: var(--design-spacing-xs);
   padding-inline: var(--design-spacing-md);
   min-height: calc(var(--mobile-nav-height) + var(--border-width));
   flex-shrink: 0;
 }
 
-/* Marca centrada; el símbolo hereda la tinta de la app. */
+.sidebar__top > .theme-select {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+}
+
+/* Marca frente al selector de apariencia; hereda la tinta de la app. */
 .sidebar__brand-mark {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: start;
   display: block;
   width: var(--icon-size-xl);
   height: var(--icon-size-xl);
@@ -61,10 +71,9 @@
 }
 
 button.sidebar__close-btn {
-  position: absolute;
-  inset-inline-end: var(--design-spacing-md);
-  inset-block-start: 50%;
-  transform: translateY(-50%);
+  grid-column: 3;
+  grid-row: 1;
+  justify-self: end;
   background: transparent;
   border: none;
   display: inline-flex;
@@ -200,12 +209,14 @@ button.sidebar__close-btn {
   letter-spacing: var(--type-caption-up-tracking);
 }
 
-/* Pie de cuenta */
+/* Cuenta */
 .sidebar__footer {
   margin-top: auto;
   padding-top: var(--design-spacing-sm);
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--design-spacing-xs);
   position: relative;
 }
 
@@ -319,6 +330,7 @@ button.sidebar__close-btn {
   }
 
   .sidebar__top {
+    grid-template-columns: minmax(var(--touch-target-min), 1fr) auto;
     min-block-size: var(--_app-header-size);
     margin-block-end: var(--design-spacing-sm);
   }

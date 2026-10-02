@@ -218,6 +218,23 @@ export function formatReadableDate(iso: string | null | undefined): string {
   });
 }
 
+
+/** Rango compacto para superficies estrechas; conserva ambos años si cambian. */
+export function formatCompactDateRange(startInput: string, endInput: string): string {
+  const start = parseDdMmYyyy(startInput);
+  const end = parseDdMmYyyy(endInput);
+  if (!start || !end) return '—';
+  if (start === end) return formatReadableDate(start);
+  if (start.slice(0, 7) === end.slice(0, 7)) {
+    return `${Number(start.slice(8))}–${formatReadableDate(end)}`;
+  }
+  const first = formatShortDate(start);
+  const last = formatShortDate(end);
+  return start.slice(0, 4) === end.slice(0, 4)
+    ? `${first.slice(0, 5)}–${last}`
+    : `${first}–${last}`;
+}
+
 /**
  * Antigüedad calendario completa entre una fecha de ingreso y una fecha de
  * referencia. Omite días para mantener una etiqueta estable y breve en UI.

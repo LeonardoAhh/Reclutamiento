@@ -254,7 +254,7 @@
 }
 
 .settings__banner--error {
-  background: var(--color-error-tint, rgba(198, 69, 69, 0.08));
+  background: var(--color-error-tint);
   border-color: var(--color-error);
   color: var(--color-error);
 }

@@ -168,8 +168,8 @@
 }
 
 .app-toaster__action--primary:hover {
-  background: var(--color-canvas-soft);
-  border-color: var(--color-canvas-soft);
+  background: var(--color-on-dark-hover);
+  border-color: var(--color-on-dark-hover);
 }
 
 .app-toaster__action--secondary {

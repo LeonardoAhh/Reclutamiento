@@ -79,15 +79,15 @@ button.section-summary-card:hover {
 }
 
 .section-summary-card__badge--muted {
-  color: var(--color-on-dark);
+  color: var(--color-on-neutral);
   background: var(--color-muted);
 }
 .section-summary-card__badge--error {
-  color: var(--color-on-dark);
+  color: var(--color-on-error);
   background: var(--color-error);
 }
 .section-summary-card__badge--warning {
-  color: var(--color-primary);
+  color: var(--color-on-warning);
   background: var(--color-warning);
 }
 .section-summary-card__badge--primary {
@@ -179,10 +179,10 @@ button.section-summary-card:hover {
 }
 
 .section-summary-card__trend--critical {
-  color: var(--color-on-dark);
+  color: var(--color-on-error);
   background: var(--color-error);
 }
 .section-summary-card__trend--stable {
-  color: var(--color-on-dark);
+  color: var(--color-on-neutral);
   background: var(--color-muted);
 }

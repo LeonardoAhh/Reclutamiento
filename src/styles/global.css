@@ -1,31 +1,31 @@
 /* ========================================
-   DESIGN TOKENS — White Precision UI
-   Near-white canvas · near-black action ink · muted focus and blue links.
+   DESIGN TOKENS — Graphite UI
+   Off-white canvas · graphite action ink · neutral focus and accessible links.
    Fuente: desing.md. Alias legados preservan compatibilidad.
    ======================================== */
 
 :root {
   /* ── Brand & Accent ───────────────────────────────────────────── */
-  --color-primary: #111111;
-  --color-primary-active: #242424;
+  --color-primary: #343b43;
+  --color-primary-active: #262c33;
   --color-primary-disabled: var(--color-hairline);
   --color-link: #0066cc;
   --color-link-deep: #004f9f;
   --color-link-soft: #e6f0ff;
 
-  --color-secondary: #111111;
-  --color-secondary-rgb: 17 17 17;
+  --color-secondary: var(--color-primary);
+  --color-secondary-rgb: var(--color-primary-rgb);
 
   /* ── Surface ──────────────────────────────────────────────────── */
-  --color-canvas: #ffffff;
-  --color-canvas-soft: #f8f9fa;
-  --color-canvas-elevated: #ffffff;
+  --color-canvas: #f1f2f4;
+  --color-canvas-soft: #e9ecf0;
+  --color-canvas-elevated: #fafbfc;
   --color-surface: var(--color-canvas-elevated);
-  --color-surface-soft: #f8f9fa;
-  --color-surface-card: var(--color-surface);
-  --color-surface-strong: #e5e7eb;
-  --color-surface-dark: #101010;
-  --color-surface-dark-elevated: #1a1a1a;
+  --color-surface-soft: var(--color-surface-card);
+  --color-surface-card: #f7f8fa;
+  --color-surface-strong: #dde1e6;
+  --color-surface-dark: #23262a;
+  --color-surface-dark-elevated: #343b43;
   --color-document-paper: #ffffff; /* Salida oficial imprimible, independiente del tema */
   --color-document-ink: #000000; /* Texto de salidas oficiales */
   --color-document-muted: #615d59; /* Texto secundario de salidas oficiales */
@@ -37,23 +37,31 @@
   --color-document-on-primary: #ffffff; /* Texto sobre encabezado oficial */
 
   /* ── Hairlines ──────────────────────────────────────────────── */
-  --color-hairline: #e5e7eb;
-  --color-hairline-soft: #f3f4f6;
-  --color-hairline-strong: #d1d5db;
-  --color-control-border: #6b7280;
+  --color-hairline: #d4d9e0;
+  --color-hairline-soft: #e3e7ec;
+  --color-hairline-strong: #bbc3ce;
+  --color-control-border: #727c8a;
 
   /* ── Text ───────────────────────────────────────────────────── */
-  --color-ink: #111111;
-  --color-body-strong: #111111;
-  --color-body: #374151;
-  --color-charcoal: #374151;
-  --color-mute: #6b7280;
-  --color-faint: #767676;
+  --color-ink: #2b3037;
+  --color-body-strong: var(--color-ink);
+  --color-body: #48515e;
+  --color-charcoal: var(--color-body);
+  --color-mute: #586371;
+  --color-faint: #606a77;
   --color-muted: var(--color-mute);
   --color-muted-soft: var(--color-faint);
-  --color-on-primary: #ffffff;
-  --color-on-dark: #ffffff;
-  --color-on-dark-soft: #a1a1aa;
+  --color-on-primary: #f7f8fa;
+  --color-on-neutral: var(--color-on-primary);
+  --color-on-error: var(--color-on-primary);
+  --color-on-success: var(--color-on-primary);
+  --color-on-warning: var(--color-ink);
+  --color-on-dark-hover: var(--color-hairline);
+  --color-shadow-rgb: 27 29 32;
+  --color-scene-light: #ffffff; /* Iluminación neutral de la escena decorativa. */
+  --color-shimmer-overlay: rgba(255, 255, 255, 0.3); /* Brillo decorativo de progreso. */
+  --color-on-dark: #e2e5e9;
+  --color-on-dark-soft: #a0a7b1;
   --color-focus-on-inverted: var(--color-on-dark);
   --color-navigation-rail: var(--color-canvas-soft);
   --color-navigation-rail-elevated: var(--color-hairline);
@@ -110,13 +118,13 @@
   --color-accent-amber-rgb: var(--color-warning-rgb);
 
   /* ── Channel values ─────────────────────────────────────────── */
-  --color-primary-rgb: 17 17 17;
+  --color-primary-rgb: 52 59 67;
   --color-link-rgb: 0 102 204;
   --color-success-rgb: 16 185 129;
   --color-warning-rgb: 245 158 11;
   --color-error-rgb: 239 68 68;
-  --color-ink-rgb: 17 17 17;
-  --color-canvas-rgb: 255 255 255;
+  --color-ink-rgb: 43 48 55;
+  --color-canvas-rgb: 241 242 244;
 
   /* ── Derived overlays ───────────────────────────────────────── */
   --color-focus-ring: rgb(var(--color-link-rgb) / 0.2);
@@ -544,17 +552,17 @@
   --color-text-tertiary: var(--color-muted);
 
   /* Level 0 = flat. Level 1 = whisper. Level 2 = floating surface. */
-  --shadow-xs: 0 1px 1px rgb(var(--color-ink-rgb) / 0.04);
+  --shadow-xs: 0 1px 1px rgb(var(--color-shadow-rgb) / 0.04);
   --shadow-sm:
-    0 1px 2px rgb(var(--color-ink-rgb) / 0.05),
-    0 4px 12px rgb(var(--color-ink-rgb) / 0.08);
+    0 1px 2px rgb(var(--color-shadow-rgb) / 0.05),
+    0 4px 12px rgb(var(--color-shadow-rgb) / 0.08);
   --shadow-subtle: var(--shadow-sm);
   --shadow-card: var(--shadow-xs);
   --shadow-soft: var(--shadow-sm);
   --shadow-md: var(--shadow-sm);
   --shadow-prominent:
-    0 1px 2px rgb(var(--color-ink-rgb) / 0.05),
-    0 4px 12px rgb(var(--color-ink-rgb) / 0.08);
+    0 1px 2px rgb(var(--color-shadow-rgb) / 0.05),
+    0 4px 12px rgb(var(--color-shadow-rgb) / 0.08);
   --shadow-elevated: var(--shadow-prominent);
   --shadow-level-2: var(--shadow-elevated);
   /* Contrato estable del workspace; evita que una migración de primitivas
@@ -584,6 +592,85 @@
   color-scheme: light;
 }
 
+
+/* Grafito suave: variantes semánticas; los tokens de documento conservan su salida clara. */
+:root[data-color-scheme="dark"] {
+  color-scheme: dark;
+  --color-primary: #cbd1d8;
+  --color-primary-active: #bbc3cc;
+  --color-primary-rgb: 203 209 216;
+  --color-secondary: var(--color-primary);
+  --color-secondary-rgb: var(--color-primary-rgb);
+  --color-on-primary: #202328;
+  --color-link: var(--color-primary);
+  --color-link-deep: var(--color-primary-active);
+  --color-link-soft: var(--color-surface-soft);
+  --color-link-rgb: var(--color-primary-rgb);
+
+  --color-canvas: #1b1d20;
+  --color-canvas-rgb: 27 29 32;
+  --color-canvas-soft: #202328;
+  --color-canvas-elevated: #2b2f34;
+  --color-surface-card: #23262a;
+  --color-surface-soft: var(--color-surface-card);
+  --color-surface-strong: #343b43;
+  --color-surface-dark: var(--color-surface-card);
+  --color-surface-dark-elevated: #414851;
+  --color-surface-contrast: var(--color-surface-dark);
+
+  --color-ink: #e2e5e9;
+  --color-ink-rgb: 226 229 233;
+  --color-body-strong: var(--color-ink);
+  --color-body: #c7ccd3;
+  --color-charcoal: var(--color-body);
+  --color-mute: #a0a7b1;
+  --color-faint: #969eaa;
+  --color-on-dark: var(--color-ink);
+  --color-on-dark-soft: var(--color-mute);
+  --color-on-dark-hover: var(--color-primary-active);
+  --color-on-neutral: var(--color-on-primary);
+  --color-on-error: var(--color-on-primary);
+  --color-on-success: var(--color-on-primary);
+  --color-on-warning: var(--color-on-primary);
+  --color-focus: var(--color-primary);
+  --color-focus-on-inverted: var(--color-primary);
+  --color-focus-ring: rgb(var(--color-primary-rgb) / 0.2);
+
+  --color-hairline: #414851;
+  --color-hairline-soft: #343b43;
+  --color-hairline-strong: #596370;
+  --color-control-border: #858e9b;
+  --color-shadow-rgb: 0 0 0;
+  --color-modal-scrim: rgb(var(--color-shadow-rgb) / 0.6);
+  --color-shimmer-overlay: rgb(var(--color-ink-rgb) / 0.08);
+
+  --color-success: #83c9a3;
+  --color-success-rgb: 131 201 163;
+  --color-success-text: var(--color-success);
+  --color-success-subtle: #24332c;
+  --color-warning: #e2b76f;
+  --color-warning-rgb: 226 183 111;
+  --color-warning-text: var(--color-warning);
+  --color-warning-subtle: #332f25;
+  --color-error: #f28b82;
+  --color-error-rgb: 242 139 130;
+  --color-error-deep: var(--color-error);
+  --color-error-text: var(--color-error);
+  --color-error-subtle: #35292a;
+  --color-vacancy-tint: rgb(var(--color-error-rgb) / 0.05);
+  --color-vacancy-chip-bg: rgb(var(--color-error-rgb) / 0.1);
+
+  /* Alias de indicadores y series existentes, sin añadir acentos a la navegación. */
+  --color-violet: #c0a6e0;
+  --color-accent-purple-deep: var(--color-violet);
+  --color-accent-orange: #e0aa78;
+  --color-accent-orange-deep: var(--color-accent-orange);
+  --color-accent-teal: #83c6c1;
+  --color-accent-teal-rgb: 131 198 193;
+  --color-accent-green: var(--color-success);
+  --color-accent-brown: var(--color-accent-orange);
+}
+
 /* ========================================
    RESET & BASE
    ======================================== */
@@ -603,7 +690,6 @@ html {
   -moz-osx-font-smoothing: grayscale;
   /* iOS: el safe-area toma su color del <html>, no del <body>. */
   background-color: var(--color-canvas);
-  transition: background-color var(--transition-base);
   scrollbar-width: thin;
   scrollbar-color: var(--color-hairline-strong) transparent;
 }
@@ -619,9 +705,6 @@ body {
   background-color: var(--color-canvas);
   min-height: 100vh;
   padding-bottom: var(--safe-area-bottom);
-  transition:
-    background-color var(--transition-base),
-    color var(--transition-base);
 }
 
 /* Breakpoints de desing.md. Las variables CSS no se evalúan en media queries. */
@@ -1229,7 +1312,7 @@ code:not(pre code) {
 /* ========================================
    BUTTONS — sistema de controles
    Los botones de aplicación usan radio de 8px y altura táctil de 44px.
-   Primaria negra; secundaria plana con hairline.
+   Primaria grafito; secundaria plana con hairline.
    ======================================== */
 
 .btn-primary,
@@ -1294,7 +1377,7 @@ code:not(pre code) {
   cursor: not-allowed;
 }
 
-/* Secondary — white surface + hairline */
+/* Secondary — elevated surface + hairline */
 .btn-secondary {
   background: var(--color-surface);
   color: var(--color-ink);
@@ -1321,7 +1404,7 @@ code:not(pre code) {
 /* Danger */
 .btn-danger {
   background: var(--color-error-deep);
-  color: var(--color-on-primary);
+  color: var(--color-on-error);
   border-color: var(--color-error-deep);
 }
 .btn-danger:hover:not(:disabled) {
