@@ -1,8 +1,7 @@
-import { useEffect, useId, useMemo, useState } from "react";
-import { LoaderCircle, Share2 } from "lucide-react";
-import { Check, Copy } from "lucide";
+import { useEffect, useMemo, useState } from "react";
+import { Check, Copy, LoaderCircle, Share2 } from "lucide-react";
 import { CANDIDATE_ACCESS_CARD_CONFIG } from "@/lib/constants";
-import { MorphingIcon } from "@/components/ui/MorphingIcon";
+import { toast } from "@/lib/notify";
 import {
   createCandidateAccessCardBlob,
   getCandidateAccessCardFilename,
@@ -12,13 +11,7 @@ import "./CandidateAccessCard.css";
 
 interface CandidateAccessCardProps {
   data: CandidateAccessCardData;
-  heading?: string;
 }
-
-type Feedback = {
-  tone: "success" | "error" | "info";
-  message: string;
-} | null;
 
 function downloadImage(blob: Blob, filename: string): void {
   const url = URL.createObjectURL(blob);
@@ -42,16 +35,12 @@ function isAbortError(error: unknown): boolean {
   return error instanceof DOMException && error.name === "AbortError";
 }
 
-export function CandidateAccessCard({
-  data,
-  heading = "Pase listo para compartir",
-}: CandidateAccessCardProps) {
+export function CandidateAccessCard({ data }: CandidateAccessCardProps) {
   const [imageBlob, setImageBlob] = useState<Blob | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(true);
-  const [feedback, setFeedback] = useState<Feedback>(null);
+  const [generationError, setGenerationError] = useState("");
   const [copied, setCopied] = useState(false);
-  const headingId = useId();
 
   const filename = useMemo(
     () => getCandidateAccessCardFilename(data.candidateName),
@@ -65,7 +54,8 @@ export function CandidateAccessCard({
     setIsGenerating(true);
     setImageBlob(null);
     setPreviewUrl(null);
-    setFeedback(null);
+    setGenerationError("");
+    setCopied(false);
     createCandidateAccessCardBlob(data)
       .then((blob) => {
         if (!active) return;
@@ -75,13 +65,8 @@ export function CandidateAccessCard({
       })
       .catch((error: unknown) => {
         if (!active) return;
-        setFeedback({
-          tone: "error",
-          message:
-            error instanceof Error
-              ? error.message
-              : "No fue posible generar la tarjeta.",
-        });
+        setGenerationError(error instanceof Error
+          ? error.message : "No fue posible generar el pase.");
       })
       .finally(() => {
         if (active) setIsGenerating(false);
@@ -114,16 +99,9 @@ export function CandidateAccessCard({
     try {
       await copyImage(imageBlob);
       setCopied(true);
-      setFeedback({
-        tone: "success",
-        message: "Imagen copiada. Ya puedes pegarla en un chat.",
-      });
+      toast.success({ title: "Pase copiado", description: "Ya puedes pegar la imagen en un chat." });
     } catch {
-      setFeedback({
-        tone: "error",
-        message:
-          "Tu navegador no permite copiar la imagen. Usa Compartir para enviarla.",
-      });
+      toast.error({ title: "No se pudo copiar", description: "Usa Compartir para enviarlo." });
     }
   };
 
@@ -137,22 +115,15 @@ export function CandidateAccessCard({
           files: [file],
           title: CANDIDATE_ACCESS_CARD_CONFIG.shareTitle,
         });
-        setFeedback({ tone: "success", message: "Tarjeta compartida." });
+        toast.success({ title: "Pase compartido" });
         return;
       }
 
       downloadImage(imageBlob, filename);
-      setFeedback({
-        tone: "info",
-        message:
-          "La imagen se descargó porque este navegador no ofrece el menú para compartir.",
-      });
+      toast.info({ title: "Pase descargado", description: "Puedes enviarlo desde tus archivos." });
     } catch (error: unknown) {
       if (!isAbortError(error)) {
-        setFeedback({
-          tone: "error",
-          message: "No fue posible compartir la tarjeta.",
-        });
+        toast.error({ title: "No se pudo compartir el pase" });
       }
     }
   };
@@ -173,20 +144,15 @@ export function CandidateAccessCard({
   return (
     <section
       className="candidate-access-card"
-      aria-labelledby={headingId}
+      aria-label="Vista previa del pase de entrevista"
     >
-      <div className="candidate-access-card__intro">
-        <h3 id={headingId}>{heading}</h3>
-        <p>
-          Comparte esta imagen para que la presente en caseta de vigilancia.
-        </p>
-      </div>
+      <p className="candidate-access-card__hint">Compártelo con el candidato.</p>
 
       <div className="candidate-access-card__preview" aria-busy={isGenerating}>
         {previewUrl ? (
           <img src={previewUrl} alt={previewAlt} />
         ) : (
-          <div className="candidate-access-card__placeholder" role="status">
+          <div className="candidate-access-card__placeholder" role={generationError ? "alert" : "status"}>
             {isGenerating && (
               <LoaderCircle
                 className="candidate-access-card__spinner"
@@ -194,20 +160,13 @@ export function CandidateAccessCard({
                 aria-hidden="true"
               />
             )}
-            <span>{isGenerating ? "Generando pase..." : "Vista previa no disponible"}</span>
+            <span>{isGenerating ? "Generando pase…" : generationError || "Vista previa no disponible"}</span>
           </div>
         )}
       </div>
-
-      {feedback && (
-        <p
-          className="candidate-access-card__feedback"
-          data-tone={feedback.tone}
-          role={feedback.tone === "error" ? "alert" : "status"}
-        >
-          {feedback.message}
-        </p>
-      )}
+      <span className="sr-only" role="status" aria-live="polite">
+        {previewUrl ? "Pase listo para copiar o compartir." : ""}
+      </span>
 
       <footer
         className="candidate-access-card__actions"
@@ -219,16 +178,14 @@ export function CandidateAccessCard({
           onClick={handleCopy}
           disabled={!imageBlob}
         >
-          <MorphingIcon
-            icon={copied ? Check : Copy}
-            size="var(--icon-size-sm)"
-            aria-hidden="true"
-          />
+          {copied
+            ? <Check size="var(--icon-size-sm)" aria-hidden="true" />
+            : <Copy size="var(--icon-size-sm)" aria-hidden="true" />}
           {copied ? "Copiada" : "Copiar"}
         </button>
         <button
           type="button"
-          className="btn-secondary"
+          className="btn-primary"
           onClick={handleShare}
           disabled={!imageBlob}
         >

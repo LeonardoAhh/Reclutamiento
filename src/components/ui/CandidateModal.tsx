@@ -655,9 +655,9 @@ const fieldsPosicion = (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      className={`candidate-modal${useWizard ? ' modal-wizard-mobile' : ''}`}
-      size={accessCard ? 'xs' : 'md'}
-      icon={icon}
+      className={accessCard ? 'candidate-access-card-modal' : `candidate-modal${useWizard ? ' modal-wizard-mobile' : ''}`}
+      size={accessCard ? 'sm' : 'md'}
+      icon={accessCard ? undefined : icon}
       title={title}
       footerActions={footerActions}
     >

@@ -288,6 +288,10 @@ Cards are rectangles at 12–16px radius; normal controls are 8px; icon buttons 
 
 ### Cards & Containers
 
+**`candidate-interview-pass`** — shareable white document and preview dialog
+- The exported pass always uses document-paper, document-ink and document-neutral tokens, independent of the application appearance. Brand and title establish context, the candidate name leads, the position follows, date and recruiter share one quiet panel, and location plus access requirements close the document. Text blocks flow vertically and the canvas grows for long names, positions or addresses instead of clipping or overlapping them. Only the header and final requirements use hairline dividers.
+- The dialog follows the application's active light or dark theme and reuses the shared Modal at the small width on desktop and the mobile sheet on narrow screens. Only the exported document remains white. The dialog shows one short instruction, a centered responsive image and two touch-sized actions: secondary Copy and primary Share. Feedback uses app toasts, keeping the dialog geometry stable. The preview reserves its 4:5 area while loading and fits taller documents within it; it has no scale entrance animation. Short viewports scroll inside the shared modal region with contained overscroll. The generated image has descriptive alternative text, and loading or generation errors are announced in place.
+
 **`feature-card`** — flat hairline content card
 - Background `{colors.surface-card}`, 1px hairline `{colors.hairline}`, ink text `{colors.ink}`, type `{typography.body-md}`, rounded `{rounded.lg}`, padding `{spacing.lg}`.
 

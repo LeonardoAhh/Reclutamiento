@@ -136,10 +136,10 @@ export function Asistencia() {
   }, [data]);
 
   return (
-    <div className="asistencia-page">
-      <header className="config-page__header" style={{ borderBottom: 'none', paddingBottom: 0 }}>
+    <div className="asistencia-page container">
+      <header className="config-page__header">
         <h1 className="config-page__title app-page-title">
-          <UsersRound className="text-primary" size={24} aria-hidden="true" />
+          <UsersRound className="text-primary" size="var(--icon-size-lg)" aria-hidden="true" />
           Asistencia del Personal
         </h1>
       </header>

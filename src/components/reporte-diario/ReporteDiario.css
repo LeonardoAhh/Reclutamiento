@@ -6,24 +6,13 @@
 
 /* ── Page container ───────────────────────────────────────────────────────── */
 
-/* ── Page container ───────────────────────────────────────────────────────── */
-
 .reporte-page {
-  padding-top: var(--spacing-lg);
-  padding-bottom: var(--spacing-lg);
+  padding-block: var(--design-spacing-md);
 }
 
 @media (min-width: 768px) {
   .reporte-page {
-    padding-top: var(--spacing-xl);
-    padding-bottom: var(--spacing-xl);
-  }
-}
-
-@media (min-width: 1024px) {
-  .reporte-page {
-    padding-top: var(--spacing-xl);
-    padding-bottom: var(--spacing-xl);
+    padding-block: var(--design-spacing-lg);
   }
 }
 

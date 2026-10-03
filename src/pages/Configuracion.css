@@ -943,7 +943,13 @@
 
 @media (min-width: 1024px) {
   .config-main {
-    padding-block: var(--spacing-2xl);
+    padding-block-end: var(--spacing-2xl);
+  }
+}
+
+@media (min-width: 768px) {
+  .config-main {
+    padding-block-start: var(--design-spacing-lg);
   }
 }
 
@@ -958,7 +964,6 @@
   flex-direction: column;
   align-items: stretch;
   gap: var(--spacing-md);
-  padding-block: var(--spacing-sm);
 }
 
 .indicadores-period {

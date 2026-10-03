@@ -1,29 +1,13 @@
-import { useEffect, useMemo, useState } from "react";
-import { UsersRound } from "lucide-react";
-import { Check, Copy } from "lucide";
-import { motion } from "framer-motion";
-import { Modal } from "./Modal";
-import { MorphingIcon } from "./MorphingIcon";
 import { formatReadableDate } from "@/lib/dates";
-import { useTeamDirectory } from '@/features/team/TeamProvider';
 import { findTeamMember, type TeamMember } from '@/features/team/types';
 import { normalizeString, toNaturalCase } from "@/lib/utils";
 import {
   buildWhatsAppReport,
-  copyTextToClipboard,
   formatWhatsAppLabel,
   formatWhatsAppSection,
   type WhatsAppReportSection,
 } from "@/lib/whatsappReport";
-import { toast } from "@/lib/notify";
 import type { Candidate, CandidateStatus } from "@/lib/types";
-import "./CandidateReportModal.css";
-
-interface CandidateReportModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  candidates: Candidate[];
-}
 
 const ACTIVE_STATUSES: ReadonlySet<CandidateStatus> = new Set<CandidateStatus>([
   "entrevista",
@@ -214,79 +198,7 @@ function buildWhatsAppMessage(active: Candidate[], members: TeamMember[]): strin
   });
 }
 
-export function CandidateReportModal({
-  isOpen,
-  onClose,
-  candidates,
-}: CandidateReportModalProps) {
-  const { members } = useTeamDirectory();
-  const active = useMemo(
-    () => candidates.filter((c) => ACTIVE_STATUSES.has(c.status)),
-    [candidates],
-  );
-  const totalActivos = active.length;
-  const message = useMemo(() => buildWhatsAppMessage(active, members), [active, members]);
-  const [copied, setCopied] = useState(false);
-
-  useEffect(() => {
-    if (!copied) return;
-    const id = window.setTimeout(() => setCopied(false), 2000);
-    return () => window.clearTimeout(id);
-  }, [copied]);
-
-  useEffect(() => {
-    if (!isOpen) setCopied(false);
-  }, [isOpen]);
-
-  const handleCopy = async () => {
-    try {
-      await copyTextToClipboard(message);
-      setCopied(true);
-    } catch {
-      toast.error({ title: "No se pudo copiar el reporte" });
-    }
-  };
-
-  const empty = totalActivos === 0;
-
-  return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      className="candidate-report-modal"
-      icon={<UsersRound size={20} aria-hidden="true" />}
-      title="Resumen de candidatos"
-      size="xs"
-      footerActions={
-        <button
-          type="button"
-          className="btn-primary candidate-report-modal__action"
-          onClick={handleCopy}
-          disabled={empty}
-        >
-          <span
-            className="candidate-report-modal__action-inner"
-            aria-live="polite"
-            aria-atomic="true"
-          >
-            <MorphingIcon icon={copied ? Check : Copy} size={16} />
-            {copied ? "Reporte copiado" : "Copiar reporte"}
-          </span>
-        </button>
-      }
-    >
-      {empty && (
-        <div className="modal-body candidate-report-modal__body">
-          <motion.p
-            className="candidate-report-modal__empty"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.1 }}
-          >
-            No hay candidatos activos en proceso.
-          </motion.p>
-        </div>
-      )}
-    </Modal>
-  );
+export function buildCandidateReport(candidates: Candidate[], members: TeamMember[]): string | null {
+  const active = candidates.filter((candidate) => ACTIVE_STATUSES.has(candidate.status));
+  return active.length > 0 ? buildWhatsAppMessage(active, members) : null;
 }

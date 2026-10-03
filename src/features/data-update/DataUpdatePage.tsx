@@ -358,8 +358,8 @@ export function DataUpdatePage() {
 
   if (!canAccess) {
     return (
-      <main className="data-update-page container" aria-labelledby="data-update-title">
-        <header className="page-header">
+      <main className="data-update-page data-update-page--has-heading container" aria-labelledby="data-update-title">
+        <header className="page-header data-update-page__header">
           <div className="page-header__content">
             <h1 id="data-update-title" className="app-page-title">Actualización de datos</h1>
             <p>No tienes acceso a este módulo.</p>
@@ -389,7 +389,7 @@ export function DataUpdatePage() {
   }
 
   return (
-    <main className="data-update-page container" aria-labelledby="data-update-title">
+    <main className="data-update-page data-update-page--has-heading container" aria-labelledby="data-update-title">
       <header className="page-header data-update-page__header">
         <div className="page-header__content">
           <h1 id="data-update-title" className="app-page-title">Actualización de datos</h1>

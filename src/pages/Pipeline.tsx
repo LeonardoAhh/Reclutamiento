@@ -9,7 +9,8 @@ import { CandidateModal } from '@/components/ui/CandidateModal';
 import { CandidateAccessCard } from '@/components/ui/CandidateAccessCard';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { notifyResult, toast } from '@/lib/notify';
-import { CandidateReportModal } from '@/components/ui/CandidateReportModal';
+import { buildCandidateReport } from '@/lib/candidateReport';
+import { copyTextToClipboard } from '@/lib/whatsappReport';
 import { CandidateStatusBadge } from '@/components/ui/CandidateStatusBadge';
 import { HireCandidateModal } from '@/components/ui/HireCandidateModal';
 import { RecruiterStatsModal } from '@/components/ui/RecruiterStatsModal';
@@ -104,7 +105,6 @@ export function Pipeline() {
   const [quickProfile, setQuickProfile] = useState<Candidate | null>(null);
   const [accessCardTarget, setAccessCardTarget] = useState<Candidate | null>(null);
   const [hireTarget, setHireTarget] = useState<Candidate | null>(null);
-  const [reportOpen, setReportOpen] = useState(false);
   const { members, resolve } = useTeamDirectory();
   const [kpiModalOpen, setKpiModalOpen] = useState<'global' | 'pauta' | 'recruiter' | null>(null);
   const [metricRecruiterId, setMetricRecruiterId] = useState('');
@@ -391,6 +391,20 @@ export function Pipeline() {
     return { ok: true };
   }
 
+  async function handleCopyReport() {
+    const report = buildCandidateReport(candidates, members);
+    if (!report) {
+      toast.info({ title: 'No hay candidatos activos en proceso' });
+      return;
+    }
+    try {
+      await copyTextToClipboard(report);
+      toast.success({ title: 'Resumen copiado', description: 'Ya puedes pegarlo en WhatsApp.' });
+    } catch {
+      toast.error({ title: 'No se pudo copiar el resumen' });
+    }
+  }
+
   return (
     <BoneyardSkeleton
       name="candidatos-page"
@@ -479,9 +493,9 @@ export function Pipeline() {
             <button
               type="button"
               className="btn-secondary pipeline__report-btn"
-              onClick={() => setReportOpen(true)}
-              aria-label="Abrir resumen de candidatos"
-              title="Resumen de candidatos para WhatsApp"
+              onClick={handleCopyReport}
+              aria-label="Copiar resumen de candidatos"
+              title="Copiar resumen de candidatos para WhatsApp"
             >
               <ClipboardList size={16} aria-hidden="true" />
               <span>Resumen</span>
@@ -631,7 +645,10 @@ export function Pipeline() {
 
                       {/* Bloque visible bajo desktop que resume
                           puesto + reclutador + entrevista de forma compacta. */}
-                      <div className="pipeline__ccard-mobile-info" aria-hidden="true">
+                      <div
+                        className={`pipeline__ccard-mobile-info${c.reclutador || fechaCitaFmt ? ' pipeline__ccard-mobile-info--has-meta' : ''}`}
+                        aria-hidden="true"
+                      >
                         <div className="pipeline__ccard-mobile-info__puesto">
                           <div className="pipeline__puesto-name" title={c.puesto}>{c.puesto}</div>
                           {c.seccion?.trim() && (
@@ -766,9 +783,8 @@ export function Pipeline() {
             isOpen={accessCardData !== null}
             onClose={() => setAccessCardTarget(null)}
             className="candidate-access-card-modal"
-            size="xs"
+            size="sm"
             title="Pase de entrevista"
-            icon={<BadgeCheck size={20} className="color-success" aria-hidden="true" />}
           >
             {accessCardData && (
               <CandidateAccessCard
@@ -786,12 +802,6 @@ export function Pipeline() {
             onConfirm={handleHire}
           />
 
-          {/* ── Candidate Report Modal (WhatsApp-ready) ── */}
-          <CandidateReportModal
-            isOpen={reportOpen}
-            onClose={() => setReportOpen(false)}
-            candidates={candidates}
-          />
         </div>
       </div>
       </div>
@@ -818,8 +828,9 @@ export function Pipeline() {
                   );
                 })()}
                 <div className="pipeline-mobile-detail__puesto">
-                  <div>{selectedMobileCandidate.puesto}</div>
-                  {selectedMobileCandidate.seccion?.trim() && <div>{selectedMobileCandidate.seccion.trim()}</div>}
+                  <div className="pipeline-mobile-detail__puesto-name">{selectedMobileCandidate.puesto}</div>
+                  {selectedMobileCandidate.seccion?.trim() &&
+                    <div className="pipeline-mobile-detail__puesto-section">{selectedMobileCandidate.seccion.trim()}</div>}
                 </div>
               </div>
             </div>
@@ -1017,7 +1028,7 @@ export function Pipeline() {
         isOpen={metricsModalOpen}
         onClose={() => setMetricsModalOpen(false)}
         title="Métricas y KPIs"
-        size="md"
+        size="lg"
       >
         <div className="modal-body pipeline__metrics-menu">
           {/* Card resumen global */}
@@ -1043,27 +1054,29 @@ export function Pipeline() {
 
           <div className="pipeline__sidebar-divider" />
 
-          {/* Sección: Detalle por Reclutador */}
-          <div className="pipeline__sidebar-section">
-            <span className="pipeline__sidebar-section__label">Detalle por Reclutador</span>
-            <div className="pipeline__recruiters">
-              <button
-                type="button"
-                className="pipeline__kpi-row"
-                onClick={() => {
-                  setMetricsModalOpen(false);
-                  setKpiModalOpen('pauta');
-                }}
-              >
-                <div className="pipeline__kpi-row__meta">
-                  <span className="pipeline__kpi-row__dot pipeline__kpi-row__dot--pauta" />
-                  <span className="pipeline__kpi-row__name">Pauta</span>
-                </div>
-                <div className="pipeline__kpi-row__stats">
-                  <ArrowUpRight size={16} className="pipeline__kpi-card__arrow" aria-hidden="true" />
-                </div>
-              </button>
+          <section className="pipeline__sidebar-section">
+            <h3 className="pipeline__sidebar-section__label">Seguimiento semanal</h3>
+            <button
+              type="button"
+              className="pipeline__kpi-row"
+              onClick={() => {
+                setMetricsModalOpen(false);
+                setKpiModalOpen('pauta');
+              }}
+            >
+              <div className="pipeline__kpi-row__meta">
+                <span className="pipeline__kpi-row__dot pipeline__kpi-row__dot--pauta" />
+                <span className="pipeline__kpi-row__name">Pauta</span>
+              </div>
+              <div className="pipeline__kpi-row__stats">
+                <ArrowUpRight size={16} className="pipeline__kpi-card__arrow" aria-hidden="true" />
+              </div>
+            </button>
+          </section>
 
+          <section className="pipeline__sidebar-section">
+            <h3 className="pipeline__sidebar-section__label">Por reclutador</h3>
+            <div className="pipeline__recruiters">
               {members.filter(member => member.include_in_metrics).map(member => <button
                 key={member.id}
                 type="button"
@@ -1082,7 +1095,7 @@ export function Pipeline() {
                 </div>
               </button>)}
             </div>
-          </div>
+          </section>
         </div>
       </Modal>
 

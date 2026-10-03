@@ -10,7 +10,13 @@
 
 .account-page__content {
   gap: var(--design-spacing-xl);
-  padding-block-start: var(--design-spacing-lg);
+  padding-block-start: var(--design-spacing-md);
+}
+
+@media (min-width: 768px) {
+  .account-page__content {
+    padding-block-start: var(--design-spacing-lg);
+  }
 }
 
 .account-page__section {
@@ -201,7 +207,7 @@
 
   .account-page__content {
     gap: var(--design-spacing-xxl);
-    padding-block-start: var(--design-spacing-xl);
+    padding-block-start: var(--design-spacing-lg);
   }
 
   .account-page__section {

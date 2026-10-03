@@ -26,7 +26,6 @@ interface WeeklyOnboardingDocumentsProps {
 
 interface DocumentTableRowProps {
   employee: Employee | null;
-  rowKey: string;
 }
 
 function chunkEmployees(employees: Employee[], size: number) {
@@ -94,9 +93,9 @@ function DocumentFooter({ controlled = false }: { controlled?: boolean }) {
   );
 }
 
-function CredentialTableRow({ employee, rowKey }: DocumentTableRowProps) {
+function CredentialTableRow({ employee }: DocumentTableRowProps) {
   return (
-    <tr key={rowKey}>
+    <tr>
       <td>{employee ? formatReadableDate(employee.fecha_ingreso) : ''}</td>
       <td>{employee?.num_empleado ?? ''}</td>
       <td>{employee?.nombre ?? ''}</td>
@@ -123,7 +122,6 @@ function CredentialTable({ employees, minimumRows }: { employees: Employee[]; mi
           <CredentialTableRow
             key={employee?.id || employee?.num_empleado || `credential-blank-${index}`}
             employee={employee}
-            rowKey={employee?.id || employee?.num_empleado || `credential-blank-${index}`}
           />
         ))}
       </tbody>
@@ -231,23 +229,20 @@ function ContractDocument({
   );
 }
 
-function DocumentPreviewCard({
+function DocumentFormatCard({
   format,
   title,
   description,
   employees,
-  weekLabel,
   onReview,
 }: {
   format: PrintFormat;
   title: string;
   description: string;
   employees: Employee[];
-  weekLabel: string;
   onReview: (format: PrintFormat) => void;
 }) {
   const Icon = format === 'credential' ? BadgeCheck : FileSignature;
-  const previewEmployees = employees.slice(0, 3);
 
   return (
     <article className="weekly-format-card">
@@ -261,23 +256,8 @@ function DocumentPreviewCard({
         </div>
       </header>
 
-      <div className="weekly-format-card__preview" aria-hidden="true">
-        <span className="weekly-format-card__preview-title">{title}</span>
-        <span className="weekly-format-card__preview-rule" />
-        {previewEmployees.length > 0 ? (
-          previewEmployees.map((employee) => (
-            <span key={employee.id || employee.num_empleado}>
-              {employee.num_empleado} · {employee.nombre}
-            </span>
-          ))
-        ) : (
-          <span>Sin ingresos en esta semana</span>
-        )}
-      </div>
-
       <footer className="weekly-format-card__footer">
         <div className="weekly-format-card__meta">
-          <span>{weekLabel}</span>
           <strong>
             {employees.length} {employees.length === 1 ? 'empleado' : 'empleados'}
           </strong>
@@ -291,7 +271,7 @@ function DocumentPreviewCard({
             employees.length === 0 ? 'weekly-formats-empty' : undefined
           }
         >
-          Revisar e imprimir
+          Revisar
         </ButtonUtility>
       </footer>
     </article>
@@ -331,16 +311,16 @@ function DocumentReviewModal({
 
   const footerActions = (
     <>
-      <ButtonUtility type="button" onClick={onClose}>
+      <button type="button" className="btn-secondary" onClick={onClose}>
         Cancelar
-      </ButtonUtility>
+      </button>
       <button
         type="button"
         className="btn-primary"
         onClick={onPrint}
         disabled={selectedEmployees.length === 0}
       >
-        <Printer aria-hidden="true" />
+        <Printer size="var(--icon-size-sm)" aria-hidden="true" />
         Imprimir {selectedEmployees.length}
       </button>
     </>
@@ -495,24 +475,21 @@ export function WeeklyOnboardingDocuments({
             Formatos de ingreso
           </h2>
         </div>
-        <span className="weekly-formats__week">{weekLabel}</span>
       </header>
 
       <div className="weekly-formats__grid">
-        <DocumentPreviewCard
+        <DocumentFormatCard
           format="credential"
           title="Entrega de credencial"
           description="Responsiva colectiva para los ingresos de la semana."
           employees={employees}
-          weekLabel={weekLabel}
           onReview={setReviewFormat}
         />
-        <DocumentPreviewCard
+        <DocumentFormatCard
           format="contracts"
           title="Entrega de contratos"
           description="Constancia colectiva para firma de recibido."
           employees={employees}
-          weekLabel={weekLabel}
           onReview={setReviewFormat}
         />
       </div>

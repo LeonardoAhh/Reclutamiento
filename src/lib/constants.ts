@@ -806,7 +806,7 @@ export const CANDIDATE_ACCESS_CARD_CONFIG = {
   accessNotice: "Válido para un solo acceso · Personal e intransferible",
   identificationNotice: "Presenta tu INE original en caseta de vigilancia",
   locationName: "Parque Industrial Querétaro",
-  address: "Av. La Montaña 98,Santa Rosa Jáuregui, Qro.",
+  address: "Av. La Montaña 98, Santa Rosa Jáuregui, Qro.",
   filePrefix: "pase-entrevista",
   shareTitle: "Pase de entrevista",
 } as const;

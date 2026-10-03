@@ -15,8 +15,7 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: var(--spacing-md);
-  padding-block: var(--spacing-sm);
+  gap: var(--design-spacing-sm);
 }
 
 .rutas-toolbar {

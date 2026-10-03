@@ -14,7 +14,9 @@
     "/tabulador",
     "/formatos",
     "/actividades",
-    "/cuenta"
+    "/cuenta",
+    "/equipo",
+    "/solicitudes-ausencia"
   ],
   "wait": 2200,
   "color": "var(--color-hairline)",

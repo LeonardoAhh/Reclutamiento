@@ -22,7 +22,7 @@
   grid-area: header;
   min-width: 0;
   padding-inline: calc(var(--focus-ring-width) + var(--focus-ring-offset));
-  padding-top: var(--spacing-lg);
+  padding-top: var(--design-spacing-md);
 }
 
 .plantilla-main {
@@ -33,7 +33,7 @@
 
 @media (min-width: 768px) {
   .plantilla-header {
-    padding-top: var(--spacing-xxl);
+    padding-top: var(--design-spacing-lg);
   }
 }
 
@@ -60,18 +60,6 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
-}
-
-.dashboard {
-  width: 100%;
-  min-height: 100vh;
-}
-
-.dashboard.container {
-  max-width: none;
-  margin: 0 auto;
-  padding-left: clamp(1rem, 3vw, 3rem);
-  padding-right: clamp(1rem, 3vw, 3rem);
 }
 
 /* ── Botón "Resumen de vacantes" (abre VacancyReportModal) ───────────── */

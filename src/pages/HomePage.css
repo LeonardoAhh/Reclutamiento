@@ -375,6 +375,10 @@
 }
 
 @media (min-width: 768px) {
+  .home-page {
+    padding-block-start: var(--design-spacing-lg);
+  }
+
   .home-page__hero {
     padding: var(--design-spacing-xl);
   }

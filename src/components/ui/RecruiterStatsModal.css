@@ -10,6 +10,10 @@
   gap: var(--spacing-lg);
 }
 
+.recruiter-stats-modal .modal-back-btn {
+  border: 0;
+}
+
 /* ── Vista Global: Grid de tarjetas ── */
 .recruiter-stats-modal__grid {
   display: grid;
@@ -192,8 +196,6 @@
 
 .recruiter-stats-modal__table-wrap {
   overflow-x: auto;
-  overflow-y: auto;
-  max-height: 60vh;
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-md);
 }
@@ -201,14 +203,11 @@
 .recruiter-stats-modal__table {
   width: 100%;
   border-collapse: collapse;
-  font-size: var(--type-caption-size);
+  font-size: var(--type-body-sm-size);
 }
 
 .recruiter-stats-modal__table thead {
-  position: sticky;
-  top: 0;
   background: var(--color-surface);
-  z-index: 1;
 }
 
 .recruiter-stats-modal__table th {
@@ -242,12 +241,18 @@
 }
 
 .recruiter-stats-modal__table-week {
-  font-weight: var(--type-body-strong-weight);
-  color: var(--color-ink);
   white-space: nowrap;
 }
 
+.recruiter-stats-modal__table-week-label {
+  display: block;
+  color: var(--color-ink);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-strong-weight);
+}
+
 .recruiter-stats-modal__table-period {
+  display: block;
   color: var(--color-muted);
   font-size: var(--type-caption-md-size);
   white-space: nowrap;
@@ -255,6 +260,9 @@
 
 .recruiter-stats-modal__table-number {
   text-align: right;
+}
+
+.recruiter-stats-modal__table td.recruiter-stats-modal__table-number {
   font-family: var(--font-mono);
   font-size: var(--type-body-sm-size);
 }
@@ -288,39 +296,26 @@
   padding-right: var(--spacing-sm) !important;
   white-space: nowrap;
 }
-.recruiter-stats-modal__table tbody tr .recruiter-stats-modal__copy-btn {
-  opacity: 0;
-}
-
-.recruiter-stats-modal__table tbody tr:hover .recruiter-stats-modal__copy-btn,
-.recruiter-stats-modal__table tbody tr .recruiter-stats-modal__copy-btn.is-copied,
-.recruiter-stats-modal__table tbody tr .recruiter-stats-modal__copy-btn:focus-visible {
-  opacity: 1;
-}
-
 .recruiter-stats-modal__copy-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 28px;
-  min-height: 28px;
+  min-width: var(--touch-target-min);
+  min-height: var(--touch-target-min);
   padding: var(--spacing-xxs);
   background: transparent;
-  border: 1px solid var(--color-hairline);
+  border: 0;
   border-radius: var(--rounded-sm);
   color: var(--color-muted);
   cursor: pointer;
   transition:
     background-color var(--transition-fast),
-    border-color var(--transition-fast),
     color var(--transition-fast),
-    opacity var(--transition-fast),
     transform var(--transition-fast);
 }
 
 .recruiter-stats-modal__copy-btn:hover {
   background: var(--color-surface-soft);
-  border-color: var(--color-hairline-strong);
   color: var(--color-ink);
 }
 
@@ -330,18 +325,13 @@
 
 .recruiter-stats-modal__copy-btn.is-copied {
   background: color-mix(in srgb, var(--color-success) 12%, transparent);
-  border-color: var(--color-success);
   color: var(--color-success);
 }
 
 /* ── Mobile adjustments ── */
-@media (max-width: 640px) {
+@media (max-width: 767px) {
   .recruiter-stats-modal__grid {
     grid-template-columns: 1fr;
-  }
-
-  .recruiter-stats-modal__table-wrap {
-    max-height: 50vh;
   }
 
   .recruiter-stats-modal__table {
@@ -351,11 +341,6 @@
   .recruiter-stats-modal__table th,
   .recruiter-stats-modal__table td {
     padding: var(--spacing-xs) var(--spacing-sm);
-  }
-
-  .recruiter-stats-modal__copy-btn {
-    min-width: 44px;
-    min-height: 44px;
   }
 
   .recruiter-stats-modal__card-stats {

@@ -158,8 +158,8 @@ export function RecruiterStatsModal({
             return (
               <tr key={key}>
                 <td className="recruiter-stats-modal__table-week">
-                  <div style={{ fontWeight: 'var(--type-body-strong-weight)', color: 'var(--color-ink)' }}>Semana {tueWeek}</div>
-                  <div style={{ fontSize: 'var(--type-caption-size)', color: 'var(--color-muted)' }}>{wedStr} – {tueStr}</div>
+                  <span className="recruiter-stats-modal__table-week-label">Semana {tueWeek}</span>
+                  <span className="recruiter-stats-modal__table-period">{wedStr} – {tueStr}</span>
                 </td>
                 <td className="recruiter-stats-modal__table-number">{stat.total}</td>
                 <td className="recruiter-stats-modal__table-number recruiter-stats-modal__table-number--hired">
@@ -217,7 +217,7 @@ export function RecruiterStatsModal({
         )
       }
       title={title}
-      size={mode === 'global' ? 'xl' : 'sm'}
+      size={mode === 'global' ? 'xl' : 'md'}
     >
       <div className="modal-body recruiter-stats-modal__body">
         {/* ── Vista Global: Grid de tarjetas ── */}

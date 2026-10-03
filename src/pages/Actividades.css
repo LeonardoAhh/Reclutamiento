@@ -9,18 +9,6 @@
   padding-bottom: var(--spacing-xxl);
 }
 
-/* ── Hero (título + acción principal) ────────────────────────────────── */
-.actividades-header {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-end;
-  justify-content: flex-start;
-  flex-wrap: wrap;
-  gap: var(--spacing-md);
-  padding-block: var(--spacing-lg);
-  margin: 0 0 var(--spacing-xl);
-}
-
 /* ── Navegación principal por secciones ─────────────────────────────── */
 .actividades-tabs {
   min-inline-size: 0;
@@ -226,19 +214,6 @@
 }
 
 /* ── Responsive ──────────────────────────────────────────────────────── */
-@media (max-width: 600px) {
-  .actividades-header {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .actividades-header .btn-primary {
-    width: 100%;
-    justify-content: center;
-  }
-
-}
-
 /* ── Smart Textarea ──────────────────────────────────────────────────── */
 .smart-textarea-wrapper {
   display: flex;

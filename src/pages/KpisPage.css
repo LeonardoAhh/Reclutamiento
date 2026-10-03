@@ -15,18 +15,6 @@
   padding-bottom: var(--spacing-xxl);
 }
 
-/* ── Hero (título + acciones) ───────────────────────────────────────── */
-.kpis-page__hero {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-end;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: var(--spacing-md);
-  padding-block: var(--spacing-lg);
-  margin: 0 0 var(--spacing-md);
-}
-
 /* ── Tabs por grupo (solo móvil) ────────────────────────────────────── */
 .kpis-page__tabs {
   display: flex;
@@ -226,14 +214,6 @@
 }
 
 /* ── Tablet portrait (≥ 768px) — versión PC ─────────────────────────── */
-@media (min-width: 768px) {
-  .kpis-page__hero {
-    padding-block: var(--spacing-xl);
-    margin-bottom: var(--spacing-lg);
-  }
-
-}
-
 /* ── Desktop (≥ 1200px) ─────────────────────────────────────────────── */
 @media (min-width: 1200px) {
   .kpis-page__grid {

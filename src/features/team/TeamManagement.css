@@ -1,5 +1,5 @@
 .team-management, .modal-body.team-form { display: grid; gap: var(--space-lg); }
-.team-page { display: grid; gap: var(--space-lg); padding-block: var(--space-lg) var(--space-xl); }
+.team-page { display: grid; gap: var(--space-lg); padding-block: var(--design-spacing-md) var(--space-xl); }
 .team-page .page-header { margin: 0; padding-block: 0; }
 .team-page__heading { display: flex; align-items: center; gap: var(--space-md); min-width: 0; }
 .team-page__back { flex-shrink: 0; justify-content: center; inline-size: var(--touch-target-min); padding-inline: 0; }
@@ -12,6 +12,7 @@
 .team-management__actions { display: flex; grid-column: 1 / -1; flex-wrap: wrap; gap: var(--space-sm); align-items: center; margin-block-start: var(--space-sm); }
 .team-check { display: flex; align-items: center; gap: var(--space-sm); min-height: var(--control-height); }
 @media (min-width: 768px) {
+  .team-page { padding-block-start: var(--design-spacing-lg); }
   .team-form__wide { grid-column: 1 / -1; }
   .team-management__tools { grid-template-columns: minmax(0, 1fr) auto; }
   .team-management__status { grid-column: 1; grid-row: 2; justify-self: start; }

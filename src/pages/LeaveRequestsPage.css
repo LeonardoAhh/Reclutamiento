@@ -1,7 +1,7 @@
 .leave-requests-page {
   display: grid;
   gap: var(--design-spacing-md);
-  padding-block: var(--design-spacing-lg) var(--design-spacing-xxl);
+  padding-block: var(--design-spacing-md) var(--design-spacing-xxl);
 }
 
 .leave-requests-page__header,
@@ -166,6 +166,12 @@
   display: none;
 }
 
+@media (min-width: 768px) {
+  .leave-requests-page {
+    padding-block-start: var(--design-spacing-lg);
+  }
+}
+
 @media (max-width: 767px) {
   .leave-requests-page__heading {
     flex-wrap: nowrap;
@@ -174,9 +180,6 @@
 
   .leave-requests-page__heading .app-page-title {
     min-inline-size: 0;
-    font-size: var(--type-heading-md-size);
-    line-height: var(--type-heading-md-line);
-    letter-spacing: var(--type-heading-md-tracking);
   }
 }
 

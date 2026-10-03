@@ -5,6 +5,10 @@
   padding-block: var(--design-spacing-lg) calc(var(--design-spacing-xxl) + var(--safe-area-bottom));
 }
 
+.data-update-page--has-heading {
+  padding-block-start: var(--design-spacing-md);
+}
+
 .data-update-page__header,
 .data-update-section-heading,
 .data-update-campaign-toolbar,
@@ -22,6 +26,12 @@
 .page-header.data-update-page__header {
   margin: 0;
   padding-block: 0;
+}
+
+@media (min-width: 768px) {
+  .data-update-page--has-heading {
+    padding-block-start: var(--design-spacing-lg);
+  }
 }
 
 .data-update-page__header .page-header__actions,

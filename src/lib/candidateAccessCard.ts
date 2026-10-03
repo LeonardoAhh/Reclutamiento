@@ -37,12 +37,8 @@ interface CardTokens {
   headingMdWeight: number;
   headingMdLine: number;
   headingMdTracking: string;
-  headingSmSize: number;
-  headingSmWeight: number;
-  headingSmLine: number;
-  headingSmTracking: string;
+  candidateNameSize: number;
   bodySmSize: number;
-  bodySmLine: number;
   bodyStrongSize: number;
   bodyStrongWeight: number;
   bodyStrongLine: number;
@@ -94,12 +90,8 @@ function getCardTokens(): CardTokens {
     headingMdWeight: readCssNumber("--type-heading-md-weight"),
     headingMdLine: readCssNumber("--type-heading-md-line"),
     headingMdTracking: readCssToken("--type-heading-md-tracking"),
-    headingSmSize: readCssNumber("--type-heading-sm-size"),
-    headingSmWeight: readCssNumber("--type-heading-sm-weight"),
-    headingSmLine: readCssNumber("--type-heading-sm-line"),
-    headingSmTracking: readCssToken("--type-heading-sm-tracking"),
+    candidateNameSize: readCssNumber("--type-brand-size"),
     bodySmSize: readCssNumber("--type-body-sm-size"),
-    bodySmLine: readCssNumber("--type-body-sm-line"),
     bodyStrongSize: readCssNumber("--type-body-strong-size"),
     bodyStrongWeight: readCssNumber("--type-body-strong-weight"),
     bodyStrongLine: readCssNumber("--type-body-strong-line"),
@@ -345,7 +337,7 @@ function drawDivider(
 function drawHeader(
   context: CanvasRenderingContext2D,
   tokens: CardTokens,
-): void {
+): number {
   const company = fitWrappedText(context, {
     text: CANDIDATE_ACCESS_CARD_CONFIG.cardSubtitle,
     maxWidth: CARD_WIDTH - tokens.spaceXl * 2,
@@ -370,10 +362,10 @@ function drawHeader(
   context.fillStyle = tokens.ink;
   setFont(
     context,
-    tokens.headingSmWeight,
-    tokens.headingSmSize,
+    tokens.headingMdWeight,
+    tokens.headingMdSize,
     tokens.fontFamily,
-    tokens.headingSmTracking,
+    tokens.headingMdTracking,
   );
   context.fillText(
     CANDIDATE_ACCESS_CARD_CONFIG.cardTitle,
@@ -381,53 +373,49 @@ function drawHeader(
     titleTop,
   );
 
-  const dividerY =
-    titleTop + tokens.headingSmSize * tokens.headingSmLine + tokens.spaceMd;
-  context.strokeStyle = tokens.hairline;
-  context.lineWidth = tokens.borderWidth;
-  context.beginPath();
-  context.moveTo(tokens.spaceXl, dividerY);
-  context.lineTo(CARD_WIDTH - tokens.spaceXl, dividerY);
-  context.stroke();
+  const dividerY = titleTop + tokens.headingMdSize * tokens.headingMdLine + tokens.spaceMd;
+  drawDivider(context, dividerY, tokens);
+  return dividerY + tokens.spaceLg;
 }
 
-function drawLocation(
+function drawAppointment(
   context: CanvasRenderingContext2D,
   y: number,
+  data: CandidateAccessCardData,
+  recruiterName: string,
   tokens: CardTokens,
 ): number {
   const panelX = tokens.spaceXl;
   const panelWidth = CARD_WIDTH - tokens.spaceXl * 2;
   const innerX = panelX + tokens.spaceMd;
   const innerWidth = panelWidth - tokens.spaceMd * 2;
-  const name = fitWrappedText(context, {
-    text: CANDIDATE_ACCESS_CARD_CONFIG.locationName,
-    maxWidth: innerWidth,
-    maxLines: 1,
+  const gap = data.interviewDate ? tokens.spaceMd : 0;
+  const dateWidth = data.interviewDate ? (innerWidth - gap) / 2 : 0;
+  const recruiterWidth = data.interviewDate ? dateWidth : innerWidth;
+  const date = data.interviewDate ? fitWrappedText(context, {
+    text: data.interviewDate,
+    maxWidth: dateWidth,
+    maxLines: 3,
     initialSize: tokens.bodyStrongSize,
-    minimumSize: tokens.bodySmSize,
+    minimumSize: tokens.captionSize,
+    weight: tokens.bodyStrongWeight,
+    lineRatio: tokens.bodyStrongLine,
+    fontFamily: tokens.fontFamily,
+  }) : null;
+  const recruiter = fitWrappedText(context, {
+    text: recruiterName,
+    maxWidth: recruiterWidth,
+    maxLines: 3,
+    initialSize: tokens.bodyStrongSize,
+    minimumSize: tokens.captionSize,
     weight: tokens.bodyStrongWeight,
     lineRatio: tokens.bodyStrongLine,
     fontFamily: tokens.fontFamily,
   });
-  const address = fitWrappedText(context, {
-    text: CANDIDATE_ACCESS_CARD_CONFIG.address,
-    maxWidth: innerWidth,
-    maxLines: 2,
-    initialSize: tokens.captionSize,
-    minimumSize: tokens.captionSize,
-    weight: tokens.captionWeight,
-    lineRatio: tokens.captionLine,
-    fontFamily: tokens.fontFamily,
-  });
   const labelHeight = tokens.captionSize * tokens.captionLine;
-  const panelHeight =
-    tokens.spaceSm * 2 +
-    labelHeight +
-    tokens.spaceXs +
-    name.lines.length * name.lineHeight +
-    tokens.spaceXs +
-    address.lines.length * address.lineHeight;
+  const valueHeight = Math.max(date ? date.lines.length * date.lineHeight : 0,
+    recruiter.lines.length * recruiter.lineHeight);
+  const panelHeight = tokens.spaceMd * 2 + labelHeight + tokens.spaceXs + valueHeight;
 
   context.fillStyle = tokens.soft;
   roundedRect(
@@ -440,107 +428,96 @@ function drawLocation(
   );
   context.fill();
 
-  let contentY = y + tokens.spaceSm;
-  contentY =
-    drawLabel(
-      context,
-      CANDIDATE_ACCESS_CARD_CONFIG.locationLabel,
-      innerX,
-      contentY,
-      tokens,
-    ) + tokens.spaceXs;
-  contentY = drawTextLines(
-    context,
-    name,
-    innerX,
-    contentY,
-    tokens.ink,
-    tokens.bodyStrongWeight,
-    tokens.fontFamily,
-  );
-  contentY += tokens.spaceXs;
-  drawTextLines(
-    context,
-    address,
-    innerX,
-    contentY,
-    tokens.muted,
-    tokens.captionWeight,
-    tokens.fontFamily,
-  );
+  const contentY = y + tokens.spaceMd;
+  if (date) {
+    const dateY = drawLabel(context, CANDIDATE_ACCESS_CARD_CONFIG.dateLabel,
+      innerX, contentY, tokens) + tokens.spaceXs;
+    drawTextLines(context, date, innerX, dateY, tokens.ink,
+      tokens.bodyStrongWeight, tokens.fontFamily);
+  }
+  const recruiterX = date ? innerX + dateWidth + gap : innerX;
+  const recruiterY = drawLabel(context, CANDIDATE_ACCESS_CARD_CONFIG.recruiterLabel,
+    recruiterX, contentY, tokens) + tokens.spaceXs;
+  drawTextLines(context, recruiter, recruiterX, recruiterY, tokens.ink,
+    tokens.bodyStrongWeight, tokens.fontFamily);
 
   return y + panelHeight;
 }
 
-function drawFooter(
+function drawLocation(
   context: CanvasRenderingContext2D,
+  y: number,
   tokens: CardTokens,
-): void {
-  const maxWidth = CARD_WIDTH - tokens.spaceXl * 2;
-  const identification = fitWrappedText(context, {
-    text: CANDIDATE_ACCESS_CARD_CONFIG.identificationNotice,
-    maxWidth,
-    maxLines: 1,
-    initialSize: tokens.captionSize,
-    minimumSize: tokens.captionSize,
+): number {
+  const x = tokens.spaceXl;
+  const width = CARD_WIDTH - x * 2;
+  const nameBottom = drawLabeledValue(context, {
+    label: CANDIDATE_ACCESS_CARD_CONFIG.locationLabel,
+    value: CANDIDATE_ACCESS_CARD_CONFIG.locationName,
+    x, y, maxWidth: width,
+    initialSize: tokens.bodyStrongSize,
+    minimumSize: tokens.bodySmSize,
+    maxLines: 3,
     weight: tokens.bodyStrongWeight,
-    lineRatio: tokens.captionLine,
-    fontFamily: tokens.fontFamily,
+    lineRatio: tokens.bodyStrongLine,
+    tokens,
   });
-  const access = fitWrappedText(context, {
-    text: CANDIDATE_ACCESS_CARD_CONFIG.accessNotice,
-    maxWidth,
-    maxLines: 1,
+  const address = fitWrappedText(context, {
+    text: CANDIDATE_ACCESS_CARD_CONFIG.address,
+    maxWidth: width,
+    maxLines: 3,
     initialSize: tokens.captionSize,
     minimumSize: tokens.captionSize,
     weight: tokens.captionWeight,
     lineRatio: tokens.captionLine,
     fontFamily: tokens.fontFamily,
   });
-  const contentHeight =
-    identification.lineHeight + tokens.spaceXs + access.lineHeight;
-  const contentTop = CARD_HEIGHT - tokens.spaceXs - contentHeight;
-
-  context.strokeStyle = tokens.hairline;
-  context.lineWidth = tokens.borderWidth;
-  context.beginPath();
-  context.moveTo(tokens.spaceXl, contentTop - tokens.spaceSm);
-  context.lineTo(CARD_WIDTH - tokens.spaceXl, contentTop - tokens.spaceSm);
-  context.stroke();
-
-  context.textAlign = "center";
-  let textY = drawTextLines(
-    context,
-    identification,
-    CARD_WIDTH / 2,
-    contentTop,
-    tokens.ink,
-    tokens.bodyStrongWeight,
-    tokens.fontFamily,
-  );
-  textY += tokens.spaceXs;
-  drawTextLines(
-    context,
-    access,
-    CARD_WIDTH / 2,
-    textY,
-    tokens.muted,
-    tokens.captionWeight,
-    tokens.fontFamily,
-  );
-  context.textAlign = "left";
+  return drawTextLines(context, address, x, nameBottom + tokens.spaceXs,
+    tokens.muted, tokens.captionWeight, tokens.fontFamily);
 }
 
-function createCardCanvas(data: CandidateAccessCardData): HTMLCanvasElement {
-  const canvas = document.createElement("canvas");
-  canvas.width = OUTPUT_WIDTH;
-  canvas.height = OUTPUT_HEIGHT;
+function getFooterText(context: CanvasRenderingContext2D, tokens: CardTokens) {
+  const maxWidth = CARD_WIDTH - tokens.spaceXl * 2;
+  const identification = fitWrappedText(context, {
+    text: CANDIDATE_ACCESS_CARD_CONFIG.identificationNotice,
+    maxWidth, maxLines: 3,
+    initialSize: tokens.captionSize, minimumSize: tokens.captionSize,
+    weight: tokens.bodyStrongWeight, lineRatio: tokens.captionLine,
+    fontFamily: tokens.fontFamily,
+  });
+  const access = fitWrappedText(context, {
+    text: CANDIDATE_ACCESS_CARD_CONFIG.accessNotice,
+    maxWidth, maxLines: 3,
+    initialSize: tokens.captionSize, minimumSize: tokens.captionSize,
+    weight: tokens.captionWeight, lineRatio: tokens.captionLine,
+    fontFamily: tokens.fontFamily,
+  });
+  return { identification, access, height:
+    identification.lines.length * identification.lineHeight + tokens.spaceXs
+    + access.lines.length * access.lineHeight };
+}
 
-  const context = canvas.getContext("2d");
-  if (!context) throw new Error("No fue posible generar la imagen del pase.");
+function drawFooter(
+  context: CanvasRenderingContext2D,
+  cardHeight: number,
+  tokens: CardTokens,
+): void {
+  const { identification, access, height } = getFooterText(context, tokens);
+  const top = cardHeight - tokens.spaceLg - height;
+  drawDivider(context, top - tokens.spaceMd, tokens);
+  const next = drawTextLines(context, identification, tokens.spaceXl, top,
+    tokens.ink, tokens.bodyStrongWeight, tokens.fontFamily);
+  drawTextLines(context, access, tokens.spaceXl, next + tokens.spaceXs,
+    tokens.muted, tokens.captionWeight, tokens.fontFamily);
+}
 
-  const tokens = getCardTokens();
-  const contentWidth = CARD_WIDTH - tokens.spaceXl * 2;
+function drawBody(
+  context: CanvasRenderingContext2D,
+  data: CandidateAccessCardData,
+  tokens: CardTokens,
+): number {
+  const x = tokens.spaceXl;
+  const contentWidth = CARD_WIDTH - x * 2;
   const displayCandidateName = toNaturalCase(data.candidateName, {
     preserveAcronyms: false,
   });
@@ -548,111 +525,72 @@ function createCardCanvas(data: CandidateAccessCardData): HTMLCanvasElement {
     preserveAcronyms: false,
   });
   const displayPosition = toNaturalCase(data.position);
-  const candidateTop = 92;
-  const positionTop = 174;
-  const detailsTop = 246;
-  const locationTop = 298;
 
-  context.scale(RENDER_SCALE, RENDER_SCALE);
-  context.textBaseline = "top";
-  context.save();
-  roundedRect(
-    context,
-    0,
-    0,
-    CARD_WIDTH,
-    CARD_HEIGHT,
-    tokens.radiusLg,
-  );
-  context.clip();
-  context.fillStyle = tokens.paper;
-  context.fillRect(0, 0, CARD_WIDTH, CARD_HEIGHT);
-
-  drawHeader(context, tokens);
-  drawLabeledValue(context, {
+  let y = drawHeader(context, tokens);
+  y = drawLabeledValue(context, {
     label: CANDIDATE_ACCESS_CARD_CONFIG.candidateLabel,
     value: displayCandidateName,
-    x: tokens.spaceXl,
-    y: candidateTop,
-    maxWidth: contentWidth,
-    initialSize: tokens.headingMdSize,
+    x, y, maxWidth: contentWidth,
+    initialSize: tokens.candidateNameSize,
     minimumSize: tokens.bodyStrongSize,
-    maxLines: 2,
+    maxLines: 4,
     weight: tokens.headingMdWeight,
     lineRatio: tokens.headingMdLine,
     tracking: tokens.headingMdTracking,
     tokens,
   });
-
-  drawDivider(context, positionTop - tokens.spaceLg, tokens);
-
-  drawLabeledValue(context, {
+  y += tokens.spaceLg;
+  y = drawLabeledValue(context, {
     label: CANDIDATE_ACCESS_CARD_CONFIG.positionLabel,
     value: displayPosition,
-    x: tokens.spaceXl,
-    y: positionTop,
-    maxWidth: contentWidth,
+    x, y, maxWidth: contentWidth,
     initialSize: tokens.bodyStrongSize,
     minimumSize: tokens.captionSize,
-    maxLines: 1,
+    maxLines: 3,
     weight: tokens.bodyStrongWeight,
     lineRatio: tokens.bodyStrongLine,
     tokens,
   });
+  y += tokens.spaceLg;
+  y = drawAppointment(context, y, data, displayRecruiterName, tokens);
+  y += tokens.spaceLg;
+  return drawLocation(context, y, tokens);
+}
 
-  drawDivider(context, detailsTop - tokens.spaceLg, tokens);
+function createCardCanvas(data: CandidateAccessCardData): HTMLCanvasElement {
+  const canvas = document.createElement("canvas");
+  canvas.width = OUTPUT_WIDTH;
+  canvas.height = OUTPUT_HEIGHT;
+  let context = canvas.getContext("2d");
+  if (!context) throw new Error("No fue posible generar la imagen del pase.");
 
-  const columnGap = tokens.spaceMd;
-  const dateColumnWidth = (contentWidth - columnGap) / 3;
-  const recruiterColumnWidth = contentWidth - columnGap - dateColumnWidth;
-  if (data.interviewDate) {
-    drawLabeledValue(context, {
-      label: CANDIDATE_ACCESS_CARD_CONFIG.dateLabel,
-      value: data.interviewDate,
-      x: tokens.spaceXl,
-      y: detailsTop,
-      maxWidth: dateColumnWidth,
-      initialSize: tokens.bodySmSize,
-      minimumSize: tokens.captionSize,
-      maxLines: 1,
-      weight: tokens.bodyStrongWeight,
-      lineRatio: tokens.bodySmLine,
-      tokens,
-    });
-  }
-  drawLabeledValue(context, {
-    label: CANDIDATE_ACCESS_CARD_CONFIG.recruiterLabel,
-    value: displayRecruiterName,
-    x: data.interviewDate
-      ? tokens.spaceXl + dateColumnWidth + columnGap
-      : tokens.spaceXl,
-    y: detailsTop,
-    maxWidth: data.interviewDate ? recruiterColumnWidth : contentWidth,
-    initialSize: tokens.bodySmSize,
-    minimumSize: tokens.captionSize,
-    maxLines: 1,
-    weight: tokens.bodyStrongWeight,
-    lineRatio: tokens.bodySmLine,
-    tokens,
-  });
+  const tokens = getCardTokens();
+  context.scale(RENDER_SCALE, RENDER_SCALE);
+  context.textBaseline = "top";
+  const contentBottom = drawBody(context, data, tokens);
+  const footerHeight = getFooterText(context, tokens).height;
+  const cardHeight = Math.max(CARD_HEIGHT, Math.ceil(contentBottom + tokens.spaceLg
+    + tokens.spaceMd + footerHeight + tokens.spaceLg));
 
-  drawDivider(context, locationTop - tokens.spaceMd, tokens);
-  drawLocation(context, locationTop, tokens);
-  drawFooter(context, tokens);
+  canvas.height = cardHeight * RENDER_SCALE;
+  context = canvas.getContext("2d");
+  if (!context) throw new Error("No fue posible generar la imagen del pase.");
+  context.scale(RENDER_SCALE, RENDER_SCALE);
+  context.textBaseline = "top";
+  context.save();
+  roundedRect(context, 0, 0, CARD_WIDTH, cardHeight, tokens.radiusLg);
+  context.clip();
+  context.fillStyle = tokens.paper;
+  context.fillRect(0, 0, CARD_WIDTH, cardHeight);
+  drawBody(context, data, tokens);
+  drawFooter(context, cardHeight, tokens);
   context.restore();
 
   context.strokeStyle = tokens.hairline;
   context.lineWidth = tokens.borderWidth;
-  roundedRect(
-    context,
-    tokens.borderWidth / 2,
-    tokens.borderWidth / 2,
-    CARD_WIDTH - tokens.borderWidth,
-    CARD_HEIGHT - tokens.borderWidth,
-    tokens.radiusLg,
-  );
+  roundedRect(context, tokens.borderWidth / 2, tokens.borderWidth / 2,
+    CARD_WIDTH - tokens.borderWidth, cardHeight - tokens.borderWidth, tokens.radiusLg);
   context.stroke();
-
   return canvas;
 }
 

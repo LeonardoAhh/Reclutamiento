@@ -1,5 +1,6 @@
 import { useState, useMemo, useRef } from "react";
-import { Bus, CircleAlert, Copy } from "lucide-react";
+import { Bus, CircleAlert } from "lucide-react";
+import { Copy as CopyIconData, LoaderCircle as LoaderCircleIconData } from "lucide";
 import { toBlob } from "html-to-image";
 import { useSupabaseData } from "@/hooks/useSupabaseData";
 import { useRutas } from "@/hooks/useRutas";
@@ -13,6 +14,7 @@ import {
 } from "@/lib/dates";
 import { WeeklyOnboardingDocuments } from "./components/WeeklyOnboardingDocuments";
 import { ButtonUtility } from "@/components/ui/ButtonUtility";
+import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
 import { toast } from "@/lib/notify";
@@ -137,24 +139,51 @@ export function FormatosView() {
   const selectedWeekLabel = selectedWeek.label;
 
   const handleCopyImage = async () => {
-    if (!tableRef.current) return;
+    const sourceNode = tableRef.current;
+    if (!sourceNode) return;
+    const routeSection = sourceNode.closest(".recordatorios-routes");
+    if (!routeSection) {
+      toast.error({ title: "No se pudo preparar la imagen" });
+      return;
+    }
+    let captureHost: HTMLDivElement | null = null;
 
     try {
       setIsGeneratingImage(true);
 
-      const node = tableRef.current;
-      node.classList.add("is-exporting");
+      const captureNode = sourceNode.cloneNode(true) as HTMLDivElement;
+      captureNode.classList.add("is-exporting");
+      captureNode.setAttribute("aria-hidden", "true");
+      captureNode.style.width = `${sourceNode.getBoundingClientRect().width}px`;
+
+      captureHost = document.createElement("div");
+      captureHost.setAttribute("aria-hidden", "true");
+      captureHost.style.position = "fixed";
+      captureHost.style.insetBlockStart = "0";
+      captureHost.style.insetInlineStart = "-100vw";
+      captureHost.style.width = captureNode.style.width;
+
+      let captureTree: HTMLElement = captureNode;
+      let ancestor = sourceNode.parentElement;
+      while (ancestor) {
+        const ancestorClone = ancestor.cloneNode(false) as HTMLElement;
+        ancestorClone.append(captureTree);
+        captureTree = ancestorClone;
+        if (ancestor === routeSection) break;
+        ancestor = ancestor.parentElement;
+      }
+      captureHost.append(captureTree);
+      document.body.append(captureHost);
+
       const documentPaper = getComputedStyle(document.documentElement)
         .getPropertyValue("--color-document-paper")
         .trim();
 
-      const blob = await toBlob(node, {
+      const blob = await toBlob(captureNode, {
         backgroundColor: documentPaper || undefined,
-        width: node.scrollWidth,
-        height: node.scrollHeight,
+        width: captureNode.scrollWidth,
+        height: captureNode.scrollHeight,
       });
-
-      node.classList.remove("exporting-image");
 
       if (blob) {
         await navigator.clipboard.write([
@@ -168,7 +197,7 @@ export function FormatosView() {
       console.error("Error generating or copying image:", err);
       toast.error({ title: "Error al copiar la imagen" });
     } finally {
-      tableRef.current?.classList.remove("is-exporting");
+      captureHost?.remove();
       setIsGeneratingImage(false);
     }
   };
@@ -257,16 +286,25 @@ export function FormatosView() {
                 <ButtonUtility
                   type="button"
                   className="config-filter-reset"
-                  icon={<Copy aria-hidden="true" />}
+                  icon={
+                    <MorphingIcon
+                      icon={isGeneratingImage ? LoaderCircleIconData : CopyIconData}
+                      size="var(--icon-size-sm)"
+                      className={isGeneratingImage ? "spin" : undefined}
+                      aria-hidden="true"
+                    />
+                  }
                   onClick={handleCopyImage}
                   disabled={filteredEmployees.length === 0 || isGeneratingImage}
+                  aria-label={isGeneratingImage ? "Copiando..." : "Copiar"}
+                  aria-busy={isGeneratingImage}
                   aria-describedby={
                     filteredEmployees.length === 0
                       ? "recordatorios-routes-empty"
                       : undefined
                   }
                 >
-                  {isGeneratingImage ? "Generando..." : "Copiar"}
+                  Copiar
                 </ButtonUtility>
               </div>
             </section>

@@ -28,7 +28,7 @@ export function BajasHero({
   showActions = false,
 }: BajasHeroProps) {
   return (
-    <header className="bajas-hero">
+    <header className="page-header">
       <h1 className="app-page-title">Rotación</h1>
       {showActions && (
         <div className="bajas-hero__actions">

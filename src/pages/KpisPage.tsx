@@ -660,7 +660,7 @@ export function KpisPage() {
       loadingLabel="Cargando resumen…"
     >
       <main className="kpis-page container" id="page-kpis">
-      <header className="kpis-page__hero">
+      <header className="page-header">
         <h1 className="app-page-title">Resumen</h1>
       </header>
 

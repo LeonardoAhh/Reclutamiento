@@ -7,7 +7,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { usePagination } from "@/hooks/usePagination";
 import { ActivitiesSection } from "@/components/ui/ActivitiesSection";
 import { ResponsibilitiesSection } from "@/components/ui/ResponsibilitiesSection";
-import { SupportSection } from "@/components/ui/SupportSection";
 import {
   Activity,
   ActivityProof,
@@ -22,7 +21,6 @@ import {
   type CreateActivityModalProps,
 } from "@/components/ui/CreateActivityModal";
 import { CreateResponsibilityModal } from "@/components/ui/CreateResponsibilityModal";
-import { CreateSupportModal } from "@/components/ui/CreateSupportModal";
 import { CreateVacancyModal } from "@/components/ui/CreateVacancyModal";
 import { EditActivityModal } from "@/components/ui/EditActivityModal";
 import { LightboxModal } from "@/components/ui/LightboxModal";
@@ -473,17 +471,6 @@ export function Actividades() {
     });
   }, [activities]);
 
-  const soportes = useMemo(() => {
-    const list = activities.filter((a) => a.tipo === "soporte");
-    return list.sort((a, b) => {
-      const aNew = isNewActivity(a);
-      const bNew = isNewActivity(b);
-      if (aNew && !bNew) return -1;
-      if (!aNew && bNew) return 1;
-      return (b.created_at ?? "").localeCompare(a.created_at ?? "");
-    });
-  }, [activities]);
-
   const allUnicas = activities.filter((a) => a.tipo === "unica" || !a.tipo);
 
   /* ── Counts for filter badges ──────────────────────────────────────── */
@@ -565,17 +552,6 @@ export function Actividades() {
   } = usePagination(responsabilidades, 10);
 
   const {
-    pageItems: soportesPaginados,
-    currentPage: soportesPage,
-    totalPages: soportesTotalPages,
-    goToPage: goToSoportesPage,
-    nextPage: nextSoportesPage,
-    prevPage: prevSoportesPage,
-    canGoNext: canGoNextSoportes,
-    canGoPrev: canGoPrevSoportes,
-  } = usePagination(soportes, 10);
-
-  const {
     pageItems: actividadesPaginadas,
     currentPage: actividadesPage,
     totalPages: actividadesTotalPages,
@@ -616,7 +592,7 @@ export function Actividades() {
       loadingLabel="Cargando actividades..."
     >
       <main className="actividades-page container">
-        <header className="actividades-header">
+        <header className="page-header">
           <h1 className="app-page-title">Actividades</h1>
         </header>
 
@@ -627,9 +603,6 @@ export function Actividades() {
           </Tabs.Trigger>
           <Tabs.Trigger className="actividades-tabs__trigger" value="responsibilities">
             Responsabilidades
-          </Tabs.Trigger>
-          <Tabs.Trigger className="actividades-tabs__trigger" value="support">
-            Soporte
           </Tabs.Trigger>
           <Tabs.Trigger className="actividades-tabs__trigger" value="activities">
             Actividades
@@ -666,29 +639,6 @@ export function Actividades() {
             }}
             isNew={isNewActivity}
             onCreate={() => setCreateModalType("rutinaria")}
-            onEdit={openEdit}
-            onDelete={handleDelete}
-            onViewReference={setLightboxSrc}
-          />
-        </Tabs.Content>
-
-        <Tabs.Content className="actividades-tabs__content" value="support">
-          <SupportSection
-            supportItems={soportes}
-            pageItems={soportesPaginados}
-            isAdmin={isAdmin}
-            currentUserId={profile?.id}
-            pagination={{
-              currentPage: soportesPage,
-              totalPages: soportesTotalPages,
-              onPageChange: goToSoportesPage,
-              onPrev: prevSoportesPage,
-              onNext: nextSoportesPage,
-              canGoPrev: canGoPrevSoportes,
-              canGoNext: canGoNextSoportes,
-            }}
-            isNew={isNewActivity}
-            onCreate={() => setCreateModalType("soporte")}
             onEdit={openEdit}
             onDelete={handleDelete}
             onViewReference={setLightboxSrc}
@@ -779,11 +729,6 @@ export function Actividades() {
       <CreateResponsibilityModal
         {...createAssignmentModalProps}
         isOpen={createModalType === "rutinaria"}
-      />
-
-      <CreateSupportModal
-        {...createAssignmentModalProps}
-        isOpen={createModalType === "soporte"}
       />
 
       {/* ── Modal: Edit ──────────────────────────────────────────── */}

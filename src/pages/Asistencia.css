@@ -1,5 +1,5 @@
 .asistencia-page {
-  padding: var(--spacing-xl);
+  padding-block: var(--design-spacing-lg);
 }
 
 .asistencia-error {
@@ -93,8 +93,8 @@
 }
 
 /* Mobile responsive fixes */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .asistencia-page {
-    padding: var(--spacing-md);
+    padding-block: var(--design-spacing-md) var(--design-spacing-sm);
   }
 }

@@ -5,7 +5,8 @@
    ───────────────────────────────────────────────────────────────────────── */
 
 .settings {
-  padding-block: var(--spacing-xl) var(--spacing-xl);
+  padding-block-start: var(--design-spacing-md);
+  padding-block-end: var(--spacing-xl);
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xl);
@@ -26,15 +27,6 @@
   letter-spacing: var(--tracking-wider);
   text-transform: uppercase;
   color: var(--color-muted);
-}
-
-.settings__title {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: var(--type-heading-lg-size, 28px);
-  font-weight: 600;
-  letter-spacing: var(--tracking-snug, -0.01em);
-  color: var(--color-ink);
 }
 
 .settings__subtitle {
@@ -388,14 +380,6 @@
   gap: var(--spacing-sm);
 }
 
-.settings__denied-title {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: var(--type-heading-md-size, 16px);
-  font-weight: 600;
-  color: var(--color-ink);
-}
-
 .settings__denied-text {
   margin: 0;
   color: var(--color-muted);
@@ -405,8 +389,8 @@
 /* ── Responsive ──────────────────────────────────────────────────── */
 @media (max-width: 600px) {
   .settings {
-    padding-block: var(--spacing-lg);
     gap: var(--spacing-lg);
+    padding-block-end: var(--spacing-lg);
   }
   .settings__panel {
     padding: var(--spacing-md);
@@ -425,10 +409,13 @@
 }
 
 @media (max-width: 420px) {
-  .settings__title {
-    font-size: var(--type-heading-md-size, 20px);
-  }
   .settings__refresh span {
     display: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .settings {
+    padding-block-start: var(--design-spacing-lg);
   }
 }

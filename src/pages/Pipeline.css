@@ -35,7 +35,7 @@
   }
 }
 
-/* ── Botón "Resumen de candidatos" (abre CandidateReportModal) ── */
+/* Botón para copiar el resumen de candidatos. */
 .pipeline__report-btn {
   gap: var(--spacing-xs);
 }
@@ -89,6 +89,25 @@
   font-size: var(--type-caption-sm-size);
   font-weight: 500;
   color: var(--color-muted);
+}
+
+.pipeline__metrics-menu .pipeline__sidebar-section__label {
+  margin: 0;
+  padding: 0;
+  color: var(--color-ink);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-sm-line);
+}
+
+.pipeline__metrics-menu .pipeline__sidebar-divider {
+  margin: 0;
+}
+
+@media (max-width: 767px) {
+  .pipeline__metrics-menu .pipeline__recruiters {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 /* ── KPI Card (Global) ── */
@@ -1305,15 +1324,21 @@
 
 /* ── Bloque compacto bajo desktop ── */
 .pipeline__ccard-mobile-info {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+  gap: var(--design-spacing-sm);
   width: 100%;
   min-width: 0;
 }
 
+.pipeline__ccard-mobile-info--has-meta {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
 .pipeline__ccard-mobile-info__puesto {
-  font-size: var(--type-body-md-size);
-  font-weight: 500;
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-strong-weight);
   color: var(--color-ink);
   line-height: 1.3;
   display: flex;
@@ -1322,10 +1347,10 @@
 }
 
 .pipeline__ccard-mobile-info__meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-xs);
-  margin-top: var(--spacing-xs);
+  display: grid;
+  justify-items: end;
+  gap: var(--design-spacing-xs);
+  min-width: 0;
 }
 
 .pipeline__ccard-mobile-info__chip {
@@ -1650,7 +1675,7 @@
 .pipeline-mobile-detail__title {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-sm);
   min-width: 0;
 }
 
@@ -1679,8 +1704,26 @@
 }
 
 .pipeline-mobile-detail__puesto {
+  display: flex;
+  flex-direction: column;
+  gap: var(--design-spacing-xxs);
+  min-width: 0;
+}
+
+.pipeline-mobile-detail__puesto-name {
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+  color: var(--color-ink);
+  overflow-wrap: anywhere;
+}
+
+.pipeline-mobile-detail__puesto-section {
   font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-line);
   color: var(--color-muted);
+  overflow-wrap: anywhere;
 }
 
 .pipeline-mobile-detail__info-grid {
