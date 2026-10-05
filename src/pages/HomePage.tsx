@@ -1,5 +1,5 @@
-import { useId, useLayoutEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
-import { ArrowUpRight, Brain, CalendarDays, Check, ChevronLeft, ChevronRight, RotateCcw, Scale, ShieldCheck, UsersRound } from "lucide-react";
+import { useId, useLayoutEffect, useRef, useState, type FormEvent } from "react";
+import { ArrowUpRight, Brain, CalendarDays, ChevronLeft, ChevronRight, RotateCcw, Scale, ShieldCheck, UsersRound } from "lucide-react";
 import { validation, wave } from "robot-toast/robots";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { CustomSelect } from "@/components/ui/CustomSelect";
@@ -12,11 +12,13 @@ import { getUserTitle } from "@/lib/userIdentity";
 import { useTeamDirectory } from '@/features/team/TeamProvider';
 import { CAREER_JOURNEY_ENABLED } from '@/features/career/types';
 import { toNaturalCase } from "@/lib/utils";
+import { HomeLessonCard } from "./home/HomeLessonCard";
 import {
   MOTIVATION_BY_TITLE, DEFAULT_MOTIVATION, LEADERSHIP_CUE_BY_TITLE,
   DEFAULT_LEADERSHIP_CUE, EMPLOYEE_LIFECYCLE, LABOR_GUIDANCE,
-  RESPONSIBLE_PROCESS_COMMITMENTS, DEVELOPMENT_SECTIONS, PRACTICE_REFLECTIONS,
-  HOME_TOPICS, LEGACY_LESSONS, LEAVE_POLICY_NOTICE, type HomeLessonData, type DevelopmentSection,
+  DEVELOPMENT_SECTIONS, PRACTICE_REFLECTIONS, RESPONSIBLE_PROCESS_CARD,
+  RESPONSIBLE_PROCESS_COMMITMENTS, HOME_TOPICS, LEGACY_LESSONS,
+  LEAVE_POLICY_NOTICE, type DevelopmentSection,
 } from "./homeContent";
 import {
   canReviewLeaveRequests, createLeaveRequest, leaveTypeLabel, requiresNoticeException, validateLeaveDraft,
@@ -24,43 +26,15 @@ import {
 } from '@/features/leave/requests';
 import "./HomePage.css";
 
-function HomeLesson({
-  title, description, eyebrow, icon: Icon, practices, steps, children,
-}: HomeLessonData & { children?: ReactNode }) {
-  return (
-    <article className="home-page__lesson">
-      <header className="home-page__lesson-header">
-        <Icon className="home-page__lesson-icon" aria-hidden="true" />
-        <div className="home-page__lesson-copy">
-          {eyebrow && <span className="home-page__eyebrow">{eyebrow}</span>}
-          <h3 className="home-page__lesson-title">{title}</h3>
-          {description && (
-            <p className="home-page__lesson-description">{description}</p>
-          )}
-        </div>
-      </header>
-      <div className="home-page__lesson-content">
-        {practices && (
-          <ul className="home-page__check-list">
-            {practices.map(practice => (
-              <li key={practice}><Check aria-hidden="true" /><span>{practice}</span></li>
-            ))}
-          </ul>
-        )}
-        {steps && (
-          <ol>{steps.map(step => <li key={step}>{step}</li>)}</ol>
-        )}
-        {children}
-      </div>
-    </article>
-  );
-}
-
 function HomeContext({ section }: { section: DevelopmentSection }) {
   return (
-    <p className="home-page__context">
-      <strong>{section.title}.</strong> {section.introduction}
-    </p>
+    <HomeLessonCard
+      title={section.title}
+      eyebrow={section.eyebrow}
+      icon={section.topics[0].icon}
+    >
+      <p>{section.introduction}</p>
+    </HomeLessonCard>
   );
 }
 
@@ -72,9 +46,7 @@ function TopicLessons({ topicId, leadershipCue }: {
     case "reclutamiento":
       return (
         <>
-          <HomeLesson title="Reclutar con responsabilidad"
-            eyebrow="Compromisos del proceso" icon={ShieldCheck}
-            description="Principios que orientan cada decisión, desde la vacante hasta el ingreso.">
+          <HomeLessonCard {...RESPONSIBLE_PROCESS_CARD} icon={ShieldCheck}>
             <ul className="home-page__commitment-list">
               {RESPONSIBLE_PROCESS_COMMITMENTS.map(({ title, description, icon: Icon }) => (
                 <li key={title}>
@@ -83,20 +55,30 @@ function TopicLessons({ topicId, leadershipCue }: {
                 </li>
               ))}
             </ul>
-          </HomeLesson>
-          <HomeLesson {...LEGACY_LESSONS[0]} />
-          <HomeLesson {...LEGACY_LESSONS[1]} />
+          </HomeLessonCard>
+          <HomeLessonCard {...LEGACY_LESSONS[0]} />
+          <HomeLessonCard {...LEGACY_LESSONS[1]} />
           <HomeContext section={DEVELOPMENT_SECTIONS[0]} />
           {DEVELOPMENT_SECTIONS[0].topics.map(topic => (
-            <HomeLesson {...topic} key={topic.title} />
+            <HomeLessonCard {...topic} key={topic.title} />
           ))}
         </>
       );
     case "administracion":
       return (
         <>
-          <HomeLesson {...LEGACY_LESSONS[2]} />
-          <HomeLesson {...LEGACY_LESSONS[3]}>
+          <HomeLessonCard {...LEGACY_LESSONS[2]} />
+          <HomeLessonCard
+            {...LEGACY_LESSONS[3]}
+            action={
+              <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/LFT.pdf"
+                target="_blank" rel="noreferrer">
+                Fuente oficial
+                <span className="sr-only">(abre en nueva pestaña)</span>
+                <ArrowUpRight aria-hidden="true" />
+              </a>
+            }
+          >
             <ul className="home-page__labor-list">
               {LABOR_GUIDANCE.map(({ article, label }) => (
                 <li key={article}><strong>{article}</strong><span>{label}</span></li>
@@ -104,47 +86,43 @@ function TopicLessons({ topicId, leadershipCue }: {
             </ul>
             <footer className="home-page__legal-footer">
               <span>Orientación general; consulta el texto vigente.</span>
-              <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/LFT.pdf"
-                target="_blank" rel="noreferrer">
-                Fuente oficial
-                <span className="sr-only">(abre en nueva pestaña)</span>
-                <ArrowUpRight aria-hidden="true" />
-              </a>
             </footer>
-          </HomeLesson>
-          <HomeLesson title="Una experiencia completa"
+          </HomeLessonCard>
+          <HomeLessonCard title="Una experiencia completa"
             eyebrow="Ciclo de la persona" icon={UsersRound}
             description="La responsabilidad de Recursos Humanos continúa antes, durante y después de la contratación."
             steps={EMPLOYEE_LIFECYCLE} />
-          <HomeLesson {...DEVELOPMENT_SECTIONS[2].topics[1]} />
-          <HomeLesson {...LEGACY_LESSONS[9]} />
+          <HomeLessonCard {...DEVELOPMENT_SECTIONS[2].topics[1]} />
+          <HomeLessonCard {...LEGACY_LESSONS[9]} />
         </>
       );
     case "liderazgo":
       return (
         <>
-          <p className="home-page__section-intro">{leadershipCue}</p>
+          <HomeLessonCard title={HOME_TOPICS[2].title} icon={HOME_TOPICS[2].icon}>
+            <p>{leadershipCue}</p>
+          </HomeLessonCard>
           {[4, 5, 6].map(index => (
-            <HomeLesson {...LEGACY_LESSONS[index]} key={LEGACY_LESSONS[index].title} />
+            <HomeLessonCard {...LEGACY_LESSONS[index]} key={LEGACY_LESSONS[index].title} />
           ))}
           <HomeContext section={DEVELOPMENT_SECTIONS[1]} />
           {DEVELOPMENT_SECTIONS[1].topics.map(topic => (
-            <HomeLesson {...topic} key={topic.title} />
+            <HomeLessonCard {...topic} key={topic.title} />
           ))}
-          <HomeLesson {...DEVELOPMENT_SECTIONS[2].topics[0]} />
+          <HomeLessonCard {...DEVELOPMENT_SECTIONS[2].topics[0]} />
         </>
       );
     case "desarrollo":
       return (
         <>
           {[7, 8, 10].map(index => (
-            <HomeLesson {...LEGACY_LESSONS[index]} key={LEGACY_LESSONS[index].title} />
+            <HomeLessonCard {...LEGACY_LESSONS[index]} key={LEGACY_LESSONS[index].title} />
           ))}
           <HomeContext section={DEVELOPMENT_SECTIONS[2]} />
-          <HomeLesson {...DEVELOPMENT_SECTIONS[2].topics[2]} />
+          <HomeLessonCard {...DEVELOPMENT_SECTIONS[2].topics[2]} />
           <HomeContext section={DEVELOPMENT_SECTIONS[3]} />
           {DEVELOPMENT_SECTIONS[3].topics.map(topic => (
-            <HomeLesson {...topic} key={topic.title} />
+            <HomeLessonCard {...topic} key={topic.title} />
           ))}
         </>
       );
@@ -152,11 +130,11 @@ function TopicLessons({ topicId, leadershipCue }: {
       return (
         <>
           {PRACTICE_REFLECTIONS.map(({ label, title, description, icon }) => (
-            <HomeLesson title={title} eyebrow={label} icon={icon} key={label}>
+            <HomeLessonCard title={title} eyebrow={label} icon={icon} key={label}>
               <p>{description}</p>
-            </HomeLesson>
+            </HomeLessonCard>
           ))}
-          <HomeLesson title="Cuando una impresión aparece antes que la evidencia"
+          <HomeLessonCard title="Cuando una impresión aparece antes que la evidencia"
             eyebrow="Caso para pensar" icon={Brain}
             description="Durante una conversación surge una conclusión rápida sobre una persona, pero todavía faltan preguntas relacionadas con el puesto.">
             <h4>Antes de decidir</h4>
@@ -165,8 +143,8 @@ function TopicLessons({ topicId, leadershipCue }: {
               <li>¿Qué estoy interpretando?</li>
               <li>¿Qué pregunta aportaría evidencia relevante?</li>
             </ul>
-          </HomeLesson>
-          <HomeLesson title="Contraste práctico"
+          </HomeLessonCard>
+          <HomeLessonCard title="Contraste práctico"
             description="Ayuda / Dificulta" icon={Scale}>
             <div className="home-page__contrast-columns">
               <div>
@@ -186,7 +164,7 @@ function TopicLessons({ topicId, leadershipCue }: {
                 </ul>
               </div>
             </div>
-          </HomeLesson>
+          </HomeLessonCard>
         </>
       );
     default:
@@ -357,69 +335,41 @@ export function HomePage() {
         </div>
       </section>
 
-
       <div id="home-content" className="home-page__learning">
-        <div className="form-group home-page__topic-picker">
-          <label htmlFor="home-topic-select">Explorar tema</label>
-          <CustomSelect
-            id="home-topic-select"
-            value={activeTopic.id}
-            onChange={(value) => {
-              const index = HOME_TOPICS.findIndex(
-                (topic) => topic.id === value,
-              );
-              selectTopic(index);
-            }}
-            options={HOME_TOPICS.map((topic) => ({
-              value: topic.id,
-              label: topic.title,
-            }))}
-            showPlaceholderOption={false}
-          />
-        </div>
-        <nav className="home-page__topics" aria-label="Temas de inicio">
-          {HOME_TOPICS.map((topic, index) => {
-            const Icon = topic.icon;
-            return (
-              <button type="button" className="home-page__topic-button" key={topic.id}
-                aria-current={index === activeIndex ? "true" : undefined}
-                aria-controls="home-topic-content" aria-label={topic.title}
-                onClick={() => selectTopic(index)}>
-                <span className="home-page__topic-label">
-                  <Icon aria-hidden="true" />
-                  {topic.navLabel}
-                </span>
-                <Check className="home-page__topic-check" aria-hidden="true" />
-              </button>
-            );
-          })}
-        </nav>
         <section id="home-topic-content" className="home-page__topic-content"
           aria-labelledby="home-topic-title">
           <header className="home-page__section-header">
-            <p className="home-page__eyebrow">
-              Tema {activeIndex + 1} de {HOME_TOPICS.length}
-            </p>
-            <h2 id="home-topic-title" ref={titleRef} tabIndex={-1}
-              className="home-page__section-title">
-              {activeTopic.title}
-            </h2>
+            <div className="home-page__section-heading">
+              <h2 id="home-topic-title" ref={titleRef} tabIndex={-1}
+                className="home-page__section-title">
+                {activeTopic.title}
+              </h2>
+              <nav className="home-page__pagination" aria-label="Recorrer temas">
+                <button
+                  type="button"
+                  className="home-page__pagination-button"
+                  aria-label="Tema anterior"
+                  disabled={activeIndex === 0}
+                  onClick={() => selectTopic(activeIndex - 1)}
+                >
+                  <ChevronLeft aria-hidden="true" />
+                </button>
+                <button
+                  type="button"
+                  className="home-page__pagination-button"
+                  aria-label="Tema siguiente"
+                  disabled={activeIndex === HOME_TOPICS.length - 1}
+                  onClick={() => selectTopic(activeIndex + 1)}
+                >
+                  <ChevronRight aria-hidden="true" />
+                </button>
+              </nav>
+            </div>
             <p className="home-page__section-intro">{activeTopic.introduction}</p>
           </header>
           <div className="home-page__lessons">
             <TopicLessons topicId={activeTopic.id} leadershipCue={leadershipCue} />
           </div>
-          <nav className="home-page__pagination" aria-label="Recorrer temas">
-            <button type="button" className="btn-secondary"
-              disabled={activeIndex === 0} onClick={() => selectTopic(activeIndex - 1)}>
-              <ChevronLeft aria-hidden="true" /> Anterior
-            </button>
-            <button type="button" className="btn-secondary"
-              disabled={activeIndex === HOME_TOPICS.length - 1}
-              onClick={() => selectTopic(activeIndex + 1)}>
-              Siguiente <ChevronRight aria-hidden="true" />
-            </button>
-          </nav>
         </section>
       </div>
       <Modal

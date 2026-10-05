@@ -168,6 +168,13 @@ export const RESPONSIBLE_PROCESS_COMMITMENTS = [
   },
 ] as const;
 
+export const RESPONSIBLE_PROCESS_CARD = {
+  eyebrow: "Compromisos del proceso",
+  title: "Reclutar con responsabilidad",
+  description:
+    "Principios que orientan cada decisión, desde la vacante hasta el ingreso.",
+} as const;
+
 type DevelopmentTopic = {
   eyebrow: string;
   title: string;

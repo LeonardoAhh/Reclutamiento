@@ -3,30 +3,32 @@
 import { registerBones } from 'boneyard-js'
 import { configureBoneyard } from 'boneyard-js/react'
 
-import _plantilla_page from './plantilla-page.bones.json'
-import _candidatos_page from './candidatos-page.bones.json'
-import _bajas_page from './bajas-page.bones.json'
-import _resumen_page from './resumen-page.bones.json'
-import _reportes_page from './reportes-page.bones.json'
+import _leave_requests_page from './leave-requests-page.bones.json'
+import _actividades_page from './actividades-page.bones.json'
 import _analisis_page from './analisis-page.bones.json'
+import _bajas_page from './bajas-page.bones.json'
+import _candidatos_page from './candidatos-page.bones.json'
+import _configuracion_formatos from './configuracion-formatos.bones.json'
 import _configuracion_indicadores from './configuracion-indicadores.bones.json'
 import _configuracion_rutas from './configuracion-rutas.bones.json'
 import _configuracion_tabulador from './configuracion-tabulador.bones.json'
-import _configuracion_formatos from './configuracion-formatos.bones.json'
-import _actividades_page from './actividades-page.bones.json'
+import _plantilla_page from './plantilla-page.bones.json'
+import _reportes_page from './reportes-page.bones.json'
+import _resumen_page from './resumen-page.bones.json'
 
 configureBoneyard({"color":"var(--color-hairline)","darkColor":"var(--color-hairline)","animate":"solid","speed":"var(--duration-skeleton)","boneClass":"boneyard-skeleton__bone"})
 
 registerBones({
-  "plantilla-page": _plantilla_page,
-  "candidatos-page": _candidatos_page,
-  "bajas-page": _bajas_page,
-  "resumen-page": _resumen_page,
-  "reportes-page": _reportes_page,
+  "leave-requests-page": _leave_requests_page,
+  "actividades-page": _actividades_page,
   "analisis-page": _analisis_page,
+  "bajas-page": _bajas_page,
+  "candidatos-page": _candidatos_page,
+  "configuracion-formatos": _configuracion_formatos,
   "configuracion-indicadores": _configuracion_indicadores,
   "configuracion-rutas": _configuracion_rutas,
   "configuracion-tabulador": _configuracion_tabulador,
-  "configuracion-formatos": _configuracion_formatos,
-  "actividades-page": _actividades_page,
+  "plantilla-page": _plantilla_page,
+  "reportes-page": _reportes_page,
+  "resumen-page": _resumen_page,
 })

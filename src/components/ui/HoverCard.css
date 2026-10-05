@@ -1,0 +1,13 @@
+.hover-card-content {
+  z-index: var(--layer-menu);
+  inline-size: min(var(--menu-inline-size-md), var(--radix-hover-card-content-available-width));
+  max-inline-size: var(--radix-hover-card-content-available-width);
+  max-block-size: var(--radix-hover-card-content-available-height);
+  overflow: auto;
+  overscroll-behavior: contain;
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  background: var(--color-surface-card);
+  color: var(--color-ink);
+  box-shadow: var(--shadow-elevated);
+}

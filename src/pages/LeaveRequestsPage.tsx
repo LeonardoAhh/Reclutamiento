@@ -5,11 +5,14 @@ import { useAuth } from '@/hooks/useAuth';
 import { useTeamDirectory } from '@/features/team/TeamProvider';
 import { HOME_PATH } from '@/components/layout/navigation';
 import { Badge } from '@/components/ui/Badge';
+import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { Tooltip } from '@/components/ui/Tooltip';
+import { isBoneyardBuild } from '@/lib/boneyard';
 import { formatDateTimeMx, formatReadableDate } from '@/lib/dates';
 import { toast } from '@/lib/notify';
 import { toNaturalCase } from '@/lib/utils';
+import { LeaveRequestsSkeletonFixture } from './LeaveRequestsSkeletonFixture';
 import {
   approveLeaveRequest, canApproveLeaveRequest, canReviewLeaveRequests, canDeleteLeaveRequest,
   deleteLeaveRequest, leaveStatusLabel, leaveTypeLabel, listLeaveRequests, LEAVE_PAGE_SIZE,
@@ -27,6 +30,7 @@ export function LeaveRequestsPage() {
   const { profile } = useAuth();
   const { members } = useTeamDirectory();
   const canReview = canReviewLeaveRequests(profile, members);
+  const isBuild = isBoneyardBuild();
   const id = useId();
   const [page, setPage] = useState(0);
   const [revision, setRevision] = useState(0);
@@ -77,8 +81,14 @@ export function LeaveRequestsPage() {
     }
   }
 
-  if (!canReview) return <Navigate to={HOME_PATH} replace />;
+  if (!canReview && !isBuild) return <Navigate to={HOME_PATH} replace />;
   return (
+    <BoneyardSkeleton
+      name="leave-requests-page"
+      loading={loading}
+      loadingLabel="Cargando solicitudes…"
+      fixture={isBuild ? <LeaveRequestsSkeletonFixture /> : undefined}
+    >
     <main className="leave-requests-page container" aria-labelledby={`${id}-title`}>
       <header className="leave-requests-page__header">
         <div className="leave-requests-page__heading">
@@ -224,5 +234,6 @@ export function LeaveRequestsPage() {
         onCancel={() => { if (!actionBusyRef.current) { setReviewAction(null); setActionError(''); } }}
       />}
     </main>
+    </BoneyardSkeleton>
   );
 }
