@@ -37,6 +37,7 @@ export const ACCOUNT_PATH = "/cuenta";
 export const TEAM_PATH = "/equipo";
 export const LOGOUT_PATH = "/cerrar-sesion";
 export const HOME_PATH = "/inicio";
+export const ORGANIZATION_CHART_PATH = "/organization-chart";
 export const APP_BRAND_NAME = "ViñoPlastic";
 
 export const NAV_SECTIONS: ReadonlyArray<NavSection> = [

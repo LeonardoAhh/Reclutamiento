@@ -1,0 +1,525 @@
+.organization-chart-page {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--design-spacing-xl);
+  padding-block: var(--design-spacing-lg) var(--design-spacing-xxl);
+}
+
+.organization-chart-page__tree {
+  display: grid;
+  min-inline-size: 0;
+  justify-items: center;
+}
+
+.organization-chart-page__root,
+.organization-chart-page__report {
+  display: grid;
+  inline-size: min(100%, var(--diagram-node-max-inline-size));
+  min-inline-size: 0;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  justify-items: stretch;
+  gap: 0;
+  padding: 0;
+}
+
+.organization-chart-page__root {
+  position: relative;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.organization-chart-page__root:is(:hover, :focus-within) {
+  border-color: var(--color-hairline-strong);
+  box-shadow: var(--shadow-xs);
+}
+
+.organization-chart-page__report--action {
+  position: relative;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.organization-chart-page__report--action:is(:hover, :focus-within) {
+  border-color: var(--color-hairline-strong);
+  box-shadow: var(--shadow-xs);
+}
+
+.organization-chart-page__root-action {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  cursor: pointer;
+}
+
+.organization-chart-page__portrait {
+  display: grid;
+  inline-size: 100%;
+  min-inline-size: 0;
+  gap: 0;
+  margin: 0;
+}
+
+.organization-chart-page__frame {
+  position: relative;
+  display: grid;
+  place-items: center;
+  inline-size: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-start-start-radius: var(--rounded-lg);
+  border-start-end-radius: var(--rounded-lg);
+  background: var(--color-canvas-soft);
+  color: var(--color-muted);
+}
+
+.organization-avatar {
+  position: absolute;
+  inset: 0;
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.organization-chart-page__portrait-fade {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  block-size: 25%;
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent, var(--color-surface-card));
+  backdrop-filter: blur(var(--blur-media-transition));
+  mask-image: linear-gradient(to bottom, transparent, currentColor);
+}
+
+.organization-avatar--level-5 {
+  --avatar-accent: var(--color-accent-purple);
+}
+
+.organization-avatar--level-7 {
+  --avatar-accent: var(--color-accent-sky);
+}
+
+.organization-avatar--level-8 {
+  --avatar-accent: var(--color-accent-teal);
+}
+
+.organization-avatar--level-10 {
+  --avatar-accent: var(--color-accent-green);
+}
+
+.organization-avatar--level-11 {
+  --avatar-accent: var(--color-accent-orange);
+}
+
+.organization-avatar--level-14 {
+  --avatar-accent: var(--color-muted);
+}
+
+.organization-avatar__halo,
+.organization-avatar__badge {
+  fill: var(--color-surface-card);
+}
+
+.organization-avatar__accent,
+.organization-avatar__shirt {
+  fill: var(--avatar-accent);
+}
+
+.organization-avatar__hair {
+  fill: var(--color-avatar-ink);
+}
+
+.organization-avatar__skin,
+.organization-avatar__collar {
+  fill: var(--color-canvas-elevated);
+}
+
+.organization-avatar__smile {
+  fill: none;
+  stroke: var(--color-avatar-ink);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.organization-avatar__role {
+  color: var(--avatar-accent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .organization-chart-page :is(article:hover, article:focus-within) .organization-avatar__character {
+    animation: organization-avatar-greet var(--duration-brand-reveal) var(--ease-standard);
+  }
+}
+
+@keyframes organization-avatar-greet {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(calc(-1 * var(--motion-float-distance))); }
+}
+
+.organization-chart-page__photo-badge {
+  position: absolute;
+  inset-block-end: var(--design-spacing-xs);
+  inset-inline-end: var(--design-spacing-xs);
+}
+
+.organization-chart-page__location-badge.badge {
+  position: absolute;
+  inset-block-start: var(--design-spacing-xs);
+  inset-inline-start: var(--design-spacing-xs);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.organization-chart-page__details {
+  display: grid;
+  min-inline-size: 0;
+  align-content: start;
+  gap: var(--design-spacing-xs);
+  padding: var(--design-spacing-sm);
+}
+
+.organization-chart-page__position-name {
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
+}
+
+.organization-chart-page__root h2,
+.organization-chart-page__report :is(h3, h4) {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.organization-chart-page__head {
+  display: grid;
+  min-inline-size: 0;
+}
+
+.organization-chart-page__head-chain {
+  display: grid;
+  min-inline-size: 0;
+  justify-items: center;
+}
+
+.organization-chart-page__direct-reports {
+  display: grid;
+  inline-size: 100%;
+  min-inline-size: 0;
+  justify-items: center;
+}
+
+.organization-chart-page__tree-list {
+  position: relative;
+  display: grid;
+  inline-size: 100%;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.organization-chart-page__tree-list::before {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: 50%;
+  block-size: var(--diagram-connector-width);
+  background: var(--color-hairline-strong);
+  content: "";
+}
+
+.organization-chart-page__tree-item {
+  position: relative;
+  display: grid;
+  min-inline-size: 0;
+  grid-template-columns: var(--design-spacing-lg) minmax(0, 1fr);
+  padding-block-end: var(--design-spacing-xl);
+}
+
+.organization-chart-page__tree-item:not(:last-child) {
+  border-inline-start: var(--diagram-connector-width) solid var(--color-hairline-strong);
+}
+
+.organization-chart-page__tree-item:last-child {
+  padding-block-end: 0;
+}
+
+.organization-chart-page__tree-item::before {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: var(--design-spacing-lg);
+  block-size: var(--diagram-connector-width);
+  background: var(--color-hairline-strong);
+  content: "";
+}
+
+.organization-chart-page__tree-item > :is(.organization-chart-page__position-branch, .organization-chart-page__coordinator-branch) {
+  grid-column: 2;
+}
+
+.organization-chart-page__coordinator-branch {
+  display: grid;
+  min-inline-size: 0;
+  justify-items: center;
+}
+
+.organization-chart-page__position-branch {
+  --branch-columns: 3;
+  position: relative;
+  display: grid;
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.organization-chart-page__position-branch--four {
+  --branch-columns: 4;
+}
+
+.organization-chart-page__position-branch--one::before,
+.organization-chart-page__coordinator-branch > .organization-chart-page__position-branch--two::before {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: 50%;
+  block-size: var(--diagram-connector-width);
+  background: var(--color-hairline-strong);
+  content: "";
+}
+
+.organization-chart-page__position-branch-lines {
+  display: none;
+}
+
+.organization-chart-page__position-branch--one .organization-chart-page__position-branch-lines {
+  display: grid;
+  block-size: var(--design-spacing-lg);
+}
+
+.organization-chart-page__position-branch-lines span {
+  justify-self: center;
+  inline-size: var(--diagram-connector-width);
+  block-size: 100%;
+  background: var(--color-hairline-strong);
+}
+
+.organization-chart-page__position-branch-grid {
+  display: grid;
+  min-inline-size: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--design-spacing-md);
+}
+
+.organization-chart-page__position-branch:not(.organization-chart-page__position-branch--one) .organization-chart-page__position-branch-grid {
+  border-inline-start: var(--diagram-connector-width) solid var(--color-hairline-strong);
+}
+
+.organization-chart-page__position-branch-slot {
+  display: grid;
+  min-inline-size: 0;
+  grid-template-columns: var(--design-spacing-lg) minmax(0, 1fr);
+}
+
+.organization-chart-page__position-branch-slot::before {
+  grid-column: 1;
+  grid-row: 1;
+  inline-size: var(--design-spacing-lg);
+  block-size: var(--diagram-connector-width);
+  background: var(--color-hairline-strong);
+  content: "";
+}
+
+.organization-chart-page__position-branch-slot > .organization-chart-page__report {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.organization-chart-page__position-branch--one .organization-chart-page__position-branch-slot {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+}
+
+.organization-chart-page__position-branch--one .organization-chart-page__position-branch-slot::before {
+  display: none;
+}
+
+.organization-chart-page__position-branch--one .organization-chart-page__position-branch-slot > .organization-chart-page__report {
+  grid-column: 1;
+}
+
+.organization-chart-page__reports {
+  display: grid;
+  inline-size: 100%;
+  min-inline-size: 0;
+  justify-items: center;
+}
+
+.organization-chart-page__stem {
+  inline-size: var(--diagram-connector-width);
+  block-size: var(--design-spacing-lg);
+  background: var(--color-hairline-strong);
+}
+
+.organization-chart-page__reports h2 {
+  margin: 0 0 var(--design-spacing-lg);
+  text-align: center;
+}
+
+.organization-chart-page__branch {
+  display: none;
+}
+
+.organization-chart-page__reports-grid {
+  display: grid;
+  inline-size: 100%;
+  min-inline-size: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--design-spacing-md);
+}
+
+.organization-chart-page__report-slot {
+  display: grid;
+  min-inline-size: 0;
+  justify-items: center;
+}
+
+@media (min-width: 768px) {
+  .organization-chart-page__tree-item--two::before {
+    inline-size: calc(50% + var(--design-spacing-lg) / 2);
+  }
+
+  .organization-chart-page__coordinator-branch > .organization-chart-page__position-branch--two::before {
+    display: none;
+  }
+
+  .organization-chart-page__position-branch--two .organization-chart-page__position-branch-lines {
+    position: relative;
+    display: grid;
+    block-size: var(--design-spacing-lg);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .organization-chart-page__position-branch--two .organization-chart-page__position-branch-lines::before {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline: 25%;
+    block-size: var(--diagram-connector-width);
+    background: var(--color-hairline-strong);
+    content: "";
+  }
+
+  .organization-chart-page__position-branch.organization-chart-page__position-branch--two .organization-chart-page__position-branch-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0;
+    border-inline-start: 0;
+  }
+
+  .organization-chart-page__position-branch--two .organization-chart-page__position-branch-slot {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    padding-inline: var(--design-spacing-xs);
+  }
+
+  .organization-chart-page__position-branch--two .organization-chart-page__position-branch-slot::before {
+    display: none;
+  }
+
+  .organization-chart-page__position-branch--two .organization-chart-page__position-branch-slot > .organization-chart-page__report {
+    grid-column: 1;
+  }
+}
+
+@media (min-width: 1080px) {
+  .organization-chart-page__tree-item:not(.organization-chart-page__tree-item--two)::before {
+    inline-size: calc(50% + var(--design-spacing-lg) / 2);
+  }
+
+  .organization-chart-page__position-branch--one::before {
+    display: none;
+  }
+
+  .organization-chart-page__position-branch:is(.organization-chart-page__position-branch--three, .organization-chart-page__position-branch--four) .organization-chart-page__position-branch-lines {
+    position: relative;
+    display: grid;
+    block-size: var(--design-spacing-lg);
+  }
+
+  .organization-chart-page__position-branch:is(.organization-chart-page__position-branch--three, .organization-chart-page__position-branch--four) .organization-chart-page__position-branch-lines,
+  .organization-chart-page__position-branch:is(.organization-chart-page__position-branch--three, .organization-chart-page__position-branch--four) .organization-chart-page__position-branch-grid {
+    grid-template-columns: repeat(var(--branch-columns), minmax(0, 1fr));
+  }
+
+  .organization-chart-page__position-branch:is(.organization-chart-page__position-branch--three, .organization-chart-page__position-branch--four) .organization-chart-page__position-branch-lines::before {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline: calc(100% / (var(--branch-columns) * 2));
+    block-size: var(--diagram-connector-width);
+    background: var(--color-hairline-strong);
+    content: "";
+  }
+
+  .organization-chart-page__position-branch:is(.organization-chart-page__position-branch--three, .organization-chart-page__position-branch--four) .organization-chart-page__position-branch-grid {
+    border-inline-start: 0;
+    gap: 0;
+  }
+
+  .organization-chart-page__position-branch:is(.organization-chart-page__position-branch--three, .organization-chart-page__position-branch--four) .organization-chart-page__position-branch-slot {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    padding-inline: var(--design-spacing-xs);
+  }
+
+  .organization-chart-page__position-branch:is(.organization-chart-page__position-branch--three, .organization-chart-page__position-branch--four) .organization-chart-page__position-branch-slot::before {
+    display: none;
+  }
+
+  .organization-chart-page__position-branch:is(.organization-chart-page__position-branch--three, .organization-chart-page__position-branch--four) .organization-chart-page__position-branch-slot > .organization-chart-page__report {
+    grid-column: 1;
+  }
+
+  .organization-chart-page__reports h2 {
+    position: absolute;
+    inline-size: var(--border-width);
+    block-size: var(--border-width);
+    margin: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .organization-chart-page__branch {
+    position: relative;
+    display: grid;
+    inline-size: 100%;
+    block-size: var(--design-spacing-lg);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .organization-chart-page__branch::before {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline: calc(100% / 6);
+    block-size: var(--diagram-connector-width);
+    background: var(--color-hairline-strong);
+    content: "";
+  }
+
+  .organization-chart-page__branch span {
+    justify-self: center;
+    inline-size: var(--diagram-connector-width);
+    block-size: 100%;
+    background: var(--color-hairline-strong);
+  }
+
+  .organization-chart-page__reports-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+  }
+
+  .organization-chart-page__report-slot {
+    padding-inline: var(--design-spacing-xs);
+  }
+}

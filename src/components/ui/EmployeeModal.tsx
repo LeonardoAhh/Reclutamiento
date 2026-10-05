@@ -169,7 +169,9 @@ export function EmployeeModal({
   const vacancySelectOptions = useMemo(() => {
     return vacancyOptions.map((vacancy, index) => ({
       value: index.toString(),
-      label: [toNaturalCase(vacancy.puesto), vacancy.area, vacancy.seccion].filter(Boolean).join(' · '),
+      label: [toNaturalCase(vacancy.puesto), toNaturalCase(vacancy.seccion)]
+        .filter(Boolean)
+        .join(' · '),
     }));
   }, [vacancyOptions]);
 
@@ -403,7 +405,7 @@ export function EmployeeModal({
               setForm({ ...form, area: val, seccion: "", puesto: "" });
               setTouchedAdd(t => ({ ...t, area: true, seccion: false, puesto: false }));
             }}
-            options={areas.map((a) => ({ value: a, label: a }))}
+            options={areas.map((a) => ({ value: a, label: toNaturalCase(a) }))}
             placeholder="Seleccione área…"
           />
           {touchedAdd.area && errorsAdd.area && <span className="form-error-text">{errorsAdd.area}</span>}
@@ -417,7 +419,7 @@ export function EmployeeModal({
               setForm({ ...form, seccion: val, puesto: "" });
               setTouchedAdd(t => ({ ...t, seccion: true, puesto: false }));
             }}
-            options={sectionsForArea.map((s) => ({ value: s, label: s }))}
+            options={sectionsForArea.map((s) => ({ value: s, label: toNaturalCase(s) }))}
             placeholder="Seleccione sección…"
             disabled={!form.area}
           />
@@ -433,7 +435,7 @@ export function EmployeeModal({
                 setForm({ ...form, puesto: val });
                 setTouchedAdd(t => ({ ...t, puesto: true }));
               }}
-              options={puestosForSection.map((p) => ({ value: p, label: p }))}
+              options={puestosForSection.map((p) => ({ value: p, label: toNaturalCase(p) }))}
               placeholder="Seleccione puesto…"
               disabled={!form.seccion}
             />
@@ -487,6 +489,12 @@ export function EmployeeModal({
       <CustomSelect
         id="emp-vacancy"
         value={selectedVacancyIndex.toString()}
+        customTrigger={
+          <span className="employee-modal__vacancy-value" title={vacancySelectOptions[selectedVacancyIndex]?.label}>
+            {vacancySelectOptions[selectedVacancyIndex]?.label ?? "Seleccione puesto…"}
+          </span>
+        }
+        triggerAppearance="control"
         onChange={(val) => {
           const idx = parseInt(val);
           setSelectedVacancyIndex(idx);

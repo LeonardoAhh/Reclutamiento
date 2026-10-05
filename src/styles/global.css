@@ -355,6 +355,8 @@
   --shadow-focus: 0 0 0 var(--focus-ring-width) var(--color-focus);
   --focus-ring-width: 2px;
   --focus-ring-offset: 0;
+  /* Softens the boundary between decorative media and card content. */
+  --blur-media-transition: 4px;
 
   /* ── Transitions ─────────────────────────────────────────────── */
   --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
@@ -389,6 +391,8 @@
   /* Diagramas: espacio para nodos y conectores legibles con movimiento pausado. */
   --diagram-stage-min-block-size: 24rem;
   --diagram-connector-width: 2px;
+  /* Ancho máximo compartido de los puestos del organigrama. */
+  --diagram-node-max-inline-size: 18rem;
   --auth-form-max-inline-size: 28rem;
   --feature-result-card-min: 34rem;
   --feature-maintenance-card-max-inline-size: var(--modal-inline-size-sm);

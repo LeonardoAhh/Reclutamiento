@@ -1,5 +1,6 @@
 import { Filter, X } from 'lucide-react';
 import { CustomSelect } from '@/components/ui/CustomSelect';
+import { toNaturalCase } from '@/lib/utils';
 import './BajasFilters.css';
 
 interface BajasFiltersProps {
@@ -71,7 +72,7 @@ export function BajasFilters({
           id="filter-puesto"
           value={puestoFilter}
           onChange={onPuestoChange}
-          options={puestosForArea.map((p) => ({ value: p, label: p }))}
+          options={puestosForArea.map((p) => ({ value: p, label: toNaturalCase(p) }))}
           placeholder="Todos los puestos"
           disabled={puestosForArea.length === 0}
         />

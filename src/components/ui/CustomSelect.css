@@ -2,6 +2,7 @@
   display: inline-block;
   min-width: 0;
   width: 100%;
+  max-width: 100%;
 }
 
 /* Radix compensa la barra al bloquear el scroll, pero el lienzo ya reserva
@@ -16,7 +17,10 @@ body[data-scroll-locked]:has(.custom-select-dropdown) {
   justify-content: space-between;
   gap: var(--design-spacing-xs);
   min-block-size: var(--touch-target-min);
+  min-width: 0;
   width: 100%;
+  max-width: 100%;
+  overflow: hidden;
   padding: var(--control-padding-y) var(--control-padding-x);
   border: var(--border-width) solid var(--color-control-border);
   border-radius: var(--rounded-md);
@@ -29,10 +33,15 @@ body[data-scroll-locked]:has(.custom-select-dropdown) {
   letter-spacing: var(--type-body-md-tracking);
   text-align: left;
   cursor: pointer;
+  flex-wrap: nowrap;
   transition:
     border-color var(--transition-fast),
     box-shadow var(--transition-fast),
     background-color var(--transition-fast);
+}
+
+.custom-select-trigger > * {
+  min-width: 0;
 }
 
 .custom-select-trigger:hover:not(:focus-visible) {
@@ -73,10 +82,16 @@ body[data-scroll-locked]:has(.custom-select-dropdown) {
 }
 
 .custom-select-value {
+  display: block;
   flex: 1 1 auto;
+  flex-shrink: 1;
   min-width: 0;
-  overflow-wrap: anywhere;
-  white-space: normal;
+  max-width: 100%;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: inherit;
 }
 
 .custom-select-icon,
@@ -84,6 +99,7 @@ body[data-scroll-locked]:has(.custom-select-dropdown) {
   inline-size: var(--icon-size-sm);
   block-size: var(--icon-size-sm);
   flex: 0 0 auto;
+  flex-shrink: 0;
 }
 
 .custom-select-icon {
@@ -162,8 +178,14 @@ body[data-scroll-locked]:has(.custom-select-dropdown) {
 }
 
 .custom-select-option-label {
+  display: block;
   min-width: 0;
-  overflow-wrap: anywhere;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: inherit;
+  max-width: 100%;
 }
 
 .custom-select-check {

@@ -4,6 +4,7 @@ import { Modal } from './Modal';
 import { FormWizard } from './FormWizard';
 import { CustomSelect, type Option } from './CustomSelect';
 import { usePositions } from '@/lib/positions';
+import { toNaturalCase } from '@/lib/utils';
 import { hasStarliteCompanion } from '@/lib/positionCatalog';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from '@/lib/notify';
@@ -53,7 +54,9 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
         .filter((p) => p.area === area && p.seccion === seccion)
         .map((p) => p.puesto)
     );
-    return Array.from(set).map((p) => ({ value: p, label: p })).sort(byLabel);
+    return Array.from(set)
+      .map((p) => ({ value: p, label: toNaturalCase(p) }))
+      .sort(byLabel);
   }, [positions, area, seccion]);
 
   const selected = useMemo(

@@ -28,6 +28,7 @@ import {
   DEFAULT_VACANCY_SLA_DAYS,
 } from '@/lib/types';
 import { usePositions } from '@/lib/positions';
+import { toNaturalCase } from '@/lib/utils';
 import {
   localTodayIso,
   localDateToIso,
@@ -305,7 +306,7 @@ export function VacancyModal({
           id="vac-puesto"
           value={form.puesto}
           onChange={(val) => setForm({ ...form, puesto: val })}
-          options={puestosForSection.map((p) => ({ value: p, label: p }))}
+          options={puestosForSection.map((p) => ({ value: p, label: toNaturalCase(p) }))}
           placeholder="Seleccione puesto…"
           disabled={!form.seccion}
         />

@@ -2,6 +2,7 @@ import { useEffect, useId, useMemo, useState } from "react";
 import { CircleAlert, CircleCheckBig, Trash2, UserRoundPlus } from "lucide-react";
 import type { Employee } from "@/lib/types";
 import { usePositions } from "@/lib/positions";
+import { toNaturalCase } from "@/lib/utils";
 import { localTodayIso } from "@/lib/dates";
 import {
   TRANSPORTE_NA,
@@ -253,7 +254,7 @@ export function EmployeeSheet({
           id="emp-puesto"
           value={form.puesto}
           onChange={(val) => setForm({ ...form, puesto: val })}
-          options={puestosForSection.map((p) => ({ value: p, label: p }))}
+          options={puestosForSection.map((p) => ({ value: p, label: toNaturalCase(p) }))}
           placeholder="Seleccione puesto…"
           disabled={!form.seccion}
         />

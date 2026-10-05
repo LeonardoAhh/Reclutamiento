@@ -5,7 +5,7 @@ import type { Candidate, CandidateStatus } from '@/lib/types';
 import { CANDIDATE_STATUSES, CANDIDATE_STATUS_LABEL } from '@/lib/types';
 import { usePositions } from '@/lib/positions';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
-import { calculatePositionCoverage, formatPhoneNumber } from '@/lib/utils';
+import { calculatePositionCoverage, formatPhoneNumber, toNaturalCase } from '@/lib/utils';
 import { formatReadableDate, isoToLocalDateString, localDateToIso, localTodayIso } from '@/lib/dates';
 import { Modal } from './Modal';
 import { DeleteConfirmModal } from './DeleteConfirmModal';
@@ -528,7 +528,7 @@ const fieldsPosicion = (
             setForm({ ...form, puesto: val });
             setTouched({ ...touched, puesto: true });
           }}
-          options={puestosForSection.map((p) => ({ value: p, label: p }))}
+          options={puestosForSection.map((p) => ({ value: p, label: toNaturalCase(p) }))}
           placeholder="Seleccionar…"
           disabled={!form.seccion || (isEdit && !isAdmin)}
           aria-invalid={touched.puesto && !!errors.puesto}

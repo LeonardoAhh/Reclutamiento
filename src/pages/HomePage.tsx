@@ -1,10 +1,12 @@
 import { useId, useLayoutEffect, useRef, useState, type FormEvent } from "react";
-import { ArrowUpRight, Brain, CalendarDays, ChevronLeft, ChevronRight, RotateCcw, Scale, ShieldCheck, UsersRound } from "lucide-react";
+import { ArrowUpRight, Brain, CalendarDays, ChevronLeft, ChevronRight, Network, RotateCcw, Scale, ShieldCheck, UsersRound } from "lucide-react";
 import { validation, wave } from "robot-toast/robots";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { ORGANIZATION_CHART_PATH } from "@/components/layout/navigation";
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { Calendar } from "@/components/ui/Calendar";
 import { BrandMark } from "@/components/ui/BrandMark";
+import { Badge } from "@/components/ui/Badge";
 import { Modal } from "@/components/ui/Modal";
 import { useAuth } from "@/hooks/useAuth";
 import { formatCompactDateRange, formatEmploymentTenure, formatReadableDate, localTodayIso, localDateToIso, isoToLocalDateString, TZ_MX } from "@/lib/dates";
@@ -317,6 +319,7 @@ export function HomePage() {
         ) : null}
         <div className="home-page__hero-footer">
           <p className="home-page__message">{motivation}</p>
+          <div className="home-page__hero-actions">
           {!canReviewRequests && (
             <button
               type="button"
@@ -326,12 +329,21 @@ export function HomePage() {
               onClick={openLeavePolicy}
             >
               <CalendarDays aria-hidden="true" />
-              {LEAVE_POLICY_NOTICE.buttonLabel}
+              <span>Solicitar</span>
             </button>
           )}
           {canReviewRequests && (
-            <Link className="btn-secondary home-page__leave-action" to={LEAVE_REQUESTS_PATH}>View</Link>
+            <Link className="btn-secondary home-page__leave-action" to={LEAVE_REQUESTS_PATH}>
+              <CalendarDays aria-hidden="true" />
+              <span>Gestionar</span>
+            </Link>
           )}
+          <Link className="btn-secondary home-page__organization-action" to={ORGANIZATION_CHART_PATH} aria-label="Organigrama" title="Organigrama">
+            <Network aria-hidden="true" />
+            <span className="home-page__organization-action-label">Organigrama</span>
+            <Badge variant="neutral-solid" className="home-page__organization-badge">Nuevo</Badge>
+          </Link>
+          </div>
         </div>
       </section>
 

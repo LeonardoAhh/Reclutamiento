@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { CircleAlert, CircleCheckBig, SquarePen, PenLine } from 'lucide-react';
 import type { Employee } from '@/lib/types';
 import { usePositions } from '@/lib/positions';
+import { toNaturalCase } from '@/lib/utils';
 import { localTodayIso } from '@/lib/dates';
 import { useTeamDirectory } from '@/features/team/TeamProvider';
 import { recruiterOptions } from '@/features/team/types';
@@ -232,7 +233,7 @@ export function EditEmployeeModal({
               id="edit-emp-puesto"
               value={form.puesto}
               onChange={(val) => setForm({ ...form, puesto: val })}
-              options={puestosForSection.map((p) => ({ value: p, label: p }))}
+              options={puestosForSection.map((p) => ({ value: p, label: toNaturalCase(p) }))}
               placeholder="Seleccione puesto…"
               disabled={!form.seccion}
             />

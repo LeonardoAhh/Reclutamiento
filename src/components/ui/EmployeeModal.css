@@ -87,9 +87,21 @@
 /* Texto largo en selects: ellipsis (no rompe layout) */
 .employee-modal .form-group [class*="CustomSelect"] [class*="trigger"],
 .employee-modal .form-group [class*="CustomSelect"] > div[role="button"] {
-  text-overflow: ellipsis;
+  min-width: 0;
+  max-width: 100%;
   overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.employee-modal__vacancy-value {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+  min-width: 0;
 }
 
 /* ── Baja flow ── */

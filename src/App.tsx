@@ -26,7 +26,7 @@ import {
 } from '@/lib/plantillaNavigation';
 import { CONFIGURACION_ROUTES } from '@/lib/configuracionNavigation';
 import { DATA_UPDATE_PATH } from '@/features/data-update/types';
-import { ACCOUNT_PATH, HOME_PATH, LOGOUT_PATH, TEAM_PATH } from '@/components/layout/navigation';
+import { ACCOUNT_PATH, HOME_PATH, LOGOUT_PATH, ORGANIZATION_CHART_PATH, TEAM_PATH } from '@/components/layout/navigation';
 import { LogoutPage } from '@/features/account/LogoutPage';
 import { CAREER_JOURNEY_ENABLED, CAREER_PATH } from '@/features/career/types';
 import { LEAVE_REQUESTS_PATH } from '@/features/leave/requests';
@@ -83,6 +83,11 @@ const LeaveRequestsPage = lazy(() => import('@/pages/LeaveRequestsPage').then(({
 const HomePage = lazy(() =>
   import('@/pages/HomePage').then(({ HomePage }) => ({
     default: HomePage,
+  })),
+);
+const OrganizationChartPage = lazy(() =>
+  import('@/pages/OrganizationChartPage').then(({ OrganizationChartPage }) => ({
+    default: OrganizationChartPage,
   })),
 );
 function ProtectedContent() {
@@ -173,6 +178,7 @@ function App() {
               <Route path={LOGOUT_PATH} element={<AuthGuard><LogoutPage /></AuthGuard>} />
               <Route element={<ProtectedShell />}>
                 <Route path={HOME_PATH} element={<HomePage />} />
+                <Route path={ORGANIZATION_CHART_PATH} element={<OrganizationChartPage />} />
                 <Route path={LEAVE_REQUESTS_PATH} element={<LeaveRequestsPage />} />
                 <Route path={CAREER_PATH} element={CAREER_JOURNEY_ENABLED
                   ? <CareerPage /> : <Navigate to={HOME_PATH} replace />} />

@@ -2,6 +2,7 @@ import { useEffect, useId, useMemo, useState } from 'react';
 import { CircleArrowUp, CircleCheckBig, ListChecks, Plus } from 'lucide-react';
 import type { Employee } from '@/lib/types';
 import { usePositions, type CreatePositionResult } from '@/lib/positions';
+import { toNaturalCase } from '@/lib/utils';
 import { Modal } from './Modal';
 import { CustomSelect } from './CustomSelect';
 import './PromoteEmployeeModal.css';
@@ -422,7 +423,7 @@ function ExistingFields({
           id="promote-existing-puesto"
           value={existing.puesto}
           onChange={onPuesto}
-          options={puestos.map((p) => ({ value: p, label: p }))}
+          options={puestos.map((p) => ({ value: p, label: toNaturalCase(p) }))}
           placeholder="Seleccione puesto…"
           disabled={!existing.seccion}
           aria-describedby={
