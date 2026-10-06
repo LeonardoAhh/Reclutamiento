@@ -1,8 +1,8 @@
 {
-  "version": "0.2.40",
+  "version": "0.2.41.1",
   "fecha": "2026-10-05",
   "nivel": "success",
   "titulo": "We are ready!",
-  "mensaje": "New features are available.",
+  "mensaje": "Transport route update",
   "notificar": true
 }
