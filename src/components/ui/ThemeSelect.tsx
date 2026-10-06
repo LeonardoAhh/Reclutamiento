@@ -1,5 +1,5 @@
 import { useId } from 'react';
-import { Moon, Sun } from 'lucide-react';
+import { Eclipse } from 'lucide-react';
 import { useTheme } from '@/hooks/useTheme';
 import './ThemeSelect.css';
 
@@ -20,8 +20,7 @@ export function ThemeSelect() {
         aria-describedby={storageError ? `${id}-storage` : undefined}
         onClick={() => setPreference(nextTheme)}
       >
-        <Sun className="theme-select__sun" aria-hidden="true" />
-        <Moon className="theme-select__moon" aria-hidden="true" />
+        <Eclipse aria-hidden="true" />
       </button>
       {storageError && (
         <p id={`${id}-storage`} className="theme-select__notice" role="status">

@@ -23,6 +23,7 @@ const FEATURE_PATHS: Record<FeatureId, string> = {
 };
 
 export const ADMINISTRATION_PATH = FEATURE_PATHS.indicadores;
+export const ROUTE_DAY_EMPLOYEES_PATH = '/rutas/empleados';
 
 interface FeatureItem {
   id: FeatureId;

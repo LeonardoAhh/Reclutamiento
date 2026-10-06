@@ -392,7 +392,7 @@
   --diagram-stage-min-block-size: 24rem;
   --diagram-connector-width: 2px;
   /* Ancho máximo compartido de los puestos del organigrama. */
-  --diagram-node-max-inline-size: 18rem;
+  --diagram-node-max-inline-size: 16rem;
   --auth-form-max-inline-size: 28rem;
   --feature-result-card-min: 34rem;
   --feature-maintenance-card-max-inline-size: var(--modal-inline-size-sm);

@@ -71,7 +71,7 @@ function AuthenticatedTeamProvider({ children }: { children: ReactNode }) {
     <p role="alert">{error}</p>
     <button type="button" className="btn-primary" onClick={() => void refresh().catch(() => {})}>Reintentar</button>
   </main>;
-  if (!members) return <TransitionLoader title="Cargando equipo…" />;
+  if (!members) return <TransitionLoader title="Cargando pagina..." />;
   return <TeamContext.Provider value={value}>{children}</TeamContext.Provider>;
 }
 

@@ -6,6 +6,8 @@ import {
 
 export type { EmpleadoRuta } from '@/lib/rutas-data';
 
+export const ROUTE_DAYS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'] as const;
+
 /** Calendario estándar por turno (días que se trabajan). */
 const DEFAULT_SCHEDULE: Record<string, string[]> = {
   '1': ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],

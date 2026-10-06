@@ -630,8 +630,10 @@
   border: var(--border-width) solid var(--color-hairline-soft);
   border-radius: var(--rounded-md);
   background: var(--color-surface);
+  color: var(--color-ink);
   font-family: var(--font-body);
   text-align: left;
+  text-decoration: none;
   cursor: pointer;
   transition: border-color var(--transition-fast), transform var(--transition-fast);
 }
@@ -639,6 +641,7 @@
 .daily-cards__card:hover {
   border-color: var(--color-hairline-strong);
   background: var(--color-canvas);
+  color: var(--color-ink);
 }
 
 .daily-cards__card:active {

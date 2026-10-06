@@ -24,26 +24,14 @@
 }
 
 .theme-select__trigger svg {
-  grid-area: 1 / 1;
   inline-size: var(--icon-size-md);
   block-size: var(--icon-size-md);
+  transform: rotate(0);
   transition: transform var(--transition-fast);
 }
 
-.theme-select__sun {
-  transform: rotate(0) scale(1);
-}
-
-.theme-select__moon {
-  transform: rotate(90deg) scale(0);
-}
-
-.theme-select__trigger[data-mode="dark"] .theme-select__sun {
-  transform: rotate(-90deg) scale(0);
-}
-
-.theme-select__trigger[data-mode="dark"] .theme-select__moon {
-  transform: rotate(0) scale(1);
+.theme-select__trigger[data-mode="dark"] svg {
+  transform: rotate(180deg);
 }
 
 .theme-select__notice {

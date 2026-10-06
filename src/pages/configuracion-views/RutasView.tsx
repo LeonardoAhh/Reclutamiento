@@ -1,4 +1,5 @@
 import { useState, useRef, useMemo, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import {
   ArrowDownRight,
   ArrowLeftRight,
@@ -18,10 +19,11 @@ import { getShortName } from "@/lib/names";
 import { formatReadableDate } from "@/lib/dates";
 import {
   useRutas,
+  ROUTE_DAYS,
   RutaAgrupada,
   type EmpleadoRuta,
 } from "@/hooks/useRutas";
-import { RutaDayEmployeesModal } from "@/components/ui/RutaDayEmployeesModal";
+import { ROUTE_DAY_EMPLOYEES_PATH } from "@/lib/configuracionNavigation";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { BackButton } from "@/components/ui/BackButton";
 
@@ -261,36 +263,26 @@ function ShiftBars({
 /* Daily capacity */
 interface DailyCapacityBarsProps {
   capacityPerDay: Record<string, number>;
+  routeName: string;
+  searchTerm: string;
   animKey: number;
-  onSelectDay: (day: string) => void;
 }
 
 function DailyCapacityBars({
   capacityPerDay,
+  routeName,
+  searchTerm,
   animKey,
-  onSelectDay,
 }: DailyCapacityBarsProps) {
-  const DAYS_ORDER = [
-    "Lunes",
-    "Martes",
-    "Miércoles",
-    "Jueves",
-    "Viernes",
-    "Sábado",
-    "Domingo",
-  ];
-
   return (
     <div className="daily-cards" key={`daily-${animKey}`}>
-      {DAYS_ORDER.map((day) => {
+      {ROUTE_DAYS.map((day) => {
         const count = capacityPerDay[day] || 0;
         return (
-          <button
+          <Link
             key={day}
-            type="button"
             className="daily-cards__card"
-            onClick={() => onSelectDay(day)}
-            aria-haspopup="dialog"
+            to={`${ROUTE_DAY_EMPLOYEES_PATH}?${new URLSearchParams({ ruta: routeName, dia: day, ...(searchTerm ? { buscar: searchTerm } : {}) })}`}
             aria-label={`Ver ${count} empleados de la ruta el ${day}`}
           >
             <span className="daily-cards__day">{day}</span>
@@ -300,7 +292,7 @@ function DailyCapacityBars({
                 <span className="daily-cards__value">{count}</span>
               </div>
             </div>
-          </button>
+          </Link>
         );
       })}
     </div>
@@ -387,19 +379,19 @@ function RouteSearchMatches({ employees }: RouteSearchMatchesProps) {
 interface RutaDetailProps {
   ruta: RutaAgrupada;
   searchMatches: EmpleadoRuta[];
+  searchTerm: string;
   animKey: number;
   hasComparison: boolean;
   comparisonDate: string | null;
-  onSelectDay: (day: string) => void;
 }
 
 function RutaDetail({
   ruta,
   searchMatches,
+  searchTerm,
   animKey,
   hasComparison,
   comparisonDate,
-  onSelectDay,
 }: RutaDetailProps) {
   return (
     <div className="ruta-detail" key={animKey}>
@@ -446,8 +438,9 @@ function RutaDetail({
             </h2>
             <DailyCapacityBars
               capacityPerDay={ruta.capacityPerDay}
+              routeName={ruta.nombreRuta}
+              searchTerm={searchTerm}
               animKey={animKey}
-              onSelectDay={onSelectDay}
             />
           </section>
         </div>
@@ -461,10 +454,10 @@ function RutaDetail({
 
 export function RutasView() {
   const { rutas, lastUpdated, hasComparison, loading, errorMsg } = useRutas();
+  const location = useLocation();
   const [selectedRuta, setSelectedRuta] = useState<RutaAgrupada | null>(null);
-  const [selectedDia, setSelectedDia] = useState<string | null>(null);
   const [animKey, setAnimKey] = useState(0);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(() => new URLSearchParams(location.search).get("buscar") ?? "");
   
   /**
    * mobileView controls which panel is shown on small screens.
@@ -474,6 +467,15 @@ export function RutasView() {
   const listRef = useRef<HTMLUListElement>(null);
   const detailRef = useRef<HTMLElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (loading || errorMsg) return;
+    const routeName = new URLSearchParams(location.search).get("ruta");
+    const route = rutas.find(item => item.nombreRuta === routeName);
+    if (!route) return;
+    setSelectedRuta(route);
+    setMobileView("detail");
+  }, [loading, errorMsg, location.search, rutas]);
 
   // Filter routes based on search term (by employee number or name)
   const searchNorm = searchTerm.trim().toLowerCase();
@@ -514,6 +516,8 @@ export function RutasView() {
   // Auto-select first matching route when search changes
   useEffect(() => {
     if (searchNorm && filteredRutas.length > 0) {
+      const routeFromUrl = new URLSearchParams(location.search).get("ruta");
+      if (!selectedRuta && filteredRutas.some(item => item.nombreRuta === routeFromUrl)) return;
       const currentStillVisible =
         selectedRuta && searchMatchesByRoute.has(selectedRuta.nombreRuta);
       if (!currentStillVisible) {
@@ -521,7 +525,7 @@ export function RutasView() {
         setAnimKey((k) => k + 1);
       }
     }
-  }, [searchNorm, filteredRutas, searchMatchesByRoute]);
+  }, [searchNorm, filteredRutas, searchMatchesByRoute, location.search, selectedRuta]);
 
   function handleSelect(ruta: RutaAgrupada) {
     setSelectedRuta(ruta);
@@ -753,10 +757,10 @@ export function RutasView() {
                   ? searchMatchesByRoute.get(selectedRuta.nombreRuta) ?? []
                   : []
               }
+              searchTerm={searchTerm}
               animKey={animKey}
               hasComparison={hasComparison}
               comparisonDate={lastUpdated}
-              onSelectDay={setSelectedDia}
             />
           ) : (
             <Placeholder />
@@ -764,12 +768,6 @@ export function RutasView() {
         </section>
       </div>
 
-      <RutaDayEmployeesModal
-        isOpen={selectedDia !== null}
-        onClose={() => setSelectedDia(null)}
-        ruta={selectedRuta}
-        dia={selectedDia}
-      />
 
 
 

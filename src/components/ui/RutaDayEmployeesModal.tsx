@@ -1,37 +1,8 @@
-import { useMemo } from 'react';
-import { CalendarDays, UsersRound } from 'lucide-react';
-import { Modal } from '@/components/ui/Modal';
-import {
-  getEmpleadosPorDia,
-  type EmpleadoRuta,
-  type RutaAgrupada,
-} from '@/hooks/useRutas';
+import { useEffect, useMemo, useRef } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
+import { getEmpleadosPorDia, ROUTE_DAYS, useRutas, type EmpleadoRuta } from '@/hooks/useRutas';
 import './RutaDayEmployeesModal.css';
-
-interface RutaDayEmployeesModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  ruta: RutaAgrupada | null;
-  dia: string | null;
-}
-
-function EmployeeRows({ employees }: { employees: EmpleadoRuta[] }) {
-  return (
-    <>
-      {employees.map((emp) => (
-        <tr key={emp.numeroEmpleado}>
-          <td className="ruta-day-modal__num">{emp.numeroEmpleado}</td>
-          <td className="ruta-day-modal__name">{emp.nombre}</td>
-          <td className="ruta-day-modal__seccion">
-            {emp.seccion ?? (
-              <span className="ruta-day-modal__muted">Sin sección</span>
-            )}
-          </td>
-        </tr>
-      ))}
-    </>
-  );
-}
 
 function compareBySeccion(a: EmpleadoRuta, b: EmpleadoRuta): number {
   const secA = a.seccion?.trim();
@@ -42,58 +13,78 @@ function compareBySeccion(a: EmpleadoRuta, b: EmpleadoRuta): number {
   return secA.localeCompare(secB) || a.nombre.localeCompare(b.nombre);
 }
 
-export function RutaDayEmployeesModal({
-  isOpen,
-  onClose,
-  ruta,
-  dia,
-}: RutaDayEmployeesModalProps) {
+export function RutaDayEmployeesPage() {
+  const [params] = useSearchParams();
+  const routeName = params.get('ruta');
+  const day = params.get('dia');
+  const searchTerm = params.get('buscar');
+  const headingRef = useRef<HTMLAnchorElement>(null);
+  const { rutas, loading, errorMsg } = useRutas();
+  const route = rutas.find(item => item.nombreRuta === routeName);
+  const validDay = ROUTE_DAYS.find(item => item === day);
   const employees = useMemo(() => {
-    if (!ruta || !dia) return [];
-    return [...getEmpleadosPorDia(ruta.empleados, dia)].sort(compareBySeccion);
-  }, [ruta, dia]);
+    if (!route || !validDay) return [];
+    return [...getEmpleadosPorDia(route.empleados, validDay)].sort(compareBySeccion);
+  }, [route, validDay]);
+  const backHref = routeName ? `/rutas?${new URLSearchParams({ ruta: routeName, ...(searchTerm ? { buscar: searchTerm } : {}) })}` : '/rutas';
+  const title = validDay ? `Empleados del ${validDay.toLowerCase()}` : 'Empleados por día';
 
-  if (!ruta || !dia) return null;
-
-  const routeCode = ruta.nombreRuta.split('-')[0].trim();
+  useEffect(() => {
+    headingRef.current?.focus();
+  }, [routeName, day]);
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      icon={<CalendarDays size={20} aria-hidden="true" />}
-      title={dia}
-      className="ruta-day-modal"
-      size="lg"
-    >
-      <div className="modal-body ruta-day-modal__body">
-        {employees.length === 0 ? (
-          <div className="ruta-day-modal__empty">
-            <UsersRound size={32} aria-hidden="true" />
-            <p className="type-body-sm">
-              No hay empleados asignados a esta ruta el día {dia.toLowerCase()}.
-            </p>
-          </div>
-        ) : (
-          <div className="ruta-day-modal__table-wrap">
-            <table
-              className="ruta-day-modal__table"
-              aria-label={`Empleados de la ruta ${routeCode} el ${dia.toLowerCase()}`}
-            >
-              <thead>
-                <tr>
-                  <th scope="col">Número</th>
-                  <th scope="col">Nombre</th>
-                  <th scope="col">Sección</th>
+    <main className="ruta-day-page container" aria-labelledby="ruta-day-page-title">
+      <header className="ruta-day-page__header">
+        <h1 id="ruta-day-page-title" className="app-page-title ruta-day-page__heading">
+          <Link ref={headingRef} className="ruta-day-page__title-link" to={backHref} aria-label={`Volver a Rutas desde ${title}`}>
+            <ArrowLeft aria-hidden="true" />
+            <span>{title}</span>
+          </Link>
+        </h1>
+        {route && <p className="type-body-md">{route.nombreRuta}</p>}
+      </header>
+
+      {loading ? (
+        <p role="status">Cargando empleados de la ruta…</p>
+      ) : errorMsg ? (
+        <div role="alert" className="ruta-day-page__notice">
+          <p>No se pudieron cargar los empleados de esta ruta.</p>
+          <p>{errorMsg}</p>
+        </div>
+      ) : !route || !validDay ? (
+        <div className="ruta-day-page__notice">
+          <p>La ruta o el día ya no están disponibles.</p>
+          <Link className="btn-text" to="/rutas">Ver rutas disponibles</Link>
+        </div>
+      ) : employees.length === 0 ? (
+        <p className="ruta-day-page__notice">No hay empleados asignados a esta ruta el {validDay.toLowerCase()}.</p>
+      ) : (
+        <section aria-label={`Empleados de ${route.nombreRuta} el ${validDay.toLowerCase()}`}>
+          <table className="ruta-day-page__table">
+            <thead>
+              <tr>
+                <th scope="col">Número</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Sección</th>
+              </tr>
+            </thead>
+            <tbody>
+              {employees.map(emp => (
+                <tr key={emp.numeroEmpleado}>
+                  <td className="ruta-day-page__number">
+                    <span className="ruta-day-page__mobile-label" aria-hidden="true">Número </span>{emp.numeroEmpleado}
+                  </td>
+                  <th scope="row" className="ruta-day-page__name">{emp.nombre}</th>
+                  <td className="ruta-day-page__section">
+                    <span className="ruta-day-page__mobile-label" aria-hidden="true">Sección </span>{emp.seccion || 'Sin sección'}
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                <EmployeeRows employees={employees} />
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
-    </Modal>
+              ))}
+            </tbody>
+          </table>
+        </section>
+      )}
+    </main>
   );
 }

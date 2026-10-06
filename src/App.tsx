@@ -24,7 +24,8 @@ import {
   EMPLEADOS_PATH,
   PLANTILLA_PATH,
 } from '@/lib/plantillaNavigation';
-import { CONFIGURACION_ROUTES } from '@/lib/configuracionNavigation';
+import { CONFIGURACION_ROUTES, ROUTE_DAY_EMPLOYEES_PATH } from '@/lib/configuracionNavigation';
+import { RutaDayEmployeesPage } from '@/components/ui/RutaDayEmployeesModal';
 import { DATA_UPDATE_PATH } from '@/features/data-update/types';
 import { ACCOUNT_PATH, HOME_PATH, LOGOUT_PATH, ORGANIZATION_CHART_PATH, TEAM_PATH } from '@/components/layout/navigation';
 import { LogoutPage } from '@/features/account/LogoutPage';
@@ -165,7 +166,7 @@ function App() {
           <PWAStatus />
           <SystemUpdateNotification />
           <AppToaster />
-          <Suspense fallback={<TransitionLoader title="Cargando vista…" />}>
+          <Suspense fallback={<TransitionLoader title="Cargando pagina..." />}>
             <Routes>
               <Route
                 path="/login"
@@ -189,6 +190,7 @@ function App() {
                 <Route path="/bajas" element={<WithSupabaseData resources={EMPLOYEE_DATA}><Bajas /></WithSupabaseData>} />
                 <Route path={EMPLEADOS_PATH} element={<Navigate to={PLANTILLA_PATH} replace />} />
                 <Route path="/transporte" element={<Navigate to="/rutas" replace />} />
+                <Route path={ROUTE_DAY_EMPLOYEES_PATH} element={<RutaDayEmployeesPage />} />
                 <Route path="/asistencia" element={<Navigate to="/analisis" replace />} />
                 <Route path="/reportes" element={<ReporteDiario />} />
                 <Route path="/motivos-baja" element={<MotivosBaja />} />
