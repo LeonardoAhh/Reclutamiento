@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Check, Copy, LoaderCircle, Share2 } from "lucide-react";
 import { CANDIDATE_ACCESS_CARD_CONFIG } from "@/lib/constants";
 import { toast } from "@/lib/notify";
@@ -36,6 +37,8 @@ function isAbortError(error: unknown): boolean {
 }
 
 export function CandidateAccessCard({ data }: CandidateAccessCardProps) {
+  const { language } = useLanguage();
+  const en = language === 'en';
   const [imageBlob, setImageBlob] = useState<Blob | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(true);
@@ -66,7 +69,7 @@ export function CandidateAccessCard({ data }: CandidateAccessCardProps) {
       .catch((error: unknown) => {
         if (!active) return;
         setGenerationError(error instanceof Error
-          ? error.message : "No fue posible generar el pase.");
+          ? error.message : 'No fue posible generar el pase.');
       })
       .finally(() => {
         if (active) setIsGenerating(false);
@@ -99,9 +102,9 @@ export function CandidateAccessCard({ data }: CandidateAccessCardProps) {
     try {
       await copyImage(imageBlob);
       setCopied(true);
-      toast.success({ title: "Pase copiado", description: "Ya puedes pegar la imagen en un chat." });
+      toast.success({ title: en ? 'Pass copied' : 'Pase copiado', description: en ? 'You can now paste the image into a chat.' : 'Ya puedes pegar la imagen en un chat.' });
     } catch {
-      toast.error({ title: "No se pudo copiar", description: "Usa Compartir para enviarlo." });
+      toast.error({ title: en ? 'Could not copy' : 'No se pudo copiar', description: en ? 'Use Share to send it.' : 'Usa Compartir para enviarlo.' });
     }
   };
 
@@ -115,15 +118,15 @@ export function CandidateAccessCard({ data }: CandidateAccessCardProps) {
           files: [file],
           title: CANDIDATE_ACCESS_CARD_CONFIG.shareTitle,
         });
-        toast.success({ title: "Pase compartido" });
+        toast.success({ title: en ? 'Pass shared' : 'Pase compartido' });
         return;
       }
 
       downloadImage(imageBlob, filename);
-      toast.info({ title: "Pase descargado", description: "Puedes enviarlo desde tus archivos." });
+      toast.info({ title: en ? 'Pass downloaded' : 'Pase descargado', description: en ? 'You can send it from your files.' : 'Puedes enviarlo desde tus archivos.' });
     } catch (error: unknown) {
       if (!isAbortError(error)) {
-        toast.error({ title: "No se pudo compartir el pase" });
+        toast.error({ title: en ? 'Could not share the pass' : 'No se pudo compartir el pase' });
       }
     }
   };
@@ -144,9 +147,9 @@ export function CandidateAccessCard({ data }: CandidateAccessCardProps) {
   return (
     <section
       className="candidate-access-card"
-      aria-label="Vista previa del pase de entrevista"
+      aria-label={en ? 'Interview pass preview' : 'Vista previa del pase de entrevista'}
     >
-      <p className="candidate-access-card__hint">Compártelo con el candidato.</p>
+      <p className="candidate-access-card__hint">{en ? 'Share it with the candidate.' : 'Compártelo con el candidato.'}</p>
 
       <div className="candidate-access-card__preview" aria-busy={isGenerating}>
         {previewUrl ? (
@@ -160,17 +163,17 @@ export function CandidateAccessCard({ data }: CandidateAccessCardProps) {
                 aria-hidden="true"
               />
             )}
-            <span>{isGenerating ? "Generando pase…" : generationError || "Vista previa no disponible"}</span>
+            <span>{isGenerating ? (en ? 'Generating pass…' : 'Generando pase…') : (en && generationError === 'No fue posible generar el pase.' ? 'Could not generate the pass.' : generationError) || (en ? 'Preview unavailable' : 'Vista previa no disponible')}</span>
           </div>
         )}
       </div>
       <span className="sr-only" role="status" aria-live="polite">
-        {previewUrl ? "Pase listo para copiar o compartir." : ""}
+        {previewUrl ? (en ? 'Pass ready to copy or share.' : 'Pase listo para copiar o compartir.') : ''}
       </span>
 
       <footer
         className="candidate-access-card__actions"
-        aria-label="Acciones de la tarjeta"
+        aria-label={en ? 'Pass actions' : 'Acciones de la tarjeta'}
       >
         <button
           type="button"
@@ -181,7 +184,7 @@ export function CandidateAccessCard({ data }: CandidateAccessCardProps) {
           {copied
             ? <Check size="var(--icon-size-sm)" aria-hidden="true" />
             : <Copy size="var(--icon-size-sm)" aria-hidden="true" />}
-          {copied ? "Copiada" : "Copiar"}
+          {copied ? (en ? 'Copied' : 'Copiada') : (en ? 'Copy' : 'Copiar')}
         </button>
         <button
           type="button"
@@ -190,7 +193,7 @@ export function CandidateAccessCard({ data }: CandidateAccessCardProps) {
           disabled={!imageBlob}
         >
           <Share2 size="var(--icon-size-sm)" aria-hidden="true" />
-          Compartir
+          {en ? 'Share' : 'Compartir'}
         </button>
       </footer>
     </section>

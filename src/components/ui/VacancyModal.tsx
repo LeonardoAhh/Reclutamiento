@@ -41,6 +41,7 @@ import { FormWizard } from './FormWizard';
 import { CustomSelect } from './CustomSelect';
 import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
 import { useIsMobile } from '@/hooks/useIsMobile';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { CANDIDATE_SOURCES } from '@/lib/types';
 import './VacancyModal.css';
 
@@ -129,6 +130,8 @@ export function VacancyModal({
   onSave,
   onDelete,
 }: VacancyModalProps) {
+  const { language } = useLanguage();
+  const english = language === 'en';
   const { members } = useTeamDirectory();
   const [form, setForm] = useState<FormState>(() => emptyForm());
   const [submitting, setSubmitting] = useState(false);
@@ -605,9 +608,9 @@ export function VacancyModal({
         isError={!!errorMsg}
         errorText={errorMsg || undefined}
         errorMessageId="vacancy-submit-error"
-        idleText="Eliminar"
-        loadingText="Eliminando..."
-        successText="¡Eliminado!"
+        idleText={english ? 'Delete' : 'Eliminar'}
+        loadingText={english ? 'Deleting…' : 'Eliminando…'}
+        successText={english ? 'Deleted!' : '¡Eliminado!'}
         idleIcon={Trash2IconData}
         className="btn-danger"
         form="vacancy-form"
@@ -620,9 +623,9 @@ export function VacancyModal({
       isError={!!errorMsg}
       errorText={errorMsg || undefined}
       errorMessageId="vacancy-submit-error"
-      idleText={isAdd ? 'Crear' : 'Guardar'}
-      loadingText="Guardando..."
-      successText="¡Guardado!"
+      idleText={isAdd ? (english ? 'Create' : 'Crear') : (english ? 'Save' : 'Guardar')}
+      loadingText={english ? 'Saving…' : 'Guardando…'}
+      successText={english ? 'Saved!' : '¡Guardado!'}
       idleIcon={SaveIconData}
       className="btn-primary"
       disabled={!isFormValid}

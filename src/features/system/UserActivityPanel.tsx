@@ -1,29 +1,39 @@
 import { useEffect, useMemo, useState } from "react";
 import { Clock } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
-import { es } from "date-fns/locale";
+import { enUS, es } from "date-fns/locale";
 import { ButtonUtility } from "@/components/ui/ButtonUtility";
 import type { Profile } from "@/hooks/useAuth";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { subscribeOnlineUserIds } from "@/lib/presence";
 import { supabase } from "@/lib/supabase";
 import { listProfiles } from "@/lib/users";
 import "./UserActivityPanel.css";
 
-function formatLastAccess(value: string | null | undefined, now: number) {
-  if (!value) return "Sin acceso";
+function formatLastAccess(value: string | null | undefined, now: number, language: "es" | "en") {
+  if (!value) return language === "en" ? "No access" : "Sin acceso";
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "Desconocido";
+  if (Number.isNaN(date.getTime())) return language === "en" ? "Unknown" : "Desconocido";
 
   const safeDate = date.getTime() > now ? new Date(now) : date;
   const distance = formatDistanceToNow(safeDate, {
     addSuffix: true,
-    locale: es,
+    locale: language === "en" ? enUS : es,
   }).replace(/alrededor de |casi |más de /g, "");
 
   return distance.charAt(0).toUpperCase() + distance.slice(1);
 }
 
-function formatCompactLastAccess(lastAccess: string) {
+function formatCompactLastAccess(lastAccess: string, language: "es" | "en") {
+  if (language === "en") {
+    return lastAccess
+      .replace(/^about /i, "")
+      .replace(/ ago$/i, "")
+      .replace(/^less than a minute$/i, "<1 min")
+      .replace(/ minutes?$/, " min")
+      .replace(/ hours?$/, " h")
+      .replace(/ days?$/, " d");
+  }
   if (!lastAccess.startsWith("Hace ")) return lastAccess;
 
   return lastAccess
@@ -35,6 +45,8 @@ function formatCompactLastAccess(lastAccess: string) {
 }
 
 export function UserActivityPanel() {
+  const { language } = useLanguage();
+  const english = language === "en";
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [onlineUsers, setOnlineUsers] = useState<Set<string>>(() => new Set());
   const [loading, setLoading] = useState(true);
@@ -106,46 +118,50 @@ export function UserActivityPanel() {
         if (firstOnline !== secondOnline) return firstOnline ? -1 : 1;
         return (first.display_name || first.username).localeCompare(
           second.display_name || second.username,
-          "es",
+          language === "en" ? "en" : "es",
         );
       }),
-    [profiles, onlineUsers],
+    [language, profiles, onlineUsers],
   );
 
   if (loading) {
     return (
       <div className="user-activity-panel__state" aria-busy="true">
         <p className="type-body-sm text-muted" role="status">
-          Cargando actividad…
+          {english ? "Loading activity…" : "Cargando actividad…"}
         </p>
       </div>
     );
   }
 
   return (
-    <section className="user-activity-panel" aria-label="Actividad de usuarios">
+    <section className="user-activity-panel" aria-label={english ? "User activity" : "Actividad de usuarios"}>
       <ul className="user-activity-panel__list">
         {error && (
           <li className="user-activity-panel__state" role="alert">
-            <p className="type-body-sm text-muted">{error}</p>
+            <p className="type-body-sm text-muted">
+              {english && error === "No fue posible cargar la lista de usuarios."
+                ? "Could not load the user list."
+                : error}
+            </p>
             <ButtonUtility
               type="button"
               onClick={() => setReloadKey((current) => current + 1)}
             >
-              Reintentar
+              {english ? "Retry" : "Reintentar"}
             </ButtonUtility>
           </li>
         )}
 
         {!error && sortedProfiles.length === 0 && (
           <li className="user-activity-panel__state type-body-sm text-muted">
-            No hay perfiles disponibles.
+            {english ? "No profiles are available." : "No hay perfiles disponibles."}
           </li>
         )}
 
         {sortedProfiles.map((profile) => {
           const isOnline = onlineUsers.has(profile.id);
-          const lastAccess = formatLastAccess(profile.last_login_at, now);
+          const lastAccess = formatLastAccess(profile.last_login_at, now, language);
 
           return (
             <li key={profile.id} className="user-activity-panel__card">
@@ -163,7 +179,7 @@ export function UserActivityPanel() {
                       className="user-activity-panel__online-dot"
                       aria-hidden="true"
                     />
-                    En línea
+                    {english ? "Online" : "En línea"}
                   </>
                 ) : (
                   <>
@@ -171,7 +187,7 @@ export function UserActivityPanel() {
                       className="user-activity-panel__status-icon"
                       aria-hidden="true"
                     />
-                    <span aria-hidden="true">{formatCompactLastAccess(lastAccess)}</span>
+                    <span aria-hidden="true">{formatCompactLastAccess(lastAccess, language)}</span>
                     <span className="sr-only">{lastAccess}</span>
                   </>
                 )}

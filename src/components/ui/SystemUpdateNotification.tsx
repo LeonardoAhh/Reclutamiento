@@ -4,8 +4,12 @@ import {
   useSystemVersion,
 } from "@/hooks/useSystemVersion";
 import { usePWAUpdate } from "@/hooks/usePWAUpdate";
-import { SYSTEM_UPDATE_BANNER_CONFIG } from "@/lib/constants";
+import {
+  SYSTEM_UPDATE_BANNER_CONFIG,
+  SYSTEM_UPDATE_BANNER_ENGLISH,
+} from "@/lib/constants";
 import { toast } from "@/lib/notify";
+import { useLanguage } from "@/contexts/LanguageContext";
 import {
   applyPWAUpdate,
   checkForPWAUpdate,
@@ -20,6 +24,8 @@ function getReleaseDescription(version: string, message?: string): string {
 }
 
 export function SystemUpdateNotification() {
+  const { language } = useLanguage();
+  const copy = language === "en" ? SYSTEM_UPDATE_BANNER_ENGLISH : SYSTEM_UPDATE_BANNER_CONFIG;
   const { info, shouldNotify, hasRemoteUpdate } = useSystemVersion();
   const { status } = usePWAUpdate();
 
@@ -33,19 +39,19 @@ export function SystemUpdateNotification() {
         toast.dismiss(RELEASE_NOTICE_ID);
         toast.info({
           id: SYSTEM_UPDATE_NOTICE_ID,
-          title: SYSTEM_UPDATE_BANNER_CONFIG.availableTitle,
-          description: SYSTEM_UPDATE_BANNER_CONFIG.availableHint,
+          title: copy.availableTitle,
+          description: copy.availableHint,
           duration: Infinity,
           pinned: true,
           actions: [
             {
-              label: SYSTEM_UPDATE_BANNER_CONFIG.actionLabel,
+              label: copy.actionLabel,
               variant: "primary",
               closeOnAction: false,
               onClick: () => void applyPWAUpdate(),
             },
             {
-              label: SYSTEM_UPDATE_BANNER_CONFIG.deferLabel,
+              label: copy.deferLabel,
               onClick: deferPWAUpdate,
             },
           ],
@@ -54,21 +60,21 @@ export function SystemUpdateNotification() {
       case "applying":
         toast.dismiss(RELEASE_NOTICE_ID);
         toastStoreUpdate("loading", {
-          title: SYSTEM_UPDATE_BANNER_CONFIG.preparingLabel,
+          title: copy.preparingLabel,
         });
         break;
       case "apply-error":
         toastStoreUpdate("error", {
-          title: SYSTEM_UPDATE_BANNER_CONFIG.errorHint,
+          title: copy.errorHint,
           actions: [
             {
-              label: SYSTEM_UPDATE_BANNER_CONFIG.retryLabel,
+              label: copy.retryLabel,
               variant: "primary",
               closeOnAction: false,
               onClick: () => void applyPWAUpdate(),
             },
             {
-              label: SYSTEM_UPDATE_BANNER_CONFIG.deferLabel,
+              label: copy.deferLabel,
               onClick: deferPWAUpdate,
             },
           ],
@@ -76,15 +82,15 @@ export function SystemUpdateNotification() {
         break;
       case "registration-error":
         toastStoreUpdate("warning", {
-          title: SYSTEM_UPDATE_BANNER_CONFIG.registrationErrorTitle,
-          description: SYSTEM_UPDATE_BANNER_CONFIG.registrationErrorHint,
+          title: copy.registrationErrorTitle,
+          description: copy.registrationErrorHint,
         });
         break;
       case "idle":
         toast.dismiss(SYSTEM_UPDATE_NOTICE_ID);
         break;
     }
-  }, [status]);
+  }, [copy, status]);
 
   useEffect(() => {
     if (!shouldNotify || !info || status === "available" || status === "applying") {
@@ -93,7 +99,7 @@ export function SystemUpdateNotification() {
 
     toast.success({
       id: RELEASE_NOTICE_ID,
-      title: SYSTEM_UPDATE_BANNER_CONFIG.appliedTitle,
+      title: copy.appliedTitle,
       description: getReleaseDescription(info.version, info.mensaje),
       duration: SYSTEM_UPDATE_BANNER_CONFIG.noticeDurationMs,
     });
@@ -103,7 +109,7 @@ export function SystemUpdateNotification() {
       SYSTEM_UPDATE_BANNER_CONFIG.noticeDurationMs,
     );
     return () => window.clearTimeout(timer);
-  }, [info, shouldNotify, status]);
+  }, [copy, info, shouldNotify, status]);
 
   return null;
 }

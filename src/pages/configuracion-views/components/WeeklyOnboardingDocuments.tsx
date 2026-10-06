@@ -11,6 +11,8 @@ import {
   TZ_MX,
 } from '@/lib/dates';
 import type { Employee } from '@/lib/types';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { getConfiguracionCopy } from '../configuracion-translations';
 
 type PrintFormat = 'credential' | 'contracts';
 
@@ -235,13 +237,16 @@ function DocumentFormatCard({
   description,
   employees,
   onReview,
+  language,
 }: {
   format: PrintFormat;
   title: string;
   description: string;
   employees: Employee[];
   onReview: (format: PrintFormat) => void;
+  language: 'es' | 'en';
 }) {
+  const copy = getConfiguracionCopy(language).formats;
   const Icon = format === 'credential' ? BadgeCheck : FileSignature;
 
   return (
@@ -259,7 +264,7 @@ function DocumentFormatCard({
       <footer className="weekly-format-card__footer">
         <div className="weekly-format-card__meta">
           <strong>
-            {employees.length} {employees.length === 1 ? 'empleado' : 'empleados'}
+            {employees.length} {employees.length === 1 ? copy.employee : copy.employees}
           </strong>
         </div>
         <ButtonUtility
@@ -271,7 +276,7 @@ function DocumentFormatCard({
             employees.length === 0 ? 'weekly-formats-empty' : undefined
           }
         >
-          Revisar
+          {copy.review}
         </ButtonUtility>
       </footer>
     </article>
@@ -287,6 +292,7 @@ interface DocumentReviewModalProps {
   onToggleEmployee: (employeeKey: string) => void;
   onToggleAll: () => void;
   onPrint: () => void;
+  language: 'es' | 'en';
 }
 
 function DocumentReviewModal({
@@ -298,7 +304,9 @@ function DocumentReviewModal({
   onToggleEmployee,
   onToggleAll,
   onPrint,
+  language,
 }: DocumentReviewModalProps) {
+  const copy = getConfiguracionCopy(language).formats;
   if (!format) return null;
 
   const selectedEmployees = employees.filter((employee) =>
@@ -307,12 +315,12 @@ function DocumentReviewModal({
   const allSelected =
     employees.length > 0 && selectedEmployees.length === employees.length;
   const title =
-    format === 'credential' ? 'Entrega de credencial' : 'Entrega de contratos';
+    format === 'credential' ? copy.credentialDelivery : copy.contractDelivery;
 
   const footerActions = (
     <>
       <button type="button" className="btn-secondary" onClick={onClose}>
-        Cancelar
+        {copy.cancel}
       </button>
       <button
         type="button"
@@ -321,7 +329,7 @@ function DocumentReviewModal({
         disabled={selectedEmployees.length === 0}
       >
         <Printer size="var(--icon-size-sm)" aria-hidden="true" />
-        Imprimir {selectedEmployees.length}
+        {copy.print} {selectedEmployees.length}
       </button>
     </>
   );
@@ -342,18 +350,19 @@ function DocumentReviewModal({
         >
           <header className="weekly-review-modal__selector-header">
             <div>
-              <h3 id="weekly-review-employees-title">Empleados incluidos</h3>
+              <h3 id="weekly-review-employees-title">{copy.includedEmployees}</h3>
               <p aria-live="polite">
-                {selectedEmployees.length} de {employees.length} seleccionados
+                {selectedEmployees.length} {copy.of} {employees.length}{' '}
+                {selectedEmployees.length === 1 ? copy.selectedOne : copy.selected}
               </p>
             </div>
             <label className="weekly-review-modal__select-all">
               <Checkbox
                 checked={allSelected}
                 onChange={onToggleAll}
-                aria-label={allSelected ? 'Excluir a todos' : 'Incluir a todos'}
+                aria-label={allSelected ? copy.excludeAll : copy.includeAll}
               />
-              <span>{allSelected ? 'Quitar todos' : 'Seleccionar todos'}</span>
+              <span>{allSelected ? copy.removeAll : copy.selectAll}</span>
             </label>
           </header>
 
@@ -367,7 +376,7 @@ function DocumentReviewModal({
                     <Checkbox
                       checked={isSelected}
                       onChange={() => onToggleEmployee(employeeKey)}
-                      aria-label={`${isSelected ? 'Excluir' : 'Incluir'} a ${employee.nombre}`}
+                      aria-label={`${isSelected ? copy.exclude : copy.include} ${language === 'en' ? '' : 'a '}${employee.nombre}`}
                     />
                     <span className="weekly-review-modal__employee-copy">
                       <strong>{employee.nombre}</strong>
@@ -389,6 +398,8 @@ export function WeeklyOnboardingDocuments({
   weekLabel,
   printDate,
 }: WeeklyOnboardingDocumentsProps) {
+  const { language } = useLanguage();
+  const copy = getConfiguracionCopy(language).formats;
   const employees = useMemo(() => {
     return [...rawEmployees].sort((a, b) => {
       const numA = String(a.num_empleado || '');
@@ -472,7 +483,7 @@ export function WeeklyOnboardingDocuments({
       <header className="weekly-formats__heading">
         <div>
           <h2 id="weekly-formats-title" className="weekly-formats__title">
-            Formatos de ingreso
+            {copy.onboardingFormats}
           </h2>
         </div>
       </header>
@@ -480,17 +491,19 @@ export function WeeklyOnboardingDocuments({
       <div className="weekly-formats__grid">
         <DocumentFormatCard
           format="credential"
-          title="Entrega de credencial"
-          description="Responsiva colectiva para los ingresos de la semana."
+          title={copy.credentialDelivery}
+          description={copy.credentialDescription}
           employees={employees}
           onReview={setReviewFormat}
+          language={language}
         />
         <DocumentFormatCard
           format="contracts"
-          title="Entrega de contratos"
-          description="Constancia colectiva para firma de recibido."
+          title={copy.contractDelivery}
+          description={copy.contractsDescription}
           employees={employees}
           onReview={setReviewFormat}
+          language={language}
         />
       </div>
 
@@ -500,7 +513,7 @@ export function WeeklyOnboardingDocuments({
           className="weekly-formats__empty"
           role="status"
         >
-          No hay ingresos registrados en la semana seleccionada.
+          {copy.noHiresThisWeek}
         </p>
       )}
 
@@ -513,6 +526,7 @@ export function WeeklyOnboardingDocuments({
         onToggleEmployee={handleToggleEmployee}
         onToggleAll={handleToggleAll}
         onPrint={handlePrintReviewed}
+        language={language}
       />
 
       {printRoot}

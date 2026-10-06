@@ -4,6 +4,8 @@ import { Modal } from './Modal';
 import { Checkbox } from './Checkbox';
 import type { Employee } from '@/lib/types';
 import { localTodayIso } from '@/lib/dates';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { workforceText } from '@/pages/workforce-translations';
 import './IncapacidadModal.css';
 
 interface IncapacidadModalProps {
@@ -23,6 +25,8 @@ export function IncapacidadModal({
   onClose,
   onSave,
 }: IncapacidadModalProps) {
+  const { language } = useLanguage();
+  const t = (text: string) => workforceText(language, text);
   const [enIncapacidad, setEnIncapacidad] = useState(false);
   const [hasta, setHasta] = useState<string>('');
   const [submitting, setSubmitting] = useState(false);
@@ -50,7 +54,7 @@ export function IncapacidadModal({
         enIncapacidad && hasta ? hasta : null
       );
       if (result.ok === false) {
-        setErrorMsg(result.message ?? 'No se pudo guardar.');
+        setErrorMsg(result.message ?? t('No se pudo guardar.'));
         return;
       }
       onClose();
@@ -69,7 +73,7 @@ export function IncapacidadModal({
         onClick={onClose}
         disabled={submitting}
       >
-        Cancelar
+        {t('Cancelar')}
       </button>
       <button
         type="submit"
@@ -78,7 +82,7 @@ export function IncapacidadModal({
         disabled={submitting}
         aria-busy={submitting}
       >
-        {submitting ? 'Guardando…' : 'Guardar'}
+        {t(submitting ? 'Guardando…' : 'Guardar')}
       </button>
     </>
   );
@@ -94,7 +98,7 @@ export function IncapacidadModal({
           aria-hidden="true"
         />
       }
-      title="Marcar incapacidad"
+      title={t("Marcar incapacidad")}
       size="xs"
       footerActions={footerActions}
     >
@@ -112,13 +116,13 @@ export function IncapacidadModal({
             disabled={submitting}
           />
           <span className="incapacidad-modal__toggle-label">
-            En incapacidad médica
+            {t('En incapacidad médica')}
           </span>
         </label>
 
         <div className="form-group">
           <label htmlFor="incapacidad-hasta">
-            Fecha estimada de regreso
+            {t('Fecha estimada de regreso')}
           </label>
           <input
             id="incapacidad-hasta"

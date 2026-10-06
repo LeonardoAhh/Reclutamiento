@@ -1,5 +1,6 @@
 import { useId, useImperativeHandle, useRef, useState, type FormEvent, type Ref } from 'react';
 import { changePassword } from '@/lib/auth';
+import { useLanguage } from '@/contexts/LanguageContext';
 import './ChangePasswordModal.css';
 
 type Field = 'current' | 'new' | 'confirm' | 'form';
@@ -16,6 +17,8 @@ interface PasswordChangeFormProps {
 export function PasswordChangeForm({
   ref, onCancel, onChanged, submitLabel = 'Cambiar contraseña', cancelLabel = 'Cancelar',
 }: PasswordChangeFormProps) {
+  const { language } = useLanguage();
+  const english = language === 'en';
   const currentId = useId();
   const newId = useId();
   const confirmId = useId();
@@ -45,7 +48,7 @@ export function PasswordChangeForm({
     if (submitting) return;
     if (
       (currentPassword || newPassword || confirmation) &&
-      !window.confirm('¿Descartar las contraseñas ingresadas?')
+      !window.confirm(english ? 'Discard the entered passwords?' : '¿Descartar las contraseñas ingresadas?')
     ) return;
     resetForm();
     onCancel();
@@ -69,19 +72,19 @@ export function PasswordChangeForm({
     setSuccess(false);
 
     if (!currentPassword) {
-      showError('current', 'Ingresa tu contraseña actual.');
+      showError('current', english ? 'Enter your current password.' : 'Ingresa tu contraseña actual.');
       return;
     }
     if (newPassword.length < 8) {
-      showError('new', 'La contraseña nueva debe tener al menos 8 caracteres.');
+      showError('new', english ? 'The new password must be at least 8 characters.' : 'La contraseña nueva debe tener al menos 8 caracteres.');
       return;
     }
     if (newPassword === currentPassword) {
-      showError('new', 'Elige una contraseña distinta de la actual.');
+      showError('new', english ? 'Choose a password different from the current one.' : 'Elige una contraseña distinta de la actual.');
       return;
     }
     if (confirmation !== newPassword) {
-      showError('confirm', 'La confirmación debe coincidir con la contraseña nueva.');
+      showError('confirm', english ? 'Confirmation must match the new password.' : 'La confirmación debe coincidir con la contraseña nueva.');
       return;
     }
 
@@ -90,7 +93,16 @@ export function PasswordChangeForm({
 
     if (!result.ok) {
       setSubmitting(false);
-      showError(result.field, result.message);
+      const englishMessages: Record<string, string> = {
+        'El servicio de cambio de contraseña no está disponible. Intenta más tarde.': 'The password service is unavailable. Try again later.',
+        'El servicio rechazó la sesión. Vuelve a iniciar sesión; si persiste, contacta al administrador.': 'The service rejected the session. Sign in again; if the issue continues, contact your administrator.',
+        'El servicio de cambio de contraseña no está publicado. Contacta al administrador.': 'The password service is not deployed. Contact your administrator.',
+        'Se hicieron demasiados intentos. Espera unos minutos antes de volver a intentar.': 'Too many attempts. Wait a few minutes before trying again.',
+        'No se pudo conectar con el servicio. Revisa tu conexión e intenta de nuevo.': 'Could not connect to the service. Check your connection and try again.',
+        'No se pudo cambiar la contraseña. Intenta de nuevo.': 'Could not change the password. Try again.',
+        'No se pudo conectar para cambiar la contraseña. Revisa tu conexión e intenta de nuevo.': 'Could not connect to change the password. Check your connection and try again.',
+      };
+      showError(result.field, english ? englishMessages[result.message] ?? result.message : result.message);
       return;
     }
 
@@ -105,7 +117,7 @@ export function PasswordChangeForm({
   return (
     <form className="password-change-form" onSubmit={handleSubmit} noValidate>
       <div className="form-group">
-        <label htmlFor={currentId}>Contraseña actual</label>
+        <label htmlFor={currentId}>{english ? 'Current password' : 'Contraseña actual'}</label>
         <input
           ref={currentRef}
           id={currentId}
@@ -126,7 +138,7 @@ export function PasswordChangeForm({
       </div>
 
       <div className="form-group">
-        <label htmlFor={newId}>Contraseña nueva</label>
+        <label htmlFor={newId}>{english ? 'New password' : 'Contraseña nueva'}</label>
         <input
           ref={newRef}
           id={newId}
@@ -143,12 +155,12 @@ export function PasswordChangeForm({
           disabled={submitting}
           aria-required="true"
         />
-        <span id={newHintId} className="change-password__hint">Mínimo 8 caracteres.</span>
+        <span id={newHintId} className="change-password__hint">{english ? 'At least 8 characters.' : 'Mínimo 8 caracteres.'}</span>
         {error?.field === 'new' && <span id={newErrorId} className="form-error">{error.message}</span>}
       </div>
 
       <div className="form-group">
-        <label htmlFor={confirmId}>Confirmar contraseña nueva</label>
+        <label htmlFor={confirmId}>{english ? 'Confirm new password' : 'Confirmar contraseña nueva'}</label>
         <input
           ref={confirmRef}
           id={confirmId}
@@ -169,13 +181,13 @@ export function PasswordChangeForm({
       </div>
 
       {error?.field === 'form' && <span className="form-error" role="alert">{error.message}</span>}
-      {success && <span className="form-success-text" role="status">Tu contraseña se cambió correctamente.</span>}
+      {success && <span className="form-success-text" role="status">{english ? 'Your password was changed.' : 'Tu contraseña se cambió correctamente.'}</span>}
       <div className="password-change-form__actions">
         <button type="button" className="btn-secondary" onClick={handleClose} disabled={submitting}>
-          {cancelLabel}
+          {english && cancelLabel === 'Cancelar' ? 'Cancel' : cancelLabel}
         </button>
         <button type="submit" className="btn-primary" disabled={submitting} aria-busy={submitting}>
-          {submitting ? 'Guardando…' : submitLabel}
+          {submitting ? (english ? 'Saving…' : 'Guardando…') : english && submitLabel === 'Cambiar contraseña' ? 'Change password' : submitLabel}
         </button>
       </div>
     </form>

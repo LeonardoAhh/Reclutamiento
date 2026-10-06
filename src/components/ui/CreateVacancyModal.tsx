@@ -1,4 +1,5 @@
 import { BriefcaseBusiness } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Modal } from "./Modal";
 import { CustomSelect } from "./CustomSelect";
 
@@ -39,13 +40,15 @@ export function CreateVacancyModal({
   recruitersOptions,
   onSubmit,
 }: CreateVacancyModalProps) {
+  const { language } = useLanguage();
+  const en = language === "en";
   const formId = "create-vacancy-form";
 
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Asignar Vacante"
+      title={en ? "Assign vacancy" : "Asignar Vacante"}
       icon={<BriefcaseBusiness size="var(--icon-size-md)" aria-hidden="true" />}
       size="md"
       footerActions={
@@ -56,7 +59,7 @@ export function CreateVacancyModal({
             onClick={onClose}
             disabled={isCreating}
           >
-            Cancelar
+            {en ? "Cancel" : "Cancelar"}
           </button>
           <button
             type="submit"
@@ -65,7 +68,7 @@ export function CreateVacancyModal({
             aria-busy={isCreating}
             form={formId}
           >
-            {isCreating ? "Guardando..." : "Crear"}
+            {isCreating ? (en ? "Saving..." : "Guardando...") : (en ? "Create" : "Crear")}
           </button>
         </>
       }
@@ -73,13 +76,13 @@ export function CreateVacancyModal({
       <form id={formId} className="modal-body" onSubmit={onSubmit} noValidate>
         <div className="vacante-form-grid">
           <div className="form-group">
-            <label htmlFor="vacante-area">Área</label>
+            <label htmlFor="vacante-area">{en ? "Area" : "Área"}</label>
             <CustomSelect
               id="vacante-area"
               value={area}
               onChange={onAreaChange}
               options={[
-                { value: "", label: "Todas las áreas" },
+                { value: "", label: en ? "All areas" : "Todas las áreas" },
                 ...areasOptions.map((option) => ({
                   value: option,
                   label: option,
@@ -89,14 +92,14 @@ export function CreateVacancyModal({
           </div>
 
           <div className="form-group">
-            <label htmlFor="vacante-seccion">Sección</label>
+            <label htmlFor="vacante-seccion">{en ? "Section" : "Sección"}</label>
             <CustomSelect
               id="vacante-seccion"
               value={seccion}
               onChange={onSeccionChange}
               disabled={seccionesOptions.length === 0}
               options={[
-                { value: "", label: "Todas las secciones" },
+                { value: "", label: en ? "All sections" : "Todas las secciones" },
                 ...seccionesOptions.map((option) => ({
                   value: option,
                   label: option,
@@ -106,14 +109,14 @@ export function CreateVacancyModal({
           </div>
 
           <div className="form-group">
-            <label htmlFor="vacante-puesto">Puesto</label>
+            <label htmlFor="vacante-puesto">{en ? "Position" : "Puesto"}</label>
             <CustomSelect
               id="vacante-puesto"
               value={puesto}
               onChange={onPuestoChange}
               disabled={puestosOptions.length === 0}
               options={[
-                { value: "", label: "Seleccione un puesto" },
+                { value: "", label: en ? "Select a position" : "Seleccione un puesto" },
                 ...puestosOptions.map((option) => ({
                   value: option,
                   label: option,
@@ -123,7 +126,7 @@ export function CreateVacancyModal({
           </div>
 
           <div className="form-group">
-            <label htmlFor="vacante-asignado">Asignar a</label>
+            <label htmlFor="vacante-asignado">{en ? "Assign to" : "Asignar a"}</label>
             <CustomSelect
               id="vacante-asignado"
               value={asignadoA}

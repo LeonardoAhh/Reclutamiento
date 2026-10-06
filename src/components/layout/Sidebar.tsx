@@ -2,10 +2,10 @@ import { Fragment, useEffect, useRef } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { MorphMenuIcon } from "@/components/ui/MorphMenuIcon";
-import { ThemeSelect } from "@/components/ui/ThemeSelect";
+import { useLanguage } from "@/contexts/LanguageContext";
 import "./Sidebar.css";
 
-import { APP_BRAND_NAME, NAV_SECTIONS } from "./navigation";
+import { APP_BRAND_NAME, getLocalizedNavigation } from "./navigation";
 import { SidebarBrand } from "./SidebarBrand";
 import { UserMenuPopover } from "./UserMenuPopover";
 import { toNaturalCase } from "@/lib/utils";
@@ -21,7 +21,9 @@ export function Sidebar({
   onCloseMobileMenu,
 }: SidebarProps) {
   const { username, user, profile } = useAuth();
+  const { language } = useLanguage();
   const location = useLocation();
+  const navSections = getLocalizedNavigation(language);
   const prevPathRef = useRef(location.pathname);
   const sidebarRef = useRef<HTMLElement>(null);
 
@@ -68,7 +70,7 @@ export function Sidebar({
       ref={sidebarRef}
       className="sidebar"
       data-mobile-open={mobileMenuOpen}
-      aria-label="Navegación principal"
+      aria-label={language === "en" ? "Main navigation" : "Navegación principal"}
       aria-modal={mobileMenuOpen || undefined}
       role={mobileMenuOpen ? "dialog" : undefined}
       id="app-sidebar"
@@ -76,7 +78,6 @@ export function Sidebar({
     >
       <div className="sidebar__top">
         <SidebarBrand name={APP_BRAND_NAME} />
-        <ThemeSelect />
         <button
           type="button"
           className="sidebar__close-btn"
@@ -84,7 +85,7 @@ export function Sidebar({
           aria-expanded={mobileMenuOpen}
           aria-controls="app-sidebar"
           data-testid="sidebar-close-toggle"
-          aria-label="Colapsar"
+          aria-label={language === "en" ? "Collapse" : "Colapsar"}
         >
           <MorphMenuIcon
             isOpen
@@ -93,8 +94,8 @@ export function Sidebar({
         </button>
       </div>
 
-      <nav className="sidebar__nav" id="sidebar-sections" aria-label="Secciones">
-        {NAV_SECTIONS.map((section) => {
+      <nav className="sidebar__nav" id="sidebar-sections" aria-label={language === "en" ? "Sections" : "Secciones"}>
+        {navSections.map((section) => {
           const sectionTitleId = `sidebar-section-${section.label.toLowerCase()}`;
           return (
             <Fragment key={section.label}>

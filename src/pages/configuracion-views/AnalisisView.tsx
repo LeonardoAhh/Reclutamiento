@@ -7,6 +7,7 @@ import {
 } from 'react';
 
 import { useAuth } from '@/hooks/useAuth';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { usePagination } from '@/hooks/usePagination';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import {
@@ -28,6 +29,7 @@ import { CustomSelect } from '@/components/ui/CustomSelect';
 import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
 import { Pagination } from '@/components/ui/Pagination';
 import { EmployeeResultCard } from './components/EmployeeResultCard';
+import { getConfiguracionCopy } from './configuracion-translations';
 import {
   getEmployeeResultId,
   normalizeFilterValue,
@@ -49,6 +51,8 @@ type RiskFilter = 'all' | 'nuevos_ingresos' | 'riesgo_baja' | 'faltas_planta';
 const ALL_FILTER_VALUE = 'all';
 
 export function AnalisisView() {
+  const { language } = useLanguage();
+  const copy = getConfiguracionCopy(language).analysis;
   const { loading: authLoading } = useAuth();
   const {
     employees,
@@ -298,18 +302,17 @@ export function AnalisisView() {
     <BoneyardSkeleton
       name="analisis-page"
       loading={authLoading || employeesLoading || bajasLoading}
-      loadingLabel="Cargando colaboradores…"
+      loadingLabel={copy.loading}
     >
       <section className="analisis-view config-page" aria-labelledby="analisis-title">
         <header className="config-page__header">
           <h1 id="analisis-title" className="config-page__title app-page-title">
-            Análisis
+            {copy.title}
           </h1>
         </header>
       {employeesError && (
         <p className="config-search-error type-body-sm mt-sm" role="alert">
-          No fue posible actualizar la lista de colaboradores. Se muestran los datos
-          disponibles.
+          {copy.loadError}
         </p>
       )}
 
@@ -317,18 +320,18 @@ export function AnalisisView() {
         <section
           className="config-page__toolbar"
           role="search"
-          aria-label="Buscar colaboradores"
+          aria-label={copy.searchRegion}
         >
           <div className="config-search-field">
             <SearchField
               id="config-search-input"
               ref={searchInputRef}
-              label="Buscar empleado"
+              label={copy.searchLabel}
               value={searchTerm}
               onChange={(event) => setSearchTerm(event.target.value)}
               onKeyDown={handleSearchKeyDown}
               onClear={handleClearSearch}
-              placeholder="Nombre o número de empleado… (Ctrl+K)"
+              placeholder={copy.searchPlaceholder}
               autoComplete="off"
               enterKeyHint="search"
               aria-keyshortcuts="Control+K Meta+K"
@@ -337,17 +340,17 @@ export function AnalisisView() {
           </div>
         </section>
 
-        <section className="analisis-hero" aria-label="Indicadores de riesgo">
+        <section className="analisis-hero" aria-label={copy.riskIndicators}>
           <button
             type="button"
             className="analisis-hero__card"
             onClick={() => setRiskFilter(r => r === 'nuevos_ingresos' ? 'all' : 'nuevos_ingresos')}
             aria-pressed={riskFilter === 'nuevos_ingresos'}
             aria-controls="config-search-results"
-            aria-label={`Nuevos ingresos: ${metrics.nuevosIngresos}`}
+            aria-label={`${copy.newHiresAria}: ${metrics.nuevosIngresos}`}
           >
             <span className="analisis-hero__card-header">
-              <span className="analisis-hero__card-title">Nuevos</span>
+              <span className="analisis-hero__card-title">{copy.newHires}</span>
               <span className="analisis-hero__card-count">{metrics.nuevosIngresos}</span>
               <CircleCheckBig className="analisis-hero__card-check" size="var(--icon-size-sm)" aria-hidden="true" />
             </span>
@@ -359,10 +362,10 @@ export function AnalisisView() {
             onClick={() => setRiskFilter(r => r === 'riesgo_baja' ? 'all' : 'riesgo_baja')}
             aria-pressed={riskFilter === 'riesgo_baja'}
             aria-controls="config-search-results"
-            aria-label={`Riesgo de no renovación: ${metrics.riesgoBaja}`}
+            aria-label={`${copy.renewalRiskAria}: ${metrics.riesgoBaja}`}
           >
             <span className="analisis-hero__card-header">
-              <span className="analisis-hero__card-title">En riesgo</span>
+              <span className="analisis-hero__card-title">{copy.renewalRisk}</span>
               <span
                 className="analisis-hero__card-count"
                 aria-busy={reportsLoading}
@@ -380,10 +383,10 @@ export function AnalisisView() {
             onClick={() => setRiskFilter(r => r === 'faltas_planta' ? 'all' : 'faltas_planta')}
             aria-pressed={riskFilter === 'faltas_planta'}
             aria-controls="config-search-results"
-            aria-label={`Empleados con faltas recientes: ${metrics.faltasPlanta}`}
+            aria-label={`${copy.recentAbsencesAria}: ${metrics.faltasPlanta}`}
           >
             <span className="analisis-hero__card-header">
-              <span className="analisis-hero__card-title">Con faltas</span>
+              <span className="analisis-hero__card-title">{copy.employeesWithAbsences}</span>
               <span
                 className="analisis-hero__card-count"
                 aria-busy={reportsLoading}
@@ -400,29 +403,29 @@ export function AnalisisView() {
 
       {reportsLoading && (
         <span className="sr-only" role="status" aria-live="polite">
-          Actualizando riesgo de no renovación…
+          {copy.updatingRisk}
         </span>
       )}
 
       <section
         id="config-search-results"
-        aria-label="Resultados de búsqueda"
+        aria-label={copy.results}
       >
 
         <section
           className="config-results-controls"
-          aria-label="Filtros y vista de resultados"
+          aria-label={copy.filtersAndView}
         >
           <div className="config-results-controls__filters">
             <fieldset className="config-filter-group">
               <legend className="config-filter-label type-caption-sm text-muted">
-                Estado
+                {copy.status}
               </legend>
               <div className="config-segmented-control">
                 {([
-                  ['all', 'Todos'],
-                  ['active', 'Activos'],
-                  ['inactive', 'Bajas'],
+                  ['all', copy.all],
+                  ['active', copy.active],
+                  ['inactive', copy.leavers],
                 ] as const).map(([value, label]) => (
                   <button
                     key={value}
@@ -441,13 +444,13 @@ export function AnalisisView() {
 
             <label className="config-filter-field">
               <span className="config-filter-label type-caption-sm text-muted">
-                Departamento
+                {copy.department}
               </span>
               <CustomSelect
                 value={departmentFilter}
                 onChange={setDepartmentFilter}
                 options={[
-                  { value: ALL_FILTER_VALUE, label: 'Todos' },
+                  { value: ALL_FILTER_VALUE, label: copy.all },
                   ...departmentOptions,
                 ]}
               />
@@ -455,13 +458,13 @@ export function AnalisisView() {
 
             <label className="config-filter-field">
               <span className="config-filter-label type-caption-sm text-muted">
-                Turno
+                {copy.shift}
               </span>
               <CustomSelect
                 value={shiftFilter}
                 onChange={setShiftFilter}
                 options={[
-                  { value: ALL_FILTER_VALUE, label: 'Todos' },
+                  { value: ALL_FILTER_VALUE, label: copy.all },
                   ...shiftOptions,
                 ]}
               />
@@ -474,7 +477,7 @@ export function AnalisisView() {
                 icon={<RotateCcw aria-hidden="true" />}
                 onClick={handleClearFilters}
               >
-                Limpiar
+                {copy.clear}
               </ButtonUtility>
             )}
           </div>
@@ -482,12 +485,12 @@ export function AnalisisView() {
           {canUseCompactView && (
             <div className="config-filter-field">
               <span className="config-filter-label type-caption-sm text-muted">
-                Vista
+                {copy.view}
               </span>
               <div
                 className="config-view-switch"
                 role="group"
-                aria-label="Vista de resultados"
+                aria-label={copy.resultView}
               >
                 <button
                   type="button"
@@ -498,7 +501,7 @@ export function AnalisisView() {
                   aria-pressed={viewMode === 'detail'}
                 >
                   <List aria-hidden="true" />
-                  Detallada
+                  {copy.detailed}
                 </button>
                 <button
                   type="button"
@@ -509,7 +512,7 @@ export function AnalisisView() {
                   aria-pressed={viewMode === 'compact'}
                 >
                   <LayoutGrid aria-hidden="true" />
-                  Compacta
+                  {copy.compact}
                 </button>
               </div>
             </div>
@@ -522,10 +525,10 @@ export function AnalisisView() {
               <MorphingIcon icon={SearchData} aria-hidden="true" />
             </div>
             <div className="animated-empty-state__title">
-              Busca un colaborador o selecciona un filtro
+              {copy.initialTitle}
             </div>
             <p className="animated-empty-state__subtitle">
-              Consulta su información laboral, asistencia e historial de incidencias.
+              {copy.initialDescription}
             </p>
           </div>
         ) : filteredEmployees.length > 0 ? (
@@ -534,11 +537,9 @@ export function AnalisisView() {
               className="config-results__count type-caption-sm text-muted"
               aria-live="polite"
             >
-              Resultados {firstVisibleResult}–{lastVisibleResult} de{' '}
+              {copy.resultRange} {firstVisibleResult}–{lastVisibleResult} {copy.of}{' '}
               {employeePagination.totalItems}{' '}
-              {employeePagination.totalItems === 1
-                ? 'colaborador'
-                : 'colaboradores'}
+              {employeePagination.totalItems === 1 ? copy.employee : copy.employees}
             </p>
 
             <div
@@ -572,7 +573,7 @@ export function AnalisisView() {
               onNext={employeePagination.nextPage}
               canGoPrev={employeePagination.canGoPrev}
               canGoNext={employeePagination.canGoNext}
-              ariaLabel="Paginación de colaboradores"
+              ariaLabel={copy.pagination}
               hideOnSinglePage
             />
           </div>
@@ -586,8 +587,8 @@ export function AnalisisView() {
             />
             <p className="type-body-md text-muted config-empty__copy">
               {hasActiveFilters
-                ? 'No hay colaboradores que coincidan con los filtros seleccionados.'
-                : `No se encontraron resultados para “${searchQuery}”.`}
+                ? copy.noFilterMatches
+                : `${copy.noSearchResults} “${searchQuery}”.`}
             </p>
             {hasActiveFilters && (
               <ButtonUtility
@@ -595,7 +596,7 @@ export function AnalisisView() {
                 icon={<RotateCcw aria-hidden="true" />}
                 onClick={handleClearFilters}
               >
-                Limpiar filtros
+                {copy.clearFilters}
               </ButtonUtility>
             )}
           </div>

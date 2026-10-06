@@ -6,6 +6,7 @@ import {
   UserRoundPlus,
 } from "lucide-react";
 import type { Activity, AuthorizedPosition } from "@/lib/types";
+import { useLanguage } from "@/contexts/LanguageContext";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -51,7 +52,9 @@ export function VacancyAssignmentSection({
   onAssign,
   onDelete,
 }: VacancyAssignmentSectionProps) {
-  const countLabel = `${vacancies.length} ${vacancies.length === 1 ? "vacante" : "vacantes"}`;
+  const { language } = useLanguage();
+  const en = language === "en";
+  const countLabel = `${vacancies.length} ${vacancies.length === 1 ? (en ? "vacancy" : "vacante") : (en ? "vacancies" : "vacantes")}`;
   const vacancyGroups = Array.from(
     vacancies
       .reduce<Map<string, VacancyGroup>>((groups, vacancy) => {
@@ -60,8 +63,8 @@ export function VacancyAssignmentSection({
         const label = vacancy.asignado_a
           ? vacancyWithAssignee.asignado_a_profile?.display_name ||
             vacancyWithAssignee.asignado_a_profile?.username ||
-            "Sin nombre"
-          : "Sin asignar";
+            (en ? "Unnamed" : "Sin nombre")
+          : (en ? "Unassigned" : "Sin asignar");
         const group = groups.get(key);
 
         if (group) {
@@ -96,7 +99,7 @@ export function VacancyAssignmentSection({
             id="vacancy-assignment-heading"
             className="vacancy-assignment-section__title"
           >
-            {isAdmin ? "Asignación de Vacantes" : "Tus Vacantes"}
+            {isAdmin ? (en ? "Vacancy assignments" : "Asignación de Vacantes") : (en ? "Your vacancies" : "Tus Vacantes")}
             <span
               className="vacancy-assignment-section__count"
               aria-label={countLabel}
@@ -106,15 +109,15 @@ export function VacancyAssignmentSection({
           </h2>
           <p className="vacancy-assignment-section__description">
             {isAdmin
-              ? "Asigna las vacantes activas a los reclutadores del equipo."
-              : "Vacantes que te han sido asignadas."}
+              ? (en ? "Assign active vacancies to team recruiters." : "Asigna las vacantes activas a los reclutadores del equipo.")
+              : (en ? "Vacancies assigned to you." : "Vacantes que te han sido asignadas.")}
           </p>
         </div>
 
         {isAdmin && (
           <button type="button" className="btn-primary btn-sm" onClick={onCreate}>
             <Plus size="var(--icon-size-sm)" aria-hidden="true" />
-            <span>Nueva</span>
+            <span>{en ? "New" : "Nueva"}</span>
           </button>
         )}
       </header>
@@ -127,10 +130,10 @@ export function VacancyAssignmentSection({
             aria-hidden="true"
           />
           <p className="vacancy-assignment-section__empty-title">
-            Sin vacantes
+            {en ? "No vacancies" : "Sin vacantes"}
           </p>
           <p className="vacancy-assignment-section__empty-description">
-            Crea una nueva asignación de vacante manualmente.
+            {en ? "Create a new vacancy assignment manually." : "Crea una nueva asignación de vacante manualmente."}
           </p>
         </div>
       ) : (
@@ -139,7 +142,7 @@ export function VacancyAssignmentSection({
             <section
               key={group.key}
               className="vacancy-assignment-group"
-              aria-label={`Vacantes de ${group.label}`}
+              aria-label={`${en ? "Vacancies for" : "Vacantes de"} ${group.label}`}
             >
               <header className="vacancy-assignment-group__header">
                 <h3 className="vacancy-assignment-group__title">
@@ -147,7 +150,7 @@ export function VacancyAssignmentSection({
                 </h3>
                 <span
                   className="vacancy-assignment-group__count"
-                  aria-label={`${group.vacancies.length} ${group.vacancies.length === 1 ? "vacante" : "vacantes"}`}
+                  aria-label={`${group.vacancies.length} ${group.vacancies.length === 1 ? (en ? "vacancy" : "vacante") : (en ? "vacancies" : "vacantes")}`}
                 >
                   {group.vacancies.length}
                 </span>
@@ -177,7 +180,7 @@ export function VacancyAssignmentSection({
               >
                 {isNew(vacancy) && (
                   <span className="vacancy-assignment-card__status">
-                    Nueva
+                    {en ? "New" : "Nueva"}
                   </span>
                 )}
                 <div className="vacancy-assignment-card__body">
@@ -226,7 +229,7 @@ export function VacancyAssignmentSection({
                         <button
                           type="button"
                           className="vacancy-assignment-card__menu"
-                          aria-label={`Opciones de ${vacancy.titulo}`}
+                          aria-label={`${en ? "Options for" : "Opciones de"} ${vacancy.titulo}`}
                         >
                           <EllipsisVertical
                             size="var(--icon-size-sm)"
@@ -244,7 +247,7 @@ export function VacancyAssignmentSection({
                         >
                           <button type="button">
                             <UserRoundPlus aria-hidden="true" />
-                            <span>Asignar a...</span>
+                            <span>{en ? "Assign to..." : "Asignar a..."}</span>
                           </button>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
@@ -258,7 +261,7 @@ export function VacancyAssignmentSection({
                         >
                           <button type="button">
                             <Trash2 aria-hidden="true" />
-                            <span>Eliminar</span>
+                            <span>{en ? "Delete" : "Eliminar"}</span>
                           </button>
                         </DropdownMenuItem>
                       </DropdownMenuContent>

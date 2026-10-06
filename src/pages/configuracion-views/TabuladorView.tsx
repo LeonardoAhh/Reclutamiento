@@ -5,6 +5,8 @@ import { ButtonUtility } from '@/components/ui/ButtonUtility';
 import { normalizeSearchText } from './analisis-helpers';
 import { SearchField } from '@/components/ui/SearchField';
 import { TabuladorAreaSection, type PuestoTabulador } from './components/TabuladorAreaSection';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { getConfiguracionCopy, localizeTabulatorFallback } from './configuracion-translations';
 import '../Configuracion.css';
 
 interface PuestoTabuladorSource {
@@ -18,11 +20,6 @@ interface PuestoTabuladorSource {
 
 type TabuladorType = 'sindicalizado' | 'nosindicalizado';
 
-const TAB_OPTIONS: Array<{ id: TabuladorType; label: string }> = [
-  { id: 'sindicalizado', label: 'Sindicalizado' },
-  { id: 'nosindicalizado', label: 'No sindicalizado' },
-];
-
 function normalizePuesto(item: PuestoTabuladorSource): PuestoTabulador {
   return {
     ÁREA: item.ÁREA?.trim() || 'Sin área',
@@ -34,6 +31,12 @@ function normalizePuesto(item: PuestoTabuladorSource): PuestoTabulador {
 }
 
 export function TabuladorView() {
+  const { language } = useLanguage();
+  const copy = getConfiguracionCopy(language).tabulator;
+  const tabOptions: Array<{ id: TabuladorType; label: string }> = [
+    { id: 'sindicalizado', label: copy.union },
+    { id: 'nosindicalizado', label: copy.nonUnion },
+  ];
   const [dataSindicalizado, setDataSindicalizado] = useState<PuestoTabulador[]>([]);
   const [dataNoSindicalizado, setDataNoSindicalizado] = useState<PuestoTabulador[]>([]);
   const [tabuladorType, setTabuladorType] = useState<TabuladorType>('sindicalizado');
@@ -53,7 +56,7 @@ export function TabuladorView() {
         ]);
 
         if (!resSindicalizado.ok || !resNoSindicalizado.ok) {
-          throw new Error('No se pudieron cargar los archivos del tabulador.');
+          throw new Error('Could not load salary scale data.');
         }
 
         const [jsonS, jsonN] = await Promise.all([
@@ -66,7 +69,7 @@ export function TabuladorView() {
       } catch (error) {
         if (error instanceof DOMException && error.name === 'AbortError') return;
         console.error('Error cargando tabuladores:', error);
-        setLoadError('No fue posible cargar el tabulador. Intenta nuevamente más tarde.');
+        setLoadError('error');
       } finally {
         if (!controller.signal.aborted) setLoading(false);
       }
@@ -87,7 +90,11 @@ export function TabuladorView() {
     const filtered = !isFiltering
       ? currentData
       : currentData.filter((item) => {
-          const haystack = normalizeSearchText(`${item.PUESTO} ${item.ÁREA} ${item.TIPO}`);
+          const haystack = normalizeSearchText([
+            item.PUESTO,
+            item.ÁREA,
+            item.TIPO,
+          ].map((value) => localizeTabulatorFallback(value, language)).join(' '));
           return searchTokens.every((token) => haystack.includes(token));
         });
 
@@ -95,7 +102,7 @@ export function TabuladorView() {
       (groups[item.ÁREA] ??= []).push(item);
       return groups;
     }, {});
-  }, [dataSindicalizado, dataNoSindicalizado, tabuladorType, searchTokens, isFiltering]);
+  }, [dataSindicalizado, dataNoSindicalizado, tabuladorType, searchTokens, isFiltering, language]);
 
   const resultCount = Object.values(groupedAndFilteredData).reduce(
     (total, puestos) => total + puestos.length,
@@ -111,13 +118,13 @@ export function TabuladorView() {
   const handleTabKeyDown = (event: KeyboardEvent<HTMLButtonElement>, currentId: TabuladorType) => {
     if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
     event.preventDefault();
-    const currentIndex = TAB_OPTIONS.findIndex(({ id }) => id === currentId);
+    const currentIndex = tabOptions.findIndex(({ id }) => id === currentId);
     const nextIndex = event.key === 'Home'
       ? 0
       : event.key === 'End'
-        ? TAB_OPTIONS.length - 1
-        : (currentIndex + (event.key === 'ArrowRight' ? 1 : -1) + TAB_OPTIONS.length) % TAB_OPTIONS.length;
-    const nextId = TAB_OPTIONS[nextIndex].id;
+        ? tabOptions.length - 1
+        : (currentIndex + (event.key === 'ArrowRight' ? 1 : -1) + tabOptions.length) % tabOptions.length;
+    const nextId = tabOptions[nextIndex].id;
     setTabuladorType(nextId);
     requestAnimationFrame(() => document.getElementById(`config-tab-${nextId}`)?.focus());
   };
@@ -126,20 +133,20 @@ export function TabuladorView() {
     <BoneyardSkeleton
       name="configuracion-tabulador"
       loading={loading}
-      loadingLabel="Cargando tabulador de salarios…"
+      loadingLabel={copy.loading}
     >
       <section className="tabulador-view config-page" aria-labelledby="tabulador-title">
       <header className="config-page__header tabulador-header">
         <h1 id="tabulador-title" className="config-page__title app-page-title">
-          Tabulador
+          {copy.title}
         </h1>
         {!loadError && (
           <div className="tabulador-search-header">
             <SearchField
               id="tabulador-search-input"
               ref={searchInputRef}
-              label="Buscar puesto, área o tipo"
-              placeholder="Buscar puesto, área o tipo…"
+              label={copy.searchLabel}
+              placeholder={copy.searchPlaceholder}
               value={searchTerm}
               onChange={(event) => setSearchTerm(event.target.value)}
               onKeyDown={(event) => {
@@ -154,8 +161,8 @@ export function TabuladorView() {
             />
           </div>
         )}
-        <div className="config-tabs" role="tablist" aria-label="Tipo de tabulador">
-          {TAB_OPTIONS.map(({ id, label }) => {
+        <div className="config-tabs" role="tablist" aria-label={copy.tabList}>
+          {tabOptions.map(({ id, label }) => {
             const isActive = tabuladorType === id;
             return (
               <button
@@ -179,7 +186,7 @@ export function TabuladorView() {
 
       {loadError ? (
         <div className="config-empty" role="alert">
-          <p className="type-body-md text-error">{loadError}</p>
+          <p className="type-body-md text-error">{copy.loadError}</p>
         </div>
       ) : (
         <>
@@ -189,8 +196,8 @@ export function TabuladorView() {
             role="status"
             aria-live="polite"
           >
-            {resultCount} puesto{resultCount === 1 ? '' : 's'} en{' '}
-            {areaCount} área{areaCount === 1 ? '' : 's'}
+            {resultCount} {language === 'en' ? resultCount === 1 ? 'position' : 'positions' : `puesto${resultCount === 1 ? '' : 's'}`} {language === 'en' ? 'in' : 'en'}{' '}
+            {areaCount} {language === 'en' ? areaCount === 1 ? 'area' : 'areas' : `área${areaCount === 1 ? '' : 's'}`}
             {isFiltering ? ` para “${searchTerm.trim()}”` : ''}.
           </p>
 
@@ -209,12 +216,12 @@ export function TabuladorView() {
                   aria-hidden="true"
                 />
                 <p className="type-body-md text-muted config-empty__copy">
-                  No se encontraron puestos
+                  {copy.noPositions}
                   {isFiltering ? ` para “${searchTerm.trim()}”` : ''}.
                 </p>
                 {isFiltering && (
                   <ButtonUtility onClick={handleClearSearch}>
-                    Limpiar búsqueda
+                    {copy.clearSearch}
                   </ButtonUtility>
                 )}
               </div>
@@ -222,9 +229,10 @@ export function TabuladorView() {
               Object.entries(groupedAndFilteredData).map(([area, puestos]) => (
                 <TabuladorAreaSection
                   key={area}
-                  area={area}
+                  area={localizeTabulatorFallback(area, language)}
                   puestos={puestos}
                   searchTokens={searchTokens}
+                  language={language}
                 />
               ))
             )}

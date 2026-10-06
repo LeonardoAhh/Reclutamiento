@@ -2,12 +2,14 @@ import { useMemo, useState } from 'react';
 import { BarChart3, SlidersHorizontal } from 'lucide-react';
 import { CartesianGrid, Label, LabelList, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { CustomSelect } from '@/components/ui/CustomSelect';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
 import { CapturarMotivoBajaModal } from '@/pages/bajas-components/CapturarMotivoBajaModal';
 import { MotivosBajaRecords } from '@/pages/bajas-components/MotivosBajaRecords';
 import { useBajaIndicatorOnly } from '@/hooks/useBajaIndicatorOnly';
 import { BAJA_REASON_CATALOG, indicatorBajaType, toBajaSentenceCase } from '@/lib/bajaReasonCatalog';
-import { formatMonthLabel, monthKey } from '@/lib/dates';
+import { monthKey, TZ_MX } from '@/lib/dates';
+import { getMotivosBajaCopy, translateBajaCatalogLabel } from '@/pages/bajas-components/motivosBajaTranslations';
 import './MotivosBaja.css';
 
 function yearFromDate(value: string): string | null {
@@ -15,13 +17,26 @@ function yearFromDate(value: string): string | null {
   return match?.[1] ?? null;
 }
 
-function monthLabel(value: string): string {
-  const label = new Intl.DateTimeFormat('es-MX', { month: 'long', timeZone: 'UTC' })
+function monthLabel(value: string, language: 'es' | 'en', style: 'long' | 'short' = 'long'): string {
+  const locale = language === 'en' ? 'en-US' : 'es-MX';
+  const label = new Intl.DateTimeFormat(locale, { month: style, timeZone: 'UTC' })
     .format(new Date(Date.UTC(2000, Number(value) - 1, 15)));
-  return label.charAt(0).toUpperCase() + label.slice(1);
+  return `${label.charAt(0).toUpperCase()}${label.slice(1).replace('.', '')}`;
+}
+
+function chartMonthLabel(value: string, language: 'es' | 'en'): string {
+  const [year, month] = value.split('-');
+  const locale = language === 'en' ? 'en-US' : 'es-MX';
+  const label = new Intl.DateTimeFormat(locale, {
+    month: 'short',
+    timeZone: TZ_MX,
+  }).format(new Date(Date.UTC(Number(year), Number(month) - 1, 15, 12)));
+  return `${label.charAt(0).toUpperCase()}${label.slice(1).replace('.', '')} ${year}`;
 }
 
 export function MotivosBaja() {
+  const { language } = useLanguage();
+  const copy = getMotivosBajaCopy(language);
   const { records: indicatorBajas, loading, error, reload, createRecord } = useBajaIndicatorOnly();
   const [year, setYear] = useState('all');
   const [month, setMonth] = useState('all');
@@ -103,7 +118,7 @@ export function MotivosBaja() {
     }
     const rows = Array.from(counts.entries())
       .sort(([a], [b]) => a.localeCompare(b))
-      .map(([key, count]) => ({ month: formatMonthLabel(key), monthIndex: Number(key.slice(0, 4)) * 12 + Number(key.slice(5, 7)), count }));
+      .map(([key, count]) => ({ month: chartMonthLabel(key, language), monthIndex: Number(key.slice(0, 4)) * 12 + Number(key.slice(5, 7)), count }));
     if (rows.length < 2) return rows;
 
     const averageMonth = rows.reduce((sum, row) => sum + row.monthIndex, 0) / rows.length;
@@ -114,7 +129,7 @@ export function MotivosBaja() {
       ...row,
       trend: Number(Math.max(0, average + slope * (row.monthIndex - averageMonth)).toFixed(1)),
     }));
-  }, [filteredBajas]);
+  }, [filteredBajas, language]);
 
   return (
     <main className="motivos-baja container" aria-labelledby="motivos-baja-title">
@@ -122,7 +137,7 @@ export function MotivosBaja() {
         <div className="motivos-baja__heading">
           <div>
             <h1 id="motivos-baja-title" className="app-page-title">
-              Motivos de baja
+              {copy.title}
             </h1>
           </div>
           <button
@@ -131,7 +146,7 @@ export function MotivosBaja() {
             onClick={() => setCaptureOpen(true)}
             disabled={loading || Boolean(error)}
           >
-            Registrar
+            {copy.register}
           </button>
         </div>
       </header>
@@ -141,12 +156,13 @@ export function MotivosBaja() {
         onClose={() => setCaptureOpen(false)}
         existingEmployees={existingEmployees}
         onCreate={createRecord}
+        language={language}
       />
 
       {error && (
         <div className="motivos-baja__message form-warning-text" role="alert">
-          <span>No se pudieron cargar los registros del indicador: {error}</span>{' '}
-          <button type="button" className="btn-secondary" onClick={() => void reload()}>Reintentar</button>
+          <span>{copy.loadError} {error}</span>{' '}
+          <button type="button" className="btn-secondary" onClick={() => void reload()}>{copy.retry}</button>
         </div>
       )}
 
@@ -154,52 +170,55 @@ export function MotivosBaja() {
         <div className="motivos-baja__panel-heading">
           <BarChart3 size="var(--icon-size-lg)" aria-hidden="true" />
           <div>
-            <h2 id="motivos-trend-title">Bajas por mes</h2>
+            <h2 id="motivos-trend-title">{copy.monthlyDepartures}</h2>
           </div>
           <Popover>
             <PopoverTrigger asChild>
-              <button type="button" className="btn-icon motivos-baja__filter-trigger" aria-label="Filtros del indicador">
+              <button type="button" className="btn-icon motivos-baja__filter-trigger" aria-label={copy.indicatorFilters}>
                 <SlidersHorizontal size="var(--icon-size-md)" aria-hidden="true" />
               </button>
             </PopoverTrigger>
-            <PopoverContent align="end" className="motivos-baja__filter-popover" aria-label="Filtros del indicador">
+            <PopoverContent align="end" className="motivos-baja__filter-popover" aria-label={copy.indicatorFilters}>
               <div className="motivos-baja__filters">
                 <div className="motivos-baja__filter">
-                  <label htmlFor="motivos-year">Año</label>
+                  <label htmlFor="motivos-year">{copy.year}</label>
                   <CustomSelect
                     id="motivos-year"
                     value={year}
                     showPlaceholderOption={false}
                     onChange={(value) => { setYear(value); setMonth('all'); }}
                     options={[
-                      { value: 'all', label: 'Todos los años' },
+                      { value: 'all', label: copy.allYears },
                       ...years.map((value) => ({ value, label: value })),
                     ]}
                   />
                 </div>
                 <div className="motivos-baja__filter">
-                  <label htmlFor="motivos-month">Mes</label>
+                  <label htmlFor="motivos-month">{copy.month}</label>
                   <CustomSelect
                     id="motivos-month"
                     value={month}
                     showPlaceholderOption={false}
                     onChange={setMonth}
                     options={[
-                      { value: 'all', label: 'Todos los meses' },
-                      ...months.map((value) => ({ value, label: monthLabel(value) })),
+                      { value: 'all', label: copy.allMonths },
+                      ...months.map((value) => ({ value, label: monthLabel(value, language) })),
                     ]}
                   />
                 </div>
                 <div className="motivos-baja__filter">
-                  <label htmlFor="motivos-type">Tipo de baja</label>
+                  <label htmlFor="motivos-type">{copy.exitType}</label>
                   <CustomSelect
                     id="motivos-type"
                     value={exitType}
                     showPlaceholderOption={false}
                     onChange={setExitType}
                     options={[
-                      { value: 'all', label: 'Todos los tipos' },
-                      ...exitTypes.map((value) => ({ value, label: toBajaSentenceCase(value) })),
+                      { value: 'all', label: copy.allTypes },
+                      ...exitTypes.map((value) => ({
+                        value,
+                        label: translateBajaCatalogLabel(toBajaSentenceCase(value), language),
+                      })),
                     ]}
                   />
                 </div>
@@ -208,19 +227,19 @@ export function MotivosBaja() {
           </Popover>
         </div>
         {monthlyRows.length > 0 ? (
-          <div className="motivos-baja__chart" role="img" aria-label={`Bajas por mes: ${monthlyRows.map((row) => `${row.month}, ${row.count}`).join('; ')}. ${monthlyRows.length > 1 ? 'La línea discontinua muestra la tendencia lineal del periodo.' : 'Se necesitan al menos dos meses para mostrar una tendencia.'}`}>
+          <div className="motivos-baja__chart" role="img" aria-label={`${copy.chartLabel} ${monthlyRows.map((row) => `${row.month}, ${row.count}`).join('; ')}. ${monthlyRows.length > 1 ? copy.chartTrend : copy.chartNeedsMonths}`}>
             <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
               <LineChart data={monthlyRows} accessibilityLayer>
                 <CartesianGrid vertical={false} stroke="var(--color-hairline)" />
                 <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fill: 'var(--color-muted)' }} />
                 <YAxis allowDecimals={false} domain={[0, (dataMax: number) => Math.max(1, Math.ceil(dataMax * 1.15))]} tickLine={false} axisLine={false} tick={{ fill: 'var(--color-muted)' }} width="auto" />
                 <Tooltip />
-                {monthlyRows.length > 1 && <Legend />}
+                {monthlyRows.length > 1 && <Legend formatter={() => copy.trend} />}
                 {monthlyRows.length > 1 && (
                   <Line
                     type="linear"
                     dataKey="trend"
-                    name="Tendencia"
+                    name={copy.trend}
                     stroke="var(--color-muted)"
                     strokeWidth="var(--chart-line-width)"
                     strokeDasharray="var(--chart-dash-short)"
@@ -232,7 +251,7 @@ export function MotivosBaja() {
                 <Line
                   type="linear"
                   dataKey="count"
-                  name="Bajas mensuales"
+                  name={copy.monthlySeries}
                   stroke="var(--color-primary)"
                   strokeWidth="var(--chart-line-width)"
                   strokeLinecap="round"
@@ -251,14 +270,14 @@ export function MotivosBaja() {
               </LineChart>
             </ResponsiveContainer>
           </div>
-        ) : <p className="motivos-baja__empty">No hay bajas para los filtros seleccionados.</p>}
+        ) : <p className="motivos-baja__empty">{copy.noFilteredDepartures}</p>}
       </section>
 
       <div className="motivos-baja__dashboard">
         <section className="motivos-baja__panel" aria-labelledby="motivos-types-title">
           <div className="motivos-baja__panel-heading">
             <BarChart3 size="var(--icon-size-lg)" aria-hidden="true" />
-            <div><h2 id="motivos-types-title">Distribución por tipo</h2></div>
+            <div><h2 id="motivos-types-title">{copy.distributionByType}</h2></div>
           </div>
           {typeRows.length > 0 ? (
             <ul className="motivos-baja__bars">
@@ -266,8 +285,8 @@ export function MotivosBaja() {
                 <li key={row.label}>
                   <div className="motivos-baja__bar-label">
                     <span className="motivos-baja__bar-category">
-                      <span>{toBajaSentenceCase(row.label)}</span>
-                      <span className="motivos-baja__bar-count">{row.count} {row.count === 1 ? 'baja' : 'bajas'}</span>
+                      <span>{translateBajaCatalogLabel(toBajaSentenceCase(row.label), language)}</span>
+                      <span className="motivos-baja__bar-count">{row.count} {row.count === 1 ? copy.departure : copy.departures}</span>
                     </span>
                     <strong>{row.percentage}%</strong>
                   </div>
@@ -275,17 +294,17 @@ export function MotivosBaja() {
                 </li>
               ))}
             </ul>
-          ) : <p className="motivos-baja__empty">No hay bajas para el periodo seleccionado.</p>}
+          ) : <p className="motivos-baja__empty">{copy.noDeparturesForPeriod}</p>}
         </section>
 
         <section className="motivos-baja__panel" aria-labelledby="motivos-reasons-title">
           <div className="motivos-baja__panel-heading">
             <BarChart3 size="var(--icon-size-lg)" aria-hidden="true" />
-            <div><h2 id="motivos-reasons-title">Motivos de baja</h2></div>
+            <div><h2 id="motivos-reasons-title">{copy.reasons}</h2></div>
           </div>
           {filteredBajas.length > 0 ? (
             <MotivosBajaRecords bajas={filteredBajas} year={year} month={month} exitType={exitType} />
-          ) : <p className="motivos-baja__empty">No hay motivos para los filtros seleccionados.</p>}
+          ) : <p className="motivos-baja__empty">{copy.noReasonsForFilters}</p>}
         </section>
       </div>
     </main>

@@ -1,6 +1,7 @@
 import { useRef, useState, type ChangeEvent } from 'react';
 import { ArrowRight, Upload } from 'lucide-react';
 import { Modal } from '@/components/ui/Modal';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from '@/lib/notify';
 import type { Employee, EmployeeAssignmentUpdate } from '@/lib/types';
 import {
@@ -42,6 +43,8 @@ export function EmployeeBulkUpdateModal({
   employees,
   onApply,
 }: EmployeeBulkUpdateModalProps) {
+  const { language } = useLanguage();
+  const english = language === 'en';
   const inputRef = useRef<HTMLInputElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [preview, setPreview] = useState<EmployeeAssignmentPreview | null>(null);
@@ -88,7 +91,11 @@ export function EmployeeBulkUpdateModal({
         return;
       }
 
-      toast.success({ title: `${result.updated} empleado${result.updated === 1 ? '' : 's'} actualizado${result.updated === 1 ? '' : 's'}` });
+      toast.success({
+        title: english
+          ? `${result.updated} employee${result.updated === 1 ? '' : 's'} updated`
+          : `${result.updated} empleado${result.updated === 1 ? '' : 's'} actualizado${result.updated === 1 ? '' : 's'}`,
+      });
       setIsOpen(false);
       setPreview(null);
     } catch {

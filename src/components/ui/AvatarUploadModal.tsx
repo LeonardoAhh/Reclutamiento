@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/useAuth";
 import { useFeedback } from "@/hooks/useFeedback";
 import { toast } from "@/lib/notify";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { toNaturalCase } from "@/lib/utils";
 import { CloudUpload, LoaderCircle, Trash2 } from "lucide";
 import { Avatar } from "./Avatar";
@@ -37,6 +38,8 @@ function getOwnedAvatarPath(
 
 export function AvatarUploadModal({ isOpen, onClose }: AvatarUploadModalProps) {
   const { user, profile, username, updateAvatarUrl } = useAuth();
+  const { language } = useLanguage();
+  const english = language === "en";
   const { trigger } = useFeedback();
 
   const [file, setFile] = useState<File | null>(null);
@@ -81,12 +84,12 @@ export function AvatarUploadModal({ isOpen, onClose }: AvatarUploadModalProps) {
     if (!selected) return;
 
     if (!selected.type.startsWith("image/")) {
-      toast.error({ title: "Solo se permiten imágenes" });
+      toast.error({ title: english ? "Only image files are allowed" : "Solo se permiten imágenes" });
       return;
     }
 
     if (selected.size > 2 * 1024 * 1024) {
-      toast.error({ title: "La imagen es muy grande (Máx 2MB)" });
+      toast.error({ title: english ? "The image is too large (max 2 MB)" : "La imagen es muy grande (Máx 2MB)" });
       return;
     }
 
@@ -135,12 +138,12 @@ export function AvatarUploadModal({ isOpen, onClose }: AvatarUploadModalProps) {
       // 4. Actualizar estado local
       updateAvatarUrl(publicUrl);
       trigger("success");
-      toast.success({ title: "Avatar actualizado exitosamente" });
+      toast.success({ title: english ? "Profile picture updated" : "Avatar actualizado exitosamente" });
       onClose();
     } catch (err: unknown) {
       console.error(err);
       trigger("error");
-      toast.error({ title: "Error al subir el avatar" });
+      toast.error({ title: english ? "Could not upload the profile picture" : "Error al subir el avatar" });
     } finally {
       setUploading(false);
     }
@@ -175,7 +178,7 @@ export function AvatarUploadModal({ isOpen, onClose }: AvatarUploadModalProps) {
         if (storageError) {
           trigger("error");
           toast.warning({
-            title: "Foto retirada; no se pudo borrar el archivo almacenado",
+            title: english ? "Picture removed; the stored file could not be deleted" : "Foto retirada; no se pudo borrar el archivo almacenado",
           });
           onClose();
           return;
@@ -183,12 +186,12 @@ export function AvatarUploadModal({ isOpen, onClose }: AvatarUploadModalProps) {
       }
 
       trigger("success");
-      toast.success({ title: "Foto de perfil eliminada" });
+      toast.success({ title: english ? "Profile picture deleted" : "Foto de perfil eliminada" });
       onClose();
     } catch (error: unknown) {
       console.error(error);
       trigger("error");
-      setDeleteError("No se pudo eliminar la foto. Inténtalo de nuevo.");
+      setDeleteError(english ? "Could not delete the picture. Try again." : "No se pudo eliminar la foto. Inténtalo de nuevo.");
     } finally {
       setDeleting(false);
     }
@@ -206,7 +209,7 @@ export function AvatarUploadModal({ isOpen, onClose }: AvatarUploadModalProps) {
         onClick={handleClose}
         disabled={uploading}
       >
-        Cancelar
+        {english ? "Cancel" : "Cancelar"}
       </button>
       <button
         type="button"
@@ -223,7 +226,7 @@ export function AvatarUploadModal({ isOpen, onClose }: AvatarUploadModalProps) {
             aria-hidden="true"
           />
         )}
-        <span>{uploading ? "Guardando..." : "Guardar"}</span>
+        <span>{uploading ? (english ? "Saving..." : "Guardando...") : (english ? "Save" : "Guardar")}</span>
       </button>
     </>
   );
@@ -232,9 +235,9 @@ export function AvatarUploadModal({ isOpen, onClose }: AvatarUploadModalProps) {
     return (
       <ConfirmModal
         isOpen={isOpen}
-        title="Eliminar foto"
-        description="Esta acción no se puede deshacer."
-        confirmLabel="Eliminar"
+        title={english ? "Delete picture" : "Eliminar foto"}
+        description={english ? "This action cannot be undone." : "Esta acción no se puede deshacer."}
+        confirmLabel={english ? "Delete" : "Eliminar"}
         onConfirm={() => void handleDelete()}
         onCancel={() => {
           if (!deleting) {
@@ -244,7 +247,7 @@ export function AvatarUploadModal({ isOpen, onClose }: AvatarUploadModalProps) {
         }}
         isDestructive
         isLoading={deleting}
-        loadingLabel="Eliminando…"
+        loadingLabel={english ? "Deleting…" : "Eliminando…"}
         errorMessage={deleteError ?? undefined}
       />
     );
@@ -254,7 +257,8 @@ export function AvatarUploadModal({ isOpen, onClose }: AvatarUploadModalProps) {
     <Modal
       isOpen={isOpen}
       onClose={handleClose}
-      title="Avatar"
+      title={english ? "Profile picture" : "Avatar"}
+      closeLabel={english ? "Close" : "Cerrar"}
       size="xs"
       footerActions={footerActions}
     >
@@ -269,7 +273,7 @@ export function AvatarUploadModal({ isOpen, onClose }: AvatarUploadModalProps) {
           </div>
 
           <p className="avatar-modal__hint">
-            Sube un avatar cuadrado, máximo 2MB.
+            {english ? "Upload a square profile picture, up to 2 MB." : "Sube un avatar cuadrado, máximo 2MB."}
           </p>
 
           <input
@@ -293,7 +297,7 @@ export function AvatarUploadModal({ isOpen, onClose }: AvatarUploadModalProps) {
                 size="var(--icon-size-sm)"
                 aria-hidden="true"
               />
-              <span>{file ? "Elegir otra imagen" : "Seleccionar"}</span>
+              <span>{file ? (english ? "Choose another image" : "Elegir otra imagen") : (english ? "Select" : "Seleccionar")}</span>
             </button>
             {profile.avatar_url && (
               <button
@@ -307,7 +311,7 @@ export function AvatarUploadModal({ isOpen, onClose }: AvatarUploadModalProps) {
                   size="var(--icon-size-sm)"
                   aria-hidden="true"
                 />
-                <span>Borrar foto</span>
+                <span>{english ? "Delete picture" : "Borrar foto"}</span>
               </button>
             )}
           </div>

@@ -1,4 +1,5 @@
 import { SquarePen, X, ImagePlus } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Modal } from "./Modal";
 import { CustomSelect } from "./CustomSelect";
 import { SmartTextarea } from "./SmartTextarea";
@@ -73,7 +74,10 @@ export function EditActivityModal({
   setExistingReferenceImage,
   onSubmit,
 }: EditActivityModalProps) {
+  const { language } = useLanguage();
+  const en = language === "en";
   const { title, formId, fieldIdPrefix } = EDIT_MODAL_CONTENT[activityType];
+  const modalTitle = en ? ({ unica: "Edit activity", rutinaria: "Edit responsibility", soporte: "Edit support task" })[activityType] : title;
   const titleId = `${fieldIdPrefix}-titulo`;
   const assigneeId = `${fieldIdPrefix}-asignado`;
   const descriptionId = `${fieldIdPrefix}-descripcion`;
@@ -82,7 +86,7 @@ export function EditActivityModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={title}
+      title={modalTitle}
       icon={<SquarePen size="var(--icon-size-md)" aria-hidden="true" />}
       size="sm"
       footerActions={
@@ -93,7 +97,7 @@ export function EditActivityModal({
             onClick={onClose}
             disabled={isEditing}
           >
-            Cancelar
+            {en ? "Cancel" : "Cancelar"}
           </button>
           <button
             type="submit"
@@ -102,14 +106,14 @@ export function EditActivityModal({
             aria-busy={isEditing}
             form={formId}
           >
-            {isEditing ? "Guardando..." : "Guardar"}
+            {isEditing ? (en ? "Saving..." : "Guardando...") : (en ? "Save" : "Guardar")}
           </button>
         </>
       }
     >
       <form id={formId} className="modal-body" onSubmit={onSubmit} noValidate>
         <div className="form-group">
-          <label htmlFor={titleId}>Título</label>
+          <label htmlFor={titleId}>{en ? "Title" : "Título"}</label>
           <input
             id={titleId}
             required
@@ -120,7 +124,7 @@ export function EditActivityModal({
         </div>
 
         <div className="form-group">
-          <label htmlFor={assigneeId}>Asignar a</label>
+          <label htmlFor={assigneeId}>{en ? "Assign to" : "Asignar a"}</label>
           <CustomSelect
             id={assigneeId}
             value={asignadoA}
@@ -130,29 +134,29 @@ export function EditActivityModal({
         </div>
 
         <div className="form-group">
-          <label htmlFor={descriptionId}>Descripción</label>
+          <label htmlFor={descriptionId}>{en ? "Description" : "Descripción"}</label>
           <SmartTextarea
             id={descriptionId}
             value={descripcion}
             onChange={setDescripcion}
-            placeholder="Detalles de la actividad..."
+            placeholder={en ? "Activity details..." : "Detalles de la actividad..."}
           />
         </div>
 
         <div className="form-group">
-          <span className="form-label">Foto de Referencia</span>
+          <span className="form-label">{en ? "Reference photo" : "Foto de Referencia"}</span>
           <div className="reference-upload-area">
             {referenceImagePreview || existingReferenceImage ? (
               <AttachmentCard
                 name={
                   referenceImageFile?.name ||
                   existingReferenceImage?.split("/").pop()?.split("?")[0] ||
-                  "Imagen"
+                  (en ? "Image" : "Imagen")
                 }
                 metadata={
                   referenceImageFile
-                    ? `Imagen · ${(referenceImageFile.size / 1024).toFixed(0)} KB`
-                    : "Imagen adjunta"
+                    ? `${en ? "Image" : "Imagen"} · ${(referenceImageFile.size / 1024).toFixed(0)} KB`
+                    : (en ? "Attached image" : "Imagen adjunta")
                 }
                 imageSrc={referenceImagePreview || existingReferenceImage!}
                 onRemove={() => {
@@ -160,7 +164,7 @@ export function EditActivityModal({
                     setReferenceImagePreview(null);
                     setExistingReferenceImage(null);
                 }}
-                removeLabel="Quitar foto de referencia"
+                removeLabel={en ? "Remove reference photo" : "Quitar foto de referencia"}
                 removeIcon={
                   <X size="var(--icon-size-sm)" aria-hidden="true" />
                 }
@@ -168,7 +172,7 @@ export function EditActivityModal({
             ) : (
               <label className="reference-upload-label">
                 <ImagePlus size="var(--icon-size-lg)" aria-hidden="true" />
-                <span>Subir foto de referencia</span>
+                <span>{en ? "Upload reference photo" : "Subir foto de referencia"}</span>
                 <input
                   type="file"
                   accept="image/*"

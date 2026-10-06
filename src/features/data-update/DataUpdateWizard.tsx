@@ -43,6 +43,7 @@ import {
   validateDataUpdatePhoto,
   validateEditableData,
 } from "./validation";
+import { useDataUpdateText } from "./translations";
 
 type SaveState = "saved" | "pending" | "saving" | "error";
 
@@ -80,6 +81,7 @@ export function DataUpdateWizard({
   onCancel,
   onCompleted,
 }: DataUpdateWizardProps) {
+  const t = useDataUpdateText();
   const initialRelationship = initialRelationshipState(initialRecord.data.emergencyRelationship);
   const [record, setRecord] = useState(initialRecord);
   const [data, setData] = useState(initialRecord.data);
@@ -141,9 +143,9 @@ export function DataUpdateWizard({
         }
         setPhotoUrl(url);
       })
-      .catch(() => { if (active) setNotice("No fue posible cargar la vista previa de la fotografía."); });
+      .catch(() => { if (active) setNotice(t("No fue posible cargar la vista previa de la fotografía.")); });
     return () => { active = false; };
-  }, [record.photoPath]);
+  }, [record.photoPath, t]);
 
   useEffect(() => () => {
     if (objectPhotoUrlRef.current) URL.revokeObjectURL(objectPhotoUrlRef.current);
@@ -172,7 +174,7 @@ export function DataUpdateWizard({
   const persist = (step: number): Promise<boolean> => {
     if (!online) {
       setSaveState("pending");
-      setNotice("Necesitas conexión para guardar este registro.");
+      setNotice(t("Necesitas conexión para guardar este registro."));
       return Promise.resolve(false);
     }
     const dataSnapshot = dataRef.current;
@@ -198,7 +200,7 @@ export function DataUpdateWizard({
         return true;
       } catch (caught) {
         setSaveState("error");
-        setNotice(dataUpdateError(caught));
+        setNotice(t(dataUpdateError(caught)));
         return false;
       } finally {
         if (queuedSignatureRef.current === nextSignature) queuedSignatureRef.current = "";
@@ -236,7 +238,7 @@ export function DataUpdateWizard({
       return true;
     } catch (caught) {
       setSaveState("error");
-      setNotice(dataUpdateError(caught));
+      setNotice(t(dataUpdateError(caught)));
       return false;
     }
   };
@@ -244,7 +246,7 @@ export function DataUpdateWizard({
   const beforeStepChange = async (currentStep: number, nextStep: number) => {
     if (photoBusy) return false;
     if (!online) {
-      setNotice("Necesitas conexión para continuar.");
+      setNotice(t("Necesitas conexión para continuar."));
       return false;
     }
     const queued = await saveQueueRef.current;
@@ -290,15 +292,15 @@ export function DataUpdateWizard({
     if (!file || photoBusy) return;
     const validationError = validateDataUpdatePhoto(file);
     if (validationError) {
-      setNotice(validationError);
+      setNotice(t(validationError));
       return;
     }
     if (!online) {
-      setNotice("Necesitas conexión para cargar la fotografía.");
+      setNotice(t("Necesitas conexión para cargar la fotografía."));
       return;
     }
     setPhotoBusy(true);
-    setPhotoStatus("Preparando fotografía…");
+    setPhotoStatus(t("Preparando fotografía…"));
     setRetryPhotoFile(null);
     setNotice(null);
     const previousPath = photoPathRef.current;
@@ -309,17 +311,17 @@ export function DataUpdateWizard({
       const objectUrl = URL.createObjectURL(file);
       objectPhotoUrlRef.current = objectUrl;
       setPhotoUrl(objectUrl);
-      setPhotoStatus("Subiendo fotografía…");
+      setPhotoStatus(t("Subiendo fotografía…"));
       uploadedPath = await uploadDataUpdatePhoto(recordRef.current, file);
       photoPathRef.current = uploadedPath;
-      setPhotoStatus("Guardando fotografía…");
+      setPhotoStatus(t("Guardando fotografía…"));
       const saved = await persist(currentStepRef.current);
-      if (!saved) throw new Error("No fue posible vincular la fotografía al registro.");
+      if (!saved) throw new Error(t("No fue posible vincular la fotografía al registro."));
       if (previousPath && previousPath !== uploadedPath) {
         await removeDataUpdatePhoto(previousPath).catch(() => undefined);
       }
-      setPhotoStatus("Fotografía guardada.");
-      toast.success({ title: "Fotografía guardada" });
+      setPhotoStatus(t("Fotografía guardada."));
+      toast.success({ title: t("Fotografía guardada") });
     } catch (caught) {
       if (uploadedPath) await removeDataUpdatePhoto(uploadedPath).catch(() => undefined);
       if (objectPhotoUrlRef.current) {
@@ -330,7 +332,7 @@ export function DataUpdateWizard({
       setPhotoUrl(previousUrl);
       setPhotoStatus(null);
       setRetryPhotoFile(file);
-      setNotice(dataUpdateError(caught));
+      setNotice(t(dataUpdateError(caught)));
     } finally {
       setPhotoBusy(false);
     }
@@ -340,7 +342,7 @@ export function DataUpdateWizard({
     if (!file) return;
     const validationError = validateDataUpdatePhoto(file);
     if (validationError) {
-      setNotice(validationError);
+      setNotice(t(validationError));
       return;
     }
     if (photoPathRef.current) {
@@ -375,20 +377,20 @@ export function DataUpdateWizard({
     && !fieldErrors.childrenBirthDates;
   const allDataValid = validateEditableData(data).length === 0 && transportValid;
   const saveLabel = !online
-    ? saveState === "pending" ? "Sin conexión · cambios pendientes" : "Sin conexión"
+    ? saveState === "pending" ? t("Sin conexión · cambios pendientes") : t("Sin conexión")
     : saveState === "saving"
-      ? "Guardando…"
+      ? t("Guardando…")
       : saveState === "pending"
-        ? "Cambios pendientes"
+        ? t("Cambios pendientes")
         : saveState === "error"
-          ? "No se pudo guardar"
-          : "Guardado";
+          ? t("No se pudo guardar")
+          : t("Guardado");
   const visibleErrors = (step: number) => revealedErrorSteps.has(step) ? fieldErrors : undefined;
   const transportErrors = revealedErrorSteps.has(1)
     ? {
         ...fieldErrors,
         ...(!transportValid && data.route && data.stop && data.location
-          ? { location: "Selecciona una combinación válida de ruta, parada y ubicación." }
+          ? { location: t("Selecciona una combinación válida de ruta, parada y ubicación.") }
           : {}),
       }
     : undefined;
@@ -396,7 +398,7 @@ export function DataUpdateWizard({
   const steps: FormWizardStep[] = useMemo(() => [
     {
       id: "identity",
-      title: "Identificación",
+      title: t("Identificación"),
       isValid: identityValid,
       content: (
         <IdentityReviewStep
@@ -419,7 +421,7 @@ export function DataUpdateWizard({
         />
       ),
       onInvalid: () => {
-        setNotice("Confirma la identificación o registra los datos incorrectos para continuar.");
+        setNotice(t("Confirma la identificación o registra los datos incorrectos para continuar."));
         window.requestAnimationFrame(() => {
           document.querySelector<HTMLInputElement>("input[name='identity-review']")?.focus();
         });
@@ -427,23 +429,23 @@ export function DataUpdateWizard({
     },
     {
       id: "transport",
-      title: "Transporte",
+      title: t("Transporte"),
       isValid: transportValid,
-      onInvalid: () => showStepErrors(1, "Revisa la selección de transporte para continuar."),
+      onInvalid: () => showStepErrors(1, t("Revisa la selección de transporte para continuar.")),
       content: <TransportStep data={data} transportOptions={campaign.transportOptions} onChange={changeField} errors={transportErrors} />,
     },
     {
       id: "contact",
-      title: "Contacto",
+      title: t("Contacto"),
       isValid: contactValid,
-      onInvalid: () => showStepErrors(2, "Revisa los datos de contacto para continuar."),
+      onInvalid: () => showStepErrors(2, t("Revisa los datos de contacto para continuar.")),
       content: <ContactStep data={data} civilStatuses={campaign.civilStatuses} onChange={changeField} errors={visibleErrors(2)} />,
     },
     {
       id: "address",
-      title: "Domicilio",
+      title: t("Domicilio"),
       isValid: addressValid,
-      onInvalid: () => showStepErrors(3, "Completa los datos de emergencia y domicilio para continuar."),
+      onInvalid: () => showStepErrors(3, t("Completa los datos de emergencia y domicilio para continuar.")),
       content: (
         <AddressStep
           data={data}
@@ -458,16 +460,16 @@ export function DataUpdateWizard({
     },
     {
       id: "additional",
-      title: "Información adicional",
+      title: t("Información adicional"),
       isValid: additionalValid,
-      onInvalid: () => showStepErrors(4, "Completa la información adicional para continuar."),
+      onInvalid: () => showStepErrors(4, t("Completa la información adicional para continuar.")),
       content: <AdditionalDataStep data={data} onChange={changeField} errors={visibleErrors(4)} />,
     },
     {
       id: "family",
-      title: "Tallas e hijos",
+      title: t("Tallas e hijos"),
       isValid: familyValid,
-      onInvalid: () => showStepErrors(5, "Completa las tallas y las fechas de nacimiento para continuar."),
+      onInvalid: () => showStepErrors(5, t("Completa las tallas y las fechas de nacimiento para continuar.")),
       content: (
         <FamilyDataStep
           data={data}
@@ -477,7 +479,7 @@ export function DataUpdateWizard({
           onConfirmChildrenCount={() => setChildrenCountConfirmed(true)}
           errors={visibleErrors(5)}
           childrenCountError={revealedErrorSteps.has(5) && !childrenCountConfirmed
-            ? "Confirma la cantidad de hijos, incluso si es 0."
+            ? t("Confirma la cantidad de hijos, incluso si es 0.")
             : undefined}
           childrenError={revealedErrorSteps.has(5) ? fieldErrors.childrenBirthDates : undefined}
         />
@@ -485,10 +487,10 @@ export function DataUpdateWizard({
     },
     {
       id: "photo",
-      title: "Fotografía",
+      title: t("Fotografía"),
       isValid: !photoBusy && Boolean(photoPathRef.current),
       onInvalid: () => {
-        setNotice("Agrega una fotografía para continuar.");
+        setNotice(t("Agrega una fotografía para continuar."));
         window.requestAnimationFrame(() => {
           document.querySelector<HTMLInputElement>(".data-update-photo input[type='file']")?.focus();
         });
@@ -507,11 +509,11 @@ export function DataUpdateWizard({
     },
     {
       id: "review",
-      title: "Revisión",
+      title: t("Revisión"),
       isValid: Boolean(photoPathRef.current) && allDataValid,
       content: (goToStep) => <ReviewStep data={data} onEditStep={goToStep} />,
     },
-  ], [record.identity, review, incidentFields, incidentNote, incidents, data, campaign, photoUrl, photoBusy, photoStatus, retryPhotoFile, relationshipChoice, relationshipOther, childrenCountConfirmed, identityValid, transportValid, contactValid, addressValid, additionalValid, familyValid, allDataValid, revealedErrorSteps, online]);
+  ], [record.identity, review, incidentFields, incidentNote, incidents, data, campaign, photoUrl, photoBusy, photoStatus, retryPhotoFile, relationshipChoice, relationshipOther, childrenCountConfirmed, identityValid, transportValid, contactValid, addressValid, additionalValid, familyValid, allDataValid, revealedErrorSteps, online, t]);
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();
@@ -521,10 +523,10 @@ export function DataUpdateWizard({
     try {
       if (!(await persist(DATA_UPDATE_STEP_COUNT - 1))) return;
       const completed = await completeDataUpdateRecord(recordRef.current.id, recordRef.current.version);
-      toast.success({ title: "Actualización completada" });
+      toast.success({ title: t("Actualización completada") });
       onCompleted(completed);
     } catch (caught) {
-      setNotice(dataUpdateError(caught));
+      setNotice(t(dataUpdateError(caught)));
     } finally {
       setSubmitting(false);
     }
@@ -536,14 +538,14 @@ export function DataUpdateWizard({
         <div className="data-update-wizard__context">
           <h1 className="app-page-title">{record.identity.name}</h1>
           <span className="type-caption-up text-muted">
-            Empleado {record.identity.employeeNumber}
+            {t(`Empleado ${record.identity.employeeNumber}`)}
           </span>
         </div>
         <div className="data-update-save-actions">
           <span className="data-update-save-state" role="status" aria-live="polite">{saveLabel}</span>
           {online && saveState === "error" && (
             <button type="button" className="btn-secondary btn-sm" onClick={() => void persist(currentStepRef.current)}>
-              Reintentar
+              {t("Reintentar")}
             </button>
           )}
         </div>
@@ -551,8 +553,8 @@ export function DataUpdateWizard({
       <FormWizard
         steps={steps}
         initialStep={currentStepRef.current}
-        submitLabel="Actualizar"
-        submittingLabel="Actualizando..."
+        submitLabel={t("Actualizar")}
+        submittingLabel={t("Actualizando...")}
         submitting={submitting}
         submitDisabled={!online || photoBusy || !photoPathRef.current || !allDataValid}
         navigationPending={photoBusy}
@@ -563,10 +565,10 @@ export function DataUpdateWizard({
       />
       <ConfirmModal
         isOpen={pendingPhotoFile !== null}
-        title="Reemplazar fotografía"
-        description="La fotografía nueva sustituirá la que ya está guardada."
-        confirmLabel="Reemplazar"
-        cancelLabel="Conservar actual"
+        title={t("Reemplazar fotografía")}
+        description={t("La fotografía nueva sustituirá la que ya está guardada.")}
+        confirmLabel={t("Reemplazar")}
+        cancelLabel={t("Conservar actual")}
         onConfirm={() => {
           const file = pendingPhotoFile;
           setPendingPhotoFile(null);

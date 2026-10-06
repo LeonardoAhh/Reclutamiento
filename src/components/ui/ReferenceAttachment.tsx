@@ -1,4 +1,5 @@
 import { Maximize2 } from "lucide-react";
+import { useLanguage } from '@/contexts/LanguageContext';
 import "./ReferenceAttachment.css";
 
 interface ReferenceAttachmentProps {
@@ -12,12 +13,14 @@ export function ReferenceAttachment({
   contextLabel,
   onOpen,
 }: ReferenceAttachmentProps) {
+  const { language } = useLanguage();
+  const en = language === 'en';
   return (
     <button
       type="button"
       className="reference-attachment"
       onClick={onOpen}
-      aria-label={`Abrir referencia visual de ${contextLabel}`}
+      aria-label={`${en ? 'Open visual reference for' : 'Abrir referencia visual de'} ${contextLabel}`}
     >
       <span className="reference-attachment__preview" aria-hidden="true">
         <img
@@ -28,9 +31,9 @@ export function ReferenceAttachment({
         />
       </span>
       <span className="reference-attachment__content">
-        <span className="reference-attachment__title">Referencia visual</span>
+        <span className="reference-attachment__title">{en ? 'Visual reference' : 'Referencia visual'}</span>
         <span className="reference-attachment__description">
-          Abrir imagen
+          {en ? 'Open image' : 'Abrir imagen'}
         </span>
       </span>
       <Maximize2

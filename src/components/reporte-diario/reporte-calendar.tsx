@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useReportLocale } from "./useReportLocale";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -33,9 +33,11 @@ function getHeatLevel(ausPct: number | undefined, threshold: number): HeatLevel 
 // ─── Subcomponent: Weekday Headers ─────────────────────────────────────────────
 
 function WeekDayHeaders() {
+    const { en } = useReportLocale();
+    const names = en ? ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] : WEEK_DAY_NAMES;
     return (
         <div className="reporte-cal__weekdays" role="row">
-            {WEEK_DAY_NAMES.map((name) => (
+            {names.map((name) => (
                 <div
                     key={name}
                     role="columnheader"
@@ -70,17 +72,18 @@ function DayCell({
     threshold,
     onSelectDay,
 }: DayCellProps) {
+    const { copy, holiday } = useReportLocale();
     const hasAus = ausPct !== undefined;
     const dayNumber = parseInt(day, 10);
     const hasData = hasAus || count > 0;
     const heat = getHeatLevel(ausPct, threshold);
 
     const ariaLabel = [
-        `Día ${dayNumber}`,
-        holidayLabel ? `Festivo: ${holidayLabel}` : null,
-        count > 0 ? `${count} incidencia${count !== 1 ? "s" : ""}` : "Sin incidencias",
-        hasAus ? `Ausentismo: ${ausPct!.toFixed(1)}%` : null,
-        !hasData ? "Sin información" : null,
+        `${copy("Día", "Day")} ${dayNumber}`,
+        holidayLabel ? `${copy("Festivo", "Holiday")}: ${holiday(holidayLabel)}` : null,
+        count > 0 ? `${count} ${count === 1 ? copy("incidencia", "incident") : copy("incidencias", "incidents")}` : copy("Sin incidencias", "No incidents"),
+        hasAus ? `${copy("Ausentismo", "Absenteeism")}: ${ausPct!.toFixed(1)}%` : null,
+        !hasData ? copy("Sin información", "No information") : null,
     ]
         .filter(Boolean)
         .join(", ");
@@ -119,7 +122,7 @@ function DayCell({
                     <span className="reporte-cal__daynum">{dayNumber}</span>
                 </div>
                 <div className="reporte-cal__kpi reporte-cal__kpi--right">
-                    <span className="sr-only">Incidencias:</span>
+                    <span className="sr-only">{copy("Incidencias", "Incidents")}:</span>
                     {count > 0 ? (
                         <span className="reporte-cal__count">{count}</span>
                     ) : (
@@ -129,8 +132,8 @@ function DayCell({
             </div>
 
             {holidayLabel && (
-                <span title={holidayLabel} className="reporte-cal__holiday">
-                    {holidayLabel}
+                <span title={holiday(holidayLabel)} className="reporte-cal__holiday">
+                    {holiday(holidayLabel)}
                 </span>
             )}
         </div>
@@ -149,12 +152,13 @@ export default function ReporteCalendar({
     ausentismoThreshold = AUSENTISMO_THRESHOLD,
     onSelectDay,
 }: ReporteCalendarProps) {
+    const { copy } = useReportLocale();
     const monthPart = currentMonth.split("-")[1];
 
     return (
         <div
             role="grid"
-            aria-label="Calendario de reporte de asistencia"
+            aria-label={copy("Calendario de reporte de asistencia", "Attendance report calendar")}
             className="reporte-cal"
         >
             <WeekDayHeaders />

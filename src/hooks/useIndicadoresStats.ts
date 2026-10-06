@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useTeamDirectory } from '@/features/team/TeamProvider';
 import { getISOWeek } from 'date-fns';
 import { supabase } from '@/lib/supabase';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export interface IndicadorRecord {
   "No.": string;
@@ -59,6 +60,7 @@ export function parseDate(dateStr: string) {
 
 export function useIndicadoresStats(selectedMonth: Date) {
   const { resolve } = useTeamDirectory();
+  const { language } = useLanguage();
   const [data, setData] = useState<IndicadorRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -250,7 +252,7 @@ export function useIndicadoresStats(selectedMonth: Date) {
     formattedData.forEach(row => {
       if (row.date === 'Sin Fecha') return;
       const weekNum = getISOWeek(row.parsedDate);
-      const weekKey = `Semana ${weekNum}`;
+      const weekKey = `${language === 'en' ? 'Week' : 'Semana'} ${weekNum}`;
       if (!groupedByWeek[weekKey]) {
         groupedByWeek[weekKey] = { date: weekKey, parsedDate: row.parsedDate, total: 0 };
       }
@@ -281,7 +283,7 @@ export function useIndicadoresStats(selectedMonth: Date) {
         metaSemanal
       }
     };
-  }, [data, selectedMonth, resolve]);
+  }, [data, selectedMonth, resolve, language]);
 
   const historicalGoals = useMemo(() => {
     const statsByMonthRecruiter: Record<string, Record<string, number>> = {};
@@ -325,8 +327,6 @@ export function useIndicadoresStats(selectedMonth: Date) {
       return yearA !== yearB ? yearA - yearB : monthA - monthB;
     });
 
-    const monthNames = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
-
     sortedMonths.forEach(([monthKey, recruiters]) => {
       const [yearStr, monthStr] = monthKey.split('-');
       const y = parseInt(yearStr, 10);
@@ -334,7 +334,7 @@ export function useIndicadoresStats(selectedMonth: Date) {
       
       const isBeforeJune2026 = y < 2026 || (y === 2026 && m < 5);
       const meta = isBeforeJune2026 ? 13 : 28;
-      const monthName = `${monthNames[m]} ${y}`;
+      const monthName = `${new Intl.DateTimeFormat(language === 'en' ? 'en-US' : 'es-MX', { month: 'short' }).format(new Date(y, m, 1))} ${y}`;
       
       Object.entries(recruiters).forEach(([rec, count]) => {
          if (count >= meta) {
@@ -351,7 +351,7 @@ export function useIndicadoresStats(selectedMonth: Date) {
       monthsCompleted: recruiterMonthsCompleted[name].total,
       details: recruiterMonthsCompleted[name].details
     })).sort((a, b) => b.monthsCompleted - a.monthsCompleted);
-  }, [data, resolve]);
+  }, [data, resolve, language]);
 
   return { data, loading, error, chartData, recruiters, tableData, kpi, historicalGoals };
 }

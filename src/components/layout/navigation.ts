@@ -14,6 +14,7 @@ import {
 import type { LucideIcon } from "lucide-react";
 import { PLANTILLA_PATH } from "@/lib/plantillaNavigation";
 import { ADMINISTRATION_PATH, getConfiguracionHref } from "@/lib/configuracionNavigation";
+import type { Language } from "@/contexts/LanguageContext";
 
 export type NavigationRole = "admin" | "reclutador";
 
@@ -32,11 +33,12 @@ export type NavSection = {
   items: NavItem[];
 };
 
-export const ACTIVIDADES_PATH = "/actividades";
-export const ACCOUNT_PATH = "/cuenta";
-export const TEAM_PATH = "/equipo";
-export const LOGOUT_PATH = "/cerrar-sesion";
-export const HOME_PATH = "/inicio";
+export const ACTIVIDADES_PATH = "/activities";
+export const ACCOUNT_PATH = "/account";
+export const TEAM_PATH = "/team";
+export const LOGOUT_PATH = "/logout";
+export const VACANCY_ASSIGNMENTS_PATH = "/vacancy-assignments";
+export const HOME_PATH = "/home";
 export const ORGANIZATION_CHART_PATH = "/organization-chart";
 export const APP_BRAND_NAME = "ViñoPlastic";
 
@@ -46,16 +48,16 @@ export const NAV_SECTIONS: ReadonlyArray<NavSection> = [
     items: [
       { to: HOME_PATH, label: "Inicio", icon: House, end: true },
       { to: getConfiguracionHref("analisis"), label: "Análisis", icon: ChartSpline },
-      { to: "/candidatos", label: "Candidatos", icon: UserSearch, mobilePriority: true },
+      { to: "/candidates", label: "Candidatos", icon: UserSearch, mobilePriority: true },
       { to: PLANTILLA_PATH, label: "Plantilla", icon: Contact },
-      { to: "/resumen", label: "Resumen", icon: ChartNoAxesCombined, end: false, mobilePriority: true },
+      { to: "/overview", label: "Resumen", icon: ChartNoAxesCombined, end: false, mobilePriority: true },
     ],
   },
   {
     label: "Herramientas",
     items: [
-      { to: "/actualizacion-datos", label: "Campaña", icon: UserRoundPen, roles: ["admin", "reclutador"] },
-      { to: "/reportes", label: "Reporte Diario", icon: NotebookText },
+      { to: "/data-update", label: "Campaña", icon: UserRoundPen, roles: ["admin", "reclutador"] },
+      { to: "/reports", label: "Reporte Diario", icon: NotebookText },
     ],
   },
   {
@@ -71,3 +73,33 @@ export const NAV_SECTIONS: ReadonlyArray<NavSection> = [
 ];
 
 export const NAV_ITEMS: ReadonlyArray<NavItem> = NAV_SECTIONS.flatMap((section) => section.items);
+
+const ENGLISH_NAV_LABELS: Readonly<Record<string, string>> = {
+  Principal: "Main",
+  Herramientas: "Tools",
+  Administración: "Administration",
+  Inicio: "Home",
+  Análisis: "Analysis",
+  Candidatos: "Candidates",
+  Plantilla: "Workforce",
+  Resumen: "Overview",
+  Campaña: "Data update",
+  "Reporte Diario": "Daily Report",
+  Actividades: "Activities",
+  Formatos: "Forms",
+  Indicadores: "Metrics",
+  Rutas: "Routes",
+  Tabulador: "Pay Scale",
+};
+
+export function getLocalizedNavigation(language: Language): NavSection[] {
+  if (language === "es") return NAV_SECTIONS.map((section) => ({ ...section, items: [...section.items] }));
+  return NAV_SECTIONS.map((section) => ({
+    ...section,
+    label: ENGLISH_NAV_LABELS[section.label] ?? section.label,
+    items: section.items.map((item) => ({
+      ...item,
+      label: ENGLISH_NAV_LABELS[item.label] ?? item.label,
+    })),
+  }));
+}

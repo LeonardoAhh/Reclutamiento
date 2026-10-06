@@ -1,4 +1,5 @@
 import { UserRound, UsersRound } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { ReclutadorBadge } from "@/components/ui/Badge";
 import "./AssignmentMeta.css";
 
@@ -17,12 +18,14 @@ export function AssignmentMeta({
   assignee,
   currentUserId,
 }: AssignmentMetaProps) {
+  const { language } = useLanguage();
+  const en = language === "en";
   const isCurrentUser = assignee?.id === currentUserId;
 
   return (
     <dl className="assignment-meta">
       <div className="assignment-meta__row">
-        <dt className="sr-only">Asignación</dt>
+        <dt className="sr-only">{en ? "Assignment" : "Asignación"}</dt>
         <dd className="assignment-meta__value">
           {assignee ? (
             isCurrentUser ? (
@@ -31,12 +34,12 @@ export function AssignmentMeta({
                   size="var(--icon-size-sm)"
                   aria-hidden="true"
                 />
-                <span>Asignada a ti</span>
+                <span>{en ? "Assigned to you" : "Asignada a ti"}</span>
               </span>
             ) : (
               <ReclutadorBadge
                 nombre={
-                  assignee.display_name || assignee.username || "Sin nombre"
+                  assignee.display_name || assignee.username || (en ? "Unnamed" : "Sin nombre")
                 }
                 size="sm"
                 showRole={false}
@@ -48,7 +51,7 @@ export function AssignmentMeta({
                 size="var(--icon-size-sm)"
                 aria-hidden="true"
               />
-              <span>Todo el equipo</span>
+              <span>{en ? "Whole team" : "Todo el equipo"}</span>
             </span>
           )}
         </dd>

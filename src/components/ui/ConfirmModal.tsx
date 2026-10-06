@@ -1,4 +1,5 @@
 import React from "react";
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Modal } from "./Modal";
 
 export interface ConfirmModalProps {
@@ -23,15 +24,17 @@ export function ConfirmModal({
   isOpen,
   title,
   description,
-  confirmLabel = "Aceptar",
-  cancelLabel = "Cancelar",
+  confirmLabel,
+  cancelLabel,
   onConfirm,
   onCancel,
   isDestructive = true,
   isLoading = false,
-  loadingLabel = "Procesando…",
+  loadingLabel,
   errorMessage,
 }: ConfirmModalProps) {
+  const { language } = useLanguage();
+  const en = language === 'en';
   return (
     <Modal
       isOpen={isOpen}
@@ -43,7 +46,7 @@ export function ConfirmModal({
       footerActions={
         <>
           <button type="button" className="btn-secondary" onClick={onCancel} disabled={isLoading}>
-            {cancelLabel}
+            {cancelLabel ?? (en ? 'Cancel' : 'Cancelar')}
           </button>
           <button
             type="button"
@@ -52,7 +55,7 @@ export function ConfirmModal({
             disabled={isLoading}
             aria-busy={isLoading}
           >
-            {isLoading ? loadingLabel : confirmLabel}
+            {isLoading ? (loadingLabel ?? (en ? 'Processing…' : 'Procesando…')) : (confirmLabel ?? (en ? 'Confirm' : 'Aceptar'))}
           </button>
         </>
       }

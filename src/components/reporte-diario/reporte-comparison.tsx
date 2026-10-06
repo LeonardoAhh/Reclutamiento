@@ -6,6 +6,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { ChevronDown, ChevronRight } from "lucide";
+import { useReportLocale } from "./useReportLocale";
 import type { ReporteDiarioSummary } from "@/hooks/useReporteDiario";
 import { Modal } from "@/components/ui/Modal";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
@@ -41,12 +42,18 @@ const AUSENTISMO_THRESHOLD = 3.0;
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
 
-function formatShortMes(ym: string): string {
+function formatShortMes(ym: string, en: boolean): string {
   const [year, month] = ym.split("-");
+  if (en) {
+    const monthNumber = Number(month);
+    if (!Number.isInteger(monthNumber) || monthNumber < 1 || monthNumber > 12) return ym;
+    return `${new Intl.DateTimeFormat("en-US", { month: "short" }).format(new Date(Number(year), monthNumber - 1, 1))} ${year}`;
+  }
   return `${MONTH_NAMES[parseInt(month, 10) - 1] ?? month} ${year}`;
 }
 
-function getQuarterLabel(q: number): string {
+function getQuarterLabel(q: number, en: boolean): string {
+  if (en) return ["Jan–Mar", "Apr–Jun", "Jul–Sep", "Oct–Dec"][q - 1] ?? "";
   if (q === 1) return "Ene-Mar";
   if (q === 2) return "Abr-Jun";
   if (q === 3) return "Jul-Sep";
@@ -91,17 +98,18 @@ function TriggerButton({
   onClick: () => void;
   variant?: "icon" | "labeled";
 }) {
+  const { copy } = useReportLocale();
   if (variant === "labeled") {
     return (
       <button
         type="button"
         onClick={onClick}
         className="reporte-saved__trigger reporte-saved__trigger--labeled"
-        aria-label="Comparativa mensual"
+        aria-label={copy("Comparativa mensual", "Monthly comparison")}
         data-testid="open-comparison-btn"
       >
         <ChartNoAxesCombined size={16} aria-hidden="true" />
-        <span className="reporte-saved__trigger-label">Comparar</span>
+        <span className="reporte-saved__trigger-label">{copy("Comparar", "Compare")}</span>
       </button>
     );
   }
@@ -110,8 +118,8 @@ function TriggerButton({
       type="button"
       onClick={onClick}
       className="reporte-saved__trigger reporte-saved__trigger--icon"
-      aria-label="Comparativa mensual"
-      title="Comparativa mensual"
+      aria-label={copy("Comparativa mensual", "Monthly comparison")}
+      title={copy("Comparativa mensual", "Monthly comparison")}
       data-testid="open-comparison-btn"
     >
       <ChartNoAxesCombined size={16} aria-hidden="true" />
@@ -125,6 +133,7 @@ export default function ReporteComparisonDialog({
   summaries,
   triggerVariant = "icon",
 }: ReporteComparisonDialogProps) {
+  const { en, copy } = useReportLocale();
   const [isOpen, setIsOpen] = useState(false);
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
 
@@ -186,7 +195,7 @@ export default function ReporteComparisonDialog({
       <Modal
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-        title="Comparativa mensual"
+        title={copy("Comparativa mensual", "Monthly comparison")}
         size="lg"
       >
         <div className="reporte-cmp__body">
@@ -209,7 +218,7 @@ export default function ReporteComparisonDialog({
                         Q{q.quarter} {q.year}
                       </span>
                       <span className="reporte-cmp__quarter-label">
-                        {getQuarterLabel(q.quarter)}
+                        {getQuarterLabel(q.quarter, en)}
                       </span>
                     </header>
                     <strong
@@ -228,24 +237,24 @@ export default function ReporteComparisonDialog({
             <table className="reporte-cmp__table">
               <thead>
                 <tr>
-                  <th scope="col">Mes</th>
+                  <th scope="col">{copy("Mes", "Month")}</th>
                   <th scope="col" className="reporte-cmp__num">
-                    Empleados
+                    {copy("Empleados", "Employees")}
                   </th>
                   <th scope="col" className="reporte-cmp__num">
-                    Días disp.
+                    {copy("Días disp.", "Available days")}
                   </th>
                   <th scope="col" className="reporte-cmp__num">
-                    Ausentismo
+                    {copy("Ausentismo", "Absenteeism")}
                   </th>
                   <th scope="col" className="reporte-cmp__num">
-                    % Ausent.
+                    {copy("% Ausent.", "Absence %")}
                   </th>
                   <th scope="col" className="reporte-cmp__num">
-                    Incidencias
+                    {copy("Incidencias", "Incidents")}
                   </th>
                   <th scope="col" className="reporte-cmp__num">
-                    Tend.
+                    {copy("Tend.", "Trend")}
                   </th>
                 </tr>
               </thead>
@@ -258,7 +267,7 @@ export default function ReporteComparisonDialog({
                   return (
                     <tr key={s.id}>
                       <td className="reporte-cmp__mes">
-                        {formatShortMes(s.mes)}
+                        {formatShortMes(s.mes, en)}
                       </td>
                       <td className="reporte-cmp__num">{s.total_empleados}</td>
                       <td className="reporte-cmp__num">{s.dias_disponibles}</td>
@@ -288,7 +297,7 @@ export default function ReporteComparisonDialog({
           </div>
 
           {/* Mobile cards with inline expand */}
-          <ul className="reporte-cmp__cards" aria-label="Comparativa mensual">
+          <ul className="reporte-cmp__cards" aria-label={copy("Comparativa mensual", "Monthly comparison")}>
             {rows.map((s) => {
               const prev = prevByMes.get(s.mes) ?? null;
               const incDiff = prev
@@ -309,7 +318,7 @@ export default function ReporteComparisonDialog({
                   >
                     <span className="reporte-incidents__card-main">
                       <span className="reporte-incidents__card-name">
-                        {formatShortMes(s.mes)}
+                        {formatShortMes(s.mes, en)}
                       </span>
                       <span className="reporte-incidents__card-tags">
                         <span className="reporte-chip">
@@ -337,19 +346,19 @@ export default function ReporteComparisonDialog({
                       className="reporte-incidents__card-detail"
                     >
                       <span className="reporte-incidents__detail-label">
-                        Empleados
+                        {copy("Empleados", "Employees")}
                       </span>
                       <span className="reporte-incidents__detail-value">
                         {s.total_empleados}
                       </span>
                       <span className="reporte-incidents__detail-label">
-                        Días disponibles
+                        {copy("Días disponibles", "Available days")}
                       </span>
                       <span className="reporte-incidents__detail-value">
                         {s.dias_disponibles}
                       </span>
                       <span className="reporte-incidents__detail-label">
-                        Total ausentismo
+                        {copy("Total ausentismo", "Total absences")}
                       </span>
                       <span className="reporte-incidents__detail-value">
                         {s.total_ausentismo}
@@ -357,13 +366,13 @@ export default function ReporteComparisonDialog({
                       {prev && (
                         <>
                           <span className="reporte-incidents__detail-label">
-                            Tend. incidencias
+                            {copy("Tend. incidencias", "Incident trend")}
                           </span>
                           <span className="reporte-incidents__detail-value">
                             <TrendDelta diff={incDiff} />
                           </span>
                           <span className="reporte-incidents__detail-label">
-                            Tend. ausentismo
+                            {copy("Tend. ausentismo", "Absenteeism trend")}
                           </span>
                           <span className="reporte-incidents__detail-value">
                             <TrendDelta

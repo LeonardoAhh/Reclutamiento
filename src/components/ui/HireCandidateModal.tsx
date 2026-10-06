@@ -1,4 +1,5 @@
 import { useEffect, useId, useState } from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { CircleAlert, CircleCheckBig, UserRoundPlus } from 'lucide-react';
 import { LoaderCircle, UserRoundPlus as UserPlusIcon } from 'lucide';
 import { Modal } from './Modal';
@@ -26,6 +27,8 @@ export function HireCandidateModal({
   onClose,
   onConfirm,
 }: HireCandidateModalProps) {
+  const { language } = useLanguage();
+  const en = language === 'en';
   const formId = useId();
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -45,7 +48,7 @@ export function HireCandidateModal({
   const alreadyHired = !!candidate.employee_num;
   const footerActions = alreadyHired ? (
     <button type="button" className="btn-secondary" onClick={onClose}>
-      Cerrar
+      {en ? 'Close' : 'Cerrar'}
     </button>
   ) : (
     <>
@@ -55,7 +58,7 @@ export function HireCandidateModal({
         onClick={onClose}
         disabled={submitting}
       >
-        Cancelar
+        {en ? 'Cancel' : 'Cancelar'}
       </button>
       <button
         type="submit"
@@ -70,7 +73,7 @@ export function HireCandidateModal({
           aria-hidden="true"
           className={submitting ? 'spin' : undefined}
         />
-        {submitting ? 'Guardando…' : 'Vincular'}
+        {submitting ? (en ? 'Saving…' : 'Guardando…') : (en ? 'Link' : 'Vincular')}
       </button>
     </>
   );
@@ -78,17 +81,17 @@ export function HireCandidateModal({
     async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!candidate?.id) {
-      setErrorMsg('El candidato debe estar guardado antes de vincularlo.');
+      setErrorMsg(en ? 'Save the candidate before linking them.' : 'El candidato debe estar guardado antes de vincularlo.');
       return;
     }
 
     if (!selectedEmployeeId) {
-      setErrorMsg('Debes seleccionar un empleado existente.');
+      setErrorMsg(en ? 'Select an existing employee.' : 'Debes seleccionar un empleado existente.');
       return;
     }
     const existing = employees.find((e) => e.num_empleado === selectedEmployeeId);
     if (!existing) {
-      setErrorMsg('No se encontró el empleado seleccionado.');
+      setErrorMsg(en ? 'The selected employee was not found.' : 'No se encontró el empleado seleccionado.');
       return;
     }
     const targetEmployee = existing;
@@ -103,7 +106,7 @@ export function HireCandidateModal({
       });
       if (!result.ok) {
         setErrorMsg(
-          result.message ?? 'No se pudo asociar al candidato.',
+          result.message ?? (en ? 'Could not link the candidate.' : 'No se pudo asociar al candidato.'),
         );
         return;
       }
@@ -119,7 +122,7 @@ export function HireCandidateModal({
       onClose={onClose}
       className="employee-modal"
       icon={<UserRoundPlus size={20} className="color-primary" aria-hidden="true" />}
-      title={`Contratar a ${candidate.nombre}`}
+      title={`${en ? 'Hire' : 'Contratar a'} ${candidate.nombre}`}
       size="sm"
       footerActions={footerActions}
     >
@@ -133,30 +136,29 @@ export function HireCandidateModal({
               <CircleCheckBig size={32} />
             </div>
             <p className="delete-warning__title">
-              Ya está contratado como empleado{' '}
+              {en ? 'Already hired as employee' : 'Ya está contratado como empleado'}{' '}
               <span className="delete-warning__name">#{candidate.employee_num}</span>
             </p>
             <p className="delete-warning__sub">
-              Si necesitas corregir los datos del empleado, edítalo directamente
-              en el Dashboard.
+              {en ? 'To correct employee details, edit them directly in the Dashboard.' : 'Si necesitas corregir los datos del empleado, edítalo directamente en el Dashboard.'}
             </p>
           </div>
         </div>
       ) : (
         <form id={formId} onSubmit={handleSubmit} className="modal-body" noValidate aria-describedby="hire-hint-text">
             <div className="form-group">
-              <label htmlFor="hire-associate-select">Selecciona el empleado *</label>
+              <label htmlFor="hire-associate-select">{en ? 'Select employee' : 'Selecciona el empleado'} *</label>
               <CustomSelect
                 id="hire-associate-select"
                 value={selectedEmployeeId}
                 onChange={setSelectedEmployeeId}
                 options={employees.map(e => ({ value: e.num_empleado, label: `${e.nombre} (#${e.num_empleado})` }))}
-                placeholder="Buscar por nombre o número..."
+                placeholder={en ? 'Search by name or number...' : 'Buscar por nombre o número...'}
               />
             </div>
 
           <p id="hire-hint-text" className="hire-hint">
-            Se enlazará y pasará a estado <strong>Contratado</strong>.
+            {en ? 'The candidate will be linked and marked as' : 'Se enlazará y pasará a estado'} <strong>{en ? 'Hired' : 'Contratado'}</strong>.
           </p>
 
           {errorMsg && (

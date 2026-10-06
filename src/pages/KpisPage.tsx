@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/hooks/useAuth";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { workforceText } from "@/pages/workforce-translations";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { ChevronRight, ArrowUpRight } from "lucide-react";
 import { StatCard } from "@/components/ui/StatCard";
@@ -164,6 +166,9 @@ interface KpiDescriptor {
 }
 
 export function KpisPage() {
+  const { language } = useLanguage();
+  const en = language === "en";
+  const t = (text: string) => workforceText(language, text);
   const {} = useAuth();
   const { employees, comments, loading: employeesLoading } = useSupabaseData();
   const { candidates, loading: candidatesLoading } = useCandidates();
@@ -198,8 +203,8 @@ export function KpisPage() {
     return isoWeekOf(d);
   }, [weekOffset]);
   const currentWeekLabel = useMemo(
-    () => formatIsoWeekRange(currentWeek),
-    [currentWeek],
+    () => formatIsoWeekRange(currentWeek, en ? "en-US" : "es-MX"),
+    [currentWeek, en],
   );
   const previousWeek = useMemo(
     () =>
@@ -207,8 +212,8 @@ export function KpisPage() {
     [currentWeek],
   );
   const previousWeekLabel = useMemo(
-    () => formatIsoWeekRange(previousWeek),
-    [previousWeek],
+    () => formatIsoWeekRange(previousWeek, en ? "en-US" : "es-MX"),
+    [previousWeek, en],
   );
   const weeklyHires: Employee[] = useMemo(() => {
     const today = localTodayIso();
@@ -224,8 +229,8 @@ export function KpisPage() {
   }, [employees, currentWeek]);
   const weeklyHiresDateBadge = useMemo(() => {
     if (weeklyHires.length === 0) return null;
-    return `Semana ${currentWeek.week}`;
-  }, [weeklyHires, currentWeek.week]);
+    return `${t("Semana")} ${currentWeek.week}`;
+  }, [weeklyHires, currentWeek.week, language]);
   const weeklyBajas: Baja[] = useMemo(
     () =>
       bajas
@@ -263,13 +268,13 @@ export function KpisPage() {
   }, [employees, currentWeek]);
   const futureHiresDateBadge = useMemo(() => {
     if (weeklyFutureHires.length === 0) return null;
-    return `Semana ${currentWeek.week}`;
-  }, [weeklyFutureHires, currentWeek.week]);
+    return `${t("Semana")} ${currentWeek.week}`;
+  }, [weeklyFutureHires, currentWeek.week, language]);
   const weeklyHiresSubtitle = useMemo(() => {
     const diff = weeklyHires.length - previousWeekHires.length;
     const sign = diff > 0 ? "+" : "";
-    return `Sem. ${previousWeek.week}: ${previousWeekHires.length} (${sign}${diff})`;
-  }, [weeklyHires.length, previousWeekHires.length, previousWeek.week]);
+    return `${t("Sem.")} ${previousWeek.week}: ${previousWeekHires.length} (${sign}${diff})`;
+  }, [weeklyHires.length, previousWeekHires.length, previousWeek.week, language]);
 
   /* ── Vacantes (5) ──────────────────────────────────────────── */
   const vacancyTotals = useMemo(() => {
@@ -377,7 +382,7 @@ export function KpisPage() {
   /* ── Gráfica Hero (Semana en Curso) ────────────────────────── */
   const heroChartData = useMemo<DailyKpiData[]>(() => {
     const days: DailyKpiData[] = [];
-    const fmtDay = new Intl.DateTimeFormat("es-MX", {
+    const fmtDay = new Intl.DateTimeFormat(en ? "en-US" : "es-MX", {
       weekday: "short",
       day: "numeric",
       timeZone: "America/Mexico_City",
@@ -440,7 +445,7 @@ export function KpisPage() {
     }
 
     return days;
-  }, [currentWeek.start, employees, bajas, positions, dismissedKeys]);
+  }, [currentWeek.start, employees, bajas, positions, dismissedKeys, en]);
 
   /* ── KPI list — el orden lo dicta el usuario ───────────────── */
   const cards: KpiDescriptor[] = useMemo(
@@ -449,7 +454,7 @@ export function KpisPage() {
         id: "kpi-ingresos-semana",
         label: (
           <span className="kpis-page__label-with-badge">
-            Ingresos
+            {t("Ingresos")}
             {weeklyHiresDateBadge && (
               <span className="kpis-page__date-badge">
                 {weeklyHiresDateBadge}
@@ -465,7 +470,7 @@ export function KpisPage() {
         id: "kpi-proximos-ingresos",
         label: (
           <span className="kpis-page__label-with-badge">
-            Proximos Ingresos
+            {t("Proximos Ingresos")}
             {futureHiresDateBadge && (
               <span className="kpis-page__date-badge">
                 {futureHiresDateBadge}
@@ -481,7 +486,7 @@ export function KpisPage() {
         id: "stat-pipeline-citados-hoy",
         label: (
           <span className="kpis-page__label-with-badge">
-            Entrevistas{" "}
+            {t("Entrevistas")}{" "}
             <span className="kpis-page__date-badge">
               {formatProjectionDate(todayIso)}
             </span>
@@ -493,119 +498,119 @@ export function KpisPage() {
       },
       {
         id: "stat-pipeline-activo",
-        label: "Procesos por cerrar",
+        label: t("Procesos por cerrar"),
         value: candidateTotals.enProceso,
         accentColor: "var(--color-primary)",
         origin: "Candidatos",
       },
       {
         id: "stat-vac-abiertas",
-        label: "Abiertas",
+        label: t("Abiertas"),
         value: vacancyTotals.abiertas,
         accentColor: "var(--color-primary)",
         origin: "Vacantes",
       },
       {
         id: "stat-vac-sla",
-        label: "En tiempo",
+        label: t("En tiempo"),
         value: vacancyTotals.enSla,
         accentColor: "var(--color-accent-teal)",
         origin: "Vacantes",
       },
       {
         id: "stat-vac-vencidas",
-        label: "Vencidas",
+        label: t("Vencidas"),
         value: vacancyTotals.vencidas,
         accentColor: "var(--color-error)",
         origin: "Vacantes",
       },
       {
         id: "stat-vac-ttf",
-        label: "TTF prom. (días)",
+        label: t("TTF prom. (días)"),
         value: vacancyTotals.ttfPromedio,
         accentColor: "var(--color-ink)",
         origin: "Vacantes",
       },
       {
         id: "stat-vac-excluidas",
-        label: "Cubiertas",
+        label: t("Cubiertas"),
         value: vacancyTotals.cubiertas,
         accentColor: "var(--color-success)",
         origin: "Vacantes",
       },
       {
         id: "stat-pipeline-total",
-        label: "Total histórico",
+        label: t("Total histórico"),
         value: candidateTotals.total,
         accentColor: "var(--color-ink)",
         origin: "Candidatos",
       },
       {
         id: "stat-pipeline-contratado",
-        label: "Contratados",
+        label: t("Contratados"),
         value: candidateTotals.contratados,
         accentColor: "var(--color-accent-teal)",
         origin: "Candidatos",
       },
       {
         id: "stat-pipeline-rechazado",
-        label: "Rechazados",
+        label: t("Rechazados"),
         value: candidateTotals.rechazados,
         accentColor: "var(--color-error)",
         origin: "Candidatos",
       },
       {
         id: "stat-autorizada",
-        label: "Plantilla Autorizada",
+        label: t("Plantilla Autorizada"),
         value: dashboardTotals.autorizada,
         accentColor: "var(--color-ink)",
         origin: "Dashboard",
       },
       {
         id: "stat-real",
-        label: "Plantilla Real",
+        label: t("Plantilla Real"),
         value: dashboardTotals.real,
         accentColor: "var(--color-accent-teal)",
         origin: "Dashboard",
       },
       {
         id: "stat-vacantes",
-        label: "Vacantes",
+        label: t("Vacantes"),
         value: dashboardTotals.vacantes,
         accentColor: "var(--color-error)",
         origin: "Dashboard",
       },
       {
         id: "stat-cobertura",
-        label: "% Cobertura Global",
+        label: t("% Cobertura Global"),
         value: `${dashboardTotals.cobertura}%`,
         accentColor: getCoverageColor(dashboardTotals.cobertura),
         origin: "Dashboard",
       },
       {
         id: "kpi-cobertura",
-        label: "Cobertura",
+        label: t("Cobertura"),
         value: `${bajasTotals.coverturaPct}%`,
         accentColor: "var(--color-accent-teal)",
         origin: "Bajas",
       },
       {
         id: "kpi-bajas",
-        label: "Bajas",
+        label: t("Bajas"),
         value: bajasTotals.bajas,
         accentColor: "var(--color-error)",
         origin: "Bajas",
       },
       {
         id: "kpi-ingresos",
-        label: "Ingresos",
+        label: t("Ingresos"),
         value: bajasTotals.ingresos,
         accentColor: "var(--color-success)",
         origin: "Bajas",
       },
       {
         id: "kpi-solo-induccion",
-        label: "Solo Inducción",
+        label: t("Solo Inducción"),
         value: bajasTotals.soloInduccion,
         accentColor: "var(--color-muted)",
         origin: "Bajas",
@@ -620,6 +625,7 @@ export function KpisPage() {
       weeklyHiresSubtitle,
       currentWeek,
       currentWeekLabel,
+      language,
     ],
   );
 
@@ -657,11 +663,11 @@ export function KpisPage() {
     <BoneyardSkeleton
       name="resumen-page"
       loading={loading}
-      loadingLabel="Cargando resumen…"
+      loadingLabel={t("Cargando resumen…")}
     >
       <main className="kpis-page container" id="page-kpis">
       <header className="page-header">
-        <h1 className="app-page-title">Resumen</h1>
+        <h1 className="app-page-title">{t("Resumen")}</h1>
       </header>
 
       {isDesktop ? (
@@ -673,12 +679,13 @@ export function KpisPage() {
               onPrevWeek={() => setWeekOffset((prev) => prev - 1)}
               onNextWeek={() => setWeekOffset((prev) => prev + 1)}
               weekNumber={currentWeek.week}
+              ariaLabel={t("Gráfica de vacantes de plantilla, backup y Starlite por día de la semana")}
             />
           </Reveal>
 
           <WorkforceProjection projection={projectionTotals} />
 
-          <section className="kpis-page__grid" aria-label="KPIs consolidados">
+          <section className="kpis-page__grid" aria-label={t("KPIs consolidados")}>
             {visibleCards.map((card, index) => {
               const isAlwaysVisible = ALWAYS_VISIBLE_IDS.has(card.id);
               const revealed = isAlwaysVisible || reveal.isRevealed(card.id);
@@ -716,14 +723,14 @@ export function KpisPage() {
                         onKeyDown={(e) => e.stopPropagation()}
                         aria-label={
                           isWeeklyCard
-                            ? "Ver puestos contratados esta semana"
+                            ? t("Ver puestos contratados esta semana")
                             : isCitedTodayCard
-                              ? "Ver candidatos citados hoy"
+                              ? t("Ver candidatos citados hoy")
                               : isTtfCard
-                                ? "Ver histórico mensual de TTF"
-                                : "Ver puestos en proceso del pipeline"
+                                ? t("Ver histórico mensual de TTF")
+                                : t("Ver puestos en proceso del pipeline")
                         }
-                        title="Ver detalle"
+                        title={t("Ver detalle")}
                       >
                         <ArrowUpRight size={18} aria-hidden="true" />
                       </button>
@@ -741,7 +748,7 @@ export function KpisPage() {
           {visibleGroups.length > 1 && (
             <nav
               className="kpis-page__tabs"
-              aria-label="Grupos de KPIs"
+              aria-label={t("Grupos de KPIs")}
               data-testid="kpis-mobile-tabs"
             >
               {visibleGroups.map((group) => (
@@ -755,7 +762,7 @@ export function KpisPage() {
                   onClick={() => setActiveGroup(group.id)}
                   data-testid={`kpis-tab-${group.id}`}
                 >
-                  {group.label}
+                  {t(group.label)}
                 </button>
               ))}
             </nav>
@@ -767,9 +774,9 @@ export function KpisPage() {
             variants={staggerContainer}
             initial="hidden"
             animate="show"
-            aria-label={`KPIs de ${
-              visibleGroups.find((group) => group.id === activeGroup)?.label ??
-              activeGroup
+            aria-label={`${t("KPIs de")} ${
+              t(visibleGroups.find((group) => group.id === activeGroup)?.label ??
+              activeGroup)
             }`}
             data-testid="kpis-mobile-grid"
           >
@@ -794,7 +801,7 @@ export function KpisPage() {
                       : undefined
                   }
                   aria-label={
-                    hasModal ? `Ver detalle de ${card.label}` : undefined
+                    hasModal ? `${t("Ver detalle")} ${card.label}` : undefined
                   }
                   data-testid={`kpis-mobile-card-${card.id}`}
                 >

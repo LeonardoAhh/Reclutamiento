@@ -1,8 +1,8 @@
 {
-  "version": "0.2.45",
-  "fecha": "2026-10-05",
+  "version": "0.3.0",
+  "fecha": "2026-10-06",
   "nivel": "success",
   "titulo": "We are ready!",
-  "mensaje": "Transport route update",
+  "mensaje": "Nuevo idioma disponible: Inglés.",
   "notificar": true
 }

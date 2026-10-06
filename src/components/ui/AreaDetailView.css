@@ -488,7 +488,7 @@
   align-items: center;
 }
 
-/* ── Header alineado (título + botón "volver") ── */
+/* ── Header del detalle del área ── */
 .area-detail-view {
   width: 100%;
   display: flex;
@@ -518,8 +518,17 @@
   overflow-wrap: anywhere;
 }
 
-.area-detail__back-btn {
-  flex: 0 0 auto;
+.area-detail__title-button {
+  display: block;
+  max-width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-align: start;
+  cursor: pointer;
 }
 
 /* ── Refactored classes from AreaDetailView.tsx inline styles ── */

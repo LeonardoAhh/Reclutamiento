@@ -6,7 +6,6 @@ import {
   UsersRound,
 } from 'lucide-react';
 import { Badge, StarliteBadge, AreaStatusBadge } from './Badge';
-import { BackButton } from './BackButton';
 import { CoverageBar } from './CoverageBar';
 import { Tooltip } from './Tooltip';
 import { useIsMobile } from '@/hooks/useIsMobile';
@@ -22,6 +21,8 @@ import type {
   DepartmentCoverage,
   PositionComment,
 } from '@/lib/types';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { workforceText } from '@/pages/workforce-translations';
 import './AreaDetailView.css';
 
 /**
@@ -63,6 +64,8 @@ export function AreaDetailView({
   incapacidadPorSeccion = null,
   incapacidadAreaTotal = 0,
 }: AreaDetailViewProps) {
+  const { language } = useLanguage();
+  const t = (text: string) => workforceText(language, text);
   const tablistRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
 
@@ -264,22 +267,26 @@ export function AreaDetailView({
       ? 'var(--color-muted)'
       : getCoverageColor(coveragePercentage);
   const coverageLabel = !projection
-    ? 'No disponible'
+    ? t('No disponible')
     : coveragePercentage === null
-      ? 'No aplica'
+      ? t('No aplica')
       : formatPercentage(coveragePercentage);
 
   return (
     <section className="area-detail-view">
       <header className="area-detail__header">
-        {onBack && (
-          <BackButton
-            className="area-detail__back-btn"
-            onClick={onBack}
-            aria-label="Volver a departamentos"
-          />
-        )}
-        <h2 className="area-detail__title">{dept.area}</h2>
+        <h2 className="area-detail__title">
+          {onBack ? (
+            <button
+              type="button"
+              className="area-detail__title-button"
+              onClick={onBack}
+              aria-label={`${t("Volver a departamentos")}: ${dept.area}`}
+            >
+              {dept.area}
+            </button>
+          ) : dept.area}
+        </h2>
       </header>
 
       <section
@@ -287,14 +294,14 @@ export function AreaDetailView({
         aria-labelledby="area-detail-summary-title"
       >
         <div className="area-detail-modal__summary-heading">
-          <h3 id="area-detail-summary-title">Resumen del área</h3>
+          <h3 id="area-detail-summary-title">{t('Resumen del área')}</h3>
         </div>
 
         <dl className="area-detail-modal__summary-stats">
           <div className="area-detail-modal__stat">
             <dt className="area-detail-modal__stat-label">
               <UsersRound aria-hidden="true" />
-              Real / Aut.
+              {t('Real / Aut.')}
             </dt>
             <dd className="area-detail-modal__stat-value">
               {activeTotals.real}
@@ -305,7 +312,7 @@ export function AreaDetailView({
           <div className="area-detail-modal__stat">
             <dt className="area-detail-modal__stat-label">
               <BriefcaseBusiness aria-hidden="true" />
-              Vacantes
+              {t('Vacantes')}
             </dt>
             <dd className="area-detail-modal__stat-value">{activeTotals.vacantes}</dd>
           </div>
@@ -321,7 +328,7 @@ export function AreaDetailView({
           {incapacidadAreaTotal > 0 && (
             <div className="area-detail-modal__stat area-detail-modal__stat--amber">
               <dt className="area-detail-modal__stat-label">
-                <HeartPulse size="var(--icon-size-sm)" aria-hidden="true" /> Incapacidad
+                <HeartPulse size="var(--icon-size-sm)" aria-hidden="true" /> {t('Incapacidad')}
               </dt>
               <dd className="area-detail-modal__stat-value">{incapacidadAreaTotal}</dd>
             </div>
@@ -339,7 +346,7 @@ export function AreaDetailView({
             >
               {coverageLabel}
             </span>
-            <span className="area-detail-modal__coverage-label">Cobertura del área</span>
+            <span className="area-detail-modal__coverage-label">{t('Cobertura del área')}</span>
           </div>
           {coveragePercentage !== null && (
             <div aria-hidden="true">
@@ -357,14 +364,14 @@ export function AreaDetailView({
         <div
           ref={tablistRef}
           role="tablist"
-          aria-label="Secciones del área"
+          aria-label={t("Secciones del área")}
           className="area-detail-modal__tabs"
         >
-          {tabs.map((t, idx) => {
-            const isActive = activeTab === t.id;
+          {tabs.map((tab, idx) => {
+            const isActive = activeTab === tab.id;
             return (
               <button
-                key={t.id}
+                key={tab.id}
                 id={`area-tab-${idx}`}
                 role="tab"
                 type="button"
@@ -372,22 +379,22 @@ export function AreaDetailView({
                 aria-controls="area-detail-tabpanel"
                 tabIndex={isActive ? 0 : -1}
                 className={`area-detail-modal__tab${isActive ? ' is-active' : ''}`}
-                onClick={() => setActiveTab(t.id)}
+                onClick={() => setActiveTab(tab.id)}
                 onKeyDown={(e) => onTabKeyDown(e, idx)}
               >
-                <span className="area-detail-modal__tab-label">{t.displayLabel}</span>
+                <span className="area-detail-modal__tab-label">{tab.displayLabel}</span>
                 <span className="area-detail-modal__tab-count" aria-hidden="true">
-                  {t.count}
+                  {tab.count}
                 </span>
-                <span className="sr-only">, {t.count} vacantes</span>
-                {t.incapacidad > 0 && (
+                <span className="sr-only">, {tab.count} {t('vacantes')}</span>
+                {tab.incapacidad > 0 && (
                   <span
                     className="area-detail-modal__tab-incapacidad"
-                    aria-label={`${t.incapacidad} en incapacidad`}
-                    title={`${t.incapacidad} en incapacidad`}
+                    aria-label={`${tab.incapacidad} ${t('en incapacidad')}`}
+                    title={`${tab.incapacidad} ${t('en incapacidad')}`}
                   >
                     <HeartPulse size="var(--icon-size-sm)" aria-hidden="true" />
-                    {t.incapacidad}
+                    {tab.incapacidad}
                   </span>
                 )}
               </button>
@@ -400,12 +407,12 @@ export function AreaDetailView({
         id="area-detail-tabpanel"
         role="tabpanel"
         aria-labelledby={activeTabDomId}
-        aria-label={activeTabDomId ? undefined : 'Puestos'}
+        aria-label={activeTabDomId ? undefined : t('Puestos')}
         className="area-detail-modal__panel"
       >
         {visiblePuestos.length === 0 ? (
           <div className="area-detail-modal__empty">
-            <p>No hay puestos en esta sección.</p>
+            <p>{t('No hay puestos en esta sección.')}</p>
           </div>
         ) : isMobile ? (
           <ul className="area-detail-modal__cards">
@@ -470,7 +477,7 @@ export function AreaDetailView({
                         <span className="area-detail-modal__stat-sep">/</span>
                         {row.plantilla_autorizada}
                       </span>
-                      <span className="area-detail-modal__card-metric-label">Real / Aut.</span>
+                      <span className="area-detail-modal__card-metric-label">{t('Real / Aut.')}</span>
                     </span>
                     <span className="area-detail-modal__card-metric">
                       <span className="area-detail-modal__card-metric-value">
@@ -480,7 +487,7 @@ export function AreaDetailView({
                           <span className="no-vacancy">—</span>
                         )}
                       </span>
-                      <span className="area-detail-modal__card-metric-label">Vacantes</span>
+                      <span className="area-detail-modal__card-metric-label">{t('Vacantes')}</span>
                     </span>
                     <span className="area-detail-modal__card-estado">{renderEstado(pos, row.isStarlite, row.vacantes, row.proximosIngresos)}</span>
                   </div>
@@ -491,15 +498,15 @@ export function AreaDetailView({
         ) : (
           <div className="area-detail-modal__table-wrapper">
             <table className="area-detail-modal__table">
-              <caption className="sr-only">Puestos del departamento {dept.area}</caption>
+              <caption className="sr-only">{t('Puestos del departamento')} {dept.area}</caption>
               <thead>
                 <tr>
-                  <th scope="col">Puesto</th>
-                  <th scope="col" className="text-center hide-on-mobile">Autorizada</th>
-                  <th scope="col" className="text-center hide-on-mobile">Backup</th>
-                  <th scope="col" className="text-center hide-on-mobile">Activos</th>
-                  <th scope="col" className="text-center">Vacantes</th>
-                  <th scope="col" className="hide-on-mobile">Cobertura</th>
+                  <th scope="col">{t('Puesto')}</th>
+                  <th scope="col" className="text-center hide-on-mobile">{t('Autorizada')}</th>
+                  <th scope="col" className="text-center hide-on-mobile">{t('Backup')}</th>
+                  <th scope="col" className="text-center hide-on-mobile">{t('Activos')}</th>
+                  <th scope="col" className="text-center">{t('Vacantes')}</th>
+                  <th scope="col" className="hide-on-mobile">{t('Cobertura')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -572,9 +579,9 @@ export function AreaDetailView({
                             content={
                               <div className="tooltip-preline">
                                 <div className="tooltip-title">
-                                  Buffer de {row.backup} personas
+                                  {t('Buffer de personas')} {row.backup}
                                 </div>
-                                <div>{pos.notas || 'Excedentes autorizados'}</div>
+                                <div>{pos.notas || t('Excedentes autorizados')}</div>
                               </div>
                             }
                             side="top"

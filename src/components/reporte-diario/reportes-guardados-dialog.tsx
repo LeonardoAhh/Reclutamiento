@@ -7,6 +7,7 @@ import {
 import { useState } from "react";
 import { Modal } from "@/components/ui/Modal";
 import { DeleteConfirmModal } from "@/components/ui/DeleteConfirmModal";
+import { useReportLocale } from "./useReportLocale";
 
 interface SavedSummary {
   id: string;
@@ -32,14 +33,15 @@ export default function ReportesGuardadosDialog({
   onDelete,
   formatMes,
   triggerVariant = "icon",
-  triggerLabel = "Reportes",
+  triggerLabel,
 }: ReportesGuardadosDialogProps) {
+  const { copy } = useReportLocale();
   const [isOpen, setIsOpen] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<SavedSummary | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const count = savedSummaries.length;
   const label =
-    count === 1 ? "1 reporte guardado" : `${count} reportes guardados`;
+    count === 1 ? copy("1 reporte guardado", "1 saved report") : `${count} ${copy("reportes guardados", "saved reports")}`;
 
   async function confirmDeletion() {
     if (!pendingDelete || isDeleting) return;
@@ -64,15 +66,15 @@ export default function ReportesGuardadosDialog({
           data-testid="open-saved-reports-btn"
         >
           <Archive size={16} aria-hidden="true" />
-          <span className="reporte-saved__trigger-label">{triggerLabel}</span>
+          <span className="reporte-saved__trigger-label">{triggerLabel ?? copy("Reportes", "Reports")}</span>
         </button>
       ) : (
         <button
           type="button"
           onClick={() => setIsOpen(true)}
           className="reporte-saved__trigger reporte-saved__trigger--icon"
-          aria-label={`Reportes guardados (${count})`}
-          title="Reportes guardados"
+          aria-label={`${copy("Reportes guardados", "Saved reports")} (${count})`}
+          title={copy("Reportes guardados", "Saved reports")}
           data-testid="open-saved-reports-btn"
         >
           <Archive size={16} aria-hidden="true" />
@@ -85,7 +87,7 @@ export default function ReportesGuardadosDialog({
       <Modal
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-        title="Reportes guardados"
+        title={copy("Reportes guardados", "Saved reports")}
         size="sm"
       >
         <div className="reporte-saved__body">
@@ -95,14 +97,14 @@ export default function ReportesGuardadosDialog({
                 <Archive size={20} aria-hidden="true" />
               </span>
               <p className="reporte-saved__empty-title">
-                No hay reportes guardados
+                {copy("No hay reportes guardados", "No saved reports")}
               </p>
               <p className="reporte-saved__empty-sub">
-                Guarda un reporte para verlo aquí.
+                {copy("Guarda un reporte para verlo aquí.", "Save a report to see it here.")}
               </p>
             </div>
           ) : (
-            <ul className="reporte-saved__list" aria-label="Reportes guardados">
+            <ul className="reporte-saved__list" aria-label={copy("Reportes guardados", "Saved reports")}>
               {savedSummaries.map((s) => (
                 <li key={s.id} className="reporte-saved__item">
                   <button
@@ -132,7 +134,7 @@ export default function ReportesGuardadosDialog({
                     }}
                     disabled={dbSaving}
                     className="reporte-saved__delete"
-                    aria-label={`Eliminar reporte ${formatMes(s.mes)}`}
+                    aria-label={`${copy("Eliminar reporte", "Delete report")} ${formatMes(s.mes)}`}
                     data-testid={`delete-report-${s.mes}`}
                   >
                     <Trash2 size={16} />
@@ -146,7 +148,7 @@ export default function ReportesGuardadosDialog({
 
       <DeleteConfirmModal
         isOpen={pendingDelete !== null}
-        title="Eliminar reporte"
+        title={copy("Eliminar reporte", "Delete report")}
         onConfirm={() => void confirmDeletion()}
         onCancel={() => {
           if (!isDeleting) setPendingDelete(null);

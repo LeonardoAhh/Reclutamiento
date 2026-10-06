@@ -23,15 +23,15 @@ test('canonical administration paths resolve to their section', () => {
     assert.equal(getConfiguracionTab(url.pathname), id);
   }
   assert.deepEqual(
-    ['/analisis', '/formatos', '/rutas']
+    ['/analysis', '/forms', '/routes']
       .map((path) => getConfiguracionTab(path)),
     ['analisis', 'formatos', 'rutas']);
 });
 
 test('each section link has one canonical path', () => {
-  assert.equal(getConfiguracionHref('analisis'), '/analisis');
-  assert.equal(getConfiguracionHref('rutas'), '/rutas');
-  assert.equal(getConfiguracionHref('indicadores'), '/indicadores');
-  assert.equal(getConfiguracionHref('tabulador'), '/tabulador');
-  assert.equal(getConfiguracionHref('formatos'), '/formatos');
+  assert.equal(getConfiguracionHref('analisis'), '/analysis');
+  assert.equal(getConfiguracionHref('rutas'), '/routes');
+  assert.equal(getConfiguracionHref('indicadores'), '/metrics');
+  assert.equal(getConfiguracionHref('tabulador'), '/pay-scale');
+  assert.equal(getConfiguracionHref('formatos'), '/forms');
 });

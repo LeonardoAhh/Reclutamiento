@@ -1,4 +1,5 @@
 import { ClipboardPenLine, X, ImagePlus } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Modal } from "./Modal";
 import { CustomSelect } from "./CustomSelect";
 import { SmartTextarea } from "./SmartTextarea";
@@ -71,7 +72,10 @@ export function CreateAssignmentModal({
   setReferenceImagePreview,
   onSubmit,
 }: CreateAssignmentModalProps) {
+  const { language } = useLanguage();
+  const en = language === "en";
   const { title, formId, fieldIdPrefix } = CREATE_MODAL_CONTENT[activityType];
+  const modalTitle = en ? ({ unica: "New activity", rutinaria: "New responsibility", soporte: "New support task" })[activityType] : title;
   const titleId = `${fieldIdPrefix}-titulo`;
   const assigneeId = `${fieldIdPrefix}-asignado`;
   const descriptionId = `${fieldIdPrefix}-descripcion`;
@@ -80,7 +84,7 @@ export function CreateAssignmentModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={title}
+      title={modalTitle}
       icon={<ClipboardPenLine size="var(--icon-size-md)" aria-hidden="true" />}
       size="sm"
       footerActions={
@@ -91,7 +95,7 @@ export function CreateAssignmentModal({
             onClick={onClose}
             disabled={isCreating}
           >
-            Cancelar
+            {en ? "Cancel" : "Cancelar"}
           </button>
           <button
             type="submit"
@@ -100,26 +104,26 @@ export function CreateAssignmentModal({
             aria-busy={isCreating}
             form={formId}
           >
-            {isCreating ? "Guardando..." : "Asignar"}
+            {isCreating ? (en ? "Saving..." : "Guardando...") : (en ? "Assign" : "Asignar")}
           </button>
         </>
       }
     >
       <form id={formId} className="modal-body" onSubmit={onSubmit} noValidate>
         <div className="form-group">
-          <label htmlFor={titleId}>Título</label>
+          <label htmlFor={titleId}>{en ? "Title" : "Título"}</label>
           <input
             id={titleId}
             required
             type="text"
             value={titulo}
             onChange={(e) => setTitulo(e.target.value)}
-            placeholder="Ej. Revisión de expedientes"
+            placeholder={en ? "E.g. Review employee records" : "Ej. Revisión de expedientes"}
           />
         </div>
 
         <div className="form-group">
-          <label htmlFor={assigneeId}>Asignar a</label>
+          <label htmlFor={assigneeId}>{en ? "Assign to" : "Asignar a"}</label>
           <CustomSelect
             id={assigneeId}
             value={asignadoA}
@@ -129,28 +133,28 @@ export function CreateAssignmentModal({
         </div>
 
         <div className="form-group">
-          <label htmlFor={descriptionId}>Descripción</label>
+          <label htmlFor={descriptionId}>{en ? "Description" : "Descripción"}</label>
           <SmartTextarea
             id={descriptionId}
             value={descripcion}
             onChange={setDescripcion}
-            placeholder="Detalles de la actividad..."
+            placeholder={en ? "Activity details..." : "Detalles de la actividad..."}
           />
         </div>
 
         <div className="form-group">
-          <span className="form-label">Foto de Referencia</span>
+          <span className="form-label">{en ? "Reference photo" : "Foto de Referencia"}</span>
           <div className="reference-upload-area">
             {referenceImagePreview ? (
               <AttachmentCard
-                name={referenceImageFile?.name || "Imagen"}
-                metadata={`Imagen · ${referenceImageFile ? (referenceImageFile.size / 1024).toFixed(0) : 0} KB`}
+                name={referenceImageFile?.name || (en ? "Image" : "Imagen")}
+                metadata={`${en ? "Image" : "Imagen"} · ${referenceImageFile ? (referenceImageFile.size / 1024).toFixed(0) : 0} KB`}
                 imageSrc={referenceImagePreview}
                 onRemove={() => {
                     setReferenceImageFile(null);
                     setReferenceImagePreview(null);
                 }}
-                removeLabel="Quitar foto de referencia"
+                removeLabel={en ? "Remove reference photo" : "Quitar foto de referencia"}
                 removeIcon={
                   <X size="var(--icon-size-sm)" aria-hidden="true" />
                 }
@@ -158,7 +162,7 @@ export function CreateAssignmentModal({
             ) : (
               <label className="reference-upload-label">
                 <ImagePlus size="var(--icon-size-lg)" aria-hidden="true" />
-                <span>Subir foto de referencia</span>
+                <span>{en ? "Upload reference photo" : "Subir foto de referencia"}</span>
                 <input
                   type="file"
                   accept="image/*"

@@ -13,6 +13,7 @@ import { usePagination } from "@/hooks/usePagination";
 import { toast } from "@/lib/notify";
 import { normalizeString } from "@/lib/utils";
 import { assignDataUpdateLocker, dataUpdateError } from "./api";
+import { useDataUpdateText } from "./translations";
 import {
   compareDataUpdateEmployeeNumbers,
   DATA_UPDATE_LOCKER_AREAS,
@@ -40,6 +41,7 @@ function getLockerError(locker: string, alreadyAssigned: boolean): string | null
 }
 
 export function DataUpdateLockerPanel({ records, canEdit, onRecordUpdated }: DataUpdateLockerPanelProps) {
+  const t = useDataUpdateText();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRecord, setSelectedRecord] = useState<DataUpdateRecord | null>(null);
   const [lockerArea, setLockerArea] = useState<DataUpdateLockerArea | "">("");
@@ -115,9 +117,9 @@ export function DataUpdateLockerPanel({ records, canEdit, onRecordUpdated }: Dat
       const updated = await assignDataUpdateLocker(selectedRecord.id, lockerArea, normalizedLocker);
       onRecordUpdated(updated);
       setSelectedRecord(null);
-      toast.success({ title: "Locker asignado" });
+      toast.success({ title: t("Locker asignado") });
     } catch (caught) {
-      setServerError(dataUpdateError(caught));
+      setServerError(t(dataUpdateError(caught)));
     } finally {
       setSaving(false);
     }
@@ -127,15 +129,15 @@ export function DataUpdateLockerPanel({ records, canEdit, onRecordUpdated }: Dat
     <section className="data-update-lockers" aria-labelledby="data-update-lockers-title">
       <div className="data-update-section-heading">
         <div>
-          <h2 id="data-update-lockers-title">Locker</h2>
-          <p className="text-muted">Consulta los lockers por área de la campaña.</p>
+          <h2 id="data-update-lockers-title">{t("Locker")}</h2>
+          <p className="text-muted">{t("Consulta los lockers por área de la campaña.")}</p>
         </div>
         {records.length > 0 && (
           <SearchField
             id="data-update-locker-search"
             className="data-update-queue__search"
-            label="Buscar lockers"
-            placeholder="Número, nombre, fecha, área o locker"
+            label={t("Buscar lockers")}
+            placeholder={t("Número, nombre, fecha, área o locker")}
             value={searchTerm}
             onChange={(event) => setSearchTerm(event.target.value)}
             onClear={() => setSearchTerm("")}
@@ -149,11 +151,11 @@ export function DataUpdateLockerPanel({ records, canEdit, onRecordUpdated }: Dat
       </div>
 
       {records.length === 0 ? (
-        <p className="data-update-message">No hay registros disponibles en esta campaña.</p>
+        <p className="data-update-message">{t("No hay registros disponibles en esta campaña.")}</p>
       ) : visibleRecords.length === 0 ? (
         <div id="data-update-locker-list" className="data-update-search-empty" role="status">
-          <p>No hay coincidencias para “{searchTerm.trim()}”.</p>
-          <button type="button" className="btn-secondary" onClick={() => setSearchTerm("")}>Limpiar búsqueda</button>
+          <p>{t(`No hay coincidencias para “${searchTerm.trim()}”.`)}</p>
+          <button type="button" className="btn-secondary" onClick={() => setSearchTerm("")}>{t("Limpiar búsqueda")}</button>
         </div>
       ) : (
         <>
@@ -171,7 +173,7 @@ export function DataUpdateLockerPanel({ records, canEdit, onRecordUpdated }: Dat
                         <button
                           type="button"
                           className="dropdown-menu-trigger"
-                          aria-label={`Acciones de ${record.identity.name}`}
+                          aria-label={`${t("Acciones de")} ${record.identity.name}`}
                         >
                           <EllipsisVertical aria-hidden="true" />
                         </button>
@@ -183,7 +185,7 @@ export function DataUpdateLockerPanel({ records, canEdit, onRecordUpdated }: Dat
                           onClick={() => openEditor(record)}
                         >
                           <PencilLine aria-hidden="true" />
-                          <span>Editar</span>
+                          <span>{t("Editar")}</span>
                         </button>
                       </PopoverContent>
                     </Popover>
@@ -191,16 +193,16 @@ export function DataUpdateLockerPanel({ records, canEdit, onRecordUpdated }: Dat
                 </div>
                 <dl className="data-update-locker-card__details">
                   <div>
-                    <dt>Turno</dt>
+                    <dt>{t("Turno")}</dt>
                     <dd>{record.identity.shift || "—"}</dd>
                   </div>
                   <div>
-                    <dt>Área de locker</dt>
-                    <dd>{record.lockerArea || "Sin asignar"}</dd>
+                    <dt>{t("Área de locker")}</dt>
+                    <dd>{record.lockerArea ? t(record.lockerArea) : t("Sin asignar")}</dd>
                   </div>
                   <div>
-                    <dt>Locker</dt>
-                    <dd>{record.data.locker.trim() || "Sin asignar"}</dd>
+                    <dt>{t("Locker")}</dt>
+                    <dd>{record.data.locker.trim() || t("Sin asignar")}</dd>
                   </div>
                 </dl>
               </article>
@@ -215,7 +217,7 @@ export function DataUpdateLockerPanel({ records, canEdit, onRecordUpdated }: Dat
               onNext={pagination.nextPage}
               canGoPrev={pagination.canGoPrev}
               canGoNext={pagination.canGoNext}
-              ariaLabel="Paginación de lockers"
+              ariaLabel={t("Paginación de lockers")}
             />
           )}
         </>
@@ -223,14 +225,14 @@ export function DataUpdateLockerPanel({ records, canEdit, onRecordUpdated }: Dat
 
       <Modal
         isOpen={selectedRecord !== null}
-        title="Asignar locker"
+        title={t("Asignar locker")}
         size="xs"
         onClose={closeEditor}
         footerActions={(
           <>
-            <button type="button" className="btn-secondary" onClick={closeEditor} disabled={saving}>Cancelar</button>
+            <button type="button" className="btn-secondary" onClick={closeEditor} disabled={saving}>{t("Cancelar")}</button>
             <button type="submit" form="data-update-locker-form" className="btn-primary" disabled={saving}>
-              {saving ? "Guardando…" : "Guardar"}
+              {saving ? t("Guardando…") : t("Guardar")}
             </button>
           </>
         )}
@@ -249,12 +251,12 @@ export function DataUpdateLockerPanel({ records, canEdit, onRecordUpdated }: Dat
             </p>
           )}
           <div className="form-group">
-            <label htmlFor="data-update-locker-area">Área de locker</label>
+            <label htmlFor="data-update-locker-area">{t("Área de locker")}</label>
             <CustomSelect
               id="data-update-locker-area"
               value={lockerArea}
-              options={LOCKER_AREA_OPTIONS}
-              placeholder="Selecciona un área"
+              options={LOCKER_AREA_OPTIONS.map((option) => ({ ...option, label: t(option.label) }))}
+              placeholder={t("Selecciona un área")}
               onChange={(value) => {
                 setLockerArea(isDataUpdateLockerArea(value) ? value : "");
                 setServerError(null);
@@ -266,12 +268,12 @@ export function DataUpdateLockerPanel({ records, canEdit, onRecordUpdated }: Dat
             />
             {lockerAreaError && (
               <p id="data-update-locker-area-error" className="form-error" role="alert">
-                {lockerAreaError}
+                {t(lockerAreaError)}
               </p>
             )}
           </div>
           <div className="form-group">
-            <label htmlFor="data-update-locker-number">Número de locker</label>
+            <label htmlFor="data-update-locker-number">{t("Número de locker")}</label>
             <input
               id="data-update-locker-number"
               className="form-control"
@@ -292,7 +294,7 @@ export function DataUpdateLockerPanel({ records, canEdit, onRecordUpdated }: Dat
             />
             {(lockerError || serverError) && (
               <p id="data-update-locker-error" className="form-error" role="alert">
-                {lockerError || serverError}
+                {t(lockerError ?? serverError ?? "")}
               </p>
             )}
           </div>

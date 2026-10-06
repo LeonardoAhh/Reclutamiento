@@ -4,6 +4,8 @@ import { Badge, StarliteBadge, ReclutadorBadge } from './Badge';
 import { ExpandableSection } from './ExpandableSection';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import type { Candidate } from '@/lib/types';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { workforceText } from '@/pages/workforce-translations';
 
 import './CandidatesCitedTodayModal.css';
 
@@ -29,6 +31,8 @@ export function CandidatesCitedTodayModal({
   onClose,
   candidates,
 }: CandidatesCitedTodayModalProps) {
+  const { language } = useLanguage();
+  const t = (text: string) => workforceText(language, text);
   const isMobile = useIsMobile();
   const grouped = groupByArea(candidates);
 
@@ -69,13 +73,13 @@ export function CandidatesCitedTodayModal({
       onClose={onClose}
       className="candidates-cited-today-modal"
       icon={<CalendarCheck size={20} aria-hidden="true" />}
-      title="Detalle entrevistas"
+      title={t("Detalle entrevistas")}
       size="md"
     >
       <div className="modal-body candidates-cited-today-modal__body">
         {candidates.length === 0 ? (
           <p className="candidates-cited-today-modal__empty">
-            No hay candidatos citados hoy.
+            {t("No hay candidatos citados hoy.")}
           </p>
         ) : (
           <div className="candidates-cited-today-modal__groups">
@@ -84,7 +88,7 @@ export function CandidatesCitedTodayModal({
                 <ExpandableSection
                   key={area}
                   title={area}
-                  badge={`${items.length} candidatos`}
+                  badge={`${items.length} ${t("candidatos")}`}
                   variant="list"
                 >
                   {renderAreaContent(items)}
@@ -95,7 +99,7 @@ export function CandidatesCitedTodayModal({
                 <section
                   key={area}
                   className="candidates-cited-today-modal__area"
-                  aria-label={`Area ${area}`}
+                  aria-label={`${t("Area")} ${area}`}
                 >
                   <h3 className="candidates-cited-today-modal__area-title">
                     {area} <span className="candidates-cited-today-modal__area-count">({items.length})</span>

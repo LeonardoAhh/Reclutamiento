@@ -16,6 +16,8 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { localTodayIso } from '@/lib/dates';
 import { formatPercentage } from '@/lib/utils';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { workforceText } from '@/pages/workforce-translations';
 import {
   ResponsiveContainer,
   XAxis,
@@ -102,6 +104,7 @@ interface CustomTooltipInternalProps extends TooltipProps<number, string> {
 }
 
 function CustomTooltip({ active, payload, label, presentation }: CustomTooltipInternalProps) {
+  const { language } = useLanguage();
   if (!active || !payload?.length) return null;
 
   return (
@@ -110,7 +113,7 @@ function CustomTooltip({ active, payload, label, presentation }: CustomTooltipIn
         {label}
       </p>
       {payload.map((entry) => {
-        const valor = entry.value.toLocaleString('es-MX');
+        const valor = entry.value.toLocaleString(language === 'en' ? 'en-US' : 'es-MX');
 
         return (
           <p
@@ -219,6 +222,8 @@ interface ChartHeaderProps {
 }
 
 function ChartHeader({ data, presentation, onClick, onPrevWeek, onNextWeek, disableNextWeek, weekNumber }: ChartHeaderProps) {
+  const { language } = useLanguage();
+  const t = (text: string) => workforceText(language, text);
   if (!data.length) return null;
 
   const minCobertura = Math.min(...data.map((d) => d.cobertura));
@@ -232,12 +237,12 @@ function ChartHeader({ data, presentation, onClick, onPrevWeek, onNextWeek, disa
             <button
               type="button"
               className="kpi-hero-title-action"
-              aria-label="Cobertura: ver detalle de vacantes"
+              aria-label={t('Cobertura: ver detalle de vacantes')}
               onClick={(event) => { event.stopPropagation(); onClick(); }}
             >
-              Cobertura
+              {t('Cobertura')}
             </button>
-          ) : 'Cobertura'}
+          ) : t('Cobertura')}
         </h2>
       </div>
 
@@ -245,7 +250,7 @@ function ChartHeader({ data, presentation, onClick, onPrevWeek, onNextWeek, disa
         <div className="kpi-hero-avg-container">
           {weekNumber && (
             <div className="kpi-hero-badge">
-              Semana {weekNumber}
+              {t('Semana')} {weekNumber}
             </div>
           )}
           <div className="kpi-hero-avg-top">
@@ -258,7 +263,7 @@ function ChartHeader({ data, presentation, onClick, onPrevWeek, onNextWeek, disa
                     if (onPrevWeek) onPrevWeek();
                   }}
                   className="kpi-hero-nav-btn"
-                  aria-label="Semana anterior"
+                  aria-label={t('Semana anterior')}
                 >
                   <ChevronLeft size={16} strokeWidth={3} />
                 </button>
@@ -270,7 +275,7 @@ function ChartHeader({ data, presentation, onClick, onPrevWeek, onNextWeek, disa
                   }}
                   disabled={disableNextWeek}
                   className="kpi-hero-nav-btn"
-                  aria-label="Semana siguiente"
+                  aria-label={t('Semana siguiente')}
                 >
                   <ChevronRight size={16} strokeWidth={3} />
                 </button>
@@ -284,7 +289,7 @@ function ChartHeader({ data, presentation, onClick, onPrevWeek, onNextWeek, disa
             <div className={`kpi-hero-critical-divider${presentation ? ' kpi-hero-critical-divider--presentation' : ''}`} />
             <div className={`kpi-hero-critical${presentation ? ' kpi-hero-critical--presentation' : ''}`}>
               <p className="kpi-hero-critical__label">
-                Mín. cobertura
+                {t('Mín. cobertura')}
               </p>
               <p className="kpi-hero-critical__value">
                 {formatPercentage(minCobertura)}
@@ -302,8 +307,10 @@ function ChartHeader({ data, presentation, onClick, onPrevWeek, onNextWeek, disa
 // ─────────────────────────────────────────────
 
 function ChartEmpty() {
+  const { language } = useLanguage();
+  const t = (text: string) => workforceText(language, text);
   return (
-    <div role="img" aria-label="Sin datos disponibles" className="kpi-hero-empty">
+    <div role="img" aria-label={t('Sin datos disponibles')} className="kpi-hero-empty">
       <svg
         className="kpi-hero-empty__icon"
         viewBox="0 0 24 24"
@@ -317,7 +324,7 @@ function ChartEmpty() {
         <rect x="3" y="3" width="18" height="18" rx="2" />
         <path d="M3 9h18M9 21V9" />
       </svg>
-      <span>Sin datos para mostrar</span>
+      <span>{t('Sin datos para mostrar')}</span>
     </div>
   );
 }
@@ -329,7 +336,7 @@ function ChartEmpty() {
 export function KpiHeroChart({
   data,
   height,
-  ariaLabel = 'Gráfica de vacantes de plantilla, backup y Starlite por día de la semana',
+  ariaLabel,
   variant = 'default',
   onClick,
   onPrevWeek,
@@ -337,6 +344,9 @@ export function KpiHeroChart({
   disableNextWeek,
   weekNumber,
 }: KpiHeroChartProps) {
+  const { language } = useLanguage();
+  const t = (text: string) => workforceText(language, text);
+  const chartAriaLabel = ariaLabel ?? t('Gráfica de vacantes de plantilla, backup y Starlite por día de la semana');
   const descId = useId();
 
   const presentation = variant === 'presentation';
@@ -386,7 +396,7 @@ export function KpiHeroChart({
 
   return (
     <figure
-      aria-label={ariaLabel}
+      aria-label={chartAriaLabel}
       aria-describedby={descId}
       className={`kpi-hero-chart${presentation ? ' kpi-hero-chart--presentation' : ''}${onClick ? ' kpi-hero-chart--interactive' : ''}`}
       onClick={onClick}
@@ -395,10 +405,10 @@ export function KpiHeroChart({
         id={descId}
         className="kpi-hero-sr-only"
       >
-        {ariaLabel}.{' '}
+        {chartAriaLabel}.{' '}
         {isEmpty
-          ? 'No hay datos disponibles.'
-          : `Semana del ${chartData[0]?.dateIso ?? ''} al ${chartData[chartData.length - 1]?.dateIso ?? ''}.`}
+          ? t('No hay datos disponibles.')
+          : `${t('Semana del')} ${chartData[0]?.dateIso ?? ''} ${t('al')} ${chartData[chartData.length - 1]?.dateIso ?? ''}.`}
       </figcaption>
 
       {isEmpty ? (
@@ -422,12 +432,12 @@ export function KpiHeroChart({
                 aria-labelledby={`${descId}-vacancies`}
               >
                 <header className="kpi-hero-panel-header">
-                  <h3 id={`${descId}-vacancies`} className="kpi-hero-panel-title">Vacantes</h3>
-                  <ul className="kpi-hero-legend" aria-label="Series de vacantes">
+                  <h3 id={`${descId}-vacancies`} className="kpi-hero-panel-title">{t('Vacantes')}</h3>
+                  <ul className="kpi-hero-legend" aria-label={t('Series de vacantes')}>
                     {SERIES.map((series) => (
                       <li key={series.key}>
                         <SeriesMarker seriesKey={series.key} />
-                        {series.label}
+                        {t(series.label)}
                       </li>
                     ))}
                   </ul>
@@ -487,7 +497,7 @@ export function KpiHeroChart({
                         yAxisId={series.axis}
                         type="linear"
                         dataKey={series.key}
-                        name={series.name}
+                        name={t(series.name)}
                         stroke={series.color}
                         strokeWidth="var(--chart-line-width)"
                         strokeDasharray={series.dash}

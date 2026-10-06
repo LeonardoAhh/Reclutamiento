@@ -5,6 +5,8 @@ import { useIsMobile } from '@/hooks/useIsMobile';
 import type { Candidate, CandidateStatus } from '@/lib/types';
 import { CandidateStatusBadge } from './CandidateStatusBadge';
 import { StarliteBadge } from './Badge';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { workforceText } from '@/pages/workforce-translations';
 import './CandidatesInProcessModal.css';
 
 interface CandidatesInProcessModalProps {
@@ -44,6 +46,8 @@ export function CandidatesInProcessModal({
   onClose,
   candidates,
 }: CandidatesInProcessModalProps) {
+  const { language } = useLanguage();
+  const t = (text: string) => workforceText(language, text);
   const isMobile = useIsMobile();
   const grouped = groupByPuesto(candidates);
 
@@ -92,18 +96,18 @@ export function CandidatesInProcessModal({
       onClose={onClose}
       className="candidates-in-process-modal"
       icon={<Activity size={20} aria-hidden="true" />}
-      title="Procesos por cerrar"
+      title={t("Procesos por cerrar")}
       size="md"
     >
       <div className="modal-body candidates-in-process-modal__body">
         {candidates.length === 0 ? (
           <p className="candidates-in-process-modal__empty">
-            No hay candidatos en proceso.
+            {t("No hay candidatos en proceso.")}
           </p>
         ) : isMobile ? (
           <ExpandableSection
-            title="Puestos con procesos"
-            badge={`${grouped.length} puestos`}
+            title={t("Puestos con procesos")}
+            badge={`${grouped.length} ${t("puestos")}`}
             variant="card"
             defaultExpanded
           >
@@ -112,10 +116,10 @@ export function CandidatesInProcessModal({
         ) : (
           <section
             className="candidates-in-process-modal__section"
-            aria-label="Resumen por puesto y sección"
+            aria-label={t("Resumen por puesto y sección")}
           >
             <h3 className="candidates-in-process-modal__section-title">
-              Puestos con procesos
+              {t("Puestos con procesos")}
             </h3>
             {renderList()}
           </section>

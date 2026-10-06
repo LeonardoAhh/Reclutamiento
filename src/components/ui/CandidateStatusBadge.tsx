@@ -1,5 +1,6 @@
 import type { CandidateStatus } from '@/lib/types';
-import { CANDIDATE_STATUS_LABEL } from '@/lib/types';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { candidateStatusLabel } from '@/lib/candidateTranslations';
 import { ChevronDown } from 'lucide-react';
 
 import './CandidateStatusBadge.css';
@@ -19,7 +20,9 @@ const COMPACT_LABELS: Partial<Record<CandidateStatus, string>> = {
 };
 
 export function CandidateStatusBadge({ status, count, showCaret, className = '', compact = false }: CandidateStatusBadgeProps) {
-  const label = compact && COMPACT_LABELS[status] ? COMPACT_LABELS[status] : CANDIDATE_STATUS_LABEL[status];
+  const { language } = useLanguage();
+  const label = compact && language === 'es' && COMPACT_LABELS[status]
+    ? COMPACT_LABELS[status] : candidateStatusLabel(status, language);
 
   return (
     <span className={`candidate-status-badge ${className}`.trim()} data-status={status}>

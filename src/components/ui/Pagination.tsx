@@ -1,4 +1,5 @@
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { useLanguage } from '@/contexts/LanguageContext';
 import "./Pagination.css";
 
 interface PaginationProps {
@@ -21,9 +22,11 @@ export function Pagination({
   onNext,
   canGoPrev,
   canGoNext,
-  ariaLabel = "Paginación",
+  ariaLabel,
   hideOnSinglePage = false,
 }: PaginationProps) {
+  const { language } = useLanguage();
+  const en = language === 'en';
   const safeTotalPages = Math.max(1, totalPages);
 
   if (hideOnSinglePage && safeTotalPages <= 1) {
@@ -45,19 +48,19 @@ export function Pagination({
   };
 
   return (
-    <nav className="pagination" aria-label={ariaLabel}>
+    <nav className="pagination" aria-label={ariaLabel ?? (en ? 'Pagination' : 'Paginación')}>
       <button
         type="button"
         className="step-nav-control"
         onClick={handlePrev}
         disabled={!canGoPrev}
-        aria-label="Página anterior"
+        aria-label={en ? 'Previous page' : 'Página anterior'}
       >
         <ArrowLeft aria-hidden="true" />
       </button>
 
       <span className="pagination__text" aria-live="polite" aria-atomic="true">
-        Página {currentPage} de {safeTotalPages}
+        {en ? 'Page' : 'Página'} {currentPage} {en ? 'of' : 'de'} {safeTotalPages}
       </span>
 
       <button
@@ -65,7 +68,7 @@ export function Pagination({
         className="step-nav-control"
         onClick={handleNext}
         disabled={!canGoNext}
-        aria-label="Página siguiente"
+        aria-label={en ? 'Next page' : 'Página siguiente'}
       >
         <ArrowRight aria-hidden="true" />
       </button>

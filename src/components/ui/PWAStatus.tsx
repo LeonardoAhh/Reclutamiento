@@ -1,12 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
 import { usePWAUpdate } from '@/hooks/usePWAUpdate';
-import { SYSTEM_UPDATE_BANNER_CONFIG } from '@/lib/constants';
+import {
+  SYSTEM_UPDATE_BANNER_CONFIG,
+  SYSTEM_UPDATE_BANNER_ENGLISH,
+} from '@/lib/constants';
 import { toast } from '@/lib/notify';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const CONNECTION_NOTICE_ID = 'connection-status';
 const OFFLINE_READY_NOTICE_ID = 'offline-ready';
 
 export function PWAStatus() {
+  const { language } = useLanguage();
+  const copy = language === 'en' ? SYSTEM_UPDATE_BANNER_ENGLISH : SYSTEM_UPDATE_BANNER_CONFIG;
   const [offline, setOffline] = useState(
     typeof navigator !== 'undefined' ? !navigator.onLine : false,
   );
@@ -30,18 +36,18 @@ export function PWAStatus() {
     if (offline) {
       toast.warning({
         id: CONNECTION_NOTICE_ID,
-        title: SYSTEM_UPDATE_BANNER_CONFIG.offlineTitle,
-        description: SYSTEM_UPDATE_BANNER_CONFIG.offlineHint,
+        title: copy.offlineTitle,
+        description: copy.offlineHint,
         duration: Infinity,
       });
     } else if (previousOffline.current) {
       toast.success({
         id: CONNECTION_NOTICE_ID,
-        title: SYSTEM_UPDATE_BANNER_CONFIG.onlineTitle,
+        title: copy.onlineTitle,
       });
     }
     previousOffline.current = offline;
-  }, [offline]);
+  }, [copy, offline]);
 
   useEffect(() => {
     if (offlineReadyRevision <= lastOfflineReadyRevision.current) return;
@@ -51,10 +57,10 @@ export function PWAStatus() {
 
     toast.success({
       id: OFFLINE_READY_NOTICE_ID,
-      title: SYSTEM_UPDATE_BANNER_CONFIG.offlineReadyTitle,
-      description: SYSTEM_UPDATE_BANNER_CONFIG.offlineReadyHint,
+      title: copy.offlineReadyTitle,
+      description: copy.offlineReadyHint,
     });
-  }, [offline, offlineReadyRevision]);
+  }, [copy, offline, offlineReadyRevision]);
 
   return null;
 }

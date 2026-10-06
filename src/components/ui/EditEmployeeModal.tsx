@@ -4,6 +4,8 @@ import type { Employee } from '@/lib/types';
 import { usePositions } from '@/lib/positions';
 import { toNaturalCase } from '@/lib/utils';
 import { localTodayIso } from '@/lib/dates';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { workforceText } from '@/pages/workforce-translations';
 import { useTeamDirectory } from '@/features/team/TeamProvider';
 import { recruiterOptions } from '@/features/team/types';
 import { Tooltip } from './Tooltip';
@@ -37,6 +39,8 @@ export function EditEmployeeModal({
   onClose,
   onSave,
 }: EditEmployeeModalProps) {
+  const { language } = useLanguage();
+  const t = (text: string) => workforceText(language, text);
   const { members } = useTeamDirectory();
   const [form, setForm] = useState<FormState>({
     nombre: '',
@@ -126,7 +130,7 @@ export function EditEmployeeModal({
         reclutador: form.reclutador || null,
       });
       if (result && result.ok === false) {
-        setErrorMsg(result.message ?? 'No se pudo guardar.');
+        setErrorMsg(result.message ?? t('No se pudo guardar.'));
         return;
       }
       onClose();
@@ -138,7 +142,7 @@ export function EditEmployeeModal({
   const icon = (
     <PenLine size={20} className="color-primary" aria-hidden="true" />
   );
-  const title = 'Editar Empleado';
+  const title = t('Editar Empleado');
   return (
     <Modal
       isOpen={isOpen}
@@ -174,7 +178,7 @@ export function EditEmployeeModal({
                   className="btn-primary"
                   disabled={!isValid || submitting}
                 >
-                  {submitting ? 'Guardando…' : 'Guardar'}
+                  {t(submitting ? 'Guardando…' : 'Guardar')}
                 </button>
               </span>
             </Tooltip>
@@ -185,7 +189,7 @@ export function EditEmployeeModal({
               className="btn-primary"
               disabled={!isValid || submitting}
             >
-              {submitting ? 'Guardando…' : 'Guardar'}
+              {t(submitting ? 'Guardando…' : 'Guardar')}
             </button>
           )}
         </>
@@ -194,7 +198,7 @@ export function EditEmployeeModal({
       <form id="edit-employee-form" onSubmit={handleSubmit} className="modal-body" noValidate>
         <div className="form-grid">
           <div className="form-group">
-            <label htmlFor="edit-emp-name">Nombre Completo</label>
+            <label htmlFor="edit-emp-name">{t('Nombre Completo')}</label>
             <input
               id="edit-emp-name"
               type="text"
@@ -207,39 +211,39 @@ export function EditEmployeeModal({
             />
           </div>
           <div className="form-group">
-            <label htmlFor="edit-emp-area">Área</label>
+            <label htmlFor="edit-emp-area">{t('Área')}</label>
             <CustomSelect
               id="edit-emp-area"
               value={form.area}
               onChange={(val) => setForm({ ...form, area: val, seccion: '', puesto: '' })}
               options={areas.map((a) => ({ value: a, label: a }))}
-              placeholder="Seleccione área…"
+              placeholder={t('Seleccione área…')}
             />
           </div>
           <div className="form-group">
-            <label htmlFor="edit-emp-seccion">Sección</label>
+            <label htmlFor="edit-emp-seccion">{t('Sección')}</label>
             <CustomSelect
               id="edit-emp-seccion"
               value={form.seccion}
               onChange={(val) => setForm({ ...form, seccion: val, puesto: '' })}
               options={sectionsForArea.map((s) => ({ value: s, label: s }))}
-              placeholder="Seleccione sección…"
+              placeholder={t('Seleccione sección…')}
               disabled={!form.area}
             />
           </div>
           <div className="form-group">
-            <label htmlFor="edit-emp-puesto">Puesto</label>
+            <label htmlFor="edit-emp-puesto">{t('Puesto')}</label>
             <CustomSelect
               id="edit-emp-puesto"
               value={form.puesto}
               onChange={(val) => setForm({ ...form, puesto: val })}
               options={puestosForSection.map((p) => ({ value: p, label: toNaturalCase(p) }))}
-              placeholder="Seleccione puesto…"
+              placeholder={t('Seleccione puesto…')}
               disabled={!form.seccion}
             />
           </div>
           <div className="form-group">
-            <label htmlFor="edit-emp-turno">Turno</label>
+            <label htmlFor="edit-emp-turno">{t('Turno')}</label>
             <CustomSelect
               id="edit-emp-turno"
               value={form.turno}
@@ -249,7 +253,7 @@ export function EditEmployeeModal({
                 { value: '2', label: '2' },
                 { value: '3', label: '3' },
                 { value: '4', label: '4' },
-                { value: 'Mixto', label: 'Mixto' },
+                { value: 'Mixto', label: t('Mixto') },
               ]}
             />
           </div>
@@ -266,7 +270,7 @@ export function EditEmployeeModal({
             />
           </div>
           <div className="form-group">
-            <label htmlFor="edit-fecha">Fecha de Ingreso</label>
+            <label htmlFor="edit-fecha">{t('Fecha de Ingreso')}</label>
             <input
               id="edit-fecha"
               type="date"
@@ -275,12 +279,12 @@ export function EditEmployeeModal({
             />
           </div>
           <div className="form-group">
-            <label htmlFor="edit-emp-reclutador">Reclutador</label>
+            <label htmlFor="edit-emp-reclutador">{t('Reclutador')}</label>
             <CustomSelect
               id="edit-emp-reclutador"
               value={form.reclutador}
               onChange={(val) => setForm({ ...form, reclutador: val })}
-              placeholder="Sin asignar"
+              placeholder={t('Sin asignar')}
               options={recruiterOptions(members, employee?.reclutador, true)}
             />
           </div>

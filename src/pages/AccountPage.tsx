@@ -11,12 +11,16 @@ import { UserActivityPanel } from "@/features/system/UserActivityPanel";
 import { useAuth } from "@/hooks/useAuth";
 import { useMaintenanceMode } from "@/hooks/useMaintenanceMode";
 import { toNaturalCase } from "@/lib/utils";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { accountCopy } from "./account-translations";
 import "./AccountPage.css";
 
 type AccountDialog = "avatar" | "password" | "recognition" | "maintenance" | null;
 
 export function AccountPage() {
   const { profile, user, username } = useAuth();
+  const { language } = useLanguage();
+  const copy = accountCopy(language);
   const maintenance = useMaintenanceMode();
   const [dialog, setDialog] = useState<AccountDialog>(null);
 
@@ -28,12 +32,12 @@ export function AccountPage() {
   const isAdmin = profile.role === "admin";
   const isRecruiter = profile.role === "reclutador";
   const maintenanceLabel = maintenance.loading
-    ? "Consultando…"
+    ? copy.checking
     : maintenance.error
-      ? "No disponible"
+      ? copy.unavailable
       : maintenance.enabled
-        ? "Activo"
-        : "Inactivo";
+        ? copy.active
+        : copy.inactive;
 
   const closeDialog = () => setDialog(null);
 
@@ -41,11 +45,11 @@ export function AccountPage() {
     <main className="account-page container container--compact" aria-labelledby="account-profile-title">
       <div className="account-page__content">
         <section className="account-page__section account-page__section--profile" aria-labelledby="account-profile-title">
-          <h1 id="account-profile-title" className="app-page-title">Mi cuenta</h1>
+          <h1 id="account-profile-title" className="app-page-title">{copy.title}</h1>
           <button
             type="button"
             className="account-page__identity"
-            aria-label={`Cambiar foto de perfil de ${displayName}`}
+            aria-label={copy.changeAvatar(displayName)}
             aria-describedby={user?.email ? "account-profile-email" : undefined}
             onClick={() => setDialog("avatar")}
           >
@@ -62,13 +66,13 @@ export function AccountPage() {
             <button
               type="button"
               className="account-page__row"
-              aria-label="Cambiar contraseña"
+              aria-label={copy.changePassword}
               aria-describedby="account-password-description"
               onClick={() => setDialog("password")}
             >
               <span className="account-page__row-copy">
-                <span className="account-page__row-title">Contraseña</span>
-                <span id="account-password-description" className="account-page__row-description">Actualiza la contraseña de acceso a tu cuenta.</span>
+                <span className="account-page__row-title">{copy.password}</span>
+                <span id="account-password-description" className="account-page__row-description">{copy.passwordDescription}</span>
               </span>
             </button>
 
@@ -76,13 +80,13 @@ export function AccountPage() {
               <button
                 type="button"
                 className="account-page__row"
-                aria-label="Configurar reconocimientos"
+                aria-label={copy.recognition}
                 aria-describedby="account-recognition-description"
                 onClick={() => setDialog("recognition")}
               >
                 <span className="account-page__row-copy">
-                  <span className="account-page__row-title">Reconocimientos</span>
-                  <span id="account-recognition-description" className="account-page__row-description">Configura cuándo quieres ver tus avances y logros.</span>
+                  <span className="account-page__row-title">{copy.recognition}</span>
+                  <span id="account-recognition-description" className="account-page__row-description">{copy.recognitionDescription}</span>
                 </span>
               </button>
             )}
@@ -91,31 +95,31 @@ export function AccountPage() {
 
         {isAdmin && (
           <section className="account-page__section" aria-labelledby="account-admin-title">
-            <h2 id="account-admin-title" className="account-page__section-title">Administración</h2>
+            <h2 id="account-admin-title" className="account-page__section-title">{copy.administration}</h2>
             <div className="account-page__panel">
               <Link to={TEAM_PATH} className="account-page__row account-page__row-link">
                 <span className="account-page__row-copy">
-                  <span className="account-page__row-title">Equipo</span>
-                  <span className="account-page__row-description">Administra integrantes, nombres y bajas de acceso.</span>
+                  <span className="account-page__row-title">{copy.team}</span>
+                  <span className="account-page__row-description">{copy.teamDescription}</span>
                 </span>
               </Link>
               <button
                 type="button"
                 className="account-page__row account-page__row--status"
-                aria-label="Administrar modo mantenimiento"
+                aria-label={copy.maintenance}
                 aria-describedby="account-maintenance-description account-maintenance-status"
                 onClick={() => setDialog("maintenance")}
                 disabled={maintenance.loading}
               >
-                <span className="account-page__row-title">Modo mantenimiento</span>
-                <Badge id="account-maintenance-status" className="account-page__status" variant={maintenance.enabled ? "amber" : "default"} aria-live="polite">
+                <span className="account-page__row-title">{copy.maintenance}</span>
+                <Badge id="account-maintenance-status" className="account-page__status" aria-live="polite">
                   {maintenanceLabel}
                 </Badge>
-                <span id="account-maintenance-description" className="account-page__row-description">Controla el acceso general al sistema.</span>
+                <span id="account-maintenance-description" className="account-page__row-description">{copy.maintenanceDescription}</span>
               </button>
             </div>
             <div className="account-page__activity">
-              <h3>Actividad de usuarios</h3>
+              <h3>{copy.userActivity}</h3>
               <UserActivityPanel />
             </div>
           </section>

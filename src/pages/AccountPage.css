@@ -163,10 +163,9 @@
   grid-row: 1;
   justify-self: end;
   align-self: start;
-}
-
-.account-page__status.badge--amber {
-  color: var(--color-warning-text);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border: var(--border-width) solid var(--color-primary);
 }
 
 .account-page__activity {

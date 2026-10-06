@@ -3,14 +3,24 @@ import { Eclipse } from 'lucide-react';
 import { useTheme } from '@/hooks/useTheme';
 import './ThemeSelect.css';
 
-export function ThemeSelect() {
+interface ThemeSelectProps {
+  language?: 'es' | 'en';
+  className?: string;
+}
+
+export function ThemeSelect({ language = 'es', className }: ThemeSelectProps) {
   const id = useId();
   const { resolvedTheme, storageError, setPreference } = useTheme();
   const nextTheme = resolvedTheme === 'dark' ? 'light' : 'dark';
-  const actionLabel = nextTheme === 'dark' ? 'Cambiar a tema oscuro' : 'Cambiar a tema claro';
+  const actionLabel = language === 'en'
+    ? nextTheme === 'dark' ? 'Switch to dark theme' : 'Switch to light theme'
+    : nextTheme === 'dark' ? 'Cambiar a tema oscuro' : 'Cambiar a tema claro';
+  const storageMessage = language === 'en'
+    ? 'The theme applies here, but this browser does not allow saving it.'
+    : 'La elección se aplica aquí, pero este navegador no permite guardarla.';
 
   return (
-    <div className="theme-select">
+    <div className={['theme-select', className].filter(Boolean).join(' ')}>
       <button
         type="button"
         className="theme-select__trigger"
@@ -24,7 +34,7 @@ export function ThemeSelect() {
       </button>
       {storageError && (
         <p id={`${id}-storage`} className="theme-select__notice" role="status">
-          La elección se aplica aquí, pero este navegador no permite guardarla.
+          {storageMessage}
         </p>
       )}
     </div>

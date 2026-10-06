@@ -6,6 +6,7 @@ import { CustomSelect } from "@/components/ui/CustomSelect";
 import { Pagination } from "@/components/ui/Pagination";
 import { SearchField } from "@/components/ui/SearchField";
 import { useAuth } from "@/hooks/useAuth";
+import { useDataUpdateText } from "./translations";
 import { useTeamDirectory } from '@/features/team/TeamProvider';
 import { usePagination } from "@/hooks/usePagination";
 import { splitCandidateName } from "@/lib/names";
@@ -128,6 +129,7 @@ function groupWorkRecords(records: DataUpdateRecord[]): DataUpdateWorkGroup[] {
 }
 
 export function DataUpdatePage() {
+  const t = useDataUpdateText();
   const { members } = useTeamDirectory();
   const { profile, user } = useAuth();
   const online = useOnlineStatus();
@@ -277,9 +279,9 @@ export function DataUpdatePage() {
   const workGroupOptions = useMemo(
     () => visibleWorkGroups.map((group) => ({
       value: group.key,
-      label: `${group.isCompleted ? "COMPLETADOS · " : ""}${group.area}`.toLocaleUpperCase("es-MX"),
+      label: `${group.isCompleted ? t("COMPLETADOS · ") : ""}${group.area === "Sin área" ? t("Sin área") : group.area}`.toLocaleUpperCase("es-MX"),
     })),
-    [visibleWorkGroups],
+    [visibleWorkGroups, t],
   );
   const myCompletedCount = myRecords.filter(
     (record) => record.status === "completado",
@@ -329,7 +331,7 @@ export function DataUpdatePage() {
       setIncidents(await listDataUpdateIncidents(record.id));
       setSelectedRecord(record);
     } catch (caught) {
-      toast.error({ title: dataUpdateError(caught) });
+      toast.error({ title: t(dataUpdateError(caught)) });
     } finally {
       setBusy(false);
     }
@@ -346,7 +348,7 @@ export function DataUpdatePage() {
       setDetail(null);
       setSelectedRecord(null);
       setSearchTerm("");
-      toast.success({ title: "Campaña eliminada" });
+      toast.success({ title: t("Campaña eliminada") });
       await loadCampaigns();
     } catch (caught) {
       setDeleteError(dataUpdateError(caught));
@@ -361,8 +363,8 @@ export function DataUpdatePage() {
       <main className="data-update-page data-update-page--has-heading container" aria-labelledby="data-update-title">
         <header className="page-header data-update-page__header">
           <div className="page-header__content">
-            <h1 id="data-update-title" className="app-page-title">Actualización de datos</h1>
-            <p>No tienes acceso a este módulo.</p>
+            <h1 id="data-update-title" className="app-page-title">{t("Actualización de datos")}</h1>
+            <p>{t("No tienes acceso a este módulo.")}</p>
           </div>
         </header>
       </main>
@@ -392,27 +394,27 @@ export function DataUpdatePage() {
     <main className="data-update-page data-update-page--has-heading container" aria-labelledby="data-update-title">
       <header className="page-header data-update-page__header">
         <div className="page-header__content">
-          <h1 id="data-update-title" className="app-page-title">Actualización de datos</h1>
+          <h1 id="data-update-title" className="app-page-title">{t("Actualización de datos")}</h1>
 
         </div>
         {isAdmin && (
           <div className="page-header__actions">
             <button type="button" className="btn-primary" onClick={() => setImportOpen(true)} disabled={!online}>
               <FilePlus2 aria-hidden="true" />
-              Nueva campaña
+              {t("Nueva campaña")}
             </button>
           </div>
         )}
       </header>
 
-      {!online && <p className="data-update-offline" role="alert">Este módulo necesita conexión. Reconéctate para consultar o guardar información.</p>}
-      {error && <p className="form-error" role="alert">{error}</p>}
+      {!online && <p className="data-update-offline" role="alert">{t("Este módulo necesita conexión. Reconéctate para consultar o guardar información.")}</p>}
+      {error && <p className="form-error" role="alert">{t(error)}</p>}
 
       {campaigns.length > 0 && (
         <div className="data-update-overview">
-          <section className="data-update-campaign-toolbar" aria-label="Campaña activa">
+          <section className="data-update-campaign-toolbar" aria-label={t("Campaña activa")}>
             <div className="form-group">
-              <label htmlFor="data-update-campaign">Campaña</label>
+              <label htmlFor="data-update-campaign">{t("Campaña")}</label>
               <CustomSelect
                 id="data-update-campaign"
                 value={selectedCampaignId}
@@ -434,7 +436,7 @@ export function DataUpdatePage() {
             <div className="data-update-campaign-actions">
               <button type="button" className="btn-secondary" onClick={() => void loadDetail()} disabled={!online || loading || busy}>
                 <RefreshCw aria-hidden="true" />
-                Actualizar
+                {t("Actualizar", "Refresh")}
               </button>
               {isAdmin && (
                 <button
@@ -446,11 +448,11 @@ export function DataUpdatePage() {
                   }}
                   disabled={!online || loading || busy || !selectedCampaign}
                   aria-label={selectedCampaign
-                    ? `Eliminar`
-                    : "Eliminar"}
+                    ? t("Eliminar")
+                    : t("Eliminar")}
                 >
                   <Trash2 aria-hidden="true" />
-                  Eliminar
+                  {t("Eliminar")}
                 </button>
               )}
               {isAdmin && !loading && detail && (
@@ -460,18 +462,18 @@ export function DataUpdatePage() {
                   onClick={() => setProgressOpen(true)}
                 >
                   <ChartNoAxesCombined aria-hidden="true" />
-                  Ver avance
+                  {t("Ver avance")}
                 </button>
               )}
             </div>
           </section>
 
           {!isAdmin && !loading && detail && (
-            <section className="card data-update-summary-card" aria-label="Resumen de campaña">
+            <section className="card data-update-summary-card" aria-label={t("Resumen de campaña")}>
               <dl className="data-update-summary">
-                <div><dt>Mis asignados</dt><dd>{myRecords.length}</dd></div>
-                <div><dt>Completados</dt><dd>{myCompletedCount}</dd></div>
-                <div><dt>Total visible</dt><dd>{totalVisibleCount}</dd></div>
+                <div><dt>{t("Mis asignados")}</dt><dd>{myRecords.length}</dd></div>
+                <div><dt>{t("Completados")}</dt><dd>{myCompletedCount}</dd></div>
+                <div><dt>{t("Total visible")}</dt><dd>{totalVisibleCount}</dd></div>
               </dl>
             </section>
           )}
@@ -479,32 +481,32 @@ export function DataUpdatePage() {
       )}
 
       {loading ? (
-        <p className="data-update-message" role="status">Cargando actualización de datos…</p>
+        <p className="data-update-message" role="status">{t("Cargando actualización de datos…")}</p>
       ) : campaigns.length === 0 ? (
         <section className="card data-update-empty" aria-labelledby="data-update-empty-title">
           <UserRoundCheck aria-hidden="true" />
-          <h2 id="data-update-empty-title">Sin campañas disponibles</h2>
-          <p className="text-muted">{isAdmin ? "Crea una campaña, importa la información" : "Aún no tienes colaboradores asignados."}</p>
+          <h2 id="data-update-empty-title">{t("Sin campañas disponibles")}</h2>
+          <p className="text-muted">{isAdmin ? t("Crea una campaña, importa la información") : t("Aún no tienes colaboradores asignados.")}</p>
         </section>
       ) : detail ? (
         <>
           <Tabs.Root className="data-update-tabs" value={activeView} onValueChange={setActiveView}>
             <Tabs.List
               className={`data-update-tabs__list${isAdmin ? " data-update-tabs__list--admin" : ""}`}
-              aria-label="Vistas de actualización de datos"
+              aria-label={t("Vistas de actualización de datos")}
             >
               <Tabs.Trigger className="data-update-tabs__trigger" value="work">
-                Mi trabajo
+                {t("Mi trabajo")}
               </Tabs.Trigger>
               <Tabs.Trigger className="data-update-tabs__trigger" value="locker">
-                Locker
+                {t("Locker")}
               </Tabs.Trigger>
               <Tabs.Trigger className="data-update-tabs__trigger" value="completed">
-                Completados
+                {t("Completados")}
               </Tabs.Trigger>
               {isAdmin && (
                 <Tabs.Trigger className="data-update-tabs__trigger" value="admin">
-                  Administración
+                  {t("Administración")}
                 </Tabs.Trigger>
               )}
             </Tabs.List>
@@ -513,8 +515,8 @@ export function DataUpdatePage() {
               <section className="data-update-queue" aria-labelledby="data-update-queue-title">
                 <div className="data-update-section-heading">
                   <div>
-                    <h2 id="data-update-queue-title">Mi trabajo</h2>
-                    <p className="text-muted">Los registros en proceso continúan desde el último paso guardado.</p>
+                    <h2 id="data-update-queue-title">{t("Mi trabajo")}</h2>
+                    <p className="text-muted">{t("Los registros en proceso continúan desde el último paso guardado.")}</p>
                   </div>
                 </div>
                 {myRecords.length > 0 && (
@@ -522,8 +524,8 @@ export function DataUpdatePage() {
                     <SearchField
                       id="data-update-record-search"
                       className="data-update-queue__search"
-                      label="Buscar en mi trabajo"
-                      placeholder="Número, nombre, área, sección, puesto o turno"
+                      label={t("Buscar en mi trabajo")}
+                      placeholder={t("Número, nombre, área, sección, puesto o turno")}
                       value={searchTerm}
                       onChange={(event) => {
                         setSearchTerm(event.target.value);
@@ -545,13 +547,13 @@ export function DataUpdatePage() {
                     {visibleMyRecords.length > 0 && (
                       <div className="form-group data-update-work-group-navigation">
                         <label className="sr-only" htmlFor="data-update-work-group-navigation">
-                          Filtrar por área
+                          {t("Filtrar por área")}
                         </label>
                         <CustomSelect
                           id="data-update-work-group-navigation"
                           value={selectedWorkGroup}
                           options={workGroupOptions}
-                          placeholder="TODAS LAS ÁREAS"
+                          placeholder={t("TODAS LAS ÁREAS")}
                           showPlaceholderOption
                           onChange={goToWorkGroup}
                         />
@@ -569,24 +571,24 @@ export function DataUpdatePage() {
                         }}
                       />
                       <span className="toggle-switch__slider" aria-hidden="true" />
-                      <span className="toggle-switch__label">Pendientes</span>
+                      <span className="toggle-switch__label">{t("Pendientes")}</span>
                     </label>
                   </div>
                 )}
                 {myRecords.length === 0 ? (
-                  <p className="data-update-message">No tienes registros asignados en esta campaña.</p>
+                  <p className="data-update-message">{t("No tienes registros asignados en esta campaña.")}</p>
                 ) : visibleMyRecords.length === 0 ? (
                   <div id="data-update-record-list" className="data-update-search-empty" role="status">
                     <p>{searchTerm.trim()
-                      ? `No hay coincidencias para “${searchTerm.trim()}”.`
-                      : "No hay registros pendientes o en proceso."}</p>
+                      ? t(`No hay coincidencias para “${searchTerm.trim()}”.`)
+                      : t("No hay registros pendientes o en proceso.")}</p>
                     <button type="button" className="btn-secondary" onClick={() => {
                       setSearchTerm("");
                       setShowOnlyPendingWork(false);
                       setSelectedWorkGroup("");
                       recordPagination.goToPage(1);
                     }}>
-                      Limpiar filtros
+                      {t("Limpiar filtros")}
                     </button>
                   </div>
                 ) : (
@@ -603,14 +605,14 @@ export function DataUpdatePage() {
                           >
                             {index === 0 && (
                               <span id={`${workGroupId(group.key)}-label`} className="sr-only">
-                                {group.isCompleted ? "Completados" : "Área"}: {group.area}
+                                {group.isCompleted ? t("Completados") : t("Área")}: {group.area === "Sin área" ? t("Sin área") : group.area}
                               </span>
                             )}
                             <div>
                               <div className="data-update-work-card__name-row">
                                 <span className="data-update-work-card__identity type-caption-up text-muted">
                                   <span>{record.identity.employeeNumber}</span>
-                                  {record.identity.shift && <span>Turno: {record.identity.shift}</span>}
+                                  {record.identity.shift && <span>{t("Turno: ")}{record.identity.shift}</span>}
                                 </span>
                                 <DataUpdateStatus status={record.status} />
                               </div>
@@ -622,7 +624,7 @@ export function DataUpdatePage() {
                               onClick={() => void openRecord(record)}
                               disabled={!online || busy || record.status === "completado"}
                             >
-                              {record.status === "pendiente" ? "Comenzar" : record.status === "en_proceso" ? "Continuar" : "Completado"}
+                              {t(record.status === "pendiente" ? "Comenzar" : record.status === "en_proceso" ? "Continuar" : "Completado")}
                             </button>
                           </article>
                         )),
@@ -637,7 +639,7 @@ export function DataUpdatePage() {
                         onNext={recordPagination.nextPage}
                         canGoPrev={recordPagination.canGoPrev}
                         canGoNext={recordPagination.canGoNext}
-                        ariaLabel="Paginación de registros asignados"
+                        ariaLabel={t("Paginación de registros asignados")}
                       />
                     )}
                   </>
@@ -656,13 +658,13 @@ export function DataUpdatePage() {
             <Tabs.Content className="data-update-tabs__content" value="completed">
               <section className="data-update-queue" aria-labelledby="data-update-completed-title">
                 <div className="data-update-section-heading">
-                  <h2 id="data-update-completed-title">Completados</h2>
+                  <h2 id="data-update-completed-title">{t("Completados")}</h2>
                   {completedRecords.length > 0 && (
                     <SearchField
                       id="data-update-completed-search"
                       className="data-update-queue__search"
-                      label="Buscar completados"
-                      placeholder="Número, nombre, departamento o turno"
+                      label={t("Buscar completados")}
+                      placeholder={t("Número, nombre, departamento o turno")}
                       value={completedSearchTerm}
                       onChange={(event) => {
                         setCompletedSearchTerm(event.target.value);
@@ -675,14 +677,14 @@ export function DataUpdatePage() {
                   )}
                 </div>
                 {completedRecords.length === 0 ? (
-                  <p className="data-update-message">Aún no hay registros completados en esta campaña.</p>
+                  <p className="data-update-message">{t("Aún no hay registros completados en esta campaña.")}</p>
                 ) : (
                   <>
                     {visibleCompletedRecords.length === 0 ? (
                       <div id="data-update-completed-list" className="data-update-search-empty" role="status">
-                        <p>No hay coincidencias para “{completedSearchTerm.trim()}”.</p>
+                        <p>{t(`No hay coincidencias para “${completedSearchTerm.trim()}”.`)}</p>
                         <button type="button" className="btn-secondary" onClick={() => setCompletedSearchTerm("")}>
-                          Limpiar búsqueda
+                          {t("Limpiar búsqueda")}
                         </button>
                       </div>
                     ) : (
@@ -698,8 +700,8 @@ export function DataUpdatePage() {
                                   <h3>{record.identity.name}</h3>
                                 </div>
                                 <dl className="data-update-completed-card__details">
-                                  <div><dt>Departamento</dt><dd>{record.identity.area || "Sin departamento"}</dd></div>
-                                  <div><dt>Turno</dt><dd>{record.identity.shift || "Sin turno"}</dd></div>
+                                  <div><dt>{t("Departamento")}</dt><dd>{record.identity.area || t("Sin departamento")}</dd></div>
+                                  <div><dt>{t("Turno")}</dt><dd>{record.identity.shift || t("Sin turno")}</dd></div>
                                 </dl>
                                 <div className="data-update-completed-card__actions">
                                   {hasPhone ? (
@@ -709,8 +711,8 @@ export function DataUpdatePage() {
                                         href={`https://wa.me/${DATA_UPDATE_PHONE_COUNTRY_CODE}${phone}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        aria-label={`Abrir WhatsApp de ${record.identity.name} en una pestaña nueva`}
-                                        title="Abrir WhatsApp"
+                                        aria-label={t(`Abrir WhatsApp de ${record.identity.name} en una pestaña nueva`)}
+                                        title={t("Abrir WhatsApp")}
                                       >
                                         <MessageCircle aria-hidden="true" />
                                       </a>
@@ -718,14 +720,14 @@ export function DataUpdatePage() {
                                         type="button"
                                         className="btn-secondary data-update-completed-card__icon-action"
                                         onClick={() => downloadContact(record, phone)}
-                                        aria-label={`Descargar contacto de ${record.identity.name}`}
-                                        title="Descargar contacto"
+                                        aria-label={t(`Descargar contacto de ${record.identity.name}`)}
+                                        title={t("Descargar contacto")}
                                       >
                                         <Download aria-hidden="true" />
                                       </button>
                                     </>
                                   ) : (
-                                    <span className="text-muted">Sin teléfono válido</span>
+                                    <span className="text-muted">{t("Sin teléfono válido")}</span>
                                   )}
                                 </div>
                               </article>
@@ -741,7 +743,7 @@ export function DataUpdatePage() {
                             onNext={completedPagination.nextPage}
                             canGoPrev={completedPagination.canGoPrev}
                             canGoNext={completedPagination.canGoNext}
-                            ariaLabel="Paginación de registros completados"
+                            ariaLabel={t("Paginación de registros completados")}
                           />
                         )}
                       </>
@@ -789,7 +791,7 @@ export function DataUpdatePage() {
           onClose={() => setImportOpen(false)}
           onCreated={(campaignId) => {
             setImportOpen(false);
-            toast.success({ title: "Campaña creada y repartida" });
+            toast.success({ title: t("Campaña creada y repartida") });
             void loadCampaigns(campaignId);
           }}
         />
@@ -798,12 +800,12 @@ export function DataUpdatePage() {
       {isAdmin && (
         <ConfirmModal
           isOpen={campaignPendingDelete !== null}
-          title="Eliminar"
+          title={t("Eliminar")}
           description={campaignPendingDelete
-            ? `Esta acción no se puede deshacer.`
+            ? t("Esta acción no se puede deshacer.")
             : undefined}
-          confirmLabel="Eliminar"
-          cancelLabel="Cancelar"
+          confirmLabel={t("Eliminar")}
+          cancelLabel={t("Cancelar")}
           onConfirm={() => void confirmCampaignDeletion()}
           onCancel={() => {
             if (deleting) return;
@@ -812,8 +814,8 @@ export function DataUpdatePage() {
           }}
           isDestructive
           isLoading={deleting}
-          loadingLabel="Eliminando campaña…"
-          errorMessage={deleteError ?? undefined}
+          loadingLabel={t("Eliminar campaña…")}
+          errorMessage={deleteError ? t(deleteError) : undefined}
         />
       )}
     </main>

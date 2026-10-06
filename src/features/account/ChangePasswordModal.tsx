@@ -1,6 +1,7 @@
 import { Modal } from '@/components/ui/Modal';
 import { useRef } from 'react';
 import { PasswordChangeForm } from './PasswordChangeForm';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface ChangePasswordModalProps {
   isOpen: boolean;
@@ -9,11 +10,13 @@ interface ChangePasswordModalProps {
 
 export function ChangePasswordModal({ isOpen, onClose }: ChangePasswordModalProps) {
   const formRef = useRef<{ close: () => void }>(null);
+  const { language } = useLanguage();
   return (
     <Modal
       isOpen={isOpen}
       onClose={() => formRef.current?.close()}
-      title="Cambiar contraseña"
+      title={language === 'en' ? 'Change password' : 'Cambiar contraseña'}
+      closeLabel={language === 'en' ? 'Close' : 'Cerrar'}
       size="xs"
       className="change-password-modal"
     >

@@ -27,6 +27,7 @@ import { exportDataUpdatePhotos, type DataUpdatePhotoExportProgress } from "./ex
 import { DataUpdateShiftImportModal } from "./DataUpdateShiftImportModal";
 import { DataUpdatePhotoModal } from "./DataUpdatePhotoModal";
 import { DataUpdateStatus } from "./DataUpdateStatus";
+import { useDataUpdateText } from "./translations";
 import type { DataUpdateCampaignDetail, DataUpdateProfileOption, DataUpdateRecord } from "./types";
 
 interface DataUpdateAdminPanelProps {
@@ -52,6 +53,7 @@ export function DataUpdateAdminPanel({
   onRecordUpdated,
   onRecordDeleted,
 }: DataUpdateAdminPanelProps) {
+  const t = useDataUpdateText();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedShift, setSelectedShift] = useState("");
   const [showOnlyPending, setShowOnlyPending] = useState(false);
@@ -107,9 +109,9 @@ export function DataUpdateAdminPanel({
       const updated = await reassignDataUpdateRecord(recordId, profileId);
       const assignedName = profiles.find((profile) => profile.id === profileId)?.label;
       onRecordUpdated({ ...updated, assignedName });
-      toast.success({ title: "Responsable actualizado" });
+      toast.success({ title: t("Responsable actualizado") });
     } catch (caught) {
-      toast.error({ title: dataUpdateError(caught) });
+      toast.error({ title: t(dataUpdateError(caught)) });
     } finally {
       onBusyChange(false);
     }
@@ -120,9 +122,9 @@ export function DataUpdateAdminPanel({
     try {
       const updated = await reopenDataUpdateRecord(recordId);
       onRecordUpdated(updated);
-      toast.success({ title: "Registro reabierto" });
+      toast.success({ title: t("Registro reabierto") });
     } catch (caught) {
-      toast.error({ title: dataUpdateError(caught) });
+      toast.error({ title: t(dataUpdateError(caught)) });
     } finally {
       onBusyChange(false);
     }
@@ -138,9 +140,9 @@ export function DataUpdateAdminPanel({
       const deletedId = pendingDeleteRecord.id;
       setPendingDeleteRecord(null);
       onRecordDeleted(deletedId);
-      toast.success({ title: "Colaborador eliminado de la campaña" });
+      toast.success({ title: t("Colaborador eliminado de la campaña") });
     } catch (caught) {
-      setDeleteRecordError(dataUpdateError(caught));
+      setDeleteRecordError(t(dataUpdateError(caught)));
     } finally {
       setDeletingRecord(false);
       onBusyChange(false);
@@ -156,9 +158,9 @@ export function DataUpdateAdminPanel({
         listCampaignDataUpdateIncidents(recordIds),
       ]);
       await exportDataUpdateCampaign({ detail, audit, incidents });
-      toast.success({ title: "Excel generado" });
+      toast.success({ title: t("Excel generado") });
     } catch (caught) {
-      toast.error({ title: dataUpdateError(caught) });
+      toast.error({ title: t(dataUpdateError(caught)) });
     } finally {
       onBusyChange(false);
     }
@@ -171,30 +173,30 @@ export function DataUpdateAdminPanel({
       if (result.downloaded === 0) {
         if (result.failed > 0) {
           toast.error({
-            title: "No se pudieron descargar las fotografías",
-            description: "Revisa tu conexión y vuelve a intentarlo.",
+            title: t("No se pudieron descargar las fotografías"),
+            description: t("Revisa tu conexión y vuelve a intentarlo."),
           });
         } else {
-          toast.info({ title: "No hay fotografías disponibles para descargar" });
+          toast.info({ title: t("No hay fotografías disponibles para descargar") });
         }
         return;
       }
 
       const omitted = result.missing + result.failed;
       toast.success({
-        title: "Fotografías descargadas",
+        title: t("Fotografías descargadas"),
         description: omitted > 0
-          ? `${result.downloaded} incluidas; ${omitted} no disponibles.`
-          : `${result.downloaded} fotografías incluidas en el ZIP.`,
+          ? `${result.downloaded} ${t("incluidas;")} ${omitted} ${t("no disponibles.")}`
+          : `${result.downloaded} ${t("fotografías incluidas en el ZIP.")}`,
       });
       if (result.failed > 0) {
         toast.warning({
-          title: "Algunas fotografías no se pudieron incluir",
-          description: `${result.failed} archivos presentaron un error. Puedes volver a intentarlo.`,
+          title: t("Algunas fotografías no se pudieron incluir"),
+          description: `${result.failed} ${t("archivos presentaron un error. Puedes volver a intentarlo.")}`,
         });
       }
     } catch (caught) {
-      toast.error({ title: dataUpdateError(caught) });
+      toast.error({ title: t(dataUpdateError(caught)) });
     } finally {
       setPhotoExportProgress(null);
       onBusyChange(false);
@@ -205,21 +207,21 @@ export function DataUpdateAdminPanel({
     <section className="data-update-admin" aria-labelledby="data-update-admin-title">
       <div className="data-update-section-heading">
         <div>
-          <h2 id="data-update-admin-title">Administración</h2>
-          <p className="text-muted">Reasigna responsables, reabre registros y exporta la campaña.</p>
+          <h2 id="data-update-admin-title">{t("Administración")}</h2>
+          <p className="text-muted">{t("Reasigna responsables, reabre registros y exporta la campaña.")}</p>
         </div>
       </div>
       <Toolbar
-        label="Herramientas de administración"
+        label={t("Herramientas de administración")}
         className={`data-update-admin__toolbar${detail.records.length === 0 ? " data-update-admin__toolbar--empty" : ""}`}
       >
         {detail.records.length > 0 && (
-          <ToolbarGroup label="Buscar registros" className="data-update-admin__search">
+          <ToolbarGroup label={t("Buscar registros")} className="data-update-admin__search">
             <SearchField
               id="data-update-admin-search"
               className="data-update-queue__search"
-              label="Buscar en administración"
-              placeholder="Número, nombre, área, sección, puesto o turno"
+              label={t("Buscar en administración")}
+              placeholder={t("Número, nombre, área, sección, puesto o turno")}
               value={searchTerm}
               onChange={(event) => setSearchTerm(event.target.value)}
               onClear={() => setSearchTerm("")}
@@ -231,20 +233,20 @@ export function DataUpdateAdminPanel({
             />
           </ToolbarGroup>
         )}
-        <ToolbarGroup label="Filtrar por turno" className="data-update-admin__shift">
+        <ToolbarGroup label={t("Filtrar por turno")} className="data-update-admin__shift">
           <CustomSelect
             id="data-update-admin-shift"
             value={selectedShift}
             options={shiftOptions}
-            placeholder="Todos"
+            placeholder={t("Todos")}
             onChange={setSelectedShift}
             triggerAppearance="control"
             disabled={shiftOptions.length === 0}
-            aria-label={`Filtrar por turno: ${selectedShift || "Todos"}`}
+            aria-label={`${t("Filtrar por turno: ")}${selectedShift || t("Todos")}`}
             customTrigger={
               <span className="data-update-admin__shift-trigger">
-                <span>Turno</span>
-                <span className="data-update-admin__shift-value">{selectedShift || "Todos"}</span>
+                <span>{t("Turno")}</span>
+                <span className="data-update-admin__shift-value">{selectedShift || t("Todos")}</span>
                 <ChevronDown size="var(--icon-size-sm)" aria-hidden="true" />
               </span>
             }
@@ -259,27 +261,27 @@ export function DataUpdateAdminPanel({
               onChange={(event) => setShowOnlyPending(event.target.checked)}
             />
             <span className="toggle-switch__slider" aria-hidden="true" />
-            <span className="toggle-switch__label">Pendientes</span>
+            <span className="toggle-switch__label">{t("Pendientes")}</span>
           </label>
         )}
-        <ToolbarGroup label="Acciones de administración" className="data-update-admin__actions">
+        <ToolbarGroup label={t("Acciones de administración")} className="data-update-admin__actions">
           <button
             type="button"
             className="btn-secondary data-update-admin__shift-import"
             hidden
             onClick={() => setShiftImportOpen(true)}
             disabled={busy || !online || detail.records.length === 0}
-            aria-label="Actualizar turnos desde JSON"
+            aria-label={t("Actualizar turnos desde JSON")}
           >
             <FileJson2 aria-hidden="true" />
-            Cargar turnos
+            {t("Cargar turnos")}
           </button>
           <button
             type="button"
             className="btn-secondary"
             onClick={() => void exportCampaign()}
             disabled={busy || detail.records.length === 0}
-            aria-label="Exportar campaña a Excel"
+            aria-label={t("Exportar campaña a Excel")}
           >
             <FileSpreadsheet aria-hidden="true" />
             Excel
@@ -292,13 +294,13 @@ export function DataUpdateAdminPanel({
             aria-busy={photoExportProgress !== null}
             aria-live="polite"
             aria-label={photoExportProgress
-              ? `Preparando ${photoExportProgress.completed} de ${photoExportProgress.total} fotografías`
-              : "Descargar fotografías de la campaña"}
+              ? `${t("Preparando")} ${photoExportProgress.completed} ${t("de")} ${photoExportProgress.total} ${t("fotografías")}`
+              : t("Descargar fotografías de la campaña")}
           >
             <FileArchive aria-hidden="true" />
             {photoExportProgress
-              ? `Preparando ${photoExportProgress.completed} de ${photoExportProgress.total}`
-              : "Fotos"}
+              ? `${t("Preparando")} ${photoExportProgress.completed} ${t("de")} ${photoExportProgress.total}`
+              : t("Fotos")}
           </button>
         </ToolbarGroup>
       </Toolbar>
@@ -317,18 +319,18 @@ export function DataUpdateAdminPanel({
       />
 
       {detail.records.length === 0 ? (
-        <p className="data-update-message">No hay registros disponibles en esta campaña.</p>
+        <p className="data-update-message">{t("No hay registros disponibles en esta campaña.")}</p>
       ) : visibleRecords.length === 0 ? (
         <div id="data-update-admin-list" className="data-update-search-empty" role="status">
           <p>{searchTerm.trim()
             ? selectedShift
-              ? `No hay coincidencias para “${searchTerm.trim()}” en el turno ${selectedShift}.`
-              : `No hay coincidencias para “${searchTerm.trim()}”.`
+              ? `${t(`No hay coincidencias para “${searchTerm.trim()}”.`)} ${t("en el turno")} ${selectedShift}.`
+              : t(`No hay coincidencias para “${searchTerm.trim()}”.`)
             : selectedShift
               ? showOnlyPending
-                ? `No hay registros pendientes o en proceso para el turno ${selectedShift}.`
-                : `No hay registros del turno ${selectedShift}.`
-              : "No hay registros pendientes o en proceso."}</p>
+                ? `${t("No hay registros pendientes o en proceso para el turno")} ${selectedShift}.`
+                : `${t("No hay registros del turno")} ${selectedShift}.`
+              : t("No hay registros pendientes o en proceso.")}</p>
           <button
             type="button"
             className="btn-secondary"
@@ -338,7 +340,7 @@ export function DataUpdateAdminPanel({
               setShowOnlyPending(false);
             }}
           >
-            Limpiar filtros
+            {t("Limpiar filtros")}
           </button>
         </div>
       ) : (
@@ -349,19 +351,19 @@ export function DataUpdateAdminPanel({
                 <div className="data-update-admin-card__identity">
                   <div className="data-update-admin-card__meta">
                     <span className="type-caption-up text-muted">
-                      <span className="sr-only">Número de empleado: </span>
+                      <span className="sr-only">{t("Número de empleado: ")}</span>
                       {record.identity.employeeNumber}
                     </span>
                     {record.identity.area && (
                       <span className="data-update-admin-card__meta-item type-caption-up text-muted">
                         <span aria-hidden="true">●</span>
-                        <span><span className="sr-only">Área: </span>{record.identity.area}</span>
+                        <span><span className="sr-only">{t("Área: ")}</span>{record.identity.area}</span>
                       </span>
                     )}
                     {record.identity.shift && (
                       <span className="data-update-admin-card__meta-item type-caption-up text-muted">
                         <span aria-hidden="true">●</span>
-                        <span><span className="sr-only">Turno: </span>{record.identity.shift}</span>
+                        <span><span className="sr-only">{t("Turno: ")}</span>{record.identity.shift}</span>
                       </span>
                     )}
                   </div>
@@ -379,7 +381,7 @@ export function DataUpdateAdminPanel({
                       type="button"
                       className="dropdown-menu-trigger"
                       disabled={busy}
-                      aria-label={`Acciones de ${record.identity.name}`}
+                      aria-label={`${t("Acciones de")} ${record.identity.name}`}
                       onClick={(event) => { photoReturnFocusRef.current = event.currentTarget; }}
                     >
                       <EllipsisVertical aria-hidden="true" />
@@ -404,7 +406,7 @@ export function DataUpdateAdminPanel({
                         }}
                       >
                         <ImageIcon aria-hidden="true" />
-                        <span>Ver foto</span>
+                        <span>{t("Ver foto")}</span>
                       </button>
                     )}
                     {record.status === "completado" ? (
@@ -414,7 +416,7 @@ export function DataUpdateAdminPanel({
                         onClick={() => { void reopen(record.id); }}
                       >
                         <RotateCcw aria-hidden="true" />
-                        <span>Reabrir</span>
+                        <span>{t("Reabrir")}</span>
                       </button>
                     ) : (
                       <button
@@ -423,7 +425,7 @@ export function DataUpdateAdminPanel({
                         onClick={() => onOpenRecord(record)}
                       >
                         <PencilLine aria-hidden="true" />
-                        <span>Actualizar</span>
+                        <span>{t("Actualizar")}</span>
                       </button>
                     )}
                     <hr className="data-update-admin-card__separator" />
@@ -434,21 +436,21 @@ export function DataUpdateAdminPanel({
                         setDeleteRecordError(null);
                         setPendingDeleteRecord(record);
                       }}
-                      aria-label={`Eliminar a ${record.identity.name} de la campaña`}
+                      aria-label={`${t("Eliminar")} a ${record.identity.name} ${t("de la campaña")}`}
                     >
                       <Trash2 aria-hidden="true" />
-                      <span>Eliminar</span>
+                      <span>{t("Eliminar")}</span>
                     </button>
                   </PopoverContent>
                 </Popover>
               </div>
               <div className="form-group">
-                <label htmlFor={`assigned-${record.id}`}>Responsable</label>
+                <label htmlFor={`assigned-${record.id}`}>{t("Responsable")}</label>
                 <CustomSelect
                   id={`assigned-${record.id}`}
                   value={record.assignedTo}
                   options={participantProfiles.filter(profile => profile.active || profile.id === record.assignedTo)
-                    .map(profile => ({ value: profile.id, label: `${profile.label}${profile.active ? '' : ' (inactivo)'}` }))}
+                    .map(profile => ({ value: profile.id, label: `${profile.label}${profile.active ? '' : ` (${t("inactivo")})`}` }))}
                   onChange={(profileId) => void reassign(record.id, profileId)}
                   showPlaceholderOption={false}
                   disabled={busy}
@@ -468,16 +470,16 @@ export function DataUpdateAdminPanel({
           onNext={pagination.nextPage}
           canGoPrev={pagination.canGoPrev}
           canGoNext={pagination.canGoNext}
-          ariaLabel="Paginación de administración de registros"
+          ariaLabel={t("Paginación de administración de registros")}
         />
       )}
 
       <ConfirmModal
         isOpen={pendingDeleteRecord !== null}
-        title="Eliminar colaborador"
-        description= "Esta acción no se puede deshacer."
-        confirmLabel="Eliminar"
-        cancelLabel="Cancelar"
+        title={t("Eliminar colaborador")}
+        description={t("Esta acción no se puede deshacer.")}
+        confirmLabel={t("Eliminar")}
+        cancelLabel={t("Cancelar")}
         onConfirm={() => void confirmRecordDeletion()}
         onCancel={() => {
           if (deletingRecord) return;
@@ -486,8 +488,8 @@ export function DataUpdateAdminPanel({
         }}
         isDestructive
         isLoading={deletingRecord}
-        loadingLabel="Eliminando…"
-        errorMessage={deleteRecordError ?? undefined}
+        loadingLabel={t("Eliminando…")}
+        errorMessage={deleteRecordError ? t(deleteRecordError) : undefined}
       />
       {photoToView && (
         <DataUpdatePhotoModal

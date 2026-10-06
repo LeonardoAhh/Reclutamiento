@@ -1,8 +1,7 @@
 import { useMemo, useState } from "react";
-import { ChartPie } from 'lucide-react';
 import { ChevronDown, ChevronRight } from 'lucide';
 import type { AreaDetailRow, AreaStaffSummary } from "./types";
-import { INCIDENCIA_LABELS } from "./constants";
+import { useReportLocale } from "./useReportLocale";
 import { PLANTILLA_AUTORIZADA } from "@/lib/constants";
 import { Modal } from "@/components/ui/Modal";
 import { Tooltip } from "@/components/ui/Tooltip";
@@ -39,7 +38,7 @@ function getStatusTone(pct: number, hasIncidents: boolean): StatusTone {
 
 // ─── AreaCard Helper (Legacy data parsing for SectionSummaryCard) ────────────
 
-function getAreaCardProps(area: AreaStaffSummary) {
+function getAreaCardProps(area: AreaStaffSummary, en: boolean) {
     const active = area.operadores_autorizados > 0 ? area.operadores_contratados : area.personal_activo;
     const incidence = area.operadores_autorizados > 0 ? area.operadores_incidencia : area.personal_incidencia;
     const pct = active > 0 ? (incidence / active) * 100 : 0;
@@ -48,7 +47,7 @@ function getAreaCardProps(area: AreaStaffSummary) {
     const isCriticalTrend = pct > TREND_THRESHOLD;
     const isClickable = incidence > 0;
     const statusTone = getStatusTone(pct, incidence > 0);
-    const asistenciaValue = isDescanso ? "Descanso" : Math.max(active - incidence, 0);
+    const asistenciaValue = isDescanso ? (en ? "Rest day" : "Descanso") : Math.max(active - incidence, 0);
 
     const opTitle = area.operadores_autorizados > 0 ? "OP. DE MÁQUINA" : undefined;
     const autorizado = area.operadores_autorizados > 0 ? area.operadores_autorizados : area.personal_autorizado;
@@ -88,13 +87,15 @@ const INC_TONE: Record<string, "error" | "warn" | "info"> = {
 };
 
 function IncidenceBadge({ code }: { code: string }) {
+    const { incident } = useReportLocale();
     const tone = INC_TONE[code] ?? "warn";
-    return <span className={`reporte-inc-badge reporte-inc-badge--${tone}`}>{INCIDENCIA_LABELS[code] ?? code}</span>;
+    return <span className={`reporte-inc-badge reporte-inc-badge--${tone}`}>{incident(code)}</span>;
 }
 
 // ─── DetailList ────────────────────────────────────────────────────────────────
 
 function DetailList({ rows }: { rows: AreaDetailRow[] }) {
+    const { copy } = useReportLocale();
     const [expanded, setExpanded] = useState<Set<string>>(new Set());
 
     const toggle = (key: string) => setExpanded((prev) => {
@@ -105,7 +106,7 @@ function DetailList({ rows }: { rows: AreaDetailRow[] }) {
 
     if (rows.length === 0) return (
         <div className="reporte-incidents__empty reporte-incidents__empty--padded">
-            <p>No hay ausencias registradas.</p>
+            <p>{copy("No hay ausencias registradas.", "No absences recorded.")}</p>
         </div>
     );
 
@@ -116,10 +117,10 @@ function DetailList({ rows }: { rows: AreaDetailRow[] }) {
                 <table className="reporte-incidents__table">
                     <thead>
                         <tr>
-                            <th scope="col">Empleado</th>
-                            <th scope="col">Puesto</th>
-                            <th scope="col">Turno</th>
-                            <th scope="col">Incidencia</th>
+                            <th scope="col">{copy("Empleado", "Employee")}</th>
+                            <th scope="col">{copy("Puesto", "Position")}</th>
+                            <th scope="col">{copy("Turno", "Shift")}</th>
+                            <th scope="col">{copy("Incidencia", "Incident")}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -131,7 +132,7 @@ function DetailList({ rows }: { rows: AreaDetailRow[] }) {
                             return (
                                 <tr key={row.key}>
                                     <td className="reporte-incidents__td-num">
-                                        <Tooltip content={row.nombre || 'Sin nombre'} side="right">
+                                        <Tooltip content={row.nombre || copy('Sin nombre', 'No name')} side="right">
                                             <span>
                                                 {row.numero_empleado}
                                             </span>
@@ -148,7 +149,7 @@ function DetailList({ rows }: { rows: AreaDetailRow[] }) {
             </div>
 
             {/* Mobile: cards colapsables */}
-            <ul className="reporte-incidents__cards" aria-label="Detalle de ausencias por empleado">
+            <ul className="reporte-incidents__cards" aria-label={copy("Detalle de ausencias por empleado", "Absences by employee")}>
                 {rows.map((row) => {
                     const isOpen = expanded.has(row.key);
                     const detailId = `area-detail-${row.key}`;
@@ -182,11 +183,11 @@ function DetailList({ rows }: { rows: AreaDetailRow[] }) {
 
                             {isOpen && (
                                 <div id={detailId} className="reporte-incidents__card-detail">
-                                    <span className="reporte-incidents__detail-label">Empleado</span>
+                                    <span className="reporte-incidents__detail-label">{copy("Empleado", "Employee")}</span>
                                     <span className="reporte-incidents__detail-value">{row.numero_empleado}</span>
                                     {row.puesto && (
                                         <>
-                                            <span className="reporte-incidents__detail-label">Puesto</span>
+                                            <span className="reporte-incidents__detail-label">{copy("Puesto", "Position")}</span>
                                             <span className="reporte-incidents__detail-value">{puestoLimpio}</span>
                                         </>
                                     )}
@@ -208,6 +209,7 @@ export default function ReporteAreaSummary({
     onSelectArea,
     detailRows,
 }: ReporteAreaSummaryProps) {
+    const { en, copy } = useReportLocale();
     const [isDetailOpen, setIsDetailOpen] = useState(false);
 
     // Mapa seccion → área padre derivado de PLANTILLA_AUTORIZADA
@@ -275,21 +277,21 @@ export default function ReporteAreaSummary({
         <section className="ras" aria-labelledby="ras-heading">
 
             {/* Grid agrupado por área */}
-            <div className="ras__groups" role="list" aria-label="Secciones de la plantilla">
+            <div className="ras__groups" role="list" aria-label={copy("Secciones de la plantilla", "Workforce sections")}>
                 {/* Grupos con varias secciones */}
                 {mainGroups.map(({ area, sections }) => (
                     <div key={area} className="ras__group" role="listitem">
                         <h3 className="ras__group-label">
                             <span>{area}</span>
-                            <span className="ras__group-count" aria-label={`${sections.length} secciones`}>
+                            <span className="ras__group-count" aria-label={`${sections.length} ${copy("secciones", "sections")}`}>
                                 {sections.length}
                             </span>
                         </h3>
-                        <div className="ras__grid" role="group" aria-label={`Secciones de ${area}`}>
+                        <div className="ras__grid" role="group" aria-label={`${copy("Secciones de", "Sections of")} ${area}`}>
                             {sections.map((sec) => (
                                 <SectionSummaryCard
                                     key={sec.area}
-                                    {...getAreaCardProps(sec)}
+                                    {...getAreaCardProps(sec, en)}
                                     isSelected={selectedArea === sec.area}
                                     onClick={() => handleSelectArea(sec.area)}
                                 />
@@ -302,16 +304,16 @@ export default function ReporteAreaSummary({
                 {otrasAreas.length > 0 && (
                     <div className="ras__group" role="listitem">
                         <h3 className="ras__group-label">
-                            <span>Otras Áreas</span>
-                            <span className="ras__group-count" aria-label={`${otrasAreas.length} secciones`}>
+                            <span>{copy("Otras Áreas", "Other areas")}</span>
+                            <span className="ras__group-count" aria-label={`${otrasAreas.length} ${copy("secciones", "sections")}`}>
                                 {otrasAreas.length}
                             </span>
                         </h3>
-                        <div className="ras__grid" role="group" aria-label="Otras áreas de la plantilla">
+                        <div className="ras__grid" role="group" aria-label={copy("Otras áreas de la plantilla", "Other workforce areas")}>
                             {otrasAreas.map((sec) => (
                                 <SectionSummaryCard
                                     key={sec.area}
-                                    {...getAreaCardProps(sec)}
+                                    {...getAreaCardProps(sec, en)}
                                     isSelected={selectedArea === sec.area}
                                     onClick={() => handleSelectArea(sec.area)}
                                 />
@@ -328,7 +330,7 @@ export default function ReporteAreaSummary({
                     setIsDetailOpen(false);
                     onSelectArea(null);
                 }}
-                title={selectedArea || 'Detalle de sección'}
+                title={selectedArea || copy('Detalle de sección', 'Section details')}
                 size="lg"
             >
                 <DetailList rows={detailRows} />

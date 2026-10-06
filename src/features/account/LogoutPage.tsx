@@ -5,9 +5,10 @@ import { BrandMark } from "@/components/ui/BrandMark";
 import { useAuth } from "@/hooks/useAuth";
 import { useFeedback } from "@/hooks/useFeedback";
 import { useLoader } from "@/hooks/useLoader";
-import { APP_BRAND_NAME, HOME_PATH, LOGOUT_PATH } from "@/components/layout/navigation";
+import { HOME_PATH, LOGOUT_PATH } from "@/components/layout/navigation";
 import { toast } from "@/lib/notify";
 import { toNaturalCase } from "@/lib/utils";
+import { useLanguage } from "@/contexts/LanguageContext";
 import "./LogoutPage.css";
 
 function getReturnPath(state: unknown): string {
@@ -21,6 +22,8 @@ function getReturnPath(state: unknown): string {
 }
 
 export function LogoutPage() {
+  const { language } = useLanguage();
+  const english = language === "en";
   const { profile, user, username, signOut } = useAuth();
   const { state } = useLocation();
   const navigate = useNavigate();
@@ -33,20 +36,27 @@ export function LogoutPage() {
   });
 
   useEffect(() => {
-    document.title = "Cerrar sesión";
-  }, []);
+    document.title = english ? "Sign out" : "Cerrar sesión";
+  }, [english]);
 
   async function handleSignOut() {
     if (pendingRef.current) return;
     pendingRef.current = true;
     setIsLoading(true);
     trigger("light");
-    loader.show({ title: "Cerrando sesión…", variant: "workspace-exit" });
+    loader.show({
+      title: english ? "Signing out…" : "Cerrando sesión…",
+      variant: "workspace-exit",
+    });
     try {
       await signOut();
       trigger("success");
     } catch {
-      toast.error({ title: "No se pudo cerrar sesión. Inténtalo de nuevo." });
+      toast.error({
+        title: english
+          ? "Could not sign out. Please try again."
+          : "No se pudo cerrar sesión. Inténtalo de nuevo.",
+      });
     } finally {
       loader.hide();
       pendingRef.current = false;
@@ -64,9 +74,7 @@ export function LogoutPage() {
 
       <main className="logout-page__main container">
         <div className="logout-page__content">
-        <h1>
-        ¿Salir de tu cuenta?
-        </h1>
+        <h1>{english ? "Sign out of your account?" : "¿Salir de tu cuenta?"}</h1>
           <div className="logout-page__identity">
             <Avatar name={displayName} src={profile?.avatar_url} />
             <div className="logout-page__identity-copy">
@@ -82,7 +90,13 @@ export function LogoutPage() {
               disabled={isLoading}
               aria-busy={isLoading}
             >
-              {isLoading ? "Cerrando sesión…" : "Cerrar sesión"}
+              {isLoading
+                ? english
+                  ? "Signing out…"
+                  : "Cerrando sesión…"
+                : english
+                  ? "Sign out"
+                  : "Cerrar sesión"}
             </button>
             <button
               type="button"
@@ -90,7 +104,7 @@ export function LogoutPage() {
               onClick={() => navigate(getReturnPath(state), { replace: true })}
               disabled={isLoading}
             >
-              Cancelar
+              {english ? "Cancel" : "Cancelar"}
             </button>
           </div>
         </div>

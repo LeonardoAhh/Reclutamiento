@@ -1,4 +1,5 @@
 import { Inbox, Plus, Search } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 import type { Activity, ActivityStatus } from "@/lib/types";
 import { ActivityCard } from "@/components/ui/ActivityCard";
 import { Pagination } from "@/components/ui/Pagination";
@@ -99,7 +100,17 @@ export function ActivitiesSection({
   onDelete,
   onViewReference,
 }: ActivitiesSectionProps) {
-  const countLabel = `${activities.length} ${activities.length === 1 ? "actividad" : "actividades"}`;
+  const { language } = useLanguage();
+  const en = language === "en";
+  const countLabel = `${activities.length} ${activities.length === 1 ? (en ? "activity" : "actividad") : (en ? "activities" : "actividades")}`;
+  const statusFilters = en ? [
+    { key: "todas", label: "All" }, { key: "pendiente", label: "Pending" },
+    { key: "en_proceso", label: "In progress" }, { key: "completada", label: "Completed" },
+  ] as typeof STATUS_FILTERS : STATUS_FILTERS;
+  const sortOptions = en ? [
+    { value: "newest", label: "Newest" }, { value: "oldest", label: "Oldest" },
+    { value: "status", label: "By status" },
+  ] : SORT_OPTIONS;
 
   return (
     <section
@@ -112,7 +123,7 @@ export function ActivitiesSection({
             id="activity-tracking-heading"
             className="activity-tracking-section__title"
           >
-            <span>Actividades</span>
+            <span>{en ? "Activities" : "Actividades"}</span>
             <span
               className="activity-tracking-section__count"
               aria-label={countLabel}
@@ -121,14 +132,14 @@ export function ActivitiesSection({
             </span>
           </h2>
           <p className="activity-tracking-section__description">
-            Seguimiento con avance y evidencias.
+            {en ? "Track progress and evidence." : "Seguimiento con avance y evidencias."}
           </p>
         </div>
 
         {isAdmin && (
           <button type="button" className="btn-primary btn-sm" onClick={onCreate}>
             <Plus size="var(--icon-size-sm)" aria-hidden="true" />
-            <span>Crear</span>
+            <span>{en ? "Create" : "Crear"}</span>
           </button>
         )}
       </header>
@@ -138,12 +149,12 @@ export function ActivitiesSection({
         className="activity-tracking-section__panel"
       >
         {activities.length > 0 && (
-          <Toolbar label="Filtros de actividades">
+          <Toolbar label={en ? "Activity filters" : "Filtros de actividades"}>
             <ToolbarGroup
               className="activity-tracking-section__status-filters"
-              label="Filtrar por estado"
+              label={en ? "Filter by status" : "Filtrar por estado"}
             >
-              {STATUS_FILTERS.map(({ key, label }) => (
+              {statusFilters.map(({ key, label }) => (
                 <button
                   key={key}
                   type="button"
@@ -163,11 +174,11 @@ export function ActivitiesSection({
 
             <ToolbarGroup
               className="activity-tracking-section__filters"
-              label="Buscar y ordenar actividades"
+              label={en ? "Search and sort activities" : "Buscar y ordenar actividades"}
             >
               <div className="activity-tracking-section__search">
                 <label className="sr-only" htmlFor="activity-search">
-                  Buscar actividades
+                  {en ? "Search activities" : "Buscar actividades"}
                 </label>
                 <Search
                   size="var(--icon-size-sm)"
@@ -178,14 +189,14 @@ export function ActivitiesSection({
                   id="activity-search"
                   type="search"
                   className="activity-tracking-section__search-input"
-                  placeholder="Buscar por título o descripción..."
+                  placeholder={en ? "Search by title or description..." : "Buscar por título o descripción..."}
                   value={searchQuery}
                   onChange={(event) => onSearchQueryChange(event.target.value)}
                 />
               </div>
 
               <label className="sr-only" htmlFor="activity-sort">
-                Ordenar actividades
+                {en ? "Sort activities" : "Ordenar actividades"}
               </label>
               <CustomSelect
                 id="activity-sort"
@@ -196,14 +207,14 @@ export function ActivitiesSection({
                     onSortOrderChange(value);
                   }
                 }}
-                options={SORT_OPTIONS}
+                options={sortOptions}
                 showPlaceholderOption={false}
               />
 
               {isAdmin && recruiters.length > 0 && (
                 <>
                   <label className="sr-only" htmlFor="activity-recruiter">
-                    Filtrar por reclutador
+                    {en ? "Filter by recruiter" : "Filtrar por reclutador"}
                   </label>
                   <CustomSelect
                     id="activity-recruiter"
@@ -211,8 +222,8 @@ export function ActivitiesSection({
                     value={recruiterFilter}
                     onChange={onRecruiterFilterChange}
                     options={[
-                      { value: "", label: "All" },
-                      { value: "__team__", label: "Todo el equipo" },
+                      { value: "", label: en ? "All" : "Todos" },
+                      { value: "__team__", label: en ? "Whole team" : "Todo el equipo" },
                       ...recruiters.map((recruiter) => ({
                         value: recruiter.id,
                         label: recruiter.display_name || recruiter.username || "",
@@ -234,12 +245,12 @@ export function ActivitiesSection({
               aria-hidden="true"
             />
             <p className="activity-tracking-section__empty-title">
-              Sin actividades
+              {en ? "No activities" : "Sin actividades"}
             </p>
             <p className="activity-tracking-section__empty-description">
               {isAdmin
-                ? "Asigna una actividad para dar seguimiento."
-                : "No tienes actividades asignadas."}
+                ? (en ? "Assign an activity to track its progress." : "Asigna una actividad para dar seguimiento.")
+                : (en ? "You have no assigned activities." : "No tienes actividades asignadas.")}
             </p>
           </div>
         ) : filteredActivities.length === 0 ? (
@@ -250,24 +261,24 @@ export function ActivitiesSection({
               aria-hidden="true"
             />
             <p className="activity-tracking-section__empty-title">
-              Sin coincidencias
+              {en ? "No matches" : "Sin coincidencias"}
             </p>
             <p className="activity-tracking-section__empty-description">
-              No hay actividades que coincidan con los filtros aplicados.
+              {en ? "No activities match the selected filters." : "No hay actividades que coincidan con los filtros aplicados."}
             </p>
             <button
               type="button"
               className="btn-ghost activity-tracking-section__clear"
               onClick={onClearFilters}
             >
-              Limpiar filtros
+              {en ? "Clear filters" : "Limpiar filtros"}
             </button>
           </div>
         ) : (
           <div
             className="activity-tracking-section__grid"
             role="list"
-            aria-label="Actividades"
+            aria-label={en ? "Activities" : "Actividades"}
           >
             {pageItems.map((activity) => {
               const activityWithAssignee = activity as ActivityWithAssignee;
@@ -314,7 +325,7 @@ export function ActivitiesSection({
           onNext={pagination.onNext}
           canGoPrev={pagination.canGoPrev}
           canGoNext={pagination.canGoNext}
-          ariaLabel="Paginación de actividades"
+          ariaLabel={en ? "Activity pages" : "Paginación de actividades"}
         />
       </div>
     </section>

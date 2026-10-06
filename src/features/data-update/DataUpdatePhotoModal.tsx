@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { LightboxModal } from "@/components/ui/LightboxModal";
 import { getDataUpdatePhotoUrl } from "./api";
+import { useDataUpdateText } from "./translations";
 import "./DataUpdatePhotoModal.css";
 
 interface DataUpdatePhotoModalProps {
@@ -10,6 +11,7 @@ interface DataUpdatePhotoModalProps {
 }
 
 export function DataUpdatePhotoModal({ name, path, onClose }: DataUpdatePhotoModalProps) {
+  const t = useDataUpdateText();
   const [url, setUrl] = useState<string | null>(null);
   const [error, setError] = useState(false);
   const [attempt, setAttempt] = useState(0);
@@ -36,8 +38,8 @@ export function DataUpdatePhotoModal({ name, path, onClose }: DataUpdatePhotoMod
       onClose={onClose}
       src={url}
       size="sm"
-      title="Fotografía"
-      alt={`Fotografía de ${name}`}
+      title={t("Fotografía")}
+      alt={t(`Fotografía de ${name}`)}
       loading={!error && !url}
       onImageError={() => {
         setUrl(null);
@@ -46,9 +48,9 @@ export function DataUpdatePhotoModal({ name, path, onClose }: DataUpdatePhotoMod
     >
       {error ? (
         <div className="data-update-photo-modal__error">
-          <p role="alert">No se pudo cargar la fotografía.</p>
+          <p role="alert">{t("No se pudo cargar la fotografía.")}</p>
           <button type="button" className="btn-secondary" onClick={() => setAttempt((value) => value + 1)}>
-            Reintentar
+            {t("Reintentar")}
           </button>
         </div>
       ) : null}

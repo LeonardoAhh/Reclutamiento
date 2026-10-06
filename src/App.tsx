@@ -20,17 +20,15 @@ import { TransitionLoader } from '@/components/ui/TransitionLoader';
 import { TopRecruiterModal } from '@/components/ui/TopRecruiterModal';
 import { TeamProvider } from '@/features/team/TeamProvider';
 import { isBoneyardBuild } from '@/lib/boneyard';
-import {
-  EMPLEADOS_PATH,
-  PLANTILLA_PATH,
-} from '@/lib/plantillaNavigation';
+import { PLANTILLA_PATH } from '@/lib/plantillaNavigation';
 import { CONFIGURACION_ROUTES, ROUTE_DAY_EMPLOYEES_PATH } from '@/lib/configuracionNavigation';
 import { RutaDayEmployeesPage } from '@/components/ui/RutaDayEmployeesModal';
 import { DATA_UPDATE_PATH } from '@/features/data-update/types';
-import { ACCOUNT_PATH, HOME_PATH, LOGOUT_PATH, ORGANIZATION_CHART_PATH, TEAM_PATH } from '@/components/layout/navigation';
+import { ACCOUNT_PATH, ACTIVIDADES_PATH, HOME_PATH, LOGOUT_PATH, ORGANIZATION_CHART_PATH, TEAM_PATH, VACANCY_ASSIGNMENTS_PATH } from '@/components/layout/navigation';
 import { LogoutPage } from '@/features/account/LogoutPage';
 import { CAREER_JOURNEY_ENABLED, CAREER_PATH } from '@/features/career/types';
 import { LEAVE_REQUESTS_PATH } from '@/features/leave/requests';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const CareerPage = lazy(() => import('@/features/career/CareerPage').then(({ CareerPage }) => ({ default: CareerPage })));
 
@@ -45,6 +43,11 @@ const Bajas = lazy(() =>
 );
 const KpisPage = lazy(() =>
   import('@/pages/KpisPage').then(({ KpisPage }) => ({ default: KpisPage })),
+);
+const VacancyAssignmentsPage = lazy(() =>
+  import('@/pages/VacancyAssignmentsPage').then(({ VacancyAssignmentsPage }) => ({
+    default: VacancyAssignmentsPage,
+  })),
 );
 const Login = lazy(() =>
   import('@/pages/Login').then(({ Login }) => ({ default: Login })),
@@ -158,15 +161,23 @@ function PlantillaPage() {
   );
 }
 
+function AppLoadingFallback() {
+  const { language } = useLanguage();
+  return (
+    <TransitionLoader
+      title={language === 'en' ? 'Loading page…' : 'Cargando página…'}
+    />
+  );
+}
+
 function App() {
   return (
     <TooltipPrimitive.Provider delayDuration={200}>
       <>
-        <>
           <PWAStatus />
           <SystemUpdateNotification />
           <AppToaster />
-          <Suspense fallback={<TransitionLoader title="Cargando pagina..." />}>
+          <Suspense fallback={<AppLoadingFallback />}>
             <Routes>
               <Route
                 path="/login"
@@ -183,20 +194,15 @@ function App() {
                 <Route path={LEAVE_REQUESTS_PATH} element={<LeaveRequestsPage />} />
                 <Route path={CAREER_PATH} element={CAREER_JOURNEY_ENABLED
                   ? <CareerPage /> : <Navigate to={HOME_PATH} replace />} />
-                <Route path="/resumen" element={<WithSupabaseData resources={WORKFORCE_DATA}><KpisPage /></WithSupabaseData>} />
+                <Route path="/overview" element={<WithSupabaseData resources={WORKFORCE_DATA}><KpisPage /></WithSupabaseData>} />
                 <Route path={PLANTILLA_PATH} element={<PlantillaPage />} />
-                <Route path="/candidatos" element={<WithSupabaseData resources={CANDIDATE_FORM_DATA}><Pipeline /></WithSupabaseData>} />
-                <Route path="/toulouse" element={<Navigate to="/analisis" replace />} />
-                <Route path="/bajas" element={<WithSupabaseData resources={EMPLOYEE_DATA}><Bajas /></WithSupabaseData>} />
-                <Route path={EMPLEADOS_PATH} element={<Navigate to={PLANTILLA_PATH} replace />} />
-                <Route path="/transporte" element={<Navigate to="/rutas" replace />} />
+                <Route path={VACANCY_ASSIGNMENTS_PATH} element={<WithSupabaseData resources={WORKFORCE_DATA}><VacancyAssignmentsPage /></WithSupabaseData>} />
+                <Route path="/candidates" element={<WithSupabaseData resources={CANDIDATE_FORM_DATA}><Pipeline /></WithSupabaseData>} />
+                <Route path="/employee-turnover" element={<WithSupabaseData resources={EMPLOYEE_DATA}><Bajas /></WithSupabaseData>} />
                 <Route path={ROUTE_DAY_EMPLOYEES_PATH} element={<RutaDayEmployeesPage />} />
-                <Route path="/asistencia" element={<Navigate to="/analisis" replace />} />
-                <Route path="/reportes" element={<ReporteDiario />} />
-                <Route path="/motivos-baja" element={<MotivosBaja />} />
-                <Route path="/reportes/motivos-baja" element={<Navigate to="/motivos-baja" replace />} />
-                <Route path="/actividades" element={<Actividades />} />
-                <Route path="/documentos" element={<Navigate to="/formatos" replace />} />
+                <Route path="/reports" element={<ReporteDiario />} />
+                <Route path="/departure-reasons" element={<MotivosBaja />} />
+                <Route path={ACTIVIDADES_PATH} element={<Actividades />} />
                 <Route path={DATA_UPDATE_PATH} element={<DataUpdatePage />} />
                 <Route path={ACCOUNT_PATH} element={<AccountPage />} />
                 <Route path={TEAM_PATH} element={<TeamPage />} />
@@ -204,16 +210,14 @@ function App() {
                   <Route key={path} path={path} element={<Configuracion />} />
                 ))}
               </Route>
-              <Route path="/features" element={<Navigate to="/analisis" replace />} />
-              <Route path="/dashboard" element={<Navigate to="/plantilla" replace />} />
-              <Route path="/pipeline" element={<Navigate to="/candidatos" replace />} />
-              <Route path="/reporte-diario" element={<Navigate to="/reportes" replace />} />
-              <Route path="/kpis" element={<Navigate to="/resumen" replace />} />
+              <Route path="/features" element={<Navigate to="/analysis" replace />} />
+              <Route path="/dashboard" element={<Navigate to={PLANTILLA_PATH} replace />} />
+              <Route path="/pipeline" element={<Navigate to="/candidates" replace />} />
+              <Route path="/kpis" element={<Navigate to="/overview" replace />} />
               <Route path="/" element={<Navigate to={HOME_PATH} replace />} />
-              <Route path="*" element={<Navigate to="/resumen" replace />} />
+              <Route path="*" element={<Navigate to={HOME_PATH} replace />} />
             </Routes>
           </Suspense>
-        </>
       </>
     </TooltipPrimitive.Provider>
   );

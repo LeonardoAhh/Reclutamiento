@@ -1,6 +1,7 @@
 import { BajasImporter } from '@/components/ui/BajasImporter';
 import { TurnosUpdater } from '@/components/ui/TurnosUpdater';
 import { toast } from '@/lib/notify';
+import { useLanguage } from '@/contexts/LanguageContext';
 import type { BajaRaw } from '@/lib/types';
 import './BajasHero.css';
 
@@ -27,6 +28,8 @@ export function BajasHero({
   applyTurnosUpdate,
   showActions = false,
 }: BajasHeroProps) {
+  const { language } = useLanguage();
+  const english = language === 'en';
   return (
     <header className="page-header">
       <h1 className="app-page-title">Rotación</h1>
@@ -37,11 +40,11 @@ export function BajasHero({
               const res = await onImportBajas(raw);
               if (res.ok) {
                 toast.success({
-                  title: 'Bajas registradas',
+                  title: english ? 'Departures imported' : 'Bajas registradas',
                 });
               } else {
                 toast.error({
-                  title: 'Error al procesar archivo',
+                  title: english ? 'Could not process the file' : 'Error al procesar archivo',
                 });
               }
               return res;

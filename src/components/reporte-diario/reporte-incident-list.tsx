@@ -3,17 +3,25 @@ import { ListX } from "lucide-react";
 import { ChevronDown, ChevronRight } from "lucide";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import type { EmployeeRef } from "./types";
+import { useReportLocale } from "./useReportLocale";
 
-const TABLE_HEADERS = ["No.", "Empleado", "Área", "Puesto", "Turno"] as const;
+const TABLE_HEADERS = [
+    { spanish: "No.", english: "No." },
+    { spanish: "Empleado", english: "Employee" },
+    { spanish: "Área", english: "Area" },
+    { spanish: "Puesto", english: "Position" },
+    { spanish: "Turno", english: "Shift" },
+] as const;
 
 export function DataTable({ rows }: { rows: EmployeeRef[] }) {
+    const { copy } = useReportLocale();
     return (
         <div className="reporte-incidents__table-wrap">
             <table className="reporte-incidents__table">
                 <thead>
                     <tr>
                         {TABLE_HEADERS.map((header) => (
-                            <th key={header} scope="col">{header}</th>
+                            <th key={header.spanish} scope="col">{copy(header.spanish, header.english)}</th>
                         ))}
                     </tr>
                 </thead>
@@ -34,6 +42,7 @@ export function DataTable({ rows }: { rows: EmployeeRef[] }) {
 }
 
 export function MobileCards({ rows }: { rows: EmployeeRef[] }) {
+    const { copy } = useReportLocale();
     const [expanded, setExpanded] = useState<Set<string>>(new Set());
 
     const toggle = (key: string) => {
@@ -46,7 +55,7 @@ export function MobileCards({ rows }: { rows: EmployeeRef[] }) {
     };
 
     return (
-        <ul className="reporte-incidents__cards" aria-label="Listado de incidencias">
+        <ul className="reporte-incidents__cards" aria-label={copy("Listado de incidencias", "Incident list")}>
             {rows.map((row) => {
                 const isOpen = expanded.has(row.key);
                 const detailId = `inc-detail-${row.key}`;
@@ -77,9 +86,9 @@ export function MobileCards({ rows }: { rows: EmployeeRef[] }) {
                             <div id={detailId} className="reporte-incidents__card-detail">
                                 <span className="reporte-incidents__detail-label">No.</span>
                                 <span className="reporte-incidents__detail-value">{row.numero_empleado}</span>
-                                <span className="reporte-incidents__detail-label">Departamento</span>
+                                <span className="reporte-incidents__detail-label">{copy("Departamento", "Department")}</span>
                                 <span className="reporte-incidents__detail-value">{row.departamento}</span>
-                                <span className="reporte-incidents__detail-label">Área</span>
+                                <span className="reporte-incidents__detail-label">{copy("Área", "Area")}</span>
                                 <span className="reporte-incidents__detail-value">{row.area}</span>
                             </div>
                         )}
@@ -91,10 +100,11 @@ export function MobileCards({ rows }: { rows: EmployeeRef[] }) {
 }
 
 export function EmptyState() {
+    const { copy } = useReportLocale();
     return (
         <div className="reporte-incidents__empty">
             <ListX size={24} aria-hidden="true" />
-            <p>Sin registros para este criterio.</p>
+            <p>{copy("Sin registros para este criterio.", "No records match this criterion.")}</p>
         </div>
     );
 }

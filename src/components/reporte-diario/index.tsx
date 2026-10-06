@@ -6,7 +6,7 @@ import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { toast } from "@/lib/notify";
 import { format, getISOWeek } from "date-fns";
-import { es } from "date-fns/locale";
+import { enUS, es } from "date-fns/locale";
 import { AnimatedSubmitButton } from "@/components/ui/AnimatedSubmitButton";
 import {
   Archive,
@@ -27,13 +27,11 @@ import {
 
 import {
   INCIDENT_TABS,
-  INCIDENCIA_LABELS,
   SECTION_CONFIGS,
   VISIBLE_SECTIONS,
 } from "./constants";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import {
-  formatMes,
   daysInMonth,
   parseReporteJSON,
   isIncidence,
@@ -63,10 +61,12 @@ import {
 
 import { useReporteDiario } from "@/hooks/useReporteDiario";
 import type { ReporteDiarioSummary } from "@/hooks/useReporteDiario";
+import { useReportLocale } from "./useReportLocale";
 
 const SAVE_SUCCESS_DURATION_MS = 1500;
 
 export default function ReporteDiarioContent() {
+  const { en, copy, month, incident } = useReportLocale();
   const [rows, setRows] = useState<ReporteRow[]>([]);
   const [selectedMes, setSelectedMes] = useState("");
   const [selectedEmployee, setSelectedEmployee] = useState<string>("");
@@ -468,20 +468,23 @@ export default function ReporteDiarioContent() {
       const dateStr = `${currentMonth}-${selectedDay}`;
       const date = new Date(dateStr + "T00:00:00");
 
-      const weekday = format(date, "EEEE", { locale: es });
-      const day = format(date, "d", { locale: es });
-      const month = format(date, "MMMM", { locale: es });
-      const year = format(date, "yyyy", { locale: es });
+      const locale = en ? enUS : es;
+      const weekday = format(date, "EEEE", { locale });
+      const day = format(date, "d", { locale });
+      const monthName = format(date, "MMMM", { locale });
+      const year = format(date, "yyyy", { locale });
 
       const capWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
-      const capMonth = month.charAt(0).toUpperCase() + month.slice(1);
+      const capMonth = monthName.charAt(0).toUpperCase() + monthName.slice(1);
       const weekNum = getISOWeek(date);
 
-      return `${capWeekday} ${day} ${capMonth} ${year} - Semana ${weekNum}`;
+      return en
+        ? `${capWeekday}, ${capMonth} ${day}, ${year} - Week ${weekNum}`
+        : `${capWeekday} ${day} ${capMonth} ${year} - Semana ${weekNum}`;
     } catch {
-      return `Incidencias — día ${parseInt(selectedDay, 10)}`;
+      return `${en ? "Incidents — day" : "Incidencias — día"} ${parseInt(selectedDay, 10)}`;
     }
-  }, [selectedDay, currentMonth]);
+  }, [selectedDay, currentMonth, en]);
 
   const monthFirstDay = currentMonth
     ? (() => {
@@ -521,7 +524,7 @@ export default function ReporteDiarioContent() {
         const json: unknown = JSON.parse(text);
         if (!Array.isArray(json)) {
           setErrors([
-            "El contenido JSON debe contener una lista de registros.",
+            en ? "The JSON content must contain a list of records." : "El contenido JSON debe contener una lista de registros.",
           ]);
           return;
         }
@@ -543,16 +546,16 @@ export default function ReporteDiarioContent() {
             error,
           );
         }
-        toast.success({ title: "Reporte cargado" });
+        toast.success({ title: en ? "Report loaded" : "Reporte cargado" });
       } catch (err) {
-        const msg = `Error al revisar el reporte: ${err instanceof Error ? err.message : String(err)}`;
+        const msg = `${en ? "Error checking the report" : "Error al revisar el reporte"}: ${err instanceof Error ? err.message : String(err)}`;
         setErrors([msg]);
         toast.error({ title: errorTitle });
       } finally {
         setProcessStep(null);
       }
     },
-    [processStep],
+    [processStep, en],
   );
 
   const processFile = useCallback(
@@ -561,7 +564,7 @@ export default function ReporteDiarioContent() {
         file.type !== "application/json" &&
         !file.name.toLowerCase().endsWith(".json")
       ) {
-        toast.error({ title: "Formato de archivo inválido" });
+        toast.error({ title: en ? "Invalid file format" : "Formato de archivo inválido" });
         return;
       }
 
@@ -569,22 +572,22 @@ export default function ReporteDiarioContent() {
         () => file.text(),
         file.name,
         "reading",
-        "Archivo corrupto",
+        en ? "Corrupt file" : "Archivo corrupto",
       );
     },
-    [processReportContent],
+    [processReportContent, en],
   );
 
   const processPastedJson = useCallback(
     async (content: string) => {
       await processReportContent(
         () => content,
-        "Contenido pegado",
+        en ? "Pasted content" : "Contenido pegado",
         "validating",
-        "Contenido JSON inválido",
+        en ? "Invalid JSON content" : "Contenido JSON inválido",
       );
     },
-    [processReportContent],
+    [processReportContent, en],
   );
 
   const handleFileChange = useCallback(
@@ -640,8 +643,8 @@ export default function ReporteDiarioContent() {
     } catch {
       // La limpieza visual no depende de que sessionStorage esté disponible.
     }
-    toast.info({ title: "Vista de datos limpiada" });
-  }, []);
+    toast.info({ title: en ? "Report view cleared" : "Vista de datos limpiada" });
+  }, [en]);
 
   const computeKpis = useCallback(
     (reportRows: ReporteRow[], dayH: string[]) => {
@@ -742,9 +745,9 @@ export default function ReporteDiarioContent() {
       const updated = await fetchSummaries();
       setSavedSummaries(updated);
     } else {
-      setSaveError(result.error || "Error al guardar");
+      setSaveError(result.error || (en ? "Could not save" : "Error al guardar"));
     }
-  }, [currentMonth, rows, dbSaving, computeKpis, saveReport, fetchSummaries]);
+  }, [currentMonth, rows, dbSaving, computeKpis, saveReport, fetchSummaries, en]);
 
   const handleLoadFromDb = useCallback(
     async (mes: string) => {
@@ -759,7 +762,7 @@ export default function ReporteDiarioContent() {
       }
       setRows(parsed);
       setSelectedMes(mes);
-      setFileName(formatMes(mes));
+      setFileName(mes);
       setErrors([]);
       // panel is always visible; no collapse
     },
@@ -781,7 +784,9 @@ export default function ReporteDiarioContent() {
   const getDrillDownDays = useCallback(
     (empKey: string, mes: string) => {
       const [year, month] = mes.split("-").map(Number);
-      const DAY_NAMES = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
+      const DAY_NAMES = en
+        ? ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+        : ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
       const empRows = allMonthsRows.filter(
         (r) => r.numero_empleado === empKey && r.mes === mes,
       );
@@ -806,14 +811,14 @@ export default function ReporteDiarioContent() {
               day,
               dayLabel: `${weekday} ${dayNum}`,
               code,
-              label: INCIDENCIA_LABELS[code] ?? code,
+              label: incident(code),
             });
           }
         }
       }
       return days.sort((a, b) => parseInt(a.day, 10) - parseInt(b.day, 10));
     },
-    [allMonthsRows],
+    [allMonthsRows, en, incident],
   );
 
   const hasData = rows.length > 0 && Boolean(currentMonth);
@@ -825,7 +830,7 @@ export default function ReporteDiarioContent() {
       <BoneyardSkeleton
         name="reportes-page"
         loading={loadingDb}
-        loadingLabel="Cargando reportes de asistencia…"
+        loadingLabel={copy("Cargando reportes de asistencia…", "Loading attendance reports…")}
       >
         <div className="reporte-container">
         <input
@@ -850,7 +855,7 @@ export default function ReporteDiarioContent() {
         >
           <header className="reporte-hero__intro">
             <h1 id="reporte-page-title" className="app-page-title">
-              Reporte Diario
+              {copy("Reporte Diario", "Daily Report")}
             </h1>
           </header>
 
@@ -874,8 +879,8 @@ export default function ReporteDiarioContent() {
                   <Archive size="1em" />
                 </span>
                 <div className="reporte-hero__panel-copy">
-                  <h2 id="reporte-recent-title">Reportes recientes</h2>
-                  <p>Consulta o compara reportes guardados.</p>
+                  <h2 id="reporte-recent-title">{copy("Reportes recientes", "Recent reports")}</h2>
+                  <p>{copy("Consulta o compara reportes guardados.", "View or compare saved reports.")}</p>
                 </div>
               </header>
 
@@ -887,7 +892,7 @@ export default function ReporteDiarioContent() {
                         type="button"
                         className="reporte-hero__recent-item"
                         onClick={() => void handleLoadFromDb(summary.mes)}
-                        aria-label={`Abrir reporte de ${formatMes(summary.mes)}`}
+                        aria-label={`${copy("Abrir reporte de", "Open report for")} ${month(summary.mes)}`}
                       >
                         <span
                           className="reporte-hero__recent-icon"
@@ -897,12 +902,12 @@ export default function ReporteDiarioContent() {
                         </span>
                         <span className="reporte-hero__recent-copy">
                           <span className="reporte-hero__recent-title">
-                            {formatMes(summary.mes)}
+                            {month(summary.mes)}
                           </span>
                           <span className="reporte-hero__recent-meta">
                             {summary.total_incidencias === 1
-                              ? "1 incidencia"
-                              : `${summary.total_incidencias} incidencias`}
+                              ? copy("1 incidencia", "1 incident")
+                              : `${summary.total_incidencias} ${copy("incidencias", "incidents")}`}
                           </span>
                         </span>
                         <ChevronRight size="1em" aria-hidden="true" />
@@ -913,18 +918,18 @@ export default function ReporteDiarioContent() {
               ) : (
                 <div className="reporte-hero__recent-empty">
                   <Archive size="1em" aria-hidden="true" />
-                  <p>No hay reportes guardados.</p>
-                  <span>Cuando guardes uno, aparecerá aquí.</span>
+                  <p>{copy("No hay reportes guardados.", "No saved reports.")}</p>
+                  <span>{copy("Cuando guardes uno, aparecerá aquí.", "Saved reports will appear here.")}</span>
                 </div>
               )}
 
               <div className="reporte-hero__recent-actions">
                 <Link
                   className="btn-secondary reporte-hero__motivos-link"
-                  to="/motivos-baja"
+                  to="/departure-reasons"
                 >
                   <BarChart3 size="var(--icon-size-sm)" aria-hidden="true" />
-                  Motivos de baja
+                  {copy("Motivos de baja", "Reasons for leaving")}
                 </Link>
                 {savedSummaries.length > 0 && (
                   <>
@@ -933,9 +938,9 @@ export default function ReporteDiarioContent() {
                       dbSaving={dbSaving}
                       onLoad={handleLoadFromDb}
                       onDelete={handleDeleteFromDb}
-                      formatMes={formatMes}
+                      formatMes={month}
                       triggerVariant="labeled"
-                      triggerLabel="Ver todos"
+                      triggerLabel={copy("Ver todos", "View all")}
                     />
                     {savedSummaries.length >= 2 && (
                       <ReporteComparison
@@ -971,7 +976,7 @@ export default function ReporteDiarioContent() {
               onDrop={handleDrop}
               role="status"
               aria-live="assertive"
-              aria-label="Suelta el archivo para cargar el reporte"
+              aria-label={copy("Suelta el archivo para cargar el reporte", "Drop the file to load the report")}
             >
               <motion.div
                 initial={overlayPanelInitial}
@@ -987,10 +992,10 @@ export default function ReporteDiarioContent() {
                   aria-hidden="true"
                 />
                 <h2 className="reporte-overlay__title">
-                  Suelta el archivo aquí
+                  {copy("Suelta el archivo aquí", "Drop the file here")}
                 </h2>
                 <p className="reporte-subtitle">
-                  Detecta automáticamente el mes y valida el formato.
+                  {copy("Detecta automáticamente el mes y valida el formato.", "The month is detected and the format checked automatically.")}
                 </p>
               </motion.div>
             </motion.div>
@@ -1005,19 +1010,19 @@ export default function ReporteDiarioContent() {
     <>
       {loadingDb && (
         <span className="sr-only" role="status" aria-live="polite">
-          Actualizando datos del reporte…
+          {copy("Actualizando datos del reporte…", "Updating report data…")}
         </span>
       )}
       <header className="reporte-header__top">
         <div className="reporte-head__left">
           <h1 id="reporte-page-title" className="app-page-title">
-            Reporte Diario
+            {copy("Reporte Diario", "Daily Report")}
           </h1>
         </div>
 
         <div
           className="reporte-head__grid"
-          aria-label="Información del reporte cargado"
+          aria-label={copy("Información del reporte cargado", "Loaded report information")}
         >
           {fileName && !processStep && (
             <div
@@ -1025,12 +1030,12 @@ export default function ReporteDiarioContent() {
               data-testid="reporte-filename"
             >
               <FileBraces size={16} className="text-primary" aria-hidden="true" />
-              <span className="reporte-head__grid-text">{fileName}</span>
+              <span className="reporte-head__grid-text">{fileName === "Autoguardado" ? copy("Autoguardado", "Autosaved") : fileName === selectedMes ? month(fileName) : fileName}</span>
               <button
                 type="button"
                 onClick={handleClearFile}
-                title="Limpiar archivo actual"
-                aria-label="Limpiar archivo actual"
+                title={copy("Limpiar archivo actual", "Clear current file")}
+                aria-label={copy("Limpiar archivo actual", "Clear current file")}
                 className="reporte-iconbtn"
                 data-testid="clear-file-btn"
               >
@@ -1051,14 +1056,14 @@ export default function ReporteDiarioContent() {
               dbSaving={dbSaving}
               onLoad={handleLoadFromDb}
               onDelete={handleDeleteFromDb}
-              formatMes={formatMes}
+              formatMes={month}
               triggerVariant="labeled"
             />
           )}
 
-          <Link className="btn-secondary" to="/motivos-baja">
+          <Link className="btn-secondary" to="/departure-reasons">
             <BarChart3 size="var(--icon-size-sm)" aria-hidden="true" />
-            Motivos de baja
+            {copy("Motivos de baja", "Reasons for leaving")}
           </Link>
 
           {hasData && (
@@ -1072,11 +1077,11 @@ export default function ReporteDiarioContent() {
                 errorMessageId="report-save-error"
                 idleText={
                   savedSummaries.some((s) => s.mes === currentMonth)
-                    ? "Actualizar"
-                    : "Guardar"
+                    ? copy("Actualizar", "Update")
+                    : copy("Guardar", "Save")
                 }
-                loadingText="Guardando…"
-                successText="¡Guardado!"
+                loadingText={copy("Guardando…", "Saving…")}
+                successText={copy("¡Guardado!", "Saved!")}
                 idleIcon={SaveIconData}
                 className="btn-primary"
                 onClick={handleSaveToDb}
@@ -1175,7 +1180,7 @@ export default function ReporteDiarioContent() {
                     <div className="reporte-flex-between">
                       <div>
                         <h2 className="reporte-card__title reporte-card__title--capitalize">
-                          {formatMes(currentMonth)}
+                          {month(currentMonth)}
                         </h2>
                       </div>
                       <div className="reporte-cal-actions">
@@ -1187,10 +1192,10 @@ export default function ReporteDiarioContent() {
                               setTopEmpModalOpen(true);
                             }}
                             data-testid="top-incidence-btn"
-                            aria-label="Ver top 10 empleados con más incidencias"
+                            aria-label={copy("Ver top 10 empleados con más incidencias", "View the 10 employees with the most incidents")}
                           >
                             <ChartSpline size={13} aria-hidden="true" />
-                            <span>Análisis de asistencia</span>
+                            <span>{copy("Análisis de asistencia", "Attendance analysis")}</span>
                           </button>
                         )}
                       </div>
@@ -1228,7 +1233,7 @@ export default function ReporteDiarioContent() {
                         <CalendarDays size={18} aria-hidden="true" />
                       </div>
                       <h3 data-testid="selected-day-title">
-                        {selectedDay ? selectedDateTitle : "Detalle del día"}
+                        {selectedDay ? selectedDateTitle : copy("Detalle del día", "Day details")}
                       </h3>
                     </div>
                     {selectedDay && (
@@ -1239,10 +1244,10 @@ export default function ReporteDiarioContent() {
                           return (
                             <span
                               className="ras__incidents-total"
-                              aria-label={`${totalInc} incidencias`}
+                              aria-label={`${totalInc} ${copy("incidencias", "incidents")}`}
                             >
                               {totalInc}{" "}
-                              {totalInc === 1 ? "incidencia" : "incidencias"}
+                              {totalInc === 1 ? copy("incidencia", "incident") : copy("incidencias", "incidents")}
                             </span>
                           );
                         })()}
@@ -1252,13 +1257,13 @@ export default function ReporteDiarioContent() {
                             className="reporte-daynav__btn"
                             onClick={() => prevDay && setSelectedDay(prevDay)}
                             disabled={!prevDay}
-                            title="Día anterior"
-                            aria-label="Día anterior"
+                            title={copy("Día anterior", "Previous day")}
+                            aria-label={copy("Día anterior", "Previous day")}
                             data-testid="prev-day-btn"
                           >
                             <ChevronLeft size={16} />
                             <span className="reporte-daynav__text">
-                              Anterior
+                              {copy("Anterior", "Previous")}
                             </span>
                           </button>
                           <button
@@ -1266,12 +1271,12 @@ export default function ReporteDiarioContent() {
                             className="reporte-daynav__btn"
                             onClick={() => nextDay && setSelectedDay(nextDay)}
                             disabled={!nextDay}
-                            title="Día siguiente"
-                            aria-label="Día siguiente"
+                            title={copy("Día siguiente", "Next day")}
+                            aria-label={copy("Día siguiente", "Next day")}
                             data-testid="next-day-btn"
                           >
                             <span className="reporte-daynav__text">
-                              Siguiente
+                              {copy("Siguiente", "Next")}
                             </span>
                             <ChevronRight size={16} />
                           </button>
@@ -1283,7 +1288,7 @@ export default function ReporteDiarioContent() {
                 <div className="reporte-card__content">
                   {!selectedDay ? (
                     <p className="reporte-placeholder">
-                      Selecciona un día en el calendario.
+                      {copy("Selecciona un día en el calendario.", "Select a day on the calendar.")}
                     </p>
                   ) : (
                     <>
@@ -1330,7 +1335,7 @@ export default function ReporteDiarioContent() {
           onClose={() => setTopEmpModalOpen(false)}
           topIncidenceEmployees={topIncidenceEmployees}
           getDrillDownDays={getDrillDownDays}
-          formatMes={formatMes}
+          formatMes={month}
         />
       </div>
     </>

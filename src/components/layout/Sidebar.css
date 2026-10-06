@@ -44,7 +44,7 @@
 .sidebar__top {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(var(--touch-target-min), 1fr) auto auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   column-gap: var(--design-spacing-xxs);
   align-items: center;
   margin-block-end: var(--design-spacing-xs);
@@ -53,13 +53,7 @@
   flex-shrink: 0;
 }
 
-.sidebar__top > .theme-select {
-  grid-column: 2;
-  grid-row: 1;
-  justify-self: end;
-}
-
-/* Marca frente al selector de apariencia; hereda la tinta de la app. */
+/* Marca de la aplicación; hereda la tinta de la app. */
 .sidebar__brand-mark {
   grid-column: 1;
   grid-row: 1;
@@ -71,7 +65,7 @@
 }
 
 button.sidebar__close-btn {
-  grid-column: 3;
+  grid-column: 2;
   grid-row: 1;
   justify-self: end;
   background: transparent;

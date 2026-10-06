@@ -3,6 +3,7 @@ import { CircleCheckBig, LockKeyhole, Save } from 'lucide-react';
 import { CustomSelect } from '@/components/ui/CustomSelect';
 import { formatReadableDate } from '@/lib/dates';
 import { toast } from '@/lib/notify';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { reopenProfileEvaluation, saveProfileEvaluation } from './api';
 import {
   profileHiringKey,
@@ -31,6 +32,8 @@ export function ProfileEvaluationPanel({
   isAdmin,
   onSaved,
 }: ProfileEvaluationPanelProps) {
+  const { language } = useLanguage();
+  const english = language === 'en';
   const [selectedKey, setSelectedKey] = useState('');
   const [responses, setResponses] = useState<Record<string, boolean | undefined>>({});
   const [comments, setComments] = useState('');
@@ -139,7 +142,11 @@ export function ProfileEvaluationPanel({
         comments,
         submit,
       });
-      toast.success({ title: submit ? 'Evaluación enviada' : 'Borrador guardado' });
+      toast.success({
+        title: submit
+          ? english ? 'Evaluation submitted' : 'Evaluación enviada'
+          : english ? 'Draft saved' : 'Borrador guardado',
+      });
       await onSaved();
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : 'No pudimos guardar la evaluación.');
@@ -154,7 +161,7 @@ export function ProfileEvaluationPanel({
     setError('');
     try {
       await reopenProfileEvaluation(existingEvaluation.id);
-      toast.success({ title: 'Evaluación reabierta' });
+      toast.success({ title: english ? 'Evaluation reopened' : 'Evaluación reabierta' });
       await onSaved();
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : 'No pudimos reabrir la evaluación.');

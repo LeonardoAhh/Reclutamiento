@@ -3,6 +3,7 @@ import { useAuth } from "@/hooks/useAuth"
 import { supabase } from "@/lib/supabase"
 import { toast } from "@/lib/notify"
 import { formatSupabaseError as describeSupabaseError } from "@/lib/errors"
+import { useLanguage } from "@/contexts/LanguageContext"
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -149,6 +150,7 @@ async function requestReportsByMonth(months: string[]): Promise<ReporteDiarioRec
 // ─────────────────────────────────────────────────────────────────────────────
 
 export function useReporteDiario() {
+    const { language } = useLanguage()
     const { user } = useAuth()
     const ownerId = user?.id ?? null
     const [loading, setLoading] = useState(false)
@@ -242,12 +244,12 @@ export function useReporteDiario() {
         } catch (err) {
             const msg = describeSupabaseError(err)
             setError(msg)
-            toast.error({ title: 'No se pudo guardar el reporte' })
+            toast.error({ title: language === 'en' ? 'Could not save the report' : 'No se pudo guardar el reporte' })
             return { success: false, error: msg }
         } finally {
             setSaving(false)
         }
-    }, [ownerId])
+    }, [ownerId, language])
 
     /** Delete a saved report */
     const deleteReport = useCallback(async (id: string): Promise<{ success: boolean }> => {
@@ -260,7 +262,7 @@ export function useReporteDiario() {
                 .eq("id", id)
             if (error) throw error
             clearReporteDiarioCache()
-            toast.success({ title: "Reporte eliminado" })
+            toast.success({ title: language === 'en' ? 'Report deleted' : 'Reporte eliminado' })
             return { success: true }
         } catch (err) {
             const msg = describeSupabaseError(err)
@@ -268,7 +270,7 @@ export function useReporteDiario() {
         } finally {
             setSaving(false)
         }
-    }, [ownerId])
+    }, [ownerId, language])
 
     /** Fetch summaries for a range of months (for comparison) */
     const fetchComparison = useCallback(async (

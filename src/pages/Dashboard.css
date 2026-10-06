@@ -62,7 +62,7 @@
   gap: var(--spacing-xs);
 }
 
-/* ── Botón "Resumen de vacantes" (abre VacancyReportModal) ───────────── */
+/* ── Botón "Resumen de vacantes" (abre la página de asignaciones) ────── */
 .dashboard__report-btn {
   gap: var(--spacing-xs);
 }

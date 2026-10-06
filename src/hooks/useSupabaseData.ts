@@ -60,7 +60,7 @@ const STORAGE_KEYS = {
   comments: 'reclutamiento_comments',
   /**
    * Mismo key que usa `useBajas`. Lo mantenemos en sync desde aquí cuando
-   * se da de baja un empleado, para que `/bajas` lo vea aunque aún no
+   * se da de baja un empleado, para que `/employee-turnover` lo vea aunque aún no
    * haya re-fetcheado Supabase.
    */
   bajas: 'reclutamiento_bajas',
@@ -400,7 +400,7 @@ function useSupabaseDataStore(
       setSaveStatus('saving');
 
       // Si se proporcionan datos de baja, crear el registro en Supabase
-      // y, en paralelo, mantenerlo en localStorage para que `/bajas` lo
+      // y, en paralelo, mantenerlo en localStorage para que `/employee-turnover` lo
       // muestre aunque aún no haya re-fetcheado el servidor.
       if (bajaData) {
         // Normaliza fechas antes del insert. Postgres `date` rechaza
@@ -542,7 +542,7 @@ function useSupabaseDataStore(
    *
    * Devuelve `{ bajaNum }` con el `num_empleado` de la baja que se cerró,
    * o `null` si no hubo match. Side-effect: actualiza `reclutamiento_bajas`
-   * en localStorage para que `/bajas` lo vea inmediatamente, y hace upsert
+   * en localStorage para que `/employee-turnover` lo vea inmediatamente, y hace upsert
    * en Supabase best-effort.
    */
   const coverBajaForPosition = useCallback(

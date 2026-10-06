@@ -1,19 +1,21 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
 import { ACCOUNT_PATH, HOME_PATH } from '@/components/layout/navigation';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { Badge } from '@/components/ui/Badge';
-import { Tooltip } from '@/components/ui/Tooltip';
 import { useAuth, type Profile } from '@/hooks/useAuth';
 import { listProfiles } from '@/lib/users';
 import { useTeamDirectory } from './TeamProvider';
 import { archiveTeamMember, setTeamMemberStatus } from './api';
 import { normalizeRecruiterName, type TeamMember } from './types';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { teamCopy, translateTeamMessage } from './translations';
 import { TeamMemberForm } from './TeamMemberForm';
 import './TeamManagement.css';
 
 export function TeamPage() {
+  const { language } = useLanguage();
+  const copy = teamCopy(language);
   const { profile } = useAuth();
   const { members, refresh } = useTeamDirectory();
   const id = useId();
@@ -39,10 +41,10 @@ export function TeamPage() {
     try {
       await setTeamMemberStatus(confirm.id, !confirm.active);
       await refresh();
-      setMessage(`${confirm.short_name}: ${confirm.active ? 'baja aplicada' : 'reactivación aplicada'}.`);
+      setMessage(copy.statusChanged(confirm.short_name, confirm.active));
       setConfirm(null);
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'No se pudo cambiar el estado.');
+      setError(cause instanceof Error ? cause.message : 'No se pudo cambiar el estado. Comprueba la conexión y vuelve a intentar.');
       await refresh().catch(() => { /* El proveedor presenta el fallo de lectura. */ });
     } finally { setBusy(false); }
   }
@@ -52,11 +54,11 @@ export function TeamPage() {
     try {
       await archiveTeamMember(removing.id);
       await refresh();
-      setMessage(`${removing.short_name}: eliminado de Equipo.`);
+      setMessage(copy.removedFromTeam(removing.short_name));
       setRemoving(null);
       requestAnimationFrame(() => searchRef.current?.focus());
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'No se pudo eliminar al integrante.');
+      setError(cause instanceof Error ? cause.message : 'No se pudo eliminar al integrante. Vuelve a intentar.');
       await refresh().catch(() => { /* El proveedor presenta el fallo de lectura. */ });
     } finally { setBusy(false); }
   }
@@ -67,53 +69,60 @@ export function TeamPage() {
     <main className="team-page container container--compact" aria-labelledby={`${id}-title`}>
       <header className="page-header">
         <div className="team-page__heading">
-          <Tooltip content="Volver a Mi cuenta"><Link to={ACCOUNT_PATH} className="btn-text team-page__back" aria-label="Volver a Mi cuenta">
-            <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
-          </Link></Tooltip>
-          <h1 id={`${id}-title`} className="app-page-title">Equipo</h1>
+          <h1 id={`${id}-title`} className="app-page-title">
+            <Link to={ACCOUNT_PATH} className="team-page__title-link" aria-label={`${copy.title}, ${copy.backToAccount}`}>
+              {copy.title}
+            </Link>
+          </h1>
         </div>
       </header>
-      <section className="team-management" aria-label="Integrantes del equipo">
+      <section
+        className="team-management"
+        aria-label={copy.teamMembers}
+        aria-busy={!profiles && !error}
+      >
         <div className="team-management__tools"><div className="form-group">
-          <label htmlFor={`${id}-search`}>Buscar integrante</label><input ref={searchRef} id={`${id}-search`} type="search" value={search} onChange={event => setSearch(event.target.value)} />
-        </div><button type="button" className="btn-primary" disabled={!profiles} onClick={() => setEditing(null)}>Agregar integrante</button></div>
-        {!profiles && !error && <p role="status">Cargando cuentas…</p>}
-        {error && !confirm && !removing && <p className="form-error-text" role="alert">{error}</p>}
+          <label htmlFor={`${id}-search`}>{copy.search}</label><input ref={searchRef} id={`${id}-search`} type="search" value={search} onChange={event => setSearch(event.target.value)} />
+        </div><button type="button" className="btn-primary" disabled={!profiles} onClick={() => setEditing(null)}>{copy.add}</button></div>
+        {!profiles && !error && <p className="team-management__loading" role="status">{copy.loadingAccounts}</p>}
+        {error && !confirm && !removing && <p className="form-error-text" role="alert">{translateTeamMessage(error, language)}</p>}
         {message && <p role="status">{message}</p>}
-        {filtered.length === 0 && <div><p>{search ? 'No hay integrantes que coincidan con la búsqueda.' : 'No hay integrantes en Equipo.'}</p>
-          {search && <button type="button" className="btn-secondary" onClick={() => setSearch('')}>Limpiar búsqueda</button>}
+        {(profiles || error) && filtered.length === 0 && <div><p>{search ? copy.noMatches : copy.empty}</p>
+          {search && <button type="button" className="btn-secondary" onClick={() => setSearch('')}>{copy.clearSearch}</button>}
         </div>}
-        <ul className="team-management__list">{filtered.map(member => {
+        {(profiles || error) && <ul className="team-management__list">{filtered.map(member => {
           const linked = profiles?.find(row => row.id === member.profile_id);
           const canDeactivate = member.profile_id !== profile?.id && linked?.role !== 'admin';
           return <li className="team-management__member" key={member.id}>
             <div className="team-management__identity"><strong className="type-body-strong">{member.full_name}</strong>
               <span className="type-body-sm">{member.job_title || member.short_name}</span>
-              <span className="type-body-sm">{linked ? `Cuenta: ${linked.username}` : member.profile_id ? 'Cuenta vinculada' : 'Sin cuenta vinculada'}</span>
+              <span className="type-body-sm">{linked ? copy.linkedAccount(linked.username) : member.profile_id ? copy.linked : copy.unlinked}</span>
             </div>
-            <Badge className="team-management__status">{member.active ? 'Activo' : 'Inactivo'}</Badge>
+            <Badge className="team-management__status" variant="default">
+              {member.active ? copy.active : copy.inactive}
+            </Badge>
             <div className="team-management__actions">
-              <button type="button" className="btn-secondary" disabled={!profiles || busy} onClick={() => setEditing(member)} aria-label={`Editar a ${member.short_name}`}>Editar</button>
+              <button type="button" className="btn-secondary" disabled={!profiles || busy} onClick={() => setEditing(member)} aria-label={`${copy.edit} ${member.short_name}`}>{copy.edit}</button>
               <button type="button" className="btn-secondary" disabled={!profiles || !canDeactivate || busy}
-                onClick={() => { setError(''); setConfirm(member); }} aria-label={`${member.active ? 'Dar de baja' : 'Reactivar'} a ${member.short_name}`}>
-                {member.active ? 'Dar de baja' : 'Reactivar'}</button>
+                onClick={() => { setError(''); setConfirm(member); }} aria-label={`${member.active ? copy.giveAccess : copy.reactivate} ${member.short_name}`}>
+                {member.active ? copy.giveAccess : copy.reactivate}</button>
               {!member.active && canDeactivate && <button type="button" className="btn-secondary" disabled={!profiles || busy}
-                onClick={() => { setError(''); setRemoving(member); }} aria-label={`Eliminar a ${member.short_name} de Equipo`}>
-                Eliminar</button>}
+                onClick={() => { setError(''); setRemoving(member); }} aria-label={`${copy.delete} ${member.short_name}`}>
+                {copy.delete}</button>}
             </div>
           </li>;
-        })}</ul>
+        })}</ul>}
       </section>
     </main>
     {editing !== undefined && profiles && <TeamMemberForm member={editing} profiles={profiles.filter(row => row.id === editing?.profile_id || !members.some(member => member.profile_id === row.id))}
       onClose={() => setEditing(undefined)} onSaved={refresh} />}
-    {confirm && <ConfirmModal isOpen title={`${confirm.active ? 'Dar de baja' : 'Reactivar'} a ${confirm.short_name}`} isDestructive={confirm.active}
-      description={confirm.active ? 'Sin acceso ni nuevas asignaciones.' : 'Podrá iniciar sesión.'}
-      confirmLabel={confirm.active ? 'Dar de baja' : 'Reactivar'} isLoading={busy} errorMessage={error}
+    {confirm && <ConfirmModal isOpen title={`${confirm.active ? copy.confirmDeactivate : copy.confirmReactivate} ${confirm.short_name}`} isDestructive={confirm.active}
+      description={confirm.active ? copy.deactivateDescription : copy.reactivateDescription}
+      confirmLabel={confirm.active ? copy.confirmDeactivate : copy.confirmReactivate} cancelLabel={copy.cancel} loadingLabel={copy.saving} isLoading={busy} errorMessage={error ? translateTeamMessage(error, language) : undefined}
       onCancel={() => { if (!busy) { setConfirm(null); setError(''); } }} onConfirm={() => void changeStatus()} />}
-    {removing && <ConfirmModal isOpen title={`Eliminar a ${removing.short_name}`} isDestructive
-      description={removing.profile_id ? 'Se quita de Equipo. El historial se mantiene.' : 'Esta acción no se puede deshacer.'}
-      confirmLabel="Eliminar" isLoading={busy} errorMessage={error}
+    {removing && <ConfirmModal isOpen title={copy.deleteMember(removing.short_name)} isDestructive
+      description={removing.profile_id ? copy.deleteLinkedDescription : copy.deleteUnlinkedDescription}
+      confirmLabel={copy.delete} cancelLabel={copy.cancel} loadingLabel={copy.saving} isLoading={busy} errorMessage={error ? translateTeamMessage(error, language) : undefined}
       onCancel={() => { if (!busy) { setRemoving(null); setError(''); } }} onConfirm={() => void removeMember()} />}
   </>;
 }

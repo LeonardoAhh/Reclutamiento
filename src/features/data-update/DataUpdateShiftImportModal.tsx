@@ -5,6 +5,7 @@ import { toast } from "@/lib/notify";
 import { bulkUpdateDataUpdateShifts, dataUpdateError } from "./api";
 import { previewDataUpdateShifts, type DataUpdateShiftPreview } from "./shiftImport";
 import type { DataUpdateRecord } from "./types";
+import { useDataUpdateText } from "./translations";
 
 interface DataUpdateShiftImportModalProps {
   isOpen: boolean;
@@ -29,6 +30,7 @@ export function DataUpdateShiftImportModal({
   onClose,
   onApplied,
 }: DataUpdateShiftImportModalProps) {
+  const t = useDataUpdateText();
   const fileInputId = useId();
   const readIdRef = useRef(0);
   const [fileName, setFileName] = useState("");
@@ -54,7 +56,7 @@ export function DataUpdateShiftImportModal({
     setError(null);
     if (!file) return;
     if (!file.name.toLowerCase().endsWith(".json")) {
-      setError("Selecciona un archivo .json.");
+      setError(t("Selecciona un archivo .json."));
       return;
     }
     setReading(true);
@@ -63,7 +65,7 @@ export function DataUpdateShiftImportModal({
       if (readId !== readIdRef.current) return;
       setPreview(previewDataUpdateShifts(source, records));
     } catch {
-      if (readId === readIdRef.current) setError("El archivo no contiene JSON válido.");
+      if (readId === readIdRef.current) setError(t("El archivo no contiene JSON válido."));
     } finally {
       if (readId === readIdRef.current) setReading(false);
     }
@@ -76,13 +78,13 @@ export function DataUpdateShiftImportModal({
     setError(null);
     try {
       const updated = await bulkUpdateDataUpdateShifts(campaignId, preview.changes);
-      toast.success({ title: `${updated} turnos actualizados` });
+      toast.success({ title: `${updated} ${t("turnos actualizados")}` });
       setFileName("");
       setPreview(null);
       onClose();
       onApplied();
     } catch (caught) {
-      setError(dataUpdateError(caught));
+      setError(t(dataUpdateError(caught)));
     } finally {
       setSubmitting(false);
       onBusyChange(false);
@@ -92,13 +94,13 @@ export function DataUpdateShiftImportModal({
   return (
     <Modal
       isOpen={isOpen}
-      title="Actualizar turnos"
+      title={t("Actualizar turnos")}
       onClose={close}
       size="md"
       footerActions={
         <>
           <button type="button" className="btn-secondary" onClick={close} disabled={submitting}>
-            Cancelar
+            {t("Cancelar")}
           </button>
           <button
             type="button"
@@ -106,19 +108,19 @@ export function DataUpdateShiftImportModal({
             onClick={() => void apply()}
             disabled={busy || !online || reading || submitting || !preview || preview.errors.length > 0 || preview.changes.length === 0}
           >
-            {submitting ? "Actualizando…" : `Aplicar ${preview?.changes.length ?? 0} cambios`}
+            {submitting ? t("Actualizando…") : `${t("Aplicar")} ${preview?.changes.length ?? 0} ${t("cambios")}`}
           </button>
         </>
       }
     >
       <div className="modal-body data-update-import">
         <p className="data-update-shifts__intro type-caption-sm text-muted">
-          Campaña: {campaignName}. El JSON debe contener solo "Numero Empleado" y "Turno".
+          {t("Campaña")}: {campaignName}. {t('El JSON debe contener solo "Numero Empleado" y "Turno".')}
         </p>
         <div className="data-update-import__file">
           <label htmlFor={fileInputId} className="btn-secondary">
             <FileJson2 size="var(--icon-size-sm)" aria-hidden="true" />
-            Seleccionar JSON
+            {t("Seleccionar JSON")}
             <input
               id={fileInputId}
               className="sr-only"
@@ -133,27 +135,27 @@ export function DataUpdateShiftImportModal({
             />
           </label>
           <span className="data-update-shifts__filename type-caption-sm text-muted">
-            {reading ? "Leyendo archivo…" : fileName || "Sin archivo seleccionado"}
+            {reading ? t("Leyendo archivo…") : fileName || t("Sin archivo seleccionado")}
           </span>
         </div>
 
         {preview && (
-          <section className="data-update-import__preview" aria-label="Vista previa de turnos">
+          <section className="data-update-import__preview" aria-label={t("Vista previa de turnos")}>
             <p className="data-update-shifts__summary" role="status">
-              {preview.changes.length} cambios · {preview.unchanged} sin cambio
+              {preview.changes.length} {t("cambios")} · {preview.unchanged} {t("sin cambio")}
             </p>
             {preview.errors.length > 0 && (
               <>
                 <p className="form-error" role="alert">
-                  Corrige el archivo antes de aplicar. No se actualizará ningún turno.
+                  {t("Corrige el archivo antes de aplicar. No se actualizará ningún turno.")}
                 </p>
                 <ul className="data-update-import__messages data-update-import__messages--error">
-                  {preview.errors.map((message) => <li key={message}>{message}</li>)}
+                  {preview.errors.map((message) => <li key={message}>{t(message)}</li>)}
                 </ul>
               </>
             )}
             {preview.changes.length === 0 && preview.errors.length === 0 && (
-              <p>No hay cambios para aplicar.</p>
+              <p>{t("No hay cambios para aplicar.")}</p>
             )}
             {preview.changes.length > 0 && (
               <ul className="data-update-shifts__list">
@@ -172,8 +174,8 @@ export function DataUpdateShiftImportModal({
             )}
           </section>
         )}
-        {error && <p className="form-error" role="alert">{error}</p>}
-        {!online && <p className="form-error" role="alert">Reconéctate para aplicar los cambios.</p>}
+        {error && <p className="form-error" role="alert">{t(error)}</p>}
+        {!online && <p className="form-error" role="alert">{t("Reconéctate para aplicar los cambios.")}</p>}
       </div>
     </Modal>
   );

@@ -2,6 +2,7 @@ import { useId, useState, type FormEvent } from "react";
 import { FileJson2 } from "lucide-react";
 import { Modal } from "@/components/ui/Modal";
 import { createDataUpdateCampaign, dataUpdateError } from "./api";
+import { useDataUpdateText } from "./translations";
 import { parseDataUpdateImport } from "./validation";
 import type { DataUpdateImportResult, DataUpdateProfileOption } from "./types";
 
@@ -20,6 +21,7 @@ export function CampaignImportModal({
   onClose,
   onCreated,
 }: CampaignImportModalProps) {
+  const t = useDataUpdateText();
   const yearNow = new Date().getFullYear();
   const formId = useId();
   const fileInputId = useId();
@@ -46,7 +48,7 @@ export function CampaignImportModal({
       const source: unknown = JSON.parse(await file.text());
       setParsed(parseDataUpdateImport(source));
     } catch {
-      setError("El archivo no contiene JSON válido.");
+      setError(t("El archivo no contiene JSON válido."));
     }
   };
 
@@ -76,7 +78,7 @@ export function CampaignImportModal({
       setParticipants(new Set([currentUserId]));
       onCreated(campaignId);
     } catch (caught) {
-      setError(dataUpdateError(caught));
+      setError(t(dataUpdateError(caught)));
     } finally {
       setSubmitting(false);
     }
@@ -94,13 +96,13 @@ export function CampaignImportModal({
   return (
     <Modal
       isOpen={isOpen}
-      title="Nueva campaña"
+      title={t("Nueva campaña")}
       onClose={close}
       size="sm"
       footerActions={
         <>
           <button type="button" className="btn-secondary" onClick={close} disabled={submitting}>
-            Cancelar
+            {t("Cancelar")}
           </button>
           <button
             type="submit"
@@ -108,17 +110,17 @@ export function CampaignImportModal({
             className="btn-primary"
             disabled={!canSubmit || submitting}
           >
-            {submitting ? "Creando…" : "Crear y repartir"}
+            {submitting ? t("Creando…") : t("Crear y repartir")}
           </button>
         </>
       }
     >
       <form id={formId} className="modal-body data-update-import" onSubmit={submit} noValidate>
         <section className="data-update-import__section" aria-labelledby="campaign-data-title">
-          <h3 id="campaign-data-title">Datos de campaña</h3>
+          <h3 id="campaign-data-title">{t("Datos de campaña")}</h3>
           <div className="form-grid">
             <div className="form-group">
-              <label htmlFor="data-update-campaign-name">Nombre de campaña</label>
+              <label htmlFor="data-update-campaign-name">{t("Nombre de campaña")}</label>
               <input
                 id="data-update-campaign-name"
                 value={name}
@@ -127,7 +129,7 @@ export function CampaignImportModal({
               />
             </div>
             <div className="form-group">
-              <label htmlFor="data-update-campaign-year">Año</label>
+              <label htmlFor="data-update-campaign-year">{t("Año")}</label>
               <input
                 id="data-update-campaign-year"
                 type="number"
@@ -141,7 +143,7 @@ export function CampaignImportModal({
         </section>
 
         <fieldset className="data-update-import__participants">
-          <legend>Participantes del reparto</legend>
+          <legend>{t("Participantes del reparto")}</legend>
           <div className="data-update-import__participant-list">
             {profiles.map((profile) => (
               <label key={profile.id} className="data-update-import__participant">
@@ -151,7 +153,7 @@ export function CampaignImportModal({
                   onChange={() => toggleParticipant(profile.id)}
                 />
                 <span>{profile.label}</span>
-                <span className="text-muted type-caption-sm">{profile.role}</span>
+                <span className="text-muted type-caption-sm">{t(profile.role)}</span>
               </label>
             ))}
           </div>
@@ -159,12 +161,12 @@ export function CampaignImportModal({
 
         <section className="data-update-import__section" aria-labelledby="campaign-file-title">
           <div>
-            <h3 id="campaign-file-title">Archivo de colaboradores</h3>
+            <h3 id="campaign-file-title">{t("Archivo de colaboradores")}</h3>
           </div>
           <div className="data-update-import__file">
             <label htmlFor={fileInputId} className="btn-secondary">
               <FileJson2 size="var(--icon-size-sm)" aria-hidden="true" />
-              Seleccionar JSON
+              {t("Seleccionar JSON")}
               <input
                 id={fileInputId}
                 className="sr-only"
@@ -173,17 +175,17 @@ export function CampaignImportModal({
                 onChange={(event) => void readFile(event.target.files?.[0])}
               />
             </label>
-            <span className="type-caption-sm text-muted">{fileName || "Sin archivo seleccionado"}</span>
+            <span className="type-caption-sm text-muted">{fileName || t("Sin archivo seleccionado")}</span>
           </div>
         </section>
 
         {parsed && (
           <section className="data-update-import__preview" aria-live="polite">
-            <strong>{parsed.rows.length} colaboradores listos</strong>
-            <span>{parsed.transportOptions.length} combinaciones de transporte</span>
-            <span>{parsed.civilStatuses.length} estados civiles</span>
+            <strong>{parsed.rows.length} {t("colaboradores listos")}</strong>
+            <span>{parsed.transportOptions.length} {t("combinaciones de transporte")}</span>
+            <span>{parsed.civilStatuses.length} {t("estados civiles")}</span>
             {parsed.rows.length > 0 && (
-              <ul className="data-update-import__sample" aria-label="Vista previa de colaboradores">
+              <ul className="data-update-import__sample" aria-label={t("Vista previa de colaboradores")}>
                 {parsed.rows.slice(0, 3).map((row) => (
                   <li key={row.identity.employeeNumber}>
                     <strong>{row.identity.employeeNumber}</strong>
@@ -194,21 +196,21 @@ export function CampaignImportModal({
             )}
             {parsed.errors.length > 0 && (
               <ul className="data-update-import__messages data-update-import__messages--error">
-                {parsed.errors.map((message) => <li key={message}>{message}</li>)}
+                {parsed.errors.map((message) => <li key={message}>{t(message)}</li>)}
               </ul>
             )}
             {parsed.warnings.length > 0 && (
               <details>
-                <summary>{parsed.warnings.length} advertencias para corregir durante la revisión</summary>
+                <summary>{parsed.warnings.length} {t("advertencias para corregir durante la revisión")}</summary>
                 <ul className="data-update-import__messages">
-                  {parsed.warnings.map((message) => <li key={message}>{message}</li>)}
+                  {parsed.warnings.map((message) => <li key={message}>{t(message)}</li>)}
                 </ul>
               </details>
             )}
           </section>
         )}
 
-        {error && <p className="form-error" role="alert">{error}</p>}
+        {error && <p className="form-error" role="alert">{t(error)}</p>}
 
       </form>
     </Modal>

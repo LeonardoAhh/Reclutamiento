@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { BadgeAlert, Building2, CalendarX2, UsersRound } from 'lucide-react';
-import { formatMes, isIncidence } from "./helpers";
+import { isIncidence } from "./helpers";
+import { useReportLocale } from "./useReportLocale";
 import type { ReporteRow } from "./types";
 import { KpiCard, type KpiTone } from "@/components/ui/KpiCard";
 import { Modal } from "@/components/ui/Modal";
@@ -15,11 +16,13 @@ interface ReporteKpiDashboardProps {
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
 
-function getWorstDayLabel(worstDay: string, currentMonth: string): string {
+function getWorstDayLabel(worstDay: string, currentMonth: string, en: boolean): string {
     if (!worstDay) return "—";
     const [year, month] = currentMonth.split("-").map(Number);
     const date = new Date(year, month - 1, parseInt(worstDay, 10));
-    const weekday = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"][date.getDay()];
+    const weekday = (en
+        ? ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+        : ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"])[date.getDay()];
     return `${weekday} ${parseInt(worstDay, 10)}`;
 }
 
@@ -98,6 +101,7 @@ export default function ReporteKpiDashboard({
     dayHeaders,
     currentMonth,
 }: ReporteKpiDashboardProps) {
+    const { en, copy, month } = useReportLocale();
     const [isWorstAreaModalOpen, setIsWorstAreaModalOpen] = useState(false);
 
     const kpis = useMemo(
@@ -125,27 +129,27 @@ export default function ReporteKpiDashboard({
 
     const cards = [
         {
-            label: "Empleados",
+            label: copy("Empleados", "Employees"),
             value: kpis.totalEmpleados,
-            sub: `en ${formatMes(currentMonth)}`,
+            sub: `${copy("en", "in")} ${month(currentMonth)}`,
             icon: <UsersRound size={18} />,
             tone: "default" as KpiTone,
         },
         {
-            label: "Total incidencias",
+            label: copy("Total incidencias", "Total incidents"),
             value: kpis.totalIncidencias,
-            sub: `en ${formatMes(currentMonth)}`,
+            sub: `${copy("en", "in")} ${month(currentMonth)}`,
             icon: <BadgeAlert size={18} />,
             tone: (kpis.totalIncidencias > 0 ? "warning" : "default") as KpiTone,
         },
         {
-            label: "Día con más incidencias",
-            value: getWorstDayLabel(kpis.worstDay, currentMonth),
+            label: copy("Día con más incidencias", "Day with most incidents"),
+            value: getWorstDayLabel(kpis.worstDay, currentMonth, en),
             icon: <CalendarX2 size={18} />,
             tone: getTone(kpis.worstDayCount, { warning: 1, destructive: 6 }),
         },
         {
-            label: "Área con más incidencias",
+            label: copy("Área con más incidencias", "Area with most incidents"),
             value: kpis.worstArea || "—",
             valueSize: "compact" as const,
             icon: <Building2 size={18} />,
@@ -165,12 +169,12 @@ export default function ReporteKpiDashboard({
             <Modal
                 isOpen={isWorstAreaModalOpen}
                 onClose={() => setIsWorstAreaModalOpen(false)}
-                title={`Incidencias · ${kpis.worstArea}`}
+                title={`${copy("Incidencias", "Incidents")} · ${kpis.worstArea}`}
                 size="sm"
             >
                 <div className="top-emp-modal">
                     {worstAreaEmployees.length > 0 ? (
-                        <ol className="top-emp-list" aria-label={`Empleados con incidencias en ${kpis.worstArea}`}>
+                        <ol className="top-emp-list" aria-label={`${copy("Empleados con incidencias en", "Employees with incidents in")} ${kpis.worstArea}`}>
                             {worstAreaEmployees.map((emp, idx) => {
                                 const maxTotal = worstAreaEmployees[0].incCount;
                                 const barPct = Math.round((emp.incCount / maxTotal) * 100);
@@ -179,7 +183,7 @@ export default function ReporteKpiDashboard({
                                         <div className="top-emp-row" style={{ cursor: 'default' }}>
                                             <span
                                                 className={`top-emp-rank${idx === 0 ? " top-emp-rank--first" : ""}`}
-                                                aria-label={`Posición ${idx + 1}`}
+                                                aria-label={`${copy("Posición", "Rank")} ${idx + 1}`}
                                             >
                                                 {idx + 1}
                                             </span>
@@ -210,7 +214,7 @@ export default function ReporteKpiDashboard({
                             })}
                         </ol>
                     ) : (
-                        <p className="top-emp-drill-empty">No hay incidencias registradas para esta área.</p>
+                        <p className="top-emp-drill-empty">{copy("No hay incidencias registradas para esta área.", "No incidents recorded for this area.")}</p>
                     )}
                 </div>
             </Modal>

@@ -2,7 +2,9 @@ import { useEffect, useId, useMemo, useState, useRef } from 'react';
 import { CircleCheckBig, PenLine, UserRoundPlus, XCircle, ClipboardList } from 'lucide-react';
 import { Save as SaveIconData } from 'lucide';
 import type { Candidate, CandidateStatus } from '@/lib/types';
-import { CANDIDATE_STATUSES, CANDIDATE_STATUS_LABEL } from '@/lib/types';
+import { CANDIDATE_STATUSES } from '@/lib/types';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { candidateSourceLabel, candidateStatusLabel, candidateText } from '@/lib/candidateTranslations';
 import { usePositions } from '@/lib/positions';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { calculatePositionCoverage, formatPhoneNumber, toNaturalCase } from '@/lib/utils';
@@ -101,6 +103,9 @@ export function CandidateModal({
   onSave,
   onDelete,
 }: CandidateModalProps) {
+  const { language } = useLanguage();
+  const en = language === 'en';
+  const t = (value: string) => candidateText(value, language);
   const { members } = useTeamDirectory();
   const formId = useId();
   const { profile } = useAuth();
@@ -240,23 +245,23 @@ export function CandidateModal({
       : isSequentialOrRepeated(telDigits)
         ? 'El número de teléfono parece ser falso o incorrecto.'
         : duplicateSource
-          ? `Teléfono duplicado en ${duplicateSource}`
+          ? (en ? `Duplicate phone number in ${t(duplicateSource)}` : `Teléfono duplicado en ${duplicateSource}`)
           : null;
 
   const isValidEmail = (email: string) => email === '' || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const emailError = !isValidEmail(form.email) ? 'El formato del correo electrónico no es válido.' : null;
 
   const errors = {
-    nombre: nombreError,
-    telefono: telefonoError,
-    email: emailError,
-    area: !form.area ? 'Selecciona un área.' : null,
-    seccion: !form.seccion ? 'Selecciona una sección.' : null,
-    puesto: !form.puesto ? 'Selecciona un puesto.' : null,
-    reclutador: !form.reclutador ? 'Debes asignar un reclutador.' : null,
-    source: !form.source ? 'Selecciona la fuente del candidato.' : null,
-    fecha_aplicacion: !form.fecha_aplicacion ? 'La fecha de contacto es obligatoria.' : form.fecha_aplicacion > localTodayIso() ? 'La fecha de contacto no puede ser futura.' : null,
-    fecha_cita: !form.fecha_cita ? 'La fecha de entrevista es obligatoria.' : null,
+    nombre: nombreError ? t(nombreError) : null,
+    telefono: telefonoError ? t(telefonoError) : null,
+    email: emailError ? t(emailError) : null,
+    area: !form.area ? t('Selecciona un área.') : null,
+    seccion: !form.seccion ? t('Selecciona una sección.') : null,
+    puesto: !form.puesto ? t('Selecciona un puesto.') : null,
+    reclutador: !form.reclutador ? t('Debes asignar un reclutador.') : null,
+    source: !form.source ? t('Selecciona la fuente del candidato.') : null,
+    fecha_aplicacion: !form.fecha_aplicacion ? t('La fecha de contacto es obligatoria.') : form.fecha_aplicacion > localTodayIso() ? t('La fecha de contacto no puede ser futura.') : null,
+    fecha_cita: !form.fecha_cita ? t('La fecha de entrevista es obligatoria.') : null,
   };
 
   const isFormValid = !Object.values(errors).some(Boolean);
@@ -271,7 +276,7 @@ export function CandidateModal({
 
       const result = await onDelete(candidate.id);
       if (result && result.ok === false) {
-        setErrorMsg(result.message ?? 'No se pudo eliminar.');
+        setErrorMsg(result.message ? t(result.message) : t('No se pudo eliminar.'));
         setSubmitting(false);
         return;
       }
@@ -279,7 +284,7 @@ export function CandidateModal({
       setIsSuccess(true);
       setTimeout(() => onClose(), 1500);
     } catch {
-      setErrorMsg('Ocurrió un error inesperado.');
+      setErrorMsg(t('Ocurrió un error inesperado.'));
       setSubmitting(false);
     }
   }
@@ -311,7 +316,7 @@ export function CandidateModal({
               c.email.trim().toLowerCase() === form.email.trim().toLowerCase()
             );
             if (isDupEmail) {
-              setErrorMsg('Este correo electrónico ya está registrado en otro candidato.');
+              setErrorMsg(t('Este correo electrónico ya está registrado en otro candidato.'));
               setSubmitting(false);
               return;
             }
@@ -343,7 +348,7 @@ export function CandidateModal({
 
         const result = await onSave(payload, candidate?.id);
         if (result && result.ok === false) {
-          setErrorMsg(result.message ?? 'No se pudo guardar.');
+          setErrorMsg(result.message ? t(result.message) : t('No se pudo guardar.'));
           setSubmitting(false);
           return;
         }
@@ -367,7 +372,7 @@ export function CandidateModal({
         setTimeout(() => onClose(), 1500);
       }
     } catch (err) {
-      setErrorMsg('Ocurrió un error inesperado.');
+      setErrorMsg(t('Ocurrió un error inesperado.'));
       setSubmitting(false);
     }
   }
@@ -380,7 +385,7 @@ export function CandidateModal({
     return (
       <DeleteConfirmModal
         isOpen={isOpen}
-        title="Eliminar candidato"
+        title={en ? 'Delete candidate' : 'Eliminar candidato'}
         onConfirm={() => void handleDeleteConfirm()}
         onCancel={onClose}
         isLoading={submitting || isSuccess}
@@ -400,10 +405,10 @@ export function CandidateModal({
   );
 
   const title = accessCard
-    ? 'Pase de entrevista'
+    ? (en ? 'Interview pass' : 'Pase de entrevista')
     : isEdit
-        ? 'Editar candidato'
-        : 'Nuevo candidato';
+        ? (en ? 'Edit candidate' : 'Editar candidato')
+        : (en ? 'New candidate' : 'Nuevo candidato');
 
   /* ── Campos agrupados para componer ambos layouts ────────────────────
      PC: un solo form-grid (diseño actual). Móvil: wizard de 3 pasos. */
@@ -411,7 +416,7 @@ export function CandidateModal({
   const fieldsContacto = (
     <>
       <div className="form-group">
-        <label htmlFor="cand-nombre">Nombre completo <span className="text-error">*</span></label>
+        <label htmlFor="cand-nombre">{en ? 'Full name' : 'Nombre completo'} <span className="text-error">*</span></label>
         <input
           id="cand-nombre"
           type="text"
@@ -433,7 +438,7 @@ export function CandidateModal({
       </div>
 
       <div className="form-group">
-        <label htmlFor="cand-telefono">Teléfono <span className="text-error">*</span></label>
+        <label htmlFor="cand-telefono">{en ? 'Phone' : 'Teléfono'} <span className="text-error">*</span></label>
         <div className="phone-input-wrapper">
           <input
             id="cand-telefono"
@@ -480,10 +485,10 @@ const fieldsPosicion = (
     <>
       <div className="form-group">
         <label htmlFor="cand-area">
-          Área <span className="text-error">*</span>
+          {en ? 'Area' : 'Área'} <span className="text-error">*</span>
           {restrictToOpen && noOpenPositions && (
             <span className="candidate-modal__hint" role="note">
-              <span className="candidate-modal__hint--warning">Sin vacantes abiertas</span>
+              <span className="candidate-modal__hint--warning">{en ? 'No open vacancies' : 'Sin vacantes abiertas'}</span>
             </span>
           )}
         </label>
@@ -495,7 +500,7 @@ const fieldsPosicion = (
             setTouched({ ...touched, area: true, seccion: false, puesto: false });
           }}
           options={areas.map((a) => ({ value: a, label: a }))}
-          placeholder="Seleccionar…"
+          placeholder={en ? 'Select…' : 'Seleccionar…'}
           disabled={(isEdit && !isAdmin) || noOpenPositions}
           aria-invalid={touched.area && !!errors.area}
         />
@@ -503,7 +508,7 @@ const fieldsPosicion = (
       </div>
 
       <div className="form-group">
-        <label htmlFor="cand-seccion">Sección <span className="text-error">*</span></label>
+        <label htmlFor="cand-seccion">{en ? 'Section' : 'Sección'} <span className="text-error">*</span></label>
         <CustomSelect
           id="cand-seccion"
           value={form.seccion}
@@ -512,7 +517,7 @@ const fieldsPosicion = (
             setTouched({ ...touched, seccion: true, puesto: false });
           }}
           options={sectionsForArea.map((s) => ({ value: s, label: s }))}
-          placeholder="Seleccionar…"
+          placeholder={en ? 'Select…' : 'Seleccionar…'}
           disabled={!form.area || (isEdit && !isAdmin)}
           aria-invalid={touched.seccion && !!errors.seccion}
         />
@@ -520,7 +525,7 @@ const fieldsPosicion = (
       </div>
 
       <div className="form-group">
-        <label htmlFor="cand-puesto">Puesto <span className="text-error">*</span></label>
+        <label htmlFor="cand-puesto">{en ? 'Position' : 'Puesto'} <span className="text-error">*</span></label>
         <CustomSelect
           id="cand-puesto"
           value={form.puesto}
@@ -529,7 +534,7 @@ const fieldsPosicion = (
             setTouched({ ...touched, puesto: true });
           }}
           options={puestosForSection.map((p) => ({ value: p, label: toNaturalCase(p) }))}
-          placeholder="Seleccionar…"
+          placeholder={en ? 'Select…' : 'Seleccionar…'}
           disabled={!form.seccion || (isEdit && !isAdmin)}
           aria-invalid={touched.puesto && !!errors.puesto}
         />
@@ -541,17 +546,17 @@ const fieldsPosicion = (
   const fieldsProceso = (
     <>
       <div className="form-group">
-        <label htmlFor="cand-status">Proceso</label>
+        <label htmlFor="cand-status">{en ? 'Process' : 'Proceso'}</label>
         <CustomSelect
           id="cand-status"
           value={form.status}
           onChange={(val) => setForm({ ...form, status: val as CandidateStatus })}
-          options={CANDIDATE_STATUSES.map((s) => ({ value: s, label: CANDIDATE_STATUS_LABEL[s] }))}
+          options={CANDIDATE_STATUSES.map((s) => ({ value: s, label: candidateStatusLabel(s, language) }))}
         />
       </div>
 
       <div className="form-group">
-        <label htmlFor="cand-reclutador">Reclutador <span className="text-error">*</span></label>
+        <label htmlFor="cand-reclutador">{en ? 'Recruiter' : 'Reclutador'} <span className="text-error">*</span></label>
         <CustomSelect
           id="cand-reclutador"
           value={form.reclutador}
@@ -559,17 +564,17 @@ const fieldsPosicion = (
             setForm({ ...form, reclutador: val });
             setTouched({ ...touched, reclutador: true });
           }}
-          placeholder="Seleccionar..."
+          placeholder={en ? 'Select...' : 'Seleccionar...'}
           options={recruiterOptions(members, mode === 'edit' ? candidate?.reclutador : null)}
           disabled={isEdit && !isAdmin}
-          aria-label="Reclutador a cargo del proceso, obligatorio"
+          aria-label={en ? 'Recruiter in charge of the process, required' : 'Reclutador a cargo del proceso, obligatorio'}
           aria-invalid={touched.reclutador && !!errors.reclutador}
         />
         {touched.reclutador && errors.reclutador && <span className="form-error-text">{errors.reclutador}</span>}
       </div>
 
       <div className="form-group">
-        <label htmlFor="cand-source">Medio de reclutamiento <span className="text-error">*</span></label>
+        <label htmlFor="cand-source">{en ? 'Recruitment source' : 'Medio de reclutamiento'} <span className="text-error">*</span></label>
         <CustomSelect
           id="cand-source"
           value={form.source}
@@ -577,8 +582,8 @@ const fieldsPosicion = (
             setForm({ ...form, source: val });
             setTouched({ ...touched, source: true });
           }}
-          options={CANDIDATE_SOURCES.map((s) => ({ value: s, label: s }))}
-          placeholder="Seleccionar..."
+          options={CANDIDATE_SOURCES.map((s) => ({ value: s, label: candidateSourceLabel(s, language) }))}
+          placeholder={en ? 'Select...' : 'Seleccionar...'}
           disabled={isEdit && !canEditCitaAndSource}
           aria-invalid={touched.source && !!errors.source}
         />
@@ -593,7 +598,7 @@ const fieldsPosicion = (
           onChange={(val) => setForm({ ...form, is_starlite: val === 'true' })}
           options={[
             { value: 'false', label: 'No' },
-            { value: 'true', label: 'Sí' }
+            { value: 'true', label: en ? 'Yes' : 'Sí' }
           ]}
           disabled={isEdit && !isAdmin}
         />
@@ -601,7 +606,7 @@ const fieldsPosicion = (
 
 
       <div className="form-group">
-        <label htmlFor="cand-fecha-cita">Fecha de entrevista <span className="text-error">*</span></label>
+        <label htmlFor="cand-fecha-cita">{en ? 'Interview date' : 'Fecha de entrevista'} <span className="text-error">*</span></label>
         <input
           id="cand-fecha-cita"
           type="date"
@@ -633,7 +638,7 @@ const fieldsPosicion = (
         onClick={onClose}
         disabled={submitting || isSuccess}
       >
-        Cancelar
+        {en ? 'Cancel' : 'Cancelar'}
       </button>
       <AnimatedSubmitButton
         isSubmitting={submitting}
@@ -641,9 +646,9 @@ const fieldsPosicion = (
         isError={!!errorMsg}
         errorText={errorMsg || undefined}
         errorMessageId="candidate-submit-error"
-        idleText="Guardar"
-        loadingText="Guardando..."
-        successText="¡Guardado!"
+        idleText={en ? 'Save' : 'Guardar'}
+        loadingText={en ? 'Saving...' : 'Guardando...'}
+        successText={en ? 'Saved!' : '¡Guardado!'}
         idleIcon={SaveIconData}
         className="btn-primary"
         form={formId}
@@ -676,25 +681,25 @@ const fieldsPosicion = (
             onCancel={onClose}
             submitting={submitting}
             submitDisabled={!isFormValid}
-            submitLabel="Guardar"
-            submittingLabel="Guardando…"
+            submitLabel={en ? 'Save' : 'Guardar'}
+            submittingLabel={en ? 'Saving…' : 'Guardando…'}
             notice={errorMsg ? errorNotice : null}
             steps={[
               {
                 id: 'contacto',
-                title: 'Contacto',
+                title: en ? 'Contact' : 'Contacto',
                 isValid: !errors.nombre && !errors.telefono && !errors.email,
                 content: <div className="form-grid">{fieldsContacto}</div>,
               },
               {
                 id: 'posicion',
-                title: 'Posición',
+                title: en ? 'Position' : 'Posición',
                 isValid: !errors.area && !errors.seccion && !errors.puesto,
                 content: <div className="form-grid">{fieldsPosicion}</div>,
               },
               {
                 id: 'proceso',
-                title: 'Proceso',
+                title: en ? 'Process' : 'Proceso',
                 isValid: !errors.reclutador && !errors.source && !errors.fecha_aplicacion && !errors.fecha_cita,
                 content: <div className="form-grid">
                   {fieldsProceso}

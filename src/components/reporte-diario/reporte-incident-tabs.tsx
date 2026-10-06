@@ -1,6 +1,7 @@
 import { EyeOff } from 'lucide-react';
-import { INCIDENT_TABS, INCIDENCIA_LABELS } from "./constants";
+import { INCIDENT_TABS } from "./constants";
 import type { IncidentTab, EmployeeRef } from "./types";
+import { useReportLocale } from "./useReportLocale";
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
@@ -21,6 +22,7 @@ interface TabButtonProps {
 }
 
 function TabButton({ code, count, active, onClick }: TabButtonProps) {
+    const { incident } = useReportLocale();
     const badgeClass = active
         ? "reporte-incidents__tab-badge reporte-incidents__tab-badge--active"
         : count > 0
@@ -36,7 +38,7 @@ function TabButton({ code, count, active, onClick }: TabButtonProps) {
             className="reporte-incidents__tab"
             data-testid={`incident-tab-${code}`}
         >
-            {INCIDENCIA_LABELS[code] ?? code}
+            {incident(code)}
             <span className={badgeClass}>{count}</span>
         </button>
     );
@@ -50,6 +52,7 @@ export default function ReporteIncidentTabs({
     dayCounts,
     incidentSummary,
 }: ReporteIncidentTabsProps) {
+    const { copy, incident } = useReportLocale();
     const visibleTabs = INCIDENT_TABS.filter((code) => (dayCounts[code] ?? 0) > 0);
 
     if (visibleTabs.length === 0) return null;
@@ -58,7 +61,7 @@ export default function ReporteIncidentTabs({
 
     return (
         <div className="reporte-incidents">
-            <div role="tablist" aria-label="Tipos de incidencia" className="reporte-incidents__tablist">
+            <div role="tablist" aria-label={copy("Tipos de incidencia", "Incident types")} className="reporte-incidents__tablist">
                 {visibleTabs.map((code) => (
                     <TabButton
                         key={code}
@@ -77,13 +80,13 @@ export default function ReporteIncidentTabs({
                         data-testid="incident-clear-btn"
                     >
                         <EyeOff size={14} aria-hidden="true" />
-                        Ocultar
+                        {copy("Ocultar", "Hide")}
                     </button>
                 )}
             </div>
 
             {selectedTab !== "" && (
-                <div role="tabpanel" aria-label={`Detalle de ${INCIDENCIA_LABELS[selectedTab] ?? selectedTab}`}>
+                <div role="tabpanel" aria-label={`${copy("Detalle de", "Details for")} ${incident(selectedTab)}`}>
                     {rows.length > 0 ? (
                         <>
                             <DataTable rows={rows} />

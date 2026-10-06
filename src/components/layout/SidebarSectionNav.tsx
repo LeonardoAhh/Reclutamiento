@@ -10,6 +10,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/Popover';
 import type { NavItem } from './navigation';
+import { useLanguage } from '@/contexts/LanguageContext';
 import './SidebarSectionNav.css';
 
 export interface SidebarSectionNavProps {
@@ -38,6 +39,7 @@ export function SidebarSectionNav({
   const mobileNavigationRef = useRef(false);
   const contentId = useId();
   const titleId = useId();
+  const { language } = useLanguage();
   const Icon = item.icon;
   const DisclosureIcon = mobile ? ChevronDown : ChevronRight;
 
@@ -60,7 +62,7 @@ export function SidebarSectionNav({
           <button
             type="button"
             className={`sidebar__item sidebar-section__trigger${isActive ? ' sidebar__item--active' : ''}`}
-            aria-label={`Vistas de ${item.label}`}
+            aria-label={language === 'en' ? `Views for ${item.label}` : `Vistas de ${item.label}`}
             aria-expanded={open}
             aria-controls={contentId}
             data-testid={`sidebar-nav-${item.to.replace(/\//g, '')}`}
@@ -86,7 +88,7 @@ export function SidebarSectionNav({
           <PopoverHeader className="sidebar-section__popover-header">
             <PopoverTitle id={titleId} className="sidebar-section__popover-title">{item.label}</PopoverTitle>
           </PopoverHeader>
-          <nav aria-label={`Navegación de ${item.label}`}>
+          <nav aria-label={language === 'en' ? `Navigation for ${item.label}` : `Navegación de ${item.label}`}>
             {groups.map((group) => (
               <div key={group.id} className="sidebar-section__group">
                 {group.title && (
@@ -118,7 +120,7 @@ export function SidebarSectionNav({
                             target="_blank"
                             rel="noopener noreferrer"
                             className="sidebar-section__view"
-                            aria-label={`${label} (abre en una pestaña nueva)`}
+                            aria-label={language === 'en' ? `${label} (opens in a new tab)` : `${label} (abre en una pestaña nueva)`}
                             onClick={handleNavigate}
                           >
                             {content}

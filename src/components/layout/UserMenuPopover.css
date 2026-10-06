@@ -24,6 +24,64 @@
   gap: var(--design-spacing-xxs);
 }
 
+.user-menu-popover__preferences {
+  display: grid;
+  gap: var(--design-spacing-xxs);
+}
+
+.user-menu-popover__storage-error {
+  padding-inline: var(--design-spacing-sm);
+  color: var(--color-muted);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-caption-sm-weight);
+  line-height: var(--type-caption-sm-line);
+  letter-spacing: var(--type-caption-sm-tracking);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.dropdown-menu-item.user-menu-popover__preference {
+  display: flex;
+  inline-size: 100%;
+  min-block-size: var(--touch-target-min);
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--design-spacing-xs);
+  padding-inline: var(--design-spacing-sm);
+  border-radius: var(--rounded-sm);
+  background: transparent;
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.dropdown-menu-item.user-menu-popover__preference[data-highlighted] {
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+}
+
+.dropdown-menu-item.user-menu-popover__preference svg {
+  flex: 0 0 auto;
+  inline-size: var(--icon-size-md);
+  block-size: var(--icon-size-md);
+  transform: rotate(0);
+  transition: transform var(--transition-fast);
+}
+
+.dropdown-menu-item.user-menu-popover__preference[data-mode="dark"] svg {
+  transform: rotate(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dropdown-menu-item.user-menu-popover__preference svg {
+    transition: none;
+  }
+}
+
 .dropdown-menu-item.user-menu-popover__item {
   display: flex;
   width: 100%;
@@ -35,6 +93,7 @@
   border: var(--border-width) solid transparent;
   border-radius: var(--rounded-sm);
   background: transparent;
+  color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);

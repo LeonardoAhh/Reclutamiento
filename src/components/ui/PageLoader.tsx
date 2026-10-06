@@ -1,4 +1,5 @@
 import { type ReactNode, useTransition, useEffect, useState, useRef } from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { TransitionLoader } from '@/components/ui/TransitionLoader';
 
 interface PageLoaderProps {
@@ -22,7 +23,8 @@ interface PageLoaderProps {
  *     <DashboardHeavyContent />
  *   </PageLoader>
  */
-export function PageLoader({ loading, title = 'Cargando…', children }: PageLoaderProps) {
+export function PageLoader({ loading, title, children }: PageLoaderProps) {
+  const { language } = useLanguage();
   const [isReady, setIsReady] = useState(false);
   const [isPending, startTransition] = useTransition();
   const firedRef = useRef(false);
@@ -48,7 +50,11 @@ export function PageLoader({ loading, title = 'Cargando…', children }: PageLoa
   }, [loading]);
 
   if (!isReady || isPending) {
-    return <TransitionLoader title={title} />;
+    return (
+      <TransitionLoader
+        title={title ?? (language === 'en' ? 'Loading…' : 'Cargando…')}
+      />
+    );
   }
 
   return <>{children}</>;

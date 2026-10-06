@@ -3,7 +3,7 @@ import { addDaysToIso, localTodayIso } from '@/lib/dates';
 import type { Profile } from '@/hooks/useAuth';
 import type { TeamMember } from '@/features/team/types';
 
-export const LEAVE_REQUESTS_PATH = '/solicitudes-ausencia';
+export const LEAVE_REQUESTS_PATH = '/leave-requests';
 export const LEAVE_NOTICE_DAYS = 14;
 export const LEAVE_PAGE_SIZE = 25;
 export const LEAVE_TYPE_OPTIONS = [

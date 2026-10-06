@@ -1,6 +1,8 @@
 import { useEffect, useId, useMemo, useState } from 'react';
 import { CircleArrowUp, CircleCheckBig, ListChecks, Plus } from 'lucide-react';
 import type { Employee } from '@/lib/types';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { workforceText } from '@/pages/workforce-translations';
 import { usePositions, type CreatePositionResult } from '@/lib/positions';
 import { toNaturalCase } from '@/lib/utils';
 import { Modal } from './Modal';
@@ -76,6 +78,8 @@ export function PromoteEmployeeModal({
   onPromote,
   onCreatePosition,
 }: PromoteEmployeeModalProps) {
+  const { language } = useLanguage();
+  const t = (text: string) => workforceText(language, text);
   const formId = useId();
   const { positions } = usePositions();
 
@@ -183,7 +187,7 @@ export function PromoteEmployeeModal({
         });
 
         if (!created.ok || !created.position) {
-          setErrorMsg(created.message ?? 'No se pudo crear el puesto.');
+          setErrorMsg(created.message ? t(created.message) : t('No se pudo crear el puesto.'));
           return;
         }
 
@@ -197,7 +201,7 @@ export function PromoteEmployeeModal({
       const result = await onPromote(employee, target);
 
       if (!result.ok) {
-        setErrorMsg(result.message ?? 'No se pudo promover al empleado.');
+        setErrorMsg(result.message ? t(result.message) : t('No se pudo promover al empleado.'));
         return;
       }
 
@@ -240,7 +244,7 @@ export function PromoteEmployeeModal({
         onClick={onClose}
         disabled={submitting}
       >
-        Cancelar
+        {t('Cancelar')}
       </button>
       <button
         type="submit"
@@ -249,7 +253,7 @@ export function PromoteEmployeeModal({
         aria-busy={submitting}
         form={formId}
       >
-        {submitting ? 'Aplicando...' : 'Confirmar'}
+        {submitting ? t('Aplicando...') : t('Confirmar')}
       </button>
     </>
   );
@@ -268,7 +272,7 @@ export function PromoteEmployeeModal({
           aria-hidden="true"
         />
       }
-      title="Promover empleado"
+      title={t("Promover empleado")}
       footerActions={footerActions}
     >
       <form
@@ -276,14 +280,14 @@ export function PromoteEmployeeModal({
         onSubmit={handleSubmit}
         className="modal-body"
         noValidate
-        aria-label={`Formulario de promoción — ${employee.nombre}`}
+        aria-label={`${t('Formulario de promoción')} — ${employee.nombre}`}
       >
         {/* ── Puesto actual ──────────────────────────────────────────── */}
         <section
           className="promote-current"
-          aria-label="Puesto actual del empleado"
+          aria-label={t("Puesto actual del empleado")}
         >
-          <span className="promote-current__label">Puesto actual</span>
+          <span className="promote-current__label">{t('Puesto actual')}</span>
           <p className="promote-current__puesto">{employee.puesto}</p>
           <p className="promote-current__meta">
             {employee.area} · {employee.seccion}
@@ -294,7 +298,7 @@ export function PromoteEmployeeModal({
         <div
           className="promote-mode"
           role="group"
-          aria-label="Tipo de promoción"
+          aria-label={t("Tipo de promoción")}
         >
           <button
             type="button"
@@ -303,7 +307,7 @@ export function PromoteEmployeeModal({
             onClick={() => setMode('existing')}
           >
             <ListChecks aria-hidden="true" />
-            <span>Puesto existente</span>
+            <span>{t('Puesto existente')}</span>
           </button>
           <button
             type="button"
@@ -312,7 +316,7 @@ export function PromoteEmployeeModal({
             onClick={() => setMode('new')}
           >
             <Plus aria-hidden="true" />
-            <span>Crear nuevo puesto</span>
+            <span>{t('Crear nuevo puesto')}</span>
           </button>
         </div>
 
@@ -373,37 +377,39 @@ function ExistingFields({
   onPuesto,
   isSamePosition,
 }: ExistingFieldsProps) {
+  const { language } = useLanguage();
+  const t = (text: string) => workforceText(language, text);
   return (
-    <div className="form-grid" role="group" aria-label="Selección de puesto destino">
+    <div className="form-grid" role="group" aria-label={t("Selección de puesto destino")}>
       {/* Área */}
       <div className="form-group">
-        <label htmlFor="promote-existing-area">Área</label>
+        <label htmlFor="promote-existing-area">{t('Área')}</label>
         <CustomSelect
           id="promote-existing-area"
           value={existing.area}
           onChange={onArea}
           options={areas.map((a) => ({ value: a, label: a }))}
-          placeholder="Seleccione área…"
+          placeholder={t("Seleccione área…")}
           aria-describedby={
             existing.area === '' ? 'promote-existing-area-hint' : undefined
           }
         />
         {existing.area === '' && (
           <span id="promote-existing-area-hint" className="sr-only">
-            Seleccione un área para ver las secciones disponibles.
+            {t('Seleccione un área para ver las secciones disponibles.')}
           </span>
         )}
       </div>
 
       {/* Sección */}
       <div className="form-group">
-        <label htmlFor="promote-existing-seccion">Sección</label>
+        <label htmlFor="promote-existing-seccion">{t('Sección')}</label>
         <CustomSelect
           id="promote-existing-seccion"
           value={existing.seccion}
           onChange={onSeccion}
           options={sections.map((s) => ({ value: s, label: s }))}
-          placeholder="Seleccione sección…"
+          placeholder={t("Seleccione sección…")}
           disabled={!existing.area}
           aria-describedby={
             !existing.area ? 'promote-existing-seccion-hint' : undefined
@@ -411,20 +417,20 @@ function ExistingFields({
         />
         {!existing.area && (
           <span id="promote-existing-seccion-hint" className="sr-only">
-            Primero seleccione un área.
+            {t('Primero seleccione un área.')}
           </span>
         )}
       </div>
 
       {/* Puesto */}
       <div className="form-group form-group--span-2">
-        <label htmlFor="promote-existing-puesto">Nuevo puesto</label>
+        <label htmlFor="promote-existing-puesto">{t('Nuevo puesto')}</label>
         <CustomSelect
           id="promote-existing-puesto"
           value={existing.puesto}
           onChange={onPuesto}
           options={puestos.map((p) => ({ value: p, label: toNaturalCase(p) }))}
-          placeholder="Seleccione puesto…"
+          placeholder={t("Seleccione puesto…")}
           disabled={!existing.seccion}
           aria-describedby={
             isSamePosition ? 'promote-same-position-error' : undefined
@@ -436,7 +442,7 @@ function ExistingFields({
             className="form-error"
             role="alert"
           >
-            El empleado ya ocupa este puesto.
+            {t('El empleado ya ocupa este puesto.')}
           </span>
         )}
       </div>
@@ -455,11 +461,13 @@ interface NewPositionFieldsProps {
 }
 
 function NewPositionFields({ draft, allAreas, onChange }: NewPositionFieldsProps) {
+  const { language } = useLanguage();
+  const t = (text: string) => workforceText(language, text);
   return (
-    <div className="form-grid" role="group" aria-label="Datos del nuevo puesto">
+    <div className="form-grid" role="group" aria-label={t("Datos del nuevo puesto")}>
       {/* Área */}
       <div className="form-group">
-        <label htmlFor="promote-new-area">Área</label>
+        <label htmlFor="promote-new-area">{t('Área')}</label>
         <input
           id="promote-new-area"
           type="text"
@@ -468,7 +476,7 @@ function NewPositionFields({ draft, allAreas, onChange }: NewPositionFieldsProps
           onChange={(e) =>
             onChange('area', e.target.value.toUpperCase())
           }
-          placeholder="Ej. RECURSOS HUMANOS"
+          placeholder={t("Ej. RECURSOS HUMANOS")}
           autoComplete="off"
           list="promote-area-suggestions"
           aria-autocomplete="list"
@@ -482,7 +490,7 @@ function NewPositionFields({ draft, allAreas, onChange }: NewPositionFieldsProps
 
       {/* Sección */}
       <div className="form-group">
-        <label htmlFor="promote-new-seccion">Sección</label>
+        <label htmlFor="promote-new-seccion">{t('Sección')}</label>
         <input
           id="promote-new-seccion"
           type="text"
@@ -491,14 +499,14 @@ function NewPositionFields({ draft, allAreas, onChange }: NewPositionFieldsProps
           onChange={(e) =>
             onChange('seccion', e.target.value.toUpperCase())
           }
-          placeholder="Ej. DESARROLLO ORGANIZACIONAL"
+          placeholder={t("Ej. DESARROLLO ORGANIZACIONAL")}
           autoComplete="off"
         />
       </div>
 
       {/* Nombre del puesto */}
       <div className="form-group form-group--span-2">
-        <label htmlFor="promote-new-puesto">Nombre del puesto</label>
+        <label htmlFor="promote-new-puesto">{t('Nombre del puesto')}</label>
         <input
           id="promote-new-puesto"
           type="text"
@@ -507,14 +515,14 @@ function NewPositionFields({ draft, allAreas, onChange }: NewPositionFieldsProps
           onChange={(e) =>
             onChange('puesto', e.target.value.toUpperCase())
           }
-          placeholder="Ej. COORDINADOR DE NUEVO PROCESO"
+          placeholder={t("Ej. COORDINADOR DE NUEVO PROCESO")}
           autoComplete="off"
         />
       </div>
 
       {/* Plantilla autorizada */}
       <div className="form-group">
-        <label htmlFor="promote-new-plantilla">Plantilla autorizada</label>
+        <label htmlFor="promote-new-plantilla">{t('Plantilla autorizada')}</label>
         <input
           id="promote-new-plantilla"
           type="number"
@@ -531,16 +539,16 @@ function NewPositionFields({ draft, allAreas, onChange }: NewPositionFieldsProps
           aria-describedby="promote-plantilla-hint"
         />
         <span id="promote-plantilla-hint" className="sr-only">
-          Número de plazas autorizadas para este puesto. Mínimo 0.
+          {t('Número de plazas autorizadas para este puesto. Mínimo 0.')}
         </span>
       </div>
 
       {/* Notas */}
       <div className="form-group form-group--span-2">
         <label htmlFor="promote-new-notas">
-          Notas{' '}
+          {t('Notas')}{' '}
           <span aria-hidden="true" className="promote-form__optional">
-            (opcional)
+            ({t('opcional')})
           </span>
         </label>
         <input
@@ -548,15 +556,14 @@ function NewPositionFields({ draft, allAreas, onChange }: NewPositionFieldsProps
           type="text"
           value={draft.notas}
           onChange={(e) => onChange('notas', e.target.value)}
-          placeholder="Ej. Promoción por reestructura organizacional"
+          placeholder={t("Ej. Promoción por reestructura organizacional")}
           autoComplete="off"
         />
       </div>
 
       {/* Hint informativo */}
       <p className="promote-hint">
-        El puesto se registrará en el sistema y aparecerá en los selectores
-        de Dashboard, Vacantes, Pipeline y formularios relacionados.
+        {t('El puesto se registrará en el sistema y aparecerá en los selectores de Dashboard, Vacantes, Pipeline y formularios relacionados.')}
       </p>
     </div>
   );

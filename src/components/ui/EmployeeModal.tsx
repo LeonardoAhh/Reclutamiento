@@ -25,6 +25,8 @@ import { supabase } from "@/lib/supabase";
 import { Modal } from "./Modal";
 import { FormWizard } from "./FormWizard";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { workforceText } from "@/pages/workforce-translations";
 import { CustomSelect } from "./CustomSelect";
 import "./EmployeeModal.css";
 
@@ -97,6 +99,8 @@ export function EmployeeModal({
   openVacancies = [],
   existingEmployees = [],
 }: EmployeeModalProps) {
+  const { language } = useLanguage();
+  const t = (text: string) => workforceText(language, text);
   const { members } = useTeamDirectory();
   const formId = useId();
   const [form, setForm] = useState<FormState>(() => emptyForm());
@@ -238,23 +242,23 @@ export function EmployeeModal({
     existingEmployees.some(e => e.num_empleado === form.num_empleado.trim());
 
   const errorsAdd = {
-    num_empleado: !form.num_empleado.trim() ? 'Obligatorio.' : !/^\d+$/.test(form.num_empleado.trim()) ? 'Solo números.' : form.num_empleado.trim().length > 4 ? 'Máximo 4 dígitos.' : isNumDuplicate ? 'Este número ya existe.' : null,
-    nombre: !form.nombre.trim() ? 'Obligatorio.' : form.nombre.trim().length < 2 ? 'Mín. 2 letras.' : !isValidNameStr(form.nombre) ? 'Solo letras.' : null,
-    area: !form.area ? 'Obligatorio.' : null,
-    seccion: !form.seccion ? 'Obligatorio.' : null,
-    puesto: !form.puesto ? 'Obligatorio.' : null,
-    fecha_ingreso: !form.fecha_ingreso ? 'Obligatorio.' : null,
-    turno: !form.turno ? 'Selecciona turno.' : null,
-    reclutador: !form.reclutador ? 'Debes asignar un reclutador.' : null,
+    num_empleado: !form.num_empleado.trim() ? t('Obligatorio.') : !/^\d+$/.test(form.num_empleado.trim()) ? t('Solo números.') : form.num_empleado.trim().length > 4 ? t('Máximo 4 dígitos.') : isNumDuplicate ? t('Este número ya existe.') : null,
+    nombre: !form.nombre.trim() ? t('Obligatorio.') : form.nombre.trim().length < 2 ? t('Mín. 2 letras.') : !isValidNameStr(form.nombre) ? t('Solo letras.') : null,
+    area: !form.area ? t('Obligatorio.') : null,
+    seccion: !form.seccion ? t('Obligatorio.') : null,
+    puesto: !form.puesto ? t('Obligatorio.') : null,
+    fecha_ingreso: !form.fecha_ingreso ? t('Obligatorio.') : null,
+    turno: !form.turno ? t('Selecciona turno.') : null,
+    reclutador: !form.reclutador ? t('Debes asignar un reclutador.') : null,
   };
 
   const isNameDuplicate = form.nombre.trim() !== '' &&
     existingEmployees.some(e => e.nombre.trim().toLowerCase() === form.nombre.trim().toLowerCase());
 
   const errorsDelete = {
-    fecha_baja: !bajaForm.fecha_baja ? 'Obligatorio.' : null,
-    tipo_baja: !bajaForm.tipo_baja ? 'Obligatorio.' : null,
-    motivo_baja: !bajaForm.motivo_baja.trim() ? 'Obligatorio.' : null,
+    fecha_baja: !bajaForm.fecha_baja ? t('Obligatorio.') : null,
+    tipo_baja: !bajaForm.tipo_baja ? t('Obligatorio.') : null,
+    motivo_baja: !bajaForm.motivo_baja.trim() ? t('Obligatorio.') : null,
   };
 
   const isAddValid = !Object.values(errorsAdd).some(Boolean);
@@ -298,7 +302,7 @@ export function EmployeeModal({
 
         const result = await onSave(payload);
         if (result && result.ok === false) {
-          setErrorMsg(result.message ?? "No se pudo guardar.");
+          setErrorMsg(result.message ? t(result.message) : t("No se pudo guardar."));
           setSubmitting(false);
           return;
         }
@@ -310,7 +314,7 @@ export function EmployeeModal({
 
         const result = await onDelete(form.num_empleado, bajaForm);
         if (result && result.ok === false) {
-          setErrorMsg(result.message ?? "No se pudo eliminar.");
+          setErrorMsg(result.message ? t(result.message) : t("No se pudo eliminar."));
           setSubmitting(false);
           return;
         }
@@ -318,7 +322,7 @@ export function EmployeeModal({
         setTimeout(() => onClose(), 1500);
       }
     } catch (err) {
-      setErrorMsg("Error inesperado.");
+      setErrorMsg(t("Error inesperado."));
       setSubmitting(false);
     }
   }
@@ -328,7 +332,7 @@ export function EmployeeModal({
   const fieldsIdentidad = (
     <div className="employee-modal__identity-grid form-group--span-2">
       <div className="form-group">
-        <label htmlFor="emp-num">No. de Empleado <span className="text-error">*</span></label>
+        <label htmlFor="emp-num">{t('No. de Empleado')} <span className="text-error">*</span></label>
         <input
           id="emp-num"
           type="text"
@@ -340,14 +344,14 @@ export function EmployeeModal({
             setForm({ ...form, num_empleado: val });
             if (!touchedAdd.num_empleado) setTouchedAdd(t => ({ ...t, num_empleado: true }));
           }}
-          placeholder="Ej. 1234"
+          placeholder={t("Ej. 1234")}
           autoComplete="off"
           className={touchedAdd.num_empleado && errorsAdd.num_empleado ? 'input-error' : ''}
         />
         {touchedAdd.num_empleado && errorsAdd.num_empleado && <span className="form-error-text">{errorsAdd.num_empleado}</span>}
       </div>
       <div className="form-group">
-        <label htmlFor="emp-name">Nombre Completo <span className="text-error">*</span></label>
+        <label htmlFor="emp-name">{t('Nombre Completo')} <span className="text-error">*</span></label>
         <input
           id="emp-name"
           type="text"
@@ -360,14 +364,14 @@ export function EmployeeModal({
             setForm(prev => ({ ...prev, nombre: prev.nombre.trim().replace(/\s+/g, ' ') }));
             if (!touchedAdd.nombre) setTouchedAdd(t => ({ ...t, nombre: true }));
           }}
-          placeholder="APELLIDOS NOMBRE"
+          placeholder={t("APELLIDOS NOMBRE")}
           autoComplete="off"
           className={touchedAdd.nombre && errorsAdd.nombre ? 'input-error' : ''}
         />
         {touchedAdd.nombre && errorsAdd.nombre && <span className="form-error-text">{errorsAdd.nombre}</span>}
         {!errorsAdd.nombre && isNameDuplicate && mode === 'add' && (
           <span className="form-warning-text">
-            <CircleAlert size={12} /> Ya existe alguien con este nombre. Verifica que sea un homónimo.
+            <CircleAlert size={12} /> {t('Ya existe alguien con este nombre. Verifica que sea un homónimo.')}
           </span>
         )}
       </div>
@@ -384,8 +388,8 @@ export function EmployeeModal({
         value={form.is_starlite ? "true" : "false"}
         onChange={(val) => setForm({ ...form, is_starlite: val === "true" })}
         options={[
-          { value: "false", label: "No" },
-          { value: "true", label: "Sí" },
+          { value: "false", label: t("No") },
+          { value: "true", label: t("Sí") },
         ]}
       />
     </div>
@@ -397,7 +401,7 @@ export function EmployeeModal({
     vacancyOptions.length > 0 && mode === "add" ? null : (
       <>
         <div className="form-group">
-          <label htmlFor="emp-area">Área <span className="text-error">*</span></label>
+          <label htmlFor="emp-area">{t('Área')} <span className="text-error">*</span></label>
           <CustomSelect
             id="emp-area"
             value={form.area}
@@ -406,12 +410,12 @@ export function EmployeeModal({
               setTouchedAdd(t => ({ ...t, area: true, seccion: false, puesto: false }));
             }}
             options={areas.map((a) => ({ value: a, label: toNaturalCase(a) }))}
-            placeholder="Seleccione área…"
+            placeholder={t("Seleccione área…")}
           />
           {touchedAdd.area && errorsAdd.area && <span className="form-error-text">{errorsAdd.area}</span>}
         </div>
         <div className="form-group">
-          <label htmlFor="emp-seccion">Sección <span className="text-error">*</span></label>
+          <label htmlFor="emp-seccion">{t('Sección')} <span className="text-error">*</span></label>
           <CustomSelect
             id="emp-seccion"
             value={form.seccion}
@@ -420,14 +424,14 @@ export function EmployeeModal({
               setTouchedAdd(t => ({ ...t, seccion: true, puesto: false }));
             }}
             options={sectionsForArea.map((s) => ({ value: s, label: toNaturalCase(s) }))}
-            placeholder="Seleccione sección…"
+            placeholder={t("Seleccione sección…")}
             disabled={!form.area}
           />
           {touchedAdd.seccion && errorsAdd.seccion && <span className="form-error-text">{errorsAdd.seccion}</span>}
         </div>
         <>
           <div className="form-group">
-            <label htmlFor="emp-puesto">Puesto <span className="text-error">*</span></label>
+            <label htmlFor="emp-puesto">{t('Puesto')} <span className="text-error">*</span></label>
             <CustomSelect
               id="emp-puesto"
               value={form.puesto}
@@ -436,13 +440,13 @@ export function EmployeeModal({
                 setTouchedAdd(t => ({ ...t, puesto: true }));
               }}
               options={puestosForSection.map((p) => ({ value: p, label: toNaturalCase(p) }))}
-              placeholder="Seleccione puesto…"
+              placeholder={t("Seleccione puesto…")}
               disabled={!form.seccion}
             />
             {touchedAdd.puesto && errorsAdd.puesto && <span className="form-error-text">{errorsAdd.puesto}</span>}
           </div>
           <div className="form-group">
-            <label htmlFor="emp-turno">Turno <span className="text-error">*</span></label>
+            <label htmlFor="emp-turno">{t('Turno')} <span className="text-error">*</span></label>
             <CustomSelect
               id="emp-turno"
               value={form.turno}
@@ -455,9 +459,9 @@ export function EmployeeModal({
                 { value: "2", label: "2" },
                 { value: "3", label: "3" },
                 { value: "4", label: "4" },
-                { value: "Mixto", label: "Mixto" },
+                { value: "Mixto", label: t("Mixto") },
               ]}
-              placeholder="Seleccionar..."
+              placeholder={t("Seleccionar...")}
               aria-invalid={touchedAdd.turno && !!errorsAdd.turno}
             />
             {touchedAdd.turno && errorsAdd.turno && <span className="form-error-text">{errorsAdd.turno}</span>}
@@ -465,7 +469,7 @@ export function EmployeeModal({
           {starliteField}
         </>
         <div className="form-group">
-          <label htmlFor="emp-fecha">Fecha de Ingreso <span className="text-error">*</span></label>
+          <label htmlFor="emp-fecha">{t('Fecha de Ingreso')} <span className="text-error">*</span></label>
           <input
             id="emp-fecha"
             type="date"
@@ -485,13 +489,13 @@ export function EmployeeModal({
 
   const fieldsVacancySelector = showVacancySelector ? (
     <div className="form-group">
-      <label htmlFor="emp-vacancy">Puesto <span className="text-error">*</span></label>
+      <label htmlFor="emp-vacancy">{t('Puesto')} <span className="text-error">*</span></label>
       <CustomSelect
         id="emp-vacancy"
         value={selectedVacancyIndex.toString()}
         customTrigger={
           <span className="employee-modal__vacancy-value" title={vacancySelectOptions[selectedVacancyIndex]?.label}>
-            {vacancySelectOptions[selectedVacancyIndex]?.label ?? "Seleccione puesto…"}
+            {vacancySelectOptions[selectedVacancyIndex]?.label ?? t("Seleccione puesto…")}
           </span>
         }
         triggerAppearance="control"
@@ -519,18 +523,18 @@ export function EmployeeModal({
     <>
       <>
         <div className="form-group">
-          <label htmlFor="emp-vac-categoria">Categoría</label>
+          <label htmlFor="emp-vac-categoria">{t('Categoría')}</label>
           <CustomSelect
             id="emp-vac-categoria"
             value={form.categoria}
             onChange={(val) => setForm({ ...form, categoria: val })}
             options={CATEGORIAS.map((c) => ({ value: c, label: c }))}
-            placeholder="N/A"
+            placeholder={t("N/A")}
             showPlaceholderOption={false}
           />
         </div>
         <div className="form-group">
-          <label htmlFor="emp-vac-turno">Turno <span className="text-error">*</span></label>
+          <label htmlFor="emp-vac-turno">{t('Turno')} <span className="text-error">*</span></label>
           <CustomSelect
             id="emp-vac-turno"
             value={form.turno}
@@ -543,9 +547,9 @@ export function EmployeeModal({
               { value: "2", label: "2" },
               { value: "3", label: "3" },
               { value: "4", label: "4" },
-              { value: "Mixto", label: "Mixto" },
+              { value: "Mixto", label: t("Mixto") },
             ]}
-            placeholder="Turno..."
+            placeholder={t("Turno...")}
             aria-invalid={touchedAdd.turno && !!errorsAdd.turno}
           />
           {touchedAdd.turno && errorsAdd.turno && <span className="form-error-text">{errorsAdd.turno}</span>}
@@ -553,7 +557,7 @@ export function EmployeeModal({
         {starliteField}
       </>
       <div className="form-group">
-        <label htmlFor="emp-vac-fecha">Fecha de Ingreso <span className="text-error">*</span></label>
+        <label htmlFor="emp-vac-fecha">{t('Fecha de Ingreso')} <span className="text-error">*</span></label>
         <input
           id="emp-vac-fecha"
           type="date"
@@ -572,7 +576,7 @@ export function EmployeeModal({
   const fieldsExtra = (
     <>
       <div className="form-group">
-        <label htmlFor="emp-reclutador">Reclutador <span className="text-error">*</span></label>
+        <label htmlFor="emp-reclutador">{t('Reclutador')} <span className="text-error">*</span></label>
         <CustomSelect
           id="emp-reclutador"
           value={form.reclutador}
@@ -580,7 +584,7 @@ export function EmployeeModal({
             setForm({ ...form, reclutador: val });
             setTouchedAdd(t => ({ ...t, reclutador: true }));
           }}
-          placeholder="Seleccionar..."
+          placeholder={t("Seleccionar...")}
           options={recruiterOptions(members, employee?.reclutador, true)}
           aria-invalid={touchedAdd.reclutador && !!errorsAdd.reclutador}
         />
@@ -600,18 +604,18 @@ export function EmployeeModal({
   ) : (
     <Trash2 size={20} className="color-error" aria-hidden="true" />
   );
-  const title = isAdd ? "Nuevo Empleado" : "Eliminar";
+  const title = isAdd ? t("Nuevo Empleado") : t("Eliminar");
   const deleteContent = (
     <div className="employee-modal__delete">
       <div className="delete-warning">
         <p className="delete-warning__title">
-          Esta acción no se puede deshacer.
+          {t('Esta acción no se puede deshacer.')}
         </p>
       </div>
 
       <div className="form-grid employee-modal__baja-grid">
         <div className="form-group">
-          <label htmlFor="baja-fecha">Fecha de Baja <span className="text-error">*</span></label>
+          <label htmlFor="baja-fecha">{t('Fecha de Baja')} <span className="text-error">*</span></label>
           <input
             id="baja-fecha"
             type="date"
@@ -625,7 +629,7 @@ export function EmployeeModal({
           {touchedDelete.fecha_baja && errorsDelete.fecha_baja && <span className="form-error-text">{errorsDelete.fecha_baja}</span>}
         </div>
         <div className="form-group">
-          <label htmlFor="baja-tipo">Tipo de Baja <span className="text-error">*</span></label>
+          <label htmlFor="baja-tipo">{t('Tipo de Baja')} <span className="text-error">*</span></label>
           <CustomSelect
             id="baja-tipo"
             value={bajaForm.tipo_baja}
@@ -634,24 +638,24 @@ export function EmployeeModal({
               setTouchedDelete(t => ({ ...t, tipo_baja: true }));
             }}
             options={[
-              { value: "Renuncia", label: "Renuncia" },
-              { value: "Ausentismo", label: "Ausentismo" },
+              { value: "Renuncia", label: t("Renuncia") },
+              { value: "Ausentismo", label: t("Ausentismo") },
               {
                 value: "Rescisión de Contrato",
-                label: "Rescisión de Contrato",
+                label: t("Rescisión de Contrato"),
               },
-              { value: "Termino de Contrato", label: "Termino de Contrato" },
-              { value: "Solo Inducción", label: "Solo Inducción" },
+              { value: "Termino de Contrato", label: t("Termino de Contrato") },
+              { value: "Solo Inducción", label: t("Solo Inducción") },
             ]}
           />
           {touchedDelete.tipo_baja && errorsDelete.tipo_baja && <span className="form-error-text">{errorsDelete.tipo_baja}</span>}
         </div>
         <div className="form-group form-group--span-2">
-          <label htmlFor="baja-motivo">Descripción <span className="text-error">*</span></label>
+          <label htmlFor="baja-motivo">{t('Descripción')} <span className="text-error">*</span></label>
           <input
             id="baja-motivo"
             type="text"
-            placeholder="Especifica el motivo..."
+            placeholder={t("Especifica el motivo...")}
             value={bajaForm.motivo_baja}
             onChange={(e) => {
               setBajaForm({ ...bajaForm, motivo_baja: e.target.value });
@@ -694,7 +698,7 @@ export function EmployeeModal({
                   className="color-warning"
                   style={{ flexShrink: 0, marginTop: "2px" }}
                 />
-                <span>No contará en KPIs ni Dashboard.</span>
+                <span>{t('No contará en KPIs ni Dashboard.')}</span>
               </span>
             }
           >
@@ -705,9 +709,9 @@ export function EmployeeModal({
                 isError={!!errorMsg}
                 errorText={errorMsg || undefined}
                 errorMessageId="employee-submit-error"
-                idleText="Guardar"
-                loadingText="Guardando..."
-                successText="¡Guardado!"
+                idleText={t("Guardar")}
+                loadingText={t("Guardando...")}
+                successText={t("¡Guardado!")}
                 idleIcon={SaveIconData}
                 className="btn-primary"
                 disabled={!isAddValid}
@@ -722,9 +726,9 @@ export function EmployeeModal({
             isError={!!errorMsg}
             errorText={errorMsg || undefined}
             errorMessageId="employee-submit-error"
-            idleText="Guardar"
-            loadingText="Guardando..."
-            successText="¡Guardado!"
+            idleText={t("Guardar")}
+            loadingText={t("Guardando...")}
+            successText={t("¡Guardado!")}
             idleIcon={SaveIconData}
             className="btn-primary"
             disabled={!isAddValid}
@@ -738,9 +742,9 @@ export function EmployeeModal({
           isError={!!errorMsg}
           errorText={errorMsg || undefined}
           errorMessageId="employee-submit-error"
-          idleText="Eliminar"
-          loadingText="Registrando baja..."
-          successText="¡Baja registrada!"
+          idleText={t("Eliminar")}
+          loadingText={t("Registrando baja...")}
+          successText={t("¡Baja registrada!")}
           idleIcon={Trash2IconData}
           className="btn-danger"
           disabled={!isDeleteValid}
@@ -765,13 +769,13 @@ export function EmployeeModal({
             onCancel={onClose}
             submitting={submitting}
             submitDisabled={!isAddValid}
-            submitLabel="Guardar"
-            submittingLabel="Guardando…"
+            submitLabel={t("Guardar")}
+            submittingLabel={t("Guardando…")}
             notice={errorNotice}
             steps={[
               {
                 id: "identidad",
-                title: "Identidad",
+                title: t("Identidad"),
                 isValid:
                   form.num_empleado.trim().length > 0 &&
                   form.nombre.trim().length > 0,
@@ -779,7 +783,7 @@ export function EmployeeModal({
               },
               {
                 id: "posicion",
-                title: "Posición",
+                title: t("Posición"),
                 isValid:
                   form.area.length > 0 &&
                   form.seccion.length > 0 &&

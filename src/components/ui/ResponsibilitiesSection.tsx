@@ -1,4 +1,5 @@
 import { ListRestart, Plus } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 import type { Activity } from "@/lib/types";
 import { Pagination } from "@/components/ui/Pagination";
 import { ResponsabilidadCard } from "@/components/ui/ResponsabilidadCard";
@@ -56,6 +57,19 @@ const RESPONSIBILITIES_COPY: AssignmentSectionCopy = {
   paginationLabel: "Paginación de responsabilidades",
 };
 
+const RESPONSIBILITIES_COPY_EN: AssignmentSectionCopy = {
+  ...RESPONSIBILITIES_COPY,
+  title: "Responsibilities",
+  singular: "responsibility",
+  plural: "responsibilities",
+  description: "Recurring work without evidence tracking.",
+  emptyTitle: "No responsibilities",
+  adminEmptyDescription: 'Create a "Responsibility" activity to assign it.',
+  assigneeEmptyDescription: "You have no assigned responsibilities yet.",
+  listLabel: "Responsibilities",
+  paginationLabel: "Responsibility pages",
+};
+
 interface ActivityWithAssignee extends Activity {
   asignado_a_profile?: {
     display_name?: string | null;
@@ -90,8 +104,10 @@ export function ResponsibilitiesSection({
   onEdit,
   onDelete,
   onViewReference,
-  copy = RESPONSIBILITIES_COPY,
+  copy: suppliedCopy,
 }: ResponsibilitiesSectionProps) {
+  const { language } = useLanguage();
+  const copy = suppliedCopy ?? (language === "en" ? RESPONSIBILITIES_COPY_EN : RESPONSIBILITIES_COPY);
   const countLabel = `${responsibilities.length} ${responsibilities.length === 1 ? copy.singular : copy.plural}`;
 
   return (
@@ -121,7 +137,7 @@ export function ResponsibilitiesSection({
         {isAdmin && (
           <button type="button" className="btn-primary btn-sm" onClick={onCreate}>
             <Plus size="var(--icon-size-sm)" aria-hidden="true" />
-            <span>Crear</span>
+            <span>{language === "en" ? "Create" : "Crear"}</span>
           </button>
         )}
       </header>

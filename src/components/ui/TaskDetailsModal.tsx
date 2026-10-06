@@ -1,4 +1,5 @@
 import { ClipboardClock, Trash2, FileUp } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Modal } from "./Modal";
 import { CustomSelect } from "./CustomSelect";
 import { AttachmentCard } from "./AttachmentCard";
@@ -35,11 +36,13 @@ export function TaskDetailsModal({
   onUploadProof,
   isUploadingProof,
 }: TaskDetailsModalProps) {
+  const { language } = useLanguage();
+  const en = language === "en";
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={activity?.titulo ?? "Detalles de Tarea"}
+      title={activity?.titulo ?? (en ? "Task details" : "Detalles de Tarea")}
       icon={<ClipboardClock size="var(--icon-size-md)" aria-hidden="true" />}
       size="sm"
     >
@@ -47,56 +50,56 @@ export function TaskDetailsModal({
         <div className="modal-body">
           <div className="activity-detail-grid">
             <div className="form-group">
-              <label htmlFor="detail-estado">Estado</label>
+              <label htmlFor="detail-estado">{en ? "Status" : "Estado"}</label>
               <CustomSelect
                 id="detail-estado"
                 value={activity.estado}
                 onChange={(val) => onStatusChange(val as ActivityStatus)}
                 disabled={isUpdatingStatus}
                 options={[
-                  { value: "pendiente", label: "Pendiente" },
-                  { value: "en_proceso", label: "En Proceso" },
-                  { value: "completada", label: "Completada" },
+                  { value: "pendiente", label: en ? "Pending" : "Pendiente" },
+                  { value: "en_proceso", label: en ? "In progress" : "En Proceso" },
+                  { value: "completada", label: en ? "Completed" : "Completada" },
                 ]}
               />
             </div>
 
             <div className="form-group">
-              <h3 className="form-label">Descripción</h3>
+              <h3 className="form-label">{en ? "Description" : "Descripción"}</h3>
               <div className="activity-desc-block">
-                {activity.descripcion || "Sin descripción detallada."}
+                {activity.descripcion || (en ? "No detailed description." : "Sin descripción detallada.")}
               </div>
             </div>
           </div>
 
           {activity.reference_image && (
             <div className="form-group">
-              <span className="form-label">Foto de Referencia</span>
+              <span className="form-label">{en ? "Reference photo" : "Foto de Referencia"}</span>
               <AttachmentCard
                 name={
                   activity.reference_image.split("/").pop()?.split("?")[0] ||
-                  "Imagen"
+                  (en ? "Image" : "Imagen")
                 }
-                metadata="Imagen adjunta"
+                metadata={en ? "Attached image" : "Imagen adjunta"}
                 imageSrc={activity.reference_image}
                 onPreview={() => onLightboxOpen(activity.reference_image!)}
-                previewLabel={`Ampliar referencia de ${activity.titulo}`}
+                previewLabel={`${en ? "Enlarge reference for" : "Ampliar referencia de"} ${activity.titulo}`}
               />
             </div>
           )}
 
           <hr className="activity-detail-divider" />
 
-          <h3 className="activity-proofs-heading">Evidencias / Pruebas</h3>
+          <h3 className="activity-proofs-heading">{en ? "Evidence" : "Evidencias / Pruebas"}</h3>
           <div className="proofs-layout">
             {proofs.length === 0 && !proofsLoading && (
               <p className="actividades-empty__subtitle">
-                No hay pruebas aún.
+                {en ? "No evidence yet." : "No hay pruebas aún."}
               </p>
             )}
             {proofsLoading && (
               <p className="actividades-empty__subtitle">
-                Cargando evidencias...
+                {en ? "Loading evidence..." : "Cargando evidencias..."}
               </p>
             )}
 
@@ -106,7 +109,7 @@ export function TaskDetailsModal({
                   key={proof.id}
                   name={proof.file_name}
                   metadata={
-                    isImage(proof.file_name) ? "Imagen adjunta" : "Documento"
+                    isImage(proof.file_name) ? (en ? "Attached image" : "Imagen adjunta") : (en ? "Document" : "Documento")
                   }
                   imageSrc={
                     isImage(proof.file_name) ? proof.file_url : undefined
@@ -119,13 +122,13 @@ export function TaskDetailsModal({
                       ? () => onLightboxOpen(proof.file_url)
                       : undefined
                   }
-                  previewLabel={`Abrir ${proof.file_name}`}
+                  previewLabel={`${en ? "Open" : "Abrir"} ${proof.file_name}`}
                   onRemove={
                     isAdmin
                       ? () => onDeleteProof(proof.id!, proof.file_url)
                       : undefined
                   }
-                  removeLabel={`Eliminar ${proof.file_name}`}
+                  removeLabel={`${en ? "Delete" : "Eliminar"} ${proof.file_name}`}
                   removeIcon={
                     <Trash2
                       size="var(--icon-size-sm)"
@@ -150,7 +153,7 @@ export function TaskDetailsModal({
                     aria-hidden="true"
                   />
                   <span className="file-upload-text">
-                    {isUploadingProof ? "Subiendo..." : "Añadir"}
+                    {isUploadingProof ? (en ? "Uploading..." : "Subiendo...") : (en ? "Add" : "Añadir")}
                   </span>
                 </div>
               </label>

@@ -11,6 +11,8 @@ import {
   SupabaseDataProvider,
   type SupabaseDataResource,
 } from "@/hooks/useSupabaseData";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getConfiguracionCopy } from "./configuracion-views/configuracion-translations";
 import "./Configuracion.css";
 
 export { FEATURES, FEATURE_GROUPS, type FeatureGroup } from "@/lib/configuracionNavigation";
@@ -34,16 +36,20 @@ const FEATURE_VIEWS: Record<FeatureId, ReactNode> = {
 };
 
 export function Configuracion() {
+  const { language } = useLanguage();
   const reduceMotion = useReducedMotion();
   const location = useLocation();
   const activeTab = getConfiguracionTab(location.pathname);
+  const featureTitle = activeTab === "analisis"
+    ? language === "en" ? "Analysis" : "Análisis"
+    : getConfiguracionCopy(language)[activeTab === "tabulador" ? "tabulator" : activeTab === "indicadores" ? "indicators" : activeTab === "rutas" ? "routes" : "formats"].title;
 
   return (
     <div className="config-layout">
       <main
         id="feature-content"
         className="config-main container"
-        aria-label={`Administración: ${FEATURES.find(({ id }) => id === activeTab)?.label}`}
+        aria-label={`${language === "en" ? "Administration" : "Administración"}: ${featureTitle}`}
         tabIndex={-1}
       >
         <AnimatePresence mode="wait" initial={false}>

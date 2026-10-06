@@ -1,5 +1,4 @@
-export const PLANTILLA_PATH = '/plantilla';
-export const EMPLEADOS_PATH = '/empleados';
+export const PLANTILLA_PATH = '/workforce';
 
 export function isPlantillaPath(pathname: string): boolean {
   return pathname === PLANTILLA_PATH;

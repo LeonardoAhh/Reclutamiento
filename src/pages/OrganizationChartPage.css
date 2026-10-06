@@ -5,6 +5,11 @@
   padding-block: var(--design-spacing-lg) var(--design-spacing-xxl);
 }
 
+.organization-chart-page__title-link {
+  color: inherit;
+  text-decoration: none;
+}
+
 .organization-chart-page__tree {
   display: grid;
   min-inline-size: 0;

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { FileImage, EllipsisVertical, PenLine, Trash2 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -24,6 +25,8 @@ export function CandidateRowActions({
   onDelete,
   onAccessCard,
 }: CandidateRowActionsProps) {
+  const { language } = useLanguage();
+  const en = language === 'en';
   const [open, setOpen] = useState(false);
 
   function run(event: Event, action: (c: Candidate) => void) {
@@ -38,7 +41,7 @@ export function CandidateRowActions({
         <DropdownMenuTrigger asChild>
           <button
             type="button"
-            aria-label={`Acciones de ${candidate.nombre}`}
+            aria-label={`${en ? 'Actions for' : 'Acciones de'} ${candidate.nombre}`}
             onClick={(e) => e.stopPropagation()}
             onPointerDown={(e) => e.stopPropagation()}
           >
@@ -52,7 +55,7 @@ export function CandidateRowActions({
               <DropdownMenuItem asChild onSelect={(event) => run(event, onAccessCard)}>
                 <button type="button">
                   <FileImage aria-hidden="true" />
-                  <span>Ver pase</span>
+                  <span>{en ? 'View pass' : 'Ver pase'}</span>
                 </button>
               </DropdownMenuItem>
             )}
@@ -60,7 +63,7 @@ export function CandidateRowActions({
             <DropdownMenuItem asChild onSelect={(event) => run(event, onEdit)}>
               <button type="button">
                 <PenLine aria-hidden="true" />
-                <span>Editar</span>
+                <span>{en ? 'Edit' : 'Editar'}</span>
               </button>
             </DropdownMenuItem>
           </DropdownMenuGroup>
@@ -76,7 +79,7 @@ export function CandidateRowActions({
                 >
                   <button type="button">
                     <Trash2 aria-hidden="true" />
-                    <span>Eliminar</span>
+                    <span>{en ? 'Delete' : 'Eliminar'}</span>
                   </button>
                 </DropdownMenuItem>
               </DropdownMenuGroup>

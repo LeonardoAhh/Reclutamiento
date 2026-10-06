@@ -4,6 +4,7 @@ import { useActivities } from "@/hooks/useActivities";
 import { usePositions } from "@/lib/positions";
 import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
 import { useAuth } from "@/hooks/useAuth";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { usePagination } from "@/hooks/usePagination";
 import { ActivitiesSection } from "@/components/ui/ActivitiesSection";
 import { ResponsibilitiesSection } from "@/components/ui/ResponsibilitiesSection";
@@ -37,6 +38,8 @@ function isImage(filename: string): boolean {
 }
 
 export function Actividades() {
+  const { language } = useLanguage();
+  const en = language === "en";
   const { members } = useTeamDirectory();
   const { profile } = useAuth();
 
@@ -153,13 +156,13 @@ export function Actividades() {
 
   const teamRecruiterOptions = useMemo(
     () => [
-      { value: "", label: "Todo el equipo" },
+      { value: "", label: en ? "Whole team" : "Todo el equipo" },
       ...reclutadores.map((reclutador) => ({
         value: reclutador.id,
         label: reclutador.username,
       })),
     ],
-    [reclutadores],
+    [reclutadores, en],
   );
 
   const { positions } = usePositions();
@@ -357,8 +360,8 @@ export function Actividades() {
 
     if (file.size > MAX_FILE_SIZE) {
       toast.error({
-        title: "Archivo demasiado grande",
-        description: `El límite es 10 MB. Tu archivo pesa ${(file.size / (1024 * 1024)).toFixed(1)} MB.`,
+        title: en ? "File too large" : "Archivo demasiado grande",
+        description: en ? `The limit is 10 MB. Your file is ${(file.size / (1024 * 1024)).toFixed(1)} MB.` : `El límite es 10 MB. Tu archivo pesa ${(file.size / (1024 * 1024)).toFixed(1)} MB.`,
       });
       e.target.value = "";
       return;
@@ -374,7 +377,7 @@ export function Actividades() {
   const handleDeleteProof = (proofId: string, url: string) => {
     setConfirmState({
       isOpen: true,
-      title: "Eliminar prueba",
+      title: en ? "Delete evidence" : "Eliminar prueba",
       isLoading: false,
       onConfirm: async () => {
         setConfirmState((state) => ({ ...state, isLoading: true }));
@@ -440,7 +443,7 @@ export function Actividades() {
     e?.stopPropagation();
     setConfirmState({
       isOpen: true,
-      title: "Eliminar actividad",
+      title: en ? "Delete activity" : "Eliminar actividad",
       isLoading: false,
       onConfirm: async () => {
         setConfirmState((state) => ({ ...state, isLoading: true }));
@@ -589,23 +592,23 @@ export function Actividades() {
     <BoneyardSkeleton
       name="actividades-page"
       loading={loading}
-      loadingLabel="Cargando actividades..."
+      loadingLabel={en ? "Loading activities..." : "Cargando actividades..."}
     >
       <main className="actividades-page container">
         <header className="page-header">
-          <h1 className="app-page-title">Actividades</h1>
+          <h1 className="app-page-title">{en ? "Activities" : "Actividades"}</h1>
         </header>
 
       <Tabs.Root className="actividades-tabs" defaultValue="vacancies">
-        <Tabs.List className="actividades-tabs__list" aria-label="Secciones de actividades">
+        <Tabs.List className="actividades-tabs__list" aria-label={en ? "Activity sections" : "Secciones de actividades"}>
           <Tabs.Trigger className="actividades-tabs__trigger" value="vacancies">
-            Vacantes
+            {en ? "Vacancies" : "Vacantes"}
           </Tabs.Trigger>
           <Tabs.Trigger className="actividades-tabs__trigger" value="responsibilities">
-            Responsabilidades
+            {en ? "Responsibilities" : "Responsabilidades"}
           </Tabs.Trigger>
           <Tabs.Trigger className="actividades-tabs__trigger" value="activities">
-            Actividades
+            {en ? "Activities" : "Actividades"}
           </Tabs.Trigger>
         </Tabs.List>
 
@@ -712,7 +715,7 @@ export function Actividades() {
         asignadoA={vacanteAsignadoA}
         onAsignadoAChange={setVacanteAsignadoA}
         recruitersOptions={[
-          { value: "", label: "Sin asignar" },
+          { value: "", label: en ? "Unassigned" : "Sin asignar" },
           ...reclutadores.map((reclutador) => ({
             value: reclutador.id,
             label: reclutador.username,
@@ -750,7 +753,7 @@ export function Actividades() {
         setAsignadoA={setEditAsignadoA}
         recruitersOptions={teamRecruiterOptions.some(option => option.value === selectedActivity?.asignado_a)
           ? teamRecruiterOptions : [...teamRecruiterOptions, { value: selectedActivity?.asignado_a ?? '',
-            label: `${members.find(member => member.profile_id === selectedActivity?.asignado_a)?.full_name ?? 'Asignación actual'} (inactivo)` }]}
+            label: `${members.find(member => member.profile_id === selectedActivity?.asignado_a)?.full_name ?? (en ? 'Current assignment' : 'Asignación actual')} (${en ? 'inactive' : 'inactivo'})` }]}
         descripcion={editDescripcion}
         setDescripcion={setEditDescripcion}
         referenceImagePreview={editReferenceImagePreview}
@@ -791,7 +794,7 @@ export function Actividades() {
         vacancyId={assignModalVacancy?.id}
         currentAssignee={assignModalVacancy?.asignado_a || ""}
         options={[
-          { value: "", label: "Sin asignar" },
+          { value: "", label: en ? "Unassigned" : "Sin asignar" },
           ...reclutadores.map((reclutador) => ({
             value: reclutador.id,
             label: reclutador.username,

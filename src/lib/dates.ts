@@ -174,7 +174,7 @@ export function endOfDayMxMs(input: string | null | undefined): number | null {
  * off-by-one clásico: `new Date('2026-05-15')` se interpreta como UTC
  * midnight, y al renderizar en TZ MX (UTC−6) caería el 14/05/26.
  */
-export function formatShortDate(iso: string | null | undefined): string {
+export function formatShortDate(iso: string | null | undefined, locale = 'es-MX'): string {
   if (!iso) return '—';
   const trimmed = String(iso).trim();
   if (!trimmed) return '—';
@@ -188,7 +188,7 @@ export function formatShortDate(iso: string | null | undefined): string {
     : new Date(trimmed);
 
   if (Number.isNaN(d.getTime())) return '—';
-  return d.toLocaleDateString('es-MX', {
+  return d.toLocaleDateString(locale, {
     day: '2-digit',
     month: '2-digit',
     year: '2-digit',
@@ -199,7 +199,7 @@ export function formatShortDate(iso: string | null | undefined): string {
 /**
  * Formato más legible para el usuario (`18 feb 2026`), en TZ MX.
  */
-export function formatReadableDate(iso: string | null | undefined): string {
+export function formatReadableDate(iso: string | null | undefined, locale = 'es-MX'): string {
   if (!iso) return '—';
   const trimmed = String(iso).trim();
   if (!trimmed) return '—';
@@ -210,7 +210,7 @@ export function formatReadableDate(iso: string | null | undefined): string {
     : new Date(trimmed);
 
   if (Number.isNaN(d.getTime())) return '—';
-  return d.toLocaleDateString('es-MX', {
+  return d.toLocaleDateString(locale, {
     day: 'numeric',
     month: 'short',
     year: 'numeric',
@@ -220,13 +220,13 @@ export function formatReadableDate(iso: string | null | undefined): string {
 
 
 /** Rango compacto para superficies estrechas; conserva ambos años si cambian. */
-export function formatCompactDateRange(startInput: string, endInput: string): string {
+export function formatCompactDateRange(startInput: string, endInput: string, locale = 'es-MX'): string {
   const start = parseDdMmYyyy(startInput);
   const end = parseDdMmYyyy(endInput);
   if (!start || !end) return '—';
-  if (start === end) return formatReadableDate(start);
+  if (start === end) return formatReadableDate(start, locale);
   if (start.slice(0, 7) === end.slice(0, 7)) {
-    return `${Number(start.slice(8))}–${formatReadableDate(end)}`;
+    return `${Number(start.slice(8))}–${formatReadableDate(end, locale)}`;
   }
   const first = formatShortDate(start);
   const last = formatShortDate(end);
@@ -242,6 +242,7 @@ export function formatCompactDateRange(startInput: string, endInput: string): st
 export function formatEmploymentTenure(
   hireDate: string | null | undefined,
   asOfDate: string = localTodayIso(),
+  locale = 'es-MX',
 ): string {
   const startIso = parseDdMmYyyy(hireDate);
   const endIso = parseDdMmYyyy(asOfDate);
@@ -260,13 +261,13 @@ export function formatEmploymentTenure(
   const parts: string[] = [];
 
   if (years > 0) {
-    parts.push(`${years} ${years === 1 ? 'año' : 'años'}`);
+    parts.push(`${years} ${locale === 'en-US' ? (years === 1 ? 'year' : 'years') : (years === 1 ? 'año' : 'años')}`);
   }
   if (months > 0) {
-    parts.push(`${months} ${months === 1 ? 'mes' : 'meses'}`);
+    parts.push(`${months} ${locale === 'en-US' ? (months === 1 ? 'month' : 'months') : (months === 1 ? 'mes' : 'meses')}`);
   }
 
-  return parts.length > 0 ? parts.join(' y ') : 'menos de un mes';
+  return parts.length > 0 ? parts.join(locale === 'en-US' ? ' and ' : ' y ') : (locale === 'en-US' ? 'less than a month' : 'menos de un mes');
 }
 
 /**
@@ -426,7 +427,10 @@ export function isInIsoWeek(
  *   "11-17 may"      -> Lun y Dom en el mismo mes.
  *   "30 abr - 6 may" -> cruza meses.
  */
-export function formatIsoWeekRange(range: IsoWeekRange): string {
+export function formatIsoWeekRange(
+  range: IsoWeekRange,
+  locale: string = 'es-MX',
+): string {
   const startMx = mxDateParts(range.start);
   
   // Ajustamos el final de la semana de visualización al Viernes (-2 días desde el Domingo original)
@@ -434,10 +438,10 @@ export function formatIsoWeekRange(range: IsoWeekRange): string {
   const endMx = mxDateParts(workWeekEnd);
   
   const startMonth = range.start
-    .toLocaleDateString('es-MX', { month: 'short', timeZone: TZ_MX })
+    .toLocaleDateString(locale, { month: 'short', timeZone: TZ_MX })
     .replace('.', '');
   const endMonth = workWeekEnd
-    .toLocaleDateString('es-MX', { month: 'short', timeZone: TZ_MX })
+    .toLocaleDateString(locale, { month: 'short', timeZone: TZ_MX })
     .replace('.', '');
     
   if (startMx.month === endMx.month) {
@@ -715,11 +719,11 @@ export function getNextWednesdayIso(dateIso: string): string {
  * timestamps de auditoría / historial (`created_at`, `updated_at`,
  * `changed_at`). Evita mostrar la hora en la zona del dispositivo.
  */
-export function formatDateTimeMx(iso: string | null | undefined): string {
+export function formatDateTimeMx(iso: string | null | undefined, locale = 'es-MX'): string {
   if (!iso) return '—';
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return '—';
-  return d.toLocaleString('es-MX', {
+  return d.toLocaleString(locale, {
     day: '2-digit',
     month: 'short',
     year: 'numeric',

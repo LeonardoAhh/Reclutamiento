@@ -17,6 +17,8 @@ import {
   UserRoundPlus,
 } from 'lucide-react';
 import { useIndicadoresStats } from '@/hooks/useIndicadoresStats';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { getConfiguracionCopy } from './configuracion-translations';
 
 interface IndicatorCardProps {
   icon: ReactNode;
@@ -48,6 +50,9 @@ function IndicatorCard({
 }
 
 export function IndicadoresView() {
+  const { language } = useLanguage();
+  const copy = getConfiguracionCopy(language).indicators;
+  const english = language === 'en';
   const [selectedMobileRecruiter, setSelectedMobileRecruiter] = useState<string | null>(null);
   const mobileDetailBackRef = useRef<HTMLButtonElement>(null);
   const recruiterButtonRefs = useRef(new Map<string, HTMLButtonElement>());
@@ -58,15 +63,17 @@ export function IndicadoresView() {
   });
 
   const { recruiters, tableData, kpi, historicalGoals, loading, error } = useIndicadoresStats(selectedMonth);
+  const displayRecruiter = (recruiter: string) =>
+    recruiter === 'Sin Reclutador' ? copy.unassignedRecruiter : recruiter;
 
   if (error) {
     return (
       <section className="indicadores-view config-page" aria-labelledby="indicadores-page-title">
         <h1 id="indicadores-page-title" className="config-page__title app-page-title">
-          Indicadores
+          {copy.title}
         </h1>
         <div className="config-empty" role="alert">
-          <p className="text-error type-body-md">{error}</p>
+          <p className="text-error type-body-md">{english ? copy.loadError : error}</p>
         </div>
       </section>
     );
@@ -105,28 +112,28 @@ export function IndicadoresView() {
     return selectedMonth.getMonth() === now.getMonth() && selectedMonth.getFullYear() === now.getFullYear();
   };
 
-  const monthLabel = new Intl.DateTimeFormat('es-MX', { month: 'long', year: 'numeric' }).format(selectedMonth);
+  const monthLabel = new Intl.DateTimeFormat(english ? 'en-US' : 'es-MX', { month: 'long', year: 'numeric' }).format(selectedMonth);
   const monthValue = `${selectedMonth.getFullYear()}-${String(selectedMonth.getMonth() + 1).padStart(2, '0')}`;
 
   return (
     <BoneyardSkeleton
       name="configuracion-indicadores"
       loading={loading}
-      loadingLabel="Cargando indicadores…"
+      loadingLabel={copy.loading}
     >
       <section className="indicadores-view config-page" aria-labelledby="indicadores-page-title">
       <header className="indicadores-page-header">
         <h1 id="indicadores-page-title" className="config-page__title app-page-title">
-          Indicadores
+          {copy.title}
         </h1>
 
-        <div className="indicadores-period" aria-label="Periodo de los indicadores">
+        <div className="indicadores-period" aria-label={copy.period}>
           <div className="indicadores-month-nav">
             <button
               type="button"
               className="step-nav-control"
               onClick={handlePrevMonth}
-              aria-label="Mostrar mes anterior"
+              aria-label={copy.previousMonth}
             >
               <ArrowLeft aria-hidden="true" />
             </button>
@@ -141,7 +148,7 @@ export function IndicadoresView() {
               className="step-nav-control"
               onClick={handleNextMonth}
               disabled={isCurrentMonth()}
-              aria-label="Mostrar mes siguiente"
+              aria-label={copy.nextMonth}
             >
               <ArrowRight aria-hidden="true" />
             </button>
@@ -154,18 +161,18 @@ export function IndicadoresView() {
         <section className="indicadores-section" aria-labelledby="indicadores-summary-title">
           <div className="indicadores-section__heading">
             <ChartNoAxesColumnIncreasing aria-hidden="true" />
-            <h2 id="indicadores-summary-title">Resumen mensual</h2>
+            <h2 id="indicadores-summary-title">{copy.summary}</h2>
           </div>
           <div className="indicadores-kpi-grid">
             <IndicatorCard
               icon={<UserRoundPlus />}
-              label="Total ingresos"
+              label={copy.totalIncome}
               value={<>
                 {kpi.totalIngresos}
               {kpi.prevMonthTotalIngresos > 0 && (
                 <span
                   className={`indicadores-kpi-trend ${kpi.totalIngresos >= kpi.prevMonthTotalIngresos ? 'text-success' : 'text-error'}`}
-                  aria-label={`${Math.abs(kpi.totalIngresos - kpi.prevMonthTotalIngresos)} ingresos ${kpi.totalIngresos >= kpi.prevMonthTotalIngresos ? 'más' : 'menos'} que el mes anterior`}
+                  aria-label={`${Math.abs(kpi.totalIngresos - kpi.prevMonthTotalIngresos)} ${copy.incomeCount} ${kpi.totalIngresos >= kpi.prevMonthTotalIngresos ? copy.more : copy.fewer} ${copy.thanPreviousMonth}`}
                 >
                   {kpi.totalIngresos >= kpi.prevMonthTotalIngresos
                     ? <TrendingUp aria-hidden="true" />
@@ -175,33 +182,33 @@ export function IndicadoresView() {
                 </span>
               )}
               </>}
-              description={`${tableData.length} semana${tableData.length === 1 ? '' : 's'} registrada${tableData.length === 1 ? '' : 's'}`}
+              description={`${tableData.length} ${tableData.length === 1 ? copy.weekRecorded : copy.weeksRecorded}`}
             />
             <IndicatorCard
               icon={<ChartNoAxesColumnIncreasing />}
-              label="Promedio semanal"
+              label={copy.weeklyAverage}
               value={kpi.promedio}
-              description="Ingresos por semana"
+              description={copy.incomePerWeek}
             />
             <IndicatorCard
               icon={<Trophy />}
-              label="Top reclutador"
+              label={copy.topRecruiter}
               value={kpi.topRecruiters.length > 1
-                ? kpi.topRecruiters.map((recruiter) => recruiter.name).join(' y ')
-                : kpi.topRecruiters[0]?.name ?? 'Sin datos'}
+                ? kpi.topRecruiters.map((recruiter) => displayRecruiter(recruiter.name)).join(english ? ' and ' : ' y ')
+                : kpi.topRecruiters[0] ? displayRecruiter(kpi.topRecruiters[0].name) : copy.noData}
               valueClassName="indicadores-kpi-value--name"
               description={kpi.topRecruiters.length > 1
-                ? `Empate con ${kpi.topRecruiters[0]?.total} ingresos cada una`
-                : `${kpi.topRecruiters[0]?.total ?? 0} ingresos`}
+                ? `${copy.tie} ${kpi.topRecruiters[0]?.total} ${copy.incomeEach}`
+                : `${kpi.topRecruiters[0]?.total ?? 0} ${copy.incomeCount}`}
             />
             <IndicatorCard
               icon={<Target />}
-              label="Meta mensual"
+              label={copy.monthlyGoal}
               value={<>
                 {kpi.reclutadoresEnMeta}
                 <span className="indicadores-kpi-total-suffix">/ {kpi.recruiterTotals.length}</span>
               </>}
-              description={`Reclutadores con al menos ${kpi.metaMensual} ingresos`}
+              description={`${copy.recruitersWithAtLeast} ${kpi.metaMensual} ${copy.incomeCount}`}
             />
           </div>
         </section>
@@ -212,7 +219,7 @@ export function IndicadoresView() {
         <section className="indicadores-section indicadores-historical-grid" aria-labelledby="indicadores-goals-title">
           <div className="indicadores-section__heading">
             <Award aria-hidden="true" />
-            <h2 id="indicadores-goals-title">Metas acumuladas</h2>
+            <h2 id="indicadores-goals-title">{copy.historicalGoals}</h2>
           </div>
           <div className="indicadores-historical-list">
             {historicalGoals.map(rec => (
@@ -222,7 +229,7 @@ export function IndicadoresView() {
                   <div className="trend-tooltip">
                     <div className="trend-tooltip__section">
                       <strong className="trend-tooltip__title trend-tooltip__title--success">
-                        Meses logrados ({rec.details.length}):
+                        {copy.achievedMonths} ({rec.details.length}):
                       </strong>
                       <ul className="trend-tooltip__list">
                         {rec.details.map(d => (
@@ -233,7 +240,7 @@ export function IndicadoresView() {
                       </ul>
                       {rec.details.length === 0 && (
                         <ul className="trend-tooltip__list">
-                          <li>Aún no ha logrado la meta.</li>
+                          <li>{copy.notAchievedGoal}</li>
                         </ul>
                       )}
                     </div>
@@ -243,11 +250,11 @@ export function IndicadoresView() {
                 <button
                   type="button"
                   className="indicadores-historical-card"
-                  aria-label={`${rec.name}: ${rec.monthsCompleted} ${rec.monthsCompleted === 1 ? 'mes con meta lograda' : 'meses con meta lograda'}`}
+                  aria-label={`${rec.name}: ${rec.monthsCompleted} ${rec.monthsCompleted === 1 ? copy.hasAchievedGoal : copy.haveAchievedGoal}`}
                 >
                   <Award aria-hidden="true" />
                   <span className="indicadores-historical-card__name">{rec.name}</span>
-                  <span className="indicadores-historical-card__value">{rec.monthsCompleted} {rec.monthsCompleted === 1 ? 'mes' : 'meses'}</span>
+                  <span className="indicadores-historical-card__value">{rec.monthsCompleted} {rec.monthsCompleted === 1 ? copy.month : copy.months}</span>
                 </button>
               </Tooltip>
             ))}
@@ -259,7 +266,7 @@ export function IndicadoresView() {
         <div className="config-empty" role="status">
           <ChartNoAxesColumnIncreasing className="config-empty__icon" aria-hidden="true" />
           <p className="config-empty__copy type-body-md">
-            No hay indicadores disponibles para este periodo.
+            {copy.noPeriodData}
           </p>
         </div>
       )}
@@ -270,19 +277,19 @@ export function IndicadoresView() {
         <div className="indicadores-table-header">
           <div className="indicadores-section__heading">
             <ChartNoAxesColumnIncreasing aria-hidden="true" />
-            <h2 id="indicadores-breakdown-title">Ingresos por reclutador</h2>
+            <h2 id="indicadores-breakdown-title">{copy.incomeByRecruiter}</h2>
           </div>
         </div>
         <div className="table-responsive indicadores-desktop-only">
-          <table className="indicadores-table" aria-label="Desglose de ingresos por reclutador y semana">
-            <caption className="sr-only">Desglose detallado de ingresos por reclutador y semana</caption>
+          <table className="indicadores-table" aria-label={copy.incomeBreakdown}>
+            <caption className="sr-only">{copy.detailedIncomeBreakdown}</caption>
             <thead>
               <tr>
-                <th scope="col" className="indicadores-table-sticky">Reclutador</th>
+                <th scope="col" className="indicadores-table-sticky">{copy.recruiter}</th>
                 {tableData.map(row => (
                   <th scope="col" key={row.date}>{row.date}</th>
                 ))}
-                <th scope="col" className="text-right">Total</th>
+                <th scope="col" className="text-right">{copy.total}</th>
               </tr>
             </thead>
             <tbody>
@@ -335,7 +342,7 @@ export function IndicadoresView() {
             {tableData.length > 0 && (
               <tfoot>
                 <tr>
-                  <th scope="row">Total por Semana</th>
+                  <th scope="row">{copy.totalByWeek}</th>
                   {tableData.map(row => {
                     let totalClass = "text-warning";
                     if (kpi?.metaSemanal !== null) {
@@ -384,12 +391,12 @@ export function IndicadoresView() {
                 ref={mobileDetailBackRef}
                 className="config-mobile-back"
                 onClick={handleBackToRecruiters}
-                aria-label="Volver a la lista de reclutadores"
+                aria-label={copy.backToRecruiters}
               />
               
               <div className="indicadores-mobile-detail__header">
                 <UserRound className="indicadores-recruiter-icon" aria-hidden="true" />
-                <h3 className="type-heading-md m-0">{selectedMobileRecruiter}</h3>
+                <h3 className="type-heading-md m-0">{displayRecruiter(selectedMobileRecruiter)}</h3>
               </div>
               
               <ul className="indicadores-mobile-detail__list">
@@ -410,7 +417,7 @@ export function IndicadoresView() {
                       <span className="type-body-sm text-ink font-bold">
                         {val ? (
                           <span className={valClass}>
-                            {val} ingresos
+                            {val} {copy.incomeCount}
                           </span>
                         ) : (
                           <span className="text-muted-soft">-</span>
@@ -422,14 +429,14 @@ export function IndicadoresView() {
               </ul>
               
               <div className="indicadores-mobile-detail__total">
-                <span className="type-body-sm font-bold">Total</span>
+                <span className="type-body-sm font-bold">{copy.total}</span>
                 <span className="type-heading-sm text-primary">
                   {kpi?.recruiterTotals[recruiters.indexOf(selectedMobileRecruiter)]?.total ?? 0}
                 </span>
               </div>
             </div>
           ) : (
-            <ul className="indicadores-mobile-list" aria-label="Lista de reclutadores">
+            <ul className="indicadores-mobile-list" aria-label={copy.recruiterList}>
               {recruiters.map((recruiter, index) => (
                 <li key={recruiter}>
                   <button
@@ -443,11 +450,11 @@ export function IndicadoresView() {
                   >
                     <div className="indicadores-mobile-list__info">
                       <UserRound className="indicadores-recruiter-icon" aria-hidden="true" />
-                      <span className="type-body-sm font-medium text-ink">{recruiter}</span>
+                      <span className="type-body-sm font-medium text-ink">{displayRecruiter(recruiter)}</span>
                     </div>
                     <div className="indicadores-mobile-list__right">
                       <span className="type-caption-sm text-muted">
-                        {kpi?.recruiterTotals[index]?.total ?? 0} ingresos
+                        {kpi?.recruiterTotals[index]?.total ?? 0} {copy.incomeCount}
                       </span>
                       <ArrowRight className="text-muted-soft" aria-hidden="true" />
                     </div>
@@ -465,21 +472,21 @@ export function IndicadoresView() {
         <section className="indicadores-section" aria-labelledby="indicadores-retention-title">
           <div className="indicadores-section__heading">
             <UserRoundMinus aria-hidden="true" />
-            <h2 id="indicadores-retention-title">Retención y efectividad</h2>
+            <h2 id="indicadores-retention-title">{copy.retention}</h2>
           </div>
           <div className="indicadores-kpi-grid indicadores-kpi-grid--compact">
             <IndicatorCard
               icon={<UserRoundMinus />}
-              label="Total bajas"
+              label={copy.totalLeavers}
               value={kpi.totalBajasMes}
               valueClassName="text-error"
-              description="Personal inactivo"
+              description={copy.inactiveStaff}
             />
             <IndicatorCard
               icon={<Timer />}
-              label="Promedio permanencia"
+              label={copy.averageTenure}
               value={kpi.promedioPermanenciaGlobal}
-              description="Días antes de baja"
+              description={copy.daysBeforeLeaving}
             />
           </div>
 
@@ -487,19 +494,19 @@ export function IndicadoresView() {
             <div className="indicadores-table-header">
               <div className="indicadores-section__heading">
                 <Target aria-hidden="true" />
-                <h3>Desempeño por reclutador</h3>
+                <h3>{copy.performanceByRecruiter}</h3>
               </div>
             </div>
             <div className="table-responsive indicadores-desktop-only">
-              <table className="indicadores-table" aria-label="Efectividad por reclutador">
-                <caption className="sr-only">Resumen de retención por reclutador</caption>
+              <table className="indicadores-table" aria-label={copy.recruiterEffectiveness}>
+                <caption className="sr-only">{copy.retentionSummary}</caption>
                 <thead>
                   <tr>
-                    <th scope="col" className="indicadores-table-sticky">Reclutador</th>
-                    <th scope="col" className="text-right">Ingresos</th>
-                    <th scope="col" className="text-right">Bajas</th>
-                    <th scope="col" className="text-right">Retención (%)</th>
-                    <th scope="col" className="text-right">Prom. Días</th>
+                    <th scope="col" className="indicadores-table-sticky">{copy.recruiter}</th>
+                    <th scope="col" className="text-right">{copy.hires}</th>
+                    <th scope="col" className="text-right">{copy.leavers}</th>
+                    <th scope="col" className="text-right">{copy.retentionPercent}</th>
+                    <th scope="col" className="text-right">{copy.averageDays}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -517,7 +524,7 @@ export function IndicadoresView() {
                       <tr key={`retention-${recruiter}`}>
                         <th scope="row" className="indicadores-table-row-header">
                           <UserRound className="indicadores-recruiter-icon" aria-hidden="true" />
-                          {recruiter}
+                          {displayRecruiter(recruiter)}
                         </th>
                         <td className="text-right font-medium">{stats.totalIngresos}</td>
                         <td className="text-right font-bold text-error">{stats.totalBajas > 0 ? stats.totalBajas : '-'}</td>
@@ -536,7 +543,7 @@ export function IndicadoresView() {
             
             {/* ── Mobile View for Retention ── */}
             <div className="indicadores-mobile-only">
-              <ul className="indicadores-mobile-list" aria-label="Retención por reclutador">
+              <ul className="indicadores-mobile-list" aria-label={english ? "Retention by recruiter" : "Retención por reclutador"}>
                 {recruiters.map((recruiter) => {
                   const stats = kpi.recruiterStats[recruiter];
                   if (!stats) return null;
@@ -553,8 +560,8 @@ export function IndicadoresView() {
                         <div className="indicadores-mobile-list__info">
                           <UserRound className="indicadores-recruiter-icon" aria-hidden="true" />
                           <div className="indicadores-mobile-list__text">
-                            <span className="type-body-sm font-medium text-ink">{recruiter}</span>
-                            <span className="type-caption-sm text-muted">Ingresos: {stats.totalIngresos} &nbsp;|&nbsp; Bajas: <span className="text-error font-medium">{stats.totalBajas}</span></span>
+                            <span className="type-body-sm font-medium text-ink">{displayRecruiter(recruiter)}</span>
+                            <span className="type-caption-sm text-muted">{copy.hires}: {stats.totalIngresos} &nbsp;|&nbsp; {copy.leavers}: <span className="text-error font-medium">{stats.totalBajas}</span></span>
                           </div>
                         </div>
                         <div className="indicadores-mobile-list__right">
@@ -562,7 +569,7 @@ export function IndicadoresView() {
                             {retention}%
                           </span>
                           <span className="type-caption-sm text-muted">
-                            Prom. {avgDays}d
+                            {copy.averageShort} {avgDays}{copy.daysShort}
                           </span>
                         </div>
                       </div>
@@ -578,7 +585,7 @@ export function IndicadoresView() {
               <div className="indicadores-table-header">
                 <div className="indicadores-section__heading">
                   <UserRoundMinus aria-hidden="true" />
-                  <h3>Detalle de personal inactivo</h3>
+                  <h3>{copy.inactiveStaffDetails}</h3>
                 </div>
               </div>
               <div className="indicadores-bajas-grid">
@@ -588,7 +595,7 @@ export function IndicadoresView() {
                   
                   return (
                     <div key={`bajas-col-${recruiter}`} className="indicadores-bajas-col">
-                      <h4 className="indicadores-bajas-header type-body-sm font-bold uppercase">{recruiter}</h4>
+                      <h4 className="indicadores-bajas-header type-body-sm font-bold uppercase">{displayRecruiter(recruiter)}</h4>
                       <ul className="indicadores-bajas-list">
                         {bajasOfRecruiter.map((baja, i) => {
                           const TARGET_RETENTION_DAYS = 90;
@@ -612,16 +619,16 @@ export function IndicadoresView() {
                               </div>
                               <div className="indicadores-bajas-item-details">
                                   <span className="type-caption-sm text-muted">
-                                    <strong>Ingreso:</strong> {baja.fechaIngreso}
+                                    <strong>{copy.hireDate}</strong> {baja.fechaIngreso}
                                   </span>
                                   <span className="type-caption-sm text-muted">
-                                    <strong>Baja:</strong> {baja.fechaBaja} ({baja.dias} días)
+                                    <strong>{copy.leavingDate}</strong> {baja.fechaBaja} ({baja.dias} {english ? 'days' : 'días'})
                                   </span>
                                   <span 
                                     className={`type-caption-sm font-medium ${efficiencyClass}`}
-                                    aria-label={`Eficiencia de contratación: ${efficiency} por ciento`}
+                                    aria-label={`${copy.hiringEfficiency}: ${efficiency} percent`}
                                   >
-                                    <strong>Eficiencia:</strong> {efficiency}%
+                                    <strong>{copy.efficiency}</strong> {efficiency}%
                                   </span>
                               </div>
                             </li>

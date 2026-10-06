@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useLanguage } from '@/contexts/LanguageContext';
 import type { ReactNode } from "react";
 import { Image as ImageIcon, LoaderCircle } from "lucide";
 import { Modal } from "./Modal";
@@ -22,12 +23,14 @@ export function LightboxModal({
   onClose,
   src,
   size = "lg",
-  title = "Referencia visual",
-  alt = "Referencia visual ampliada",
+  title,
+  alt,
   children,
   loading = false,
   onImageError,
 }: LightboxModalProps) {
+  const { language } = useLanguage();
+  const en = language === 'en';
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
   const [loadedSrc, setLoadedSrc] = useState<string | null>(null);
 
@@ -46,7 +49,7 @@ export function LightboxModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={title}
+      title={title ?? (en ? 'Visual reference' : 'Referencia visual')}
       size={size}
     >
       <div className="modal-body lightbox-modal__body">
@@ -59,11 +62,11 @@ export function LightboxModal({
                 className={showLoading ? "lightbox-modal__spinner" : undefined}
               />
             </span>
-            {showLoading && <span className="sr-only" role="status">Cargando imagen…</span>}
+            {showLoading && <span className="sr-only" role="status">{en ? 'Loading image…' : 'Cargando imagen…'}</span>}
             {src && !imageFailed && (
               <img
                 src={src}
-                alt={alt}
+                alt={alt ?? (en ? 'Enlarged visual reference' : 'Referencia visual ampliada')}
                 className="lightbox-modal__image"
                 data-loaded={imageReady}
                 onLoad={() => setLoadedSrc(src)}
@@ -75,7 +78,7 @@ export function LightboxModal({
             )}
           </div>
         ) : children ?? (imageFailed && (
-          <p className="lightbox-modal__message" role="alert">No se pudo mostrar la imagen.</p>
+          <p className="lightbox-modal__message" role="alert">{en ? 'Could not display the image.' : 'No se pudo mostrar la imagen.'}</p>
         ))}
       </div>
     </Modal>

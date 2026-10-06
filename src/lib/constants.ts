@@ -746,6 +746,24 @@ export const SYSTEM_UPDATE_BANNER_CONFIG = {
   offlineReadyHint: "Los datos y cambios requieren internet.",
 } as const;
 
+export const SYSTEM_UPDATE_BANNER_ENGLISH = {
+  availableTitle: "Update available",
+  availableHint: "Save your work before updating.",
+  actionLabel: "Update",
+  deferLabel: "Later",
+  preparingLabel: "Preparing…",
+  errorHint: "Could not update. Try again.",
+  retryLabel: "Retry",
+  registrationErrorTitle: "No updates found",
+  registrationErrorHint: "The app is working, but updates could not be checked.",
+  appliedTitle: "Update applied",
+  offlineTitle: "You're offline",
+  offlineHint: "Some features require an internet connection.",
+  onlineTitle: "You're back online",
+  offlineReadyTitle: "App available offline",
+  offlineReadyHint: "Data and changes still require an internet connection.",
+} as const;
+
 export const TOAST_CONFIG = {
   maxVisible: 3,
   defaultDurationMs: 4000,

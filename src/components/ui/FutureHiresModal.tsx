@@ -6,6 +6,8 @@ import { Modal } from './Modal';
 import { StarliteBadge } from './Badge';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import type { Employee } from '@/lib/types';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { workforceText } from '@/pages/workforce-translations';
 import { formatReadableDate, formatShortDate } from '@/lib/dates';
 import { toast } from '@/lib/notify';
 import { toNaturalCase } from '@/lib/utils';
@@ -30,7 +32,9 @@ interface FutureHireReportRow {
   count: number;
 }
 
-function buildFutureHiresMessage(futureHires: Employee[]): string {
+function buildFutureHiresMessage(futureHires: Employee[], language: 'es' | 'en'): string {
+  const t = (text: string) => workforceText(language, text);
+  const locale = language === 'en' ? 'en-US' : 'es-MX';
   const sectionMap = new Map<string, Map<string, FutureHireReportRow>>();
   const orderedHires = [...futureHires].sort((left, right) => {
     const dateComparison = left.fecha_ingreso.localeCompare(right.fecha_ingreso, 'es');
@@ -38,19 +42,19 @@ function buildFutureHiresMessage(futureHires: Employee[]): string {
     return left.area.localeCompare(right.area, 'es');
   });
   const scheduledDates = Array.from(
-    new Set(orderedHires.map((employee) => formatReadableDate(employee.fecha_ingreso))),
+    new Set(orderedHires.map((employee) => formatReadableDate(employee.fecha_ingreso, locale))),
   );
   const hasMultipleDates = scheduledDates.length > 1;
 
   for (const employee of orderedHires) {
     const baseSectionTitle = employee.is_starlite
       ? 'Starlite'
-      : toNaturalCase(employee.area || 'Sin área');
-    const date = formatReadableDate(employee.fecha_ingreso);
+      : toNaturalCase(employee.area || t('Sin área'));
+    const date = formatReadableDate(employee.fecha_ingreso, locale);
     const sectionTitle = hasMultipleDates
       ? `${date} · ${baseSectionTitle}`
       : baseSectionTitle;
-    let position = formatWhatsAppLabel(employee.puesto || 'Sin puesto');
+    let position = formatWhatsAppLabel(employee.puesto || t('Sin puesto'));
     if (
       employee.is_starlite &&
       position.toLocaleLowerCase('es-MX').includes('operador de máquina')
@@ -86,11 +90,11 @@ function buildFutureHiresMessage(futureHires: Employee[]): string {
     }));
 
   return buildWhatsAppReport({
-    title: 'Próximos ingresos',
-    date: scheduledDates.length === 1 ? scheduledDates[0] : 'Fechas programadas',
+    title: t('Próximos ingresos'),
+    date: scheduledDates.length === 1 ? scheduledDates[0] : t('Fechas programadas'),
     total: futureHires.length,
     sections,
-    emptyMessage: 'Sin ingresos programados.',
+    emptyMessage: t('Sin ingresos programados.'),
   });
 }
 
@@ -99,6 +103,9 @@ export function FutureHiresModal({
   onClose,
   futureHires,
 }: FutureHiresModalProps) {
+  const { language } = useLanguage();
+  const t = (text: string) => workforceText(language, text);
+  const locale = language === 'en' ? 'en-US' : 'es-MX';
   const isMobile = useIsMobile();
   const [copied, setCopied] = useState(false);
 
@@ -111,8 +118,8 @@ export function FutureHiresModal({
   }, [futureHires]);
 
   const message = useMemo(
-    () => buildFutureHiresMessage(sortedFutureHires),
-    [sortedFutureHires],
+    () => buildFutureHiresMessage(sortedFutureHires, language),
+    [sortedFutureHires, language],
   );
 
   useEffect(() => {
@@ -130,7 +137,7 @@ export function FutureHiresModal({
       await copyTextToClipboard(message);
       setCopied(true);
     } catch {
-      toast.error({ title: 'No se pudo copiar el reporte' });
+      toast.error({ title: t('No se pudo copiar el reporte') });
     }
   };
 
@@ -145,7 +152,7 @@ export function FutureHiresModal({
                     <span className="future-hires-modal__mobile-apellidos">{e.puesto}</span>
                     {e.is_starlite && <StarliteBadge compact />}
                   </span>
-                  <span className="future-hires-modal__mobile-date">{formatShortDate(e.fecha_ingreso)}</span>
+                  <span className="future-hires-modal__mobile-date">{formatShortDate(e.fecha_ingreso, locale)}</span>
                 </div>
                 <div className="future-hires-modal__mobile-card-body">
                   <div className="future-hires-modal__mobile-seccion">
@@ -160,9 +167,9 @@ export function FutureHiresModal({
           <table className="future-hires-modal__table">
             <thead>
               <tr>
-                <th>Puesto</th>
-                <th>Sección</th>
-                <th>Fecha</th>
+                <th>{t('Puesto')}</th>
+                <th>{t('Sección')}</th>
+                <th>{t('Fecha')}</th>
               </tr>
             </thead>
             <tbody>
@@ -180,7 +187,7 @@ export function FutureHiresModal({
                     </div>
                   </td>
                   <td className="future-hires-modal__cell-mono">
-                    {formatShortDate(e.fecha_ingreso)}
+                    {formatShortDate(e.fecha_ingreso, locale)}
                   </td>
                 </tr>
               ))}
@@ -195,7 +202,7 @@ export function FutureHiresModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Próximos ingresos"
+      title={t("Próximos ingresos")}
       icon={<UsersRound size={20} />}
       size="md"
       footerActions={
@@ -211,7 +218,7 @@ export function FutureHiresModal({
             aria-atomic="true"
           >
             <MorphingIcon icon={copied ? Check : Copy} size={16} />
-            {copied ? 'Reporte copiado' : 'Copiar reporte'}
+            {t(copied ? 'Reporte copiado' : 'Copiar reporte')}
           </span>
         </button>
       }
@@ -223,7 +230,7 @@ export function FutureHiresModal({
           </>
         ) : (
           <div className="future-hires-modal__empty">
-            No hay ingresos programados.
+            {t('No hay ingresos programados.')}
           </div>
         )}
       </div>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { CircleCheckBig, Copy, TrendingUp, UsersRound, Plus, Minus } from 'lucide-react';
 import { toast } from '@/lib/notify';
 import { Modal } from '@/components/ui/Modal';
@@ -67,6 +68,9 @@ export function RecruiterStatsModal({
   individualStats,
   recruiterName,
 }: RecruiterStatsModalProps) {
+  const { language } = useLanguage();
+  const en = language === 'en';
+  const dateLocale = en ? 'en-US' : 'es-MX';
   const isMobile = useIsMobile();
   const [copiedKey, setCopiedKey] = useState<number | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);  useEffect(() => {
@@ -77,10 +81,10 @@ export function RecruiterStatsModal({
   }, [isOpen]);
   const title =
     mode === 'global'
-      ? 'Resumen de Reclutadores'
+      ? (en ? 'Recruiter summary' : 'Resumen de Reclutadores')
       : mode === 'pauta'
-        ? 'Detalle Pauta'
-        : mode === 'recruiter' ? `Detalle ${recruiterName}` : '';
+        ? (en ? 'Campaign details' : 'Detalle Pauta')
+        : mode === 'recruiter' ? `${en ? 'Details for' : 'Detalle'} ${recruiterName}` : '';
 
   const stats =
     mode === 'pauta'
@@ -107,14 +111,14 @@ export function RecruiterStatsModal({
       }
       setCopiedKey(key);
       toast.success({
-        title: `Sem ${weekNum} copiada`,
+        title: en ? `Week ${weekNum} copied` : `Sem ${weekNum} copiada`,
         duration: 2000,
       });
       window.setTimeout(() => {
         setCopiedKey((curr) => (curr === key ? null : curr));
       }, 2000);
     } catch {
-      toast.error({ title: 'No se pudo copiar al portapapeles' });
+      toast.error({ title: en ? 'Could not copy to clipboard' : 'No se pudo copiar al portapapeles' });
     }
   };
 
@@ -128,12 +132,12 @@ export function RecruiterStatsModal({
           {showHeader && (
             <thead>
               <tr>
-                <th>Semana</th>
-                <th className="recruiter-stats-modal__table-number">Candidatos</th>
-                <th className="recruiter-stats-modal__table-number">Contratados</th>
-                <th className="recruiter-stats-modal__table-number">Efectividad</th>
+                <th>{en ? 'Week' : 'Semana'}</th>
+                <th className="recruiter-stats-modal__table-number">{en ? 'Candidates' : 'Candidatos'}</th>
+                <th className="recruiter-stats-modal__table-number">{en ? 'Hired' : 'Contratados'}</th>
+                <th className="recruiter-stats-modal__table-number">{en ? 'Effectiveness' : 'Efectividad'}</th>
                 <th className="recruiter-stats-modal__table-copy-col">
-                  <span className="recruiter-stats-modal__sr-only">Copiar</span>
+                  <span className="recruiter-stats-modal__sr-only">{en ? 'Copy' : 'Copiar'}</span>
                 </th>
               </tr>
             </thead>
@@ -141,7 +145,7 @@ export function RecruiterStatsModal({
           <tbody>
           {displayedWeeks.map((stat) => {
             const tueWeek = isoWeekOf(stat.endTue).week;
-            const fmt = new Intl.DateTimeFormat('es-MX', {
+            const fmt = new Intl.DateTimeFormat(dateLocale, {
               day: 'numeric',
               month: 'short',
             });
@@ -158,7 +162,7 @@ export function RecruiterStatsModal({
             return (
               <tr key={key}>
                 <td className="recruiter-stats-modal__table-week">
-                  <span className="recruiter-stats-modal__table-week-label">Semana {tueWeek}</span>
+                  <span className="recruiter-stats-modal__table-week-label">{en ? 'Week' : 'Semana'} {tueWeek}</span>
                   <span className="recruiter-stats-modal__table-period">{wedStr} – {tueStr}</span>
                 </td>
                 <td className="recruiter-stats-modal__table-number">{stat.total}</td>
@@ -169,12 +173,12 @@ export function RecruiterStatsModal({
                   {effectiveness}%
                 </td>
                 <td className="recruiter-stats-modal__table-copy-col">
-                  <Tooltip content="Copiar semana">
+                  <Tooltip content={en ? 'Copy week' : 'Copiar semana'}>
                     <button
                       type="button"
                       onClick={() => handleCopyRow(stat, tueWeek)}
                       className={`recruiter-stats-modal__copy-btn${isCopied ? ' is-copied' : ''}`}
-                      aria-label={`Copiar Semana ${tueWeek}`}
+                      aria-label={`${en ? 'Copy Week' : 'Copiar Semana'} ${tueWeek}`}
                     >
                       {isCopied ? (
                         <CircleCheckBig size={16} aria-hidden="true" />
@@ -195,7 +199,7 @@ export function RecruiterStatsModal({
             onClick={() => setIsExpanded(!isExpanded)}
             icon={isExpanded ? <Minus size={16} aria-hidden="true" /> : <Plus size={16} aria-hidden="true" />}
           >
-            {isExpanded ? "Ver menos" : "Ver más"}
+            {isExpanded ? (en ? 'Show less' : 'Ver menos') : (en ? 'Show more' : 'Ver más')}
           </ButtonUtility>
         </div>
       )}
@@ -238,10 +242,10 @@ export function RecruiterStatsModal({
                       </h3>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)' }}>
                         <span className="recruiter-stats-modal__card-total">
-                          {r.total} candidato{r.total === 1 ? '' : 's'}
+                          {r.total} {en ? (r.total === 1 ? 'candidate' : 'candidates') : `candidato${r.total === 1 ? '' : 's'}`}
                         </span>
                         <span className="recruiter-stats-modal__card-efectividad">
-                          {efectividadAsistencia}% Efectividad
+                          {efectividadAsistencia}% {en ? 'Effectiveness' : 'Efectividad'}
                         </span>
                       </div>
                     </div>
@@ -250,24 +254,24 @@ export function RecruiterStatsModal({
                   <div className="recruiter-stats-modal__card-stats">
                     <div className="recruiter-stats-modal__stat recruiter-stats-modal__stat--citados">
                       <span className="recruiter-stats-modal__stat-value">{pct(r.citados)}%</span>
-                      <span className="recruiter-stats-modal__stat-label">Citados</span>
+                      <span className="recruiter-stats-modal__stat-label">{en ? 'Scheduled' : 'Citados'}</span>
                       <span className="recruiter-stats-modal__stat-count">({r.citados})</span>
                     </div>
                     <div className="recruiter-stats-modal__stat recruiter-stats-modal__stat--contratados">
                       <span className="recruiter-stats-modal__stat-value">{pct(r.contratados)}%</span>
-                      <span className="recruiter-stats-modal__stat-label">Contratados</span>
+                      <span className="recruiter-stats-modal__stat-label">{en ? 'Hired' : 'Contratados'}</span>
                       <span className="recruiter-stats-modal__stat-count">({r.contratados})</span>
                     </div>
                     {!isMobile && (
                       <>
                         <div className="recruiter-stats-modal__stat recruiter-stats-modal__stat--rechazados">
                           <span className="recruiter-stats-modal__stat-value">{pct(r.rechazados)}%</span>
-                          <span className="recruiter-stats-modal__stat-label">Rechazados</span>
+                          <span className="recruiter-stats-modal__stat-label">{en ? 'Rejected' : 'Rechazados'}</span>
                           <span className="recruiter-stats-modal__stat-count">({r.rechazados})</span>
                         </div>
                         <div className="recruiter-stats-modal__stat recruiter-stats-modal__stat--no-asistio">
                           <span className="recruiter-stats-modal__stat-value">{pct(r.no_asistio)}%</span>
-                          <span className="recruiter-stats-modal__stat-label">No Asistió</span>
+                          <span className="recruiter-stats-modal__stat-label">{en ? 'Did not attend' : 'No Asistió'}</span>
                           <span className="recruiter-stats-modal__stat-count">({r.no_asistio})</span>
                         </div>
                       </>
@@ -305,10 +309,10 @@ export function RecruiterStatsModal({
           <div className="recruiter-stats-modal__weeks">
             {isMobile ? (
               (() => {
-                if (stats.length === 0) return <p>No hay datos.</p>;
+                if (stats.length === 0) return <p>{en ? 'No data.' : 'No hay datos.'}</p>;
                 const stat = stats[0];
                 const tueWeek = isoWeekOf(stat.endTue).week;
-                const fmt = new Intl.DateTimeFormat('es-MX', {
+                const fmt = new Intl.DateTimeFormat(dateLocale, {
                   day: 'numeric',
                   month: 'short',
                 });
@@ -325,7 +329,7 @@ export function RecruiterStatsModal({
                 return (
                   <div className="recruiter-stats-modal__mobile-current-week">
                     <p style={{ textAlign: "center", color: "var(--color-muted)", marginBottom: "var(--spacing-md)" }}>
-                      Semana actual (Sem {tueWeek})<br/>
+                      {en ? 'Current week' : 'Semana actual'} ({en ? 'Week' : 'Sem'} {tueWeek})<br/>
                       <span style={{ fontSize: "var(--type-body-sm-size)" }}>{wedStr} – {tueStr}</span>
                     </p>
                     <div
@@ -333,15 +337,15 @@ export function RecruiterStatsModal({
                     >
                       <div className="recruiter-stats-modal__stat recruiter-stats-modal__stat--citados">
                         <span className="recruiter-stats-modal__stat-value">{stat.total}</span>
-                        <span className="recruiter-stats-modal__stat-label">Candidatos</span>
+                        <span className="recruiter-stats-modal__stat-label">{en ? 'Candidates' : 'Candidatos'}</span>
                       </div>
                       <div className="recruiter-stats-modal__stat recruiter-stats-modal__stat--contratados">
                         <span className="recruiter-stats-modal__stat-value">{stat.contratados}</span>
-                        <span className="recruiter-stats-modal__stat-label">Contratados</span>
+                        <span className="recruiter-stats-modal__stat-label">{en ? 'Hired' : 'Contratados'}</span>
                       </div>
                       <div className="recruiter-stats-modal__stat">
                         <span className="recruiter-stats-modal__stat-value">{effectiveness}%</span>
-                        <span className="recruiter-stats-modal__stat-label">Efectividad</span>
+                        <span className="recruiter-stats-modal__stat-label">{en ? 'Effectiveness' : 'Efectividad'}</span>
                       </div>
                     </div>
                     <ButtonUtility
@@ -349,7 +353,7 @@ export function RecruiterStatsModal({
                       style={{ width: "100%", justifyContent: "center" }}
                       icon={isCopied ? <CircleCheckBig size={16} aria-hidden="true" /> : <Copy size={16} aria-hidden="true" />}
                     >
-                      {isCopied ? "¡Copiado!" : "Copiar métricas de la semana"}
+                      {isCopied ? (en ? 'Copied!' : '¡Copiado!') : (en ? 'Copy weekly metrics' : 'Copiar métricas de la semana')}
                     </ButtonUtility>
                   </div>
                 );

@@ -3,6 +3,8 @@ import { CircleAlertIcon, CircleCheckBig, Star } from 'lucide-react';
 import { Modal } from './Modal';
 import { Tooltip } from './Tooltip';
 import type { PositionCoverage, VacancyRequest, Candidate } from '@/lib/types';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { workforceText } from '@/pages/workforce-translations';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { useDismissedPositions } from '@/hooks/useDismissedPositions';
 import './MissingPositionsModal.css';
@@ -110,6 +112,8 @@ export function MissingPositionsModal({
   coverage,
   vacancies,
 }: MissingPositionsModalProps) {
+  const { language } = useLanguage();
+  const t = (text: string) => workforceText(language, text);
   const { dismissedKeys, toggleDismiss } = useDismissedPositions();
   const isMobile = useIsMobile();
 
@@ -131,14 +135,14 @@ export function MissingPositionsModal({
       onClose={onClose}
       className="missing-positions-modal"
       icon={<CircleAlertIcon size={20} aria-hidden="true" />}
-      title="Vacantes Pendientes"
+      title={t("Vacantes Pendientes")}
       size="lg"
     >
       <div className="modal-body missing-positions-modal__body">
 
         {missingPositions.length === 0 ? (
           <p className="missing-positions-modal__empty">
-            Excelente, no hay puestos con falta de cobertura.
+            {t('Excelente, no hay puestos con falta de cobertura.')}
           </p>
         ) : (
           <section
@@ -151,33 +155,33 @@ export function MissingPositionsModal({
               className="missing-positions-modal__table-container"
               tabIndex={0}
               role="region"
-              aria-label="Tabla de puestos faltantes"
+              aria-label={t("Tabla de puestos faltantes")}
             >
               <table className="missing-positions-modal__table">
                 <thead>
                   <tr>
-                    <th scope="col">Puesto</th>
+                    <th scope="col">{t('Puesto')}</th>
                     <th
                       scope="col"
                       className="missing-positions-modal__num-col"
                     >
-                      <Tooltip content="En plantilla">
-                        <span>Plantilla</span>
+                      <Tooltip content={t("En plantilla")}>
+                        <span>{t('Plantilla')}</span>
                       </Tooltip>
                     </th>
                     <th
                       scope="col"
                       className="missing-positions-modal__num-col"
                     >
-                      <Tooltip content="En backup">
-                        <span>Backup</span>
+                      <Tooltip content={t("En backup")}>
+                        <span>{t('Backup')}</span>
                       </Tooltip>
                     </th>
                     <th
                       scope="col"
                       className="missing-positions-modal__num-col missing-positions-modal__starlite-col"
                     >
-                      <Tooltip content="Starlite">
+                      <Tooltip content={t("Starlite")}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                           <Star size={12} className="missing-positions-modal__starlite-icon" aria-hidden="true" style={{ marginRight: '2px' }} />
                           Starlite
@@ -201,7 +205,7 @@ export function MissingPositionsModal({
                         key={rowKey}
                         className={isDismissed ? 'is-dismissed' : ''}
                         onClick={() => toggleDismiss(rowKey)}
-                        title={isDismissed ? 'Click para incluir de nuevo en el conteo' : 'Click para excluir del conteo'}
+                        title={isDismissed ? t('Click para incluir de nuevo en el conteo') : t('Click para excluir del conteo')}
                         aria-pressed={isDismissed}
                       >
                         <td>
@@ -215,9 +219,9 @@ export function MissingPositionsModal({
                           </div>
                           {r.proximos > 0 && (
                             <div className="missing-positions-modal__prox-details">
-                              <Tooltip content="Cubiertas (ingreso futuro)">
+                              <Tooltip content={t("Cubiertas (ingreso futuro)")}>
                                 <span className="missing-positions-modal__puesto-note">
-                                  −{r.proximos} PRÓX. INGRESO{r.proximos === 1 ? '' : 'S'}
+                                  −{r.proximos} {t(r.proximos === 1 ? 'PRÓXIMO INGRESO' : 'PRÓXIMOS INGRESOS')}
                                 </span>
                               </Tooltip>
                               {(() => {
@@ -233,9 +237,9 @@ export function MissingPositionsModal({
                                     (
                                     {[
                                       starliteDisp > 0 ? `★ ${starliteDisp} Starlite` : null,
-                                      plantillaDisp > 0 ? `${plantillaDisp} Plantilla` : null,
-                                      backupDisp > 0 ? `${backupDisp} Backup` : null,
-                                      excedenteDisp > 0 ? `${excedenteDisp} Excedente` : null,
+                                      plantillaDisp > 0 ? `${plantillaDisp} ${t('Plantilla')}` : null,
+                                      backupDisp > 0 ? `${backupDisp} ${t('Backup')}` : null,
+                                      excedenteDisp > 0 ? `${excedenteDisp} ${t('Excedente')}` : null,
                                     ].filter(Boolean).join(', ')}
                                     )
                                   </span>
@@ -250,7 +254,7 @@ export function MissingPositionsModal({
                               {faltanPlantilla}
                             </span>
                           ) : (
-                            <span className="missing-positions-modal__count-empty" aria-label="Sin faltantes en plantilla">—</span>
+                            <span className="missing-positions-modal__count-empty" aria-label={t("Sin faltantes en plantilla")}>—</span>
                           )}
                         </td>
                         <td className="missing-positions-modal__num-col">
@@ -259,7 +263,7 @@ export function MissingPositionsModal({
                               {faltanBackup}
                             </span>
                           ) : (
-                            <span className="missing-positions-modal__count-empty" aria-label="Sin faltantes en backup">—</span>
+                            <span className="missing-positions-modal__count-empty" aria-label={t("Sin faltantes en backup")}>—</span>
                           )}
                         </td>
                         <td className="missing-positions-modal__num-col">
@@ -268,7 +272,7 @@ export function MissingPositionsModal({
                               {r.netStarlite}
                             </span>
                           ) : (
-                            <span className="missing-positions-modal__count-empty" aria-label="Sin faltantes en starlite">—</span>
+                            <span className="missing-positions-modal__count-empty" aria-label={t("Sin faltantes en starlite")}>—</span>
                           )}
                         </td>
                       </tr>

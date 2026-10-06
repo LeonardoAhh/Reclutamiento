@@ -1,6 +1,7 @@
 import { ChevronDown, Crown, UserRound } from 'lucide-react';
 import { Tooltip } from './Tooltip';
 import { useTeamDirectory } from '@/features/team/TeamProvider';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { findTeamMember, type TeamMember, type RecruiterRole } from '@/features/team/types';
 import './Badge.css';
 
@@ -70,6 +71,7 @@ export function ReclutadorBadge({
   showCaret = false,
   className = '',
 }: ReclutadorBadgeProps) {
+  const { language } = useLanguage();
   const { members } = useTeamDirectory();
   if (!nombre) return null;
 
@@ -112,7 +114,7 @@ export function ReclutadorBadge({
       )}
       <span className="reclutador-badge__name">{nombreFormateado}</span>
       {showRole && (
-        <span className="reclutador-badge__role-tag">{labelRol}</span>
+        <span className="reclutador-badge__role-tag">{language === 'en' ? (isCoordinador ? 'Coordinator' : 'Recruiter') : labelRol}</span>
       )}
       {showCaret && (
         <ChevronDown className="reclutador-badge__caret" aria-hidden="true" />

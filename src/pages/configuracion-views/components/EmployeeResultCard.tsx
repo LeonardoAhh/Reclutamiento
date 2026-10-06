@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronUp, IdCard } from 'lucide';
+import { useLanguage } from '@/contexts/LanguageContext';
 import type { ReporteDiarioRecord } from '@/hooks/useReporteDiario';
 import { addDaysToIso, formatReadableDate } from '@/lib/dates';
 import { toTitleCase } from '@/lib/utils';
@@ -12,6 +13,7 @@ import {
   type EmployeeSearchResult,
   type SearchViewMode,
 } from '../analisis-helpers';
+import { getConfiguracionCopy } from '../configuracion-translations';
 
 interface EmployeeResultCardProps {
   employee: EmployeeSearchResult;
@@ -36,9 +38,14 @@ export function EmployeeResultCard({
   onToggle,
   autoExpand = false,
 }: EmployeeResultCardProps) {
+  const { language } = useLanguage();
+  const copy = getConfiguracionCopy(language).analysis;
+  const localizeValue = (value: unknown) => (
+    String(value ?? '').trim() ? displayValue(value) : copy.noInformation
+  );
   const [isLaborInfoExpanded, setIsLaborInfoExpanded] = useState(autoExpand);
-  const employeeName = displayValue(employee.nombre);
-  const employeeNumber = displayValue(employee.num_empleado);
+  const employeeName = localizeValue(employee.nombre);
+  const employeeNumber = localizeValue(employee.num_empleado);
   const employeeTitleId = `employee-card-title-${resultId}`;
   const laborInfoId = `employee-labor-info-${resultId}`;
   const compactDetailsId = `compact-details-${resultId}`;
@@ -60,7 +67,7 @@ export function EmployeeResultCard({
     : [];
   const faltaBadge = isRiskFilter && faltaDates.length > 0 ? (
     <Badge variant="error-solid">
-      {faltaDates.length} {faltaDates.length === 1 ? 'Falta' : 'Faltas'}
+      {faltaDates.length} {faltaDates.length === 1 ? copy.absence : copy.absences}
     </Badge>
   ) : null;
 
@@ -76,7 +83,7 @@ export function EmployeeResultCard({
           type="button"
           className="config-card__card-toggle"
           onClick={onToggle}
-          aria-label={`${isExpanded ? 'Ocultar' : 'Mostrar'} detalles de ${employeeName}`}
+          aria-label={`${isExpanded ? copy.hide : copy.show} ${copy.detailsFor} ${employeeName}`}
           aria-expanded={isExpanded}
           aria-controls={`${compactDetailsId} ${calendarPanelId}`}
         />
@@ -89,11 +96,11 @@ export function EmployeeResultCard({
           id={employeeTitleId}
           className="config-card__employee-title type-body-sm-strong text-muted"
         >
-          No. {employeeNumber}
+          {copy.number} {employeeNumber}
         </h3>
         {(employee.isBaja || employee.is_starlite || faltaBadge !== null) && (
           <span className="config-card__header-badges">
-            {employee.isBaja && <Badge variant="error-solid">Baja</Badge>}
+            {employee.isBaja && <Badge variant="error-solid">{copy.leaver}</Badge>}
             {employee.is_starlite && <StarliteBadge />}
             {faltaBadge}
           </span>
@@ -112,7 +119,7 @@ export function EmployeeResultCard({
               id={`details-${resultId}`}
               className={`config-card__section-title type-caption-up text-muted${isCompactPreview ? ' sr-only' : ''}`}
             >
-              Información laboral
+              {copy.laborInformation}
             </h4>
             {!isCompact && (
               <button
@@ -126,38 +133,38 @@ export function EmployeeResultCard({
                   icon={isLaborInfoExpanded ? ChevronUp : ChevronDown}
                   aria-hidden="true"
                 />
-                {isLaborInfoExpanded ? 'Contraer' : 'Mostrar'}
+                {isLaborInfoExpanded ? copy.hide : copy.show}
               </button>
             )}
           </div>
           <dl className="config-card__properties config-card__identity-properties">
             <div className="notion-prop notion-prop--wide">
-              <dt className={identityLabelClassName}>Nombre</dt>
+              <dt className={identityLabelClassName}>{copy.employeeName}</dt>
               <dd className="notion-prop__value">
                 <span className="type-heading-sm text-ink">{employeeName}</span>
               </dd>
             </div>
             <div className="notion-prop">
-              <dt className={identityLabelClassName}>Puesto</dt>
-              <dd className={identityValueClassName}>{displayValue(employee.puesto)}</dd>
+              <dt className={identityLabelClassName}>{copy.position}</dt>
+              <dd className={identityValueClassName}>{localizeValue(employee.puesto)}</dd>
             </div>
             {!isCompactPreview && (
               <div className="notion-prop">
-                <dt className={identityLabelClassName}>Departamento</dt>
-                <dd className={identityValueClassName}>{displayValue(employee.area)}</dd>
+                <dt className={identityLabelClassName}>{copy.department}</dt>
+                <dd className={identityValueClassName}>{localizeValue(employee.area)}</dd>
               </div>
             )}
             {showDetails && (
               <>
                 <div className="notion-prop">
-                  <dt className={identityLabelClassName}>Estado</dt>
+                  <dt className={identityLabelClassName}>{copy.state}</dt>
                   <dd className={`${identityValueClassName} config-card__status`}>
-                    {employee.isBaja ? <Badge variant="error-solid">Baja</Badge> : 'Activo'}
+                    {employee.isBaja ? <Badge variant="error-solid">{copy.leaver}</Badge> : copy.activeStatus}
                   </dd>
                 </div>
                 <div className="notion-prop">
-                  <dt className={identityLabelClassName}>Reclutador</dt>
-                  <dd className={identityValueClassName}>{displayValue(employee.reclutador)}</dd>
+                  <dt className={identityLabelClassName}>{copy.recruiter}</dt>
+                  <dd className={identityValueClassName}>{localizeValue(employee.reclutador)}</dd>
                 </div>
               </>
             )}
@@ -171,53 +178,53 @@ export function EmployeeResultCard({
             >
               <div className="notion-prop">
                 <dt className="notion-prop__label type-body-sm text-muted">
-                  Sección
+                  {copy.section}
                 </dt>
                 <dd className="notion-prop__value type-body-sm-strong text-charcoal">
-                  {displayValue(employee.seccion)}
+                  {localizeValue(employee.seccion)}
                 </dd>
               </div>
               <div className="notion-prop">
                 <dt className="notion-prop__label type-body-sm text-muted">
-                  Fecha de ingreso
+                  {copy.hireDate}
                 </dt>
                 <dd className="notion-prop__value type-body-sm-strong text-charcoal">
-                  {toTitleCase(formatReadableDate(employee.fecha_ingreso))}
+                  {toTitleCase(formatReadableDate(employee.fecha_ingreso, language === 'en' ? 'en-US' : 'es-MX'))}
                 </dd>
               </div>
               {!employee.isBaja && (
                 <div className="notion-prop">
                   <dt className="notion-prop__label type-body-sm text-muted">
-                    Renov. contrato
+                    {copy.contractRenewal}
                   </dt>
                   <dd className="notion-prop__value type-body-sm-strong text-charcoal">
-                    {toTitleCase(formatReadableDate(renewalDate))}
+                    {toTitleCase(formatReadableDate(renewalDate, language === 'en' ? 'en-US' : 'es-MX'))}
                   </dd>
                 </div>
               )}
               {employee.isBaja && (
                 <div className="notion-prop">
-                  <dt className="notion-prop__label type-body-sm text-muted">Fecha de baja</dt>
+                  <dt className="notion-prop__label type-body-sm text-muted">{copy.departureDate}</dt>
                   <dd className="notion-prop__value type-body-sm-strong text-charcoal">
-                    {toTitleCase(formatReadableDate(employee.fecha_baja))}
+                    {toTitleCase(formatReadableDate(employee.fecha_baja, language === 'en' ? 'en-US' : 'es-MX'))}
                   </dd>
                 </div>
               )}
               {employee.isBaja && (
                 <div className="notion-prop">
-                  <dt className="notion-prop__label type-body-sm text-muted">Motivo de baja</dt>
+                  <dt className="notion-prop__label type-body-sm text-muted">{copy.departureReason}</dt>
                   <dd
                     className="notion-prop__value type-body-sm-strong text-charcoal"
                   >
-                    {displayValue(employee.motivo_baja)}
+                    {localizeValue(employee.motivo_baja)}
                   </dd>
                 </div>
               )}
               {!(employee.isBaja && !employee.turno) && (
                 <div className="notion-prop">
-                  <dt className="notion-prop__label type-body-sm text-muted">Turno</dt>
+                  <dt className="notion-prop__label type-body-sm text-muted">{copy.shift}</dt>
                   <dd className={`notion-prop__value type-body-sm-strong ${employee.turno ? 'text-charcoal' : 'text-muted'}`}>
-                    {employee.turno ? displayValue(employee.turno) : 'N/A'}
+                    {employee.turno ? displayValue(employee.turno) : copy.notApplicable}
                   </dd>
                 </div>
               )}

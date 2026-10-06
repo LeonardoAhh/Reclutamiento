@@ -7,6 +7,7 @@ import {
   Trash2,
 } from "lucide-react";
 import type { ElementType } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -65,12 +66,14 @@ export function ActivityCard({
   onDelete,
   onViewReference,
 }: ActivityCardProps) {
+  const { language } = useLanguage();
+  const en = language === "en";
   const Icon = STATUS_ICON[status];
   const normalizedDescription = description?.trim();
 
   return (
     <article className="card activity-card" role="listitem" data-status={status}>
-      {isNew && <span className="activity-card__new">Nueva</span>}
+      {isNew && <span className="activity-card__new">{en ? "New" : "Nueva"}</span>}
       <header className="activity-card__header">
         <div className="activity-card__icon">
           <Icon size="var(--icon-size-md)" aria-hidden="true" />
@@ -83,13 +86,13 @@ export function ActivityCard({
                 type="button"
                 className="activity-card__open"
                 onClick={onClick}
-                aria-label={`Consultar ${title}`}
+                aria-label={`${en ? "View" : "Consultar"} ${title}`}
               >
                 {title}
               </button>
             </h3>
             <span className="activity-card__status">
-              {STATUS_LABEL[status]}
+              {en ? ({ pendiente: "Pending", en_proceso: "In progress", completada: "Completed" })[status] : STATUS_LABEL[status]}
             </span>
           </div>
         </div>
@@ -101,7 +104,7 @@ export function ActivityCard({
                 <button
                   type="button"
                   className="activity-card__menu"
-                  aria-label={`Opciones de ${title}`}
+                  aria-label={`${en ? "Options for" : "Opciones de"} ${title}`}
                 >
                   <EllipsisVertical
                     size="var(--icon-size-sm)"
@@ -114,7 +117,7 @@ export function ActivityCard({
                   <DropdownMenuItem asChild onSelect={onEdit}>
                     <button type="button">
                       <SquarePen aria-hidden="true" />
-                      <span>Editar</span>
+                      <span>{en ? "Edit" : "Editar"}</span>
                     </button>
                   </DropdownMenuItem>
                 )}
@@ -128,7 +131,7 @@ export function ActivityCard({
                     >
                       <button type="button">
                         <Trash2 aria-hidden="true" />
-                        <span>Eliminar</span>
+                        <span>{en ? "Delete" : "Eliminar"}</span>
                       </button>
                     </DropdownMenuItem>
                   </>
@@ -142,7 +145,7 @@ export function ActivityCard({
       <p
         className={`activity-card__description${normalizedDescription ? "" : " activity-card__description--muted"}`}
       >
-        {normalizedDescription || "Sin descripción"}
+        {normalizedDescription || (en ? "No description" : "Sin descripción")}
       </p>
 
       <footer className="activity-card__footer">

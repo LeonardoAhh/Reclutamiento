@@ -1,30 +1,27 @@
 import { useEffect, useMemo, useState } from "react";
-import { ClipboardList } from "lucide-react";
-import { Check, Copy } from "lucide";
+import { Check, ClipboardList, Copy } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
-import { Modal } from "./Modal";
-import { MorphingIcon } from "./MorphingIcon";
-import { CustomSelect } from "./CustomSelect";
+import { Link } from "react-router-dom";
+import { CustomSelect } from "@/components/ui/CustomSelect";
 import { formatReadableDate } from "@/lib/dates";
-import { useIsMobile } from "@/hooks/useIsMobile";
 import { useDismissedPositions } from "@/hooks/useDismissedPositions";
 import { toast } from "@/lib/notify";
-import { toNaturalCase } from "@/lib/utils";
+import { calculatePositionCoverage, toNaturalCase } from "@/lib/utils";
 import {
   buildWhatsAppReportFromBlocks,
   copyTextToClipboard,
   formatWhatsAppLabel,
 } from "@/lib/whatsappReport";
+import { useSupabaseData } from "@/hooks/useSupabaseData";
+import { usePositions } from "@/lib/positions";
+import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
 import type { PositionCoverage } from "@/lib/types";
 import { useTeamDirectory } from '@/features/team/TeamProvider';
 import { recruiterOptions, findTeamMember, type TeamMember } from '@/features/team/types';
-import "./VacancyReportModal.css";
-
-interface VacancyReportModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  positions: PositionCoverage[];
-}
+import { useLanguage, type Language } from '@/contexts/LanguageContext';
+import { workforceText } from '@/pages/workforce-translations';
+import { PLANTILLA_PATH } from '@/lib/plantillaNavigation';
+import "./VacancyAssignmentsPage.css";
 
 interface VacancyRow {
   area: string;
@@ -209,6 +206,7 @@ function buildAssignedWhatsAppMessage(
   dismissedKeys: Set<string>,
   assignments: Record<string, string>,
   members: TeamMember[],
+  language: Language,
 ): string {
   const blocks: string[] = [];
   let totalPending = 0;
@@ -287,18 +285,18 @@ function buildAssignedWhatsAppMessage(
     if (totalVacantesAsignadas > 0) {
       while (recLines[recLines.length - 1] === "") recLines.pop();
       blocks.push(
-        `*${toNaturalCase(rec)}*\n${recLines.join("\n")}\n_Subtotal: ${totalVacantesAsignadas}_`,
+        `*${rec === 'Pendiente' ? workforceText(language, 'Pendiente') : toNaturalCase(rec)}*\n${recLines.join("\n")}\n_${workforceText(language, 'Subtotal')}: ${totalVacantesAsignadas}_`,
       );
       totalPending += totalVacantesAsignadas;
     }
   }
 
   return buildWhatsAppReportFromBlocks({
-    title: "Vacantes pendientes",
-    date: formatReadableDate(new Date().toISOString()),
+    title: workforceText(language, "Vacantes pendientes"),
+    date: formatReadableDate(new Date().toISOString(), language === 'en' ? 'en-US' : 'es-MX'),
     total: totalPending,
     blocks,
-    emptyMessage: "Sin vacantes pendientes.",
+    emptyMessage: workforceText(language, "Sin vacantes pendientes."),
   });
 }
 
@@ -307,12 +305,13 @@ function buildWhatsAppMessage(
   dismissedKeys: Set<string>,
   assignments: Record<string, string>,
   members: TeamMember[],
+  language: Language,
 ): string {
   const hasAssignments = Object.values(assignments).some(
     (v) => v !== "" && v !== "Pendiente",
   );
   if (hasAssignments) {
-    return buildAssignedWhatsAppMessage(allGroups, dismissedKeys, assignments, members);
+    return buildAssignedWhatsAppMessage(allGroups, dismissedKeys, assignments, members, language);
   }
 
   const groups = allGroups
@@ -324,7 +323,7 @@ function buildWhatsAppMessage(
     }))
     .filter((g) => g.rows.length > 0);
 
-  const date = formatReadableDate(new Date().toISOString());
+  const date = formatReadableDate(new Date().toISOString(), language === 'en' ? 'en-US' : 'es-MX');
 
   const blocks: string[] = [];
   const generales = buildWhatsAppMessageBlock(
@@ -358,11 +357,11 @@ function buildWhatsAppMessage(
   );
 
   return buildWhatsAppReportFromBlocks({
-    title: "Vacantes pendientes",
+    title: workforceText(language, "Vacantes pendientes"),
     date,
     total: totalPending,
     blocks,
-    emptyMessage: "Sin vacantes pendientes.",
+    emptyMessage: workforceText(language, "Sin vacantes pendientes."),
   });
 }
 
@@ -383,57 +382,23 @@ const itemVariants: Variants = {
   },
 };
 
-export function VacancyReportModal({
-  isOpen,
-  onClose,
-  positions,
-}: VacancyReportModalProps) {
+export function VacancyAssignmentsPage() {
+  const { language } = useLanguage();
+  const t = (text: string) => workforceText(language, text);
   const { members } = useTeamDirectory();
-  const isMobile = useIsMobile();
-  const groups = useMemo(() => buildGroups(positions), [positions]);
+  const { employees, comments, loading } = useSupabaseData();
+  const { positions } = usePositions();
+  const positionCoverage = useMemo(
+    () => calculatePositionCoverage(employees, comments, positions),
+    [employees, comments, positions],
+  );
+  const groups = useMemo(() => buildGroups(positionCoverage), [positionCoverage]);
   const { dismissedKeys, toggleDismiss } = useDismissedPositions();
   const [assignments, setAssignments] = useState<Record<string, string>>({});
 
-  const {
-    totalActivas,
-    totalBackup,
-    totalProximos,
-    totalStarliteUrgentes,
-    totalStarliteEmpleados,
-    totalPuestos,
-  } = useMemo(() => {
-    let activas = 0;
-    let backup = 0;
-    let proximos = 0;
-    let starliteUrgentes = 0;
-    let starliteEmpleados = 0;
-    let puestos = 0;
-
-    for (const g of groups) {
-      for (const r of g.rows) {
-        if (!dismissedKeys.has(`${r.area}|${r.seccion}|${r.puesto}`)) {
-          activas += r.vacantesAutorizada;
-          backup += r.vacantesBackup;
-          proximos += r.proximosIngresos;
-          starliteUrgentes += r.starliteUrgentes;
-          starliteEmpleados += r.starliteEmpleados;
-          puestos += 1;
-        }
-      }
-    }
-    return {
-      totalActivas: activas,
-      totalBackup: backup,
-      totalProximos: proximos,
-      totalStarliteUrgentes: starliteUrgentes,
-      totalStarliteEmpleados: starliteEmpleados,
-      totalPuestos: puestos,
-    };
-  }, [groups, dismissedKeys]);
-
   const message = useMemo(
-    () => buildWhatsAppMessage(groups, dismissedKeys, assignments, members),
-    [groups, dismissedKeys, assignments, members],
+    () => buildWhatsAppMessage(groups, dismissedKeys, assignments, members, language),
+    [groups, dismissedKeys, assignments, members, language],
   );
   const [copied, setCopied] = useState(false);
 
@@ -443,18 +408,12 @@ export function VacancyReportModal({
     return () => window.clearTimeout(id);
   }, [copied]);
 
-  useEffect(() => {
-    if (!isOpen) {
-      setCopied(false);
-    }
-  }, [isOpen]);
-
   const handleCopy = async () => {
     try {
       await copyTextToClipboard(message);
       setCopied(true);
     } catch {
-      toast.error({ title: "No se pudo copiar el reporte" });
+      toast.error({ title: t("No se pudo copiar el reporte") });
     }
   };
 
@@ -470,17 +429,16 @@ export function VacancyReportModal({
           <li
             key={key}
             className={`vacancy-report-modal__row ${isDismissed ? "vacancy-report-modal__row--dismissed" : ""}`}
-            style={{ cursor: "default" }}
           >
-            <div
+            <button
+              type="button"
               className="vacancy-report-modal__row-main"
               onClick={() => toggleDismiss(key)}
-              style={{ cursor: "pointer", flex: 1, justifyContent: "center" }}
+              title={t(isDismissed ? "Click para incluir de nuevo en el conteo" : "Click para excluir del conteo")}
+              aria-label={`${t(isDismissed ? "Click para incluir de nuevo en el conteo" : "Click para excluir del conteo")}: ${toNaturalCase(row.puesto)}`}
+              aria-pressed={isDismissed}
             >
-              <span
-                className="vacancy-report-modal__puesto"
-                style={{ fontSize: "var(--type-body-sm-size)", color: "var(--color-ink)" }}
-              >
+              <span className="vacancy-report-modal__puesto">
                 {(() => {
                   let turnoLabel = row.turno ? toNaturalCase(row.turno) : "";
                   const lowerTurno = turnoLabel.toLowerCase();
@@ -506,14 +464,11 @@ export function VacancyReportModal({
                     : displayPuesto;
                 })()}
               </span>
-            </div>
-            <div
-              className="vacancy-report-modal__badges"
-              style={{ alignItems: "center" }}
-            >
+            </button>
+            <div className="vacancy-report-modal__badges">
               <CustomSelect
                 className="vacancy-report-modal__assign-select"
-                aria-label={`Asignar reclutador a ${toNaturalCase(row.puesto)}`}
+                aria-label={`${t('Asignar reclutador a')} ${toNaturalCase(row.puesto)}`}
                 value={assignments[key] || ""}
                 onChange={(val) => {
                   setAssignments((prev) => ({
@@ -522,10 +477,10 @@ export function VacancyReportModal({
                   }));
                 }}
                 options={[
-                  { value: "", label: "Pendiente" },
+                  { value: "", label: t("Pendiente") },
                   ...recruiterOptions(members, assignments[key]),
                 ]}
-                placeholder="Pendiente"
+                placeholder={t("Pendiente")}
               />
             </div>
           </li>
@@ -535,109 +490,84 @@ export function VacancyReportModal({
   );
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      className="vacancy-report-modal "
-      icon={<ClipboardList size={20} aria-hidden="true" />}
-      title="Asignación de vacantes"
-      size="md"
-      footerActions={
-        <button
-          type="button"
-          className="btn-primary vacancy-report-modal__action"
-          onClick={handleCopy}
-          disabled={empty}
-        >
-          <span
-            className="vacancy-report-modal__action-inner"
-            aria-live="polite"
-            aria-atomic="true"
-          >
-            <MorphingIcon icon={copied ? Check : Copy} size={16} />
-            {copied ? "Reporte copiado" : "Copiar reporte"}
-          </span>
-        </button>
-      }
+    <BoneyardSkeleton
+      name="vacancy-assignments-page"
+      loading={loading && employees.length === 0}
+      loadingLabel={t("Cargando vacantes…")}
     >
-      <div
-        className="vacancy-report-modal__wrapper"
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          flex: 1,
-          minHeight: 0,
-        }}
-      >
-        <div
-          className="modal-body vacancy-report-modal__body"
-          style={
-            isMobile
-              ? {
-                  padding: "var(--spacing-xl) var(--spacing-md)",
-                  textAlign: "center",
-                }
-              : { flex: 1, overflowY: "auto" }
-          }
-        >
-          {empty ? (
-            <motion.p
-              className="vacancy-report-modal__empty"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.1 }}
-            >
-              No hay vacantes activas ni backups pendientes. Plantilla cubierta.
-            </motion.p>
-          ) : (
-            <>
-              {isMobile ? (
-                <p
-                  style={{
-                    color: "var(--color-muted)",
-                    fontSize: "var(--type-body-md-size)",
-                  }}
-                >
-                  Pulsa el botón de abajo para copiar el reporte.
-                </p>
-              ) : (
-                <motion.section
-                  className="vacancy-report-modal__groups"
-                  variants={containerVariants}
-                  initial="hidden"
-                  animate="show"
-                  aria-label="Detalle de puestos con vacantes"
-                >
-                  {groups.map((group) => (
-                    <motion.article
-                      key={group.area}
-                      className="vacancy-report-modal__group"
-                      variants={itemVariants}
-                    >
-                      <header className="vacancy-report-modal__group-header">
-                        <h3 className="vacancy-report-modal__group-title">
-                          {group.area}
-                        </h3>
-                        <span className="vacancy-report-modal__group-count">
-                          {group.totalStarliteUrgentes > 0 &&
-                            `★ Starlite ${group.totalStarliteEmpleados}/${group.totalStarliteUrgentes} · `}
-                          {group.totalVacantes} activa
-                          {group.totalVacantes === 1 ? "" : "s"}
-                          {group.totalBackup > 0 &&
-                            ` · ${group.totalBackup} backup`}
-                          {group.totalProximosIngresos > 0 &&
-                            ` · ${group.totalProximosIngresos} próx.`}
-                        </span>
-                      </header>
-                      {renderGroupContent(group)}
-                    </motion.article>
-                  ))}
-                </motion.section>
-              )}
-            </>
-          )}
+    <main className="vacancy-assignments-page container" aria-labelledby="vacancy-assignments-title">
+      <header className="page-header">
+        <div className="page-header__content">
+          <Link
+            className="vacancy-assignments-page__title-link"
+            to={PLANTILLA_PATH}
+            aria-label={`${t("Volver a plantilla")}: ${t("Asignación de vacantes")}`}
+          >
+            <h1 id="vacancy-assignments-title" className="app-page-title">
+              <ClipboardList size={20} aria-hidden="true" />
+              {t("Asignación de vacantes")}
+            </h1>
+          </Link>
         </div>
+        <div className="page-header__actions">
+          <button
+            type="button"
+            className="btn-primary vacancy-report-modal__action"
+            onClick={() => void handleCopy()}
+            disabled={empty}
+          >
+            {copied ? (
+              <Check size={16} aria-hidden="true" />
+            ) : (
+              <Copy size={16} aria-hidden="true" />
+            )}
+            <span aria-live="polite" aria-atomic="true">
+              {copied ? t("Reporte copiado") : t("Copiar reporte")}
+            </span>
+          </button>
+        </div>
+      </header>
+
+      <div className="vacancy-assignments-page__content">
+        {empty ? (
+          <p className="vacancy-report-modal__empty" role="status">
+            {t('No hay vacantes activas ni backups pendientes. Plantilla cubierta.')}
+          </p>
+        ) : (
+          <motion.section
+            className="vacancy-report-modal__groups"
+            variants={containerVariants}
+            initial="hidden"
+            animate="show"
+            aria-label={t("Detalle de puestos con vacantes")}
+          >
+            {groups.map((group) => (
+              <motion.article
+                key={group.area}
+                className="vacancy-report-modal__group"
+                variants={itemVariants}
+              >
+                <header className="vacancy-report-modal__group-header">
+                  <h2 className="vacancy-report-modal__group-title">
+                    {group.area}
+                  </h2>
+                  <span className="vacancy-report-modal__group-count">
+                    {group.totalStarliteUrgentes > 0 &&
+                      `★ Starlite ${group.totalStarliteEmpleados}/${group.totalStarliteUrgentes} · `}
+                    {group.totalVacantes} {t(group.totalVacantes === 1 ? 'vacante activa' : 'vacantes activas')}
+                    {group.totalBackup > 0 &&
+                      ` · ${group.totalBackup} ${t('backup')}`}
+                    {group.totalProximosIngresos > 0 &&
+                      ` · ${group.totalProximosIngresos} ${t('próx.')}`}
+                  </span>
+                </header>
+                {renderGroupContent(group)}
+              </motion.article>
+            ))}
+          </motion.section>
+        )}
       </div>
-    </Modal>
+    </main>
+    </BoneyardSkeleton>
   );
 }

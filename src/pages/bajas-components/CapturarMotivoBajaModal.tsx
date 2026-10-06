@@ -1,20 +1,28 @@
 import { useId, useState, type FormEvent } from 'react';
+import type { Language } from '@/contexts/LanguageContext';
 import { CustomSelect } from '@/components/ui/CustomSelect';
 import { Modal } from '@/components/ui/Modal';
 import { BAJA_REASON_CATALOG, toBajaSentenceCase } from '@/lib/bajaReasonCatalog';
 import { parseBajaReasonRecord, type BajaReasonUpdate } from '@/lib/bajaReasonUpdates';
 import { maskDdMmYyyyInput, parseDdMmYyyy } from '@/lib/dates';
 import { toast } from '@/lib/notify';
+import {
+  getMotivosBajaCopy,
+  translateBajaCatalogLabel,
+  translateBajaValidationMessage,
+} from './motivosBajaTranslations';
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
   existingEmployees: ReadonlySet<string>;
   onCreate: (record: BajaReasonUpdate) => Promise<{ ok: true } | { ok: false; message: string }>;
+  language: Language;
 }
 
-export function CapturarMotivoBajaModal({ isOpen, onClose, existingEmployees, onCreate }: Props) {
+export function CapturarMotivoBajaModal({ isOpen, onClose, existingEmployees, onCreate, language }: Props) {
   const id = useId();
+  const copy = getMotivosBajaCopy(language);
   const [employee, setEmployee] = useState('');
   const [date, setDate] = useState('');
   const [type, setType] = useState('');
@@ -34,13 +42,13 @@ export function CapturarMotivoBajaModal({ isOpen, onClose, existingEmployees, on
     setDateError(null);
 
     if (!/^\d{1,4}$/.test(employee)) {
-      setEmployeeError('Escribe un número de empleado de hasta 4 dígitos.');
+      setEmployeeError(copy.invalidEmployee);
       return;
     }
 
     const isoDate = parseDdMmYyyy(date);
     if (!isoDate) {
-      setDateError('Escribe una fecha válida en formato DD/MM/AAAA.');
+      setDateError(copy.invalidDate);
       return;
     }
 
@@ -52,11 +60,11 @@ export function CapturarMotivoBajaModal({ isOpen, onClose, existingEmployees, on
       detalle_baja: detail.trim() ? toBajaSentenceCase(detail) : '-',
     });
     if (!parsed.ok) {
-      setError(parsed.message);
+      setError(translateBajaValidationMessage(parsed.message, language));
       return;
     }
     if (existingEmployees.has(parsed.record.num_empleado)) {
-      setError('Este número de empleado ya está en el indicador. No se modificó su registro.');
+      setError(copy.duplicateEmployee);
       return;
     }
 
@@ -72,7 +80,7 @@ export function CapturarMotivoBajaModal({ isOpen, onClose, existingEmployees, on
       setType('');
       setReason('');
       setDetail('');
-      toast.success({ title: 'Motivo agregado al indicador' });
+      toast.success({ title: copy.added });
       onClose();
     } finally {
       setSaving(false);
@@ -82,21 +90,21 @@ export function CapturarMotivoBajaModal({ isOpen, onClose, existingEmployees, on
   return (
     <Modal
       isOpen={isOpen}
-      title="Registrar baja"
+      title={copy.captureTitle}
       size="md"
       onClose={() => { if (!saving) onClose(); }}
       footerActions={
         <>
-          <button type="button" className="btn-secondary" onClick={onClose} disabled={saving}>Cancelar</button>
+          <button type="button" className="btn-secondary" onClick={onClose} disabled={saving}>{copy.cancel}</button>
           <button type="submit" className="btn-primary" form={`${id}-form`} disabled={saving} aria-busy={saving}>
-            {saving ? 'Guardando…' : 'Guardar'}
+            {saving ? copy.saving : copy.save}
           </button>
         </>
       }
     >
       <form id={`${id}-form`} className="modal-body motivos-baja__capture-form" onSubmit={(event) => void handleSubmit(event)} noValidate>
         <div className="form-group">
-          <label htmlFor={`${id}-employee`}>No. empleado</label>
+          <label htmlFor={`${id}-employee`}>{copy.employeeNumber}</label>
           <input
             id={`${id}-employee`}
             type="text"
@@ -115,13 +123,13 @@ export function CapturarMotivoBajaModal({ isOpen, onClose, existingEmployees, on
           {employeeError && <p id={`${id}-employee-error`} className="form-error-text" role="alert">{employeeError}</p>}
         </div>
         <div className="form-group">
-          <label htmlFor={`${id}-date`}>Fecha de baja</label>
+          <label htmlFor={`${id}-date`}>{copy.date}</label>
           <input
             id={`${id}-date`}
             type="text"
             inputMode="numeric"
             autoComplete="off"
-            placeholder="DD/MM/AAAA"
+            placeholder={copy.datePlaceholder}
             maxLength={10}
             value={date}
             onChange={(event) => { setDate(maskDdMmYyyyInput(event.target.value)); setDateError(null); }}
@@ -132,30 +140,36 @@ export function CapturarMotivoBajaModal({ isOpen, onClose, existingEmployees, on
           {dateError && <p id={`${id}-date-error`} className="form-error-text" role="alert">{dateError}</p>}
         </div>
         <div className="form-group">
-          <label htmlFor={`${id}-type`}>Tipo de baja</label>
+          <label htmlFor={`${id}-type`}>{copy.type}</label>
           <CustomSelect
             id={`${id}-type`}
             value={type}
             onChange={(value) => { setType(value); setReason(''); }}
-            options={Object.keys(BAJA_REASON_CATALOG).map((value) => ({ value, label: toBajaSentenceCase(value) }))}
-            placeholder="Seleccionar tipo"
+            options={Object.keys(BAJA_REASON_CATALOG).map((value) => ({
+              value,
+              label: translateBajaCatalogLabel(toBajaSentenceCase(value), language),
+            }))}
+            placeholder={copy.selectType}
             aria-required="true"
           />
         </div>
         <div className="form-group">
-          <label htmlFor={`${id}-reason`}>Motivo de baja</label>
+          <label htmlFor={`${id}-reason`}>{copy.reason}</label>
           <CustomSelect
             id={`${id}-reason`}
             value={reason}
             onChange={setReason}
-            options={reasons.map((value) => ({ value, label: toBajaSentenceCase(value) }))}
-            placeholder="Seleccionar motivo"
+            options={reasons.map((value) => ({
+              value,
+              label: translateBajaCatalogLabel(toBajaSentenceCase(value), language),
+            }))}
+            placeholder={copy.selectReason}
             disabled={!type}
             aria-required="true"
           />
         </div>
         <div className="form-group motivos-baja__capture-detail">
-          <label htmlFor={`${id}-detail`}>Detalle de la baja</label>
+          <label htmlFor={`${id}-detail`}>{copy.detail}</label>
           <textarea id={`${id}-detail`} value={detail} onChange={(event) => setDetail(event.target.value)} />
         </div>
         {error && <p className="form-error-text motivos-baja__capture-error" role="alert">{error}</p>}

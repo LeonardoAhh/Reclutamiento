@@ -1,4 +1,5 @@
 import { ConfirmModal } from "./ConfirmModal";
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface DeleteConfirmModalProps {
   isOpen: boolean;
@@ -17,18 +18,20 @@ export function DeleteConfirmModal({
   isLoading = false,
   errorMessage,
 }: DeleteConfirmModalProps) {
+  const { language } = useLanguage();
+  const en = language === 'en';
   return (
     <ConfirmModal
       isOpen={isOpen}
       title={title}
-      description="Esta acción no se puede deshacer."
-      confirmLabel="Eliminar"
-      cancelLabel="Cancelar"
+      description={en ? 'This action cannot be undone.' : 'Esta acción no se puede deshacer.'}
+      confirmLabel={en ? 'Delete' : 'Eliminar'}
+      cancelLabel={en ? 'Cancel' : 'Cancelar'}
       onConfirm={onConfirm}
       onCancel={onCancel}
       isDestructive
       isLoading={isLoading}
-      loadingLabel="Eliminando…"
+      loadingLabel={en ? 'Deleting…' : 'Eliminando…'}
       errorMessage={errorMessage}
     />
   );

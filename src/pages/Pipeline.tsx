@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState, useRef } from 'react';
 import { MotionConfig } from 'framer-motion';
 import { isToday, isTomorrow, isYesterday, formatDistanceToNowStrict } from 'date-fns';
-import { es } from 'date-fns/locale';
+import { enUS, es } from 'date-fns/locale';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { candidateStatusLabel } from '@/lib/candidateTranslations';
 
 import { ArrowUpRight, BadgeCheck, BarChart3, CalendarDays, ClipboardList, FileImage, LayoutGrid, PenLine, SlidersHorizontal, Trash2, UserRoundPlus, UserRound, UserX, UsersRound } from 'lucide-react';
 import { StarliteBadge, VinoplasticBadge, ReclutadorBadge } from '@/components/ui/Badge';
@@ -31,7 +33,7 @@ import { useCandidates } from '@/hooks/useCandidates';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useVacancyRequests } from '@/hooks/useVacancyRequests';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
-import { CANDIDATE_STATUSES, CANDIDATE_STATUS_LABEL } from '@/lib/types';
+import { CANDIDATE_STATUSES } from '@/lib/types';
 import type { Candidate, CandidateStatus, Employee } from '@/lib/types';
 import { formatReadableDate, formatShortDate, getPautaWeekRange, shiftPautaWeek } from '@/lib/dates';
 import { useTeamDirectory } from '@/features/team/TeamProvider';
@@ -69,6 +71,8 @@ type RecruiterStats = {
 
 
 export function Pipeline() {
+  const { language } = useLanguage();
+  const en = language === 'en';
   const {
     candidates,
     loading,
@@ -333,8 +337,8 @@ export function Pipeline() {
     return notifyResult(
       id ? updateCandidate(id, payload) : addCandidate(payload),
       {
-        success: id ? 'Candidato actualizado' : 'Candidato agregado',
-        error: id ? 'No se pudo actualizar el candidato' : 'No se pudo agregar el candidato',
+        success: id ? (en ? 'Candidate updated' : 'Candidato actualizado') : (en ? 'Candidate added' : 'Candidato agregado'),
+        error: id ? (en ? 'Could not update candidate' : 'No se pudo actualizar el candidato') : (en ? 'Could not add candidate' : 'No se pudo agregar el candidato'),
       }
     );
   }
@@ -342,8 +346,8 @@ export function Pipeline() {
   async function handleStatusChange(c: Candidate, status: CandidateStatus) {
     if (!c.id || c.status === status) return;
     await notifyResult(setCandidateStatus(c.id, status), {
-      success: 'Estado actualizado',
-      error: 'No se pudo cambiar el estado',
+      success: en ? 'Status updated' : 'Estado actualizado',
+      error: en ? 'Could not change status' : 'No se pudo cambiar el estado',
     });
   }
 
@@ -359,7 +363,7 @@ export function Pipeline() {
     if (input.mode === 'create') {
       const empResult = await addSingleEmployee(input.employee);
       if (!empResult.ok) {
-        toast.error({ title: 'No se pudo contratar' });
+        toast.error({ title: en ? 'Could not hire candidate' : 'No se pudo contratar' });
         return empResult;
       }
     }
@@ -374,9 +378,9 @@ export function Pipeline() {
       const message =
         candResult.message ??
         (input.mode === 'create'
-          ? 'Empleado creado, pero no se pudo actualizar el candidato.'
-          : 'No se pudo vincular al candidato.');
-      toast.warning({ title: input.mode === 'create' ? 'Contratación incompleta' : 'Vinculación fallida' });
+          ? (en ? 'Employee created, but the candidate could not be updated.' : 'Empleado creado, pero no se pudo actualizar el candidato.')
+          : (en ? 'Could not link candidate.' : 'No se pudo vincular al candidato.'));
+      toast.warning({ title: input.mode === 'create' ? (en ? 'Hiring incomplete' : 'Contratación incompleta') : (en ? 'Linking failed' : 'Vinculación fallida') });
       return { ok: false, message };
     }
 
@@ -386,7 +390,7 @@ export function Pipeline() {
     });
 
     toast.success({
-      title: input.mode === 'create' ? 'Candidato contratado' : 'Candidato vinculado',
+      title: input.mode === 'create' ? (en ? 'Candidate hired' : 'Candidato contratado') : (en ? 'Candidate linked' : 'Candidato vinculado'),
     });
     return { ok: true };
   }
@@ -394,14 +398,14 @@ export function Pipeline() {
   async function handleCopyReport() {
     const report = buildCandidateReport(candidates, members);
     if (!report) {
-      toast.info({ title: 'No hay candidatos activos en proceso' });
+      toast.info({ title: en ? 'No active candidates in process' : 'No hay candidatos activos en proceso' });
       return;
     }
     try {
       await copyTextToClipboard(report);
-      toast.success({ title: 'Resumen copiado', description: 'Ya puedes pegarlo en WhatsApp.' });
+      toast.success({ title: en ? 'Summary copied' : 'Resumen copiado', description: en ? 'You can now paste it into WhatsApp.' : 'Ya puedes pegarlo en WhatsApp.' });
     } catch {
-      toast.error({ title: 'No se pudo copiar el resumen' });
+      toast.error({ title: en ? 'Could not copy summary' : 'No se pudo copiar el resumen' });
     }
   }
 
@@ -409,7 +413,7 @@ export function Pipeline() {
     <BoneyardSkeleton
       name="candidatos-page"
       loading={loading}
-      loadingLabel="Cargando candidatos…"
+      loadingLabel={en ? 'Loading candidates…' : 'Cargando candidatos…'}
     >
       <MotionConfig reducedMotion="user">
         <main className="pipeline container">
@@ -417,20 +421,20 @@ export function Pipeline() {
         {/* ── Hero ── */}
       <header className="page-header">
         <div className="page-header__content">
-          <h1 className="app-page-title">Candidatos</h1>
+          <h1 className="app-page-title">{en ? 'Candidates' : 'Candidatos'}</h1>
         </div>
       </header>
 
-      <Toolbar label="Herramientas de candidatos" className="pipeline__toolbar">
-          <ToolbarGroup label="Buscar candidatos" className="pipeline__controls">
+      <Toolbar label={en ? 'Candidate tools' : 'Herramientas de candidatos'} className="pipeline__toolbar">
+          <ToolbarGroup label={en ? 'Search candidates' : 'Buscar candidatos'} className="pipeline__controls">
             <div className="pipeline__search-container">
               <div className="pipeline__search">
                 <SearchField
                   id="pipeline-search-input"
                   ref={searchInputRef}
                   className="pipeline__search-field"
-                  label="Buscar candidato"
-                  placeholder="Buscar por nombre, puesto, teléfono... (Ctrl+K)"
+                  label={en ? 'Search candidate' : 'Buscar candidato'}
+                  placeholder={en ? 'Search by name, position, phone... (Ctrl+K)' : 'Buscar por nombre, puesto, teléfono... (Ctrl+K)'}
                   value={searchTerm}
                   onChange={(event) => setSearchTerm(event.target.value)}
                   onClear={() => setSearchTerm('')}
@@ -442,7 +446,7 @@ export function Pipeline() {
                   <div
                     className="pipeline__search-dropdown"
                     role="region"
-                    aria-label="Resultados de búsqueda"
+                    aria-label={en ? 'Search results' : 'Resultados de búsqueda'}
                   >
                     {searchResults.length > 0 ? (
                       searchResults.map(c => (
@@ -461,7 +465,7 @@ export function Pipeline() {
                           <div className="search-dropdown-item__text">
                             <strong>{c.nombre}</strong>
                             <span className="search-dropdown-item__info">
-                              {c.telefono} • {c.reclutador} • {CANDIDATE_STATUS_LABEL[c.status]}
+                              {c.telefono} • {c.reclutador} • {candidateStatusLabel(c.status, language)}
                             </span>
                           </div>
                         </button>
@@ -469,7 +473,7 @@ export function Pipeline() {
                     ) : (
                       <div className="search-dropdown-item__empty" role="status">
                         <UserX size={16} aria-hidden="true" />
-                        <span>No hay coincidencias</span>
+                        <span>{en ? 'No matches' : 'No hay coincidencias'}</span>
                       </div>
                     )}
                   </div>
@@ -478,37 +482,37 @@ export function Pipeline() {
             </div>
 
           </ToolbarGroup>
-          <ToolbarGroup label="Acciones de candidatos" className="pipeline__hero-actions">
+          <ToolbarGroup label={en ? 'Candidate actions' : 'Acciones de candidatos'} className="pipeline__hero-actions">
             <CandidateFilters value={macroStatus} onChange={setMacroStatus} />
             <button
               type="button"
               className="btn-secondary pipeline__report-btn"
               onClick={() => setMetricsModalOpen(true)}
-              aria-label="Abrir métricas y KPIs"
-              title="Métricas y KPIs"
+              aria-label={en ? 'Open metrics and KPIs' : 'Abrir métricas y KPIs'}
+              title={en ? 'Metrics and KPIs' : 'Métricas y KPIs'}
             >
               <BarChart3 size={16} aria-hidden="true" />
-              <span>Métricas</span>
+              <span>{en ? 'Metrics' : 'Métricas'}</span>
             </button>
             <button
               type="button"
               className="btn-secondary pipeline__report-btn"
               onClick={handleCopyReport}
-              aria-label="Copiar resumen de candidatos"
-              title="Copiar resumen de candidatos para WhatsApp"
+              aria-label={en ? 'Copy candidate summary' : 'Copiar resumen de candidatos'}
+              title={en ? 'Copy candidate summary for WhatsApp' : 'Copiar resumen de candidatos para WhatsApp'}
             >
               <ClipboardList size={16} aria-hidden="true" />
-              <span>Resumen</span>
+              <span>{en ? 'Summary' : 'Resumen'}</span>
             </button>
             <button
               type="button"
               className="btn-primary"
               onClick={openAdd}
-              aria-label="Nuevo candidato"
-              title="Nuevo candidato"
+              aria-label={en ? 'New candidate' : 'Nuevo candidato'}
+              title={en ? 'New candidate' : 'Nuevo candidato'}
             >
               <UserRoundPlus size={16} aria-hidden="true" />
-              <span>Nuevo</span>
+              <span>{en ? 'New' : 'Nuevo'}</span>
             </button>
           </ToolbarGroup>
       </Toolbar>
@@ -527,12 +531,12 @@ export function Pipeline() {
                 <div className="animated-empty-state__icon">
                   <UserX aria-hidden="true" />
                 </div>
-                <h2 className="animated-empty-state__title" id="pipeline-error-title">Error al cargar</h2>
+                <h2 className="animated-empty-state__title" id="pipeline-error-title">{en ? 'Could not load candidates' : 'Error al cargar'}</h2>
                 <p className="pipeline__error-message">
                   {error}
                 </p>
                 <button type="button" className="btn-secondary pipeline__empty-action" onClick={() => refetch()}>
-                  Reintentar
+                  {en ? 'Retry' : 'Reintentar'}
                 </button>
               </div>
             </section>
@@ -540,12 +544,12 @@ export function Pipeline() {
             <section className="pipeline__empty">
               {candidates.length === 0 ? (
                 <>
-                  <h2>Aún no hay candidatos</h2>
+                  <h2>{en ? 'No candidates yet' : 'Aún no hay candidatos'}</h2>
                   <p>
-                    Empieza agregando tu primer candidato a la base de datos de reclutamiento.
+                    {en ? 'Start by adding your first candidate to the recruitment database.' : 'Empieza agregando tu primer candidato a la base de datos de reclutamiento.'}
                   </p>
-                  <Tooltip content="Agregar candidato">
-                    <button type="button" className="btn-primary" onClick={openAdd} aria-label="Agregar primer candidato">
+                  <Tooltip content={en ? 'Add candidate' : 'Agregar candidato'}>
+                    <button type="button" className="btn-primary" onClick={openAdd} aria-label={en ? 'Add first candidate' : 'Agregar primer candidato'}>
                       <UserRoundPlus size={16} aria-hidden="true" />
                     </button>
                   </Tooltip>
@@ -555,16 +559,16 @@ export function Pipeline() {
                   <div className="animated-empty-state__icon">
                     <UserX aria-hidden="true" />
                   </div>
-                  <div className="animated-empty-state__title">Sin resultados</div>
+                  <div className="animated-empty-state__title">{en ? 'No results' : 'Sin resultados'}</div>
                   {(macroStatus !== 'todos' || searchTerm.trim().length > 0) && (
                     <button
                       type="button"
                       className="btn-secondary pipeline__empty-action"
                       onClick={resetFilters}
-                      title="Limpiar filtros"
+                      title={en ? 'Clear filters' : 'Limpiar filtros'}
                     >
                       <SlidersHorizontal size={16} aria-hidden="true" />
-                      Limpiar filtros
+                      {en ? 'Clear filters' : 'Limpiar filtros'}
                     </button>
                   )}
                 </div>
@@ -574,16 +578,16 @@ export function Pipeline() {
             <>
             <section
               className="pipeline__card-list"
-              aria-label="Lista de candidatos"
+              aria-label={en ? 'Candidate list' : 'Lista de candidatos'}
               role={isDesktop ? "table" : undefined}
             >
               <div className="pipeline__card-list-header" role="row">
-                <span role="columnheader">Candidato</span>
-                <span role="columnheader">Puesto</span>
-                <span role="columnheader">Proceso</span>
-                <span role="columnheader">Reclutador</span>
-                <span role="columnheader">Entrevista</span>
-                <span role="columnheader" className="text-center">Acciones</span>
+                <span role="columnheader">{en ? 'Candidate' : 'Candidato'}</span>
+                <span role="columnheader">{en ? 'Position' : 'Puesto'}</span>
+                <span role="columnheader">{en ? 'Process' : 'Proceso'}</span>
+                <span role="columnheader">{en ? 'Recruiter' : 'Reclutador'}</span>
+                <span role="columnheader">{en ? 'Interview' : 'Entrevista'}</span>
+                <span role="columnheader" className="text-center">{en ? 'Actions' : 'Acciones'}</span>
               </div>
               {paginatedCandidates.map((c) => {
                 const fechaCitaFmt = c.fecha_cita ? formatDate(c.fecha_cita) : null;
@@ -600,11 +604,11 @@ export function Pipeline() {
                   if (isNaN(date.getTime())) return null;
 
                   let relative = '';
-                  if (isToday(date)) relative = 'Hoy';
-                  else if (isTomorrow(date)) relative = 'Mañana';
-                  else if (isYesterday(date)) relative = 'Ayer';
+                  if (isToday(date)) relative = en ? 'Today' : 'Hoy';
+                  else if (isTomorrow(date)) relative = en ? 'Tomorrow' : 'Mañana';
+                  else if (isYesterday(date)) relative = en ? 'Yesterday' : 'Ayer';
                   else {
-                    relative = formatDistanceToNowStrict(date, { addSuffix: true, locale: es });
+                    relative = formatDistanceToNowStrict(date, { addSuffix: true, locale: en ? enUS : es });
                     relative = relative.charAt(0).toUpperCase() + relative.slice(1);
                   }
                   return relative;
@@ -625,7 +629,7 @@ export function Pipeline() {
                     className={`pipeline__ccard pipeline__ccard--${c.status}`}
                     role={isDesktop ? "row" : "button"}
                     tabIndex={isDesktop ? undefined : 0}
-                    aria-label={isDesktop ? undefined : `Ver detalles de ${c.nombre}`}
+                    aria-label={isDesktop ? undefined : `${en ? 'View details for' : 'Ver detalles de'} ${c.nombre}`}
                     onClick={isDesktop ? undefined : () => setSelectedMobileCandidate(c)}
                     onKeyDown={isDesktop ? undefined : (event) => {
                       if (event.key === 'Enter' || event.key === ' ') {
@@ -692,9 +696,9 @@ export function Pipeline() {
                         }
                         options={CANDIDATE_STATUSES.map((s) => ({
                           value: s,
-                          label: CANDIDATE_STATUS_LABEL[s],
+                          label: candidateStatusLabel(s, language),
                         }))}
-                        aria-label={`Cambiar estado de ${c.nombre}`}
+                        aria-label={`${en ? 'Change status for' : 'Cambiar estado de'} ${c.nombre}`}
                         customTrigger={
                           <span className="pipeline__status-trigger">
                             <CandidateStatusBadge status={c.status} showCaret />
@@ -758,7 +762,7 @@ export function Pipeline() {
               onPageChange={setCurrentPage}
               canGoPrev={currentPage > 1}
               canGoNext={currentPage < totalPages}
-              ariaLabel="Paginación de candidatos"
+              ariaLabel={en ? 'Candidate pages' : 'Paginación de candidatos'}
             />
             </>
           )}
@@ -773,8 +777,8 @@ export function Pipeline() {
             onSave={handleSave}
             onDelete={(id) =>
               notifyResult(deleteCandidate(id), {
-                success: 'Candidato eliminado',
-                error: 'No se pudo eliminar el candidato',
+                success: en ? 'Candidate deleted' : 'Candidato eliminado',
+                error: en ? 'Could not delete candidate' : 'No se pudo eliminar el candidato',
               })
             }
           />
@@ -784,7 +788,7 @@ export function Pipeline() {
             onClose={() => setAccessCardTarget(null)}
             className="candidate-access-card-modal"
             size="sm"
-            title="Pase de entrevista"
+            title={en ? 'Interview pass' : 'Pase de entrevista'}
           >
             {accessCardData && (
               <CandidateAccessCard
@@ -812,7 +816,7 @@ export function Pipeline() {
           <BackButton
             className="config-mobile-back"
             onClick={() => setSelectedMobileCandidate(null)}
-            aria-label="Volver a Candidatos"
+            aria-label={en ? 'Back to Candidates' : 'Volver a Candidatos'}
           />
 
           <article className="pipeline-mobile-detail__card">
@@ -839,7 +843,7 @@ export function Pipeline() {
               <div className="pipeline-mobile-detail__info-item">
                 <UserRound size={16} aria-hidden="true" className="pipeline-mobile-detail__info-icon" />
                 <div className="pipeline-mobile-detail__info-content">
-                  <span className="pipeline-mobile-detail__info-label">Reclutador</span>
+                  <span className="pipeline-mobile-detail__info-label">{en ? 'Recruiter' : 'Reclutador'}</span>
                   <span className="pipeline-mobile-detail__info-value">{selectedMobileCandidate.reclutador || '—'}</span>
                 </div>
               </div>
@@ -847,7 +851,7 @@ export function Pipeline() {
               <div className="pipeline-mobile-detail__info-item">
                 <CalendarDays size={16} aria-hidden="true" className="pipeline-mobile-detail__info-icon" />
                 <div className="pipeline-mobile-detail__info-content">
-                  <span className="pipeline-mobile-detail__info-label">Entrevista</span>
+                  <span className="pipeline-mobile-detail__info-label">{en ? 'Interview' : 'Entrevista'}</span>
                   <span className="pipeline-mobile-detail__info-value">
                     {selectedMobileCandidate.fecha_cita ? formatDate(selectedMobileCandidate.fecha_cita) : '—'}
                   </span>
@@ -857,7 +861,7 @@ export function Pipeline() {
               <div className="pipeline-mobile-detail__info-item">
                 <LayoutGrid size={16} aria-hidden="true" className="pipeline-mobile-detail__info-icon" />
                 <div className="pipeline-mobile-detail__info-content">
-                  <span className="pipeline-mobile-detail__info-label">Proyecto</span>
+                  <span className="pipeline-mobile-detail__info-label">{en ? 'Project' : 'Proyecto'}</span>
                   <span className="pipeline-mobile-detail__info-value pipeline-mobile-detail__info-value--inline">
                     {selectedMobileCandidate.is_starlite ? <StarliteBadge /> : <VinoplasticBadge />}
                   </span>
@@ -867,7 +871,7 @@ export function Pipeline() {
               <div className="pipeline-mobile-detail__info-item">
                 <ClipboardList size={16} aria-hidden="true" className="pipeline-mobile-detail__info-icon" />
                 <div className="pipeline-mobile-detail__info-content">
-                  <span className="pipeline-mobile-detail__info-label">Proceso</span>
+                  <span className="pipeline-mobile-detail__info-label">{en ? 'Process' : 'Proceso'}</span>
                   <div className="pipeline-mobile-detail__status-select">
                     <div className="pipeline__cell-status pipeline-mobile-detail__status-cell" data-status={selectedMobileCandidate.status}>
                       <CustomSelect
@@ -877,9 +881,9 @@ export function Pipeline() {
                         onChange={(val) => handleStatusChange(selectedMobileCandidate, val as CandidateStatus)}
                         options={CANDIDATE_STATUSES.map((s) => ({
                           value: s,
-                          label: CANDIDATE_STATUS_LABEL[s],
+                          label: candidateStatusLabel(s, language),
                         }))}
-                        aria-label={`Cambiar estado de ${selectedMobileCandidate.nombre}`}
+                        aria-label={`${en ? 'Change status for' : 'Cambiar estado de'} ${selectedMobileCandidate.nombre}`}
                         customTrigger={
                           <span className="pipeline__status-trigger pipeline__status-trigger--full">
                             <CandidateStatusBadge
@@ -899,51 +903,51 @@ export function Pipeline() {
 
             <div className="pipeline-mobile-detail__actions">
               <div className="pipeline-mobile-detail__row-actions">
-                <span className="pipeline-mobile-detail__info-label pipeline-mobile-detail__actions-label">Acciones</span>
+                <span className="pipeline-mobile-detail__info-label pipeline-mobile-detail__actions-label">{en ? 'Actions' : 'Acciones'}</span>
                 <div className="pipeline-mobile-detail__action-buttons">
                     {selectedMobileCandidate.reclutador && selectedMobileCandidate.puesto && (
                       <button
                         type="button"
                         className="btn-secondary pipeline-mobile-detail__action-btn"
-                        title="Ver pase"
+                        title={en ? 'View pass' : 'Ver pase'}
                         onClick={() => setAccessCardTarget(selectedMobileCandidate)}
                       >
                         <FileImage size={16} aria-hidden="true" />
-                        <span>Ver pase</span>
+                        <span>{en ? 'View pass' : 'Ver pase'}</span>
                       </button>
                     )}
                     <button
                       type="button"
                       className="btn-secondary pipeline-mobile-detail__action-btn"
-                      title="Editar candidato"
+                      title={en ? 'Edit candidate' : 'Editar candidato'}
                       onClick={() => openEdit(selectedMobileCandidate)}
                     >
                       <PenLine size={16} aria-hidden="true" />
-                      <span>Editar</span>
+                      <span>{en ? 'Edit' : 'Editar'}</span>
                     </button>
                     {selectedMobileCandidate.status === 'contratado' && !selectedMobileCandidate.employee_num && (
                       <button
                         type="button"
                         className="btn-primary pipeline-mobile-detail__action-btn"
-                        title="Contratar"
+                        title={en ? 'Hire' : 'Contratar'}
                         onClick={() => openHire(selectedMobileCandidate)}
                       >
                         <BadgeCheck size={16} aria-hidden="true" />
-                        <span>Contratar</span>
+                        <span>{en ? 'Hire' : 'Contratar'}</span>
                       </button>
                     )}
                     {isAdmin && (
                       <button
                         type="button"
                         className="btn-secondary pipeline-mobile-detail__action-btn pipeline-mobile-detail__action-btn--danger"
-                        title="Eliminar candidato"
+                        title={en ? 'Delete candidate' : 'Eliminar candidato'}
                         onClick={() => {
                           openDelete(selectedMobileCandidate);
                           setSelectedMobileCandidate(null);
                         }}
                       >
                         <Trash2 size={16} aria-hidden="true" />
-                        <span>Eliminar</span>
+                        <span>{en ? 'Delete' : 'Eliminar'}</span>
                       </button>
                     )}
                 </div>
@@ -957,7 +961,7 @@ export function Pipeline() {
       <Modal
         isOpen={!!quickProfile}
         onClose={() => setQuickProfile(null)}
-        title="Vista Previa"
+        title={en ? 'Preview' : 'Vista Previa'}
         size="md"
         footerActions={
           <>
@@ -973,7 +977,7 @@ export function Pipeline() {
                 }}
               >
                 <BadgeCheck size={16} aria-hidden="true" />
-                <span>Contratar</span>
+                <span>{en ? 'Hire' : 'Contratar'}</span>
               </button>
             )}
             <button
@@ -986,7 +990,7 @@ export function Pipeline() {
                 openEdit(target);
               }}
             >
-              Editar Perfil Completo
+              {en ? 'Edit full profile' : 'Editar Perfil Completo'}
             </button>
           </>
         }
@@ -1027,7 +1031,7 @@ export function Pipeline() {
       <Modal
         isOpen={metricsModalOpen}
         onClose={() => setMetricsModalOpen(false)}
-        title="Métricas y KPIs"
+        title={en ? 'Metrics and KPIs' : 'Métricas y KPIs'}
         size="lg"
       >
         <div className="modal-body pipeline__metrics-menu">
@@ -1044,9 +1048,9 @@ export function Pipeline() {
               <UsersRound size={20} aria-hidden="true" />
             </div>
             <div className="pipeline__kpi-card__body">
-              <span className="pipeline__kpi-card__label">Resumen General</span>
+              <span className="pipeline__kpi-card__label">{en ? 'Overall summary' : 'Resumen General'}</span>
               <span className="pipeline__kpi-card__hint">
-                {candidates.filter(c => CITADO_STATUSES.has(c.status)).length} citados
+                {candidates.filter(c => CITADO_STATUSES.has(c.status)).length} {en ? 'scheduled' : 'citados'}
               </span>
             </div>
             <ArrowUpRight size={18} className="pipeline__kpi-card__arrow" aria-hidden="true" />
@@ -1055,7 +1059,7 @@ export function Pipeline() {
           <div className="pipeline__sidebar-divider" />
 
           <section className="pipeline__sidebar-section">
-            <h3 className="pipeline__sidebar-section__label">Seguimiento semanal</h3>
+            <h3 className="pipeline__sidebar-section__label">{en ? 'Weekly tracking' : 'Seguimiento semanal'}</h3>
             <button
               type="button"
               className="pipeline__kpi-row"
@@ -1066,7 +1070,7 @@ export function Pipeline() {
             >
               <div className="pipeline__kpi-row__meta">
                 <span className="pipeline__kpi-row__dot pipeline__kpi-row__dot--pauta" />
-                <span className="pipeline__kpi-row__name">Pauta</span>
+                <span className="pipeline__kpi-row__name">{en ? 'Campaign' : 'Pauta'}</span>
               </div>
               <div className="pipeline__kpi-row__stats">
                 <ArrowUpRight size={16} className="pipeline__kpi-card__arrow" aria-hidden="true" />
@@ -1075,7 +1079,7 @@ export function Pipeline() {
           </section>
 
           <section className="pipeline__sidebar-section">
-            <h3 className="pipeline__sidebar-section__label">Por reclutador</h3>
+            <h3 className="pipeline__sidebar-section__label">{en ? 'By recruiter' : 'Por reclutador'}</h3>
             <div className="pipeline__recruiters">
               {members.filter(member => member.include_in_metrics).map(member => <button
                 key={member.id}
@@ -1088,7 +1092,7 @@ export function Pipeline() {
                 }}
               >
                 <div className="pipeline__kpi-row__meta">
-                  <span className="pipeline__kpi-row__name">{member.short_name}{!member.active && ' (inactivo)'}</span>
+                  <span className="pipeline__kpi-row__name">{member.short_name}{!member.active && (en ? ' (inactive)' : ' (inactivo)')}</span>
                 </div>
                 <div className="pipeline__kpi-row__stats">
                   <ArrowUpRight size={16} className="pipeline__kpi-card__arrow" aria-hidden="true" />

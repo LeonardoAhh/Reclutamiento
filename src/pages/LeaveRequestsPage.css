@@ -19,14 +19,12 @@
   justify-content: space-between;
 }
 
-.leave-requests-page__back {
-  justify-content: center;
-  inline-size: var(--touch-target-min);
-  padding-inline: 0;
+.leave-requests-page__title-link {
+  color: inherit;
+  text-decoration: none;
 }
 
-.leave-requests-page button svg,
-.leave-requests-page__back svg {
+.leave-requests-page button svg {
   inline-size: var(--icon-size-control);
   block-size: var(--icon-size-control);
   flex-shrink: 0;

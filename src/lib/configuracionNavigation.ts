@@ -15,15 +15,15 @@ export type FeatureId =
   | "formatos";
 
 const FEATURE_PATHS: Record<FeatureId, string> = {
-  analisis: '/analisis',
-  formatos: '/formatos',
-  indicadores: '/indicadores',
-  rutas: '/rutas',
-  tabulador: '/tabulador',
+  analisis: '/analysis',
+  formatos: '/forms',
+  indicadores: '/metrics',
+  rutas: '/routes',
+  tabulador: '/pay-scale',
 };
 
 export const ADMINISTRATION_PATH = FEATURE_PATHS.indicadores;
-export const ROUTE_DAY_EMPLOYEES_PATH = '/rutas/empleados';
+export const ROUTE_DAY_EMPLOYEES_PATH = '/routes/employees';
 
 interface FeatureItem {
   id: FeatureId;

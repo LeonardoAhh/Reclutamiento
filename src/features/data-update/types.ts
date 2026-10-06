@@ -1,4 +1,4 @@
-export const DATA_UPDATE_PATH = "/actualizacion-datos";
+export const DATA_UPDATE_PATH = "/data-update";
 
 export type DataUpdateRecordStatus = "pendiente" | "en_proceso" | "completado";
 export type DataUpdateCampaignStatus = "activa" | "completada" | "archivada";

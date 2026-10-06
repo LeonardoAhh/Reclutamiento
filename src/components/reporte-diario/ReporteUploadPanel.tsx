@@ -3,6 +3,7 @@ import type { DragEvent, FormEvent } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { FileUp, LoaderCircle } from "lucide-react";
 import "./ReporteUploadPanel.css";
+import { useReportLocale } from "./useReportLocale";
 
 export type ReportProcessStep = "reading" | "validating" | null;
 
@@ -26,6 +27,7 @@ export function ReporteUploadPanel({
   onSubmitJson,
 }: ReporteUploadPanelProps) {
   const [jsonContent, setJsonContent] = useState("");
+  const { copy } = useReportLocale();
   const reduceMotion = useReducedMotion();
   const isProcessing = Boolean(processStep);
 
@@ -46,8 +48,8 @@ export function ReporteUploadPanel({
           <FileUp size="1em" />
         </span>
         <div className="reporte-hero__panel-copy">
-          <h2 id="reporte-upload-title">Cargar reporte</h2>
-          <p>Selecciona un archivo .json o pega su contenido.</p>
+          <h2 id="reporte-upload-title">{copy("Cargar reporte", "Load report")}</h2>
+          <p>{copy("Selecciona un archivo .json o pega su contenido.", "Select a .json file or paste its contents.")}</p>
         </div>
       </header>
 
@@ -57,7 +59,7 @@ export function ReporteUploadPanel({
           aria-labelledby="reporte-file-title"
         >
           <h3 id="reporte-file-title" className="reporte-upload-method__title">
-            Seleccionar archivo
+            {copy("Seleccionar archivo", "Select file")}
           </h3>
           <motion.button
             type="button"
@@ -67,7 +69,7 @@ export function ReporteUploadPanel({
             onDragLeave={onDragLeave}
             onDrop={onDrop}
             onClick={onSelectFile}
-            aria-label="Subir un archivo de reporte de asistencia"
+            aria-label={copy("Subir un archivo de reporte de asistencia", "Upload an attendance report file")}
             aria-busy={isProcessing}
             disabled={isProcessing}
             data-testid="upload-dropzone"
@@ -92,9 +94,9 @@ export function ReporteUploadPanel({
                     aria-hidden="true"
                   />
                   <span className="reporte-hero__dropzone-title">
-                    {processStep === "reading" && "Leyendo archivo…"}
+                    {processStep === "reading" && copy("Leyendo archivo…", "Reading file…")}
                     {processStep === "validating" &&
-                      "Revisando incidencias…"}
+                      copy("Revisando incidencias…", "Checking incidents…")}
                   </span>
                 </motion.span>
               ) : (
@@ -115,10 +117,10 @@ export function ReporteUploadPanel({
                   </span>
                   <span className="reporte-upload-file__copy">
                     <span className="reporte-hero__dropzone-title">
-                      Selecciona o arrastra tu archivo
+                      {copy("Selecciona o arrastra tu archivo", "Select or drag your file")}
                     </span>
                     <span className="reporte-hero__dropzone-hint">
-                      Detectamos el mes y validamos el formato automáticamente.
+                      {copy("Detectamos el mes y validamos el formato automáticamente.", "We detect the month and validate the format automatically.")}
                     </span>
                   </span>
                 </motion.span>
@@ -132,18 +134,18 @@ export function ReporteUploadPanel({
           aria-labelledby="reporte-paste-title"
         >
           <h3 id="reporte-paste-title" className="reporte-upload-method__title">
-            Pegar contenido
+            {copy("Pegar contenido", "Paste content")}
           </h3>
           <form className="reporte-upload-form" onSubmit={handleSubmit}>
             <div className="form-group reporte-upload-form__field">
               <label className="sr-only" htmlFor="reporte-json-content">
-                Contenido JSON
+                {copy("Contenido JSON", "JSON content")}
               </label>
               <textarea
                 id="reporte-json-content"
                 value={jsonContent}
                 onChange={(event) => setJsonContent(event.target.value)}
-                placeholder="Pega aquí el contenido completo del reporte"
+                placeholder={copy("Pega aquí el contenido completo del reporte", "Paste the full report content here")}
                 autoComplete="off"
                 spellCheck={false}
                 disabled={isProcessing}
@@ -155,8 +157,8 @@ export function ReporteUploadPanel({
               disabled={!jsonContent.trim() || isProcessing}
             >
               {isProcessing
-                ? "Procesando reporte…"
-                : "Procesar contenido"}
+                ? copy("Procesando reporte…", "Processing report…")
+                : copy("Procesar contenido", "Process content")}
             </button>
           </form>
         </section>

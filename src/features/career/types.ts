@@ -1,5 +1,5 @@
 /** Ruta proporcionada por el usuario; no representa otras áreas de la empresa. */
-export const CAREER_PATH = '/mi-camino';
+export const CAREER_PATH = '/career-path';
 /** Recorrido y diálogo pendientes de publicación; conservar su implementación. */
 export const CAREER_JOURNEY_ENABLED = false;
 export const CAREER_ROLES = [

@@ -12,6 +12,7 @@ import type { Session, User, RealtimeChannel } from '@supabase/supabase-js';
 import { supabase, AUTH_JWT_EXPIRED_EVENT, AUTH_ACCOUNT_INACTIVE_EVENT } from '@/lib/supabase';
 import { extractOnlineUserIds, publishOnlineUserIds } from '@/lib/presence';
 import { toast } from '@/lib/notify';
+import { useLanguage } from '@/contexts/LanguageContext';
 import {
   signInWithUsername as signInLib,
   signOut as signOutLib,
@@ -54,6 +55,8 @@ const ACTIVITY_WRITE_INTERVAL_MS = 5 * 60_000;
  * estado de session/profile.
  */
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const { language } = useLanguage();
+  const english = language === 'en';
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [profileLoading, setProfileLoading] = useState(true);
@@ -83,7 +86,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!expiredNotifiedRef.current && window.location.pathname !== '/login') {
       expiredNotifiedRef.current = true;
       toast.error({
-        title: inactive ? 'Tu cuenta está inactiva. Contacta al administrador.' : 'Sesión expirada. Vuelve a iniciar sesión.',
+        title: inactive
+          ? english ? 'Your account is inactive. Contact an administrator.' : 'Tu cuenta está inactiva. Contacta al administrador.'
+          : english ? 'Your session expired. Please sign in again.' : 'Sesión expirada. Vuelve a iniciar sesión.',
       });
     }
 
@@ -95,7 +100,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } finally {
       expiryHandlingRef.current = false;
     }
-  }, []);
+  }, [english]);
 
   useEffect(() => {
     sessionRef.current = session;

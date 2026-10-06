@@ -3,6 +3,7 @@ import { CircleCheckBig, CircleAlert, Trash2 } from 'lucide-react';
 import { CircleCheckBig as CheckCircleIconData } from 'lucide';
 import { Modal } from '@/components/ui/Modal';
 import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
+import { useLanguage } from '@/contexts/LanguageContext';
 import type { Baja } from '@/lib/types';
 import { localTodayIso, formatReadableDate } from '@/lib/dates';
 import './CubrirVacanteModal.css';
@@ -26,6 +27,8 @@ export function CubrirVacanteModal({
   onSave,
   onClear,
 }: CubrirVacanteModalProps) {
+  const { language } = useLanguage();
+  const english = language === 'en';
   const [fecha, setFecha] = useState<string>('');
   const [nota, setNota] = useState<string>('');
   const [submitting, setSubmitting] = useState(false);
@@ -110,9 +113,11 @@ export function CubrirVacanteModal({
       <AnimatedSubmitButton
         isSubmitting={submitting}
         isSuccess={isSuccess}
-        idleText={isMarcada ? 'Actualizar' : 'Marcar cubierta'}
-        loadingText="Guardando..."
-        successText="¡Guardado!"
+        idleText={isMarcada
+          ? english ? 'Update' : 'Actualizar'
+          : english ? 'Mark as filled' : 'Marcar cubierta'}
+        loadingText={english ? 'Saving…' : 'Guardando…'}
+        successText={english ? 'Saved!' : '¡Guardado!'}
         idleIcon={CheckCircleIconData}
         className="btn-primary"
         form="cubrir-vacante-form"

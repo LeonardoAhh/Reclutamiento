@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef } from "react";
+import { useLanguage } from '@/contexts/LanguageContext';
 import { createPortal } from "react-dom";
 import { ArrowLeft, X } from "lucide-react";
 
@@ -16,6 +17,7 @@ interface ModalProps {
   size?: "xs" | "sm" | "md" | "lg" | "xl";
   /** Oculta el botón X de cerrar en el encabezado */
   hideCloseButton?: boolean;
+  closeLabel?: string;
 }
 
 const openModalStack: symbol[] = [];
@@ -62,7 +64,10 @@ export function Modal({
   footerActions,
   size = "md",
   hideCloseButton = false,
+  closeLabel,
 }: ModalProps) {
+  const { language } = useLanguage();
+  const resolvedCloseLabel = closeLabel ?? (language === 'en' ? 'Close' : 'Cerrar');
   const contentRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
   const modalInstanceRef = useRef(Symbol("modal"));
@@ -184,7 +189,7 @@ export function Modal({
                 type="button"
                 className="modal-back-btn"
                 onClick={onBack}
-                aria-label="Regresar"
+                aria-label={language === 'en' ? 'Back' : 'Regresar'}
               >
                 <ArrowLeft aria-hidden="true" />
               </button>
@@ -200,7 +205,8 @@ export function Modal({
               type="button"
               className="modal-close"
               onClick={onClose}
-              aria-label="Cerrar"
+              aria-label={resolvedCloseLabel}
+              title={resolvedCloseLabel}
             >
               <X aria-hidden="true" />
             </button>

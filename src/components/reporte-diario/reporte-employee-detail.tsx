@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { cn } from "@/lib/utils-shadcn";
-import { INCIDENCIA_LABELS } from "./constants";
 import { isIncidence } from "./helpers";
+import { useReportLocale } from "./useReportLocale";
 import { Badge } from "@/components/ui/Badge";
 import { Modal } from "@/components/ui/Modal";
 import type { ReporteRow } from "./types";
@@ -221,15 +221,16 @@ interface KpiCardsProps {
 }
 
 const KPI_CONFIG = [
-    { label: "Asistencias", key: "asistencias" as const, tone: "var(--color-success)" },
-    { label: "Incidencias", key: "incidencias" as const, tone: "var(--color-error)" },
-    { label: "Descansos", key: "descansos" as const, tone: "var(--color-accent-teal)" },
+    { label: "Asistencias", englishLabel: "Attendance", key: "asistencias" as const, tone: "var(--color-success)" },
+    { label: "Incidencias", englishLabel: "Incidents", key: "incidencias" as const, tone: "var(--color-error)" },
+    { label: "Descansos", englishLabel: "Rest days", key: "descansos" as const, tone: "var(--color-accent-teal)" },
 ] as const;
 
 function KpiCards({ stats }: KpiCardsProps) {
+    const { copy } = useReportLocale();
     return (
         <div style={STYLES.kpiGrid}>
-            {KPI_CONFIG.map(({ label, key, tone }) => {
+            {KPI_CONFIG.map(({ label, englishLabel, key, tone }) => {
                 const value = stats[key];
                 const valueColor = key === "incidencias" && value === 0
                     ? "var(--color-muted)"
@@ -237,7 +238,7 @@ function KpiCards({ stats }: KpiCardsProps) {
 
                 return (
                     <div key={label} style={STYLES.kpiCard}>
-                        <p style={STYLES.kpiLabel}>{label}</p>
+                        <p style={STYLES.kpiLabel}>{copy(label, englishLabel)}</p>
                         <p style={{ ...STYLES.kpiValue, color: valueColor }}>{value}</p>
                     </div>
                 );
@@ -256,6 +257,8 @@ interface CalendarGridProps {
 }
 
 function CalendarGrid({ employee, dayHeaders, year, month }: CalendarGridProps) {
+    const { en, copy, incident } = useReportLocale();
+    const dayNames = en ? ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] : DAY_NAMES;
     const firstDay = new Date(year, month - 1, 1).getDay();
     const emptyCells = Array.from({ length: firstDay }, (_, i) => (
         <div key={`empty-${i}`} />
@@ -263,9 +266,9 @@ function CalendarGrid({ employee, dayHeaders, year, month }: CalendarGridProps) 
 
     return (
         <div style={STYLES.calendarSection}>
-            <p style={STYLES.calendarLabel}>Calendario del mes</p>
+            <p style={STYLES.calendarLabel}>{copy("Calendario del mes", "Monthly calendar")}</p>
             <div style={STYLES.calendarGrid}>
-                {DAY_NAMES.map((d) => (
+                {dayNames.map((d) => (
                     <div key={d} style={STYLES.weekdayHeader}>
                         {d}
                     </div>
@@ -273,7 +276,7 @@ function CalendarGrid({ employee, dayHeaders, year, month }: CalendarGridProps) 
                 {emptyCells}
                 {dayHeaders.map((day) => {
                     const code = employee.days[day] ?? "";
-                    const label = INCIDENCIA_LABELS[code] ?? code;
+                    const label = incident(code);
 
                     return (
                         <div
@@ -282,7 +285,7 @@ function CalendarGrid({ employee, dayHeaders, year, month }: CalendarGridProps) 
                                 ...STYLES.dayCell,
                                 background: codeBg(code),
                             }}
-                            title={`Día ${parseInt(day, 10)}: ${label}`}
+                            title={`${copy("Día", "Day")} ${parseInt(day, 10)}: ${label}`}
                         >
                             <span style={STYLES.dayNumber}>{parseInt(day, 10)}</span>
                             <p style={{ ...STYLES.dayCode, color: codeTone(code) }}>
@@ -304,23 +307,29 @@ interface IncidentTableProps {
     month: number;
 }
 
-const TABLE_HEADERS = ["Día", "Código", "Tipo"] as const;
+const TABLE_HEADERS = [
+    { spanish: "Día", english: "Day" },
+    { spanish: "Código", english: "Code" },
+    { spanish: "Tipo", english: "Type" },
+] as const;
 
 function IncidentTable({ incidents, year, month }: IncidentTableProps) {
+    const { en, copy, incident } = useReportLocale();
+    const dayNames = en ? ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] : DAY_NAMES;
     if (incidents.length === 0) return null;
 
     return (
         <div style={STYLES.incidentSection}>
             <p style={STYLES.incidentLabel}>
-                Detalle de incidencias ({incidents.length})
+                {copy("Detalle de incidencias", "Incident details")} ({incidents.length})
             </p>
             <div style={STYLES.incidentTableWrapper}>
                 <table style={STYLES.table}>
                     <thead style={STYLES.thead}>
                         <tr>
                             {TABLE_HEADERS.map((header) => (
-                                <th key={header} scope="col" style={STYLES.th}>
-                                    {header}
+                                <th key={header.spanish} scope="col" style={STYLES.th}>
+                                    {copy(header.spanish, header.english)}
                                 </th>
                             ))}
                         </tr>
@@ -329,7 +338,7 @@ function IncidentTable({ incidents, year, month }: IncidentTableProps) {
                         {incidents.map(({ day, code }) => {
                             const dayNum = parseInt(day, 10);
                             const date = new Date(year, month - 1, dayNum);
-                            const weekday = DAY_NAMES[date.getDay()];
+                            const weekday = dayNames[date.getDay()];
 
                             return (
                                 <tr key={day} style={STYLES.tr}>
@@ -340,7 +349,7 @@ function IncidentTable({ incidents, year, month }: IncidentTableProps) {
                                         <Badge variant="error">{code}</Badge>
                                     </td>
                                     <td style={{ ...STYLES.td.base, ...STYLES.td.type }}>
-                                        {INCIDENCIA_LABELS[code] ?? code}
+                                        {incident(code)}
                                     </td>
                                 </tr>
                             );
@@ -361,6 +370,7 @@ export default function ReporteEmployeeDetail({
     dayHeaders,
     currentMonth,
 }: ReporteEmployeeDetailProps) {
+    const { copy } = useReportLocale();
     const [activeTab, setActiveTab] = useState<'overview' | 'incidencias'>('overview');
     const stats = useMemo(
         () => (employee ? computeStats(employee, dayHeaders) : null),
@@ -391,7 +401,7 @@ export default function ReporteEmployeeDetail({
             className="reporte-employee-detail-modal"
         >
             <div className="modal-body">
-                <div className="reporte-employee-detail__tabs" role="tablist" aria-label="Secciones del detalle de empleado">
+                <div className="reporte-employee-detail__tabs" role="tablist" aria-label={copy("Secciones del detalle de empleado", "Employee detail sections")}>
                     <button
                         type="button"
                         role="tab"
@@ -402,7 +412,7 @@ export default function ReporteEmployeeDetail({
                         className={`reporte-employee-detail__tab ${activeTab === 'overview' ? 'is-active' : ''}`}
                         onClick={() => setActiveTab('overview')}
                     >
-                        Resumen
+                        {copy("Resumen", "Overview")}
                     </button>
                     <button
                         type="button"
@@ -414,7 +424,7 @@ export default function ReporteEmployeeDetail({
                         className={`reporte-employee-detail__tab ${activeTab === 'incidencias' ? 'is-active' : ''}`}
                         onClick={() => setActiveTab('incidencias')}
                     >
-                        Incidencias
+                        {copy("Incidencias", "Incidents")}
                     </button>
                 </div>
 

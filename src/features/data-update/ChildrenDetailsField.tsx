@@ -3,6 +3,7 @@ import { Plus, Trash2 } from "lucide-react";
 import { BirthDateField } from "@/components/ui/BirthDateField";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { isDataUpdateBirthDateValid } from "./validation";
+import { useDataUpdateText } from "./translations";
 
 type PendingRemoval =
   | { type: "count"; nextCount: number }
@@ -25,6 +26,7 @@ export function ChildrenDetailsField({
   onChange,
   onConfirmCount,
 }: ChildrenDetailsFieldProps) {
+  const t = useDataUpdateText();
   const addChildButtonRef = useRef<HTMLButtonElement>(null);
   const [countInput, setCountInput] = useState(() => String(values.length));
   const [countInputError, setCountInputError] = useState<string | null>(null);
@@ -50,13 +52,13 @@ export function ChildrenDetailsField({
   const requestCountChange = () => {
     const normalized = countInput.trim();
     if (!/^\d+$/.test(normalized)) {
-      setCountInputError("Escribe una cantidad entera igual o mayor que 0.");
+      setCountInputError(t("Escribe una cantidad entera igual o mayor que 0."));
       return;
     }
 
     const nextCount = Number(normalized);
     if (!Number.isSafeInteger(nextCount)) {
-      setCountInputError("Escribe una cantidad entera válida.");
+      setCountInputError(t("Escribe una cantidad entera válida."));
       return;
     }
 
@@ -128,17 +130,17 @@ export function ChildrenDetailsField({
     : 0;
   const removalDescription = pendingRemoval?.type === "count"
     ? removedDatesCount === 1
-      ? "Se eliminará una fecha de nacimiento ya capturada."
-      : `Se eliminarán ${removedDatesCount} fechas de nacimiento ya capturadas.`
+      ? t("Se eliminará una fecha de nacimiento ya capturada.")
+      : t(`Se eliminarán ${removedDatesCount} fechas de nacimiento ya capturadas.`)
     : pendingRemoval?.type === "child"
-      ? `Se eliminará la fecha de nacimiento del hijo ${pendingRemoval.index + 1}.`
+      ? t(`Se eliminará la fecha de nacimiento del hijo ${pendingRemoval.index + 1}.`)
       : undefined;
 
   return (
     <fieldset className="data-update-children">
-      <legend>Hijos</legend>
+      <legend>{t("Hijos")}</legend>
       <div className="form-group data-update-children__count">
-        <label htmlFor="data-update-children-count">Cantidad de hijos</label>
+        <label htmlFor="data-update-children-count">{t("Cantidad de hijos")}</label>
         <div className="data-update-children__count-controls">
           <input
             id="data-update-children-count"
@@ -159,11 +161,11 @@ export function ChildrenDetailsField({
           />
           <button ref={addChildButtonRef} type="button" className="btn-secondary btn-sm" onClick={addChild}>
             <Plus aria-hidden="true" />
-            Agregar hijo
+            {t("Agregar hijo")}
           </button>
         </div>
         <span id={countHelpId} className="form-help">
-          Escribe 0 si no tienes hijos.
+          {t("Escribe 0 si no tienes hijos.")}
         </span>
         {visibleCountError && (
           <p id={countErrorId} className="form-error-text">{visibleCountError}</p>
@@ -171,22 +173,22 @@ export function ChildrenDetailsField({
       </div>
 
       {isCountConfirmed && values.length === 0 ? (
-        <p className="text-muted">Confirmaste que no tienes hijos.</p>
+        <p className="text-muted">{t("Confirmaste que no tienes hijos.")}</p>
       ) : values.length > 0 ? (
         <div className="data-update-children__list">
           {values.map((birthDate, index) => {
             const fieldError = datesError && !isDataUpdateBirthDateValid(birthDate)
-              ? datesError
+              ? t(datesError)
               : undefined;
             const fieldId = `data-update-child-birth-date-${index}`;
             return (
               <div className="data-update-child" key={fieldId}>
                 <div className="data-update-child__header">
-                  <h3>Hijo {index + 1}</h3>
+                  <h3>{t("Hijo ") + (index + 1)}</h3>
                   <button
                     type="button"
                     className="btn-icon"
-                    aria-label={`Quitar hijo ${index + 1}`}
+                    aria-label={`${t("Quitar")} ${t("Hijo ").toLowerCase()}${index + 1}`}
                     onClick={() => requestChildRemoval(index)}
                   >
                     <Trash2 aria-hidden="true" />
@@ -194,7 +196,7 @@ export function ChildrenDetailsField({
                 </div>
                 <BirthDateField
                   id={fieldId}
-                  label="Fecha de nacimiento"
+                  label={t("Fecha de nacimiento")}
                   value={birthDate}
                   onChange={(value) => changeBirthDate(index, value)}
                   error={fieldError}
@@ -207,10 +209,10 @@ export function ChildrenDetailsField({
 
       <ConfirmModal
         isOpen={pendingRemoval !== null}
-        title="Reducir cantidad de hijos"
+        title={t("Reducir cantidad de hijos")}
         description={removalDescription}
-        confirmLabel="Quitar"
-        cancelLabel="Conservar"
+        confirmLabel={t("Quitar")}
+        cancelLabel={t("Conservar")}
         onConfirm={confirmRemoval}
         onCancel={cancelRemoval}
         isDestructive

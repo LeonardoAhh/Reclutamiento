@@ -8,6 +8,7 @@ import {
 } from '@/lib/types';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from '@/lib/notify';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const ACTIVITY_SELECT = `
   id,
@@ -35,6 +36,8 @@ function sortActivitiesByCreatedAt(rows: Activity[]): Activity[] {
 
 export function useActivities() {
   const { profile } = useAuth();
+  const { language } = useLanguage();
+  const english = language === 'en';
   const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -56,11 +59,11 @@ export function useActivities() {
       if (error) throw error;
       setActivities(data as Activity[]);
     } catch (err: any) {
-      toast.error({ title: 'Error al cargar actividades', description: err.message });
+      toast.error({ title: english ? 'Could not load activities' : 'Error al cargar actividades', description: err.message });
     } finally {
       setLoading(false);
     }
-  }, [profile]);
+  }, [profile, english]);
 
   useEffect(() => {
     fetchActivities();
@@ -91,10 +94,10 @@ export function useActivities() {
           ...current.filter((activity) => activity.id !== saved.id),
         ])
       );
-      toast.success({ title: 'Actividad asignada' });
+      toast.success({ title: english ? 'Activity assigned' : 'Actividad asignada' });
       return saved;
     } catch (err: any) {
-      toast.error({ title: 'Error al asignar', description: err.message });
+      toast.error({ title: english ? 'Could not assign the activity' : 'Error al asignar', description: err.message });
       return null;
     }
   };
@@ -110,10 +113,10 @@ export function useActivities() {
       if (error) throw error;
       const saved = data as Activity;
       setActivities(prev => prev.map(a => a.id === id ? saved : a));
-      toast.success({ title: 'Estado actualizado' });
+      toast.success({ title: english ? 'Status updated' : 'Estado actualizado' });
       return saved;
     } catch (err: any) {
-      toast.error({ title: 'Error al actualizar', description: err.message });
+      toast.error({ title: english ? 'Could not update the activity' : 'Error al actualizar', description: err.message });
       return null;
     }
   };
@@ -142,10 +145,10 @@ export function useActivities() {
       }).select(ACTIVITY_PROOF_SELECT).single();
       
       if (error) throw error;
-      toast.success({ title: 'Prueba subida exitosamente' });
+      toast.success({ title: english ? 'Proof uploaded' : 'Prueba subida exitosamente' });
       return data as ActivityProof;
     } catch (err: any) {
-      toast.error({ title: 'Error al subir prueba', description: err.message });
+      toast.error({ title: english ? 'Could not upload proof' : 'Error al subir prueba', description: err.message });
       return null;
     }
   };
@@ -160,7 +163,7 @@ export function useActivities() {
       if (error) throw error;
       return data as any[];
     } catch (err: any) {
-      toast.error({ title: 'Error al cargar pruebas', description: err.message });
+      toast.error({ title: english ? 'Could not load proof' : 'Error al cargar pruebas', description: err.message });
       return [];
     }
   };
@@ -176,10 +179,10 @@ export function useActivities() {
         
         const { error } = await supabase.from('activity_proofs').delete().eq('id', proofId);
         if (error) throw error;
-        toast.success({ title: 'Prueba eliminada' });
+        toast.success({ title: english ? 'Proof deleted' : 'Prueba eliminada' });
         return true;
       } catch (err: any) {
-          toast.error({ title: 'Error al eliminar', description: err.message });
+          toast.error({ title: english ? 'Could not delete proof' : 'Error al eliminar', description: err.message });
           return false;
       }
   }
@@ -202,7 +205,7 @@ export function useActivities() {
         
       return publicUrlData.publicUrl;
     } catch (err: any) {
-      toast.error({ title: 'Error al subir foto', description: err.message });
+      toast.error({ title: english ? 'Could not upload the photo' : 'Error al subir foto', description: err.message });
       return null;
     }
   };
@@ -220,10 +223,10 @@ export function useActivities() {
       setActivities((current) =>
         current.map((activity) => activity.id === id ? saved : activity)
       );
-      toast.success({ title: 'Actividad actualizada' });
+      toast.success({ title: english ? 'Activity updated' : 'Actividad actualizada' });
       return saved;
     } catch (err: any) {
-      toast.error({ title: 'Error al actualizar', description: err.message });
+      toast.error({ title: english ? 'Could not update the activity' : 'Error al actualizar', description: err.message });
       return null;
     }
   };
@@ -233,10 +236,10 @@ export function useActivities() {
       const { error } = await supabase.from('activities').delete().eq('id', id);
       if (error) throw error;
       setActivities(prev => prev.filter(a => a.id !== id));
-      toast.success({ title: 'Actividad eliminada' });
+      toast.success({ title: english ? 'Activity deleted' : 'Actividad eliminada' });
       return true;
     } catch (err: any) {
-      toast.error({ title: 'Error al eliminar', description: err.message });
+      toast.error({ title: english ? 'Could not delete the activity' : 'Error al eliminar', description: err.message });
       return false;
     }
   };

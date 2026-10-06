@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } fro
 import { useLocation } from 'react-router-dom';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
-import { ACCOUNT_PATH, HOME_PATH, TEAM_PATH, NAV_ITEMS } from './navigation';
+import { ACCOUNT_PATH, HOME_PATH, TEAM_PATH, VACANCY_ASSIGNMENTS_PATH, getLocalizedNavigation } from './navigation';
 import { isPlantillaPath, PLANTILLA_PATH } from '@/lib/plantillaNavigation';
 import { FEATURES, getConfiguracionHref } from '@/lib/configuracionNavigation';
 import { DATA_UPDATE_PATH } from '@/features/data-update/types';
@@ -10,15 +10,17 @@ import { DESKTOP_MEDIA_QUERY } from '@/lib/layout';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { SessionNotice } from './SessionNotice';
 import { CAREER_PATH } from '@/features/career/types';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const PAGE_TITLES: Readonly<Record<string, string>> = {
   [HOME_PATH]: 'Inicio',
   [CAREER_PATH]: 'Tu camino profesional',
-  '/bajas': 'Rotación',
-  '/motivos-baja': 'Motivos de baja',
+  '/employee-turnover': 'Rotación',
+  '/departure-reasons': 'Motivos de baja',
   [DATA_UPDATE_PATH]: 'Actualización de datos',
   [ACCOUNT_PATH]: 'Cuenta',
   [TEAM_PATH]: 'Equipo',
+  [VACANCY_ASSIGNMENTS_PATH]: 'Asignación de vacantes',
 };
 
 /**
@@ -27,6 +29,7 @@ const PAGE_TITLES: Readonly<Record<string, string>> = {
  *  - Tablet/movil (<1080px): Header superior + Sidebar deslizable.
  */
 export function AppShell({ children }: { children: ReactNode }) {
+  const { language } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
   const restoreMenuFocusRef = useRef(false);
@@ -35,14 +38,19 @@ export function AppShell({ children }: { children: ReactNode }) {
   const location = useLocation();
 
   const pageTitle = useMemo(() => {
-    const currentNavItem = NAV_ITEMS.find((item) => {
-      if (item.to === PLANTILLA_PATH) return isPlantillaPath(location.pathname);
-      if (item.end) return location.pathname === item.to;
-      return location.pathname.startsWith(item.to);
-    });
+    if (language === 'en' && location.pathname === ACCOUNT_PATH) return 'Account';
+    if (language === 'en' && location.pathname === TEAM_PATH) return 'Team';
+    if (language === 'en' && location.pathname === VACANCY_ASSIGNMENTS_PATH) return 'Vacancy assignments';
+    const currentNavItem = getLocalizedNavigation(language)
+      .flatMap((section) => section.items)
+      .find((item) => {
+        if (item.to === PLANTILLA_PATH) return isPlantillaPath(location.pathname);
+        if (item.end) return location.pathname === item.to;
+        return location.pathname.startsWith(item.to);
+      });
     const feature = FEATURES.find(({ id }) => getConfiguracionHref(id) === location.pathname);
-    return PAGE_TITLES[location.pathname] ?? feature?.label ?? currentNavItem?.label ?? 'App';
-  }, [location.pathname]);
+    return currentNavItem?.label ?? PAGE_TITLES[location.pathname] ?? feature?.label ?? 'App';
+  }, [language, location.pathname]);
 
   useEffect(() => {
     document.title = pageTitle;
@@ -94,7 +102,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           type="button"
           className="sidebar-mobile-overlay"
           onClick={closeMobileMenu}
-          aria-label="Cerrar menú"
+          aria-label={language === 'en' ? 'Close menu' : 'Cerrar menú'}
           tabIndex={-1}
         />
       )}
@@ -104,6 +112,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           onMobileMenuToggle={toggleMobileMenu}
           mobileMenuOpen={isMobileMenuOpen}
           mobileMenuButtonRef={mobileMenuButtonRef}
+          language={language}
         />
         <div className="app-shell__main">
           {children}

@@ -26,6 +26,8 @@ import {
 import { ROUTE_DAY_EMPLOYEES_PATH } from "@/lib/configuracionNavigation";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { BackButton } from "@/components/ui/BackButton";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { formatRouteDay, getConfiguracionCopy } from "./configuracion-translations";
 
 import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
 import "./Rutas.css";
@@ -42,6 +44,8 @@ function RutaCard({
   onClick,
   matchCount,
 }: RutaCardProps & { matchCount?: number }) {
+  const { language } = useLanguage();
+  const copy = getConfiguracionCopy(language).routes;
   const [routeCode, ...routeNameParts] = ruta.nombreRuta.split("-");
   const routeName = routeNameParts.join("-").trim();
   const isOverCapacity = Object.entries(ruta.turnosCount).some(
@@ -65,7 +69,7 @@ function RutaCard({
           {isOverCapacity && (
             <span className="ruta-card__capacity-alert">
               <span className="ruta-card__alert-dot" aria-hidden="true" />
-              <span>Sobrecupo</span>
+              <span>{copy.overCapacity}</span>
             </span>
           )}
         </span>
@@ -74,7 +78,7 @@ function RutaCard({
       {matchCount !== undefined && matchCount > 0 && (
         <span
           className="ruta-card__match-badge"
-          aria-label={`${matchCount} coincidencia${matchCount === 1 ? "" : "s"}`}
+          aria-label={`${matchCount} ${matchCount === 1 ? copy.match : copy.matches}`}
         >
           {matchCount}
         </span>
@@ -103,6 +107,9 @@ function ShiftBars({
   hasComparison,
   animKey,
 }: ShiftBarsProps) {
+  const { language } = useLanguage();
+  const copy = getConfiguracionCopy(language).routes;
+  const english = language === 'en';
   const entries = Array.from(
     new Set([...Object.keys(turnosCount), ...Object.keys(turnosCountPrev)]),
   ).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
@@ -132,8 +139,10 @@ function ShiftBars({
         );
         const netChange = added.length - removed.length;
         const trendAria = added.length > 0 || removed.length > 0
-          ? `${added.length} alta${added.length === 1 ? "" : "s"} y ${removed.length} baja${removed.length === 1 ? "" : "s"}`
-          : "Sin cambios";
+          ? english
+            ? `${added.length} ${copy.additions} and ${removed.length} ${copy.departures}`
+            : `${added.length} alta${added.length === 1 ? "" : "s"} y ${removed.length} baja${removed.length === 1 ? "" : "s"}`
+          : copy.noChanges;
         const trendClass = added.length > 0 && removed.length > 0
           ? "trend-mixed"
           : added.length > 0
@@ -161,7 +170,7 @@ function ShiftBars({
               {added.length > 0 && (
                 <div className="trend-tooltip__section">
                   <strong className="trend-tooltip__title trend-tooltip__title--success">
-                    <ArrowUpRight aria-hidden="true" /> Altas ({added.length}):
+                    <ArrowUpRight aria-hidden="true" /> {english ? `Added (${added.length}):` : `Altas (${added.length}):`}
                   </strong>
                   <ul className="trend-tooltip__list">
                     {added.map((e) => (
@@ -175,7 +184,7 @@ function ShiftBars({
               {removed.length > 0 && (
                 <div className="trend-tooltip__section">
                   <strong className="trend-tooltip__title trend-tooltip__title--danger">
-                    <ArrowDownRight aria-hidden="true" /> Bajas ({removed.length}):
+                    <ArrowDownRight aria-hidden="true" /> {english ? `Departures (${removed.length}):` : `Bajas (${removed.length}):`}
                   </strong>
                   <ul className="trend-tooltip__list">
                     {removed.map((e) => (
@@ -219,7 +228,7 @@ function ShiftBars({
             }
           >
             <span className="shift-bars__label type-body-sm">
-              Turno {turno}
+              {copy.shift} {turno}
             </span>
             <div
               className="shift-bars__track"
@@ -229,10 +238,10 @@ function ShiftBars({
               aria-valuemax={Math.max(barMax, count)}
               aria-valuetext={
                 assignedCapacity
-                  ? `${count} de ${assignedCapacity} empleados`
-                  : `${count} empleados`
+                  ? `${count} ${copy.of} ${assignedCapacity} ${copy.employeesPlural.toLowerCase()}`
+                  : `${count} ${copy.employeesPlural.toLowerCase()}`
               }
-              aria-label={`Turno ${turno}`}
+              aria-label={`${copy.shift} ${turno}`}
             >
               <div className="shift-bars__fill" />
             </div>
@@ -274,6 +283,8 @@ function DailyCapacityBars({
   searchTerm,
   animKey,
 }: DailyCapacityBarsProps) {
+  const { language } = useLanguage();
+  const copy = getConfiguracionCopy(language).routes;
   return (
     <div className="daily-cards" key={`daily-${animKey}`}>
       {ROUTE_DAYS.map((day) => {
@@ -282,13 +293,13 @@ function DailyCapacityBars({
           <Link
             key={day}
             className="daily-cards__card"
-            to={`${ROUTE_DAY_EMPLOYEES_PATH}?${new URLSearchParams({ ruta: routeName, dia: day, ...(searchTerm ? { buscar: searchTerm } : {}) })}`}
-            aria-label={`Ver ${count} empleados de la ruta el ${day}`}
+            to={`${ROUTE_DAY_EMPLOYEES_PATH}?${new URLSearchParams({ route: routeName, day: formatRouteDay(day, 'en').toLowerCase(), ...(searchTerm ? { search: searchTerm } : {}) })}`}
+            aria-label={`${language === 'en' ? 'View' : 'Ver'} ${count} ${count === 1 ? copy.employee : copy.employeesPlural} ${language === 'en' ? 'on the route on' : 'de la ruta el'} ${formatRouteDay(day, language)}`}
           >
-            <span className="daily-cards__day">{day}</span>
+            <span className="daily-cards__day">{formatRouteDay(day, language)}</span>
             <div className="daily-cards__stats">
               <div className="daily-cards__stat">
-                <span className="daily-cards__label">Empleados</span>
+                <span className="daily-cards__label">{copy.employees}</span>
                 <span className="daily-cards__value">{count}</span>
               </div>
             </div>
@@ -301,16 +312,18 @@ function DailyCapacityBars({
 
 /*Placeholder*/
 function Placeholder() {
+  const { language } = useLanguage();
+  const copy = getConfiguracionCopy(language).routes;
   return (
     <div className="rutas-placeholder">
       <span className="rutas-placeholder__icon" aria-hidden="true">
         <Route />
       </span>
       <h2 id="rutas-placeholder-title" className="type-heading-md">
-        Selecciona una ruta
+        {copy.selectRoute}
       </h2>
       <p className="type-body-sm">
-        Toca cualquier tarjeta para ver sus detalles.
+        {copy.selectRouteHelp}
       </p>
     </div>
   );
@@ -321,6 +334,8 @@ interface RouteSearchMatchesProps {
 }
 
 function RouteSearchMatches({ employees }: RouteSearchMatchesProps) {
+  const { language } = useLanguage();
+  const copy = getConfiguracionCopy(language).routes;
   if (employees.length === 0) return null;
 
   return (
@@ -338,10 +353,10 @@ function RouteSearchMatches({ employees }: RouteSearchMatchesProps) {
             aria-hidden="true"
             className="ruta-section__title-icon"
           />
-          Empleados encontrados
+          {copy.foundEmployees}
         </h2>
         <span className="ruta-search-results__count">
-          {employees.length} resultado{employees.length === 1 ? "" : "s"}
+          {employees.length} {employees.length === 1 ? copy.result : copy.results}
         </span>
       </header>
 
@@ -351,21 +366,21 @@ function RouteSearchMatches({ employees }: RouteSearchMatchesProps) {
             <div className="ruta-search-result__identity">
               <strong>{employee.nombre}</strong>
               <span>
-                #{employee.numeroEmpleado} · Turno {employee.turno}
+                #{employee.numeroEmpleado} · {copy.shift} {employee.turno}
               </span>
             </div>
             <dl className="ruta-search-result__details">
               <div>
-                <dt>Parada</dt>
-                <dd>{employee.parada || "Sin información"}</dd>
+                <dt>{copy.stop}</dt>
+                <dd>{employee.parada || copy.noInformation}</dd>
               </div>
               <div>
-                <dt>Colonia</dt>
-                <dd>{employee.colonia || "Sin información"}</dd>
+                <dt>{copy.neighborhood}</dt>
+                <dd>{employee.colonia || copy.noInformation}</dd>
               </div>
               <div>
-                <dt>Sección</dt>
-                <dd>{employee.seccion || "Sin información"}</dd>
+                <dt>{copy.section}</dt>
+                <dd>{employee.seccion || copy.noInformation}</dd>
               </div>
             </dl>
           </li>
@@ -393,6 +408,8 @@ function RutaDetail({
   hasComparison,
   comparisonDate,
 }: RutaDetailProps) {
+  const { language } = useLanguage();
+  const copy = getConfiguracionCopy(language).routes;
   return (
     <div className="ruta-detail" key={animKey}>
       <div className="ruta-detail__body">
@@ -423,8 +440,8 @@ function RutaDetail({
             />
             <p className="shift-bars__comparison-note">
               {hasComparison
-                ? `Cambios desde la captura del ${formatReadableDate(comparisonDate)}.`
-                : "El comparativo aparecerá después de la próxima actualización de rutas."}
+                ? `${copy.comparisonChanged} ${formatReadableDate(comparisonDate, language === 'en' ? 'en-US' : 'es-MX')}.`
+                : copy.comparisonPending}
             </p>
           </section>
 
@@ -434,7 +451,7 @@ function RutaDetail({
                 aria-hidden="true"
                 className="ruta-section__title-icon"
               />
-              Empleados por día
+              {copy.employeesByDay}
             </h2>
             <DailyCapacityBars
               capacityPerDay={ruta.capacityPerDay}
@@ -453,11 +470,14 @@ function RutaDetail({
 
 
 export function RutasView() {
+  const { language } = useLanguage();
+  const copy = getConfiguracionCopy(language).routes;
+  const english = language === 'en';
   const { rutas, lastUpdated, hasComparison, loading, errorMsg } = useRutas();
   const location = useLocation();
   const [selectedRuta, setSelectedRuta] = useState<RutaAgrupada | null>(null);
   const [animKey, setAnimKey] = useState(0);
-  const [searchTerm, setSearchTerm] = useState(() => new URLSearchParams(location.search).get("buscar") ?? "");
+  const [searchTerm, setSearchTerm] = useState(() => new URLSearchParams(location.search).get("search") ?? "");
   
   /**
    * mobileView controls which panel is shown on small screens.
@@ -470,7 +490,7 @@ export function RutasView() {
 
   useEffect(() => {
     if (loading || errorMsg) return;
-    const routeName = new URLSearchParams(location.search).get("ruta");
+    const routeName = new URLSearchParams(location.search).get("route");
     const route = rutas.find(item => item.nombreRuta === routeName);
     if (!route) return;
     setSelectedRuta(route);
@@ -516,7 +536,7 @@ export function RutasView() {
   // Auto-select first matching route when search changes
   useEffect(() => {
     if (searchNorm && filteredRutas.length > 0) {
-      const routeFromUrl = new URLSearchParams(location.search).get("ruta");
+      const routeFromUrl = new URLSearchParams(location.search).get("route");
       if (!selectedRuta && filteredRutas.some(item => item.nombreRuta === routeFromUrl)) return;
       const currentStillVisible =
         selectedRuta && searchMatchesByRoute.has(selectedRuta.nombreRuta);
@@ -583,14 +603,14 @@ export function RutasView() {
       <header className="rutas-header">
         <div className="rutas-header__copy">
           <h1 id="rutas-page-title" className="config-page__title app-page-title">
-            Rutas
+            {copy.title}
           </h1>
         </div>
       </header>
 
       <section
         className="config-results-controls rutas-toolbar"
-        aria-label="Herramientas de rutas"
+        aria-label={copy.tools}
       >
         <div className="rutas-toolbar-flex">
           <div className="form-group config-search rutas-search-container">
@@ -598,7 +618,7 @@ export function RutasView() {
               htmlFor="rutas-search-input"
               className="config-filter-label type-caption-sm text-muted"
             >
-              Buscar empleado
+              {copy.searchEmployee}
             </label>
             <div className="config-search__wrapper">
               <button
@@ -606,7 +626,7 @@ export function RutasView() {
                 className={`config-search__icon rutas-search-clear-btn ${searchTerm ? "rutas-search-clear-btn--active" : "rutas-search-clear-btn--inactive"}`}
                 onClick={handleClearSearch}
                 disabled={!searchTerm}
-                aria-label={searchTerm ? "Limpiar búsqueda" : "Buscar"}
+                aria-label={searchTerm ? copy.clearSearch : copy.search}
                 tabIndex={searchTerm ? 0 : -1}
               >
                 <MorphingIcon
@@ -619,7 +639,7 @@ export function RutasView() {
                 id="rutas-search-input"
                 ref={searchInputRef}
                 type="search"
-                placeholder="Buscar por número de empleado o nombres"
+                placeholder={copy.searchPlaceholder}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 aria-describedby={
@@ -641,8 +661,9 @@ export function RutasView() {
                 aria-live="polite"
               >
                 {filteredRutas.length === 0
-                  ? "Sin resultados"
-                  : `${totalSearchMatches} empleado${totalSearchMatches === 1 ? "" : "s"} en ${searchMatchesByRoute.size} ruta${searchMatchesByRoute.size === 1 ? "" : "s"}`}
+                  ? copy.noResults
+                  : `${totalSearchMatches} ${totalSearchMatches === 1 ? copy.employee : copy.employeesPlural} ${copy.of} ${searchMatchesByRoute.size} ${english ? searchMatchesByRoute.size === 1 ? 'route' : 'routes' : `ruta${searchMatchesByRoute.size === 1 ? '' : 's'}`}`
+                }
               </p>
             )}
           </div>
@@ -655,10 +676,10 @@ export function RutasView() {
           aria-labelledby="rutas-list-title"
         >
           <header className="rutas-list-panel__header">
-            <h2 id="rutas-list-title">Rutas disponibles</h2>
+            <h2 id="rutas-list-title">{copy.routesAvailable}</h2>
             {!loading && !errorMsg && (
               <span className="rutas-list-panel__count">
-                {filteredRutas.length} de {rutas.length}
+                {filteredRutas.length} {copy.of} {rutas.length}
               </span>
             )}
           </header>
@@ -666,19 +687,19 @@ export function RutasView() {
           <BoneyardSkeleton
             name="configuracion-rutas"
             loading={loading}
-            loadingLabel="Cargando rutas…"
+            loadingLabel={copy.loading}
           >
             <ul
               ref={listRef}
               className="rutas-list"
-              aria-label="Lista de rutas"
+              aria-label={copy.routeList}
               onKeyDown={handleListKeyDown}
             >
               {errorMsg && (
                 <li className="rutas-error">
                   <div role="alert">
-                    <p className="type-body-strong">Error al cargar datos</p>
-                    <p className="type-body-sm">{errorMsg}</p>
+                    <p className="type-body-strong">{copy.loadError}</p>
+                    <p className="type-body-sm">{english ? "Check your connection and try again." : errorMsg}</p>
                   </div>
                 </li>
               )}
@@ -688,7 +709,7 @@ export function RutasView() {
                 !searchNorm &&
                 filteredRutas.length === 0 && (
                   <li className="rutas-empty type-body-sm">
-                    No se encontraron rutas en el archivo.
+                    {copy.noRoutesInFile}
                   </li>
                 )}
 
@@ -698,14 +719,14 @@ export function RutasView() {
                 filteredRutas.length === 0 && (
                   <li className="rutas-empty">
                     <p className="type-body-sm">
-                      No hay rutas con empleados que coincidan con la búsqueda.
+                      {copy.noMatchingRoutes}
                     </p>
                     <button
                       type="button"
                       className="btn-text"
                       onClick={handleClearSearch}
                     >
-                      Limpiar búsqueda
+                      {copy.clearSearch}
                     </button>
                   </li>
                 )}
@@ -744,8 +765,8 @@ export function RutasView() {
             <BackButton
               className="rutas-back-btn"
               onClick={handleBack}
-              aria-label="Volver a la lista de rutas"
-              label="Todas las rutas"
+              aria-label={copy.backToRouteList}
+              label={copy.allRoutes}
             />
           )}
 

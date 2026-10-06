@@ -3,6 +3,8 @@ import { EmployeeRowActions } from '@/components/ui/EmployeeRowActions';
 import { localTodayIso } from '@/lib/dates';
 import type { Employee } from '@/lib/types';
 import { normalizeString } from '@/lib/utils';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { workforceText } from '@/pages/workforce-translations';
 import './DepartmentSearchResults.css';
 
 interface DepartmentSearchResultsProps {
@@ -57,6 +59,8 @@ export function DepartmentSearchResults({
   onIncapacidad,
   onDelete,
 }: DepartmentSearchResultsProps) {
+  const { language } = useLanguage();
+  const t = (text: string) => workforceText(language, text);
   const groups = groupEmployeesByArea(employees);
   const today = localTodayIso();
 
@@ -66,10 +70,10 @@ export function DepartmentSearchResults({
       aria-labelledby="department-search-results-title"
     >
       <header className="department-search-results__header">
-        <h2 id="department-search-results-title">Resultados</h2>
+        <h2 id="department-search-results-title">{t('Resultados')}</h2>
         <p className="department-search-results__summary" aria-live="polite">
-          {employees.length} {employees.length === 1 ? 'empleado' : 'empleados'} ·{' '}
-          {groups.length} {groups.length === 1 ? 'departamento' : 'departamentos'}
+          {employees.length} {t(employees.length === 1 ? 'empleado' : 'empleados')} ·{' '}
+          {groups.length} {t(groups.length === 1 ? 'departamento' : 'departamentos')}
         </p>
       </header>
 
@@ -80,7 +84,7 @@ export function DepartmentSearchResults({
               <h3>{group.area}</h3>
               <span
                 className="department-search-group__count"
-                aria-label={`${group.employees.length} ${group.employees.length === 1 ? 'empleado' : 'empleados'} en ${group.area}`}
+                aria-label={`${group.employees.length} ${t(group.employees.length === 1 ? 'empleado' : 'empleados')} ${language === 'en' ? 'in' : 'en'} ${group.area}`}
               >
                 {group.employees.length}
               </span>

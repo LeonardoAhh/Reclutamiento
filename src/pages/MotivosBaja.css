@@ -110,6 +110,7 @@
 .motivos-baja__filter-trigger {
   flex: 0 0 auto;
   margin-inline-start: auto;
+  border: 0;
 }
 
 .motivos-baja__filter {

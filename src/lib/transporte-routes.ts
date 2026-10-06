@@ -1,6 +1,6 @@
 /**
  * Catálogo de rutas de transporte autorizadas. Es la fuente única de verdad
- * para la página /transporte: el importer rechaza filas cuya ruta no exista
+ * para la página /routes: el importer rechaza filas cuya ruta no exista
  * acá, y el dashboard de capacidad construye una columna por cada turno
  * conocido para cada ruta.
  *

@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   ClipboardList,
   SlidersHorizontal,
@@ -13,7 +13,6 @@ import { SearchField } from "@/components/ui/SearchField";
 import { StarliteBadge } from "@/components/ui/Badge";
 import { DepartmentSearchResults } from "@/components/plantilla/DepartmentSearchResults";
 import { DepartmentCard } from "@/components/plantilla/DepartmentCard";
-import { VacancyReportModal } from "@/components/ui/VacancyReportModal";
 import { PositionSettingsWizard } from "@/components/ui/PositionSettingsWizard";
 import { EmployeeModal } from "@/components/ui/EmployeeModal";
 import { EditEmployeeModal } from "@/components/ui/EditEmployeeModal";
@@ -40,10 +39,16 @@ import { useCandidates } from "@/hooks/useCandidates";
 import { useBajas } from "@/hooks/useBajas";
 import { useAuth } from "@/hooks/useAuth";
 import { usePositions } from "@/lib/positions";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { workforceText } from "@/pages/workforce-translations";
+import { VACANCY_ASSIGNMENTS_PATH } from "@/components/layout/navigation";
 import type { Employee, EmployeeRaw } from "@/lib/types";
 import "./Dashboard.css";
 
 export function Dashboard() {
+  const { language } = useLanguage();
+  const t = (text: string) => workforceText(language, text);
+  const navigate = useNavigate();
   const { profile } = useAuth();
   const isAdmin = profile?.role === "admin";
   const {
@@ -107,7 +112,6 @@ export function Dashboard() {
   );
   const [promoteTarget, setPromoteTarget] = useState<Employee | null>(null);
   const [editTarget, setEditTarget] = useState<Employee | null>(null);
-  const [vacancyReportOpen, setVacancyReportOpen] = useState(false);
   const [positionSettingsOpen, setPositionSettingsOpen] = useState(false);
 
   const positionCoverage = useMemo(
@@ -228,7 +232,7 @@ export function Dashboard() {
   /**
    * Recibe `bajaData` desde el modal de baja y se lo reenvía al hook,
    * para que se inserte el registro correspondiente en la tabla `bajas`
-   * (y se refleje en `/bajas`). Antes se ignoraba el argumento extra y la
+   * (y se refleje en `/employee-turnover`). Antes se ignoraba el argumento extra y la
    * baja nunca se persistía.
    */
   async function handleDeleteEmployee(
@@ -310,13 +314,13 @@ export function Dashboard() {
     <main className="plantilla-layout container" aria-labelledby="plantilla-title">
       <header className="plantilla-header">
         <h1 id="plantilla-title" className="app-page-title">
-          Plantilla
+          {t("Plantilla")}
         </h1>
       </header>
 
       <section
         className="plantilla-main"
-        aria-label="Contenido principal"
+        aria-label={t("Contenido principal")}
       >
         <AnimatePresence initial={false} mode="wait">
           <motion.div
@@ -331,21 +335,21 @@ export function Dashboard() {
               <BoneyardSkeleton
                 name="plantilla-page"
                 loading={loading && employees.length === 0}
-                loadingLabel="Cargando plantilla…"
+                loadingLabel={t("Cargando plantilla…")}
               >
                 <header className="dashboard__hero dashboard-sidebar__hero">
                   <div className="dashboard__hero-content dashboard-sidebar__hero-content">
                     <div
                       className="dashboard-sidebar__search"
                       role="search"
-                      aria-label="Buscar en la plantilla"
+                      aria-label={t("Buscar en la plantilla")}
                     >
                       <div className="dashboard-sidebar__search-wrapper">
                         <SearchField
                           id="search-input"
                           className="dashboard-sidebar__search-field"
-                          label="Buscar en la plantilla"
-                          placeholder="Buscar..."
+                          label={t("Buscar en la plantilla")}
+                          placeholder={t("Buscar...")}
                           value={searchTerm}
                           onChange={(event) => setSearchTerm(event.target.value)}
                           onClear={() => setSearchTerm("")}
@@ -361,7 +365,7 @@ export function Dashboard() {
                           role="switch"
                           checked={showOnlyStarlite}
                           onChange={(event) => setShowOnlyStarlite(event.target.checked)}
-                          aria-label="Solo proyecto Starlite"
+                          aria-label={t("Solo proyecto Starlite")}
                         />
                         <span className="toggle-switch__slider" aria-hidden="true" />
                         <StarliteBadge />
@@ -374,22 +378,22 @@ export function Dashboard() {
                             setSelectedEmployee(null);
                             setEmpModalMode("add");
                           }}
-                          aria-label="Nuevo empleado"
+                          aria-label={t("Nuevo empleado")}
                         >
                           <UserPlusIcon size={16} aria-hidden="true" />
                           <span className="dashboard__report-btn-label">
-                            Nuevo
+                            {t("Nuevo")}
                           </span>
                         </button>
                         <button
                           type="button"
                           className="btn-secondary dashboard__report-btn"
-                          onClick={() => setVacancyReportOpen(true)}
-                          aria-label="Resumen de vacantes"
+                          onClick={() => navigate(VACANCY_ASSIGNMENTS_PATH)}
+                          aria-label={t("Asignación de vacantes")}
                         >
                           <ClipboardList size={16} aria-hidden="true" />
                           <span className="dashboard__report-btn-label">
-                            Reporte
+                            {t("Reporte")}
                           </span>
                         </button>
                         {isAdmin && (
@@ -397,8 +401,8 @@ export function Dashboard() {
                             type="button"
                             className="btn-secondary dashboard__report-btn"
                             onClick={() => setPositionSettingsOpen(true)}
-                            title="Configurar plantilla, backup y Starlite"
-                            aria-label="Configurar plantilla, backup y Starlite"
+                            title={t("Configurar plantilla, backup y Starlite")}
+                            aria-label={t("Configurar plantilla, backup y Starlite")}
                             aria-haspopup="dialog"
                           >
                             <SlidersHorizontal size={16} aria-hidden="true" />
@@ -415,17 +419,16 @@ export function Dashboard() {
                   {filteredDepts.length === 0 && employees.length === 0 && (
                     <div className="dashboard__empty" id="dashboard-empty">
                       <UsersRound size={48} strokeWidth={2.5} />
-                      <h2>Sin datos cargados</h2>
+                      <h2>{t("Sin datos cargados")}</h2>
                       <p>
-                        Importa un archivo JSON o crea un empleado para
-                        comenzar.
+                        {t("Importa un archivo JSON o crea un empleado para comenzar.")}
                       </p>
                     </div>
                   )}
 
                   {employees.length > 0 && normalizedSearchTerm.length === 1 && (
                     <p className="dashboard__search-hint" role="status">
-                      Escribe al menos 2 caracteres para buscar.
+                      {t("Escribe al menos 2 caracteres para buscar.")}
                     </p>
                   )}
 
@@ -441,10 +444,10 @@ export function Dashboard() {
 
                   {hasSearchQuery && !showOnlyStarlite && filteredDepts.length > 0 && (
                     <header className="dashboard__department-match-heading">
-                      <h2>Departamentos y puestos</h2>
+                      <h2>{t("Departamentos y puestos")}</h2>
                       <span>
                         {filteredDepts.length}{' '}
-                        {filteredDepts.length === 1 ? 'coincidencia' : 'coincidencias'}
+                        {t(filteredDepts.length === 1 ? 'coincidencia' : 'coincidencias')}
                       </span>
                     </header>
                   )}
@@ -456,10 +459,10 @@ export function Dashboard() {
                         size={48}
                         strokeWidth={2.5}
                       />
-                      <h2>Sin resultados</h2>
+                      <h2>{t("Sin resultados")}</h2>
                       <p>{showOnlyStarlite && !hasSearchQuery
-                        ? "No hay empleados del proyecto Starlite."
-                        : "No se encontraron coincidencias para tu búsqueda."}</p>
+                        ? t("No hay empleados del proyecto Starlite.")
+                        : t("No se encontraron coincidencias para tu búsqueda.")}</p>
                       <button
                         type="button"
                         className="btn-secondary"
@@ -468,7 +471,7 @@ export function Dashboard() {
                           setShowOnlyStarlite(false);
                         }}
                       >
-                        {showOnlyStarlite ? "Limpiar filtros" : "Limpiar búsqueda"}
+                        {t(showOnlyStarlite ? "Limpiar filtros" : "Limpiar búsqueda")}
                       </button>
                     </div>
                   )}
@@ -482,8 +485,8 @@ export function Dashboard() {
                           size={48}
                           strokeWidth={2.5}
                         />
-                        <h2>Sin resultados</h2>
-                        <p>No hay departamentos que coincidan con el filtro.</p>
+                        <h2>{t("Sin resultados")}</h2>
+                        <p>{t("No hay departamentos que coincidan con el filtro.")}</p>
                       </div>
                     )}
 
@@ -552,13 +555,6 @@ export function Dashboard() {
           onClose={() => setPromoteTarget(null)}
           onPromote={handlePromote}
           onCreatePosition={createPosition}
-        />
-
-        {/* ── Vacancy Report Modal (WhatsApp-ready) ── */}
-        <VacancyReportModal
-          isOpen={vacancyReportOpen}
-          onClose={() => setVacancyReportOpen(false)}
-          positions={positionCoverage}
         />
 
         {isAdmin && (

@@ -13,6 +13,7 @@ import { bajaKey, buildRequisicionCodes } from '@/lib/requisicion';
 import type { Baja } from '@/lib/types';
 import { currentYearMx } from '@/lib/dates';
 import { toast } from '@/lib/notify';
+import { useLanguage } from '@/contexts/LanguageContext';
 import {
   BajasHero,
   BajasBanner,
@@ -28,6 +29,8 @@ const currentYear = currentYearMx();
 const YEAR_OPTIONS = Array.from({ length: 5 }, (_, i) => currentYear - i);
 
 export function Bajas() {
+  const { language } = useLanguage();
+  const english = language === 'en';
   const { employees } = useSupabaseData();
   const {
     bajas,
@@ -164,14 +167,14 @@ export function Bajas() {
           onClose={() => setCubrirTarget(null)}
           onSave={async (n, f, note) => {
             const res = await marcarCubierta(n, f, note);
-            if (res.ok) toast.success({ title: 'Vacante cubierta' });
-            else toast.error({ title: 'No se pudo marcar como cubierta' });
+            if (res.ok) toast.success({ title: english ? 'Vacancy filled' : 'Vacante cubierta' });
+            else toast.error({ title: english ? 'Could not mark the vacancy as filled' : 'No se pudo marcar como cubierta' });
             return res;
           }}
           onClear={async (n) => {
             const res = await desmarcarCubierta(n);
-            if (res.ok) toast.info({ title: 'Cobertura removida' });
-            else toast.error({ title: 'No se pudo remover la cobertura' });
+            if (res.ok) toast.info({ title: english ? 'Coverage removed' : 'Cobertura removida' });
+            else toast.error({ title: english ? 'Could not remove coverage' : 'No se pudo remover la cobertura' });
             return res;
           }}
         />

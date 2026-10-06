@@ -3,6 +3,8 @@ import { BarChart3, CircleCheckBig, Minus, TrendingDown, TrendingUp } from 'luci
 import { Modal } from './Modal';
 import { businessDaysBetween } from '@/lib/dates';
 import type { VacancyRequest } from '@/lib/types';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { workforceText } from '@/pages/workforce-translations';
 import './TtfHistoryModal.css';
 
 interface TtfHistoryModalProps {
@@ -24,15 +26,17 @@ interface MonthlyTtf {
   }>;
 }
 
-function getMonthName(month: number): string {
-  const months = [
-    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-  ];
-  return months[month - 1] || '';
+function getMonthName(month: number, language: 'es' | 'en'): string {
+  const date = new Date(Date.UTC(2024, month - 1, 1));
+  return new Intl.DateTimeFormat(language === 'en' ? 'en-US' : 'es-MX', {
+    month: 'long',
+    timeZone: 'UTC',
+  }).format(date);
 }
 
 export function TtfHistoryModal({ isOpen, onClose, vacancies }: TtfHistoryModalProps) {
+  const { language } = useLanguage();
+  const t = (text: string) => workforceText(language, text);
   const monthlyData = useMemo(() => {
     // Agrupar vacantes cubiertas por mes
     const grouped = new Map<string, MonthlyTtf>();
@@ -55,7 +59,7 @@ export function TtfHistoryModal({ isOpen, onClose, vacancies }: TtfHistoryModalP
 
       if (!grouped.has(key)) {
         grouped.set(key, {
-          month: getMonthName(month),
+          month: getMonthName(month, language),
           year,
           ttfAvg: 0,
           count: 0,
@@ -83,7 +87,7 @@ export function TtfHistoryModal({ isOpen, onClose, vacancies }: TtfHistoryModalP
     return Array.from(grouped.entries())
       .sort((a, b) => b[0].localeCompare(a[0]))
       .map(([_, data]) => data);
-  }, [vacancies]);
+  }, [vacancies, language]);
 
   if (!isOpen) return null;
 
@@ -91,7 +95,7 @@ export function TtfHistoryModal({ isOpen, onClose, vacancies }: TtfHistoryModalP
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Histórico TTF (Días Hábiles)"
+      title={t("Histórico TTF (Días Hábiles)")}
       icon={<BarChart3 size={20} />}
       className="ttf-history-modal"
       labelledById="ttf-history-title"
@@ -101,7 +105,7 @@ export function TtfHistoryModal({ isOpen, onClose, vacancies }: TtfHistoryModalP
         <div className="ttf-history-modal__content">
           {monthlyData.length === 0 ? (
             <div className="ttf-history-modal__empty">
-              <p>No hay vacantes cubiertas con fechas registradas</p>
+              <p>{t("No hay vacantes cubiertas con fechas registradas")}</p>
             </div>
           ) : (
             <div className="ttf-history-modal__list">
@@ -119,13 +123,13 @@ export function TtfHistoryModal({ isOpen, onClose, vacancies }: TtfHistoryModalP
                         </h3>
                         <div className="ttf-history-modal__month-meta">
                           <span className="ttf-history-modal__month-count">
-                            {data.count} {data.count === 1 ? 'vacante' : 'vacantes'}
+                            {data.count} {t(data.count === 1 ? 'vacante' : 'vacantes')}
                           </span>
                         </div>
                       </div>
                       <div className="ttf-history-modal__month-stats">
                         <div className="ttf-history-modal__month-avg">
-                          {data.ttfAvg} días
+                          {data.ttfAvg} {t('días')}
                         </div>
                         {index < monthlyData.length - 1 && (
                           <div className={`ttf-history-modal__month-trend ttf-history-modal__month-trend--${trend}`}>

@@ -9,6 +9,7 @@ import {
 import type { IconInput } from 'morphicons/react';
 import type { HTMLMotionProps } from 'framer-motion';
 
+import { useLanguage } from '@/contexts/LanguageContext';
 import { useFeedback } from '@/hooks/useFeedback';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import './AnimatedSubmitButton.css';
@@ -32,10 +33,10 @@ export function AnimatedSubmitButton({
   isSubmitting,
   isSuccess,
   isError,
-  idleText = 'Guardar',
-  loadingText = 'Guardando…',
-  successText = '¡Guardado!',
-  errorText = 'Error',
+  idleText: idleTextProp,
+  loadingText: loadingTextProp,
+  successText: successTextProp,
+  errorText: errorTextProp,
   errorMessageId,
   idleIcon = Save,
   iconOnly = false,
@@ -48,6 +49,12 @@ export function AnimatedSubmitButton({
   title,
   ...buttonProps
 }: AnimatedSubmitButtonProps) {
+  const { language } = useLanguage();
+  const english = language === 'en';
+  const idleText = idleTextProp ?? (english ? 'Save' : 'Guardar');
+  const loadingText = loadingTextProp ?? (english ? 'Saving…' : 'Guardando…');
+  const successText = successTextProp ?? (english ? 'Saved!' : '¡Guardado!');
+  const errorText = errorTextProp ?? 'Error';
   const { trigger } = useFeedback();
   const previousState = useRef<SubmitState>('idle');
   const state: SubmitState = isSubmitting ? 'loading' : isError ? 'error' : isSuccess ? 'success' : 'idle';

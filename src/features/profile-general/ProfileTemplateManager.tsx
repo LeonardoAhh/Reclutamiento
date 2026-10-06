@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { FileUp, Plus, Printer, Trash2 } from 'lucide-react';
 import { CustomSelect } from '@/components/ui/CustomSelect';
 import { toast } from '@/lib/notify';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { usePositions } from '@/lib/positions';
 import { saveProfileTemplate } from './api';
 import { ProfileImportModal } from './ProfileImportModal';
@@ -23,6 +24,8 @@ const emptyCriterion = (): EditableCriterion => ({
 });
 
 export function ProfileTemplateManager({ templates, onSaved }: ProfileTemplateManagerProps) {
+  const { language } = useLanguage();
+  const english = language === 'en';
   const { positions, loading: positionsLoading } = usePositions();
   const [area, setArea] = useState('');
   const [position, setPosition] = useState('');
@@ -75,7 +78,7 @@ export function ProfileTemplateManager({ templates, onSaved }: ProfileTemplateMa
     setError('');
     try {
       await saveProfileTemplate({ area, position, source, criteria });
-      toast.success({ title: 'Plantilla activada' });
+      toast.success({ title: english ? 'Template activated' : 'Plantilla activada' });
       setArea('');
       setPosition('');
       setSource('manual');

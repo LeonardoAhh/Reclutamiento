@@ -6,6 +6,8 @@ import { toast } from '@/lib/notify';
 import { isBoneyardBuild } from '@/lib/boneyard';
 import { listTeamMembers } from './api';
 import { findTeamMember, type TeamMember } from './types';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { teamCopy, translateTeamMessage } from './translations';
 
 interface TeamDirectory {
   members: TeamMember[];
@@ -22,6 +24,9 @@ export function TeamProvider({ children }: { children: ReactNode }) {
 
 function AuthenticatedTeamProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
+  const { language } = useLanguage();
+  const copy = teamCopy(language);
+  const languageRef = useRef(language);
   const [members, setMembers] = useState<TeamMember[] | null>(null);
   const [error, setError] = useState('');
   const request = useRef(0);
@@ -33,7 +38,9 @@ function AuthenticatedTeamProvider({ children }: { children: ReactNode }) {
       setMembers(rows);
       setError('');
     } catch (cause) {
-      if (version === request.current) setError(cause instanceof Error ? cause.message : 'No se pudo cargar el equipo.');
+      if (version === request.current) setError(cause instanceof Error
+        ? cause.message
+        : 'No se pudo cargar el equipo. Comprueba la conexión y la migración del catálogo.');
       throw cause;
     }
   }, []);
@@ -59,7 +66,17 @@ function AuthenticatedTeamProvider({ children }: { children: ReactNode }) {
   }, [user?.id, refresh]);
 
   useEffect(() => {
-    if (error && members) toast.error({ title: 'No se pudo actualizar el equipo', description: error });
+    languageRef.current = language;
+  }, [language]);
+
+  useEffect(() => {
+    if (error && members) {
+      const currentLanguage = languageRef.current;
+      toast.error({
+        title: currentLanguage === 'en' ? 'Could not update the team' : 'No se pudo actualizar el equipo',
+        description: translateTeamMessage(error, currentLanguage),
+      });
+    }
   }, [error, members]);
 
   const value = useMemo(() => ({ members: members ?? [], refresh,
@@ -67,11 +84,11 @@ function AuthenticatedTeamProvider({ children }: { children: ReactNode }) {
   }), [members, refresh]);
 
   if (error && !members) return <main className="container container--compact">
-    <h1 className="app-page-title">Equipo no disponible</h1>
-    <p role="alert">{error}</p>
-    <button type="button" className="btn-primary" onClick={() => void refresh().catch(() => {})}>Reintentar</button>
+    <h1 className="app-page-title">{copy.titleUnavailable}</h1>
+    <p role="alert">{translateTeamMessage(error, language)}</p>
+    <button type="button" className="btn-primary" onClick={() => void refresh().catch(() => {})}>{copy.retry}</button>
   </main>;
-  if (!members) return <TransitionLoader title="Cargando pagina..." />;
+  if (!members) return <TransitionLoader title={copy.loadingPage} />;
   return <TeamContext.Provider value={value}>{children}</TeamContext.Provider>;
 }
 

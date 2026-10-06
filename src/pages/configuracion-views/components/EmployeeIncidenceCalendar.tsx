@@ -1,19 +1,11 @@
 import { useMemo, useState } from 'react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { CustomSelect } from '@/components/ui/CustomSelect';
 import { INCIDENCIA_LABELS, NON_INCIDENT_CODES } from '@/components/reporte-diario/constants';
-import { daysInMonth, formatMes } from '@/components/reporte-diario/helpers';
+import { daysInMonth } from '@/components/reporte-diario/helpers';
 import type { ReporteDiarioRecord } from '@/hooks/useReporteDiario';
-
-const WEEKDAYS = [
-  { short: 'L', full: 'Lunes' },
-  { short: 'M', full: 'Martes' },
-  { short: 'M', full: 'Miércoles' },
-  { short: 'J', full: 'Jueves' },
-  { short: 'V', full: 'Viernes' },
-  { short: 'S', full: 'Sábado' },
-  { short: 'D', full: 'Domingo' },
-] as const;
+import { getConfiguracionCopy } from '../configuracion-translations';
 
 type EmployeeReportRow = {
   numero_empleado: string;
@@ -41,9 +33,16 @@ export function findEmployeeReportRow(report: ReporteDiarioRecord, employeeNumbe
   );
 }
 
-function describeCalendarCode(code?: string) {
-  if (!code || code === '-' || code === 'X') return 'Sin registro';
+function describeCalendarCode(code: string | undefined, noRecord: string) {
+  if (!code || code === '-' || code === 'X') return noRecord;
   return INCIDENCIA_LABELS[code] || code;
+}
+
+function formatCalendarMonth(month: string, locale: string) {
+  const [year, monthNumber] = month.split('-').map(Number);
+  if (!year || !monthNumber) return month;
+  return new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' })
+    .format(new Date(Date.UTC(year, monthNumber - 1, 1)));
 }
 
 function getCalendarDayKind(code?: string): CalendarDayKind {
@@ -90,6 +89,10 @@ export function EmployeeIncidenceCalendar({
   selectId,
   titleId,
 }: EmployeeIncidenceCalendarProps) {
+  const { language } = useLanguage();
+  const copy = getConfiguracionCopy(language).analysis;
+  const locale = language === 'en' ? 'en-US' : 'es-MX';
+  const incidenceLabels: Readonly<Record<string, string>> = copy.incidenceLabels;
   const [requestedMonth, setRequestedMonth] = useState('');
 
   const availableReports = useMemo(() => {
@@ -125,7 +128,7 @@ export function EmployeeIncidenceCalendar({
       <header className="config-calendar-header-actions">
         <div className="config-calendar-heading">
           <h4 id={titleId} className="config-card__section-title type-caption-up text-muted">
-            Calendario de incidencias
+            {copy.incidenceCalendar}
           </h4>
           {selectedEntry && (
             <p
@@ -133,7 +136,7 @@ export function EmployeeIncidenceCalendar({
               aria-live="polite"
               aria-atomic="true"
             >
-              {incidentCount} {incidentCount === 1 ? 'incidencia' : 'incidencias'} en {formatMes(selectedMonth)}
+              {incidentCount} {incidentCount === 1 ? copy.incidence : copy.incidences} {copy.in} {formatCalendarMonth(selectedMonth, locale)}
             </p>
           )}
         </div>
@@ -147,19 +150,19 @@ export function EmployeeIncidenceCalendar({
                 onClick={() => previousMonth && setRequestedMonth(previousMonth)}
                 disabled={!previousMonth}
                 aria-label={previousMonth
-                  ? `Mes anterior: ${formatMes(previousMonth)}`
-                  : 'No hay un mes anterior'}
+                  ? `${copy.previousMonth}: ${formatCalendarMonth(previousMonth, locale)}`
+                  : copy.noPreviousMonth}
               >
                 <ArrowLeft size="var(--icon-size-sm)" aria-hidden="true" />
               </button>
               <CustomSelect
                 id={selectId}
-                aria-label="Mes del calendario de incidencias"
+                aria-label={copy.incidenceCalendarMonth}
                 value={selectedMonth}
                 onChange={setRequestedMonth}
                 options={availableReports.map(({ report }) => ({
                   value: report.mes,
-                  label: formatMes(report.mes),
+                  label: formatCalendarMonth(report.mes, locale),
                 }))}
                 showPlaceholderOption={false}
               />
@@ -169,8 +172,8 @@ export function EmployeeIncidenceCalendar({
                 onClick={() => nextMonth && setRequestedMonth(nextMonth)}
                 disabled={!nextMonth}
                 aria-label={nextMonth
-                  ? `Mes siguiente: ${formatMes(nextMonth)}`
-                  : 'No hay un mes siguiente'}
+                  ? `${copy.nextMonth}: ${formatCalendarMonth(nextMonth, locale)}`
+                  : copy.noNextMonth}
               >
                 <ArrowRight size="var(--icon-size-sm)" aria-hidden="true" />
               </button>
@@ -181,32 +184,33 @@ export function EmployeeIncidenceCalendar({
 
       {loading ? (
         <p className="config-calendar-empty type-body-sm text-muted">
-          Cargando calendario…
+          {copy.loadingCalendar}
         </p>
       ) : selectedEntry ? (
         <div className="config-calendar-grid-container">
           <div className="config-calendar-wrapper">
             <div className="config-calendar-header" aria-hidden="true">
-              {WEEKDAYS.map((weekday) => (
+              {copy.weekdays.map((weekday) => (
                 <abbr key={weekday.full} title={weekday.full} className="config-calendar-header__abbr">
                   {weekday.short}
                 </abbr>
               ))}
             </div>
 
-            <ol className="config-calendar" aria-label={`Calendario de ${formatMes(selectedMonth)} para ${employeeName}`}>
+            <ol className="config-calendar" aria-label={`${copy.calendarFor} ${formatCalendarMonth(selectedMonth, locale)} ${copy.for} ${employeeName}`}>
               {calendarDays.map((day, index) => {
                 if (!day) {
                   return <li key={`blank-${index}`} className="config-calendar__day config-calendar__day--blank" aria-hidden="true" />;
                 }
 
                 const kind = getCalendarDayKind(day.code);
-                const description = describeCalendarCode(day.code);
+                const sourceDescription = describeCalendarCode(day.code, copy.noRecord);
+                const description = incidenceLabels[sourceDescription] ?? sourceDescription;
                 return (
                   <li
                     key={day.dayKey}
                     className={`config-calendar__day config-calendar__day--${kind}`}
-                    aria-label={`Día ${day.dayNumber}: ${description}`}
+                    aria-label={`${copy.day} ${day.dayNumber}: ${description}`}
                   >
                     <span className="config-calendar__day-number" aria-hidden="true">{day.dayNumber}</span>
                     <span className="config-calendar__day-code" aria-hidden="true">{day.code || '—'}</span>
@@ -215,25 +219,25 @@ export function EmployeeIncidenceCalendar({
               })}
             </ol>
 
-            <div className="config-calendar-legend" aria-label="Leyenda del calendario">
+            <div className="config-calendar-legend" aria-label={copy.calendarLegend}>
               <span className="config-calendar-legend__item">
                 <span className="config-calendar-legend__swatch config-calendar-legend__swatch--attendance" aria-hidden="true" />
-                Asistencia
+                {copy.attendance}
               </span>
               <span className="config-calendar-legend__item">
                 <span className="config-calendar-legend__swatch config-calendar-legend__swatch--incident" aria-hidden="true" />
-                Incidencia
+                {copy.incident}
               </span>
               <span className="config-calendar-legend__item">
                 <span className="config-calendar-legend__swatch config-calendar-legend__swatch--rest" aria-hidden="true" />
-                Descanso o baja
+                {copy.restOrLeave}
               </span>
             </div>
           </div>
         </div>
       ) : (
         <p className="config-calendar-empty type-body-sm text-muted" role="status">
-          No hay reportes disponibles para este colaborador.
+          {copy.noReports}
         </p>
       )}
     </section>

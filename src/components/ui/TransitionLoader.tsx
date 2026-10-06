@@ -1,5 +1,6 @@
 import { motion, useReducedMotion } from 'framer-motion';
 import { BrandMarkPath } from '@/components/ui/BrandMark';
+import { useLanguage } from '@/contexts/LanguageContext';
 import './TransitionLoader.css';
 
 interface TransitionLoaderProps {
@@ -14,13 +15,15 @@ export function TransitionLoader({
   variant = 'default',
 }: TransitionLoaderProps) {
   const reduceMotion = useReducedMotion();
+  const { language } = useLanguage();
+  const english = language === 'en';
   const message = title ?? (variant === 'workspace-entry'
-    ? 'Preparando tu sesión…'
+    ? english ? 'Preparing your session…' : 'Preparando tu sesión…'
     : variant === 'workspace-exit'
-      ? 'Cerrando sesión…'
-      : 'Sincronizando…');
+      ? english ? 'Signing out…' : 'Cerrando sesión…'
+      : english ? 'Syncing…' : 'Sincronizando…');
   const accessibleMessage = variant === 'workspace-entry' && !title
-    ? `Acceso confirmado. ${message}`
+    ? `${english ? 'Access confirmed.' : 'Acceso confirmado.'} ${message}`
     : message;
 
   return (

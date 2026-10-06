@@ -19,6 +19,8 @@ import { CustomSelect } from "@/components/ui/CustomSelect";
 import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
 import { toast } from "@/lib/notify";
 import { isRouteAssignmentEligibleShift } from "./formatos-helpers";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getConfiguracionCopy } from "./configuracion-translations";
 import "./FormatosView.css";
 
 interface AvailableWeek {
@@ -36,19 +38,25 @@ function getWeekKey(range: IsoWeekRange) {
   return `${range.year}-W${String(range.week).padStart(2, "0")}`;
 }
 
-function getWeekLabel(range: IsoWeekRange) {
-  return `Semana ${range.week} · ${formatIsoWeekRange(range)} ${range.year}`;
+function getWeekLabel(range: IsoWeekRange, language: "es" | "en") {
+  if (language === "es") return `Semana ${range.week} · ${formatIsoWeekRange(range)} ${range.year}`;
+  const workWeekEnd = new Date(range.end.getTime() - 2 * 24 * 60 * 60 * 1000);
+  const start = range.start.toLocaleDateString("en-US", { day: "numeric", month: "short", timeZone: "America/Mexico_City" });
+  const end = workWeekEnd.toLocaleDateString("en-US", { day: "numeric", month: "short", timeZone: "America/Mexico_City" });
+  return `Week ${range.week} · ${start} - ${end} ${range.year}`;
 }
 
-function toAvailableWeek(range: IsoWeekRange): AvailableWeek {
+function toAvailableWeek(range: IsoWeekRange, language: "es" | "en"): AvailableWeek {
   return {
     value: getWeekKey(range),
-    label: getWeekLabel(range),
+    label: getWeekLabel(range, language),
     range,
   };
 }
 
 export function FormatosView() {
+  const { language } = useLanguage();
+  const copy = getConfiguracionCopy(language).formats;
   const {
     employees,
     loading: employeesLoading,
@@ -87,24 +95,24 @@ export function FormatosView() {
 
   const availableWeeks = useMemo(() => {
     const weeks = new Map<string, AvailableWeek>();
-    const current = toAvailableWeek(currentWeek);
+    const current = toAvailableWeek(currentWeek, language);
     weeks.set(current.value, current);
 
     for (const employee of employees) {
       const range = getWeekRange(employee.fecha_ingreso);
       if (!range) continue;
-      const option = toAvailableWeek(range);
+      const option = toAvailableWeek(range, language);
       weeks.set(option.value, option);
     }
 
     return Array.from(weeks.values()).sort((first, second) =>
       second.value.localeCompare(first.value),
     );
-  }, [currentWeek, employees]);
+  }, [currentWeek, employees, language]);
 
   const selectedWeek =
     availableWeeks.find((week) => week.value === selectedWeekKey) ??
-    toAvailableWeek(currentWeek);
+    toAvailableWeek(currentWeek, language);
 
   const weeklyEmployees = useMemo(
     () =>
@@ -136,14 +144,12 @@ export function FormatosView() {
       });
   }, [employees, rutaLookup, selectedRouteDate]);
 
-  const selectedWeekLabel = selectedWeek.label;
-
   const handleCopyImage = async () => {
     const sourceNode = tableRef.current;
     if (!sourceNode) return;
     const routeSection = sourceNode.closest(".recordatorios-routes");
     if (!routeSection) {
-      toast.error({ title: "No se pudo preparar la imagen" });
+      toast.error({ title: copy.prepareImageError });
       return;
     }
     let captureHost: HTMLDivElement | null = null;
@@ -189,13 +195,13 @@ export function FormatosView() {
         await navigator.clipboard.write([
           new ClipboardItem({ [blob.type]: blob }),
         ]);
-        toast.success({ title: "Imagen copiada al portapapeles" });
+        toast.success({ title: copy.imageCopied });
       } else {
-        throw new Error("No se pudo generar el Blob de la imagen");
+        throw new Error(copy.prepareImageError);
       }
     } catch (err) {
       console.error("Error generating or copying image:", err);
-      toast.error({ title: "Error al copiar la imagen" });
+      toast.error({ title: copy.imageCopyError });
     } finally {
       captureHost?.remove();
       setIsGeneratingImage(false);
@@ -208,7 +214,7 @@ export function FormatosView() {
     <BoneyardSkeleton
       name="configuracion-formatos"
       loading={loading}
-      loadingLabel="Cargando formatos…"
+      loadingLabel={copy.loading}
     >
       <section
         className="config-page formatos-page"
@@ -216,14 +222,14 @@ export function FormatosView() {
       >
         <header className="formatos-page__header">
           <h1 id="formatos-page-title" className="config-page__title app-page-title">
-            Formatos
+            {copy.title}
           </h1>
           <label className="config-filter-field formatos-page__week-filter">
             <CustomSelect
               id="formatos-week"
               value={selectedWeek.value}
               onChange={setSelectedWeekKey}
-              aria-label="Semana de ingreso"
+              aria-label={copy.hireWeek}
               options={availableWeeks.map((week) => ({
                 value: week.value,
                 label: week.label,
@@ -238,14 +244,14 @@ export function FormatosView() {
               className="formatos-page__error type-body-sm text-error"
               role="alert"
             >
-              Hubo un problema al cargar los empleados.
+              {copy.employeeProblem}
             </p>
           )}
 
           <div className="config-results-wrapper">
             <WeeklyOnboardingDocuments
               employees={weeklyEmployees}
-              weekLabel={selectedWeekLabel}
+              weekLabel={getWeekLabel(selectedWeek.range, "es")}
               printDate={localTodayIso()}
             />
 
@@ -259,19 +265,19 @@ export function FormatosView() {
                   id="recordatorios-routes-title"
                   className="recordatorios-routes__title"
                 >
-                  Asignación de rutas
+                  {copy.routeAssignment}
                 </h2>
               </div>
             </header>
 
             <section
               className="config-results-controls recordatorios-route-controls"
-              aria-label="Fecha y copia de rutas"
+              aria-label={copy.routeDateAndCopy}
             >
               <div className="config-results-controls__filters recordatorios-route-controls__grid">
                 <label className="config-filter-field recordatorios-route-date-field">
                   <span className="config-filter-label type-caption-sm text-muted">
-                    Fecha de ingreso
+                    {copy.hireDate}
                   </span>
                   <input
                     type="date"
@@ -296,7 +302,7 @@ export function FormatosView() {
                   }
                   onClick={handleCopyImage}
                   disabled={filteredEmployees.length === 0 || isGeneratingImage}
-                  aria-label={isGeneratingImage ? "Copiando..." : "Copiar"}
+                  aria-label={isGeneratingImage ? copy.copying : copy.copy}
                   aria-busy={isGeneratingImage}
                   aria-describedby={
                     filteredEmployees.length === 0
@@ -304,7 +310,7 @@ export function FormatosView() {
                       : undefined
                   }
                 >
-                  Copiar
+                  {copy.copy}
                 </ButtonUtility>
               </div>
             </section>
@@ -317,8 +323,7 @@ export function FormatosView() {
               >
                 <Bus size={32} aria-hidden="true" />
                 <p className="type-body-md text-charcoal">
-                  No hay ingresos aplicables al listado de rutas para la fecha
-                  seleccionada.
+                  {copy.noApplicableHires}
                 </p>
               </div>
             ) : (
@@ -327,12 +332,12 @@ export function FormatosView() {
                   className="table-responsive recordatorios-table-region"
                   tabIndex={0}
                   role="region"
-                  aria-label="Asignación de rutas"
+                  aria-label={copy.routeAssignment}
                 >
                   <div ref={tableRef} className="recordatorios-export-canvas">
                     <table className="config-table recordatorios-table">
                       <caption className="sr-only">
-                        Asignación de rutas para {selectedRouteDate}
+                        {copy.routeAssignment} · {selectedRouteDate}
                       </caption>
                       <thead>
                         <tr>
@@ -340,31 +345,31 @@ export function FormatosView() {
                             scope="col"
                             className="recordatorios-table__cell--left"
                           >
-                            No. Emp
+                            {copy.employeeNumber}
                           </th>
                           <th
                             scope="col"
                             className="recordatorios-table__cell--left"
                           >
-                            Nombre
+                            {copy.name}
                           </th>
                           <th
                             scope="col"
                             className="recordatorios-table__cell--center"
                           >
-                            Turno
+                            {copy.shift}
                           </th>
                           <th
                             scope="col"
                             className="recordatorios-table__cell--left"
                           >
-                            Nombre Ruta
+                            {copy.routeName}
                           </th>
                           <th
                             scope="col"
                             className="recordatorios-table__cell--left"
                           >
-                            Parada
+                            {copy.stop}
                           </th>
                         </tr>
                       </thead>
@@ -372,27 +377,27 @@ export function FormatosView() {
                         {filteredEmployees.map((emp) => (
                           <tr key={emp.id || emp.num_empleado}>
                             <td
-                              data-label="No. Emp"
+                              data-label={copy.employeeNumber}
                               className="type-body-sm font-medium text-ink recordatorios-table__cell--left"
                             >
                               {emp.num_empleado}
                             </td>
                             <td
-                              data-label="Nombre"
+                              data-label={copy.name}
                               className="type-body-sm text-charcoal recordatorios-table__cell--left"
                             >
                               {emp.nombre}
                             </td>
                             <td
-                              data-label="Turno"
+                              data-label={copy.shift}
                               className="type-body-sm text-charcoal recordatorios-table__cell--center"
                             >
                               {emp.turno || (
-                                <span className="text-error">Falta turno</span>
+                                <span className="text-error">{copy.missingShift}</span>
                               )}
                             </td>
                             <td
-                              data-label="Nombre Ruta"
+                              data-label={copy.routeName}
                               className="type-body-sm text-charcoal recordatorios-table__cell--left"
                             >
                               {emp.ruta_final ? (
@@ -400,12 +405,12 @@ export function FormatosView() {
                               ) : (
                                 <span className="text-error recordatorios-missing-data">
                                   <CircleAlert size={14} aria-hidden="true" />{" "}
-                                  Faltan datos
+                                  {copy.missingData}
                                 </span>
                               )}
                             </td>
                             <td
-                              data-label="Parada"
+                              data-label={copy.stop}
                               className="type-body-sm text-charcoal recordatorios-table__cell--left"
                             >
                               {emp.parada_final ? (
@@ -413,7 +418,7 @@ export function FormatosView() {
                               ) : (
                                 <span className="text-error recordatorios-missing-data">
                                   <CircleAlert size={14} aria-hidden="true" />{" "}
-                                  Faltan datos
+                                  {copy.missingData}
                                 </span>
                               )}
                             </td>

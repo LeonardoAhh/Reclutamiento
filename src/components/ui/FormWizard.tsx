@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { CircleCheckBig, ChevronLeft } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 import './FormWizard.css';
 
 export interface FormWizardStep {
@@ -51,6 +52,8 @@ export function FormWizard({
   focusStepOnChange = false,
   notice,
 }: FormWizardProps) {
+  const { language } = useLanguage();
+  const en = language === 'en';
   const total = steps.length;
   const [step, setStep] = useState(() =>
     Math.min(Math.max(initialStep, 0), Math.max(0, total - 1)),
@@ -107,7 +110,7 @@ export function FormWizard({
       <div className="form-wizard__progress" data-testid="form-wizard-progress">
         <div className="form-wizard__progress-info">
           <span className="form-wizard__step-count">
-            Paso {step + 1} de {total}
+            {en ? 'Step' : 'Paso'} {step + 1} {en ? 'of' : 'de'} {total}
           </span>
           <span
             ref={stepTitleRef}
@@ -123,7 +126,7 @@ export function FormWizard({
           aria-valuemin={1}
           aria-valuemax={total}
           aria-valuenow={step + 1}
-          aria-label={`Paso ${step + 1} de ${total}: ${current.title}`}
+          aria-label={`${en ? 'Step' : 'Paso'} ${step + 1} ${en ? 'of' : 'de'} ${total}: ${current.title}`}
         >
           {steps.map((s, i) => (
             <span
@@ -152,7 +155,7 @@ export function FormWizard({
             disabled={submitting || navigating || navigationPending}
             data-testid="form-wizard-cancel"
           >
-            Cancelar
+            {en ? 'Cancel' : 'Cancelar'}
           </button>
         ) : (
           <button
@@ -163,7 +166,7 @@ export function FormWizard({
             data-testid="form-wizard-back"
           >
             <ChevronLeft size="var(--icon-size-sm)" aria-hidden="true" />
-            Atrás
+            {en ? 'Back' : 'Atrás'}
           </button>
         )}
         {isLast ? (
@@ -184,7 +187,7 @@ export function FormWizard({
             aria-busy={navigationPending || undefined}
             data-testid="form-wizard-next"
           >
-            {navigationPending ? 'Espera…' : 'Siguiente'}
+            {navigationPending ? (en ? 'Please wait…' : 'Espera…') : (en ? 'Next' : 'Siguiente')}
           </button>
         )}
       </footer>

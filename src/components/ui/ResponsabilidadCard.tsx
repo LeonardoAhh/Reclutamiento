@@ -1,4 +1,5 @@
 import { EllipsisVertical, ListRestart, SquarePen, Trash2 } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,10 +38,12 @@ export function ResponsabilidadCard({
   onDelete,
   onViewReference,
 }: ResponsabilidadCardProps) {
+  const { language } = useLanguage();
+  const en = language === "en";
   return (
     <article className="card responsibility-card" role="listitem">
       {isNew && (
-        <span className="responsibility-card__status">Nueva</span>
+        <span className="responsibility-card__status">{en ? "New" : "Nueva"}</span>
       )}
       <header className="responsibility-card__header">
         <div className="responsibility-card__icon">
@@ -60,7 +63,7 @@ export function ResponsabilidadCard({
                 <button
                   type="button"
                   className="responsibility-card__menu"
-                  aria-label={`Opciones de ${title}`}
+                  aria-label={`${en ? "Options for" : "Opciones de"} ${title}`}
                 >
                   <EllipsisVertical
                     size="var(--icon-size-sm)"
@@ -73,7 +76,7 @@ export function ResponsabilidadCard({
                   <DropdownMenuItem asChild onSelect={onEdit}>
                     <button type="button">
                       <SquarePen aria-hidden="true" />
-                      <span>Editar</span>
+                      <span>{en ? "Edit" : "Editar"}</span>
                     </button>
                   </DropdownMenuItem>
                 )}
@@ -87,7 +90,7 @@ export function ResponsabilidadCard({
                     >
                       <button type="button">
                         <Trash2 aria-hidden="true" />
-                        <span>Eliminar</span>
+                        <span>{en ? "Delete" : "Eliminar"}</span>
                       </button>
                     </DropdownMenuItem>
                   </>
@@ -105,7 +108,7 @@ export function ResponsabilidadCard({
       <footer className="responsibility-card__footer">
         {area && (
           <p className="responsibility-card__area">
-            <span className="sr-only">Área:</span>
+            <span className="sr-only">{en ? "Area:" : "Área:"}</span>
             {area}
           </p>
         )}

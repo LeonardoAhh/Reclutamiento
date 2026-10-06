@@ -3,12 +3,14 @@ import { useLocation } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/lib/notify";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { ACTIVIDADES_PATH } from "./navigation";
 
 const SESSION_NOTICE_ID = "pending-activities";
 
 export function SessionNotice() {
   const { profile } = useAuth();
+  const { language } = useLanguage();
   const { pathname } = useLocation();
   const viewingActivities = pathname === ACTIVIDADES_PATH;
   const [taskCount, setTaskCount] = useState(0);
@@ -93,12 +95,12 @@ export function SessionNotice() {
 
     toast.info({
       id: SESSION_NOTICE_ID,
-      title: `${taskCount} ${
-        taskCount === 1 ? "actividad pendiente" : "actividades pendientes"
-      }`,
+      title: language === 'en'
+        ? `${taskCount} pending ${taskCount === 1 ? 'activity' : 'activities'}`
+        : `${taskCount} ${taskCount === 1 ? 'actividad pendiente' : 'actividades pendientes'}`,
     });
     sessionStorage.setItem("notified_activities", "true");
-  }, [taskCount, viewingActivities]);
+  }, [taskCount, viewingActivities, language]);
 
   return null;
 }

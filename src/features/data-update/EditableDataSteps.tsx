@@ -13,6 +13,7 @@ import type {
   DataUpdateTransportOption,
 } from "./types";
 import { ChildrenDetailsField } from "./ChildrenDetailsField";
+import { useDataUpdateText } from "./translations";
 
 type EditableKey = DataUpdateEditableTextKey;
 type EditableErrors = Partial<Record<EditableKey, string>>;
@@ -46,16 +47,17 @@ interface FamilyDataStepProps extends EditableDataStepProps {
   childrenError?: string;
 }
 
-function uppercaseOptions(values: readonly string[]): Option[] {
+function uppercaseOptions(values: readonly string[], t: (text: string) => string = (text) => text): Option[] {
   return [...new Set(values)].map((value) => ({
     value,
-    label: value.toLocaleUpperCase("es-MX"),
+    label: t(value.toLocaleUpperCase("es-MX")),
   }));
 }
 
 function optionsWithRegisteredValue(
   options: readonly Option[],
   currentValue: string,
+  t: (text: string) => string,
 ): Option[] {
   const registeredValue = currentValue.trim();
   const catalogOptions = [...options];
@@ -67,9 +69,9 @@ function optionsWithRegisteredValue(
   return [
     {
       value: currentValue,
-      label: `${registeredValue.toLocaleUpperCase("es-MX")} — VALOR REGISTRADO`,
+      label: `${registeredValue.toLocaleUpperCase("es-MX")} — ${t("VALOR REGISTRADO")}`,
     },
-    ...catalogOptions,
+    ...catalogOptions.map((option) => ({ ...option, label: t(option.label) })),
   ];
 }
 
@@ -98,10 +100,11 @@ function Field({
   inputMode?: "text" | "tel" | "email" | "numeric" | "decimal";
   max?: string;
 }) {
+  const t = useDataUpdateText();
   const errorId = `${id}-error`;
   return (
     <div className={`form-group${multiline ? " form-group--span-2" : ""}`}>
-      <label htmlFor={id}>{label}</label>
+      <label htmlFor={id}>{t(label)}</label>
       {multiline ? (
         <textarea
           className="data-update-value--uppercase"
@@ -134,7 +137,7 @@ function Field({
           required
         />
       )}
-      {error && <p id={errorId} className="form-error-text">{error}</p>}
+      {error && <p id={errorId} className="form-error-text">{t(error)}</p>}
     </div>
   );
 }
@@ -162,6 +165,7 @@ function SelectField({
   helpText?: string;
   showPlaceholderOption?: boolean;
 }) {
+  const t = useDataUpdateText();
   const errorId = `${id}-error`;
   const helpId = `${id}-help`;
   const describedBy = [helpText ? helpId : undefined, error ? errorId : undefined]
@@ -169,21 +173,21 @@ function SelectField({
     .join(" ") || undefined;
   return (
     <div className="form-group">
-      <label htmlFor={id}>{label}</label>
+      <label htmlFor={id}>{t(label)}</label>
       <CustomSelect
         id={id}
         value={value}
         options={options}
         onChange={onChange}
-        placeholder={placeholder}
+        placeholder={placeholder ? t(placeholder) : undefined}
         showPlaceholderOption={showPlaceholderOption}
         disabled={disabled}
         aria-required="true"
         aria-invalid={Boolean(error) || undefined}
         aria-describedby={describedBy}
       />
-      {helpText && <span id={helpId} className="form-help">{helpText}</span>}
-      {error && <p id={errorId} className="form-error-text">{error}</p>}
+      {helpText && <span id={helpId} className="form-help">{t(helpText)}</span>}
+      {error && <p id={errorId} className="form-error-text">{t(error)}</p>}
     </div>
   );
 }
@@ -197,6 +201,7 @@ function PayrollReceiptField({
   onChange: (value: string) => void;
   error?: string;
 }) {
+  const t = useDataUpdateText();
   const errorId = "data-update-payroll-receipts-error";
   return (
     <fieldset
@@ -204,7 +209,7 @@ function PayrollReceiptField({
       aria-invalid={Boolean(error) || undefined}
       aria-describedby={error ? errorId : undefined}
     >
-      <legend>¿Recibes recibos de nómina?</legend>
+      <legend>{t("¿Recibes recibos de nómina?")}</legend>
       <div className="data-update-binary-field__options">
         {PAYROLL_RECEIPT_OPTIONS.map((option) => (
           <label key={option}>
@@ -218,7 +223,7 @@ function PayrollReceiptField({
               aria-describedby={error ? errorId : undefined}
               required
             />
-            <span>{option === "SI" ? "Sí" : "No"}</span>
+            <span>{t(option === "SI" ? "Sí" : "No")}</span>
           </label>
         ))}
       </div>
@@ -228,6 +233,7 @@ function PayrollReceiptField({
 }
 
 export function TransportStep({ data, transportOptions, onChange, errors }: TransportStepProps) {
+  const t = useDataUpdateText();
   const routeOptions = uppercaseOptions(transportOptions.map((option) => option.route));
   const stopOptions = uppercaseOptions(
     transportOptions.filter((option) => option.route === data.route).map((option) => option.stop),
@@ -251,8 +257,8 @@ export function TransportStep({ data, transportOptions, onChange, errors }: Tran
   return (
     <section className="data-update-step" aria-labelledby="transport-step-title">
       <div>
-        <h2 id="transport-step-title">Transporte</h2>
-        <p className="text-muted">Selecciona una combinación válida de ruta, parada y ubicación.</p>
+        <h2 id="transport-step-title">{t("Transporte")}</h2>
+        <p className="text-muted">{t("Selecciona una combinación válida de ruta, parada y ubicación.")}</p>
       </div>
       <div className="form-grid data-update-transport-grid">
         <SelectField id="data-update-route" label="Ruta" value={data.route} options={routeOptions} onChange={changeRoute} error={errors?.route} />
@@ -266,16 +272,17 @@ export function TransportStep({ data, transportOptions, onChange, errors }: Tran
 }
 
 export function ContactStep({ data, civilStatuses, onChange, errors }: ContactStepProps) {
+  const t = useDataUpdateText();
   return (
     <section className="data-update-step" aria-labelledby="contact-step-title">
       <div>
-        <h2 id="contact-step-title">Contacto y datos personales</h2>
-        <p className="text-muted">Verifica los valores precargados y actualiza lo necesario.</p>
+        <h2 id="contact-step-title">{t("Contacto y datos personales")}</h2>
+        <p className="text-muted">{t("Verifica los valores precargados y actualiza lo necesario.")}</p>
       </div>
       <div className="data-update-contact-fields">
         <div className="form-grid data-update-contact-identity-grid">
           <SelectField id="data-update-birth-state" label="Estado de nacimiento" value={data.birthState} options={uppercaseOptions(MEXICO_STATES)} onChange={(value) => onChange("birthState", value)} error={errors?.birthState} />
-          <SelectField id="data-update-civil-status" label="Estado civil" value={data.civilStatus} options={uppercaseOptions(civilStatuses)} onChange={(value) => onChange("civilStatus", value)} error={errors?.civilStatus} />
+          <SelectField id="data-update-civil-status" label="Estado civil" value={data.civilStatus} options={uppercaseOptions(civilStatuses, t)} onChange={(value) => onChange("civilStatus", value)} error={errors?.civilStatus} />
         </div>
         <div className="form-grid data-update-contact-channels-grid">
           <Field id="data-update-email" label="Correo" type="email" autoComplete="email" value={data.email} onChange={(value) => onChange("email", value)} error={errors?.email} />
@@ -296,11 +303,12 @@ export function AddressStep({
   onRelationshipChoiceChange,
   onRelationshipOtherChange,
 }: AddressStepProps) {
+  const t = useDataUpdateText();
   return (
     <section className="data-update-step" aria-labelledby="address-step-title">
       <div>
-        <h2 id="address-step-title">Emergencia y domicilio</h2>
-        <p className="text-muted">Confirma que estos datos permitan contactar y ubicar al colaborador.</p>
+        <h2 id="address-step-title">{t("Emergencia y domicilio")}</h2>
+        <p className="text-muted">{t("Confirma que estos datos permitan contactar y ubicar al colaborador.")}</p>
       </div>
       <div className="data-update-address-fields">
         <div className="form-grid data-update-emergency-grid">
@@ -310,8 +318,8 @@ export function AddressStep({
               id="data-update-emergency-relationship"
               label="Parentesco"
               value={relationshipChoice}
-              options={uppercaseOptions(EMERGENCY_RELATIONSHIPS)}
-              placeholder="SELECCIONA EL PARENTESCO"
+              options={uppercaseOptions(EMERGENCY_RELATIONSHIPS, t)}
+              placeholder={t("SELECCIONA EL PARENTESCO")}
               showPlaceholderOption
               onChange={onRelationshipChoiceChange}
               error={!relationshipChoice ? errors?.emergencyRelationship : undefined}
@@ -339,11 +347,12 @@ export function AddressStep({
 }
 
 export function AdditionalDataStep({ data, onChange, errors }: EditableDataStepProps) {
+  const t = useDataUpdateText();
   return (
     <section className="data-update-step" aria-labelledby="additional-step-title">
       <div>
-        <h2 id="additional-step-title">Información adicional</h2>
-        <p className="text-muted">Si un dato no aplica, escribe N/A o Ninguna según corresponda.</p>
+        <h2 id="additional-step-title">{t("Información adicional")}</h2>
+        <p className="text-muted">{t("Si un dato no aplica, escribe N/A o Ninguna según corresponda.")}</p>
       </div>
       <div className="form-grid data-update-additional-grid">
         <Field id="data-update-education" label="Último grado de estudios" value={data.educationLevel} onChange={(value) => onChange("educationLevel", value)} error={errors?.educationLevel} />
@@ -365,11 +374,12 @@ export function FamilyDataStep({
   childrenCountError,
   childrenError,
 }: FamilyDataStepProps) {
+  const t = useDataUpdateText();
   return (
     <section className="data-update-step" aria-labelledby="family-step-title">
       <div>
-        <h2 id="family-step-title">Tallas e hijos</h2>
-        <p className="text-muted">Registra las tallas y, si aplica, la fecha de nacimiento de cada hijo.</p>
+        <h2 id="family-step-title">{t("Tallas e hijos")}</h2>
+        <p className="text-muted">{t("Registra las tallas y, si aplica, la fecha de nacimiento de cada hijo.")}</p>
       </div>
 
       <div className="form-grid data-update-family-size-grid">
@@ -377,8 +387,8 @@ export function FamilyDataStep({
           id="data-update-shirt-size"
           label="Talla de playera"
           value={data.shirtSize}
-          options={optionsWithRegisteredValue(SHIRT_SIZE_OPTIONS, data.shirtSize)}
-          placeholder="SELECCIONA UNA TALLA"
+          options={optionsWithRegisteredValue(SHIRT_SIZE_OPTIONS, data.shirtSize, t)}
+          placeholder={t("SELECCIONA UNA TALLA")}
           onChange={(value) => onChange("shirtSize", value)}
           error={errors?.shirtSize}
         />
@@ -386,9 +396,9 @@ export function FamilyDataStep({
           id="data-update-shoe-size"
           label="Talla de zapatos"
           value={data.shoeSize}
-          options={optionsWithRegisteredValue(SHOE_SIZE_OPTIONS, data.shoeSize)}
-          placeholder="SELECCIONA UNA TALLA"
-          helpText="Talla MX en centímetros; solo números enteros."
+          options={optionsWithRegisteredValue(SHOE_SIZE_OPTIONS, data.shoeSize, t)}
+          placeholder={t("SELECCIONA UNA TALLA")}
+          helpText={t("Talla MX en centímetros; solo números enteros.")}
           onChange={(value) => onChange("shoeSize", value)}
           error={errors?.shoeSize}
         />

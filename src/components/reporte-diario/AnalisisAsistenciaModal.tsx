@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Modal } from "@/components/ui/Modal";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { INCIDENCIA_LABELS } from "./constants";
+import { useReportLocale } from "./useReportLocale";
 
 export interface TopEmployee {
   numero_empleado: string;
@@ -32,6 +32,7 @@ export function AnalisisAsistenciaModal({
   getDrillDownDays,
   formatMes,
 }: AnalisisAsistenciaModalProps) {
+  const { copy, incident } = useReportLocale();
   const [selectedTopEmpKey, setSelectedTopEmpKey] = useState<string | null>(null);
   const [drillDownMonth, setDrillDownMonth] = useState<{
     empKey: string;
@@ -56,7 +57,7 @@ export function AnalisisAsistenciaModal({
     <Modal
       isOpen={isOpen}
       onClose={handleClose}
-      title="Análisis de asistencia"
+      title={copy("Análisis de asistencia", "Attendance analysis")}
       onBack={drillDownMonth ? () => setDrillDownMonth(null) : undefined}
       size="sm"
     >
@@ -95,12 +96,12 @@ export function AnalisisAsistenciaModal({
 
                   {days.length === 0 ? (
                     <p className="top-emp-drill-empty">
-                      Sin incidencias registradas este mes.
+                      {copy("Sin incidencias registradas este mes.", "No incidents recorded this month.")}
                     </p>
                   ) : (
                     <ol
                       className="top-emp-drill-days"
-                      aria-label={`Días con incidencia en ${formatMes(drillDownMonth.mes)}`}
+                      aria-label={`${copy("Días con incidencia en", "Days with incidents in")} ${formatMes(drillDownMonth.mes)}`}
                     >
                       {days.map(({ day, dayLabel, code, label }) => (
                         <li key={day} className="top-emp-drill-day">
@@ -139,7 +140,7 @@ export function AnalisisAsistenciaModal({
             >
               <ol
                 className="top-emp-list"
-                aria-label="Top 10 empleados con más incidencias"
+                aria-label={copy("Top 10 empleados con más incidencias", "Top 10 employees with the most incidents")}
               >
                 {topIncidenceEmployees.map((emp, idx) => {
                   const isOpenItem = selectedTopEmpKey === emp.numero_empleado;
@@ -167,7 +168,7 @@ export function AnalisisAsistenciaModal({
                       >
                         <span
                           className={`top-emp-rank${idx === 0 ? " top-emp-rank--first" : ""}`}
-                          aria-label={`Posición ${idx + 1}`}
+                          aria-label={`${copy("Posición", "Rank")} ${idx + 1}`}
                         >
                           {idx + 1}
                         </span>
@@ -193,7 +194,7 @@ export function AnalisisAsistenciaModal({
                           </span>
                           <span
                             className="top-emp-row__total"
-                            aria-label={`${emp.total} incidencias`}
+                            aria-label={`${emp.total} ${copy("incidencias", "incidents")}`}
                           >
                             {emp.total}
                           </span>
@@ -209,7 +210,7 @@ export function AnalisisAsistenciaModal({
                               id={`type-heading-${emp.numero_empleado}`}
                               className="top-emp-modal__section-title"
                             >
-                              Por tipo
+                              {copy("Por tipo", "By type")}
                             </h4>
                             <div className="top-emp-modal__codes" role="list">
                               {Object.entries(emp.byCode)
@@ -219,13 +220,13 @@ export function AnalisisAsistenciaModal({
                                     key={code}
                                     className="top-emp-modal__code-item"
                                     role="listitem"
-                                    aria-label={`${INCIDENCIA_LABELS[code] ?? code}: ${count}`}
+                                    aria-label={`${incident(code)}: ${count}`}
                                   >
                                     <span className="top-emp-modal__code-badge">
                                       {code}
                                     </span>
                                     <span className="top-emp-modal__code-label">
-                                      {INCIDENCIA_LABELS[code] ?? code}
+                                      {incident(code)}
                                     </span>
                                     <span className="top-emp-modal__code-count">
                                       {count}
@@ -242,7 +243,7 @@ export function AnalisisAsistenciaModal({
                               id={`month-heading-${emp.numero_empleado}`}
                               className="top-emp-modal__section-title"
                             >
-                              Por mes
+                              {copy("Por mes", "By month")}
                             </h4>
                             <div className="top-emp-modal__months" role="list">
                               {Object.entries(emp.byMes)
@@ -262,7 +263,7 @@ export function AnalisisAsistenciaModal({
                                           mes,
                                         })
                                       }
-                                      aria-label={`Ver días de ${formatMes(mes)}: ${count} incidencias`}
+                                      aria-label={`${copy("Ver días de", "View days in")} ${formatMes(mes)}: ${count} ${copy("incidencias", "incidents")}`}
                                       data-testid={`month-drill-${emp.numero_empleado}-${mes}`}
                                     >
                                       <span className="top-emp-modal__month-name">

@@ -1,8 +1,11 @@
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { motion, useReducedMotion, type Variants } from 'framer-motion';
+import { LoaderCircle } from 'lucide-react';
 import { sleep } from 'robot-toast/robots';
 import { useAuth } from '@/hooks/useAuth';
 import { useMaintenanceMode } from '@/hooks/useMaintenanceMode';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { toast } from '@/lib/notify';
 import './MaintenanceGuard.css';
 
 // ── SVG decorativo: engrane minimalista ───────────────────────────────────────
@@ -68,6 +71,8 @@ const robotVariants: Variants = {
 
 // ── Componente principal ───────────────────────────────────────────────────────
 export function MaintenanceGuard({ children }: { children: ReactNode }) {
+  const { language } = useLanguage();
+  const english = language === 'en';
   const { profile, profileLoading, loading: authLoading, signOut } = useAuth();
   const {
     enabled: isMaintenance,
@@ -81,6 +86,17 @@ export function MaintenanceGuard({ children }: { children: ReactNode }) {
   const [isChecking, setIsChecking] = useState(false);
   const [hasChecked, setHasChecked] = useState(false);
   const reduceMotion = useReducedMotion();
+
+  useEffect(() => {
+    if (!hasChecked || !isMaintenance) return;
+
+    toast.warning({
+      title: english
+        ? 'The system is still under maintenance.'
+        : 'El sistema sigue en mantenimiento.',
+    });
+    setHasChecked(false);
+  }, [english, hasChecked, isMaintenance]);
 
   const handleCheck = async () => {
     if (isChecking) return;
@@ -102,13 +118,9 @@ export function MaintenanceGuard({ children }: { children: ReactNode }) {
     return <>{children}</>;
   }
 
-  const statusMessage = isChecking
-    ? 'Verificando…'
-    : maintenanceError
-      ? 'No se pudo consultar el estado. Intenta de nuevo.'
-      : hasChecked && isMaintenance
-        ? 'El sistema sigue en mantenimiento.'
-        : '';
+  const statusMessage = maintenanceError
+    ? english ? 'Could not check the status. Try again.' : 'No se pudo consultar el estado. Intenta de nuevo.'
+    : '';
 
   return (
     <motion.main
@@ -146,12 +158,16 @@ export function MaintenanceGuard({ children }: { children: ReactNode }) {
         {/* Texto */}
         <div className="maintenance-content">
           <h1 id="maintenance-title" className="app-page-title">
-            {hasConfirmedState ? 'En mantenimiento' : 'Sin acceso confirmado'}
+            {hasConfirmedState
+              ? english ? 'Under maintenance' : 'En mantenimiento'
+              : english ? 'Access not confirmed' : 'Sin acceso confirmado'}
           </h1>
           <p className="maintenance-body">
             {hasConfirmedState
-              ? 'Estamos trabajando en el sistema. Vuelve pronto.'
-              : 'No pudimos verificar tu acceso. Comprueba el estado o inicia sesión de nuevo.'}
+              ? english ? 'We are working on the system. Please check back soon.' : 'Estamos trabajando en el sistema. Vuelve pronto.'
+              : english
+                ? 'We could not verify your access. Check the status or sign in again.'
+                : 'No pudimos verificar tu acceso. Comprueba el estado o inicia sesión de nuevo.'}
           </p>
         </div>
 
@@ -163,9 +179,12 @@ export function MaintenanceGuard({ children }: { children: ReactNode }) {
             onClick={handleCheck}
             disabled={isChecking}
             aria-busy={isChecking}
-            aria-describedby="maintenance-status"
+            aria-describedby={maintenanceError ? 'maintenance-status' : undefined}
           >
-            {isChecking ? 'Comprobando…' : 'Comprobar estado'}
+            {isChecking && <LoaderCircle className="spin" aria-hidden="true" />}
+            {isChecking
+              ? english ? 'Checking…' : 'Comprobando…'
+              : english ? 'Check status' : 'Comprobar estado'}
           </button>
           <button
             type="button"
@@ -173,20 +192,22 @@ export function MaintenanceGuard({ children }: { children: ReactNode }) {
             onClick={signOut}
             disabled={isChecking}
           >
-            Cerrar sesión
+            {english ? 'Sign out' : 'Cerrar sesión'}
           </button>
         </div>
 
         {/* Estado accesible */}
-        <p
-          id="maintenance-status"
-          className="maintenance-status"
-          role="status"
-          aria-atomic="true"
-          aria-live="polite"
-        >
-          {statusMessage}
-        </p>
+        {statusMessage && (
+          <p
+            id="maintenance-status"
+            className="maintenance-status"
+            role="status"
+            aria-atomic="true"
+            aria-live="polite"
+          >
+            {statusMessage}
+          </p>
+        )}
       </motion.section>
     </motion.main>
   );
