@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { CustomSelect } from '@/components/ui/CustomSelect';
+import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton';
 import { INCIDENCIA_LABELS, NON_INCIDENT_CODES } from '@/components/reporte-diario/constants';
 import { daysInMonth } from '@/components/reporte-diario/helpers';
 import type { ReporteDiarioRecord } from '@/hooks/useReporteDiario';
@@ -183,9 +184,18 @@ export function EmployeeIncidenceCalendar({
       </header>
 
       {loading ? (
-        <p className="config-calendar-empty type-body-sm text-muted">
-          {copy.loadingCalendar}
-        </p>
+        <LoadingSkeleton label={copy.loadingCalendar} className="config-calendar-skeleton">
+          <div className="config-calendar-skeleton__weekdays" aria-hidden="true">
+            {Array.from({ length: 7 }, (_, index) => (
+              <span className="loading-skeleton__bone config-calendar-skeleton__weekday" key={index} />
+            ))}
+          </div>
+          <div className="config-calendar-skeleton__days" aria-hidden="true">
+            {Array.from({ length: 35 }, (_, index) => (
+              <span className="loading-skeleton__bone config-calendar-skeleton__day" key={index} />
+            ))}
+          </div>
+        </LoadingSkeleton>
       ) : selectedEntry ? (
         <div className="config-calendar-grid-container">
           <div className="config-calendar-wrapper">

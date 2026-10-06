@@ -3,6 +3,7 @@ import { Link, Navigate } from 'react-router-dom';
 import { ACCOUNT_PATH, HOME_PATH } from '@/components/layout/navigation';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { Badge } from '@/components/ui/Badge';
+import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton';
 import { useAuth, type Profile } from '@/hooks/useAuth';
 import { listProfiles } from '@/lib/users';
 import { useTeamDirectory } from './TeamProvider';
@@ -84,7 +85,26 @@ export function TeamPage() {
         <div className="team-management__tools"><div className="form-group">
           <label htmlFor={`${id}-search`}>{copy.search}</label><input ref={searchRef} id={`${id}-search`} type="search" value={search} onChange={event => setSearch(event.target.value)} />
         </div><button type="button" className="btn-primary" disabled={!profiles} onClick={() => setEditing(null)}>{copy.add}</button></div>
-        {!profiles && !error && <p className="team-management__loading" role="status">{copy.loadingAccounts}</p>}
+        {!profiles && !error && (
+          <LoadingSkeleton label={copy.loadingAccounts} className="team-management__skeleton">
+            <ul className="team-management__list team-management__skeleton-list" aria-hidden="true">
+              {['first', 'second', 'third'].map((member) => (
+                <li className="team-management__member" key={member}>
+                  <div className="team-management__skeleton-identity">
+                    <span className="loading-skeleton__bone team-management__skeleton-name" />
+                    <span className="loading-skeleton__bone team-management__skeleton-detail" />
+                    <span className="loading-skeleton__bone team-management__skeleton-detail team-management__skeleton-detail--short" />
+                  </div>
+                  <span className="loading-skeleton__bone team-management__skeleton-status" />
+                  <div className="team-management__skeleton-actions">
+                    <span className="loading-skeleton__bone team-management__skeleton-action" />
+                    <span className="loading-skeleton__bone team-management__skeleton-action" />
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </LoadingSkeleton>
+        )}
         {error && !confirm && !removing && <p className="form-error-text" role="alert">{translateTeamMessage(error, language)}</p>}
         {message && <p role="status">{message}</p>}
         {(profiles || error) && filtered.length === 0 && <div><p>{search ? copy.noMatches : copy.empty}</p>

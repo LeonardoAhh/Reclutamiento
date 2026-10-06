@@ -24,8 +24,8 @@ const HEAD_ANALYST_REPORTS = [
   "Analista de Seguridad e Higiene",
 ] as const;
 
-const CLEANING_REPORTS = ["Auxiliar de Limpieza A", "Auxiliar de Limpieza B", "Auxiliar de Limpieza B", "Auxiliar de Limpieza B"] as const;
-const CLEANING_EMPLOYEES = ["330", "3520", "4097", "3999"] as const;
+const CLEANING_REPORTS = ["Auxiliar de Limpieza A", "Auxiliar de Limpieza B"] as const;
+const CLEANING_EMPLOYEES = ["330", "3520"] as const;
 
 type PositionTitle = typeof MANAGER_REPORTS[number]
   | typeof COORDINATOR_REPORTS[number]

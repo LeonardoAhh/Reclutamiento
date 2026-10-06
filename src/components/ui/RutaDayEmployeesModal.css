@@ -53,6 +53,39 @@
   margin: 0;
 }
 
+.ruta-day-page__skeleton-rows {
+  display: grid;
+  gap: var(--design-spacing-sm);
+}
+
+.ruta-day-page__skeleton-row {
+  display: grid;
+  min-inline-size: 0;
+  gap: var(--design-spacing-xs);
+  padding: var(--design-spacing-lg);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  background: var(--color-surface-card);
+}
+
+.ruta-day-page__skeleton-cell {
+  block-size: var(--type-body-sm-size);
+  border-radius: var(--rounded-sm);
+}
+
+.ruta-day-page__skeleton-cell--number {
+  inline-size: 28%;
+}
+
+.ruta-day-page__skeleton-cell--name {
+  inline-size: 76%;
+  block-size: var(--type-heading-sm-size);
+}
+
+.ruta-day-page__skeleton-cell--section {
+  inline-size: 52%;
+}
+
 .ruta-day-page__table {
   inline-size: 100%;
   border-collapse: separate;
@@ -124,6 +157,18 @@
     line-height: var(--type-caption-sm-line);
     letter-spacing: var(--type-caption-sm-tracking);
     text-align: start;
+  }
+
+  .ruta-day-page__skeleton-row {
+    grid-template-columns: minmax(0, 0.7fr) minmax(0, 2fr) minmax(0, 1.3fr);
+    align-items: center;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .ruta-day-page__skeleton-row + .ruta-day-page__skeleton-row {
+    border-block-start: var(--border-width) solid var(--color-hairline-soft);
   }
 
   .ruta-day-page__table tbody tr {

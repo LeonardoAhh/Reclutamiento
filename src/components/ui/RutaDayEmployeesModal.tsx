@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton';
 import { getEmpleadosPorDia, ROUTE_DAYS, useRutas, type EmpleadoRuta } from '@/hooks/useRutas';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { formatRouteDay, getConfiguracionCopy } from '@/pages/configuracion-views/configuracion-translations';
@@ -51,7 +52,17 @@ export function RutaDayEmployeesPage() {
       </header>
 
       {loading ? (
-        <p role="status">{copy.loadingRouteEmployees}</p>
+        <LoadingSkeleton label={copy.loadingRouteEmployees} className="ruta-day-page__skeleton">
+          <div className="ruta-day-page__skeleton-rows" aria-hidden="true">
+            {['first', 'second', 'third', 'fourth', 'fifth'].map((row) => (
+              <div className="ruta-day-page__skeleton-row" key={row}>
+                <span className="loading-skeleton__bone ruta-day-page__skeleton-cell ruta-day-page__skeleton-cell--number" />
+                <span className="loading-skeleton__bone ruta-day-page__skeleton-cell ruta-day-page__skeleton-cell--name" />
+                <span className="loading-skeleton__bone ruta-day-page__skeleton-cell ruta-day-page__skeleton-cell--section" />
+              </div>
+            ))}
+          </div>
+        </LoadingSkeleton>
       ) : errorMsg ? (
         <div role="alert" className="ruta-day-page__notice">
           <p>{language === 'en' ? "Could not load route details. Check your connection and try again." : copy.routeEmployeesLoadError}</p>

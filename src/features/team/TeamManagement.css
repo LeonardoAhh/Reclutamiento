@@ -6,10 +6,19 @@
 .team-page__title-link:focus-visible { outline: var(--focus-ring-width) solid var(--color-focus); }
 .team-management__tools { display: grid; align-items: end; gap: var(--space-md); }
 .team-management__tools .form-group { min-width: 0; margin: 0; }
-.team-management__loading { display: flex; min-block-size: var(--touch-target-min); align-items: center; margin: 0; }
 .team-management__list { display: grid; gap: var(--space-md); list-style: none; padding: 0; margin: 0; }
 .team-management__member { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--space-md); row-gap: var(--space-xs); align-items: start; padding: var(--space-lg); border: var(--border-width) solid var(--color-hairline); border-radius: var(--rounded-lg); background: var(--color-surface); }
 .team-management__identity { display: grid; justify-items: start; gap: var(--space-xs); min-width: 0; overflow-wrap: anywhere; }
+.team-management__skeleton-list { margin: 0; }
+.team-management__skeleton-identity { display: grid; grid-column: 1; gap: var(--space-xs); min-width: 0; }
+.team-management__skeleton-name,
+.team-management__skeleton-detail { block-size: var(--type-body-sm-size); border-radius: var(--rounded-sm); }
+.team-management__skeleton-name { inline-size: 82%; block-size: var(--type-body-md-size); }
+.team-management__skeleton-detail { inline-size: 72%; }
+.team-management__skeleton-detail--short { inline-size: 48%; }
+.team-management__skeleton-status { grid-column: 2; grid-row: 1; inline-size: calc(var(--touch-target-min) + var(--design-spacing-md)); block-size: var(--touch-target-min); border-radius: var(--rounded-full); }
+.team-management__skeleton-actions { display: flex; grid-column: 1 / -1; flex-wrap: wrap; gap: var(--space-sm); margin-block-start: var(--space-sm); }
+.team-management__skeleton-action { inline-size: calc(var(--touch-target-min) * 2); block-size: var(--touch-target-min); border-radius: var(--rounded-md); }
 .team-management__status {
   grid-column: 1 / -1;
   grid-row: 2;

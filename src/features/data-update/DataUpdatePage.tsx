@@ -481,7 +481,16 @@ export function DataUpdatePage() {
       )}
 
       {loading ? (
-        <p className="data-update-message" role="status">{t("Cargando actualización de datos…")}</p>
+        <div
+          className="data-update-loading"
+          role="status"
+          aria-label={t("Cargando actualización de datos…")}
+          aria-busy="true"
+        >
+          <span className="data-update-loading__bone data-update-loading__bone--title" aria-hidden="true" />
+          <span className="data-update-loading__bone data-update-loading__bone--field" aria-hidden="true" />
+          <span className="data-update-loading__bone data-update-loading__bone--content" aria-hidden="true" />
+        </div>
       ) : campaigns.length === 0 ? (
         <section className="card data-update-empty" aria-labelledby="data-update-empty-title">
           <UserRoundCheck aria-hidden="true" />

@@ -1,0 +1,23 @@
+.loading-skeleton__bone {
+  display: block;
+  background: var(--color-hairline);
+  opacity: var(--opacity-skeleton-rest);
+  animation: loading-skeleton-fade var(--duration-skeleton) ease-in-out infinite;
+}
+
+@keyframes loading-skeleton-fade {
+  0%,
+  100% {
+    opacity: var(--opacity-skeleton-rest);
+  }
+
+  50% {
+    opacity: var(--opacity-skeleton-active);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-skeleton__bone {
+    animation: none;
+  }
+}

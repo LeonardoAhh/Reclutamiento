@@ -909,6 +909,32 @@
   border-radius: var(--rounded-md);
 }
 
+.config-calendar-skeleton {
+  display: grid;
+  gap: var(--spacing-xxs);
+}
+
+.config-calendar-skeleton__weekdays,
+.config-calendar-skeleton__days {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: var(--spacing-xs);
+}
+
+.config-calendar-skeleton__weekday {
+  inline-size: 56%;
+  block-size: var(--type-caption-sm-size);
+  justify-self: center;
+  border-radius: var(--rounded-sm);
+}
+
+.config-calendar-skeleton__day {
+  min-inline-size: 0;
+  min-block-size: var(--control-height);
+  aspect-ratio: 1;
+  border-radius: var(--rounded-sm);
+}
+
 /* Configuración: contenido en el contenedor global */
 .config-layout {
   display: flex;
