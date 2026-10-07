@@ -89,6 +89,7 @@ button.kpi-card--interactive {
     line-height: var(--type-heading-md-line);
     letter-spacing: var(--type-heading-md-tracking);
   }
+
 }
 
 .kpi-card--destructive .kpi-card__value {

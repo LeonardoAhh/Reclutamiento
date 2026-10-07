@@ -20,8 +20,15 @@
 }
 
 .leave-requests-page__title-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--design-spacing-sm);
+  min-inline-size: 0;
   color: inherit;
   text-decoration: none;
+}
+.leave-requests-page__title-link svg {
+  flex: 0 0 auto;
 }
 
 .leave-requests-page button svg {

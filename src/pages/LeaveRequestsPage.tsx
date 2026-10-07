@@ -116,7 +116,10 @@ export function LeaveRequestsPage() {
       <header className="leave-requests-page__header">
         <div className="leave-requests-page__heading">
           <h1 id={`${id}-title`} className="app-page-title">
-            <Link to={HOME_PATH} className="leave-requests-page__title-link">{t.title}</Link>
+            <Link to={HOME_PATH} className="leave-requests-page__title-link">
+              <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
+              {t.title}
+            </Link>
           </h1>
         </div>
 

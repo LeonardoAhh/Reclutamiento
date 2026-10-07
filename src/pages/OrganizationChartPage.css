@@ -6,8 +6,15 @@
 }
 
 .organization-chart-page__title-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--design-spacing-sm);
+  min-inline-size: 0;
   color: inherit;
   text-decoration: none;
+}
+.organization-chart-page__title-link svg {
+  flex: 0 0 auto;
 }
 
 .organization-chart-page__tree {

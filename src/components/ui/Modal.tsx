@@ -18,6 +18,7 @@ export interface ModalProps {
   footerActions?: React.ReactNode;
   size?: "xs" | "sm" | "md" | "lg" | "xl";
   placement?: "center" | "bottom";
+  presentation?: "modal" | "sheet";
   /** Oculta el botón X de cerrar en el encabezado */
   hideCloseButton?: boolean;
   closeLabel?: string;
@@ -67,11 +68,14 @@ export function Modal({
   footerActions,
   size = "md",
   placement,
+  presentation: presentationOverride,
   hideCloseButton = false,
   closeLabel,
 }: ModalProps) {
   const configuredPresentation = useContext(ModalPresentationContext);
-  const presentation = placement ? "modal" : configuredPresentation;
+  const presentation = placement
+    ? "modal"
+    : presentationOverride ?? configuredPresentation;
   const { language } = useLanguage();
   const resolvedCloseLabel = closeLabel ?? (language === 'en' ? 'Close' : 'Cerrar');
   const contentRef = useRef<HTMLDivElement>(null);

@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState } from 'react';
+import { ArrowLeft } from 'lucide-react';
 import { Link, Navigate } from 'react-router-dom';
 import { ACCOUNT_PATH, HOME_PATH } from '@/components/layout/navigation';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
@@ -72,6 +73,7 @@ export function TeamPage() {
         <div className="team-page__heading">
           <h1 id={`${id}-title`} className="app-page-title">
             <Link to={ACCOUNT_PATH} className="team-page__title-link" aria-label={`${copy.title}, ${copy.backToAccount}`}>
+              <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
               {copy.title}
             </Link>
           </h1>

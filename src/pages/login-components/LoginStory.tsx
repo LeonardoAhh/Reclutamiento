@@ -1,6 +1,5 @@
-import { useEffect } from "react";
-import { useAnimate, useReducedMotion } from "framer-motion";
-import { wave } from "robot-toast/robots";
+import { success, think, wave } from "robot-toast/robots";
+import { useLoginStoryAnimation } from "./useLoginStoryAnimation";
 import { BrandMark } from "@/components/ui/BrandMark";
 import { loginTranslations, type LoginLanguage } from "../login-translations";
 
@@ -10,24 +9,8 @@ interface LoginStoryProps {
 }
 
 export function LoginStory({ username, language }: LoginStoryProps) {
-  const [scope, animate] = useAnimate();
-  const reduceMotion = useReducedMotion();
+  const { scope, enabled } = useLoginStoryAnimation();
   const copy = loginTranslations[language];
-
-  useEffect(() => {
-    if (reduceMotion !== false) return;
-
-    const duration = Number.parseFloat(
-      getComputedStyle(document.documentElement).getPropertyValue("--duration-brand-reveal"),
-    ) / 1000;
-    const fadeDuration = duration / 2;
-    const playback = animate([
-      [".login-story__mark", { opacity: [1, 0] }, { at: fadeDuration, duration: fadeDuration }],
-      [".login-story__robot", { opacity: [0, 1], y: ["var(--design-spacing-md)", "0px"] }, { duration: fadeDuration }],
-    ]);
-
-    return () => playback.cancel();
-  }, [animate, reduceMotion]);
 
   const greeting = username
     ? `${copy.greeting}, ${username[0].toUpperCase() + username.slice(1)}.`
@@ -49,10 +32,14 @@ export function LoginStory({ username, language }: LoginStoryProps) {
             <p className="login-story__description">{copy.storyDescription}</p>
           </div>
         </div>
-        {reduceMotion === false && (
+        {enabled && (
           <div className="login-story__scene login-story__robot">
             <div className="login-story__visual">
-              <img className="login-story__robot-image" src={wave} alt="" />
+              <div className="login-story__robot-motion">
+                <img className="login-story__robot-image" data-expression="wave" src={wave} alt="" />
+                <img className="login-story__robot-image" data-expression="think" src={think} alt="" />
+                <img className="login-story__robot-image" data-expression="success" src={success} alt="" />
+              </div>
             </div>
             <div className="login-story__copy">
               <p className="login-story__title">{greeting}</p>

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { CircleAlertIcon, Star } from 'lucide-react';
+import { ArrowLeft, Star } from 'lucide-react';
 import { Tooltip } from '@/components/ui/Tooltip';
 import type { PositionCoverage } from '@/lib/types';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -110,7 +110,7 @@ export function MissingPositionsPage({
               onClick={onBack}
               aria-label={`${t('Volver al resumen')}: ${t('Vacantes Pendientes')}`}
             >
-              <CircleAlertIcon size={20} aria-hidden="true" />
+              <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
               {t("Vacantes Pendientes")}
             </button>
           </h1>

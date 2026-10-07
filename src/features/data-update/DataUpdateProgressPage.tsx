@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { ArrowLeft } from "lucide-react";
 import type { DataUpdateCampaignDetail, DataUpdateProfileOption, DataUpdateRecord } from "./types";
 import { useDataUpdateText } from "./translations";
 
@@ -71,6 +72,7 @@ export function DataUpdateProgressPage({
               onClick={onBack}
               aria-label={`${t("Volver")}: ${t("Avance de la campaña")}`}
             >
+              <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
               {t("Avance de la campaña")}
             </button>
           </h1>

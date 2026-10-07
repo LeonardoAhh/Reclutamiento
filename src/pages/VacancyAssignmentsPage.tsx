@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Check, ClipboardList, Copy } from "lucide-react";
+import { ArrowLeft, Check, Copy } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
 import { Link } from "react-router-dom";
 import { CustomSelect } from "@/components/ui/CustomSelect";
@@ -504,7 +504,7 @@ export function VacancyAssignmentsPage() {
             aria-label={`${t("Volver a plantilla")}: ${t("Asignación de vacantes")}`}
           >
             <h1 id="vacancy-assignments-title" className="app-page-title">
-              <ClipboardList size={20} aria-hidden="true" />
+              <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
               {t("Asignación de vacantes")}
             </h1>
           </Link>

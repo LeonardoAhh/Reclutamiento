@@ -87,8 +87,18 @@
   block-size: auto;
 }
 
-.login-story__robot-image {
+.login-story__robot-motion {
+  display: grid;
+  place-items: center;
   inline-size: 50%;
+}
+
+.login-story__robot-image {
+  grid-area: 1 / 1;
+}
+
+.login-story__robot-image:not([data-expression="wave"]) {
+  opacity: 0;
 }
 
 .login-story__robot {

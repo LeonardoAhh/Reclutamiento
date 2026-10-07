@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { ArrowUpRight, UsersRound } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, UsersRound } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { RecruiterSummary } from './candidate-metrics/RecruiterSummary';
 import { WeeklyMetrics } from './candidate-metrics/WeeklyMetrics';
@@ -45,6 +45,7 @@ export function CandidateMetricsPage() {
                 ? (en ? 'Back to metrics: Metrics and KPIs' : 'Volver a métricas: Métricas y KPIs')
                 : (en ? 'Back to candidates: Metrics and KPIs' : 'Volver a candidatos: Métricas y KPIs')}
             >
+              <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
               {en ? 'Metrics and KPIs' : 'Métricas y KPIs'}
             </Link>
           </h1>

@@ -1,18 +1,17 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useMatch, useNavigate } from "react-router-dom";
+import { ReportDayPage } from "@/pages/ReportDayPage";
+import { getReportDayPath, REPORT_DAY_PATTERN } from "./navigation";
 import "./ReporteDiario.css";
 import { Modal } from "@/components/ui/Modal";
 import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { toast } from "@/lib/notify";
-import { format, getISOWeek } from "date-fns";
-import { enUS, es } from "date-fns/locale";
 import { AnimatedSubmitButton } from "@/components/ui/AnimatedSubmitButton";
 import {
   Archive,
   BarChart3,
   CalendarDays,
-  ChevronLeft,
   ChevronRight,
   ChartSpline,
   FileBraces,
@@ -26,8 +25,6 @@ import {
 } from "lucide";
 
 import {
-  INCIDENT_TABS,
-  SECTION_CONFIGS,
   VISIBLE_SECTIONS,
 } from "./constants";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
@@ -35,20 +32,15 @@ import {
   daysInMonth,
   parseReporteJSON,
   isIncidence,
-  isIncidentTab,
   getMexicoHolidayLabels,
 } from "./helpers";
 import type {
   IncidentTab,
-  AreaStaffSummary,
   ReporteRow,
-  EmployeeRef,
 } from "./types";
 
 import ReporteCalendar from "./reporte-calendar";
-import ReporteAreaSummary from "./reporte-area-summary";
 import { AnalisisAsistenciaModal } from "./AnalisisAsistenciaModal";
-import ReporteIncidentTabs from "./reporte-incident-tabs";
 import ReporteKpiDashboard from "./reporte-kpi-dashboard";
 import ReporteComparison from "./reporte-comparison";
 import ReporteEmployeeDetail from "./reporte-employee-detail";
@@ -62,6 +54,8 @@ import {
 import { useReporteDiario } from "@/hooks/useReporteDiario";
 import type { ReporteDiarioSummary } from "@/hooks/useReporteDiario";
 import { useReportLocale } from "./useReportLocale";
+import { useReportDayDetails } from "./useReportDayDetails";
+import { useReportDayRouteLoading } from "./useReportDayRouteLoading";
 
 const SAVE_SUCCESS_DURATION_MS = 1500;
 
@@ -76,7 +70,21 @@ export default function ReporteDiarioContent() {
   const [selectedIncidentTab, setSelectedIncidentTab] = useState<
     IncidentTab | ""
   >("");
-  const [selectedDay, setSelectedDay] = useState("");
+  const dayRoute = useMatch(REPORT_DAY_PATTERN);
+  const navigate = useNavigate();
+  const [calendarDay, setCalendarDay] = useState("");
+  const routeMonth = dayRoute?.params.month ?? '';
+  const routeDay = dayRoute?.params.day ?? '';
+  const validDayRoute = /^\d{4}-(0[1-9]|1[0-2])$/.test(routeMonth)
+    && /^(0[1-9]|[12]\d|3[01])$/.test(routeDay)
+    && Number(routeDay) <= daysInMonth(routeMonth);
+  const selectedDay = dayRoute ? (validDayRoute ? routeDay : '') : calendarDay;
+  useEffect(() => {
+    if (validDayRoute) {
+      setCalendarDay(routeDay);
+      setSelectedMes(routeMonth);
+    }
+  }, [validDayRoute, routeDay, routeMonth]);
   const [selectedArea, setSelectedArea] = useState<string | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
   const [fileName, setFileName] = useState("");
@@ -103,6 +111,7 @@ export default function ReporteDiarioContent() {
 
   const {
     saving: dbSaving,
+    error: dbError,
     fetchSummaries,
     fetchByMes,
     fetchByMesList,
@@ -177,7 +186,7 @@ export default function ReporteDiarioContent() {
     [rows],
   );
 
-  const currentMonth = selectedMes || months[0] || "";
+  const currentMonth = (validDayRoute ? routeMonth : "") || selectedMes || months[0] || "";
   const dayCount = currentMonth ? daysInMonth(currentMonth) : 0;
   const dayHeaders = Array.from({ length: dayCount }, (_, i) =>
     String(i + 1).padStart(2, "0"),
@@ -292,199 +301,11 @@ export default function ReporteDiarioContent() {
     }, {});
   }, [dayHeaders, selectedRows]);
 
-  const emptyIncident = () =>
-    INCIDENT_TABS.reduce(
-      (acc, c) => ({ ...acc, [c]: [] as EmployeeRef[] }),
-      {} as Record<IncidentTab, EmployeeRef[]>,
-    );
-
-  const selectedDayIncidentSummary = useMemo(() => {
-    const base = emptyIncident();
-    if (!selectedDay) return base;
-    const result = selectedRows.reduce((acc, row, idx) => {
-      const code = row.days[selectedDay];
-      if (!isIncidence(code) || !isIncidentTab(code!)) return acc;
-      acc[code].push({
-        key: `${code}||${row.departamento}||${row.area}||${row.turno || "-"}||${row.numero_empleado}||${idx}`,
-        numero_empleado: row.numero_empleado,
-        nombre: row.nombre,
-        departamento: row.departamento,
-        area: row.area,
-        puesto: row.puesto,
-        turno: row.turno || "-",
-      });
-      return acc;
-    }, base);
-    for (const tab of INCIDENT_TABS) {
-      result[tab].sort((a, b) => a.area.localeCompare(b.area));
-    }
-    return result;
-  }, [selectedRows, selectedDay]);
-
-  const selectedDayAreaSummary = useMemo<AreaStaffSummary[]>(() => {
-    if (!selectedDay)
-      return SECTION_CONFIGS.filter((sec) =>
-        VISIBLE_SECTIONS.has(sec.seccion),
-      ).map((sec) => ({
-        area: sec.seccion,
-        personal_activo: 0,
-        personal_autorizado: sec.personal_autorizado,
-        personal_incidencia: 0,
-        personal_real: sec.personal_autorizado,
-        operadores_autorizados: sec.operadores_autorizados,
-        operadores_contratados: 0,
-        operadores_incidencia: 0,
-      }));
-
-    let dayOfWeek = -1;
-    if (currentMonth && selectedDay) {
-      const [year, month] = currentMonth.split("-").map(Number);
-      dayOfWeek = new Date(year, month - 1, parseInt(selectedDay, 10)).getDay();
-    }
-
-    return SECTION_CONFIGS.filter((sec) =>
-      VISIBLE_SECTIONS.has(sec.seccion),
-    ).map((sec) => {
-      const rowsInSection = selectedRows.filter((row) => {
-        const effectiveSection = VISIBLE_SECTIONS.has(row.area)
-          ? row.area
-          : row.departamento;
-        return effectiveSection === sec.seccion;
-      });
-      const personal_activo = rowsInSection.length;
-      const personal_incidencia = rowsInSection.reduce((count, row) => {
-        return count + (isIncidence(row.days[selectedDay]) ? 1 : 0);
-      }, 0);
-
-      const operadoresRows = rowsInSection.filter(
-        (row) =>
-          row.puesto &&
-          row.puesto.toUpperCase().includes("OPERADOR DE MÁQUINA"),
-      );
-      const operadores_contratados = operadoresRows.length;
-      const operadores_incidencia = operadoresRows.reduce((count, row) => {
-        return count + (isIncidence(row.days[selectedDay]) ? 1 : 0);
-      }, 0);
-
-      // Lógica de descanso para turnos de producción
-      let is_descanso = false;
-      if (dayOfWeek !== -1) {
-        if ((sec.seccion === "PRODUCCIÓN 1ER. TURNO" || sec.seccion === "PRODUCCIÓN 1ER. TURNO (STARLITE)") && dayOfWeek === 0)
-          is_descanso = true;
-        else if (
-          sec.seccion === "PRODUCCIÓN 2o. TURNO" &&
-          (dayOfWeek === 1 || dayOfWeek === 2)
-        )
-          is_descanso = true;
-        else if (
-          sec.seccion === "PRODUCCIÓN 3ER. TURNO" &&
-          (dayOfWeek === 3 || dayOfWeek === 4)
-        )
-          is_descanso = true;
-        else if (
-          sec.seccion === "PRODUCCIÓN 4o. TURNO" &&
-          (dayOfWeek === 5 || dayOfWeek === 6)
-        )
-          is_descanso = true;
-      }
-
-      return {
-        area: sec.seccion,
-        personal_activo,
-        personal_autorizado: sec.personal_autorizado,
-        operadores_autorizados: sec.operadores_autorizados,
-        operadores_contratados,
-        operadores_incidencia,
-        personal_incidencia,
-        personal_real: Math.max(personal_activo - personal_incidencia, 0),
-        is_descanso,
-      };
+  const { selectedDayIncidentSummary, selectedDayAreaSummary, selectedAreaDetailRows,
+    selectedDayCounts, prevDay, nextDay, selectedDateTitle } = useReportDayDetails({
+      selectedRows, selectedDay, selectedArea, currentMonth, en,
+      dayHeaders, dayAusentismoPct, daySummaries,
     });
-  }, [selectedRows, selectedDay, currentMonth]);
-
-  const selectedAreaDetailRows = useMemo(() => {
-    if (!selectedDay || !selectedArea) return [];
-
-    const seen = new Set<string>();
-    return selectedRows
-      .filter((row) => {
-        const effectiveSection = VISIBLE_SECTIONS.has(row.area)
-          ? row.area
-          : row.departamento;
-        return (
-          effectiveSection === selectedArea &&
-          isIncidence(row.days[selectedDay])
-        );
-      })
-      .filter((row) => {
-        if (seen.has(row.numero_empleado)) return false;
-        seen.add(row.numero_empleado);
-        return true;
-      })
-      .map((row, idx) => ({
-        key: `${row.numero_empleado}||${row.area}||${idx}`,
-        numero_empleado: row.numero_empleado,
-        nombre: row.nombre,
-        departamento: row.departamento,
-        area: row.area,
-        puesto: row.puesto,
-        turno: row.turno || "-",
-        tipo_incidencia: row.days[selectedDay] || "-",
-      }));
-  }, [selectedRows, selectedDay, selectedArea]);
-
-  const selectedDayCounts = useMemo(() => {
-    const base = INCIDENT_TABS.reduce(
-      (acc, c) => ({ ...acc, [c]: 0 }),
-      {} as Record<IncidentTab, number>,
-    );
-    if (!selectedDay) return base;
-    return selectedRows.reduce((acc, row) => {
-      const code = row.days[selectedDay];
-      if (!isIncidence(code) || !isIncidentTab(code!)) return acc;
-      acc[code] = (acc[code] || 0) + 1;
-      return acc;
-    }, base);
-  }, [selectedRows, selectedDay]);
-
-  const daysWithData = useMemo(() => {
-    return dayHeaders.filter(
-      (day) =>
-        dayAusentismoPct[day] !== undefined || (daySummaries[day] ?? 0) > 0,
-    );
-  }, [dayHeaders, dayAusentismoPct, daySummaries]);
-
-  const currentDayIndex = selectedDay ? daysWithData.indexOf(selectedDay) : -1;
-  const prevDay =
-    currentDayIndex > 0 ? daysWithData[currentDayIndex - 1] : null;
-  const nextDay =
-    currentDayIndex !== -1 && currentDayIndex < daysWithData.length - 1
-      ? daysWithData[currentDayIndex + 1]
-      : null;
-
-  const selectedDateTitle = useMemo(() => {
-    if (!selectedDay || !currentMonth) return "";
-    try {
-      const dateStr = `${currentMonth}-${selectedDay}`;
-      const date = new Date(dateStr + "T00:00:00");
-
-      const locale = en ? enUS : es;
-      const weekday = format(date, "EEEE", { locale });
-      const day = format(date, "d", { locale });
-      const monthName = format(date, "MMMM", { locale });
-      const year = format(date, "yyyy", { locale });
-
-      const capWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
-      const capMonth = monthName.charAt(0).toUpperCase() + monthName.slice(1);
-      const weekNum = getISOWeek(date);
-
-      return en
-        ? `${capWeekday}, ${capMonth} ${day}, ${year} - Week ${weekNum}`
-        : `${capWeekday} ${day} ${capMonth} ${year} - Semana ${weekNum}`;
-    } catch {
-      return `${en ? "Incidents — day" : "Incidencias — día"} ${parseInt(selectedDay, 10)}`;
-    }
-  }, [selectedDay, currentMonth, en]);
 
   const monthFirstDay = currentMonth
     ? (() => {
@@ -769,6 +590,11 @@ export default function ReporteDiarioContent() {
     [fetchByMes],
   );
 
+  const { dayReportLoading, retryDayReport } = useReportDayRouteLoading({
+    isDayPage: Boolean(dayRoute), validDayRoute, routeMonth, rows,
+    loadingDb, loadReport: handleLoadFromDb,
+  });
+
   const handleDeleteFromDb = useCallback(
     async (id: string) => {
       const result = await deleteReport(id);
@@ -823,6 +649,28 @@ export default function ReporteDiarioContent() {
 
   const hasData = rows.length > 0 && Boolean(currentMonth);
   const recentSummaries = savedSummaries.slice(0, 3);
+
+  if (dayRoute) {
+    return <ReportDayPage
+      title={selectedDateTitle}
+      month={currentMonth}
+      day={selectedDay}
+      loading={validDayRoute && (loadingDb || dayReportLoading)}
+      hasData={validDayRoute && rows.some(row => row.mes === routeMonth)}
+      hasError={validDayRoute && !rows.some(row => row.mes === routeMonth) && Boolean(dbError || errors.length)}
+      onRetry={retryDayReport}
+      prevDay={prevDay}
+      nextDay={nextDay}
+      areas={selectedDayAreaSummary}
+      selectedArea={selectedArea}
+      onSelectArea={setSelectedArea}
+      detailRows={selectedAreaDetailRows}
+      selectedTab={selectedIncidentTab}
+      onSelectTab={setSelectedIncidentTab}
+      dayCounts={selectedDayCounts}
+      incidentSummary={selectedDayIncidentSummary}
+    />;
+  }
 
   /* Estado inicial: carga de archivo y acceso a reportes recientes. */
   if (!hasData) {
@@ -1208,105 +1056,14 @@ export default function ReporteDiarioContent() {
                       selectedDay={selectedDay}
                       selectedMonthHolidayLabels={selectedMonthHolidayLabels}
                       currentMonth={currentMonth}
-                      onSelectDay={setSelectedDay}
+                      onSelectDay={day => {
+                        setCalendarDay(day);
+                        navigate(getReportDayPath(currentMonth, day));
+                      }}
                     />
                   </div>
                 </motion.div>
               )}
-              <motion.div
-                className="reporte-card"
-                variants={{
-                  hidden: { opacity: 0, y: 12 },
-                  visible: {
-                    opacity: 1,
-                    y: 0,
-                    transition: { duration: 0.35, ease: [0.16, 1, 0.3, 1] },
-                  },
-                }}
-              >
-                <div className="reporte-card__header">
-                  <div className="reporte-dayhead">
-                    <div className="reporte-dayhead__title">
-                      <div className="reporte-dayhead__icon">
-                        <CalendarDays size={18} aria-hidden="true" />
-                      </div>
-                      <h3 data-testid="selected-day-title">
-                        {selectedDay ? selectedDateTitle : copy("Detalle del día", "Day details")}
-                      </h3>
-                    </div>
-                    {selectedDay && (
-                      <div className="reporte-dayhead__actions">
-                        {(() => {
-                          const totalInc = daySummaries[selectedDay] || 0;
-                          if (totalInc === 0) return null;
-                          return (
-                            <span
-                              className="ras__incidents-total"
-                              aria-label={`${totalInc} ${copy("incidencias", "incidents")}`}
-                            >
-                              {totalInc}{" "}
-                              {totalInc === 1 ? copy("incidencia", "incident") : copy("incidencias", "incidents")}
-                            </span>
-                          );
-                        })()}
-                        <div className="reporte-daynav">
-                          <button
-                            type="button"
-                            className="reporte-daynav__btn"
-                            onClick={() => prevDay && setSelectedDay(prevDay)}
-                            disabled={!prevDay}
-                            title={copy("Día anterior", "Previous day")}
-                            aria-label={copy("Día anterior", "Previous day")}
-                            data-testid="prev-day-btn"
-                          >
-                            <ChevronLeft size={16} />
-                            <span className="reporte-daynav__text">
-                              {copy("Anterior", "Previous")}
-                            </span>
-                          </button>
-                          <button
-                            type="button"
-                            className="reporte-daynav__btn"
-                            onClick={() => nextDay && setSelectedDay(nextDay)}
-                            disabled={!nextDay}
-                            title={copy("Día siguiente", "Next day")}
-                            aria-label={copy("Día siguiente", "Next day")}
-                            data-testid="next-day-btn"
-                          >
-                            <span className="reporte-daynav__text">
-                              {copy("Siguiente", "Next")}
-                            </span>
-                            <ChevronRight size={16} />
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <div className="reporte-card__content">
-                  {!selectedDay ? (
-                    <p className="reporte-placeholder">
-                      {copy("Selecciona un día en el calendario.", "Select a day on the calendar.")}
-                    </p>
-                  ) : (
-                    <>
-                      <ReporteAreaSummary
-                        areas={selectedDayAreaSummary}
-                        selectedArea={selectedArea}
-                        onSelectArea={setSelectedArea}
-                        detailRows={selectedAreaDetailRows}
-                      />
-
-                      <ReporteIncidentTabs
-                        selectedTab={selectedIncidentTab}
-                        onSelectTab={setSelectedIncidentTab}
-                        dayCounts={selectedDayCounts}
-                        incidentSummary={selectedDayIncidentSummary}
-                      />
-                    </>
-                  )}
-                </div>
-              </motion.div>
             </motion.div>
           )}
         </div>

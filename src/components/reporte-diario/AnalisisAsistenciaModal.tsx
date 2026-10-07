@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Modal } from "@/components/ui/Modal";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useReportLocale } from "./useReportLocale";
@@ -33,6 +34,7 @@ export function AnalisisAsistenciaModal({
   formatMes,
 }: AnalisisAsistenciaModalProps) {
   const { copy, incident } = useReportLocale();
+  const isMobile = useIsMobile();
   const [selectedTopEmpKey, setSelectedTopEmpKey] = useState<string | null>(null);
   const [drillDownMonth, setDrillDownMonth] = useState<{
     empKey: string;
@@ -60,6 +62,7 @@ export function AnalisisAsistenciaModal({
       title={copy("Análisis de asistencia", "Attendance analysis")}
       onBack={drillDownMonth ? () => setDrillDownMonth(null) : undefined}
       size="sm"
+      presentation={isMobile ? "modal" : "sheet"}
     >
       <div className="top-emp-modal">
         <AnimatePresence mode="wait" initial={false}>

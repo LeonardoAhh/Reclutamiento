@@ -6,7 +6,6 @@ import {
   ArrowUpRight,
   BusFront,
   CalendarRange,
-  Gauge,
   Minus,
   Route,
   UserRoundSearch,
@@ -418,17 +417,6 @@ function RutaDetail({
         {/* Dual column grids */}
         <div className="ruta-detail__grids">
           <section className="ruta-section">
-            <h2
-              id="ruta-detail-title"
-              className="ruta-section__title ruta-section__title-wrapper type-heading-sm"
-            >
-              <Gauge
-                aria-hidden="true"
-                className="ruta-section__title-icon"
-              />
-              {ruta.nombreRuta}
-            </h2>
-
             <ShiftBars
               turnosCount={ruta.turnosCount}
               turnosCountPrev={ruta.turnosCountPrev}
@@ -756,9 +744,8 @@ export function RutasView() {
           id="rutas-detail-pane"
           ref={detailRef}
           className="rutas-detail-pane"
-          aria-labelledby={
-            selectedRuta ? "ruta-detail-title" : "rutas-placeholder-title"
-          }
+          aria-label={selectedRuta?.nombreRuta}
+          aria-labelledby={selectedRuta ? undefined : "rutas-placeholder-title"}
         >
           {/* Back button — mobile only, rendered via CSS display */}
           {selectedRuta && (
@@ -766,7 +753,7 @@ export function RutasView() {
               className="rutas-back-btn"
               onClick={handleBack}
               aria-label={copy.backToRouteList}
-              label={copy.allRoutes}
+              label={selectedRuta.nombreRuta}
             />
           )}
 

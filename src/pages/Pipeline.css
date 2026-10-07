@@ -1677,16 +1677,22 @@
 /* ── Quick Profile Mini Modal (Minimalista) ── */
 .quick-profile__info {
   display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xxs);
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--design-spacing-sm);
+  flex: 1 1 auto;
+  min-inline-size: 0;
 }
 
 .quick-profile__info h3 {
   margin: 0;
+  min-inline-size: 0;
   font-size: var(--type-body-md-size);
   font-weight: 600;
   color: var(--color-ink);
   letter-spacing: -0.01em;
+  overflow-wrap: anywhere;
 }
 
 .quick-profile__info p {
@@ -1711,12 +1717,43 @@
 
 .quick-profile-header {
   display: flex;
-  gap: var(--spacing-md);
   align-items: center;
+  gap: var(--design-spacing-sm);
+  min-inline-size: 0;
 }
 
 .quick-profile__status-wrap {
-  margin-top: var(--spacing-xs);
+  flex: 0 0 auto;
+}
+
+.quick-profile__details {
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+  margin: 0;
+  border-block-start: var(--border-width) solid var(--color-hairline);
+}
+
+.quick-profile__details > div {
+  display: flex;
+  flex-direction: column;
+  gap: var(--design-spacing-xxs);
+  min-inline-size: 0;
+  padding-block: var(--design-spacing-sm);
+  border-block-end: var(--border-width) solid var(--color-hairline);
+}
+
+.quick-profile__details dt {
+  color: var(--color-muted);
+  font-size: var(--type-caption-sm-size);
+  line-height: var(--type-caption-sm-line);
+}
+
+.quick-profile__details dd {
+  min-inline-size: 0;
+  margin: 0;
+  color: var(--color-ink);
+  overflow-wrap: anywhere;
 }
 
 .quick-profile__action-btn {

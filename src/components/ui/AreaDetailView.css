@@ -519,7 +519,10 @@
 }
 
 .area-detail__title-button {
-  display: block;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--design-spacing-sm);
+  min-inline-size: 0;
   max-width: 100%;
   padding: 0;
   border: 0;
@@ -529,6 +532,10 @@
   letter-spacing: inherit;
   text-align: start;
   cursor: pointer;
+}
+
+.area-detail__title-button svg {
+  flex: 0 0 auto;
 }
 
 /* ── Refactored classes from AreaDetailView.tsx inline styles ── */

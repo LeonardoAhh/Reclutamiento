@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton';
 import { useReporteDiario, type ReporteDiarioSummary } from '@/hooks/useReporteDiario';
@@ -26,6 +27,7 @@ export function ReportComparisonPage() {
         <div className="page-header__content">
           <h1 ref={headingRef} tabIndex={-1} id="report-comparison-title" className="app-page-title">
             <Link to="/reports" className="report-comparison-page__title-link" aria-label={copy('Comparativa mensual: volver a Reporte diario', 'Monthly comparison: back to Daily report')}>
+              <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
               {copy('Comparativa mensual', 'Monthly comparison')}
             </Link>
           </h1>

@@ -89,7 +89,12 @@
 .ruta-day-page__table {
   inline-size: 100%;
   border-collapse: separate;
-  border-spacing: 0 var(--design-spacing-sm);
+  border-spacing: 0;
+}
+
+.ruta-day-page__table tbody {
+  display: grid;
+  gap: var(--design-spacing-sm);
 }
 
 .ruta-day-page__table thead {
@@ -146,6 +151,11 @@
     inline-size: auto;
     block-size: auto;
     clip-path: none;
+  }
+
+  .ruta-day-page__table tbody {
+    display: table-row-group;
+    gap: 0;
   }
 
   .ruta-day-page__table thead th {

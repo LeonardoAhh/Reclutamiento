@@ -3,7 +3,7 @@ import { MotionConfig } from 'framer-motion';
 import { isToday, isTomorrow, isYesterday, formatDistanceToNowStrict } from 'date-fns';
 import { enUS, es } from 'date-fns/locale';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { candidateStatusLabel } from '@/lib/candidateTranslations';
+import { candidateSourceLabel, candidateStatusLabel } from '@/lib/candidateTranslations';
 
 import { BadgeCheck, BarChart3, CalendarDays, ClipboardList, FileImage, LayoutGrid, PenLine, SlidersHorizontal, Trash2, UserRoundPlus, UserRound, UserX } from 'lucide-react';
 import { StarliteBadge, VinoplasticBadge, ReclutadorBadge } from '@/components/ui/Badge';
@@ -39,6 +39,7 @@ import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { CANDIDATE_STATUSES } from '@/lib/types';
 import type { Candidate, CandidateStatus, Employee } from '@/lib/types';
 import { formatReadableDate, formatShortDate } from '@/lib/dates';
+import { toNaturalCase } from '@/lib/utils';
 import { useTeamDirectory } from '@/features/team/TeamProvider';
 import { accessCardRecruiterName } from '@/features/team/types';
 import { splitCandidateName } from '@/lib/names';
@@ -845,12 +846,13 @@ export function Pipeline() {
         </div>
       )}
 
-      {/* ── Quick Profile (Modal) ── */}
+      {/* ── Quick Profile ── */}
       <Modal
         isOpen={!!quickProfile}
         onClose={() => setQuickProfile(null)}
         title={en ? 'Preview' : 'Vista Previa'}
         size="md"
+        presentation={isMobile ? 'modal' : 'sheet'}
         footerActions={
           <>
             {quickProfile?.status === 'contratado' && !quickProfile?.employee_num && (
@@ -890,13 +892,74 @@ export function Pipeline() {
                 {(quickProfile.nombre ?? '?').charAt(0)}
               </div>
               <div className="quick-profile__info">
-                <h3>{quickProfile.nombre}</h3>
-                <p>{quickProfile.telefono} • {quickProfile.puesto}</p>
+                <h3>{toNaturalCase(quickProfile.nombre, { preserveAcronyms: false })}</h3>
                 <div className="quick-profile__status-wrap">
                   <CandidateStatusBadge status={quickProfile.status} />
                 </div>
               </div>
             </div>
+            <dl className="quick-profile__details">
+              {quickProfile.telefono && (
+                <div>
+                  <dt>{en ? 'Phone' : 'Teléfono'}</dt>
+                  <dd>{quickProfile.telefono}</dd>
+                </div>
+              )}
+              {quickProfile.email && (
+                <div>
+                  <dt>{en ? 'Email' : 'Correo electrónico'}</dt>
+                  <dd>{quickProfile.email}</dd>
+                </div>
+              )}
+              <div>
+                <dt>{en ? 'Position' : 'Puesto'}</dt>
+                <dd>{toNaturalCase(quickProfile.puesto)}</dd>
+              </div>
+              <div>
+                <dt>{en ? 'Area' : 'Área'}</dt>
+                <dd>{toNaturalCase(quickProfile.area)}</dd>
+              </div>
+              {quickProfile.seccion && (
+                <div>
+                  <dt>{en ? 'Section' : 'Sección'}</dt>
+                  <dd>{toNaturalCase(quickProfile.seccion)}</dd>
+                </div>
+              )}
+              {quickProfile.reclutador && (
+                <div>
+                  <dt>{en ? 'Recruiter' : 'Reclutador'}</dt>
+                  <dd>{toNaturalCase(quickProfile.reclutador, { preserveAcronyms: false })}</dd>
+                </div>
+              )}
+              {quickProfile.source && (
+                <div>
+                  <dt>{en ? 'Recruitment source' : 'Medio de reclutamiento'}</dt>
+                  <dd>{toNaturalCase(candidateSourceLabel(quickProfile.source, language))}</dd>
+                </div>
+              )}
+              {quickProfile.fecha_cita && (
+                <div>
+                  <dt>{en ? 'Interview Date' : 'Fecha de Entrevista'}</dt>
+                  <dd>{toNaturalCase(formatReadableDate(quickProfile.fecha_cita, en ? 'en-US' : 'es-MX'))}</dd>
+                </div>
+              )}
+              {quickProfile.employee_num && (
+                <div>
+                  <dt>{en ? 'Employee number' : 'Número de empleado'}</dt>
+                  <dd>{quickProfile.employee_num}</dd>
+                </div>
+              )}
+              <div>
+                <dt>{en ? 'Company' : 'Empresa'}</dt>
+                <dd>{quickProfile.is_starlite ? <StarliteBadge /> : <VinoplasticBadge />}</dd>
+              </div>
+              {quickProfile.notas && (
+                <div>
+                  <dt>{en ? 'Notes' : 'Notas'}</dt>
+                  <dd>{toNaturalCase(quickProfile.notas, { preserveAcronyms: false })}</dd>
+                </div>
+              )}
+            </dl>
           </div>
         )}
       </Modal>

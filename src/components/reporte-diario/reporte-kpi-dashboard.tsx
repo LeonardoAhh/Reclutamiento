@@ -5,6 +5,8 @@ import { useReportLocale } from "./useReportLocale";
 import type { ReporteRow } from "./types";
 import { KpiCard, type KpiTone } from "@/components/ui/KpiCard";
 import { Modal } from "@/components/ui/Modal";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { toNaturalCase } from "@/lib/utils";
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
@@ -102,6 +104,7 @@ export default function ReporteKpiDashboard({
     currentMonth,
 }: ReporteKpiDashboardProps) {
     const { en, copy, month } = useReportLocale();
+    const isMobile = useIsMobile();
     const [isWorstAreaModalOpen, setIsWorstAreaModalOpen] = useState(false);
 
     const kpis = useMemo(
@@ -131,6 +134,7 @@ export default function ReporteKpiDashboard({
         {
             label: copy("Empleados", "Employees"),
             value: kpis.totalEmpleados,
+            valueSize: "compact" as const,
             sub: `${copy("en", "in")} ${month(currentMonth)}`,
             icon: <UsersRound size={18} />,
             tone: "default" as KpiTone,
@@ -138,6 +142,7 @@ export default function ReporteKpiDashboard({
         {
             label: copy("Total incidencias", "Total incidents"),
             value: kpis.totalIncidencias,
+            valueSize: "compact" as const,
             sub: `${copy("en", "in")} ${month(currentMonth)}`,
             icon: <BadgeAlert size={18} />,
             tone: (kpis.totalIncidencias > 0 ? "warning" : "default") as KpiTone,
@@ -145,6 +150,7 @@ export default function ReporteKpiDashboard({
         {
             label: copy("Día con más incidencias", "Day with most incidents"),
             value: getWorstDayLabel(kpis.worstDay, currentMonth, en),
+            valueSize: "compact" as const,
             icon: <CalendarX2 size={18} />,
             tone: getTone(kpis.worstDayCount, { warning: 1, destructive: 6 }),
         },
@@ -158,6 +164,12 @@ export default function ReporteKpiDashboard({
         },
     ];
 
+    const worstAreaLabel = toNaturalCase(kpis.worstArea).replace(
+        /\b([1-4])(ER|RA|RO|DO|DA|TO|TA|O)\b/gi,
+        (_, number: string, suffix: string) =>
+            `${number}${suffix.toLocaleLowerCase("es-MX")}`,
+    );
+
     return (
         <>
             <div className="reporte-kpi__grid">
@@ -169,8 +181,9 @@ export default function ReporteKpiDashboard({
             <Modal
                 isOpen={isWorstAreaModalOpen}
                 onClose={() => setIsWorstAreaModalOpen(false)}
-                title={`${copy("Incidencias", "Incidents")} · ${kpis.worstArea}`}
+                title={`${copy("Incidencias", "Incidents")} · ${worstAreaLabel}`}
                 size="sm"
+                presentation={isMobile ? "modal" : "sheet"}
             >
                 <div className="top-emp-modal">
                     {worstAreaEmployees.length > 0 ? (

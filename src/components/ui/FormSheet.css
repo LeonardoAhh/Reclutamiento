@@ -1,3 +1,7 @@
+.form-sheet .modal-back-btn {
+  border: 0;
+}
+
 .form-sheet:is(.candidate-modal, .edit-employee-modal, .promote-modal) .form-grid {
   grid-template-columns: minmax(0, 1fr);
 }

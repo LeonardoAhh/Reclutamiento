@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { useLocation } from 'react-router-dom';
+import { matchPath, useLocation } from 'react-router-dom';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { ACCOUNT_PATH, HOME_PATH, TEAM_PATH, VACANCY_ASSIGNMENTS_PATH, getLocalizedNavigation } from './navigation';
@@ -10,7 +10,7 @@ import { DESKTOP_MEDIA_QUERY } from '@/lib/layout';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { SessionNotice } from './SessionNotice';
 import { CAREER_PATH } from '@/features/career/types';
-import { REPORT_COMPARISON_PATH } from '@/components/reporte-diario/navigation';
+import { REPORT_COMPARISON_PATH, REPORT_DAY_PATTERN } from '@/components/reporte-diario/navigation';
 import { CANDIDATE_METRICS_PATH } from '@/pages/candidate-metrics/navigation';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -40,6 +40,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const location = useLocation();
 
   const pageTitle = useMemo(() => {
+    if (matchPath(REPORT_DAY_PATTERN, location.pathname)) return language === 'en' ? 'Day details' : 'Detalle del día';
     if (location.pathname === REPORT_COMPARISON_PATH) return language === 'en' ? 'Monthly comparison' : 'Comparativa mensual';
     if (location.pathname === CANDIDATE_METRICS_PATH) return language === 'en' ? 'Metrics and KPIs' : 'Métricas y KPIs';
     if (language === 'en' && location.pathname === ACCOUNT_PATH) return 'Account';

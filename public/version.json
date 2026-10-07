@@ -1,8 +1,8 @@
 {
-  "version": "0.3.5",
+  "version": "0.3.6",
   "fecha": "2026-10-07",
   "nivel": "success",
   "titulo": "We are ready!",
-  "mensaje": "Mejoras en la interfaz de usuario y corrección de errores menores.",
+  "mensaje": "Fix issues with the new version and improve performance.",
   "notificar": true
 }

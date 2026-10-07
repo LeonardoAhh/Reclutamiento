@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
+  ArrowLeft,
   BriefcaseBusiness,
   HeartPulse,
   Star,
@@ -283,6 +284,7 @@ export function AreaDetailView({
               onClick={onBack}
               aria-label={`${t("Volver a departamentos")}: ${dept.area}`}
             >
+              <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
               {dept.area}
             </button>
           ) : dept.area}

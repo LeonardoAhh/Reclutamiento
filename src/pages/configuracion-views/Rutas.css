@@ -81,6 +81,13 @@
 /* ── Back button (mobile only) ── */
 .rutas-back-btn {
   display: none;
+  color: var(--color-ink);
+  text-decoration: none;
+}
+
+.rutas-back-btn:hover:not(:disabled) {
+  color: var(--color-ink);
+  text-decoration: none;
 }
 
 .rutas-search-clear-btn svg,
