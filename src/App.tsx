@@ -26,6 +26,8 @@ import { RutaDayEmployeesPage } from '@/components/ui/RutaDayEmployeesModal';
 import { DATA_UPDATE_PATH } from '@/features/data-update/types';
 import { ACCOUNT_PATH, ACTIVIDADES_PATH, HOME_PATH, LOGOUT_PATH, ORGANIZATION_CHART_PATH, TEAM_PATH, VACANCY_ASSIGNMENTS_PATH } from '@/components/layout/navigation';
 import { LogoutPage } from '@/features/account/LogoutPage';
+import { REPORT_COMPARISON_PATH } from '@/components/reporte-diario/navigation';
+import { CANDIDATE_METRICS_PATH } from '@/pages/candidate-metrics/navigation';
 import { CAREER_JOURNEY_ENABLED, CAREER_PATH } from '@/features/career/types';
 import { LEAVE_REQUESTS_PATH } from '@/features/leave/requests';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -35,6 +37,7 @@ const CareerPage = lazy(() => import('@/features/career/CareerPage').then(({ Car
 const Dashboard = lazy(() =>
   import('@/pages/Dashboard').then(({ Dashboard }) => ({ default: Dashboard })),
 );
+const CandidateMetricsPage = lazy(() => import('@/pages/CandidateMetricsPage').then(({ CandidateMetricsPage }) => ({ default: CandidateMetricsPage })));
 const Pipeline = lazy(() =>
   import('@/pages/Pipeline').then(({ Pipeline }) => ({ default: Pipeline })),
 );
@@ -52,6 +55,7 @@ const VacancyAssignmentsPage = lazy(() =>
 const Login = lazy(() =>
   import('@/pages/Login').then(({ Login }) => ({ default: Login })),
 );
+const ReportComparisonPage = lazy(() => import('@/pages/ReportComparisonPage').then(({ ReportComparisonPage }) => ({ default: ReportComparisonPage })));
 const ReporteDiario = lazy(() =>
   import('@/pages/ReporteDiario').then(({ ReporteDiario }) => ({
     default: ReporteDiario,
@@ -197,9 +201,11 @@ function App() {
                 <Route path="/overview" element={<WithSupabaseData resources={WORKFORCE_DATA}><KpisPage /></WithSupabaseData>} />
                 <Route path={PLANTILLA_PATH} element={<PlantillaPage />} />
                 <Route path={VACANCY_ASSIGNMENTS_PATH} element={<WithSupabaseData resources={WORKFORCE_DATA}><VacancyAssignmentsPage /></WithSupabaseData>} />
+                <Route path={CANDIDATE_METRICS_PATH} element={<CandidateMetricsPage />} />
                 <Route path="/candidates" element={<WithSupabaseData resources={CANDIDATE_FORM_DATA}><Pipeline /></WithSupabaseData>} />
                 <Route path="/employee-turnover" element={<WithSupabaseData resources={EMPLOYEE_DATA}><Bajas /></WithSupabaseData>} />
                 <Route path={ROUTE_DAY_EMPLOYEES_PATH} element={<RutaDayEmployeesPage />} />
+                <Route path={REPORT_COMPARISON_PATH} element={<ReportComparisonPage />} />
                 <Route path="/reports" element={<ReporteDiario />} />
                 <Route path="/departure-reasons" element={<MotivosBaja />} />
                 <Route path={ACTIVIDADES_PATH} element={<Actividades />} />

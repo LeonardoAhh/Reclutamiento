@@ -1,0 +1,11 @@
+.form-sheet:is(.candidate-modal, .edit-employee-modal, .promote-modal) .form-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.form-sheet .modal-wizard-form {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-block-size: 0;
+  min-inline-size: 0;
+}

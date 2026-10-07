@@ -4,8 +4,10 @@ import {
   CalendarDays,
   Trash2,
 } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Modal } from "@/components/ui/Modal";
+import { FormSheet } from "@/components/ui/FormSheet";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { DeleteConfirmModal } from "@/components/ui/DeleteConfirmModal";
 import { useReportLocale } from "./useReportLocale";
 
@@ -35,7 +37,10 @@ export default function ReportesGuardadosDialog({
   triggerVariant = "icon",
   triggerLabel,
 }: ReportesGuardadosDialogProps) {
+  const isMobile = useIsMobile();
+  const Dialog = isMobile ? Modal : FormSheet;
   const { copy } = useReportLocale();
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<SavedSummary | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -63,6 +68,7 @@ export default function ReportesGuardadosDialog({
           onClick={() => setIsOpen(true)}
           className="reporte-saved__trigger reporte-saved__trigger--labeled"
           aria-label={label}
+          ref={triggerRef}
           data-testid="open-saved-reports-btn"
         >
           <Archive size={16} aria-hidden="true" />
@@ -75,6 +81,7 @@ export default function ReportesGuardadosDialog({
           className="reporte-saved__trigger reporte-saved__trigger--icon"
           aria-label={`${copy("Reportes guardados", "Saved reports")} (${count})`}
           title={copy("Reportes guardados", "Saved reports")}
+          ref={triggerRef}
           data-testid="open-saved-reports-btn"
         >
           <Archive size={16} aria-hidden="true" />
@@ -84,8 +91,9 @@ export default function ReportesGuardadosDialog({
         </button>
       )}
 
-      <Modal
-        isOpen={isOpen}
+      <Dialog
+        isOpen={isOpen && (isMobile || pendingDelete === null)}
+        {...(isMobile ? {} : { returnFocusRef: triggerRef })}
         onClose={() => setIsOpen(false)}
         title={copy("Reportes guardados", "Saved reports")}
         size="sm"
@@ -144,7 +152,7 @@ export default function ReportesGuardadosDialog({
             </ul>
           )}
         </div>
-      </Modal>
+      </Dialog>
 
       <DeleteConfirmModal
         isOpen={pendingDelete !== null}

@@ -1,5 +1,7 @@
 import { useId, useState, type FormEvent } from 'react';
 import { Modal } from '@/components/ui/Modal';
+import { FormSheet } from '@/components/ui/FormSheet';
+import { useIsMobile } from '@/hooks/useIsMobile';
 import type { Profile } from '@/hooks/useAuth';
 import { toNaturalCase } from '@/lib/utils';
 import { saveTeamMember } from './api';
@@ -15,6 +17,7 @@ function formatField(key: 'canonical_name' | 'full_name' | 'short_name' | 'acces
 interface Props { member: TeamMember | null; profiles: Profile[]; onClose: () => void; onSaved: () => Promise<void> }
 export function TeamMemberForm({ member, profiles, onClose, onSaved }: Props) {
   const { language } = useLanguage();
+  const isMobile = useIsMobile();
   const copy = teamCopy(language);
   const id = useId();
   const formatInput = (key: Parameters<typeof formatField>[0], value: string) =>
@@ -51,7 +54,8 @@ export function TeamMemberForm({ member, profiles, onClose, onSaved }: Props) {
     ['short_name', copy.displayName, 120], ['access_card_name', copy.accessCardName, 200],
     ['job_title', copy.jobTitle, 200],
   ] as const;
-  return <Modal isOpen title={member ? copy.editMember : copy.addMember} size="md"
+  const Dialog = isMobile ? Modal : FormSheet;
+  return <Dialog isOpen title={member ? copy.editMember : copy.addMember} size="md"
     closeLabel={language === 'en' ? 'Close' : 'Cerrar'}
     onClose={() => { if (!busy) onClose(); }} footerActions={<>
       <button type="button" className="btn-secondary" disabled={busy} onClick={onClose}>{copy.cancel}</button>
@@ -93,5 +97,5 @@ export function TeamMemberForm({ member, profiles, onClose, onSaved }: Props) {
         onChange={event => setForm({ ...form, include_in_metrics: event.target.checked })} />{copy.includeMetrics}</label>
       {error && <p id={`${id}-error`} className="form-error-text team-form__wide" role="alert">{translateTeamMessage(error, language)}</p>}
     </form>
-  </Modal>;
+  </Dialog>;
 }

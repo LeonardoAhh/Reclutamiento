@@ -6,6 +6,8 @@ import { workforceText } from '@/pages/workforce-translations';
 import { usePositions, type CreatePositionResult } from '@/lib/positions';
 import { toNaturalCase } from '@/lib/utils';
 import { Modal } from './Modal';
+import { FormSheet } from './FormSheet';
+import { useIsMobile } from '@/hooks/useIsMobile';
 import { CustomSelect } from './CustomSelect';
 import './PromoteEmployeeModal.css';
 
@@ -78,6 +80,8 @@ export function PromoteEmployeeModal({
   onPromote,
   onCreatePosition,
 }: PromoteEmployeeModalProps) {
+  const isMobile = useIsMobile();
+  const Dialog = isMobile ? Modal : FormSheet;
   const { language } = useLanguage();
   const t = (text: string) => workforceText(language, text);
   const formId = useId();
@@ -261,7 +265,7 @@ export function PromoteEmployeeModal({
   /* ── Render ───────────────────────────────────────────────────────────── */
 
   return (
-    <Modal
+    <Dialog
       isOpen={isOpen}
       onClose={onClose}
       className="promote-modal"
@@ -348,7 +352,7 @@ export function PromoteEmployeeModal({
         )}
 
       </form>
-    </Modal>
+    </Dialog>
   );
 }
 

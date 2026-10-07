@@ -10,6 +10,7 @@ import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { calculatePositionCoverage, formatPhoneNumber, toNaturalCase } from '@/lib/utils';
 import { formatReadableDate, isoToLocalDateString, localDateToIso, localTodayIso } from '@/lib/dates';
 import { Modal } from './Modal';
+import { CandidateSheet } from './CandidateSheet';
 import { DeleteConfirmModal } from './DeleteConfirmModal';
 import { FormWizard } from './FormWizard';
 import { useIsMobile } from '@/hooks/useIsMobile';
@@ -656,8 +657,10 @@ const fieldsPosicion = (
     </>
   ) : undefined;
 
+  const Dialog = isMobile ? Modal : CandidateSheet;
+
   return (
-    <Modal
+    <Dialog
       isOpen={isOpen}
       onClose={onClose}
       className={accessCard ? 'candidate-access-card-modal' : `candidate-modal${useWizard ? ' modal-wizard-mobile' : ''}`}
@@ -720,6 +723,6 @@ const fieldsPosicion = (
 
         </form>
       )}
-    </Modal>
+    </Dialog>
   );
 }

@@ -5,3 +5,24 @@
   gap: var(--design-spacing-sm);
   text-align: center;
 }
+
+.data-update-photo-modal .lightbox-modal__visual {
+  aspect-ratio: 3 / 4;
+  max-block-size: var(--feature-image-viewer-max-block-size);
+}
+
+.data-update-photo-modal .lightbox-modal__image {
+  block-size: 100%;
+  max-block-size: 100%;
+}
+
+.data-update-photo-modal__skeleton {
+  position: absolute;
+  inset: 0;
+}
+
+.data-update-photo-modal__bone {
+  inline-size: 100%;
+  block-size: 100%;
+  border-radius: var(--rounded-md);
+}

@@ -3,6 +3,7 @@ import { useCallback } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const englishCopy: ReadonlyMap<string, string> = new Map([
+  ["Cargando fotografía…", "Loading photo…"],
   ["Actualización de datos", "Data update"],
   ["No tienes acceso a este módulo.", "You do not have access to this module."],
   ["Este módulo necesita conexión. Reconéctate para consultar o guardar información.", "This module requires an internet connection. Reconnect to view or save information."],
@@ -288,6 +289,7 @@ const englishCopy: ReadonlyMap<string, string> = new Map([
   ["Avance por responsable", "Progress by assignee"],
   ["Global", "Overall"],
   ["Mi avance", "My progress"],
+  ["Volver", "Back"],
   ["colaboradores completados", "employees completed"],
   ["Datos de campaña", "Campaign details"],
   ["Participantes del reparto", "Assignment participants"],

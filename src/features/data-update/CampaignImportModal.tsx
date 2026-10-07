@@ -1,6 +1,8 @@
 import { useId, useState, type FormEvent } from "react";
 import { FileJson2 } from "lucide-react";
 import { Modal } from "@/components/ui/Modal";
+import { FormSheet } from "@/components/ui/FormSheet";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { createDataUpdateCampaign, dataUpdateError } from "./api";
 import { useDataUpdateText } from "./translations";
 import { parseDataUpdateImport } from "./validation";
@@ -22,6 +24,7 @@ export function CampaignImportModal({
   onCreated,
 }: CampaignImportModalProps) {
   const t = useDataUpdateText();
+  const isMobile = useIsMobile();
   const yearNow = new Date().getFullYear();
   const formId = useId();
   const fileInputId = useId();
@@ -93,8 +96,10 @@ export function CampaignImportModal({
       participants.size > 0,
   );
 
+  const Dialog = isMobile ? Modal : FormSheet;
+
   return (
-    <Modal
+    <Dialog
       isOpen={isOpen}
       title={t("Nueva campaña")}
       onClose={close}
@@ -213,6 +218,6 @@ export function CampaignImportModal({
         {error && <p className="form-error" role="alert">{t(error)}</p>}
 
       </form>
-    </Modal>
+    </Dialog>
   );
 }

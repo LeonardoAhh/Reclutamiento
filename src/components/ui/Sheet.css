@@ -1,0 +1,146 @@
+.sheet-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--layer-modal);
+  background: var(--color-modal-scrim);
+}
+
+/* El ancho fluido ocupa el espacio disponible en móvil y se limita en pantallas mayores. */
+.sheet-content {
+  position: fixed;
+  inset-block: 0;
+  inset-inline-end: 0;
+  z-index: var(--layer-modal);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  inline-size: min(var(--sheet-available-inline-size, 100%), var(--modal-inline-size-sm));
+  min-inline-size: 0;
+  background: var(--color-canvas-elevated);
+  color: var(--color-body);
+  border-inline-start: var(--border-width) solid var(--color-hairline);
+  box-shadow: var(--shadow-sm);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+  overflow-wrap: anywhere;
+}
+
+/* Variante flotante: marco y elevación del workspace con separación de las safe areas. */
+.sheet-content--floating {
+  --sheet-available-inline-size: calc(
+    100% - max(var(--design-spacing-sm), var(--safe-area-left)) -
+      max(var(--design-spacing-sm), var(--safe-area-right))
+  );
+  inset-block-start: max(var(--design-spacing-sm), var(--safe-area-top));
+  inset-block-end: max(var(--design-spacing-sm), var(--safe-area-bottom));
+  inset-inline-end: max(var(--design-spacing-sm), var(--safe-area-right));
+  border: var(--border-width) solid var(--workspace-border-color);
+  border-radius: var(--workspace-radius);
+  box-shadow: var(--workspace-shadow);
+  overflow: hidden;
+}
+
+.sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--design-spacing-sm);
+  flex: 0 0 auto;
+  min-inline-size: 0;
+  padding-block-start: max(var(--design-spacing-md), var(--safe-area-top));
+  padding-block-end: var(--design-spacing-md);
+  padding-inline-start: max(var(--design-spacing-md), var(--safe-area-left));
+  padding-inline-end: max(var(--design-spacing-md), var(--safe-area-right));
+  border-block-end: var(--border-width) solid var(--color-hairline);
+}
+
+.sheet-heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--design-spacing-xs);
+  min-inline-size: 0;
+  flex: 1 1 auto;
+}
+
+.sheet-title {
+  margin: 0;
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  line-height: var(--type-heading-md-line);
+  letter-spacing: var(--type-heading-md-tracking);
+}
+
+.sheet-description {
+  margin: 0;
+  color: var(--color-body);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.sheet-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  min-inline-size: var(--touch-target-min);
+  min-block-size: var(--touch-target-min);
+  padding: 0;
+  border: 0;
+  border-radius: var(--rounded-full);
+  background: none;
+  color: var(--color-ink);
+  cursor: pointer;
+}
+
+.sheet-close svg {
+  inline-size: var(--icon-size-md);
+  block-size: var(--icon-size-md);
+}
+
+.sheet-close:hover {
+  background: var(--color-surface-soft);
+}
+
+.sheet-content:focus-visible,
+.sheet-close:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.sheet-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--design-spacing-md);
+  flex: 1 1 auto;
+  min-block-size: 0;
+  min-inline-size: 0;
+  padding-block-start: var(--design-spacing-md);
+  padding-block-end: max(var(--design-spacing-md), var(--safe-area-bottom));
+  padding-inline-start: max(var(--design-spacing-md), var(--safe-area-left));
+  padding-inline-end: max(var(--design-spacing-md), var(--safe-area-right));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.sheet-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--design-spacing-xs);
+  flex: 0 0 auto;
+  min-inline-size: 0;
+  padding-block-start: var(--design-spacing-md);
+  padding-block-end: max(var(--design-spacing-md), var(--safe-area-bottom));
+  padding-inline-start: max(var(--design-spacing-md), var(--safe-area-left));
+  padding-inline-end: max(var(--design-spacing-md), var(--safe-area-right));
+  border-block-start: var(--border-width) solid var(--color-hairline);
+}

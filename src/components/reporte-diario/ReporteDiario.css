@@ -817,175 +817,12 @@ button.reporte-card:hover,
    MONTHLY COMPARISON — compact table on desktop, cards (inline expand) on mobile.
    ============================================================================ */
 
-.reporte-cmp__body {
-  padding: var(--spacing-lg);
-}
-
-.reporte-cmp__table-wrap {
-  display: none;
-  overflow-x: auto;
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
-  max-width: 100%;
-}
-
-.reporte-cmp__table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: var(--type-body-sm-size);
-  line-height: var(--type-body-sm-line);
-}
-
-.reporte-cmp__table thead {
-  background: var(--color-surface-soft);
-  border-bottom: 1px solid var(--color-hairline);
-}
-
-.reporte-cmp__table th {
-  padding: var(--spacing-sm) var(--spacing-md);
-  text-align: left;
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  text-transform: uppercase;
-  letter-spacing: var(--type-caption-up-tracking);
-  color: var(--color-muted);
-  white-space: nowrap;
-}
-
-.reporte-cmp__table tbody tr {
-  border-bottom: 1px solid var(--color-hairline-soft);
-}
-
-.reporte-cmp__table tbody tr:last-child {
-  border-bottom: none;
-}
-.reporte-cmp__table tbody tr:hover {
-  background: var(--color-surface-soft);
-}
-
-.reporte-cmp__table td {
-  padding: var(--spacing-sm) var(--spacing-md);
-  color: var(--color-ink);
-  white-space: normal;
-}
-
-.reporte-cmp__mes {
-  font-weight: var(--type-body-strong-weight);
-  white-space: nowrap !important;
-}
-
-.reporte-cmp__num {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-.reporte-cmp__table th.reporte-cmp__num {
-  text-align: right;
-}
-.reporte-cmp__mes {
-  font-weight: var(--type-body-strong-weight);
-}
-.reporte-cmp__strong {
-  font-weight: var(--type-body-strong-weight);
-}
-.reporte-cmp__muted {
-  color: var(--color-muted);
-}
-
-.reporte-cmp__trend {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-xxs);
-  font-weight: var(--type-body-strong-weight);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-
-.reporte-cmp__trend--error {
-  color: var(--color-error);
-}
-.reporte-cmp__trend--success {
-  color: var(--color-success);
-}
-.reporte-cmp__trend--muted {
-  color: var(--color-muted);
-}
-
-.reporte-cmp__quarters {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-xl);
-  padding-inline: var(--spacing-md);
-}
-
-.reporte-cmp__quarter {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-lg);
-  background: var(--color-surface-card);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-md);
-}
-
-.reporte-cmp__quarter-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--spacing-sm);
-}
-
-.reporte-cmp__quarter-title {
-  color: var(--color-ink);
-  font-size: var(--type-caption-md-size);
-  font-weight: var(--font-semibold);
-}
-
-.reporte-cmp__quarter-label {
-  color: var(--color-muted);
-  font-size: var(--type-caption-up-size);
-  text-transform: uppercase;
-}
-
-.reporte-cmp__quarter-value {
-  font-size: var(--type-heading-md-size);
-  font-weight: var(--font-bold);
-}
-
-.reporte-cmp__quarter-value--ok {
-  color: var(--color-success);
-}
-.reporte-cmp__quarter-value--warn {
-  color: var(--color-warning);
-}
-.reporte-cmp__quarter-value--error {
-  color: var(--color-error);
-}
-
-.reporte-cmp__cards {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-@media (min-width: 768px) {
-  .reporte-cmp__cards {
-    display: none;
-  }
-  .reporte-cmp__table-wrap {
-    display: block;
-  }
-}
-
 /* ============================================================================
    SAVED REPORTS — trigger + compact list (mobile-first).
    ============================================================================ */
 
 .reporte-saved__trigger {
+  text-decoration: none;
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-sm);
@@ -1068,7 +905,7 @@ button.reporte-card:hover,
 }
 
 @media (min-width: 640px) {
-  .reporte-saved__list {
+  .modal-content .reporte-saved__list {
     grid-template-columns: repeat(2, 1fr);
   }
 }

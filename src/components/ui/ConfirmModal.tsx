@@ -14,6 +14,8 @@ export interface ConfirmModalProps {
   isLoading?: boolean;
   loadingLabel?: string;
   errorMessage?: string;
+  placement?: "center" | "bottom";
+  hideCloseButton?: boolean;
 }
 
 /**
@@ -32,6 +34,8 @@ export function ConfirmModal({
   isLoading = false,
   loadingLabel,
   errorMessage,
+  placement,
+  hideCloseButton = true,
 }: ConfirmModalProps) {
   const { language } = useLanguage();
   const en = language === 'en';
@@ -39,10 +43,11 @@ export function ConfirmModal({
     <Modal
       isOpen={isOpen}
       title={title}
-      onClose={onCancel}
+      onClose={() => { if (hideCloseButton || !isLoading) onCancel(); }}
       size="xs"
       className="modal-alert"
-      hideCloseButton
+      placement={placement}
+      hideCloseButton={hideCloseButton}
       footerActions={
         <>
           <button type="button" className="btn-secondary" onClick={onCancel} disabled={isLoading}>

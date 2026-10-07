@@ -260,7 +260,7 @@ export function AvatarUploadModal({ isOpen, onClose }: AvatarUploadModalProps) {
       title={english ? "Profile picture" : "Avatar"}
       closeLabel={english ? "Close" : "Cerrar"}
       size="xs"
-      footerActions={footerActions}
+      footerActions={file ? footerActions : undefined}
     >
         <div className="modal-body avatar-modal__body">
           <div className="avatar-modal__preview">
@@ -297,12 +297,12 @@ export function AvatarUploadModal({ isOpen, onClose }: AvatarUploadModalProps) {
                 size="var(--icon-size-sm)"
                 aria-hidden="true"
               />
-              <span>{file ? (english ? "Choose another image" : "Elegir otra imagen") : (english ? "Select" : "Seleccionar")}</span>
+              <span>{file ? (english ? "Choose another image" : "Elegir otra imagen") : (english ? "Change picture" : "Cambiar foto")}</span>
             </button>
             {profile.avatar_url && (
               <button
                 type="button"
-                className="btn-secondary avatar-modal__delete-btn"
+                className="btn-ghost avatar-modal__delete-btn"
                 onClick={() => setConfirmingDelete(true)}
                 disabled={uploading}
               >

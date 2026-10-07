@@ -5,7 +5,7 @@ import { enUS, es } from 'date-fns/locale';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { candidateStatusLabel } from '@/lib/candidateTranslations';
 
-import { ArrowUpRight, BadgeCheck, BarChart3, CalendarDays, ClipboardList, FileImage, LayoutGrid, PenLine, SlidersHorizontal, Trash2, UserRoundPlus, UserRound, UserX, UsersRound } from 'lucide-react';
+import { BadgeCheck, BarChart3, CalendarDays, ClipboardList, FileImage, LayoutGrid, PenLine, SlidersHorizontal, Trash2, UserRoundPlus, UserRound, UserX } from 'lucide-react';
 import { StarliteBadge, VinoplasticBadge, ReclutadorBadge } from '@/components/ui/Badge';
 import { CandidateModal } from '@/components/ui/CandidateModal';
 import { CandidateAccessCard } from '@/components/ui/CandidateAccessCard';
@@ -15,10 +15,13 @@ import { buildCandidateReport } from '@/lib/candidateReport';
 import { copyTextToClipboard } from '@/lib/whatsappReport';
 import { CandidateStatusBadge } from '@/components/ui/CandidateStatusBadge';
 import { HireCandidateModal } from '@/components/ui/HireCandidateModal';
-import { RecruiterStatsModal } from '@/components/ui/RecruiterStatsModal';
+import { Link } from 'react-router-dom';
+import { CANDIDATE_METRICS_PATH } from './candidate-metrics/navigation';
 import { CandidateRowActions } from '@/components/ui/CandidateRowActions';
 import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
 import { Modal } from '@/components/ui/Modal';
+import { FormSheet } from '@/components/ui/FormSheet';
+import { useIsMobile } from '@/hooks/useIsMobile';
 import { CustomSelect } from '@/components/ui/CustomSelect';
 import { SearchField } from '@/components/ui/SearchField';
 import { Toolbar, ToolbarGroup } from '@/components/ui/Toolbar';
@@ -35,10 +38,9 @@ import { useVacancyRequests } from '@/hooks/useVacancyRequests';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { CANDIDATE_STATUSES } from '@/lib/types';
 import type { Candidate, CandidateStatus, Employee } from '@/lib/types';
-import { formatReadableDate, formatShortDate, getPautaWeekRange, shiftPautaWeek } from '@/lib/dates';
+import { formatReadableDate, formatShortDate } from '@/lib/dates';
 import { useTeamDirectory } from '@/features/team/TeamProvider';
 import { accessCardRecruiterName } from '@/features/team/types';
-import { normalizeString } from '@/lib/utils';
 import { splitCandidateName } from '@/lib/names';
 import { DESKTOP_MEDIA_QUERY } from '@/lib/layout';
 import './Pipeline.css';
@@ -47,30 +49,9 @@ type ModalMode = 'add' | 'edit' | 'delete' | null;
 
 const formatDate = formatShortDate;
 
-/**
- * Status que cuentan como "citado" para el hero de reclutadores. Tras
- * la simplificacion del pipeline a 4 etapas, citar = estar en Entrevista 1
- * o Entrevista 2. Contratado y Rechazado son terminales y se cuentan
- * aparte.
- */
-const CITADO_STATUSES: ReadonlySet<CandidateStatus> = new Set<CandidateStatus>([
-  'entrevista',
-  'entrega_documentos',
-  'faltan_documentos',
-  'feedback_pendiente',
-]);
-
-type RecruiterStats = {
-  name: string;
-  total: number;
-  citados: number;
-  contratados: number;
-  rechazados: number;
-  no_asistio: number;
-};
-
-
 export function Pipeline() {
+  const isMobile = useIsMobile();
+  const InterviewPassDialog = isMobile ? Modal : FormSheet;
   const { language } = useLanguage();
   const en = language === 'en';
   const {
@@ -109,13 +90,10 @@ export function Pipeline() {
   const [quickProfile, setQuickProfile] = useState<Candidate | null>(null);
   const [accessCardTarget, setAccessCardTarget] = useState<Candidate | null>(null);
   const [hireTarget, setHireTarget] = useState<Candidate | null>(null);
-  const { members, resolve } = useTeamDirectory();
-  const [kpiModalOpen, setKpiModalOpen] = useState<'global' | 'pauta' | 'recruiter' | null>(null);
-  const [metricRecruiterId, setMetricRecruiterId] = useState('');
+  const { members } = useTeamDirectory();
   const [selectedMobileCandidate, setSelectedMobileCandidate] = useState<Candidate | null>(null);
   const isDesktop = useMediaQuery(DESKTOP_MEDIA_QUERY);
 
-  const [metricsModalOpen, setMetricsModalOpen] = useState(false);
 
   useEffect(() => {
     if (isDesktop) setSelectedMobileCandidate(null);
@@ -155,101 +133,12 @@ export function Pipeline() {
     };
   }, [accessCardTarget, members]);
 
-  const { pautaStats, individualStats } = useMemo(() => {
-    const getWeeklyStats = (cands: Candidate[], targetTotal?: number, targetContratados?: number) => {
-      const groups = new Map<number, {
-        startWed: Date;
-        endTue: Date;
-        total: number;
-        contratados: number;
-        targetTotal?: number;
-        targetContratados?: number;
-        efectividadVolumen?: number;
-        efectividadContratacion?: number;
-      }>();
-
-      for (const c of cands) {
-        // Agrupar por **fecha de entrevista** (`fecha_cita`), no por
-        // fecha de contacto. Una semana de pauta agrupa los candidatos
-        // citados a entrevista entre miércoles y martes (TZ MX).
-        if (!c.fecha_cita) continue;
-        const range = getPautaWeekRange(c.fecha_cita);
-        if (!range) continue;
-
-        const { startWed, endTue, timeKey } = range;
-        if (!groups.has(timeKey)) {
-          groups.set(timeKey, { startWed, endTue, total: 0, contratados: 0, targetTotal, targetContratados });
-        }
-
-        const bucket = groups.get(timeKey)!;
-        bucket.total += 1;
-        if (c.status === 'contratado') bucket.contratados += 1;
-      }
-
-      // Asegurar que aparezcan semana anterior / actual / siguiente
-      // aun sin candidatos. Todo el cálculo es TZ-agnóstico (MX, sin DST).
-      const currentRange = getPautaWeekRange(new Date());
-      if (currentRange) {
-        const prevRange = shiftPautaWeek(currentRange, -1);
-        const nextRange = shiftPautaWeek(currentRange, 1);
-
-        [prevRange, currentRange, nextRange].forEach(({ startWed, endTue, timeKey }) => {
-          if (!groups.has(timeKey)) {
-            groups.set(timeKey, { startWed, endTue, total: 0, contratados: 0, targetTotal, targetContratados });
-          }
-        });
-      }
-
-      return Array.from(groups.values()).map(stat => {
-        // Cálculo de efectividad oculto (solo lógico)
-        const efectividadVolumen = stat.targetTotal ? Math.round((stat.total / stat.targetTotal) * 100) : undefined;
-        const efectividadContratacion = stat.targetContratados ? Math.round((stat.contratados / stat.targetContratados) * 100) : undefined;
-        return { ...stat, efectividadVolumen, efectividadContratacion };
-      }).sort((a, b) => b.startWed.getTime() - a.startWed.getTime());
-    };
-
-    return {
-      // Pauta tiene un objetivo de 30/14. Reclutadoras tienen 20/7 por semana.
-      pautaStats: getWeeklyStats(candidates.filter(c => normalizeString(c.source ?? '') === 'PAUTA'), 30, 14),
-      individualStats: getWeeklyStats(candidates.filter(c => normalizeString(c.source ?? '') === 'PAUTA' && resolve(c.reclutador)?.id === metricRecruiterId), 20, 7),
-    };
-  }, [candidates, resolve, metricRecruiterId]);
 
   function resetFilters() {
     setMacroStatus('todos');
     setSearchTerm('');
   }
 
-  /**
-   * KPIs por integrante del catálogo, incluyendo cuentas dadas de baja.
-   * Cuenta candidatos cuyo `reclutador`
-   * normalizado (mayusculas + sin acentos) coincide con uno de los
-   * nombres canónicos o variantes del catálogo. Otros nombres se
-   * descartan tanto del numerador como del denominador.
-   */
-  const recruiterStats = useMemo<RecruiterStats[]>(() => {
-    const empty = (name: string): RecruiterStats => ({
-      name,
-      total: 0,
-      citados: 0,
-      contratados: 0,
-      rechazados: 0,
-      no_asistio: 0,
-    });
-    const acc = new Map<string, RecruiterStats>();
-    for (const member of members.filter(member => member.selectable)) acc.set(member.canonical_name, empty(member.canonical_name));
-    for (const c of candidates) {
-      const norm = resolve(c.reclutador)?.canonical_name ?? normalizeString(c.reclutador ?? '');
-      const bucket = acc.get(norm);
-      if (!bucket) continue;
-      bucket.total += 1;
-      if (c.status === 'contratado') bucket.contratados += 1;
-      else if (c.status === 'rechazado') bucket.rechazados += 1;
-      else if (c.status === 'no_asistio') bucket.no_asistio += 1;
-      else if (CITADO_STATUSES.has(c.status)) bucket.citados += 1;
-    }
-    return Array.from(acc.values());
-  }, [candidates, members, resolve]);
 
   const filtered = useMemo(() => {
     return candidates.filter((c) => {
@@ -484,16 +373,15 @@ export function Pipeline() {
           </ToolbarGroup>
           <ToolbarGroup label={en ? 'Candidate actions' : 'Acciones de candidatos'} className="pipeline__hero-actions">
             <CandidateFilters value={macroStatus} onChange={setMacroStatus} />
-            <button
-              type="button"
+            <Link
               className="btn-secondary pipeline__report-btn"
-              onClick={() => setMetricsModalOpen(true)}
+              to={CANDIDATE_METRICS_PATH}
               aria-label={en ? 'Open metrics and KPIs' : 'Abrir métricas y KPIs'}
               title={en ? 'Metrics and KPIs' : 'Métricas y KPIs'}
             >
               <BarChart3 size={16} aria-hidden="true" />
               <span>{en ? 'Metrics' : 'Métricas'}</span>
-            </button>
+            </Link>
             <button
               type="button"
               className="btn-secondary pipeline__report-btn"
@@ -783,7 +671,7 @@ export function Pipeline() {
             }
           />
 
-          <Modal
+          <InterviewPassDialog
             isOpen={accessCardData !== null}
             onClose={() => setAccessCardTarget(null)}
             className="candidate-access-card-modal"
@@ -795,7 +683,7 @@ export function Pipeline() {
                 data={accessCardData}
               />
             )}
-          </Modal>
+          </InterviewPassDialog>
 
 
 
@@ -1011,96 +899,6 @@ export function Pipeline() {
             </div>
           </div>
         )}
-      </Modal>
-
-      {/* ── Modals de KPIs de reclutadores ── */}
-      <RecruiterStatsModal
-        isOpen={kpiModalOpen !== null}
-        onClose={() => setKpiModalOpen(null)}
-        onBack={() => {
-          setKpiModalOpen(null);
-          setMetricsModalOpen(true);
-        }}
-        mode={kpiModalOpen}
-        recruiterStats={recruiterStats}
-        pautaStats={pautaStats}
-        individualStats={individualStats}
-        recruiterName={members.find(member => member.id === metricRecruiterId)?.short_name ?? ''}
-      />
-      {/* ── Modal de Menú de Métricas ── */}
-      <Modal
-        isOpen={metricsModalOpen}
-        onClose={() => setMetricsModalOpen(false)}
-        title={en ? 'Metrics and KPIs' : 'Métricas y KPIs'}
-        size="lg"
-      >
-        <div className="modal-body pipeline__metrics-menu">
-          {/* Card resumen global */}
-          <button
-            type="button"
-            className="pipeline__kpi-card pipeline__kpi-card--global"
-            onClick={() => {
-              setMetricsModalOpen(false);
-              setKpiModalOpen('global');
-            }}
-          >
-            <div className="pipeline__kpi-card__icon">
-              <UsersRound size={20} aria-hidden="true" />
-            </div>
-            <div className="pipeline__kpi-card__body">
-              <span className="pipeline__kpi-card__label">{en ? 'Overall summary' : 'Resumen General'}</span>
-              <span className="pipeline__kpi-card__hint">
-                {candidates.filter(c => CITADO_STATUSES.has(c.status)).length} {en ? 'scheduled' : 'citados'}
-              </span>
-            </div>
-            <ArrowUpRight size={18} className="pipeline__kpi-card__arrow" aria-hidden="true" />
-          </button>
-
-          <div className="pipeline__sidebar-divider" />
-
-          <section className="pipeline__sidebar-section">
-            <h3 className="pipeline__sidebar-section__label">{en ? 'Weekly tracking' : 'Seguimiento semanal'}</h3>
-            <button
-              type="button"
-              className="pipeline__kpi-row"
-              onClick={() => {
-                setMetricsModalOpen(false);
-                setKpiModalOpen('pauta');
-              }}
-            >
-              <div className="pipeline__kpi-row__meta">
-                <span className="pipeline__kpi-row__dot pipeline__kpi-row__dot--pauta" />
-                <span className="pipeline__kpi-row__name">{en ? 'Campaign' : 'Pauta'}</span>
-              </div>
-              <div className="pipeline__kpi-row__stats">
-                <ArrowUpRight size={16} className="pipeline__kpi-card__arrow" aria-hidden="true" />
-              </div>
-            </button>
-          </section>
-
-          <section className="pipeline__sidebar-section">
-            <h3 className="pipeline__sidebar-section__label">{en ? 'By recruiter' : 'Por reclutador'}</h3>
-            <div className="pipeline__recruiters">
-              {members.filter(member => member.include_in_metrics).map(member => <button
-                key={member.id}
-                type="button"
-                className="pipeline__kpi-row"
-                onClick={() => {
-                  setMetricsModalOpen(false);
-                  setMetricRecruiterId(member.id);
-                  setKpiModalOpen('recruiter');
-                }}
-              >
-                <div className="pipeline__kpi-row__meta">
-                  <span className="pipeline__kpi-row__name">{member.short_name}{!member.active && (en ? ' (inactive)' : ' (inactivo)')}</span>
-                </div>
-                <div className="pipeline__kpi-row__stats">
-                  <ArrowUpRight size={16} className="pipeline__kpi-card__arrow" aria-hidden="true" />
-                </div>
-              </button>)}
-            </div>
-          </section>
-        </div>
       </Modal>
 
         </main>

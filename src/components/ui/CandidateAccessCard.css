@@ -6,6 +6,12 @@
   padding-block-end: calc(var(--design-spacing-md) + var(--safe-area-bottom));
 }
 
+.candidate-access-card__body {
+  display: grid;
+  min-inline-size: 0;
+  gap: inherit;
+}
+
 .candidate-access-card__hint {
   margin: 0;
   color: var(--color-muted);
@@ -82,4 +88,31 @@
     padding: var(--design-spacing-lg);
     gap: var(--design-spacing-lg);
   }
+}
+
+.form-sheet.candidate-access-card-modal .modal-scroll-region {
+  overflow: hidden;
+}
+
+.form-sheet .candidate-access-card {
+  flex: 1 1 auto;
+  min-block-size: 0;
+  grid-template-rows: minmax(0, 1fr) auto;
+  padding: 0;
+  gap: 0;
+}
+
+.form-sheet .candidate-access-card__body {
+  min-block-size: 0;
+  align-content: start;
+  gap: var(--design-spacing-lg);
+  padding: var(--design-spacing-lg);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.form-sheet .candidate-access-card__actions {
+  padding: var(--design-spacing-md);
+  padding-block-end: max(var(--design-spacing-md), var(--safe-area-bottom));
+  border-block-start: var(--border-width) solid var(--color-hairline);
 }

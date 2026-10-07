@@ -44,12 +44,12 @@
 }
 
 @media (min-width: 600px) {
-  .pos-settings-metrics-grid {
+  .modal-content .pos-settings-metrics-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--spacing-md);
   }
 
-  .pos-settings-metrics-grid--paired {
+  .modal-content .pos-settings-metrics-grid--paired {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

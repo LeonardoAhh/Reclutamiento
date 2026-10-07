@@ -23,6 +23,7 @@ import { localTodayIso } from "@/lib/dates";
 import { Tooltip } from "./Tooltip";
 import { supabase } from "@/lib/supabase";
 import { Modal } from "./Modal";
+import { FormSheet } from "./FormSheet";
 import { FormWizard } from "./FormWizard";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -805,8 +806,10 @@ export function EmployeeModal({
     );
   }
 
+  const Dialog = isMobile ? Modal : FormSheet;
+
   return (
-    <Modal
+    <Dialog
       isOpen={isOpen}
       onClose={onClose}
       className="employee-modal"
@@ -830,6 +833,6 @@ export function EmployeeModal({
 
         {errorNotice}
       </form>
-    </Modal>
+    </Dialog>
   );
 }

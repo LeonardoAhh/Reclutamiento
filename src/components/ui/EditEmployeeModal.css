@@ -20,7 +20,7 @@
 }
 
 @media (min-width: 640px) {
-  .edit-employee-modal .form-grid.form-grid--3-cols {
+  .edit-employee-modal:not(.form-sheet) .form-grid.form-grid--3-cols {
     grid-template-columns: 1fr 1fr 1fr;
   }
 }

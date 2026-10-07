@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import { SlidersHorizontal } from 'lucide-react';
 import { Modal } from './Modal';
+import { FormSheet } from './FormSheet';
+import { useIsMobile } from '@/hooks/useIsMobile';
 import { FormWizard } from './FormWizard';
 import { CustomSelect, type Option } from './CustomSelect';
 import { usePositions } from '@/lib/positions';
@@ -25,6 +27,8 @@ const byLabel = (a: Option, b: Option) => a.label.localeCompare(b.label, 'es');
  * Valores. Guarda en `position_settings` (override que manda sobre el código).
  */
 export function PositionSettingsWizard({ isOpen, onClose }: Props) {
+  const isMobile = useIsMobile();
+  const Dialog = isMobile ? Modal : FormSheet;
   const { language } = useLanguage();
   const t = (text: string) => workforceText(language, text);
   const { configurablePositions: positions, upsertPositionSetting } = usePositions();
@@ -191,7 +195,7 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
   ) : null;
 
   return (
-    <Modal
+    <Dialog
       isOpen={isOpen}
       onClose={handleClose}
       icon={<SlidersHorizontal size={20} className="color-primary" aria-hidden="true" />}
@@ -371,6 +375,6 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
           ]}
         />
       </form>
-    </Modal>
+    </Dialog>
   );
 }

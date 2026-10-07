@@ -10,6 +10,8 @@ import { useTeamDirectory } from '@/features/team/TeamProvider';
 import { recruiterOptions } from '@/features/team/types';
 import { Tooltip } from './Tooltip';
 import { Modal } from './Modal';
+import { FormSheet } from './FormSheet';
+import { useIsMobile } from '@/hooks/useIsMobile';
 import { CustomSelect } from './CustomSelect';
 import './EditEmployeeModal.css';
 
@@ -39,6 +41,8 @@ export function EditEmployeeModal({
   onClose,
   onSave,
 }: EditEmployeeModalProps) {
+  const isMobile = useIsMobile();
+  const Dialog = isMobile ? Modal : FormSheet;
   const { language } = useLanguage();
   const t = (text: string) => workforceText(language, text);
   const { members } = useTeamDirectory();
@@ -144,7 +148,7 @@ export function EditEmployeeModal({
   );
   const title = t('Editar Empleado');
   return (
-    <Modal
+    <Dialog
       isOpen={isOpen}
       onClose={onClose}
       icon={icon}
@@ -297,6 +301,6 @@ export function EditEmployeeModal({
         )}
 
       </form>
-    </Modal>
+    </Dialog>
   );
 }

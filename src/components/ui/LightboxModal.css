@@ -30,7 +30,7 @@
   animation: lightbox-modal-spin var(--duration-spinner) linear infinite;
 }
 
-.modal-content .lightbox-modal__image {
+.lightbox-modal__image {
   display: block;
   flex-shrink: 0;
   inline-size: 100%;

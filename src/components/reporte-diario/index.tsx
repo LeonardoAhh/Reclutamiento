@@ -944,7 +944,6 @@ export default function ReporteDiarioContent() {
                     />
                     {savedSummaries.length >= 2 && (
                       <ReporteComparison
-                        summaries={savedSummaries}
                         triggerVariant="labeled"
                       />
                     )}
@@ -1046,7 +1045,6 @@ export default function ReporteDiarioContent() {
 
           {savedSummaries.length >= 2 && (
             <ReporteComparison
-              summaries={savedSummaries}
               triggerVariant="labeled"
             />
           )}

@@ -149,27 +149,29 @@ export function CandidateAccessCard({ data }: CandidateAccessCardProps) {
       className="candidate-access-card"
       aria-label={en ? 'Interview pass preview' : 'Vista previa del pase de entrevista'}
     >
-      <p className="candidate-access-card__hint">{en ? 'Share it with the candidate.' : 'Compártelo con el candidato.'}</p>
+      <div className="candidate-access-card__body">
+        <p className="candidate-access-card__hint">{en ? 'Share it with the candidate.' : 'Compártelo con el candidato.'}</p>
 
-      <div className="candidate-access-card__preview" aria-busy={isGenerating}>
-        {previewUrl ? (
-          <img src={previewUrl} alt={previewAlt} />
-        ) : (
-          <div className="candidate-access-card__placeholder" role={generationError ? "alert" : "status"}>
-            {isGenerating && (
-              <LoaderCircle
-                className="candidate-access-card__spinner"
-                size="var(--icon-size-lg)"
-                aria-hidden="true"
-              />
-            )}
-            <span>{isGenerating ? (en ? 'Generating pass…' : 'Generando pase…') : (en && generationError === 'No fue posible generar el pase.' ? 'Could not generate the pass.' : generationError) || (en ? 'Preview unavailable' : 'Vista previa no disponible')}</span>
-          </div>
-        )}
+        <div className="candidate-access-card__preview" aria-busy={isGenerating}>
+          {previewUrl ? (
+            <img src={previewUrl} alt={previewAlt} />
+          ) : (
+            <div className="candidate-access-card__placeholder" role={generationError ? "alert" : "status"}>
+              {isGenerating && (
+                <LoaderCircle
+                  className="candidate-access-card__spinner"
+                  size="var(--icon-size-lg)"
+                  aria-hidden="true"
+                />
+              )}
+              <span>{isGenerating ? (en ? 'Generating pass…' : 'Generando pase…') : (en && generationError === 'No fue posible generar el pase.' ? 'Could not generate the pass.' : generationError) || (en ? 'Preview unavailable' : 'Vista previa no disponible')}</span>
+            </div>
+          )}
+        </div>
+        <span className="sr-only" role="status" aria-live="polite">
+          {previewUrl ? (en ? 'Pass ready to copy or share.' : 'Pase listo para copiar o compartir.') : ''}
+        </span>
       </div>
-      <span className="sr-only" role="status" aria-live="polite">
-        {previewUrl ? (en ? 'Pass ready to copy or share.' : 'Pase listo para copiar o compartir.') : ''}
-      </span>
 
       <footer
         className="candidate-access-card__actions"

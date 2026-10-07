@@ -15,6 +15,8 @@ interface LightboxModalProps {
   alt?: string;
   children?: ReactNode;
   loading?: boolean;
+  loadingFallback?: ReactNode;
+  className?: string;
   onImageError?: () => void;
 }
 
@@ -27,6 +29,8 @@ export function LightboxModal({
   alt,
   children,
   loading = false,
+  loadingFallback,
+  className,
   onImageError,
 }: LightboxModalProps) {
   const { language } = useLanguage();
@@ -51,18 +55,21 @@ export function LightboxModal({
       onClose={onClose}
       title={title ?? (en ? 'Visual reference' : 'Referencia visual')}
       size={size}
+      className={className}
     >
       <div className="modal-body lightbox-modal__body">
         {(src && !imageFailed) || loading ? (
           <div className="lightbox-modal__visual" aria-busy={showLoading}>
-            <span className="lightbox-modal__indicator" data-loaded={imageReady} aria-hidden="true">
-              <MorphingIcon
-                icon={imageReady ? ImageIcon : LoaderCircle}
-                size="var(--icon-size-xl)"
-                className={showLoading ? "lightbox-modal__spinner" : undefined}
-              />
-            </span>
-            {showLoading && <span className="sr-only" role="status">{en ? 'Loading image…' : 'Cargando imagen…'}</span>}
+            {loadingFallback ? (showLoading && loadingFallback) : (
+              <span className="lightbox-modal__indicator" data-loaded={imageReady} aria-hidden="true">
+                <MorphingIcon
+                  icon={imageReady ? ImageIcon : LoaderCircle}
+                  size="var(--icon-size-xl)"
+                  className={showLoading ? "lightbox-modal__spinner" : undefined}
+                />
+              </span>
+            )}
+            {showLoading && !loadingFallback && <span className="sr-only" role="status">{en ? 'Loading image…' : 'Cargando imagen…'}</span>}
             {src && !imageFailed && (
               <img
                 src={src}

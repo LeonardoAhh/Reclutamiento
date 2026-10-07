@@ -2,6 +2,8 @@ import { useId, useState, type FormEvent } from 'react';
 import type { Language } from '@/contexts/LanguageContext';
 import { CustomSelect } from '@/components/ui/CustomSelect';
 import { Modal } from '@/components/ui/Modal';
+import { FormSheet } from '@/components/ui/FormSheet';
+import { useIsMobile } from '@/hooks/useIsMobile';
 import { BAJA_REASON_CATALOG, toBajaSentenceCase } from '@/lib/bajaReasonCatalog';
 import { parseBajaReasonRecord, type BajaReasonUpdate } from '@/lib/bajaReasonUpdates';
 import { maskDdMmYyyyInput, parseDdMmYyyy } from '@/lib/dates';
@@ -21,6 +23,8 @@ interface Props {
 }
 
 export function CapturarMotivoBajaModal({ isOpen, onClose, existingEmployees, onCreate, language }: Props) {
+  const isMobile = useIsMobile();
+  const Dialog = isMobile ? Modal : FormSheet;
   const id = useId();
   const copy = getMotivosBajaCopy(language);
   const [employee, setEmployee] = useState('');
@@ -88,7 +92,7 @@ export function CapturarMotivoBajaModal({ isOpen, onClose, existingEmployees, on
   }
 
   return (
-    <Modal
+    <Dialog
       isOpen={isOpen}
       title={copy.captureTitle}
       size="md"
@@ -174,6 +178,6 @@ export function CapturarMotivoBajaModal({ isOpen, onClose, existingEmployees, on
         </div>
         {error && <p className="form-error-text motivos-baja__capture-error" role="alert">{error}</p>}
       </form>
-    </Modal>
+    </Dialog>
   );
 }

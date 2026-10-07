@@ -1678,6 +1678,29 @@ code:not(pre code) {
   }
 }
 
+/* Posiciones compactas explícitas: conservan gutters, radios y safe areas. */
+.modal-overlay--bottom,
+.modal-overlay--center {
+  padding-top: max(var(--design-spacing-md), var(--safe-area-top));
+  padding-right: max(var(--design-spacing-md), var(--safe-area-right));
+  padding-bottom: max(var(--design-spacing-md), var(--safe-area-bottom));
+  padding-left: max(var(--design-spacing-md), var(--safe-area-left));
+}
+
+.modal-overlay--bottom {
+  align-items: flex-end;
+}
+
+.modal-overlay--center {
+  align-items: center;
+}
+
+.modal-overlay--bottom > .modal-content,
+.modal-overlay--center > .modal-content {
+  border-radius: var(--rounded-lg);
+  max-height: var(--modal-max-block-size);
+}
+
 .modal-header {
   display: flex;
   align-items: center;

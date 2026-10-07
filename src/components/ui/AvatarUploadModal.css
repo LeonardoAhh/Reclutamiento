@@ -1,8 +1,9 @@
-.avatar-modal__body {
+.modal-body.avatar-modal__body {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--design-spacing-md);
+  padding-block-end: max(var(--modal-content-padding), var(--safe-area-bottom));
 }
 
 .avatar-modal__preview {
@@ -32,19 +33,22 @@
 
 .avatar-modal__actions {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
   gap: var(--design-spacing-xs);
   width: 100%;
 }
 
-.avatar-modal__delete-btn {
-  color: var(--color-error-text);
-  border-color: var(--color-error);
+.avatar-modal__actions > button:only-child {
+  grid-column: 1 / -1;
 }
 
-.avatar-modal__delete-btn:hover:not(:disabled) {
+.avatar-modal__actions .avatar-modal__delete-btn {
   color: var(--color-error-text);
-  border-color: var(--color-error-text);
+}
+
+.avatar-modal__actions .avatar-modal__delete-btn:hover:not(:disabled) {
+  color: var(--color-error-text);
   background: var(--color-error-subtle);
 }
 
@@ -59,15 +63,5 @@
 @media (prefers-reduced-motion: reduce) {
   .avatar-modal__spin {
     animation: none;
-  }
-}
-
-@media (min-width: 768px) {
-  .avatar-modal__actions {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .avatar-modal__actions > button:only-child {
-    grid-column: 1 / -1;
   }
 }

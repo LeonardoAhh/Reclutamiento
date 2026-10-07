@@ -1,9 +1,11 @@
-import { useEffect, useId, useRef } from "react";
+import { useContext, useEffect, useId, useRef } from "react";
 import { useLanguage } from '@/contexts/LanguageContext';
 import { createPortal } from "react-dom";
 import { ArrowLeft, X } from "lucide-react";
+import { FormSheet } from "./FormSheet";
+import { ModalPresentationContext } from "./ModalPresentation";
 
-interface ModalProps {
+export interface ModalProps {
   isOpen: boolean;
   title: React.ReactNode;
   icon?: React.ReactNode;
@@ -15,6 +17,7 @@ interface ModalProps {
   /** Botones de acción que se mostrarán en el footer */
   footerActions?: React.ReactNode;
   size?: "xs" | "sm" | "md" | "lg" | "xl";
+  placement?: "center" | "bottom";
   /** Oculta el botón X de cerrar en el encabezado */
   hideCloseButton?: boolean;
   closeLabel?: string;
@@ -63,9 +66,12 @@ export function Modal({
   labelledById,
   footerActions,
   size = "md",
+  placement,
   hideCloseButton = false,
   closeLabel,
 }: ModalProps) {
+  const configuredPresentation = useContext(ModalPresentationContext);
+  const presentation = placement ? "modal" : configuredPresentation;
   const { language } = useLanguage();
   const resolvedCloseLabel = closeLabel ?? (language === 'en' ? 'Close' : 'Cerrar');
   const contentRef = useRef<HTMLDivElement>(null);
@@ -78,7 +84,7 @@ export function Modal({
   onCloseRef.current = onClose;
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || presentation === "sheet") return;
 
     previousFocusRef.current = document.activeElement as HTMLElement | null;
     const { body } = document;
@@ -153,7 +159,27 @@ export function Modal({
       }
       previousFocusRef.current?.focus?.();
     };
-  }, [isOpen]);
+  }, [isOpen, presentation]);
+
+  if (presentation === "sheet") {
+    return (
+      <FormSheet
+        isOpen={isOpen}
+        title={title}
+        icon={icon}
+        onClose={onClose}
+        onBack={onBack}
+        className={className}
+        labelledById={labelledById}
+        footerActions={footerActions}
+        size={size}
+        hideCloseButton={hideCloseButton}
+        closeLabel={closeLabel}
+      >
+        {children}
+      </FormSheet>
+    );
+  }
 
   if (!isOpen) return null;
 
@@ -167,7 +193,7 @@ export function Modal({
 
   return createPortal(
     <div
-      className="modal-overlay"
+      className={["modal-overlay", placement && `modal-overlay--${placement}`].filter(Boolean).join(" ")}
       role="presentation"
       onPointerDown={(e) => {
         if (e.target === e.currentTarget) onClose();

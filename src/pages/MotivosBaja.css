@@ -307,7 +307,7 @@
     padding-block-start: var(--design-spacing-lg);
   }
 
-  .modal-body.motivos-baja__capture-form {
+  .modal-content .modal-body.motivos-baja__capture-form {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 

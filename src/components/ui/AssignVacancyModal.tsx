@@ -1,4 +1,5 @@
 import { UserRoundPlus } from "lucide-react";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Modal } from "./Modal";
 import { CustomSelect } from "./CustomSelect";
@@ -22,6 +23,7 @@ export function AssignVacancyModal({
   options,
   onAssign,
 }: AssignVacancyModalProps) {
+  const isMobile = useIsMobile();
   const { language } = useLanguage();
   return (
     <Modal
@@ -30,6 +32,7 @@ export function AssignVacancyModal({
       title={language === "en" ? "Assign recruiter" : "Asignar reclutador"}
       icon={<UserRoundPlus size="var(--icon-size-md)" aria-hidden="true" />}
       size="xs"
+      placement={isMobile ? "bottom" : "center"}
     >
       <div className="modal-body assign-vacancy-modal__body">
         <div className="form-group">

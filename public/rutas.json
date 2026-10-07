@@ -2888,5 +2888,35 @@
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
     "parada": "PASEOS QUERETARO",
     "colonia": "PARADA EN LA PANADERIA LECAROZ"
+  },
+  {
+    "numero_empleado": "4389",
+    "nombre": "JAEN SANCHEZ SARAHI",
+    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "puesto": "OPERADOR DE MÁQUINA D",
+    "Turno": "1",
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "SANTA ROSA",
+    "colonia": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
+  },
+  {
+    "numero_empleado": "4390",
+    "nombre": "CRUZ GARCIA ALEIDA LIZETH",
+    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "puesto": "OPERADOR DE MÁQUINA D",
+    "Turno": "2",
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
+  },
+  {
+    "numero_empleado": "4393",
+    "nombre": "TORRES SANCHEZ LUZ PAULINA",
+    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "puesto": "OPERADOR DE MÁQUINA D",
+    "Turno": "1",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "CRUZ ROJA MEXICANA"
   }
 ]

@@ -372,6 +372,13 @@
 }
 
 
+.home-page__leave-sheet-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--design-spacing-sm);
+  min-inline-size: 0;
+}
+
 .home-page__leave-modal .modal-back-btn {
   border: 0;
 }
@@ -422,7 +429,7 @@
 
 @media (min-width: 768px) {
   .home-page__leave-modal--form .home-page__leave-fields {
-    grid-template-columns: minmax(0, 1fr) max-content;
+    grid-template-columns: minmax(0, 1fr);
     align-items: start;
     gap: var(--design-spacing-lg);
   }

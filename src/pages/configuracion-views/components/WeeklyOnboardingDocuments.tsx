@@ -4,6 +4,8 @@ import { BadgeCheck, FileSignature, Printer } from 'lucide-react';
 import { ButtonUtility } from '@/components/ui/ButtonUtility';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { Modal } from '@/components/ui/Modal';
+import { FormSheet } from '@/components/ui/FormSheet';
+import { useIsMobile } from '@/hooks/useIsMobile';
 import { ONBOARDING_DOCUMENT_CONFIG } from '@/lib/constants';
 import {
   formatReadableDate,
@@ -306,6 +308,8 @@ function DocumentReviewModal({
   onPrint,
   language,
 }: DocumentReviewModalProps) {
+  const isMobile = useIsMobile();
+  const Dialog = isMobile ? Modal : FormSheet;
   const copy = getConfiguracionCopy(language).formats;
   if (!format) return null;
 
@@ -335,7 +339,7 @@ function DocumentReviewModal({
   );
 
   return (
-    <Modal
+    <Dialog
       isOpen={isOpen}
       onClose={onClose}
       title={title}
@@ -389,7 +393,7 @@ function DocumentReviewModal({
           </ul>
         </section>
       </div>
-    </Modal>
+    </Dialog>
   );
 }
 

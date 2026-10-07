@@ -19,6 +19,7 @@ import { leaveErrorText } from '@/features/leave/translations';
 import { CAREER_JOURNEY_ENABLED } from '@/features/career/types';
 import { toNaturalCase } from "@/lib/utils";
 import { HomeLessonCard } from "./home/HomeLessonCard";
+import { HomeLeaveDialog } from "./home/HomeLeaveDialog";
 import {
   MOTIVATION_BY_TITLE, DEFAULT_MOTIVATION, LEADERSHIP_CUE_BY_TITLE,
   DEFAULT_LEADERSHIP_CUE, EMPLOYEE_LIFECYCLE, LABOR_GUIDANCE,
@@ -201,6 +202,7 @@ export function HomePage() {
   const [leaveDraft, setLeaveDraft] = useState<LeaveDraft>({ type: 'vacation', startDate: '', endDate: '' });
   const [leaveSaving, setLeaveSaving] = useState(false);
   const [leaveError, setLeaveError] = useState('');
+  const leaveTriggerRef = useRef<HTMLButtonElement>(null);
   const leaveFormId = useId();
   const leaveFormRef = useRef<HTMLFormElement>(null);
   const leaveSuccessRef = useRef<HTMLHeadingElement>(null);
@@ -334,6 +336,7 @@ export function HomePage() {
           {!canReviewRequests && (
             <button
               type="button"
+              ref={leaveTriggerRef}
               className="btn-secondary home-page__leave-action"
               aria-haspopup="dialog"
               aria-expanded={leavePolicyOpen}
@@ -395,7 +398,8 @@ export function HomePage() {
           </div>
         </section>
       </div>
-      <Modal
+      <HomeLeaveDialog
+        triggerRef={leaveTriggerRef}
         isOpen={leavePolicyOpen}
         onClose={closeLeavePolicy}
         onBack={leaveStep === 'form' && !leaveSaving ? () => { setLeaveError(''); setLeaveStep('policy'); } : undefined}
@@ -507,7 +511,7 @@ export function HomePage() {
             <p>{en ? 'Your coordinator will review the request and provide the physical forms.' : 'Tu coordinador revisará la solicitud y te entregará los formatos físicos.'}</p>
             <p>{homeText(LEAVE_POLICY_NOTICE.handoverReminder, language)}</p>
           </div>}
-      </Modal>
+      </HomeLeaveDialog>
       {CAREER_JOURNEY_ENABLED && <Modal isOpen={showCareerMotivation} title={en ? 'Your day, your focus' : 'Tu día, tu enfoque'}
       onClose={closeCareerMotivation} size="sm"
       footerActions={<button type="button" className="btn-primary" onClick={closeCareerMotivation}>{en ? 'Make it count' : 'Hacer que cuente'}</button>}>

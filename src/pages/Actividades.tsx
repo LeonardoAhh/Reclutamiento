@@ -1,6 +1,8 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import * as Tabs from "@radix-ui/react-tabs";
 import { useActivities } from "@/hooks/useActivities";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { ModalPresentationProvider } from "@/components/ui/ModalPresentation";
 import { usePositions } from "@/lib/positions";
 import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
 import { useAuth } from "@/hooks/useAuth";
@@ -38,6 +40,7 @@ function isImage(filename: string): boolean {
 }
 
 export function Actividades() {
+  const isMobile = useIsMobile();
   const { language } = useLanguage();
   const en = language === "en";
   const { members } = useTeamDirectory();
@@ -690,6 +693,7 @@ export function Actividades() {
         </Tabs.Content>
       </Tabs.Root>
 
+      <ModalPresentationProvider value={isMobile ? "modal" : "sheet"}>
       <CreateVacancyModal
         isOpen={isCreateVacanteModalOpen}
         onClose={() => {
@@ -764,6 +768,8 @@ export function Actividades() {
         setExistingReferenceImage={setEditExistingReferenceImage}
         onSubmit={handleEdit}
       />
+
+      </ModalPresentationProvider>
 
       {/* ── Modal: Detail / Proofs ─────────────────────────────────── */}
       <TaskDetailsModal

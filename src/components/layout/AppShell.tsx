@@ -10,6 +10,8 @@ import { DESKTOP_MEDIA_QUERY } from '@/lib/layout';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { SessionNotice } from './SessionNotice';
 import { CAREER_PATH } from '@/features/career/types';
+import { REPORT_COMPARISON_PATH } from '@/components/reporte-diario/navigation';
+import { CANDIDATE_METRICS_PATH } from '@/pages/candidate-metrics/navigation';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const PAGE_TITLES: Readonly<Record<string, string>> = {
@@ -38,6 +40,8 @@ export function AppShell({ children }: { children: ReactNode }) {
   const location = useLocation();
 
   const pageTitle = useMemo(() => {
+    if (location.pathname === REPORT_COMPARISON_PATH) return language === 'en' ? 'Monthly comparison' : 'Comparativa mensual';
+    if (location.pathname === CANDIDATE_METRICS_PATH) return language === 'en' ? 'Metrics and KPIs' : 'Métricas y KPIs';
     if (language === 'en' && location.pathname === ACCOUNT_PATH) return 'Account';
     if (language === 'en' && location.pathname === TEAM_PATH) return 'Team';
     if (language === 'en' && location.pathname === VACANCY_ASSIGNMENTS_PATH) return 'Vacancy assignments';

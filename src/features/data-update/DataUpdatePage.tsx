@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as Tabs from "@radix-ui/react-tabs";
 import { ChartNoAxesCombined, Download, FilePlus2, MessageCircle, RefreshCw, Trash2, UserRoundCheck } from "lucide-react";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
@@ -25,7 +25,7 @@ import { compareDataUpdateRecords, DATA_UPDATE_PAGE_SIZE, DATA_UPDATE_PHONE_COUN
 import { DataUpdateAdminPanel } from "./DataUpdateAdminPanel";
 import { DataUpdateStatus } from "./DataUpdateStatus";
 import { DataUpdateLockerPanel } from "./DataUpdateLockerPanel";
-import { DataUpdateProgressModal } from "./DataUpdateProgressModal";
+import { DataUpdateProgressPage } from "./DataUpdateProgressPage";
 import { DataUpdateWizard } from "./DataUpdateWizard";
 import type {
   DataUpdateCampaign,
@@ -139,6 +139,8 @@ export function DataUpdatePage() {
   const [selectedCampaignId, setSelectedCampaignId] = useState("");
   const [detail, setDetail] = useState<DataUpdateCampaignDetail | null>(null);
   const [profiles, setProfiles] = useState<DataUpdateProfileOption[]>([]);
+  const progressTriggerRef = useRef<HTMLButtonElement>(null);
+  const wasProgressPageOpen = useRef(false);
   const [selectedRecord, setSelectedRecord] = useState<DataUpdateRecord | null>(null);
   const [incidents, setIncidents] = useState<DataUpdateIncident[]>([]);
   const [importOpen, setImportOpen] = useState(false);
@@ -155,6 +157,15 @@ export function DataUpdatePage() {
   const [selectedWorkGroup, setSelectedWorkGroup] = useState("");
   const [pendingWorkGroupFocus, setPendingWorkGroupFocus] = useState<string | null>(null);
   const [activeView, setActiveView] = useState("work");
+
+  useEffect(() => {
+    if (progressOpen) {
+      wasProgressPageOpen.current = true;
+    } else if (wasProgressPageOpen.current) {
+      wasProgressPageOpen.current = false;
+      progressTriggerRef.current?.focus();
+    }
+  }, [progressOpen]);
 
   const loadCampaigns = useCallback(async (preferredId?: string) => {
     if (!canAccess || !online) {
@@ -390,6 +401,17 @@ export function DataUpdatePage() {
     );
   }
 
+  if (progressOpen && isAdmin && detail) {
+    return (
+      <DataUpdateProgressPage
+        detail={detail}
+        profiles={profiles}
+        currentUserId={user?.id ?? ""}
+        onBack={() => setProgressOpen(false)}
+      />
+    );
+  }
+
   return (
     <main className="data-update-page data-update-page--has-heading container" aria-labelledby="data-update-title">
       <header className="page-header data-update-page__header">
@@ -440,6 +462,7 @@ export function DataUpdatePage() {
               </button>
               {isAdmin && (
                 <button
+                  ref={progressTriggerRef}
                   type="button"
                   className="btn-danger"
                   onClick={() => {
@@ -780,17 +803,6 @@ export function DataUpdatePage() {
           </Tabs.Root>
         </>
       ) : null}
-
-      {isAdmin && detail && (
-        <DataUpdateProgressModal
-          key={detail.campaign.id}
-          isOpen={progressOpen}
-          onClose={() => setProgressOpen(false)}
-          detail={detail}
-          profiles={profiles}
-          currentUserId={user?.id ?? ""}
-        />
-      )}
 
       {isAdmin && profile && (
         <CampaignImportModal
