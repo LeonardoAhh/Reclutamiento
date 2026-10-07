@@ -1,48 +1,15 @@
-import { useMemo, useState, useEffect } from 'react';
-import { CircleAlertIcon, CircleCheckBig, Star } from 'lucide-react';
-import { Modal } from './Modal';
-import { Tooltip } from './Tooltip';
-import type { PositionCoverage, VacancyRequest, Candidate } from '@/lib/types';
+import { useEffect, useMemo, useRef } from 'react';
+import { CircleAlertIcon, Star } from 'lucide-react';
+import { Tooltip } from '@/components/ui/Tooltip';
+import type { PositionCoverage } from '@/lib/types';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { workforceText } from '@/pages/workforce-translations';
-import { useIsMobile } from '@/hooks/useIsMobile';
 import { useDismissedPositions } from '@/hooks/useDismissedPositions';
-import './MissingPositionsModal.css';
+import './MissingPositionsPage.css';
 
-/**
- * Normalización robusta para hacer match entre candidato y posición:
- *  - lowercase
- *  - quita acentos/diacríticos (NFD + strip de marcas combinantes)
- *  - reemplaza cualquier carácter no alfanumérico por espacio
- *  - colapsa espacios múltiples y recorta
- *
- * Esto evita que diferencias como "1ER. TURNO" vs "1ER TURNO",
- * "PRODUCCIÓN" vs "PRODUCCION", caracteres NBSP invisibles, u otras
- * variaciones de captura rompan el cruce de datos.
- */
-function normalizeForMatch(s: string): string {
-  return (s || '')
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9]+/g, ' ')
-    .trim();
-}
-
-/**
- * Clave para cruzar candidato ↔ posición. Match estricto por
- * `puesto + sección` ya normalizados — un candidato debe coincidir
- * exactamente con la posición/turno que va a ocupar.
- */
-function buildPositionKey(puesto: string, seccion: string): string {
-  return `${normalizeForMatch(puesto)}||${normalizeForMatch(seccion)}`;
-}
-
-interface MissingPositionsModalProps {
-  isOpen: boolean;
-  onClose: () => void;
+interface MissingPositionsPageProps {
+  onBack: () => void;
   coverage: PositionCoverage[];
-  vacancies: VacancyRequest[];
 }
 
 interface MissingRow {
@@ -106,16 +73,14 @@ function netVacancies(pos: PositionCoverage): MissingRow {
   };
 }
 
-export function MissingPositionsModal({
-  isOpen,
-  onClose,
+export function MissingPositionsPage({
+  onBack,
   coverage,
-  vacancies,
-}: MissingPositionsModalProps) {
+}: MissingPositionsPageProps) {
   const { language } = useLanguage();
   const t = (text: string) => workforceText(language, text);
   const { dismissedKeys, toggleDismiss } = useDismissedPositions();
-  const isMobile = useIsMobile();
+  const titleRef = useRef<HTMLButtonElement>(null);
 
   // 1. Memoizamos la lista filtrada y ordenada para evitar recalcular en cada render
   const missingPositions = useMemo(() => {
@@ -129,41 +94,54 @@ export function MissingPositionsModal({
       );
   }, [coverage]);
 
-  return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      className="missing-positions-modal"
-      icon={<CircleAlertIcon size={20} aria-hidden="true" />}
-      title={t("Vacantes Pendientes")}
-      size="lg"
-    >
-      <div className="modal-body missing-positions-modal__body">
+  useEffect(() => {
+    titleRef.current?.focus({ preventScroll: true });
+  }, []);
 
+  return (
+    <main className="missing-positions-page container" aria-labelledby="missing-positions-title">
+      <header className="page-header">
+        <div className="page-header__content">
+          <h1 id="missing-positions-title" className="app-page-title">
+            <button
+              ref={titleRef}
+              type="button"
+              className="missing-positions-page__back-link"
+              onClick={onBack}
+              aria-label={`${t('Volver al resumen')}: ${t('Vacantes Pendientes')}`}
+            >
+              <CircleAlertIcon size={20} aria-hidden="true" />
+              {t("Vacantes Pendientes")}
+            </button>
+          </h1>
+        </div>
+      </header>
+      <div className="missing-positions-page__body">
         {missingPositions.length === 0 ? (
-          <p className="missing-positions-modal__empty">
+          <p className="missing-positions-page__empty">
             {t('Excelente, no hay puestos con falta de cobertura.')}
           </p>
         ) : (
-          <section
-            className="missing-positions-modal__section"
-          >
-
-
-            {/* Contenedor con tabIndex para permitir scroll con teclado (Accesibilidad) */}
+          <section className="missing-positions-page__section">
             <div
-              className="missing-positions-modal__table-container"
+              className="missing-positions-page__table-container"
               tabIndex={0}
               role="region"
               aria-label={t("Tabla de puestos faltantes")}
             >
-              <table className="missing-positions-modal__table">
+              <table className="missing-positions-page__table">
+                <colgroup>
+                  <col className="missing-positions-page__position-column" />
+                  <col className="missing-positions-page__metric-column" />
+                  <col className="missing-positions-page__metric-column" />
+                  <col className="missing-positions-page__metric-column" />
+                </colgroup>
                 <thead>
                   <tr>
                     <th scope="col">{t('Puesto')}</th>
                     <th
                       scope="col"
-                      className="missing-positions-modal__num-col"
+                      className="missing-positions-page__num-col"
                     >
                       <Tooltip content={t("En plantilla")}>
                         <span>{t('Plantilla')}</span>
@@ -171,7 +149,7 @@ export function MissingPositionsModal({
                     </th>
                     <th
                       scope="col"
-                      className="missing-positions-modal__num-col"
+                      className="missing-positions-page__num-col"
                     >
                       <Tooltip content={t("En backup")}>
                         <span>{t('Backup')}</span>
@@ -179,11 +157,11 @@ export function MissingPositionsModal({
                     </th>
                     <th
                       scope="col"
-                      className="missing-positions-modal__num-col missing-positions-modal__starlite-col"
+                      className="missing-positions-page__num-col missing-positions-page__starlite-col"
                     >
                       <Tooltip content={t("Starlite")}>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                          <Star size={12} className="missing-positions-modal__starlite-icon" aria-hidden="true" style={{ marginRight: '2px' }} />
+                        <div className="missing-positions-page__starlite-label">
+                          <Star size={12} className="missing-positions-page__starlite-icon" aria-hidden="true" />
                           Starlite
                         </div>
                       </Tooltip>
@@ -209,18 +187,18 @@ export function MissingPositionsModal({
                         aria-pressed={isDismissed}
                       >
                         <td>
-                          <div className="missing-positions-modal__puesto">
-                            <span className="missing-positions-modal__puesto-name">
+                          <div className="missing-positions-page__puesto">
+                            <span className="missing-positions-page__puesto-name">
                               {pos.puesto}
                             </span>
-                            <span className="missing-positions-modal__puesto-section">
+                            <span className="missing-positions-page__puesto-section">
                               {pos.seccion || pos.area}
                             </span>
                           </div>
                           {r.proximos > 0 && (
-                            <div className="missing-positions-modal__prox-details">
+                            <div className="missing-positions-page__prox-details">
                               <Tooltip content={t("Cubiertas (ingreso futuro)")}>
-                                <span className="missing-positions-modal__puesto-note">
+                                <span className="missing-positions-page__puesto-note">
                                   −{r.proximos} {t(r.proximos === 1 ? 'PRÓXIMO INGRESO' : 'PRÓXIMOS INGRESOS')}
                                 </span>
                               </Tooltip>
@@ -233,7 +211,7 @@ export function MissingPositionsModal({
                                 const excedenteDisp = Math.min(r.proxExcedente, regularDisp - plantillaDisp - backupDisp);
 
                                 return (
-                                  <span className="missing-positions-modal__prox-breakdown" style={{ fontSize: '0.75rem', color: 'var(--color-muted)', display: 'block', marginTop: '2px' }}>
+                                  <span className="missing-positions-page__prox-breakdown">
                                     (
                                     {[
                                       starliteDisp > 0 ? `★ ${starliteDisp} Starlite` : null,
@@ -248,31 +226,31 @@ export function MissingPositionsModal({
                             </div>
                           )}
                         </td>
-                        <td className="missing-positions-modal__num-col">
+                        <td data-label={t('Plantilla')} className="missing-positions-page__num-col">
                           {faltanPlantilla > 0 ? (
-                            <span className="missing-positions-modal__count-badge missing-positions-modal__count-badge--error">
+                            <span className="missing-positions-page__count-badge missing-positions-page__count-badge--error">
                               {faltanPlantilla}
                             </span>
                           ) : (
-                            <span className="missing-positions-modal__count-empty" aria-label={t("Sin faltantes en plantilla")}>—</span>
+                            <span className="missing-positions-page__count-empty" aria-label={t("Sin faltantes en plantilla")}>—</span>
                           )}
                         </td>
-                        <td className="missing-positions-modal__num-col">
+                        <td data-label={t('Backup')} className="missing-positions-page__num-col">
                           {faltanBackup > 0 ? (
-                            <span className="missing-positions-modal__count-badge missing-positions-modal__count-badge--warning">
+                            <span className="missing-positions-page__count-badge missing-positions-page__count-badge--warning">
                               {faltanBackup}
                             </span>
                           ) : (
-                            <span className="missing-positions-modal__count-empty" aria-label={t("Sin faltantes en backup")}>—</span>
+                            <span className="missing-positions-page__count-empty" aria-label={t("Sin faltantes en backup")}>—</span>
                           )}
                         </td>
-                        <td className="missing-positions-modal__num-col">
+                        <td data-label={t('Starlite')} className="missing-positions-page__num-col">
                           {r.netStarlite > 0 ? (
-                            <span className="missing-positions-modal__count-badge missing-positions-modal__count-badge--starlite">
+                            <span className="missing-positions-page__count-badge missing-positions-page__count-badge--starlite">
                               {r.netStarlite}
                             </span>
                           ) : (
-                            <span className="missing-positions-modal__count-empty" aria-label={t("Sin faltantes en starlite")}>—</span>
+                            <span className="missing-positions-page__count-empty" aria-label={t("Sin faltantes en starlite")}>—</span>
                           )}
                         </td>
                       </tr>
@@ -284,6 +262,6 @@ export function MissingPositionsModal({
           </section>
         )}
       </div>
-    </Modal>
+    </main>
   );
 }

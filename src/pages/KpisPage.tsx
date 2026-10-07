@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -16,7 +16,7 @@ import { FutureHiresModal } from "@/components/ui/FutureHiresModal";
 import { CandidatesInProcessModal } from "@/components/ui/CandidatesInProcessModal";
 import { CandidatesCitedTodayModal } from "@/components/ui/CandidatesCitedTodayModal";
 import { TtfHistoryModal } from "@/components/ui/TtfHistoryModal";
-import { MissingPositionsModal } from "@/components/ui/MissingPositionsModal";
+import { MissingPositionsPage } from "@/pages/MissingPositionsPage";
 import { useSupabaseData } from "@/hooks/useSupabaseData";
 import { useCandidates } from "@/hooks/useCandidates";
 import { useBajas } from "@/hooks/useBajas";
@@ -193,8 +193,17 @@ export function KpisPage() {
   const [candidatesModalOpen, setCandidatesModalOpen] = useState(false);
   const [citedTodayModalOpen, setCitedTodayModalOpen] = useState(false);
   const [ttfHistoryModalOpen, setTtfHistoryModalOpen] = useState(false);
-  const [missingModalOpen, setMissingModalOpen] = useState(false);
+  const [missingPositionsPageOpen, setMissingPositionsPageOpen] = useState(false);
+  const overviewTitleRef = useRef<HTMLHeadingElement>(null);
+  const wasMissingPositionsPageOpenRef = useRef(false);
   const [weekOffset, setWeekOffset] = useState(0);
+
+  useEffect(() => {
+    if (!missingPositionsPageOpen && wasMissingPositionsPageOpenRef.current) {
+      overviewTitleRef.current?.focus({ preventScroll: true });
+    }
+    wasMissingPositionsPageOpenRef.current = missingPositionsPageOpen;
+  }, [missingPositionsPageOpen]);
 
   /* ── Semana ISO actual + semana anterior ──────────────────── */
   const currentWeek = useMemo(() => {
@@ -659,6 +668,21 @@ export function KpisPage() {
     else if (id === "stat-vac-ttf") setTtfHistoryModalOpen(true);
   }
 
+  if (missingPositionsPageOpen) {
+    return (
+      <BoneyardSkeleton
+        name="resumen-page"
+        loading={loading}
+        loadingLabel={t("Cargando resumen…")}
+      >
+        <MissingPositionsPage
+          coverage={currentPositionCoverage}
+          onBack={() => setMissingPositionsPageOpen(false)}
+        />
+      </BoneyardSkeleton>
+    );
+  }
+
   return (
     <BoneyardSkeleton
       name="resumen-page"
@@ -667,7 +691,7 @@ export function KpisPage() {
     >
       <main className="kpis-page container" id="page-kpis">
       <header className="page-header">
-        <h1 className="app-page-title">{t("Resumen")}</h1>
+        <h1 ref={overviewTitleRef} tabIndex={-1} className="app-page-title">{t("Resumen")}</h1>
       </header>
 
       {isDesktop ? (
@@ -675,7 +699,7 @@ export function KpisPage() {
           <Reveal as="section" className="kpis-page__chart-section">
             <KpiHeroChart
               data={heroChartData}
-              onClick={() => setMissingModalOpen(true)}
+              onClick={() => setMissingPositionsPageOpen(true)}
               onPrevWeek={() => setWeekOffset((prev) => prev - 1)}
               onNextWeek={() => setWeekOffset((prev) => prev + 1)}
               weekNumber={currentWeek.week}
@@ -744,6 +768,17 @@ export function KpisPage() {
       ) : (
         <>
           <WorkforceProjection projection={projectionTotals} />
+
+          <button
+            type="button"
+            className="kpis-page__missing-positions-link"
+            onClick={() => setMissingPositionsPageOpen(true)}
+            aria-label={`${t("Ver detalle")} ${t("Vacantes Pendientes")}`}
+            data-testid="kpis-mobile-missing-positions"
+          >
+            <span>{t("Vacantes Pendientes")}</span>
+            <ChevronRight size={20} aria-hidden="true" />
+          </button>
 
           {visibleGroups.length > 1 && (
             <nav
@@ -862,12 +897,6 @@ export function KpisPage() {
         futureHires={weeklyFutureHires}
       />
 
-      <MissingPositionsModal
-        isOpen={missingModalOpen}
-        onClose={() => setMissingModalOpen(false)}
-        coverage={currentPositionCoverage}
-        vacancies={vacancies}
-      />
       </main>
     </BoneyardSkeleton>
   );

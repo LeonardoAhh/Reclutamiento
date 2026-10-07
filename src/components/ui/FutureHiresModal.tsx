@@ -3,6 +3,7 @@ import { UsersRound } from 'lucide-react';
 import { Check, Copy } from 'lucide';
 import { MorphingIcon } from './MorphingIcon';
 import { Modal } from './Modal';
+import { FormSheet } from './FormSheet';
 import { StarliteBadge } from './Badge';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import type { Employee } from '@/lib/types';
@@ -107,6 +108,7 @@ export function FutureHiresModal({
   const t = (text: string) => workforceText(language, text);
   const locale = language === 'en' ? 'en-US' : 'es-MX';
   const isMobile = useIsMobile();
+  const Dialog = isMobile ? Modal : FormSheet;
   const [copied, setCopied] = useState(false);
 
   const sortedFutureHires = useMemo(() => {
@@ -155,8 +157,8 @@ export function FutureHiresModal({
                   <span className="future-hires-modal__mobile-date">{formatShortDate(e.fecha_ingreso, locale)}</span>
                 </div>
                 <div className="future-hires-modal__mobile-card-body">
-                  <div className="future-hires-modal__mobile-seccion">
-                    {e.seccion || '-'}
+                  <div className="future-hires-modal__mobile-turno">
+                    {e.turno || '-'}
                   </div>
                 </div>
               </div>
@@ -168,7 +170,7 @@ export function FutureHiresModal({
             <thead>
               <tr>
                 <th>{t('Puesto')}</th>
-                <th>{t('Sección')}</th>
+                <th>{t('Turno')}</th>
                 <th>{t('Fecha')}</th>
               </tr>
             </thead>
@@ -177,13 +179,13 @@ export function FutureHiresModal({
                 <tr key={e.num_empleado}>
                   <td>
                     <div className="future-hires-modal__cell-name">
-                      <span>{e.puesto}</span>
+                      <span className="future-hires-modal__name-text">{e.puesto}</span>
                       {e.is_starlite && <StarliteBadge compact />}
                     </div>
                   </td>
                   <td>
-                    <div className="future-hires-modal__cell-seccion">
-                      {e.seccion || '-'}
+                    <div className="future-hires-modal__cell-turno">
+                      {e.turno || '-'}
                     </div>
                   </td>
                   <td className="future-hires-modal__cell-mono">
@@ -199,7 +201,7 @@ export function FutureHiresModal({
   );
 
   return (
-    <Modal
+    <Dialog
       isOpen={isOpen}
       onClose={onClose}
       title={t("Próximos ingresos")}
@@ -234,6 +236,6 @@ export function FutureHiresModal({
           </div>
         )}
       </div>
-    </Modal>
+    </Dialog>
   );
 }

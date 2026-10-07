@@ -1,11 +1,13 @@
 import { CalendarCheck, CircleCheckBig } from 'lucide-react';
 import { Modal } from './Modal';
+import { FormSheet } from './FormSheet';
 import { Badge, StarliteBadge, ReclutadorBadge } from './Badge';
 import { ExpandableSection } from './ExpandableSection';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import type { Candidate } from '@/lib/types';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { workforceText } from '@/pages/workforce-translations';
+import { formatWhatsAppSection } from '@/lib/whatsappReport';
 
 import './CandidatesCitedTodayModal.css';
 
@@ -34,12 +36,14 @@ export function CandidatesCitedTodayModal({
   const { language } = useLanguage();
   const t = (text: string) => workforceText(language, text);
   const isMobile = useIsMobile();
+  const Dialog = isMobile ? Modal : FormSheet;
   const grouped = groupByArea(candidates);
 
   const renderAreaContent = (items: Candidate[]) => (
     <ul className="candidates-cited-today-modal__list">
       {items.map((c) => {
-        const detalle = [c.puesto, c.seccion]
+        const seccion = formatWhatsAppSection(c.seccion ?? '', c.area);
+        const detalle = [c.puesto, seccion]
           .map((v) => v?.trim())
           .filter(Boolean)
           .join(' · ');
@@ -68,7 +72,7 @@ export function CandidatesCitedTodayModal({
   );
 
   return (
-    <Modal
+    <Dialog
       isOpen={isOpen}
       onClose={onClose}
       className="candidates-cited-today-modal"
@@ -111,6 +115,6 @@ export function CandidatesCitedTodayModal({
           </div>
         )}
       </div>
-    </Modal>
+    </Dialog>
   );
 }

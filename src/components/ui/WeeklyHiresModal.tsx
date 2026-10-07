@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { CircleCheckBig, Copy, UsersRound } from 'lucide-react';
 import { Modal } from './Modal';
+import { FormSheet } from './FormSheet';
 import { ExpandableSection } from './ExpandableSection';
 import { StarliteBadge } from './Badge';
 import { useIsMobile } from '@/hooks/useIsMobile';
@@ -92,6 +93,7 @@ export function WeeklyHiresModal({
   const t = (text: string) => workforceText(language, text);
   const locale = en ? 'en-US' : 'es-MX';
   const isMobile = useIsMobile();
+  const Dialog = isMobile ? Modal : FormSheet;
 
   const groupedHires = useMemo(() => groupByPuesto(hires), [hires]);
   const groupedPreviousHires = useMemo(() => groupByPuesto(previousHires), [previousHires]);
@@ -140,7 +142,6 @@ export function WeeklyHiresModal({
             <thead>
               <tr>
                 <th>{t('Puesto')}</th>
-                <th>{t('Sección')}</th>
                 <th>{t('Fecha')}</th>
               </tr>
             </thead>
@@ -152,11 +153,6 @@ export function WeeklyHiresModal({
                       <span>{e.puesto}</span>
                       {highlightStarlite && e.is_starlite && <StarliteBadge />}
                     </span>
-                  </td>
-                  <td>
-                    <div className="weekly-hires-modal__cell-seccion">
-                      {e.seccion || '-'}
-                    </div>
                   </td>
                   <td className="weekly-hires-modal__cell-mono">
                     {formatShortDate(e.fecha_ingreso, locale)}
@@ -198,7 +194,6 @@ export function WeeklyHiresModal({
             <thead>
               <tr>
                 <th>{t('Puesto')}</th>
-                <th>{t('Sección')}</th>
                 <th>{t('Fecha')}</th>
               </tr>
             </thead>
@@ -210,11 +205,6 @@ export function WeeklyHiresModal({
                       <span>{b.puesto}</span>
                       {highlightStarlite && b.is_starlite && <StarliteBadge />}
                     </span>
-                  </td>
-                  <td>
-                    <div className="weekly-hires-modal__cell-seccion">
-                      {[b.seccion, b.turno].map((v) => v?.trim()).filter(Boolean).join(' · ') || '—'}
-                    </div>
                   </td>
                   <td className="weekly-hires-modal__cell-mono">
                     {formatShortDate(b.fecha_baja, locale)}
@@ -229,7 +219,7 @@ export function WeeklyHiresModal({
   );
 
   return (
-    <Modal
+    <Dialog
       isOpen={isOpen}
       onClose={onClose}
       className="weekly-hires-modal"
@@ -372,6 +362,6 @@ export function WeeklyHiresModal({
             </ExpandableSection>
         </div>
       </div>
-    </Modal>
+    </Dialog>
   );
 }

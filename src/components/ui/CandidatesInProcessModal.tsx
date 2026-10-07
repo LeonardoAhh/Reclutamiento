@@ -1,5 +1,6 @@
 import { Activity, CircleCheckBig } from 'lucide-react';
 import { Modal } from './Modal';
+import { FormSheet } from './FormSheet';
 import { ExpandableSection } from './ExpandableSection';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import type { Candidate, CandidateStatus } from '@/lib/types';
@@ -49,6 +50,7 @@ export function CandidatesInProcessModal({
   const { language } = useLanguage();
   const t = (text: string) => workforceText(language, text);
   const isMobile = useIsMobile();
+  const Dialog = isMobile ? Modal : FormSheet;
   const grouped = groupByPuesto(candidates);
 
   const renderList = () => (
@@ -91,7 +93,7 @@ export function CandidatesInProcessModal({
   );
 
   return (
-    <Modal
+    <Dialog
       isOpen={isOpen}
       onClose={onClose}
       className="candidates-in-process-modal"
@@ -125,6 +127,6 @@ export function CandidatesInProcessModal({
           </section>
         )}
       </div>
-    </Modal>
+    </Dialog>
   );
 }

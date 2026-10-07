@@ -33,6 +33,37 @@
   display: none;
 }
 
+.kpis-page__missing-positions-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  inline-size: 100%;
+  min-block-size: var(--touch-target-min);
+  margin-block-end: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  background: var(--color-surface-card);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+  text-align: start;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.kpis-page__missing-positions-link:hover {
+  background: var(--color-surface-soft);
+}
+
+.kpis-page__missing-positions-link:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: var(--focus-ring-offset);
+}
+
 .kpis-page__tab {
   flex-shrink: 0;
   padding: var(--spacing-xs) var(--spacing-md);

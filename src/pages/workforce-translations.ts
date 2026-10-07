@@ -263,6 +263,7 @@ const englishCopy: Record<string, string> = {
   "En incapacidad médica": "On medical leave",
   "Fecha estimada de regreso": "Estimated return date",
   "Volver a plantilla": "Back to workforce",
+  "Volver al resumen": "Back to overview",
   "Cargando vacantes…": "Loading vacancies…",
 };
 
