@@ -68,7 +68,7 @@ export function CapturarMotivoBajaModal({ isOpen, onClose, existingEmployees, on
       return;
     }
     if (existingEmployees.has(parsed.record.num_empleado)) {
-      setError(copy.duplicateEmployee);
+      setEmployeeError(copy.duplicateEmployee);
       return;
     }
 
@@ -116,8 +116,11 @@ export function CapturarMotivoBajaModal({ isOpen, onClose, existingEmployees, on
             maxLength={4}
             value={employee}
             onChange={(event) => {
-              setEmployee(event.target.value.replace(/\D/g, '').slice(0, 4));
-              setEmployeeError(null);
+              const value = event.target.value.replace(/\D/g, '').slice(0, 4);
+              setEmployee(value);
+              setEmployeeError(
+                value && existingEmployees.has(value) ? copy.duplicateEmployee : null,
+              );
             }}
             aria-invalid={Boolean(employeeError) || undefined}
             aria-describedby={employeeError ? `${id}-employee-error` : undefined}
