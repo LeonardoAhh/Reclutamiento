@@ -85,7 +85,6 @@ export function CapturarMotivoBajaModal({ isOpen, onClose, existingEmployees, on
       setReason('');
       setDetail('');
       toast.success({ title: copy.added });
-      onClose();
     } finally {
       setSaving(false);
     }

@@ -356,6 +356,7 @@ Cards are rectangles at 12–16px radius; normal controls are 8px; icon buttons 
 
 **`departure-capture-and-saved-reports`** — responsive dialogs
 - Register departure and Saved reports use the existing Modal on mobile and the compact floating FormSheet from tablet upward. Capture fields and the saved-report list stay in one column in the Sheet; its body scrolls independently of the header and existing capture footer.
+- After a departure reason is saved successfully, keep its capture dialog open and clear the fields for another entry; retain the success toast.
 - Preserve employee/date validation, dependent departure reasons, capture persistence, saved-report data and loading/deletion actions. Report deletion confirmation remains the separate DeleteConfirmModal, bottom-centered on mobile and centered from tablet upward. On larger screens it temporarily replaces the saved-report Sheet, which reopens when confirmation closes; a stable trigger reference restores focus when the Sheet is dismissed.
 
 **`monthly-report-comparison-page`** — saved-report comparison
