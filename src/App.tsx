@@ -31,73 +31,31 @@ import { CANDIDATE_METRICS_PATH } from '@/pages/candidate-metrics/navigation';
 import { CAREER_JOURNEY_ENABLED, CAREER_PATH } from '@/features/career/types';
 import { LEAVE_REQUESTS_PATH } from '@/features/leave/requests';
 import { useLanguage } from '@/contexts/LanguageContext';
+import {
+  AccountPage,
+  Actividades,
+  Bajas,
+  CandidateMetricsPage,
+  CareerPage,
+  Configuracion,
+  Dashboard,
+  DataUpdatePage,
+  HomePage,
+  KpisPage,
+  LeaveRequestsPage,
+  MotivosBaja,
+  OrganizationChartPage,
+  Pipeline,
+  ReportComparisonPage,
+  ReporteDiario,
+  TeamPage,
+  VacancyAssignmentsPage,
+} from '@/lib/routePages';
 
-const CareerPage = lazy(() => import('@/features/career/CareerPage').then(({ CareerPage }) => ({ default: CareerPage })));
-
-const Dashboard = lazy(() =>
-  import('@/pages/Dashboard').then(({ Dashboard }) => ({ default: Dashboard })),
-);
-const CandidateMetricsPage = lazy(() => import('@/pages/CandidateMetricsPage').then(({ CandidateMetricsPage }) => ({ default: CandidateMetricsPage })));
-const Pipeline = lazy(() =>
-  import('@/pages/Pipeline').then(({ Pipeline }) => ({ default: Pipeline })),
-);
-const Bajas = lazy(() =>
-  import('@/pages/Bajas').then(({ Bajas }) => ({ default: Bajas })),
-);
-const KpisPage = lazy(() =>
-  import('@/pages/KpisPage').then(({ KpisPage }) => ({ default: KpisPage })),
-);
-const VacancyAssignmentsPage = lazy(() =>
-  import('@/pages/VacancyAssignmentsPage').then(({ VacancyAssignmentsPage }) => ({
-    default: VacancyAssignmentsPage,
-  })),
-);
 const Login = lazy(() =>
   import('@/pages/Login').then(({ Login }) => ({ default: Login })),
 );
-const ReportComparisonPage = lazy(() => import('@/pages/ReportComparisonPage').then(({ ReportComparisonPage }) => ({ default: ReportComparisonPage })));
-const ReporteDiario = lazy(() =>
-  import('@/pages/ReporteDiario').then(({ ReporteDiario }) => ({
-    default: ReporteDiario,
-  })),
-);
-const MotivosBaja = lazy(() =>
-  import('@/pages/MotivosBaja').then(({ MotivosBaja }) => ({
-    default: MotivosBaja,
-  })),
-);
-const Configuracion = lazy(() =>
-  import('@/pages/Configuracion').then(({ Configuracion }) => ({
-    default: Configuracion,
-  })),
-);
-const Actividades = lazy(() =>
-  import('@/pages/Actividades').then(({ Actividades }) => ({
-    default: Actividades,
-  })),
-);
-const DataUpdatePage = lazy(() =>
-  import('@/features/data-update/DataUpdatePage').then(({ DataUpdatePage }) => ({
-    default: DataUpdatePage,
-  })),
-);
-const AccountPage = lazy(() =>
-  import('@/pages/AccountPage').then(({ AccountPage }) => ({
-    default: AccountPage,
-  })),
-);
-const TeamPage = lazy(() => import('@/features/team/TeamPage').then(({ TeamPage }) => ({ default: TeamPage })));
-const LeaveRequestsPage = lazy(() => import('@/pages/LeaveRequestsPage').then(({ LeaveRequestsPage }) => ({ default: LeaveRequestsPage })));
-const HomePage = lazy(() =>
-  import('@/pages/HomePage').then(({ HomePage }) => ({
-    default: HomePage,
-  })),
-);
-const OrganizationChartPage = lazy(() =>
-  import('@/pages/OrganizationChartPage').then(({ OrganizationChartPage }) => ({
-    default: OrganizationChartPage,
-  })),
-);
+
 function ProtectedContent() {
   const { pathname } = useLocation();
   return (

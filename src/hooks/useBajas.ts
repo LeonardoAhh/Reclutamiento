@@ -4,25 +4,15 @@ import { formatSupabaseError } from '@/lib/errors';
 import type { Baja, BajaRaw } from '@/lib/types';
 import { transformBajaData } from '@/lib/bajas';
 import { localTodayIso } from '@/lib/dates';
-
-const STORAGE_KEY = 'reclutamiento_bajas';
-
-function loadLocal<T>(key: string, fallback: T): T {
-  try {
-    const stored = localStorage.getItem(key);
-    return stored ? JSON.parse(stored) : fallback;
-  } catch {
-    return fallback;
-  }
-}
-
-function saveLocal<T>(key: string, data: T): void {
-  try {
-    localStorage.setItem(key, JSON.stringify(data));
-  } catch (err) {
-    console.warn('localStorage save failed:', err);
-  }
-}
+import { isFresh } from '@/lib/dataCache';
+import {
+  fetchRemoteBajas,
+  getBajasDataSource,
+  getBajasFetchedAt,
+  readBajasCache,
+  setBajasDataSource,
+  writeBajasCache,
+} from '@/lib/bajasCache';
 
 /**
  * Convierte cualquier valor de error (Error nativo, PostgrestError, objeto
@@ -60,13 +50,24 @@ export type DataSource = 'remote' | 'local' | 'unknown';
  *   4. Si Supabase falla → mantiene local, expone `error` y `dataSource='local'`.
  */
 export function useBajas() {
-  const [bajas, setBajas] = useState<Baja[]>(() => loadLocal<Baja[]>(STORAGE_KEY, []));
-  const [loading, setLoading] = useState(true);
+  const isConfigured = checkSupabaseConfig();
+  // Stale-while-revalidate: la caché de sesión se muestra al instante; el
+  // skeleton solo aparece si todavía no hay ninguna baja que enseñar.
+  const [bajas, setBajas] = useState<Baja[]>(() => readBajasCache());
+  const [loading, setLoading] = useState(
+    () => isConfigured && getBajasFetchedAt() === undefined && readBajasCache().length === 0
+  );
   const [error, setError] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
-  const [dataSource, setDataSource] = useState<DataSource>('unknown');
+  const [dataSource, setDataSource] = useState<DataSource>(() => getBajasDataSource());
 
-  const isConfigured = checkSupabaseConfig();
+  // Mutaciones y descargas alimentan la caché compartida entre páginas.
+  useEffect(() => {
+    writeBajasCache(bajas, 'none');
+  }, [bajas]);
+  useEffect(() => {
+    setBajasDataSource(dataSource);
+  }, [dataSource]);
   // Lectura sincrónica de `bajas` desde callbacks asincrónicos sin recrear el callback.
   const bajasRef = useRef<Baja[]>(bajas);
   bajasRef.current = bajas;
@@ -116,20 +117,25 @@ export function useBajas() {
       setDataSource(bajasRef.current.length > 0 ? 'local' : 'unknown');
       return;
     }
+    if (isFresh(getBajasFetchedAt())) {
+      setLoading(false);
+      return;
+    }
     let cancelled = false;
     async function fetchData() {
       try {
-        setLoading(true);
-        const { data, error: err } = await supabase.from('bajas').select('*');
-        if (err) throw err;
+        const remote = await fetchRemoteBajas(async () => {
+          const { data, error: err } = await supabase.from('bajas').select('*');
+          if (err) throw err;
+          return (data ?? []) as Baja[];
+        });
         if (cancelled) return;
-        const remote = (data ?? []) as Baja[];
         const local = bajasRef.current;
 
         if (remote.length > 0) {
           // Remote es fuente de verdad: pisa local.
           setBajas(remote);
-          saveLocal(STORAGE_KEY, remote);
+          writeBajasCache(remote, 'idle');
           setDataSource('remote');
           setError(null);
           return;
@@ -198,7 +204,7 @@ export function useBajas() {
       const merged = Array.from(prevByNum.values());
 
       setBajas(merged);
-      saveLocal(STORAGE_KEY, merged);
+      writeBajasCache(merged);
 
       if (!isConfigured) {
         setDataSource('local');
@@ -247,7 +253,7 @@ export function useBajas() {
           : b
       );
       setBajas(next);
-      saveLocal(STORAGE_KEY, next);
+      writeBajasCache(next);
       if (!isConfigured) return { ok: true };
       const target = next.find((b) => b.num_empleado === numEmpleado);
       if (!target) return { ok: false };
@@ -281,7 +287,7 @@ export function useBajas() {
           : b
       );
       setBajas(next);
-      saveLocal(STORAGE_KEY, next);
+      writeBajasCache(next);
       if (!isConfigured) return { ok: true };
       const target = next.find((b) => b.num_empleado === numEmpleado);
       if (!target) return { ok: false };
@@ -315,7 +321,7 @@ export function useBajas() {
           : b
       );
       setBajas(next);
-      saveLocal(STORAGE_KEY, next);
+      writeBajasCache(next);
       if (!isConfigured) return { ok: true };
       const target = next.find((b) => b.num_empleado === numEmpleado);
       if (!target) return { ok: false };
@@ -342,7 +348,7 @@ export function useBajas() {
 
   const clearBajas = useCallback(async () => {
     setBajas([]);
-    saveLocal(STORAGE_KEY, []);
+    writeBajasCache([]);
     setDataSource('unknown');
     if (isConfigured) {
       try {
@@ -439,7 +445,7 @@ export function useBajas() {
       });
 
       setBajas(next);
-      saveLocal(STORAGE_KEY, next);
+      writeBajasCache(next);
 
       if (!isConfigured) {
         return { ok: true, updated };

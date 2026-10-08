@@ -11,6 +11,10 @@ import { supabase } from '@/lib/supabase';
 import { formatSupabaseError } from '@/lib/errors';
 import { parseDdMmYyyy, localTodayIso } from '@/lib/dates';
 import { isSoloInduccion, normalizePuesto } from '@/lib/bajas';
+import { isFresh, scheduleIdle } from '@/lib/dataCache';
+// Caché compartida con `useBajas`: al dar de baja o cubrir una vacante, la
+// página de rotación ve el cambio aunque aún no haya revalidado Supabase.
+import { readBajasCache, writeBajasCache } from '@/lib/bajasCache';
 import type {
   Baja,
   Employee,
@@ -58,12 +62,6 @@ function withNormalizedDates(emp: Employee): Employee {
 const STORAGE_KEYS = {
   employees: 'reclutamiento_employees',
   comments: 'reclutamiento_comments',
-  /**
-   * Mismo key que usa `useBajas`. Lo mantenemos en sync desde aquí cuando
-   * se da de baja un empleado, para que `/employee-turnover` lo vea aunque aún no
-   * haya re-fetcheado Supabase.
-   */
-  bajas: 'reclutamiento_bajas',
   no_citados: 'reclutamiento_no_citados',
 };
 
@@ -110,91 +108,150 @@ const ALL_SUPABASE_DATA_RESOURCES: readonly SupabaseDataResource[] = [
   'noCitados',
 ];
 
+type ResourceRows = {
+  employees: Employee[];
+  comments: PositionComment[];
+  noCitados: NoCitado[];
+};
+
+const RESOURCE_STORAGE_KEYS: Record<SupabaseDataResource, string> = {
+  employees: STORAGE_KEYS.employees,
+  comments: STORAGE_KEYS.comments,
+  noCitados: STORAGE_KEYS.no_citados,
+};
+
+/**
+ * Caché de sesión compartida por todas las rutas. Cada página monta su propio
+ * provider; sin esta caché, cada visita re-parseaba localStorage y volvía a
+ * descargar las tablas completas antes de mostrar contenido.
+ */
+const sessionRows: Partial<ResourceRows> = {};
+const sessionFetchedAt: Partial<Record<SupabaseDataResource, number>> = {};
+const inflightRequests: Partial<Record<SupabaseDataResource, Promise<unknown[]>>> = {};
+
+function readCachedRows<K extends SupabaseDataResource>(resource: K): ResourceRows[K] {
+  const cached = sessionRows[resource];
+  if (cached) return cached;
+  const stored = loadLocal<ResourceRows[K]>(RESOURCE_STORAGE_KEYS[resource], [] as ResourceRows[K]);
+  sessionRows[resource] = stored;
+  return stored;
+}
+
+function queryResource(resource: SupabaseDataResource) {
+  if (resource === 'employees') return supabase.from('empleados').select('*');
+  if (resource === 'comments') return supabase.from('comentarios_reclutamiento').select('*');
+  return supabase
+    .from('no_citados')
+    .select('*')
+    .order('created_at', { ascending: false });
+}
+
+/** Una sola descarga en vuelo por recurso, compartida entre montajes. */
+function fetchResource<K extends SupabaseDataResource>(resource: K): Promise<ResourceRows[K]> {
+  const pending = inflightRequests[resource];
+  if (pending) return pending as Promise<ResourceRows[K]>;
+
+  const request = (async () => {
+    const { data, error } = await queryResource(resource);
+    if (error) throw error;
+    const rows = (data ?? []) as ResourceRows[K];
+    sessionRows[resource] = rows;
+    sessionFetchedAt[resource] = Date.now();
+    scheduleIdle(() => saveLocal(RESOURCE_STORAGE_KEYS[resource], rows));
+    return rows;
+  })().finally(() => {
+    delete inflightRequests[resource];
+  });
+
+  inflightRequests[resource] = request;
+  return request;
+}
+
+/** El skeleton solo se muestra si un recurso pedido no tiene nada que enseñar. */
+function needsBlockingLoad(resource: SupabaseDataResource): boolean {
+  return sessionFetchedAt[resource] === undefined && readCachedRows(resource).length === 0;
+}
+
 /**
  * Hook for fetching and mutating employees + comments.
- * Tries Supabase first, falls back to localStorage so the app stays usable offline.
+ * Stale-while-revalidate: muestra la caché de sesión/localStorage al instante
+ * y revalida contra Supabase en segundo plano.
  */
 function useSupabaseDataStore(
   resources: readonly SupabaseDataResource[] = ALL_SUPABASE_DATA_RESOURCES
 ) {
-  const [employees, setEmployees] = useState<Employee[]>(() =>
-    loadLocal(STORAGE_KEYS.employees, [])
-  );
-  const [comments, setComments] = useState<PositionComment[]>(() =>
-    loadLocal(STORAGE_KEYS.comments, [])
-  );
-  const [noCitados, setNoCitados] = useState<NoCitado[]>(() =>
-    loadLocal(STORAGE_KEYS.no_citados, [])
-  );
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
-
   const isConfigured = checkSupabaseConfig();
   const loadEmployees = resources.includes('employees');
   const loadComments = resources.includes('comments');
   const loadNoCitados = resources.includes('noCitados');
 
+  const [employees, setEmployees] = useState<Employee[]>(() =>
+    readCachedRows('employees')
+  );
+  const [comments, setComments] = useState<PositionComment[]>(() =>
+    readCachedRows('comments')
+  );
+  const [noCitados, setNoCitados] = useState<NoCitado[]>(() =>
+    readCachedRows('noCitados')
+  );
+  const [loading, setLoading] = useState(
+    () => isConfigured && resources.some(needsBlockingLoad)
+  );
+  const [error, setError] = useState<string | null>(null);
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
+
+  // Las mutaciones locales también alimentan la caché de sesión, para que la
+  // siguiente página muestre el estado más reciente sin esperar a la red.
   useEffect(() => {
-    if (
-      !isConfigured ||
-      (!loadEmployees &&
-        !loadComments &&
-        !loadNoCitados)
-    ) {
+    sessionRows.employees = employees;
+  }, [employees]);
+  useEffect(() => {
+    sessionRows.comments = comments;
+  }, [comments]);
+  useEffect(() => {
+    sessionRows.noCitados = noCitados;
+  }, [noCitados]);
+
+  useEffect(() => {
+    const requested = ALL_SUPABASE_DATA_RESOURCES.filter((resource) =>
+      resource === 'employees'
+        ? loadEmployees
+        : resource === 'comments'
+          ? loadComments
+          : loadNoCitados
+    );
+    const stale = requested.filter((resource) => !isFresh(sessionFetchedAt[resource]));
+
+    if (!isConfigured || stale.length === 0) {
       setLoading(false);
       return;
     }
 
-    async function fetchData() {
-      try {
-        setLoading(true);
+    let cancelled = false;
 
-        const [empResult, commResult, noCitadosResult] =
-          await Promise.all([
-            loadEmployees
-              ? supabase.from('empleados').select('*')
-              : Promise.resolve(null),
-            loadComments
-              ? supabase.from('comentarios_reclutamiento').select('*')
-              : Promise.resolve(null),
-            loadNoCitados
-              ? supabase
-                  .from('no_citados')
-                  .select('*')
-                  .order('created_at', { ascending: false })
-              : Promise.resolve(null),
-          ]);
-
-        if (empResult?.error) throw empResult.error;
-        if (commResult?.error) throw commResult.error;
-        if (noCitadosResult?.error) throw noCitadosResult.error;
-
-        if (empResult) {
-          const empData = empResult.data as Employee[];
-          setEmployees(empData);
-          saveLocal(STORAGE_KEYS.employees, empData);
-        }
-        if (commResult) {
-          const commData = commResult.data as PositionComment[];
-          setComments(commData);
-          saveLocal(STORAGE_KEYS.comments, commData);
-        }
-        if (noCitadosResult) {
-          const noCitadosData = noCitadosResult.data as NoCitado[];
-          setNoCitados(noCitadosData);
-          saveLocal(STORAGE_KEYS.no_citados, noCitadosData);
-        }
-      } catch (err) {
+    Promise.all(stale.map((resource) => fetchResource(resource)))
+      .then((results) => {
+        if (cancelled) return;
+        stale.forEach((resource, index) => {
+          const rows = results[index];
+          if (resource === 'employees') setEmployees(rows as Employee[]);
+          else if (resource === 'comments') setComments(rows as PositionComment[]);
+          else setNoCitados(rows as NoCitado[]);
+        });
+      })
+      .catch((err) => {
+        if (cancelled) return;
         const msg = formatSupabaseError(err);
         console.warn('Supabase fetch failed, using localStorage:', msg, err);
         setError(msg);
-      } finally {
-        setLoading(false);
-      }
-    }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
 
-    fetchData();
+    return () => {
+      cancelled = true;
+    };
   }, [
     isConfigured,
     loadComments,
@@ -427,11 +484,11 @@ function useSupabaseDataStore(
 
         // Update local cache primero: dedupe por num_empleado para no
         // duplicar si por alguna razón ya existía una baja previa.
-        const existingBajas = loadLocal<Baja[]>(STORAGE_KEYS.bajas, []);
+        const existingBajas = readBajasCache();
         const dedup = existingBajas.filter(
           (b) => b.num_empleado !== nuevaBaja.num_empleado
         );
-        saveLocal(STORAGE_KEYS.bajas, [...dedup, nuevaBaja]);
+        writeBajasCache([...dedup, nuevaBaja]);
 
         const { error: bajaErr } = await supabase
           .from('bajas')
@@ -550,7 +607,7 @@ function useSupabaseDataStore(
       position: { area: string; seccion: string; puesto: string },
       meta: { num_empleado: string; source: string }
     ): Promise<{ bajaNum: string | null }> => {
-      const bajas = loadLocal<Baja[]>(STORAGE_KEYS.bajas, []);
+      const bajas = readBajasCache();
       const puestoNorm = normalizePuesto(position.puesto);
       const areaTrim = (position.area ?? '').trim();
 
@@ -582,7 +639,7 @@ function useSupabaseDataStore(
             }
           : b
       );
-      saveLocal(STORAGE_KEYS.bajas, updatedBajas);
+      writeBajasCache(updatedBajas);
 
       if (!isConfigured) return { bajaNum: target.num_empleado };
 
