@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from "react";
+import { isBoneyardBuild } from "@/lib/boneyard";
+import { BONEYARD_SAMPLE_ACTIVITIES } from "@/lib/boneyardFixtures";
 import * as Tabs from "@radix-ui/react-tabs";
 import { useActivities } from "@/hooks/useActivities";
 import { useIsMobile } from "@/hooks/useIsMobile";
@@ -60,7 +62,7 @@ export function Actividades() {
   }, []);
 
   const {
-    activities,
+    activities: liveActivities,
     loading,
     createActivity,
     updateActivity,
@@ -71,6 +73,12 @@ export function Actividades() {
     getProofs,
     deleteProof,
   } = useActivities();
+  // Solo en la captura de Boneyard (sin perfil): muestra representativa para
+  // que el snapshot dibuje las cards reales y no el estado vacío.
+  const activities = useMemo(
+    () => (isBoneyardBuild() && liveActivities.length === 0 ? [...BONEYARD_SAMPLE_ACTIVITIES] : liveActivities),
+    [liveActivities],
+  );
 
   const isNewActivity = (act: Activity) => {
     if (!lastVisitRef.current || !act.created_at) return false;

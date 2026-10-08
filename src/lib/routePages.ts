@@ -63,43 +63,61 @@ export const LeaveRequestsPage = lazyWithPreload(() => import('@/pages/LeaveRequ
 export const HomePage = lazyWithPreload(() => import('@/pages/HomePage').then(({ HomePage }) => ({ default: HomePage })));
 export const OrganizationChartPage = lazyWithPreload(() => import('@/pages/OrganizationChartPage').then(({ OrganizationChartPage }) => ({ default: OrganizationChartPage })));
 
+/**
+ * Dónde se capturó el snapshot, para reproducir su geometría en el fallback:
+ * - `page`: la página envuelve su propio `.container` dentro del skeleton.
+ * - `container`: el skeleton vive dentro del `.container` del layout/página.
+ */
+export type RouteBonesFrame = 'page' | 'container';
+
+interface RouteBones {
+  name: string;
+  frame: RouteBonesFrame;
+}
+
 interface RoutePage {
   matches: (pathname: string) => boolean;
   page: PreloadableComponent<AnyComponent>;
-  /** Snapshot registrado en `src/bones/registry.ts`, si la ruta tiene uno. */
-  bones?: string;
+  /**
+   * Snapshot de la vista completa registrado en `src/bones/registry.ts`.
+   * Los skeletons locales (p. ej. solo la lista de Rutas) no se usan aquí.
+   */
+  bones?: RouteBones;
 }
+
+const pageBones = (name: string): RouteBones => ({ name, frame: 'page' });
+const containedBones = (name: string): RouteBones => ({ name, frame: 'container' });
 
 const exact = (path: string) => (pathname: string) => pathname === path;
 
-const CONFIGURACION_BONES: Readonly<Record<string, string>> = {
-  [getConfiguracionHref('analisis')]: 'analisis-page',
-  [getConfiguracionHref('indicadores')]: 'configuracion-indicadores',
-  [getConfiguracionHref('rutas')]: 'configuracion-rutas',
-  [getConfiguracionHref('tabulador')]: 'configuracion-tabulador',
-  [getConfiguracionHref('formatos')]: 'configuracion-formatos',
+/** Vistas de Administración capturadas dentro de `.config-main.container`. */
+const CONFIGURACION_BONES: Readonly<Record<string, RouteBones>> = {
+  [getConfiguracionHref('analisis')]: containedBones('analisis-page'),
+  [getConfiguracionHref('indicadores')]: containedBones('configuracion-indicadores'),
+  [getConfiguracionHref('tabulador')]: containedBones('configuracion-tabulador'),
+  [getConfiguracionHref('formatos')]: containedBones('configuracion-formatos'),
 };
 
 /** Orden relevante: las rutas exactas anidadas van antes que sus prefijos. */
 const ROUTE_PAGES: readonly RoutePage[] = [
   { matches: exact(HOME_PATH), page: HomePage },
   { matches: exact(ORGANIZATION_CHART_PATH), page: OrganizationChartPage },
-  { matches: exact(LEAVE_REQUESTS_PATH), page: LeaveRequestsPage, bones: 'leave-requests-page' },
+  { matches: exact(LEAVE_REQUESTS_PATH), page: LeaveRequestsPage, bones: pageBones('leave-requests-page') },
   { matches: exact(CAREER_PATH), page: CareerPage },
-  { matches: exact('/overview'), page: KpisPage, bones: 'resumen-page' },
-  { matches: exact(PLANTILLA_PATH), page: Dashboard, bones: 'plantilla-page' },
-  { matches: exact(VACANCY_ASSIGNMENTS_PATH), page: VacancyAssignmentsPage },
+  { matches: exact('/overview'), page: KpisPage, bones: pageBones('resumen-page') },
+  { matches: exact(PLANTILLA_PATH), page: Dashboard, bones: pageBones('plantilla-page') },
+  { matches: exact(VACANCY_ASSIGNMENTS_PATH), page: VacancyAssignmentsPage, bones: pageBones('vacancy-assignments-page') },
   { matches: exact(CANDIDATE_METRICS_PATH), page: CandidateMetricsPage },
-  { matches: exact(CANDIDATES_PATH), page: Pipeline, bones: 'candidatos-page' },
-  { matches: exact('/employee-turnover'), page: Bajas, bones: 'bajas-page' },
+  { matches: exact(CANDIDATES_PATH), page: Pipeline, bones: pageBones('candidatos-page') },
+  { matches: exact('/employee-turnover'), page: Bajas, bones: pageBones('bajas-page') },
   { matches: exact(REPORT_COMPARISON_PATH), page: ReportComparisonPage },
   {
     matches: (pathname) => pathname === '/reports' || pathname.startsWith('/reports/'),
     page: ReporteDiario,
-    bones: 'reportes-page',
+    bones: containedBones('reportes-page'),
   },
   { matches: exact('/departure-reasons'), page: MotivosBaja },
-  { matches: exact(ACTIVIDADES_PATH), page: Actividades, bones: 'actividades-page' },
+  { matches: exact(ACTIVIDADES_PATH), page: Actividades, bones: pageBones('actividades-page') },
   { matches: exact(DATA_UPDATE_PATH), page: DataUpdatePage },
   { matches: exact(ACCOUNT_PATH), page: AccountPage },
   { matches: exact(TEAM_PATH), page: TeamPage },
@@ -119,7 +137,7 @@ export function preloadRoute(pathname: string): void {
   findRoutePage(pathname)?.page.preload().catch(() => undefined);
 }
 
-/** Nombre del snapshot Boneyard de la ruta, para el fallback dentro del layout. */
-export function getRouteBones(pathname: string): string | undefined {
+/** Snapshot Boneyard de la vista completa de la ruta, para el fallback del layout. */
+export function getRouteBones(pathname: string): RouteBones | undefined {
   return findRoutePage(pathname)?.bones;
 }

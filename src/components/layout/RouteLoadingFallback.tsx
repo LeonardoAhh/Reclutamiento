@@ -22,9 +22,12 @@ export function RouteLoadingFallback() {
     );
   }
 
-  return (
-    <BoneyardSkeleton name={bones} loading loadingLabel={label}>
+  const skeleton = (
+    <BoneyardSkeleton name={bones.name} loading loadingLabel={label}>
       <div aria-hidden="true" />
     </BoneyardSkeleton>
   );
+
+  // Reproduce el mismo marco en el que se capturó el snapshot.
+  return bones.frame === 'container' ? <div className="container">{skeleton}</div> : skeleton;
 }
