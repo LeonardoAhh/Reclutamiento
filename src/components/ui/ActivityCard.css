@@ -85,7 +85,7 @@
 
 .activity-card__status,
 .activity-card__new {
-  padding: var(--spacing-xxs) var(--spacing-xs);
+  padding: var(--design-spacing-xxs) var(--spacing-xs);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-sm);
   font-size: var(--type-caption-xs-size);

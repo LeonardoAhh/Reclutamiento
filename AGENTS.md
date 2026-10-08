@@ -251,17 +251,26 @@ Las excepciones no autorizan magic numbers repetidos.
 
 ## 8. Sistema de color
 
-- `{colors.primary}` es el único color estructural de acción.
-- Debe reservarse para CTA principal, enlaces, selección activa y foco.
-- `{colors.canvas-soft}` es el lienzo general.
-- `{colors.surface}` se utiliza para cards, paneles, inputs y superficies elevadas.
-- La paleta sticker es exclusivamente decorativa.
-- Los colores sticker no pueden estructurar navegación, formularios, tabs, filtros o botones.
+Los valores exactos de cada token (claro y oscuro) viven únicamente en `desing.md` y `src/styles/global.css`. Este apartado fija las reglas de uso.
+
+- `{colors.primary}` (grafito) es el único color estructural de acción: CTA principal, navegación seleccionada y logo.
+- `{colors.link}` (azul accesible) se reserva exclusivamente para enlaces. No rellena filas de navegación ni botones.
+- El foco visible usa `{colors.focus}`: outline neutro de 2px, sin offset. Las superficies invertidas y `forced-colors` conservan sus colores de foco dedicados.
+- `{colors.canvas}` es el suelo continuo de página y workspace.
+- `{colors.canvas-soft}` agrupa regiones tranquilas.
+- `{colors.surface-card}` contiene cards y paneles de contenido.
+- `{colors.canvas-elevated}` se usa en inputs, menús, diálogos y superficies de detalle.
+- Texto: escalera deliberada `{colors.ink}` → `{colors.body}` → `{colors.mute}` → `{colors.faint}`. Nunca negro puro para texto de producto.
+- Bordes: `{colors.hairline}` en cards y divisores; `{colors.control-border}` en inputs, selects, botones secundarios, checkboxes, switches e icon buttons.
+- Estados semánticos: el color base (`success`, `warning`, `error`) es para indicadores e iconos; el texto usa `success-text`, `warning-text` y `error-text`/`error-deep`.
+- Los colores violeta, cian, rosa, magenta, gradientes y acentos de series son exclusivamente decorativos o de compatibilidad localizada.
+- Los colores decorativos no pueden estructurar navegación, formularios, tabs, filtros o botones.
 - No se debe introducir un segundo color estructural.
+- Los tokens de documento (`document-*`) son independientes del tema y solo aplican a salidas imprimibles o exportadas.
 - El color nunca debe ser la única forma de comunicar estado.
 - Los estados semánticos deben ser puntuales, comprensibles y accesibles.
 - No se debe pintar un contenedor completo si basta un mensaje, icono o indicador localizado.
-- Todo contraste debe cumplir WCAG 2.2 AA.
+- Todo contraste debe cumplir WCAG 2.2 AA: 4.5:1 en texto y 3:1 en bordes de control, foco e indicadores.
 
 Antes de utilizar texto muted o faint, se DEBE comprobar su contraste sobre la superficie real.
 
@@ -269,36 +278,39 @@ Antes de utilizar texto muted o faint, se DEBE comprobar su contraste sobre la s
 
 ## 9. Tipografía
 
-- Usar únicamente la familia y los fallbacks definidos en `desing.md`.
-- Usar los tokens tipográficos completos, no solo el tamaño.
-- Cada token debe aplicar tamaño, peso, line-height y tracking correspondientes.
+- Usar únicamente las familias definidas en `desing.md`: **Inter** para cuerpo, controles y headings (sustituto autorizado de Cal Sans), y el stack monoespaciado solo para código y eyebrows técnicos.
+- No descargar ni simular Cal Sans u otra fuente sin permiso.
+- Usar los tokens tipográficos completos, no solo el tamaño: cada regla aplica familia, tamaño, peso, line-height y tracking del mismo rol (`--type-<rol>-*`).
+- El tracking forma parte del rol. Los alias `--tracking-*` están obsoletos.
+- Headings y botones usan peso 600 con tracking negativo en display; navegación puede usar 500; el body conserva 400.
+- Las etiquetas cortas en mayúsculas (encabezados de tabla, eyebrows, tags) usan el rol `caption-up`. No usar mayúsculas extensas para contenido de lectura.
 - No elegir un elemento HTML por su apariencia visual.
 - La jerarquía HTML y la jerarquía visual deben ser coherentes.
 - Cada página debe tener un solo `h1`.
 - Los niveles de heading no deben saltarse sin una razón semántica.
-- El body debe conservar peso regular.
-- Los pesos fuertes se reservan para títulos, valores y énfasis real.
-- No usar mayúsculas extensas para contenido de lectura.
 - No reducir texto esencial para hacerlo encajar.
 - El zoom del navegador no debe romper el contenido.
 - No impedir el escalado de texto.
-
-Si `NotionInter` no está disponible legal o técnicamente, se debe usar el sustituto autorizado por `desing.md`; no se debe descargar ni simular una fuente sin permiso.
 
 ---
 
 ## 10. Espaciado, geometría y elevación
 
-- Usar exclusivamente la escala de spacing existente.
+- Usar exclusivamente la escala de `desing.md` (base 4px): 4 · 8 · 12 · 16 · 24 · 32 · 40 · 64 · 96 · 128, expuesta como `--design-spacing-*`.
+- La escala `--spacing-*` es legado: conserva valores en px porque el generador del pase en canvas la lee como número; `--spacing-xxs` y `--spacing-2xl` son alias obsoletos.
 - Las distancias equivalentes deben utilizar el mismo token.
 - Los componentes hermanos deben compartir ritmo y dimensiones.
-- Inputs: `{rounded.xs}`.
-- Botones de navegación o utilidad: `{rounded.md}`.
-- Cards de contenido: `{rounded.lg}`.
-- CTA de marketing: `{rounded.full}`.
-- Los inputs nunca deben ser pill.
-- Las cards deben utilizar hairline y la elevación definida.
-- Está prohibido introducir sombras pesadas.
+- Radios según `desing.md`:
+  - Botones, inputs, tabs y controles utilitarios: `{rounded.md}` (8px).
+  - Cards de contenido, menús y diálogos: `{rounded.lg}` (12px).
+  - Contenedores marquee o de vista previa: `{rounded.xl}` (16px).
+  - Menu items y controles compactos en línea: `{rounded.sm}` (6px).
+  - Marcas de checkbox y acentos compactos: `{rounded.xs}` (4px).
+  - Avatares y botones solo-icono: `{rounded.full}`.
+- Las pills se reservan para badges o navegación agrupada. Los botones e inputs ordinarios nunca deben ser pill.
+- Todo control interactivo tiene un mínimo explícito de 44px (`--touch-target-min`); la altura nunca se infiere solo del line-height.
+- Las cards deben utilizar hairline y la elevación definida: Level 0 plano, Level 1 `{shadows.xs}`, Level 2 `{shadows.sm}` solo para menús, modales y popovers.
+- Está prohibido introducir sombras pesadas, glows o gradientes en el chrome de la aplicación.
 - No utilizar margen para compensar un problema estructural que debe resolverse con layout.
 - No acumular overrides para corregir una regla anterior.
 - No usar offsets negativos salvo que formen parte de un patrón documentado.
@@ -1008,8 +1020,9 @@ Antes de responder al usuario, confirmar:
 - [ ] No existen fuentes o tamaños tipográficos arbitrarios.
 - [ ] No existen paddings, márgenes o gaps fuera de tokens.
 - [ ] No existen radios o sombras inventados.
-- [ ] La paleta sticker se usa únicamente como decoración.
-- [ ] `{colors.primary}` sigue siendo el único acento estructural.
+- [ ] Los colores decorativos se usan únicamente como decoración.
+- [ ] `{colors.primary}` sigue siendo el único color estructural de acción y `{colors.link}` se usa solo en enlaces.
+- [ ] Los tokens tipográficos se aplican como rol completo.
 
 ### Responsive y accesibilidad
 

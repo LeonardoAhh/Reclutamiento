@@ -34,7 +34,7 @@
 }
 
 .vacancy-assignments-page .page-header__content {
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
 }
 
 .vacancy-assignments-page__content {
@@ -117,7 +117,7 @@
   flex-direction: column;
   inline-size: 100%;
   min-inline-size: 0;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
   padding: 0;
   border: 0;
   background: transparent;
@@ -142,7 +142,7 @@
   display: flex;
   min-inline-size: 0;
   flex-wrap: wrap;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
   justify-content: flex-end;
 }
 
@@ -172,7 +172,7 @@
   .vacancy-report-modal__group-header {
     align-items: flex-start;
     flex-direction: column;
-    gap: var(--spacing-xxs);
+    gap: var(--design-spacing-xxs);
   }
 
   .vacancy-report-modal__group-count {

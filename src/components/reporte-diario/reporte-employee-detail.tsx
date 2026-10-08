@@ -105,7 +105,7 @@ const STYLES = {
         fontSize: "var(--type-caption-sm-size)",
         fontWeight: "var(--type-body-strong-weight)",
         lineHeight: "var(--type-caption-sm-line)",
-        marginTop: "var(--spacing-xxs)",
+        marginTop: "var(--design-spacing-xxs)",
     },
     incidentSection: {
         marginTop: "var(--spacing-lg)",

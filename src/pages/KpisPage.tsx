@@ -6,7 +6,6 @@ import { workforceText } from "@/pages/workforce-translations";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { ChevronRight, ArrowUpRight } from "lucide-react";
 import { StatCard } from "@/components/ui/StatCard";
-import { Reveal } from "@/components/ui/Reveal";
 import { staggerContainer, staggerItem } from "@/lib/motion";
 import { KpiReveal, useKpiReveal } from "@/components/ui/KpiReveal";
 import { KpiHeroChart, DailyKpiData } from "@/components/ui/KpiHeroChart";
@@ -175,8 +174,13 @@ export function KpisPage() {
   const { bajas, loading: bajasLoading } = useBajas();
   const { positions, loading: positionsLoading } = usePositions();
 
+  // Stale-while-revalidate: el skeleton solo cubre la primera carga sin datos;
+  // las revalidaciones en segundo plano no vuelven a ocultar la página.
   const loading =
-    employeesLoading || candidatesLoading || bajasLoading || positionsLoading;
+    (employeesLoading && employees.length === 0) ||
+    (candidatesLoading && candidates.length === 0) ||
+    (bajasLoading && bajas.length === 0) ||
+    (positionsLoading && positions.length === 0);
 
   // Vacantes derivadas automáticamente de bajas + empleados (mismo modelo
   // que la página de Vacantes), adaptadas a VacancyRequest para los KPIs.
@@ -188,6 +192,8 @@ export function KpisPage() {
   const reveal = useKpiReveal();
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const [activeGroup, setActiveGroup] = useState<KpiGroupId>("semana");
+  // Las cards visibles al llegar no se animan; solo el cambio de grupo lo hace.
+  const [hasSwitchedGroup, setHasSwitchedGroup] = useState(false);
   const [weeklyModalOpen, setWeeklyModalOpen] = useState(false);
   const [futureHiresModalOpen, setFutureHiresModalOpen] = useState(false);
   const [candidatesModalOpen, setCandidatesModalOpen] = useState(false);
@@ -696,7 +702,8 @@ export function KpisPage() {
 
       {isDesktop ? (
         <>
-          <Reveal as="section" className="kpis-page__chart-section">
+          {/* Visible al llegar: se muestra sin animación de entrada. */}
+          <section className="kpis-page__chart-section">
             <KpiHeroChart
               data={heroChartData}
               onClick={() => setMissingPositionsPageOpen(true)}
@@ -705,7 +712,7 @@ export function KpisPage() {
               weekNumber={currentWeek.week}
               ariaLabel={t("Gráfica de vacantes de plantilla, backup y Starlite por día de la semana")}
             />
-          </Reveal>
+          </section>
 
           <WorkforceProjection projection={projectionTotals} />
 
@@ -794,7 +801,11 @@ export function KpisPage() {
                     activeGroup === group.id ? " kpis-page__tab--active" : ""
                   }`}
                   aria-pressed={activeGroup === group.id}
-                  onClick={() => setActiveGroup(group.id)}
+                  onClick={() => {
+                    if (group.id === activeGroup) return;
+                    setHasSwitchedGroup(true);
+                    setActiveGroup(group.id);
+                  }}
                   data-testid={`kpis-tab-${group.id}`}
                 >
                   {t(group.label)}
@@ -805,9 +816,9 @@ export function KpisPage() {
 
           <motion.section
             key={activeGroup}
-            className="kpis-page__m-grid"
+            className={`kpis-page__m-grid${hasSwitchedGroup ? " kpis-page__m-grid--switched" : ""}`}
             variants={staggerContainer}
-            initial="hidden"
+            initial={hasSwitchedGroup ? "hidden" : false}
             animate="show"
             aria-label={`${t("KPIs de")} ${
               t(visibleGroups.find((group) => group.id === activeGroup)?.label ??

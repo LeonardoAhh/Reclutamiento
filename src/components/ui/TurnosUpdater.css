@@ -55,7 +55,7 @@
 }
 
 .turnos-updater__preview-subtitle {
-  margin: var(--spacing-xxs) 0 0;
+  margin: var(--design-spacing-xxs) 0 0;
   font-size: var(--type-body-md-size);
   color: var(--color-muted);
 }
@@ -66,7 +66,7 @@
   border: none;
   color: var(--color-muted);
   cursor: pointer;
-  padding: var(--spacing-xxs);
+  padding: var(--design-spacing-xxs);
   border-radius: var(--rounded-sm);
   transition: all 0.15s ease;
 }
@@ -106,11 +106,13 @@
 .turnos-updater__table th {
   text-align: left;
   padding: var(--spacing-sm) var(--spacing-md);
-  font-weight: 600;
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
   color: var(--color-ink);
   text-transform: uppercase;
-  font-size: var(--type-caption-md-size);
-  letter-spacing: var(--tracking-wider);
   border-bottom: 2px solid var(--color-hairline);
 }
 

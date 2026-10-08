@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { formatSupabaseError } from '@/lib/errors';
 import type {
@@ -59,9 +59,18 @@ function localId(): string {
  * Hook for fetching and mutating vacancy_requests + audit history.
  */
 export function useVacancyRequests(
-  options: { loadHistory?: boolean } = {}
+  options: {
+    loadHistory?: boolean;
+    /**
+     * `false`: no descarga al montar. Las vacantes se piden bajo demanda la
+     * primera vez que una acción las necesita (p. ej. cubrir una vacante al
+     * crear un empleado), sin bloquear la llegada a la página.
+     */
+    autoLoad?: boolean;
+  } = {}
 ) {
   const loadHistory = options.loadHistory ?? true;
+  const autoLoad = options.autoLoad ?? true;
   const [vacancies, setVacancies] = useState<VacancyRequest[]>(() =>
     loadLocal(STORAGE_KEYS.vacancies, [])
   );
@@ -73,9 +82,15 @@ export function useVacancyRequests(
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
 
   const isConfigured = checkSupabaseConfig();
+  // Lista vigente para acciones asíncronas encadenadas (p. ej. importaciones
+  // que cubren varias vacantes seguidas) sin depender de un closure antiguo.
+  const vacanciesRef = useRef<VacancyRequest[]>(vacancies);
+  vacanciesRef.current = vacancies;
+  const remoteLoadedRef = useRef(false);
+  const pendingLoadRef = useRef<Promise<VacancyRequest[]> | null>(null);
 
   useEffect(() => {
-    if (!isConfigured) {
+    if (!isConfigured || !autoLoad) {
       setLoading(false);
       return;
     }
@@ -101,6 +116,8 @@ export function useVacancyRequests(
 
         const vacData = (vacResult.data ?? []) as VacancyRequest[];
 
+        remoteLoadedRef.current = true;
+        vacanciesRef.current = vacData;
         setVacancies(vacData);
         saveLocal(STORAGE_KEYS.vacancies, vacData);
         if (histResult) {
@@ -118,7 +135,37 @@ export function useVacancyRequests(
     }
 
     fetchData();
-  }, [isConfigured, loadHistory]);
+  }, [isConfigured, loadHistory, autoLoad]);
+
+  /** Descarga las vacantes una sola vez cuando una acción las necesita. */
+  const ensureVacanciesLoaded = useCallback(async (): Promise<VacancyRequest[]> => {
+    if (!isConfigured || remoteLoadedRef.current) return vacanciesRef.current;
+    if (!pendingLoadRef.current) {
+      pendingLoadRef.current = (async () => {
+        try {
+          const { data, error: err } = await supabase
+            .from('vacancy_requests')
+            .select('*')
+            .order('fecha_apertura', { ascending: false });
+          if (err) throw err;
+          const rows = (data ?? []) as VacancyRequest[];
+          remoteLoadedRef.current = true;
+          vacanciesRef.current = rows;
+          setVacancies(rows);
+          saveLocal(STORAGE_KEYS.vacancies, rows);
+          return rows;
+        } catch (err) {
+          const msg = formatSupabaseError(err);
+          console.warn('Supabase vacancy_requests fetch failed, using localStorage:', msg, err);
+          setError(msg);
+          return vacanciesRef.current;
+        } finally {
+          pendingLoadRef.current = null;
+        }
+      })();
+    }
+    return pendingLoadRef.current;
+  }, [isConfigured]);
 
   function flashSaved() {
     setSaveStatus('saved');
@@ -250,7 +297,8 @@ export function useVacancyRequests(
       patch: Partial<VacancyRequest>,
       meta?: StatusChangeMeta
     ): Promise<{ ok: boolean; message?: string }> => {
-      const target = vacancies.find((v) => v.id === id);
+      const current = vacanciesRef.current;
+      const target = current.find((v) => v.id === id);
       if (!target) return { ok: false, message: 'Vacante no encontrada.' };
 
       const merged: VacancyRequest = { ...target, ...patch, updated_at: nowIso() };
@@ -261,7 +309,8 @@ export function useVacancyRequests(
       if (statusChanged && merged.status === 'cubierta' && !merged.fecha_cubierta) {
         merged.fecha_cubierta = nowIso();
       }
-      const updated = vacancies.map((v) => (v.id === id ? merged : v));
+      const updated = current.map((v) => (v.id === id ? merged : v));
+      vacanciesRef.current = updated;
       setVacancies(updated);
       saveLocal(STORAGE_KEYS.vacancies, updated);
 
@@ -306,7 +355,7 @@ export function useVacancyRequests(
         return { ok: true, message: 'Actualizado local. Sincronización pendiente.' };
       }
     },
-    [vacancies, isConfigured, appendStatusHistory]
+    [isConfigured, appendStatusHistory]
   );
 
   const setVacancyStatus = useCallback(
@@ -330,7 +379,8 @@ export function useVacancyRequests(
       meta?: { source?: string; changedBy?: string }
     ): Promise<{ vacancyId: string | null }> => {
       const OPEN: ReadonlyArray<VacancyStatus> = ['abierta', 'en_proceso', 'pausa'];
-      const matches = vacancies
+      const source = await ensureVacanciesLoaded();
+      const matches = source
         .filter((v) =>
           OPEN.includes(v.status) &&
           (v.area ?? '').trim() === (employee.area ?? '').trim() &&
@@ -357,7 +407,7 @@ export function useVacancyRequests(
       );
       return { vacancyId: target.id };
     },
-    [vacancies, updateVacancy]
+    [ensureVacanciesLoaded, updateVacancy]
   );
 
   const deleteVacancy = useCallback(

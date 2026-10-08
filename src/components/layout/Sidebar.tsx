@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useRef } from "react";
 import { NavLink, useLocation } from "react-router-dom";
+import { preloadRoute } from "@/lib/routePages";
 import { useAuth } from "@/hooks/useAuth";
 import { MorphMenuIcon } from "@/components/ui/MorphMenuIcon";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -128,6 +129,8 @@ export function Sidebar({
                           }
                         }}
                         data-testid={`sidebar-nav-${to.replace("/", "") || "kpis"}`}
+                        onPointerEnter={() => preloadRoute(to)}
+                        onFocus={() => preloadRoute(to)}
                       >
                         <Icon
                           aria-hidden="true"

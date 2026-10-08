@@ -435,7 +435,7 @@ button.reporte-card:hover,
   background: var(--color-surface-soft);
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
 }
 
 .reporte-employee-detail__info-label {
@@ -471,7 +471,7 @@ button.reporte-card:hover,
   justify-content: center;
   text-align: center;
   gap: var(--spacing-xs);
-  padding: var(--spacing-2xl) var(--spacing-lg);
+  padding: var(--design-spacing-xxl) var(--spacing-lg);
   border: 2px dashed var(--color-hairline);
   border-radius: var(--rounded-lg);
   background: var(--color-surface-soft);
@@ -528,7 +528,7 @@ button.reporte-card:hover,
 
 .reporte-errors__icon {
   flex-shrink: 0;
-  margin-top: var(--spacing-xxs);
+  margin-top: var(--design-spacing-xxs);
 }
 
 .reporte-errors__header {
@@ -553,7 +553,7 @@ button.reporte-card:hover,
 }
 
 .reporte-errors__summary {
-  margin: var(--spacing-xxs) 0 0;
+  margin: var(--design-spacing-xxs) 0 0;
   color: var(--color-charcoal);
 }
 
@@ -575,7 +575,7 @@ button.reporte-card:hover,
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
   color: var(--color-charcoal);
 }
 
@@ -772,7 +772,7 @@ button.reporte-card:hover,
 
 /* Variante solo-icono (compacta, alineada con los demás controles) */
 .reporte-saved__trigger--icon {
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
   padding: var(--spacing-xs);
   min-width: var(--control-height);
   height: var(--control-height);
@@ -857,7 +857,7 @@ button.reporte-card:hover,
 .reporte-saved__main {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
   min-width: 0;
   flex: 1;
 }
@@ -899,7 +899,7 @@ button.reporte-card:hover,
 }
 
 .reporte-saved__count-label {
-  margin-top: var(--spacing-xxs);
+  margin-top: var(--design-spacing-xxs);
   font-size: var(--type-caption-sm-size);
   line-height: 1;
   text-transform: uppercase;
@@ -940,8 +940,8 @@ button.reporte-card:hover,
   align-items: center;
   justify-content: center;
   text-align: center;
-  gap: var(--spacing-xxs);
-  padding: var(--spacing-2xl) var(--spacing-lg);
+  gap: var(--design-spacing-xxs);
+  padding: var(--design-spacing-xxl) var(--spacing-lg);
 }
 
 .reporte-saved__empty-icon {
@@ -1173,7 +1173,7 @@ button.reporte-card:hover,
 .reporte-incidents__card-main {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
   min-width: 0;
   flex: 1;
 }
@@ -1229,7 +1229,7 @@ button.reporte-card:hover,
   align-items: center;
   border-radius: var(--rounded-sm);
   background: var(--color-muted);
-  padding: var(--spacing-xxs) var(--spacing-sm);
+  padding: var(--design-spacing-xxs) var(--spacing-sm);
   font-size: var(--type-caption-sm-size);
   line-height: var(--type-caption-sm-line);
   color: var(--color-on-neutral);
@@ -1240,7 +1240,7 @@ button.reporte-card:hover,
   display: inline-flex;
   align-items: center;
   border-radius: var(--rounded-sm);
-  padding: var(--spacing-xxs) var(--spacing-sm);
+  padding: var(--design-spacing-xxs) var(--spacing-sm);
   font-size: var(--type-caption-sm-size);
   line-height: var(--type-caption-sm-line);
   font-weight: var(--type-body-strong-weight);
@@ -1316,7 +1316,7 @@ button.reporte-card:hover,
 .reporte-cal__grid {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
 }
 
 .reporte-cal__weekdays {
@@ -1337,7 +1337,7 @@ button.reporte-card:hover,
   min-width: 0;
   overflow: hidden;
   text-align: center;
-  padding: var(--spacing-xxs) 0;
+  padding: var(--design-spacing-xxs) 0;
   font-size: var(--type-caption-sm-size);
   font-weight: var(--type-body-strong-weight);
   text-transform: uppercase;
@@ -1357,7 +1357,7 @@ button.reporte-card:hover,
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-sm);
   padding: var(--spacing-xs);
@@ -1413,7 +1413,7 @@ button.reporte-card:hover,
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
   width: 100%;
   min-width: 0;
 }
@@ -1425,7 +1425,7 @@ button.reporte-card:hover,
   width: 100%;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
 }
 
 .reporte-cal__kpi--right {
@@ -1476,7 +1476,7 @@ button.reporte-card:hover,
 
 .reporte-cal__holiday {
   border-radius: var(--rounded-sm);
-  padding: var(--spacing-xxs);
+  padding: var(--design-spacing-xxs);
   font-size: var(--type-caption-sm-size);
   font-weight: var(--type-body-strong-weight);
   line-height: 1.2;
@@ -1621,7 +1621,7 @@ button.reporte-card:hover,
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
 }
 
 .top-emp-modal__name {
@@ -1676,7 +1676,7 @@ button.reporte-card:hover,
   font-size: var(--type-caption-sm-size);
   color: var(--color-error);
   opacity: 0.75;
-  margin-top: var(--spacing-xxs);
+  margin-top: var(--design-spacing-xxs);
 }
 
 /* Título de sección interna */
@@ -1712,7 +1712,7 @@ button.reporte-card:hover,
   align-items: center;
   justify-content: center;
   min-width: var(--spacing-xxl);
-  padding: var(--spacing-xxs) var(--spacing-xs);
+  padding: var(--design-spacing-xxs) var(--spacing-xs);
   border-radius: var(--rounded-sm);
   background: var(--color-primary);
   color: var(--color-on-primary);
@@ -1865,7 +1865,7 @@ button.reporte-card:hover,
 .top-emp-row__info {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
   min-width: 0;
 }
 
@@ -2012,7 +2012,7 @@ button.reporte-card:hover,
 .top-emp-drill-header__info {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
 }
 
 .top-emp-drill-header__name {
@@ -2153,7 +2153,7 @@ button.reporte-card:hover,
   background: var(--color-warning);
   border: var(--border-width) solid var(--color-warning-text);
   border-radius: var(--rounded-sm);
-  padding: var(--spacing-xxs) var(--spacing-sm);
+  padding: var(--design-spacing-xxs) var(--spacing-sm);
 }
 
 .ras__clear-btn {
@@ -2266,7 +2266,7 @@ button.reporte-card:hover,
 @media (min-width: 768px) {
   .reporte-hero {
     padding-block: var(--spacing-xl);
-    gap: var(--spacing-2xl);
+    gap: var(--design-spacing-xxl);
   }
 }
 
@@ -2373,7 +2373,7 @@ button.reporte-card:hover,
 
 @media (min-width: 768px) {
   .reporte-hero__dropzone {
-    padding: var(--spacing-2xl) var(--spacing-xl);
+    padding: var(--design-spacing-xxl) var(--spacing-xl);
   }
 }
 
@@ -2466,7 +2466,7 @@ button.reporte-card:hover,
 .reporte-hero__recent-copy {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-2xs);
+  gap: var(--design-spacing-xxs);
   min-width: 0;
 }
 
@@ -2606,7 +2606,7 @@ button.reporte-card:hover,
 .reporte-hero__step-body {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-2xs);
+  gap: var(--design-spacing-xxs);
   min-width: 0;
 }
 
@@ -2787,7 +2787,7 @@ button.reporte-card:hover,
 .reporte-preview__body {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-2xs);
+  gap: var(--design-spacing-xxs);
   min-width: 0;
   flex: 1;
 }
@@ -2963,8 +2963,8 @@ button.reporte-card:hover,
 }
 
 .reporte-drag__icon {
-  width: var(--spacing-2xl);
-  height: var(--spacing-2xl);
+  width: var(--design-spacing-xxl);
+  height: var(--design-spacing-xxl);
   margin-bottom: var(--spacing-lg);
 }
 

@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState, useRef } from 'react';
+import { isBoneyardBuild } from '@/lib/boneyard';
+import { BONEYARD_SAMPLE_CANDIDATES } from '@/lib/boneyardFixtures';
 import { MotionConfig } from 'framer-motion';
 import { isToday, isTomorrow, isYesterday, formatDistanceToNowStrict } from 'date-fns';
 import { enUS, es } from 'date-fns/locale';
@@ -59,7 +61,7 @@ export function Pipeline() {
   const { language } = useLanguage();
   const en = language === 'en';
   const {
-    candidates,
+    candidates: liveCandidates,
     loading,
     error,
     addCandidate,
@@ -69,6 +71,13 @@ export function Pipeline() {
     deleteCandidate,
     refetch,
   } = useCandidates();
+  // Solo en la captura de Boneyard (sin sesión): muestra representativa para
+  // que el snapshot dibuje la lista real y no el estado vacío.
+  const usingBoneyardSample = isBoneyardBuild() && liveCandidates.length === 0;
+  const candidates = useMemo(
+    () => (usingBoneyardSample ? [...BONEYARD_SAMPLE_CANDIDATES] : liveCandidates),
+    [usingBoneyardSample, liveCandidates],
+  );
 
   const { profile } = useAuth();
   const isAdmin = profile?.role === 'admin';
@@ -423,7 +432,7 @@ export function Pipeline() {
         <div className="pipeline__content">
 
           {/* ── Vista (tabla o kanban) ── */}
-          {error ? (
+          {error && !usingBoneyardSample ? (
             <section
               className="pipeline__empty"
               aria-labelledby="pipeline-error-title"

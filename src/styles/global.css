@@ -58,8 +58,8 @@
   --color-on-warning: var(--color-ink);
   --color-on-dark-hover: var(--color-hairline);
   --color-shadow-rgb: 27 29 32;
-  --color-scene-light: #ffffff; /* Iluminación neutral de la escena decorativa. */
-  --color-shimmer-overlay: rgba(255, 255, 255, 0.3); /* Brillo decorativo de progreso. */
+  --color-scene-light: #ffffff; /* Iluminación neutral de la escena decorativa (leído por WebGL: debe ser color literal). */
+  --color-shimmer-overlay: color-mix(in srgb, var(--color-scene-light) 30%, transparent); /* Brillo decorativo de progreso. */
   --color-on-dark: #e2e5e9;
   --color-on-dark-soft: #a0a7b1;
   --color-focus-on-inverted: var(--color-on-dark);
@@ -113,7 +113,8 @@
   --color-badge-emerald: var(--color-accent-green);
 
   /* Accent RGB channels (usados por gradientes/tintes en la app) */
-  --color-accent-teal-rgb: 42 157 153;
+  /* Debe coincidir con --color-accent-teal (#087f7a). */
+  --color-accent-teal-rgb: 8 127 122;
   --color-accent-amber: var(--color-warning);
   --color-accent-amber-rgb: var(--color-warning-rgb);
 
@@ -127,10 +128,12 @@
   --color-canvas-rgb: 241 242 244;
 
   /* ── Derived overlays ───────────────────────────────────────── */
-  --color-focus-ring: rgb(var(--color-link-rgb) / 0.2);
-  --color-modal-scrim: rgba(0, 0, 0, 0.32);
-  --color-vacancy-tint: rgba(239, 68, 68, 0.05);
-  --color-vacancy-chip-bg: rgba(239, 68, 68, 0.1);
+  /* desing.md: el azul queda reservado a enlaces; el foco y sus tintes son neutros.
+     Los derivados se recalculan solos en dark porque sus canales cambian en el mismo :root. */
+  --color-focus-ring: rgb(var(--color-primary-rgb) / 0.2);
+  --color-modal-scrim: rgb(var(--color-shadow-rgb) / 0.32);
+  --color-vacancy-tint: rgb(var(--color-error-rgb) / 0.05);
+  --color-vacancy-chip-bg: rgb(var(--color-error-rgb) / 0.1);
   --color-success-tint: var(--color-success-subtle);
   --color-error-tint: var(--color-error-subtle);
   --color-warning-tint: var(--color-warning-subtle);
@@ -138,9 +141,7 @@
   --color-header-glass: rgb(var(--color-canvas-rgb) / 0.92);
 
   /* Cal Sans no se distribuye con la app; Inter 600 es el sustituto autorizado. */
-  --font-display:
-    "Inter", -apple-system, system-ui, "Segoe UI", Helvetica,
-    Arial, sans-serif;
+  --font-display: var(--font-body);
   --font-body:
     "Inter", -apple-system, system-ui, "Segoe UI", Helvetica,
     Arial, sans-serif;
@@ -154,10 +155,10 @@
   --type-display-xl-tracking: -0.05em;
 
   /* display-lg — large section headlines */
-  --type-display-lg-size: 2rem;
-  --type-display-lg-weight: 600;
-  --type-display-lg-line: 1.25;
-  --type-display-lg-tracking: -0.04em;
+  --type-display-lg-size: var(--type-heading-lg-size);
+  --type-display-lg-weight: var(--type-heading-lg-weight);
+  --type-display-lg-line: var(--type-heading-lg-line);
+  --type-display-lg-tracking: var(--type-heading-lg-tracking);
 
   /* heading-lg — section headlines */
   --type-heading-lg-size: 2rem;
@@ -176,7 +177,8 @@
   /* Marca de la navegación: jerarquía propia dentro del ancho del rail. */
   --type-brand-size: 24px;
   --type-brand-weight: var(--type-heading-md-weight);
-  --type-brand-line: var(--type-heading-md-line);
+  /* desing.md {typography.brand}: 24px / 34px. */
+  --type-brand-line: calc(34 / 24);
   --type-brand-tracking: var(--type-heading-md-tracking);
 
   /* heading-sm — card titles */
@@ -293,10 +295,12 @@
   --type-title-tracking: -0.00625em;
 
   /* ── Control sizing ─────────────────────────────────────────── */
-  --control-height: 44px;
-  --control-height-sm: var(--spacing-xxl);
-  --control-height-lg: 44px;
   --touch-target-min: 44px;
+  --control-height: var(--touch-target-min);
+  /* 32px: solo para elementos compactos NO interactivos (icon tiles, badges).
+     Un control interactivo nunca debe quedar por debajo de --touch-target-min. */
+  --control-height-sm: var(--spacing-xxl);
+  --control-height-lg: var(--touch-target-min);
   --control-padding-x: var(--design-spacing-sm);
   --control-padding-y: var(--design-spacing-xs);
   /* Campo y botón comparten altura exterior; el texto puede crecer con el zoom. */
@@ -317,15 +321,21 @@
   --feature-avatar-initials-size: var(--type-caption-md-size);
   --feature-avatar-preview-initials-size: var(--type-heading-1-size);
 
-  /* ── Spacing legado — se conserva durante migración ───────── */
-  --spacing-xxs: 2px;
+  /* ── Spacing legado — se conserva durante migración ───────────
+     Se mantiene en px literal: candidateAccessCard.ts lo lee como número
+     para dibujar el pase en canvas. Equivalencias con la escala canónica:
+     xs=design-xxs · sm=design-xs · md=design-sm · lg=design-md · xl=design-lg · xxl=design-xl.
+     xxs y 2xl son alias obsoletos de la escala canónica: no usar en código nuevo. */
+  /* Obsoleto: 2px no pertenece a la base de 4px. Alias al paso mínimo. */
+  --spacing-xxs: var(--spacing-xs);
   --spacing-xs: 4px;
   --spacing-sm: 8px;
   --spacing-md: 12px;
   --spacing-lg: 16px;
   --spacing-xl: 24px;
   --spacing-xxl: 32px;
-  --spacing-2xl: 48px;
+  /* Obsoleto: 48px no pertenece a la escala. Alias a {spacing.2xl} (40px). */
+  --spacing-2xl: var(--design-spacing-xxl);
   --spacing-section: 96px;
 
   /* Escala canónica de desing.md para primitivas nuevas/migradas. */
@@ -386,6 +396,8 @@
   --container-padding-mobile: var(--design-spacing-md);
   /* Medida máxima de lectura definida por desing.md. */
   --content-reading-max-inline-size: 65ch;
+  /* Ancho mínimo legible de un bloque flexible antes de pasar a su propia línea. */
+  --content-min-inline-size: 17.5rem;
   /* Máximo de líneas para vistas previas de texto antes de revelar el contenido completo. */
   --content-preview-max-lines: 3;
   /* Diagramas: espacio para nodos y conectores legibles con movimiento pausado. */
@@ -472,7 +484,7 @@
   --layer-system-update: 1500;
   --layer-toast: var(--layer-system-update);
   --layer-system-update-curtain: 1600;
-  --tooltip-max-width: 280px;
+  --tooltip-max-width: 17.5rem;
   --scrollbar-size: var(--spacing-sm);
   --toggle-track-inline-size: 2.25rem;
   --toggle-track-block-size: 1.25rem;
@@ -483,7 +495,7 @@
   --action-count-size: 1.125rem;
   --action-count-offset: calc(-1 * var(--design-spacing-xxs));
   --empty-state-description-max-inline-size: 18.75rem;
-  --config-panel-min-height: calc(var(--spacing-section) + var(--spacing-2xl));
+  --config-panel-min-height: calc(var(--design-spacing-4xl) + var(--design-spacing-xxl));
 
   /* ── PWA / safe-area ─────────────────────────────────────────── */
   --safe-area-top: env(safe-area-inset-top, 0px);
@@ -503,8 +515,9 @@
   --type-body-lg-weight: 400;
   --type-body-lg-line: 1.5;
   --type-body-lg-tracking: 0;
-  --text-xs: 12px;
-  --text-sm: 14px;
+  /* Alias legados: apuntan a la escala tipográfica, no a valores sueltos. */
+  --text-xs: var(--type-body-sm-size);
+  --text-sm: var(--type-body-md-size);
 
   --font-medium: 500;
   --font-semibold: 600;
@@ -515,10 +528,12 @@
   --font-mono: var(--font-code);
 
   /* Tight display tracking */
-  --tracking-tight: -0.03em;
-  --tracking-snug: -0.018em;
-  --tracking-wide: 0.02em;
-  --tracking-wider: 0.04em;
+  /* Obsoletos: el tracking forma parte de cada rol tipográfico (--type-*-tracking).
+     Se conservan como alias del rol equivalente; no usar en código nuevo. */
+  --tracking-tight: var(--type-heading-lg-tracking);
+  --tracking-snug: var(--type-label-sm-tracking);
+  --tracking-wide: var(--type-caption-up-tracking);
+  --tracking-wider: var(--type-caption-up-tracking);
 
   --radius-sm: var(--rounded-sm);
   --radius-md: var(--rounded-md);
@@ -533,8 +548,9 @@
   --chart-dash-short: 4px 4px;
   --chart-dash-dotted: 1px 4px;
 
-  --spacing-2xs: 3px;
-  --space-xxs: var(--spacing-xxs);
+  /* Legado: 3px no pertenece a la base de 4px; se alinea al paso mínimo. */
+  --spacing-2xs: var(--spacing-xs);
+  --space-xxs: var(--design-spacing-xxs);
   --space-xs: var(--spacing-xs);
   --space-sm: var(--spacing-sm);
   --space-md: var(--spacing-md);
@@ -563,9 +579,8 @@
   --shadow-card: var(--shadow-xs);
   --shadow-soft: var(--shadow-sm);
   --shadow-md: var(--shadow-sm);
-  --shadow-prominent:
-    0 1px 2px rgb(var(--color-shadow-rgb) / 0.05),
-    0 4px 12px rgb(var(--color-shadow-rgb) / 0.08);
+  /* desing.md solo define Level 1 (xs) y Level 2 (sm); los alias no crean niveles nuevos. */
+  --shadow-prominent: var(--shadow-sm);
   --shadow-elevated: var(--shadow-prominent);
   --shadow-level-2: var(--shadow-elevated);
   /* Contrato estable del workspace; evita que una migración de primitivas
@@ -579,10 +594,11 @@
   --type-heading-xs-size: var(--type-caption-sm-size);
   --z-index-tooltip: var(--layer-tooltip);
 
-  --header-height: 64px;
-  --mobile-nav-height: 56px;
+  --header-height: var(--design-spacing-3xl);
+  /* Barra móvil: touch target + aire vertical de la escala (56px). */
+  --mobile-nav-height: calc(var(--touch-target-min) + var(--design-spacing-sm));
   --mobile-nav-content-space: calc(
-    var(--mobile-nav-height) + var(--spacing-2xl)
+    var(--mobile-nav-height) + var(--design-spacing-xxl)
   );
   --ease-apple: cubic-bezier(0.19, 1, 0.22, 1);
   --duration-skeleton: 1500ms;
@@ -637,7 +653,6 @@
   --color-on-warning: var(--color-on-primary);
   --color-focus: var(--color-primary);
   --color-focus-on-inverted: var(--color-primary);
-  --color-focus-ring: rgb(var(--color-primary-rgb) / 0.2);
 
   --color-hairline: #414851;
   --color-hairline-soft: #343b43;
@@ -660,8 +675,6 @@
   --color-error-deep: var(--color-error);
   --color-error-text: var(--color-error);
   --color-error-subtle: #35292a;
-  --color-vacancy-tint: rgb(var(--color-error-rgb) / 0.05);
-  --color-vacancy-chip-bg: rgb(var(--color-error-rgb) / 0.1);
 
   /* Alias de indicadores y series existentes, sin añadir acentos a la navegación. */
   --color-violet: #c0a6e0;
@@ -689,6 +702,9 @@
 html {
   /* Respeta el tamaño de texto configurado en el navegador. */
   font-size: 100%;
+  /* Evita el inflado automático en iOS al girar; no bloquea el zoom del usuario. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   /* iOS: el safe-area toma su color del <html>, no del <body>. */
@@ -707,15 +723,20 @@ body {
   color: var(--color-body);
   background-color: var(--color-canvas);
   min-height: 100vh;
+  /* Viewport dinámico: no queda oculto tras la barra del navegador móvil. */
+  min-height: 100dvh;
   padding-bottom: var(--safe-area-bottom);
+}
+
+/* Medios fluidos: escalan dentro de su contenedor conservando proporción. */
+img,
+video {
+  max-inline-size: 100%;
+  block-size: auto;
 }
 
 /* Breakpoints de desing.md. Las variables CSS no se evalúan en media queries. */
 @media (min-width: 768px) {
-  :root {
-    --control-padding-y: var(--design-spacing-xs);
-  }
-
   body {
     padding-bottom: 0;
   }
@@ -743,11 +764,12 @@ h4 {
   color: var(--color-ink);
 }
 
+/* Mobile-first: el h1 base usa el rol display fluido (40px en móvil → 48px). */
 h1 {
-  font-size: var(--type-display-xl-size);
-  font-weight: var(--type-display-xl-weight);
-  line-height: var(--type-display-xl-line);
-  letter-spacing: var(--type-display-xl-tracking);
+  font-size: var(--type-display-1-size);
+  font-weight: var(--type-display-1-weight);
+  line-height: var(--type-display-1-line);
+  letter-spacing: var(--type-display-1-tracking);
 }
 
 h2 {
@@ -791,6 +813,8 @@ button {
   cursor: pointer;
   border: none;
   background: none;
+  /* Elimina el retardo de doble toque sin impedir el zoom por pellizco. */
+  touch-action: manipulation;
 }
 
 input,
@@ -829,7 +853,7 @@ pre {
 code:not(pre code) {
   background: var(--color-surface-soft);
   color: var(--color-ink);
-  padding: var(--spacing-xxs) calc(var(--spacing-xxs) + var(--spacing-xs));
+  padding: 0 var(--design-spacing-xxs);
   border-radius: var(--rounded-sm);
   font-size: var(--type-code-sm-size);
 }
@@ -1044,7 +1068,7 @@ code:not(pre code) {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
   min-width: 0;
 }
 
@@ -1160,7 +1184,7 @@ code:not(pre code) {
 .form-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--spacing-lg);
+  gap: var(--design-spacing-md);
 }
 
 @media (min-width: 768px) {
@@ -1173,7 +1197,7 @@ code:not(pre code) {
   display: flex;
   min-width: 0;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
 }
 
 .form-group label {
@@ -1252,7 +1276,7 @@ code:not(pre code) {
   line-height: var(--type-caption-sm-line);
   letter-spacing: var(--type-caption-sm-tracking);
   color: var(--color-error-text);
-  margin-top: var(--spacing-xxs);
+  margin-top: var(--design-spacing-xxs);
 }
 
 /* ── Teléfono: wrapper + iconos de validación ──────────────── */
@@ -1264,7 +1288,7 @@ code:not(pre code) {
 
 .phone-validation-icon {
   position: absolute;
-  right: var(--spacing-sm);
+  inset-inline-end: var(--design-spacing-xs);
   pointer-events: none;
   transition: opacity var(--transition-fast);
 }
@@ -1286,15 +1310,16 @@ code:not(pre code) {
   background: var(--color-success-subtle);
 }
 
+/* Mensajes de campo: mismo rol tipográfico que .form-error (caption, sin mayúsculas). */
 .form-error-text,
 .form-warning-text,
 .form-success-text {
-  margin-top: var(--spacing-xs);
+  margin-top: var(--design-spacing-xxs);
   font-family: var(--font-body);
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  line-height: var(--type-caption-up-line);
-  letter-spacing: var(--type-caption-up-tracking);
+  font-size: var(--type-caption-sm-size);
+  font-weight: var(--type-caption-sm-weight);
+  line-height: var(--type-caption-sm-line);
+  letter-spacing: var(--type-caption-sm-tracking);
 }
 
 .form-error-text {
@@ -1304,7 +1329,7 @@ code:not(pre code) {
 .form-warning-text {
   display: flex;
   align-items: center;
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
   color: var(--color-warning-text);
 }
 
@@ -1325,7 +1350,7 @@ code:not(pre code) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
   min-width: 0;
   max-width: 100%;
   min-height: var(--control-min-block-size);
@@ -1351,7 +1376,7 @@ code:not(pre code) {
 
 .btn-sm {
   min-height: var(--touch-target-min);
-  padding-inline: var(--spacing-md);
+  padding-inline: var(--control-padding-x);
   font-size: var(--type-button-md-size);
   font-weight: var(--type-button-md-weight);
   line-height: var(--type-button-md-line);
@@ -1443,14 +1468,14 @@ code:not(pre code) {
   letter-spacing: var(--type-body-md-tracking);
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
   background: none;
   border: none;
   color: var(--color-link);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
-  padding: var(--spacing-xs);
+  padding: var(--design-spacing-xxs);
   border-radius: var(--rounded-sm);
   cursor: pointer;
   transition: color var(--transition-fast);
@@ -1523,11 +1548,11 @@ code:not(pre code) {
 
 .btn-icon__count {
   position: absolute;
-  top: var(--action-count-offset);
-  right: var(--action-count-offset);
+  inset-block-start: var(--action-count-offset);
+  inset-inline-end: var(--action-count-offset);
   min-width: var(--action-count-size);
   min-height: var(--action-count-size);
-  padding: 0 var(--spacing-xs);
+  padding: 0 var(--design-spacing-xxs);
   border-radius: var(--rounded-full);
   background: var(--color-primary);
   color: var(--color-on-primary);
@@ -1732,7 +1757,7 @@ code:not(pre code) {
 }
 
 .modal-title h2 {
-  font-family: var(--font-body);
+  font-family: var(--font-display);
   font-size: var(--type-heading-md-size);
   font-weight: var(--type-heading-md-weight);
   color: var(--color-ink);
@@ -1838,7 +1863,7 @@ code:not(pre code) {
 @keyframes slideUpModal {
   from {
     opacity: 0;
-    transform: translateY(var(--spacing-lg));
+    transform: translateY(var(--design-spacing-md));
   }
   to {
     opacity: 1;
@@ -1849,7 +1874,7 @@ code:not(pre code) {
 @keyframes slideUpMobile {
   from {
     opacity: 0;
-    transform: translateY(var(--spacing-xxl));
+    transform: translateY(var(--design-spacing-xl));
   }
   to {
     opacity: 1;
@@ -1883,13 +1908,6 @@ code:not(pre code) {
   padding-top: var(--design-spacing-sm);
 }
 
-.modal-alert .modal-title__text h2 {
-  font-size: var(--type-heading-md-size);
-  font-weight: var(--type-heading-md-weight);
-  line-height: var(--type-heading-md-line);
-  letter-spacing: var(--type-heading-md-tracking);
-}
-
 /* ========================================
    GLOBAL EMPTY STATE ANIMADO
    ======================================== */
@@ -1899,7 +1917,7 @@ code:not(pre code) {
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: var(--spacing-2xl) var(--spacing-xl);
+  padding: var(--design-spacing-xxl) var(--design-spacing-lg);
   color: var(--color-muted);
   animation: fadeIn var(--transition-base);
 }
@@ -1908,7 +1926,7 @@ code:not(pre code) {
   position: relative;
   width: var(--design-spacing-4xl);
   height: var(--design-spacing-4xl);
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: var(--design-spacing-md);
   color: var(--color-hairline-strong);
 }
 
@@ -1918,14 +1936,15 @@ code:not(pre code) {
   animation: floatEmpty var(--transition-decorative-float) infinite;
 }
 
+/* Rol tipográfico de títulos breves (body-strong), no de botón. */
 .animated-empty-state__title {
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-button-weight);
-  color: var(--color-ink);
-  margin-bottom: var(--spacing-xs);
-  line-height: var(--type-button-line);
-  letter-spacing: var(--type-button-tracking);
   font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+  color: var(--color-ink);
+  margin-bottom: var(--design-spacing-xxs);
 }
 
 .animated-empty-state__subtitle {
@@ -1948,6 +1967,14 @@ code:not(pre code) {
   }
   100% {
     transform: translateY(0);
+  }
+}
+
+/* Decoración en bucle: se detiene por completo con movimiento reducido. */
+@media (prefers-reduced-motion: reduce) {
+  .animated-empty-state,
+  .animated-empty-state__icon svg {
+    animation: none;
   }
 }
 
@@ -2030,7 +2057,7 @@ label > input.sr-only:focus-visible,
   min-height: var(--touch-target-min);
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
   cursor: pointer;
   user-select: none;
   font-family: var(--font-body);
@@ -2053,7 +2080,8 @@ label > input.sr-only:focus-visible,
   display: inline-block;
   width: var(--toggle-track-inline-size);
   height: var(--toggle-track-block-size);
-  background-color: var(--color-border);
+  /* WCAG 1.4.11: el riel apagado usa el borde de control (≥3:1), no un hairline. */
+  background-color: var(--color-control-border);
   border-radius: var(--rounded-full);
   transition: background-color var(--transition-fast);
   flex-shrink: 0;
@@ -2064,8 +2092,8 @@ label > input.sr-only:focus-visible,
   position: absolute;
   height: var(--toggle-thumb-size);
   width: var(--toggle-thumb-size);
-  left: var(--toggle-thumb-inset);
-  bottom: var(--toggle-thumb-inset);
+  inset-inline-start: var(--toggle-thumb-inset);
+  inset-block-end: var(--toggle-thumb-inset);
   background-color: var(--color-surface);
   border-radius: var(--rounded-full);
   transition: transform var(--transition-fast);

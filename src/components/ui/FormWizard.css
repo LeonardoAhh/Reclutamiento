@@ -45,7 +45,7 @@
 
 .form-wizard__bar {
   display: flex;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
 }
 
 .form-wizard__seg {

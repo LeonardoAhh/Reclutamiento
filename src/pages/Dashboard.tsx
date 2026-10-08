@@ -67,7 +67,7 @@ export function Dashboard() {
     purgeAllEmployees,
   } = useSupabaseData();
 
-  const { coverVacancyForEmployee } = useVacancyRequests({ loadHistory: false });
+  const { coverVacancyForEmployee } = useVacancyRequests({ loadHistory: false, autoLoad: false });
   const { positions, createPosition } = usePositions();
   const { bajas } = useBajas();
   // Pipeline completo. Se pasa a `AreaDetailModal` para contar candidatos
@@ -322,6 +322,13 @@ export function Dashboard() {
   const hasSearchResults = matchingEmployees.length > 0 || filteredDepts.length > 0;
 
   return (
+    // Snapshot de página completa (título + contenido), mismo patrón que
+    // Resumen, Rotación y Candidatos: el skeleton coincide con lo que llega.
+    <BoneyardSkeleton
+      name="plantilla-page"
+      loading={loading && employees.length === 0 && activeTab === "general"}
+      loadingLabel={t("Cargando plantilla…")}
+    >
     <main className="plantilla-layout container" aria-labelledby="plantilla-title">
       <header className="plantilla-header">
         <h1 id="plantilla-title" className="app-page-title">
@@ -343,11 +350,7 @@ export function Dashboard() {
             className="dashboard__content-area"
           >
             {activeTab === "general" && (
-              <BoneyardSkeleton
-                name="plantilla-page"
-                loading={loading && employees.length === 0}
-                loadingLabel={t("Cargando plantilla…")}
-              >
+              <>
                 <header className="dashboard__hero dashboard-sidebar__hero">
                   <div className="dashboard__hero-content dashboard-sidebar__hero-content">
                     <div
@@ -511,7 +514,7 @@ export function Dashboard() {
                     />
                   ))}
                 </section>
-              </BoneyardSkeleton>
+              </>
             )}
             {activeTab !== "general" && (
               <AreaDetailView
@@ -576,5 +579,6 @@ export function Dashboard() {
         )}
       </section>
     </main>
+    </BoneyardSkeleton>
   );
 }

@@ -42,7 +42,7 @@
   overflow: auto;
   overscroll-behavior: contain;
   flex-direction: column;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
   padding: var(--spacing-xs);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-md);
@@ -127,14 +127,14 @@
 
 .dropdown-menu-separator {
   block-size: var(--border-width);
-  margin-block: var(--spacing-xxs);
+  margin-block: var(--design-spacing-xxs);
   background: var(--color-hairline);
 }
 
 @keyframes dropdown-menu-slide-up-and-fade {
   from {
     opacity: 0;
-    transform: translateY(var(--spacing-xxs));
+    transform: translateY(var(--design-spacing-xxs));
   }
 
   to {
@@ -146,7 +146,7 @@
 @keyframes dropdown-menu-slide-right-and-fade {
   from {
     opacity: 0;
-    transform: translateX(calc(var(--spacing-xxs) * -1));
+    transform: translateX(calc(var(--design-spacing-xxs) * -1));
   }
 
   to {
@@ -158,7 +158,7 @@
 @keyframes dropdown-menu-slide-down-and-fade {
   from {
     opacity: 0;
-    transform: translateY(calc(var(--spacing-xxs) * -1));
+    transform: translateY(calc(var(--design-spacing-xxs) * -1));
   }
 
   to {
@@ -170,7 +170,7 @@
 @keyframes dropdown-menu-slide-left-and-fade {
   from {
     opacity: 0;
-    transform: translateX(var(--spacing-xxs));
+    transform: translateX(var(--design-spacing-xxs));
   }
 
   to {

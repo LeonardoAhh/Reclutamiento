@@ -252,7 +252,7 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
 }
 
 .ruta-card__heading {
@@ -306,7 +306,7 @@
 .ruta-card__match-badge {
   display: inline-flex;
   align-items: center;
-  padding: var(--spacing-xxs) var(--spacing-sm);
+  padding: var(--design-spacing-xxs) var(--spacing-sm);
   border-radius: var(--rounded-full);
   background: var(--color-hairline-soft);
   color: var(--color-charcoal);
@@ -445,7 +445,7 @@
 .ruta-search-result__identity {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
   min-width: 0;
 }
 
@@ -484,7 +484,7 @@
 }
 
 .ruta-search-result__details dd {
-  margin: var(--spacing-xxs) 0 0;
+  margin: var(--design-spacing-xxs) 0 0;
   overflow-wrap: anywhere;
   color: var(--color-ink);
   font-size: var(--type-body-sm-size);
@@ -575,7 +575,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
   min-width: var(--touch-target-min);
   min-height: var(--touch-target-min);
   padding-inline: var(--spacing-sm);
@@ -663,7 +663,7 @@
 .daily-cards__stat {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
 }
 
 .daily-cards__label {

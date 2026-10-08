@@ -201,7 +201,7 @@
 
 .kpi-hero-nav {
   display: flex;
-  gap: calc(var(--spacing-xs) + var(--spacing-xxs));
+  gap: var(--design-spacing-xs);
   background: var(--color-surface);
   padding: var(--spacing-xs);
   border-radius: var(--rounded-md);
@@ -215,7 +215,7 @@
   background: transparent;
   border: none;
   cursor: pointer;
-  padding: calc(var(--spacing-xs) + var(--spacing-xxs));
+  padding: var(--design-spacing-xs);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -268,7 +268,7 @@
 }
 
 .kpi-hero-critical__label {
-  margin: 0 0 var(--spacing-xxs);
+  margin: 0 0 var(--design-spacing-xxs);
   font-size: var(--type-caption-up-size);
   font-weight: var(--type-caption-up-weight);
   line-height: var(--type-caption-up-line);

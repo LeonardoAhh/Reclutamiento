@@ -155,35 +155,48 @@
 }
 
 /* ── Form notice ── */
+/* Texto con tokens *-text (AA ≥4.5:1); el color de indicador queda en el icono. */
 .form-notice {
   display: flex;
   align-items: flex-start;
-  gap: var(--spacing-xs);
-  margin-top: var(--spacing-xs);
-  padding: var(--spacing-sm);
+  gap: var(--design-spacing-xxs);
+  margin-top: var(--design-spacing-xxs);
+  padding: var(--design-spacing-xs);
   border-radius: var(--rounded-sm);
-  font-size: var(--type-caption-md-size);
-  line-height: var(--type-caption-md-line);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
 }
 
+/* Alinea el icono con la primera línea: (line-height − icono) / 2. */
 .form-notice svg {
   flex-shrink: 0;
-  margin-top: 2px;
+  margin-top: calc((var(--type-body-sm-size) * var(--type-body-sm-line) - var(--icon-size-sm)) / 2);
 }
 
 .form-notice--warning {
+  color: var(--color-warning-text);
+  background: var(--color-warning-tint);
+}
+
+.form-notice--warning svg {
   color: var(--color-warning);
-  background: var(--color-vacancy-tint);
 }
 
 .form-notice--info {
-  color: var(--color-primary);
+  color: var(--color-ink);
   background: var(--color-focus-ring);
 }
 
 .form-notice--success {
-  color: var(--color-success);
+  color: var(--color-success-text);
   background: var(--color-success-tint);
+}
+
+.form-notice--success svg {
+  color: var(--color-success);
 }
 
 /* ── Form hint ── */

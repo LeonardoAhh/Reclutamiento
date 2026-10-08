@@ -1317,7 +1317,7 @@
 .data-update-admin-card__popover {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
   min-inline-size: 10rem;
   padding: var(--spacing-xs);
 }
@@ -1366,7 +1366,7 @@
 /* Separador entre acciones normales y destructivas */
 .data-update-admin-card__separator {
   block-size: var(--border-width);
-  margin-block: var(--spacing-xxs);
+  margin-block: var(--design-spacing-xxs);
   border: none;
   background: var(--color-hairline);
 }

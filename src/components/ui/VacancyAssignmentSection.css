@@ -22,7 +22,7 @@
   flex-wrap: wrap;
   align-items: baseline;
   gap: var(--spacing-sm);
-  margin: 0 0 var(--spacing-xxs);
+  margin: 0 0 var(--design-spacing-xxs);
   color: var(--color-ink);
   font-family: var(--font-display);
   font-size: var(--type-heading-md-size);
@@ -179,7 +179,7 @@
   inset-block-start: 0;
   inset-inline-start: var(--spacing-lg);
   transform: translateY(-50%);
-  padding: var(--spacing-xxs) var(--spacing-xs);
+  padding: var(--design-spacing-xxs) var(--spacing-xs);
   border: var(--border-width) solid var(--color-primary);
   border-radius: var(--rounded-sm);
   background: var(--color-primary);
@@ -255,7 +255,7 @@
 }
 
 .vacancy-assignment-section__empty-title {
-  margin: 0 0 var(--spacing-xxs);
+  margin: 0 0 var(--design-spacing-xxs);
   color: var(--color-charcoal);
   font-size: var(--type-body-strong-size);
   font-weight: var(--type-body-strong-weight);

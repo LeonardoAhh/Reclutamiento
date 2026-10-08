@@ -147,9 +147,11 @@
 }
 
 .rh__stage-label {
+  font-family: var(--font-body);
   font-size: var(--type-caption-up-size);
-  font-weight: 500;
-  letter-spacing: var(--tracking-wider);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
   color: var(--color-muted);
   white-space: nowrap;
   transition: color 200ms ease;

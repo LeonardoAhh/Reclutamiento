@@ -116,7 +116,7 @@
 .motivos-baja__filter {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
   min-width: 0;
 }
 
@@ -167,7 +167,7 @@
 .motivos-baja__bar-category {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
 }
 
 .motivos-baja__bar-count {
@@ -325,6 +325,6 @@
 @media (min-width: 1024px) {
   .motivos-baja {
     gap: var(--spacing-xl);
-    padding-block: var(--spacing-xl) var(--spacing-2xl);
+    padding-block: var(--spacing-xl) var(--design-spacing-xxl);
   }
 }

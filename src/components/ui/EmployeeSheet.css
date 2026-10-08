@@ -85,7 +85,7 @@
 .delete-warning__meta {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
   padding: var(--spacing-sm) var(--spacing-md);
   background: var(--color-surface);
   border: var(--border-width) solid var(--color-hairline);
@@ -105,9 +105,11 @@
 .delete-warning__meta-row dt {
   color: var(--color-muted);
   text-transform: uppercase;
-  letter-spacing: var(--tracking-wider);
-  font-size: var(--type-caption-md-size);
-  font-weight: 500;
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
 }
 
 .delete-warning__meta-row dd {

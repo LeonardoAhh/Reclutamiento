@@ -177,10 +177,12 @@
 }
 
 .reclutador-badge__role-tag {
+  font-family: var(--font-body);
   font-size: var(--type-caption-up-size);
-  font-weight: var(--font-semibold);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
   text-transform: uppercase;
-  letter-spacing: var(--tracking-wider);
   margin-inline-start: var(--design-spacing-xxs);
   padding-inline-start: var(--design-spacing-xs);
   border-inline-start: var(--border-width) solid var(--color-hairline);
