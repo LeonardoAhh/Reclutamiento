@@ -652,6 +652,7 @@ export function Pipeline() {
               canGoPrev={currentPage > 1}
               canGoNext={currentPage < totalPages}
               ariaLabel={en ? 'Candidate pages' : 'Paginación de candidatos'}
+              sticky
             />
             </>
           )}

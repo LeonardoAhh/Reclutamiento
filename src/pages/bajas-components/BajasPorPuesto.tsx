@@ -115,6 +115,7 @@ export function BajasPorPuesto({
               canGoPrev={canGoPrev}
               canGoNext={canGoNext}
               ariaLabel="Paginación de puestos"
+              sticky
             />
           </div>
         </>

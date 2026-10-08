@@ -12,6 +12,13 @@
   width: 100%;
 }
 
+.pagination--sticky {
+  position: sticky;
+  inset-block-end: 0;
+  z-index: var(--layer-sticky-navigation);
+  padding-block-end: calc(var(--spacing-sm) + var(--safe-area-bottom));
+}
+
 .pagination__text {
   font-family: var(--font-body);
   font-size: var(--type-caption-md-size);

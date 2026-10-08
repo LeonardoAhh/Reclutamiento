@@ -19,6 +19,13 @@
   justify-content: space-between;
 }
 
+.leave-requests-page__pagination {
+  position: sticky;
+  inset-block-end: 0;
+  z-index: var(--layer-sticky-navigation);
+  padding-block-end: calc(var(--design-spacing-sm) + var(--safe-area-bottom));
+}
+
 .leave-requests-page__title-link {
   display: inline-flex;
   align-items: center;

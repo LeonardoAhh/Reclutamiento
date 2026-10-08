@@ -214,6 +214,8 @@ export function ResponsibilitiesSection({
               canGoPrev={pagination.canGoPrev}
               canGoNext={pagination.canGoNext}
               ariaLabel={copy.paginationLabel}
+              sticky
+              hideOnSinglePage
             />
           </>
         )}

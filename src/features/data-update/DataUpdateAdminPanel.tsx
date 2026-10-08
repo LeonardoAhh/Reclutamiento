@@ -471,6 +471,7 @@ export function DataUpdateAdminPanel({
           canGoPrev={pagination.canGoPrev}
           canGoNext={pagination.canGoNext}
           ariaLabel={t("Paginación de administración de registros")}
+          sticky
         />
       )}
 

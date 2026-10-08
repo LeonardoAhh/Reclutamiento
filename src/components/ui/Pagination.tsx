@@ -12,6 +12,7 @@ interface PaginationProps {
   canGoNext: boolean;
   ariaLabel?: string;
   hideOnSinglePage?: boolean;
+  sticky?: boolean;
 }
 
 export function Pagination({
@@ -24,6 +25,7 @@ export function Pagination({
   canGoNext,
   ariaLabel,
   hideOnSinglePage = false,
+  sticky = false,
 }: PaginationProps) {
   const { language } = useLanguage();
   const en = language === 'en';
@@ -48,7 +50,10 @@ export function Pagination({
   };
 
   return (
-    <nav className="pagination" aria-label={ariaLabel ?? (en ? 'Pagination' : 'Paginación')}>
+    <nav
+      className={`pagination${sticky ? ' pagination--sticky' : ''}`}
+      aria-label={ariaLabel ?? (en ? 'Pagination' : 'Paginación')}
+    >
       <button
         type="button"
         className="step-nav-control"

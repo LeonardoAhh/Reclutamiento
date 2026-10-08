@@ -672,6 +672,7 @@ export function DataUpdatePage() {
                         canGoPrev={recordPagination.canGoPrev}
                         canGoNext={recordPagination.canGoNext}
                         ariaLabel={t("Paginación de registros asignados")}
+                        sticky
                       />
                     )}
                   </>
@@ -776,6 +777,7 @@ export function DataUpdatePage() {
                             canGoPrev={completedPagination.canGoPrev}
                             canGoNext={completedPagination.canGoNext}
                             ariaLabel={t("Paginación de registros completados")}
+                            sticky
                           />
                         )}
                       </>

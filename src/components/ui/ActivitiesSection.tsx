@@ -326,6 +326,8 @@ export function ActivitiesSection({
           canGoPrev={pagination.canGoPrev}
           canGoNext={pagination.canGoNext}
           ariaLabel={en ? "Activity pages" : "Paginación de actividades"}
+          sticky
+          hideOnSinglePage
         />
       </div>
     </section>

@@ -575,6 +575,7 @@ export function AnalisisView() {
               canGoNext={employeePagination.canGoNext}
               ariaLabel={copy.pagination}
               hideOnSinglePage
+              sticky
             />
           </div>
         ) : (

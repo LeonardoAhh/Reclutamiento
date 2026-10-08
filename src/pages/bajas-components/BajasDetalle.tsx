@@ -124,6 +124,7 @@ export function BajasDetalle({
               canGoPrev={canGoPrev}
               canGoNext={canGoNext}
               ariaLabel="Paginación de detalle de bajas"
+              sticky
             />
           </div>
         </>
