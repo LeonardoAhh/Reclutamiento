@@ -12,7 +12,7 @@ import {
   Info,
   AlertTriangle,
 } from 'lucide-react';
-import { Save as SaveIconData, Trash2 as Trash2IconData } from 'lucide';
+import { Save } from 'lucide-react';
 import type {
   VacancyRequest,
   VacancyStatus,
@@ -39,7 +39,7 @@ import {
 import { Modal } from './Modal';
 import { FormWizard } from './FormWizard';
 import { CustomSelect } from './CustomSelect';
-import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
+import { toast } from '@/lib/notify';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { CANDIDATE_SOURCES } from '@/lib/types';
@@ -135,7 +135,6 @@ export function VacancyModal({
   const { members } = useTeamDirectory();
   const [form, setForm] = useState<FormState>(() => emptyForm());
   const [submitting, setSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const isMobile = useIsMobile();
 
@@ -169,7 +168,6 @@ export function VacancyModal({
     if (!isOpen) return;
     setErrorMsg(null);
     setSubmitting(false);
-    setIsSuccess(false);
     setForm(vacancy ? fromVacancy(vacancy) : emptyForm());
   }, [isOpen, vacancy, mode]);
 
@@ -198,17 +196,16 @@ export function VacancyModal({
       setSubmitting(true);
 
       if (mode === 'delete' && onDelete && vacancy?.id) {
-        // Retraso artificial para que se note la animación
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
         const result = await onDelete(vacancy.id);
         if (result && result.ok === false) {
-          setErrorMsg(result.message ?? 'No se pudo eliminar.');
+          const message = result.message ?? 'No se pudo eliminar.';
+          setErrorMsg(message);
+          toast.error({ title: message });
           setSubmitting(false);
           return;
         }
-        setIsSuccess(true);
-        setTimeout(() => onClose(), 1500);
+        toast.success({ title: english ? 'Vacancy deleted' : 'Vacante eliminada' });
+        onClose();
         return;
       }
 
@@ -244,20 +241,21 @@ export function VacancyModal({
             : null,
         };
 
-        // Retraso artificial para que se note la animación
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
         const result = await onSave(payload, vacancy?.id);
         if (result && result.ok === false) {
-          setErrorMsg(result.message ?? 'No se pudo guardar.');
+          const message = result.message ?? 'No se pudo guardar.';
+          setErrorMsg(message);
+          toast.error({ title: message });
           setSubmitting(false);
           return;
         }
-        setIsSuccess(true);
-        setTimeout(() => onClose(), 1500);
+        toast.success({ title: english ? 'Vacancy saved' : 'Vacante guardada' });
+        onClose();
       }
     } catch (err) {
-      setErrorMsg('Error inesperado.');
+      const message = english ? 'Unexpected error.' : 'Error inesperado.';
+      setErrorMsg(message);
+      toast.error({ title: message });
       setSubmitting(false);
     }
   }
@@ -512,7 +510,7 @@ export function VacancyModal({
     ) : null;
 
   const errorNotice = errorMsg ? (
-    <p id="vacancy-submit-error" className="form-error-text" role="alert">
+    <p id="vacancy-submit-error" className="form-error-text">
       {errorMsg}
     </p>
   ) : null;
@@ -598,39 +596,20 @@ export function VacancyModal({
         type="button"
         className="btn-secondary"
         onClick={onClose}
-        disabled={submitting || isSuccess}
+        disabled={submitting}
       >
         Cancelar
       </button>
-      <AnimatedSubmitButton
-        isSubmitting={submitting}
-        isSuccess={isSuccess}
-        isError={!!errorMsg}
-        errorText={errorMsg || undefined}
-        errorMessageId="vacancy-submit-error"
-        idleText={english ? 'Delete' : 'Eliminar'}
-        loadingText={english ? 'Deleting…' : 'Eliminando…'}
-        successText={english ? 'Deleted!' : '¡Eliminado!'}
-        idleIcon={Trash2IconData}
-        className="btn-danger"
-        form="vacancy-form"
-      />
+      <button type="submit" className="btn-danger" form="vacancy-form" disabled={submitting}>
+        <Trash2 size="var(--icon-size-sm)" aria-hidden="true" />
+        {english ? 'Delete' : 'Eliminar'}
+      </button>
     </>
   ) : (
-    <AnimatedSubmitButton
-      isSubmitting={submitting}
-      isSuccess={isSuccess}
-      isError={!!errorMsg}
-      errorText={errorMsg || undefined}
-      errorMessageId="vacancy-submit-error"
-      idleText={isAdd ? (english ? 'Create' : 'Crear') : (english ? 'Save' : 'Guardar')}
-      loadingText={english ? 'Saving…' : 'Guardando…'}
-      successText={english ? 'Saved!' : '¡Guardado!'}
-      idleIcon={SaveIconData}
-      className="btn-primary"
-      disabled={!isFormValid}
-      form="vacancy-form"
-    />
+    <button type="submit" className="btn-primary" disabled={submitting || !isFormValid} form="vacancy-form">
+      <Save size="var(--icon-size-sm)" aria-hidden="true" />
+      {isAdd ? (english ? 'Create' : 'Crear') : (english ? 'Save' : 'Guardar')}
+    </button>
   );
 
   return (

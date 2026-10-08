@@ -1,6 +1,6 @@
 import { useEffect, useId, useMemo, useState, useRef } from 'react';
 import { CircleCheckBig, PenLine, UserRoundPlus, XCircle, ClipboardList } from 'lucide-react';
-import { Save as SaveIconData } from 'lucide';
+import { Save } from 'lucide-react';
 import type { Candidate, CandidateStatus } from '@/lib/types';
 import { CANDIDATE_STATUSES } from '@/lib/types';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -20,7 +20,6 @@ import './CandidateModal.css';
 import { CustomSelect } from './CustomSelect';
 import { CANDIDATE_SOURCES } from '@/lib/types';
 import { useAuth } from '@/hooks/useAuth';
-import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
 import { CandidateAccessCard } from '@/components/ui/CandidateAccessCard';
 import type { CandidateAccessCardData } from '@/lib/candidateAccessCard';
 import { useTeamDirectory } from '@/features/team/TeamProvider';
@@ -117,7 +116,6 @@ export function CandidateModal({
   const canEditCitaAndSource = isAdmin || profile?.role === 'reclutador';
   const [form, setForm] = useState<FormState>(() => emptyForm());
   const [submitting, setSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [accessCard, setAccessCard] = useState<CandidateAccessCardData | null>(null);
 
@@ -203,7 +201,6 @@ export function CandidateModal({
   useEffect(() => {
     if (isOpen) {
       setErrorMsg(null);
-      setIsSuccess(false);
       setSubmitting(false);
       setAccessCard(null);
       setForm(candidate ? fromCandidate(candidate) : emptyForm());
@@ -273,19 +270,19 @@ export function CandidateModal({
 
     try {
       setSubmitting(true);
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
       const result = await onDelete(candidate.id);
       if (result && result.ok === false) {
-        setErrorMsg(result.message ? t(result.message) : t('No se pudo eliminar.'));
+        const message = result.message ? t(result.message) : t('No se pudo eliminar.');
+        setErrorMsg(message);
         setSubmitting(false);
         return;
       }
 
-      setIsSuccess(true);
-      setTimeout(() => onClose(), 1500);
+      onClose();
     } catch {
-      setErrorMsg(t('Ocurrió un error inesperado.'));
+      const message = t('Ocurrió un error inesperado.');
+      setErrorMsg(message);
+      toast.error({ title: message });
       setSubmitting(false);
     }
   }
@@ -317,7 +314,9 @@ export function CandidateModal({
               c.email.trim().toLowerCase() === form.email.trim().toLowerCase()
             );
             if (isDupEmail) {
-              setErrorMsg(t('Este correo electrónico ya está registrado en otro candidato.'));
+              const message = t('Este correo electrónico ya está registrado en otro candidato.');
+              setErrorMsg(message);
+              toast.error({ title: message });
               setSubmitting(false);
               return;
             }
@@ -344,17 +343,14 @@ export function CandidateModal({
           is_starlite: form.is_starlite,
         };
 
-        // Retraso artificial para que se note la animación de "pensando"
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
         const result = await onSave(payload, candidate?.id);
         if (result && result.ok === false) {
-          setErrorMsg(result.message ? t(result.message) : t('No se pudo guardar.'));
+          const message = result.message ? t(result.message) : t('No se pudo guardar.');
+          setErrorMsg(message);
           setSubmitting(false);
           return;
         }
 
-        setIsSuccess(true);
         if (mode === 'add') {
           const recruiterName =
             accessCardRecruiterName(members, form.reclutador) ?? form.reclutador;
@@ -370,10 +366,12 @@ export function CandidateModal({
           return;
         }
 
-        setTimeout(() => onClose(), 1500);
+        onClose();
       }
     } catch (err) {
-      setErrorMsg(t('Ocurrió un error inesperado.'));
+      const message = t('Ocurrió un error inesperado.');
+      setErrorMsg(message);
+      toast.error({ title: message });
       setSubmitting(false);
     }
   }
@@ -389,7 +387,7 @@ export function CandidateModal({
         title={en ? 'Delete candidate' : 'Eliminar candidato'}
         onConfirm={() => void handleDeleteConfirm()}
         onCancel={onClose}
-        isLoading={submitting || isSuccess}
+        isLoading={submitting}
         errorMessage={errorMsg ?? undefined}
       />
     );
@@ -625,7 +623,7 @@ const fieldsPosicion = (
   );
 
   const errorNotice = errorMsg ? (
-    <p id="candidate-submit-error" className="form-error-text" role="alert">
+    <p id="candidate-submit-error" className="form-error-text">
       {errorMsg}
     </p>
   ) : null;
@@ -637,23 +635,14 @@ const fieldsPosicion = (
         type="button"
         className="btn-secondary"
         onClick={onClose}
-        disabled={submitting || isSuccess}
+        disabled={submitting}
       >
         {en ? 'Cancel' : 'Cancelar'}
       </button>
-      <AnimatedSubmitButton
-        isSubmitting={submitting}
-        isSuccess={isSuccess}
-        isError={!!errorMsg}
-        errorText={errorMsg || undefined}
-        errorMessageId="candidate-submit-error"
-        idleText={en ? 'Save' : 'Guardar'}
-        loadingText={en ? 'Saving...' : 'Guardando...'}
-        successText={en ? 'Saved!' : '¡Guardado!'}
-        idleIcon={SaveIconData}
-        className="btn-primary"
-        form={formId}
-      />
+      <button type="submit" className="btn-primary" form={formId} disabled={submitting}>
+        <Save size="var(--icon-size-sm)" aria-hidden="true" />
+        {en ? 'Save' : 'Guardar'}
+      </button>
     </>
   ) : undefined;
 

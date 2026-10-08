@@ -6,8 +6,8 @@ import {
   UserCheck,
   CircleAlert,
 } from "lucide-react";
-import { Save as SaveIconData, Trash2 as Trash2IconData } from "lucide";
-import { AnimatedSubmitButton } from "@/components/ui/AnimatedSubmitButton";
+import { Save } from "lucide-react";
+import { toast } from "@/lib/notify";
 import type { Employee } from "@/lib/types";
 import type { AutoVacancy } from "@/lib/autoVacancies";
 import { usePositions } from "@/lib/positions";
@@ -106,7 +106,6 @@ export function EmployeeModal({
   const formId = useId();
   const [form, setForm] = useState<FormState>(() => emptyForm());
   const [submitting, setSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [bajaForm, setBajaForm] = useState({
     fecha_baja: localTodayIso(),
@@ -184,7 +183,6 @@ export function EmployeeModal({
     if (!isOpen) return;
     setErrorMsg(null);
     setSubmitting(false);
-    setIsSuccess(false);
     setSelectedVacancyIndex(0);
     setTouchedAdd(emptyTouchedAdd);
     setTouchedDelete(emptyTouchedDelete);
@@ -298,32 +296,32 @@ export function EmployeeModal({
           reclutador: form.reclutador ? form.reclutador : null,
         };
 
-        // Retraso artificial para que se note la animación
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
         const result = await onSave(payload);
         if (result && result.ok === false) {
-          setErrorMsg(result.message ? t(result.message) : t("No se pudo guardar."));
+          const message = result.message ? t(result.message) : t("No se pudo guardar.");
+          setErrorMsg(message);
+          toast.error({ title: message });
           setSubmitting(false);
           return;
         }
-        setIsSuccess(true);
-        setTimeout(() => onClose(), 1500);
+        toast.success({ title: t("¡Guardado!") });
+        onClose();
       } else if (mode === "delete" && onDelete && form.num_empleado) {
-        // Retraso artificial para que se note la animación
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
         const result = await onDelete(form.num_empleado, bajaForm);
         if (result && result.ok === false) {
-          setErrorMsg(result.message ? t(result.message) : t("No se pudo eliminar."));
+          const message = result.message ? t(result.message) : t("No se pudo eliminar.");
+          setErrorMsg(message);
+          toast.error({ title: message });
           setSubmitting(false);
           return;
         }
-        setIsSuccess(true);
-        setTimeout(() => onClose(), 1500);
+        toast.success({ title: t("¡Baja registrada!") });
+        onClose();
       }
     } catch (err) {
-      setErrorMsg(t("Error inesperado."));
+      const message = t("Error inesperado.");
+      setErrorMsg(message);
+      toast.error({ title: message });
       setSubmitting(false);
     }
   }
@@ -595,7 +593,7 @@ export function EmployeeModal({
   );
 
   const errorNotice = errorMsg ? (
-    <p id="employee-submit-error" className="form-error-text" role="alert">
+    <p id="employee-submit-error" className="form-error-text">
       {errorMsg}
     </p>
   ) : null;
@@ -677,7 +675,7 @@ export function EmployeeModal({
         type="button"
         className="btn-secondary"
         onClick={onClose}
-        disabled={submitting || isSuccess}
+        disabled={submitting}
       >
         Cancelar
       </button>
@@ -704,53 +702,23 @@ export function EmployeeModal({
             }
           >
             <span style={{ display: "inline-block" }}>
-              <AnimatedSubmitButton
-                isSubmitting={submitting}
-                isSuccess={isSuccess}
-                isError={!!errorMsg}
-                errorText={errorMsg || undefined}
-                errorMessageId="employee-submit-error"
-                idleText={t("Guardar")}
-                loadingText={t("Guardando...")}
-                successText={t("¡Guardado!")}
-                idleIcon={SaveIconData}
-                className="btn-primary"
-                disabled={!isAddValid}
-                form={formId}
-              />
+              <button type="submit" className="btn-primary" disabled={submitting || !isAddValid} form={formId}>
+                <Save size="var(--icon-size-sm)" aria-hidden="true" />
+                {t("Guardar")}
+              </button>
             </span>
           </Tooltip>
         ) : (
-          <AnimatedSubmitButton
-            isSubmitting={submitting}
-            isSuccess={isSuccess}
-            isError={!!errorMsg}
-            errorText={errorMsg || undefined}
-            errorMessageId="employee-submit-error"
-            idleText={t("Guardar")}
-            loadingText={t("Guardando...")}
-            successText={t("¡Guardado!")}
-            idleIcon={SaveIconData}
-            className="btn-primary"
-            disabled={!isAddValid}
-            form={formId}
-          />
+          <button type="submit" className="btn-primary" disabled={submitting || !isAddValid} form={formId}>
+            <Save size="var(--icon-size-sm)" aria-hidden="true" />
+            {t("Guardar")}
+          </button>
         )
       ) : (
-        <AnimatedSubmitButton
-          isSubmitting={submitting}
-          isSuccess={isSuccess}
-          isError={!!errorMsg}
-          errorText={errorMsg || undefined}
-          errorMessageId="employee-submit-error"
-          idleText={t("Eliminar")}
-          loadingText={t("Registrando baja...")}
-          successText={t("¡Baja registrada!")}
-          idleIcon={Trash2IconData}
-          className="btn-danger"
-          disabled={!isDeleteValid}
-          form={formId}
-        />
+        <button type="submit" className="btn-danger" disabled={submitting || !isDeleteValid} form={formId}>
+          <Trash2 size="var(--icon-size-sm)" aria-hidden="true" />
+          {t("Eliminar")}
+        </button>
       )}
     </>
   );

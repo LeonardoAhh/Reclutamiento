@@ -1,7 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { UsersRound } from 'lucide-react';
-import { Check, Copy } from 'lucide';
-import { MorphingIcon } from './MorphingIcon';
+import { Copy } from 'lucide-react';
 import { Modal } from './Modal';
 import { FormSheet } from './FormSheet';
 import { StarliteBadge } from './Badge';
@@ -109,7 +108,6 @@ export function FutureHiresModal({
   const locale = language === 'en' ? 'en-US' : 'es-MX';
   const isMobile = useIsMobile();
   const Dialog = isMobile ? Modal : FormSheet;
-  const [copied, setCopied] = useState(false);
 
   const sortedFutureHires = useMemo(() => {
     return [...futureHires].sort((a, b) => {
@@ -124,20 +122,10 @@ export function FutureHiresModal({
     [sortedFutureHires, language],
   );
 
-  useEffect(() => {
-    if (!copied) return;
-    const timeoutId = window.setTimeout(() => setCopied(false), 2000);
-    return () => window.clearTimeout(timeoutId);
-  }, [copied]);
-
-  useEffect(() => {
-    if (!isOpen) setCopied(false);
-  }, [isOpen]);
-
   const handleCopy = async () => {
     try {
       await copyTextToClipboard(message);
-      setCopied(true);
+      toast.success({ title: t('Reporte copiado') });
     } catch {
       toast.error({ title: t('No se pudo copiar el reporte') });
     }
@@ -214,13 +202,9 @@ export function FutureHiresModal({
           onClick={handleCopy}
           disabled={futureHires.length === 0}
         >
-          <span
-            className="future-hires-modal__action-inner"
-            aria-live="polite"
-            aria-atomic="true"
-          >
-            <MorphingIcon icon={copied ? Check : Copy} size={16} />
-            {t(copied ? 'Reporte copiado' : 'Copiar reporte')}
+          <span className="future-hires-modal__action-inner">
+            <Copy size="var(--icon-size-sm)" aria-hidden="true" />
+            {t('Copiar reporte')}
           </span>
         </button>
       }

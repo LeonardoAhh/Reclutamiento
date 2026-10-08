@@ -1,8 +1,7 @@
 import { useEffect, useId, useState } from 'react';
 import { CircleCheckBig, CircleAlert, Trash2 } from 'lucide-react';
-import { CircleCheckBig as CheckCircleIconData } from 'lucide';
 import { Modal } from '@/components/ui/Modal';
-import { AnimatedSubmitButton } from '@/components/ui/AnimatedSubmitButton';
+import { toast } from '@/lib/notify';
 import { useLanguage } from '@/contexts/LanguageContext';
 import type { Baja } from '@/lib/types';
 import { localTodayIso, formatReadableDate } from '@/lib/dates';
@@ -32,7 +31,6 @@ export function CubrirVacanteModal({
   const [fecha, setFecha] = useState<string>('');
   const [nota, setNota] = useState<string>('');
   const [submitting, setSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const errorId = useId();
 
@@ -42,7 +40,6 @@ export function CubrirVacanteModal({
     setNota(baja.cubierta_nota ?? '');
     setErrorMsg(null);
     setSubmitting(false);
-    setIsSuccess(false);
   }, [isOpen, baja]);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -61,10 +58,11 @@ export function CubrirVacanteModal({
         setSubmitting(false);
         return;
       }
-      setIsSuccess(true);
-      setTimeout(() => onClose(), 1200);
+      onClose();
     } catch {
-      setErrorMsg('Error inesperado al registrar la cobertura.');
+      const message = 'Error inesperado al registrar la cobertura.';
+      setErrorMsg(message);
+      toast.error({ title: message });
       setSubmitting(false);
     }
   }
@@ -110,18 +108,12 @@ export function CubrirVacanteModal({
       >
         Cancelar
       </button>
-      <AnimatedSubmitButton
-        isSubmitting={submitting}
-        isSuccess={isSuccess}
-        idleText={isMarcada
+      <button type="submit" className="btn-primary" form="cubrir-vacante-form" disabled={submitting}>
+        <CircleCheckBig size="var(--icon-size-sm)" aria-hidden="true" />
+        {isMarcada
           ? english ? 'Update' : 'Actualizar'
           : english ? 'Mark as filled' : 'Marcar cubierta'}
-        loadingText={english ? 'Saving…' : 'Guardando…'}
-        successText={english ? 'Saved!' : '¡Guardado!'}
-        idleIcon={CheckCircleIconData}
-        className="btn-primary"
-        form="cubrir-vacante-form"
-      />
+      </button>
     </div>
   );
 
