@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { CustomSelect } from '@/components/ui/CustomSelect';
 import { Pagination } from '@/components/ui/Pagination';
+import { SearchField } from '@/components/ui/SearchField';
 import { usePagination } from '@/hooks/usePagination';
 import { formatReadableDate } from '@/lib/dates';
 import {
@@ -101,10 +102,13 @@ export function ProfileSummary({ cycle, employees, evaluations }: ProfileSummary
           </div>
         </header>
         <div className="profile-general__summary-filters" aria-label="Filtros del detalle">
-          <div className="form-group">
-            <label htmlFor="profile-summary-search">Buscar</label>
-            <input id="profile-summary-search" type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Número, nombre o puesto" />
-          </div>
+          <SearchField
+            id="profile-summary-search"
+            label="Buscar empleados"
+            placeholder="Buscar"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+          />
           <div className="form-group">
             <label htmlFor="profile-summary-recruiter">Reclutador</label>
             <CustomSelect

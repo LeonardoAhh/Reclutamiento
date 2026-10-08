@@ -10,10 +10,6 @@ import {
   Route,
   UserRoundSearch,
 } from "lucide-react";
-// NOTE: MorphingIcon espera IconInput de 'morphicons', compatible solo con
-// las definiciones crudas del paquete base 'lucide' (no 'lucide-react').
-import { UserRoundSearch as SearchData, X as XIconData } from "lucide";
-import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import { getShortName } from "@/lib/names";
 import { formatReadableDate } from "@/lib/dates";
 import {
@@ -25,6 +21,7 @@ import {
 import { ROUTE_DAY_EMPLOYEES_PATH } from "@/lib/configuracionNavigation";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { BackButton } from "@/components/ui/BackButton";
+import { SearchField } from "@/components/ui/SearchField";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { formatRouteDay, getConfiguracionCopy } from "./configuracion-translations";
 
@@ -601,46 +598,25 @@ export function RutasView() {
         aria-label={copy.tools}
       >
         <div className="rutas-toolbar-flex">
-          <div className="form-group config-search rutas-search-container">
-            <label
-              htmlFor="rutas-search-input"
-              className="config-filter-label type-caption-sm text-muted"
-            >
-              {copy.searchEmployee}
-            </label>
-            <div className="config-search__wrapper">
-              <button
-                type="button"
-                className={`config-search__icon rutas-search-clear-btn ${searchTerm ? "rutas-search-clear-btn--active" : "rutas-search-clear-btn--inactive"}`}
-                onClick={handleClearSearch}
-                disabled={!searchTerm}
-                aria-label={searchTerm ? copy.clearSearch : copy.search}
-                tabIndex={searchTerm ? 0 : -1}
-              >
-                <MorphingIcon
-                  icon={searchTerm ? XIconData : SearchData}
-                  className="text-muted"
-                  aria-hidden="true"
-                />
-              </button>
-              <input
-                id="rutas-search-input"
-                ref={searchInputRef}
-                type="search"
-                placeholder={copy.searchPlaceholder}
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                aria-describedby={
-                  searchNorm ? "rutas-search-status" : undefined
-                }
-                aria-controls={
-                  searchNorm && totalSearchMatches > 0
-                    ? "rutas-search-results"
-                    : undefined
-                }
-                autoComplete="off"
-              />
-            </div>
+          <div className="rutas-search-container">
+            <SearchField
+              id="rutas-search-input"
+              ref={searchInputRef}
+              label={copy.searchEmployee}
+              placeholder={copy.search}
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+              onClear={handleClearSearch}
+              aria-describedby={
+                searchNorm ? "rutas-search-status" : undefined
+              }
+              aria-controls={
+                searchNorm && totalSearchMatches > 0
+                  ? "rutas-search-results"
+                  : undefined
+              }
+              autoComplete="off"
+            />
             {searchNorm && (
               <p
                 id="rutas-search-status"

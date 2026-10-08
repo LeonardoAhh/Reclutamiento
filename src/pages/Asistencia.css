@@ -29,25 +29,13 @@
 }
 
 .search-group {
-  position: relative;
   flex: 1;
   max-width: 400px;
   margin: 0;
 }
 
-.search-group input {
-  padding-left: calc(var(--spacing-xl) + var(--spacing-md));
+.search-group .search-field {
   width: 100%;
-  border-radius: var(--rounded-xs);
-}
-
-.search-group .search-icon {
-  position: absolute;
-  left: var(--spacing-md);
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--color-muted-soft);
-  pointer-events: none;
 }
 
 .asistencia-table-wrapper {

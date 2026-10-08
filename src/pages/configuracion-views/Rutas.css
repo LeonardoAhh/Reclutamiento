@@ -24,11 +24,6 @@
   border-radius: var(--rounded-lg);
 }
 
-.rutas-toolbar .config-search input {
-  height: var(--touch-target-min);
-  min-height: var(--touch-target-min);
-}
-
 .rutas-header__copy {
   display: flex;
   flex-direction: column;
@@ -90,7 +85,6 @@
   text-decoration: none;
 }
 
-.rutas-search-clear-btn svg,
 .ruta-card__icon svg,
 .ruta-section__title-icon,
 .shift-bars__trend svg {
@@ -719,24 +713,6 @@
   flex: 1;
   min-width: 0;
   margin: 0;
-}
-
-.rutas-search-clear-btn {
-  background: transparent;
-  border: none;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  color: inherit;
-  z-index: 1;
-}
-
-.rutas-search-clear-btn--active {
-  cursor: pointer;
-}
-
-.rutas-search-clear-btn--inactive {
-  cursor: default;
 }
 
 @media (prefers-reduced-motion: reduce) {

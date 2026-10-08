@@ -5,6 +5,7 @@ import { ACCOUNT_PATH, HOME_PATH } from '@/components/layout/navigation';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { Badge } from '@/components/ui/Badge';
 import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton';
+import { SearchField } from '@/components/ui/SearchField';
 import { useAuth, type Profile } from '@/hooks/useAuth';
 import { listProfiles } from '@/lib/users';
 import { useTeamDirectory } from './TeamProvider';
@@ -84,9 +85,17 @@ export function TeamPage() {
         aria-label={copy.teamMembers}
         aria-busy={!profiles && !error}
       >
-        <div className="team-management__tools"><div className="form-group">
-          <label htmlFor={`${id}-search`}>{copy.search}</label><input ref={searchRef} id={`${id}-search`} type="search" value={search} onChange={event => setSearch(event.target.value)} />
-        </div><button type="button" className="btn-primary" disabled={!profiles} onClick={() => setEditing(null)}>{copy.add}</button></div>
+        <div className="team-management__tools">
+          <SearchField
+            id={`${id}-search`}
+            ref={searchRef}
+            label={copy.search}
+            placeholder={language === 'en' ? 'Search' : 'Buscar'}
+            value={search}
+            onChange={event => setSearch(event.target.value)}
+          />
+          <button type="button" className="btn-primary" disabled={!profiles} onClick={() => setEditing(null)}>{copy.add}</button>
+        </div>
         {!profiles && !error && (
           <LoadingSkeleton label={copy.loadingAccounts} className="team-management__skeleton">
             <ul className="team-management__list team-management__skeleton-list" aria-hidden="true">

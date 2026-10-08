@@ -27,6 +27,7 @@ const englishCopy: ReadonlyMap<string, string> = new Map([
   ["Administración", "Administration"],
   ["Los registros en proceso continúan desde el último paso guardado.", "In-progress records resume from the last saved step."],
   ["Buscar en mi trabajo", "Search my work"],
+  ["Buscar", "Search"],
   ["Número, nombre, área, sección, puesto o turno", "Number, name, department, section, position, or shift"],
   ["Filtrar por área", "Filter by department"],
   ["TODAS LAS ÁREAS", "ALL DEPARTMENTS"],

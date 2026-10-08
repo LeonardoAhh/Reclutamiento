@@ -15,7 +15,7 @@ import { buildCandidateReport } from '@/lib/candidateReport';
 import { copyTextToClipboard } from '@/lib/whatsappReport';
 import { CandidateStatusBadge } from '@/components/ui/CandidateStatusBadge';
 import { HireCandidateModal } from '@/components/ui/HireCandidateModal';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { CANDIDATE_METRICS_PATH } from './candidate-metrics/navigation';
 import { CandidateRowActions } from '@/components/ui/CandidateRowActions';
 import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
@@ -44,6 +44,7 @@ import { useTeamDirectory } from '@/features/team/TeamProvider';
 import { accessCardRecruiterName } from '@/features/team/types';
 import { splitCandidateName } from '@/lib/names';
 import { DESKTOP_MEDIA_QUERY } from '@/lib/layout';
+import { getSidebarCreateAction } from '@/lib/sidebarActionNavigation';
 import './Pipeline.css';
 
 type ModalMode = 'add' | 'edit' | 'delete' | null;
@@ -51,6 +52,8 @@ type ModalMode = 'add' | 'edit' | 'delete' | null;
 const formatDate = formatShortDate;
 
 export function Pipeline() {
+  const location = useLocation();
+  const navigate = useNavigate();
   const isMobile = useIsMobile();
   const InterviewPassDialog = isMobile ? Modal : FormSheet;
   const { language } = useLanguage();
@@ -94,6 +97,16 @@ export function Pipeline() {
   const { members } = useTeamDirectory();
   const [selectedMobileCandidate, setSelectedMobileCandidate] = useState<Candidate | null>(null);
   const isDesktop = useMediaQuery(DESKTOP_MEDIA_QUERY);
+
+  useEffect(() => {
+    if (getSidebarCreateAction(location.state) !== 'create-candidate') return;
+    setSelected(null);
+    setModalMode('add');
+    navigate(
+      { pathname: location.pathname, search: location.search, hash: location.hash },
+      { replace: true, state: null },
+    );
+  }, [location.pathname, location.search, location.hash, location.state, navigate]);
 
 
   useEffect(() => {
@@ -324,7 +337,7 @@ export function Pipeline() {
                   ref={searchInputRef}
                   className="pipeline__search-field"
                   label={en ? 'Search candidate' : 'Buscar candidato'}
-                  placeholder={en ? 'Search by name, position, phone... (Ctrl+K)' : 'Buscar por nombre, puesto, teléfono... (Ctrl+K)'}
+                  placeholder={en ? 'Search' : 'Buscar'}
                   value={searchTerm}
                   onChange={(event) => setSearchTerm(event.target.value)}
                   onClear={() => setSearchTerm('')}

@@ -547,7 +547,7 @@
   --color-primary-faint: var(--color-primary-tint);
   --color-error-soft: var(--color-error-tint);
   --color-border: var(--color-hairline);
-  --color-focus: var(--color-muted);
+  --color-focus: color-mix(in srgb, var(--color-muted) 75%, transparent);
   --color-surface-contrast: var(--color-ink);
   --color-surface-sunken: var(--color-surface-soft);
   --color-surface-cream-strong: var(--color-surface-soft);

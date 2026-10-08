@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
@@ -42,6 +42,7 @@ import { usePositions } from "@/lib/positions";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { workforceText } from "@/pages/workforce-translations";
 import { VACANCY_ASSIGNMENTS_PATH } from "@/components/layout/navigation";
+import { getSidebarCreateAction } from "@/lib/sidebarActionNavigation";
 import type { Employee, EmployeeRaw } from "@/lib/types";
 import "./Dashboard.css";
 
@@ -113,6 +114,16 @@ export function Dashboard() {
   const [promoteTarget, setPromoteTarget] = useState<Employee | null>(null);
   const [editTarget, setEditTarget] = useState<Employee | null>(null);
   const [positionSettingsOpen, setPositionSettingsOpen] = useState(false);
+
+  useEffect(() => {
+    if (getSidebarCreateAction(location.state) !== 'create-employee') return;
+    setSelectedEmployee(null);
+    setEmpModalMode('add');
+    navigate(
+      { pathname: location.pathname, search: location.search, hash: location.hash },
+      { replace: true, state: null },
+    );
+  }, [location.pathname, location.search, location.hash, location.state, navigate]);
 
   const positionCoverage = useMemo(
     () => calculatePositionCoverage(employees, comments, positions),
@@ -349,7 +360,7 @@ export function Dashboard() {
                           id="search-input"
                           className="dashboard-sidebar__search-field"
                           label={t("Buscar en la plantilla")}
-                          placeholder={t("Buscar...")}
+                          placeholder={t("Buscar")}
                           value={searchTerm}
                           onChange={(event) => setSearchTerm(event.target.value)}
                           onClear={() => setSearchTerm("")}

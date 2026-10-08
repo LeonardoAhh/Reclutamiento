@@ -132,37 +132,6 @@
   flex: 999 1 var(--feature-activity-search-min-inline-size);
 }
 
-.activity-tracking-section__search-icon {
-  position: absolute;
-  inset-block-start: 50%;
-  inset-inline-start: var(--spacing-sm);
-  color: var(--color-muted);
-  pointer-events: none;
-  transform: translateY(-50%);
-}
-
-.activity-tracking-section__search-input {
-  min-block-size: var(--touch-target-min);
-  border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-xs);
-  background: var(--color-surface);
-  color: var(--color-ink);
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-}
-
-.activity-tracking-section__search-input {
-  inline-size: 100%;
-  padding-inline: calc(var(--icon-size-sm) + var(--spacing-xl)) var(--spacing-sm);
-}
-
-.activity-tracking-section__search-input::placeholder {
-  color: var(--color-muted);
-}
-
 .activity-tracking-section__select {
   min-inline-size: min(100%, var(--menu-min-inline-size));
   flex: 1 1 var(--menu-min-inline-size);

@@ -557,7 +557,7 @@ export function DataUpdatePage() {
                       id="data-update-record-search"
                       className="data-update-queue__search"
                       label={t("Buscar en mi trabajo")}
-                      placeholder={t("Número, nombre, área, sección, puesto o turno")}
+                      placeholder={t("Buscar")}
                       value={searchTerm}
                       onChange={(event) => {
                         setSearchTerm(event.target.value);
@@ -697,7 +697,7 @@ export function DataUpdatePage() {
                       id="data-update-completed-search"
                       className="data-update-queue__search"
                       label={t("Buscar completados")}
-                      placeholder={t("Número, nombre, departamento o turno")}
+                      placeholder={t("Buscar")}
                       value={completedSearchTerm}
                       onChange={(event) => {
                         setCompletedSearchTerm(event.target.value);

@@ -6,7 +6,7 @@
 .team-page__title-link svg { flex: 0 0 auto; }
 .team-page__title-link:focus-visible { outline: var(--focus-ring-width) solid var(--color-focus); }
 .team-management__tools { display: grid; align-items: end; gap: var(--space-md); }
-.team-management__tools .form-group { min-width: 0; margin: 0; }
+.team-management__tools > .search-field { min-width: 0; }
 .team-management__list { display: grid; gap: var(--space-md); list-style: none; padding: 0; margin: 0; }
 .team-management__member { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--space-md); row-gap: var(--space-xs); align-items: start; padding: var(--space-lg); border: var(--border-width) solid var(--color-hairline); border-radius: var(--rounded-lg); background: var(--color-surface); }
 .team-management__identity { display: grid; justify-items: start; gap: var(--space-xs); min-width: 0; overflow-wrap: anywhere; }

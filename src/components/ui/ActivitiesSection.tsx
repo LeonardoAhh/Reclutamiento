@@ -3,6 +3,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import type { Activity, ActivityStatus } from "@/lib/types";
 import { ActivityCard } from "@/components/ui/ActivityCard";
 import { Pagination } from "@/components/ui/Pagination";
+import { SearchField } from "@/components/ui/SearchField";
 import { Toolbar, ToolbarGroup } from "@/components/ui/Toolbar";
 import { CustomSelect, type Option } from "@/components/ui/CustomSelect";
 import "./ActivitiesSection.css";
@@ -177,19 +178,10 @@ export function ActivitiesSection({
               label={en ? "Search and sort activities" : "Buscar y ordenar actividades"}
             >
               <div className="activity-tracking-section__search">
-                <label className="sr-only" htmlFor="activity-search">
-                  {en ? "Search activities" : "Buscar actividades"}
-                </label>
-                <Search
-                  size="var(--icon-size-sm)"
-                  className="activity-tracking-section__search-icon"
-                  aria-hidden="true"
-                />
-                <input
+                <SearchField
                   id="activity-search"
-                  type="search"
-                  className="activity-tracking-section__search-input"
-                  placeholder={en ? "Search by title or description..." : "Buscar por título o descripción..."}
+                  label={en ? "Search activities" : "Buscar actividades"}
+                  placeholder={en ? "Search" : "Buscar"}
                   value={searchQuery}
                   onChange={(event) => onSearchQueryChange(event.target.value)}
                 />

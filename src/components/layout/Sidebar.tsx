@@ -8,6 +8,7 @@ import "./Sidebar.css";
 import { APP_BRAND_NAME, getLocalizedNavigation } from "./navigation";
 import { SidebarBrand } from "./SidebarBrand";
 import { UserMenuPopover } from "./UserMenuPopover";
+import { SidebarActionSearch } from "./SidebarActionSearch";
 import { toNaturalCase } from "@/lib/utils";
 import clsx from "clsx";
 
@@ -38,7 +39,7 @@ export function Sidebar({
     const handleTab = (event: KeyboardEvent) => {
       if (event.key !== "Tab") return;
       const focusable = Array.from(
-        sidebar.querySelectorAll<HTMLElement>('a[href], button:not([disabled])'),
+        sidebar.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), input:not([disabled])'),
       ).filter((element) => element.getClientRects().length > 0);
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
@@ -93,6 +94,8 @@ export function Sidebar({
           />
         </button>
       </div>
+
+      <SidebarActionSearch mobileMenuOpen={mobileMenuOpen} onNavigate={onCloseMobileMenu} />
 
       <nav className="sidebar__nav" id="sidebar-sections" aria-label={language === "en" ? "Sections" : "Secciones"}>
         {navSections.map((section) => {

@@ -25,7 +25,7 @@ The light and dark themes share the same hierarchy. The workspace and page floor
 ### Brand & Accent
 - **Primary graphite** (`{colors.primary}` — #343b43): primary CTA fill, logo and selected navigation. Pressed actions use `{colors.primary-active}` (#262c33), paired with `{colors.on-primary}` (#f7f8fa).
 - **Accessible Blue** (`{colors.link}` — #0066cc): functional links with AA contrast on light surfaces. Darker press tone `{colors.link-deep}` (#004f9f), pale wash `{colors.link-soft}` (#e6f0ff).
-- **Focus** (`{colors.focus}` / `{colors.mute}` — #586371): a 2px neutral outline with no offset on light surfaces. Inverted surfaces and forced-colors mode retain their dedicated focus colors.
+- **Focus** (`{colors.focus}` / `{colors.mute}`): a 2px neutral outline at 75% opacity with no offset on light surfaces, preserving at least 3:1 contrast against the light canvas and surface tokens. Inverted surfaces and forced-colors mode retain their dedicated focus colors.
 - Existing violet, cyan, pink, and magenta tokens remain localized compatibility tokens.
 
 ### Surface
@@ -56,7 +56,7 @@ The light and dark themes share the same hierarchy. The workspace and page floor
 - Status must never rely on color alone.
 
 ### Light Contrast
-Across the canvas, quiet, card and elevated surfaces, calculated minimum contrast is 11.21:1 for headings, 6.78:1 for reading text, 5.15:1 for secondary text and focus, 4.63:1 for placeholders and 3.57:1 for control borders. Primary button text has 10.67:1 contrast. These token pairs do not cover inherited text, opacity, images or every rendered state.
+Across the canvas, quiet, card and elevated surfaces, calculated minimum contrast is 11.21:1 for headings, 6.78:1 for reading text, 5.15:1 for secondary text, 3.15:1 for the focus indicator, 4.63:1 for placeholders and 3.57:1 for control borders. Primary button text has 10.67:1 contrast. These token pairs do not cover inherited text, opacity, images or every rendered state.
 
 ### Decorative Compatibility
 Legacy gradient tokens remain available for existing illustrations. Application UI uses the graphite, gray, link, and semantic tokens above.
@@ -236,8 +236,10 @@ Cards are rectangles at 12–16px radius; normal controls are 8px; icon buttons 
 - The workspace uses a 1px `{colors.hairline}` border, `{rounded.lg}` corners, and a Level-1 shadow. A `{spacing.sm}` inset separates it from the shared page floor. It owns vertical scrolling so the sidebar remains stationary.
 - Sidebar selection uses a solid `{colors.primary}` fill with `{colors.on-primary}` text and icons, without a leading border or inset indicator. Every page link is shown directly in a single flat list, with no nested navigation; section labels remain available to assistive technology as visually-hidden headings. `{colors.link}` is reserved for links, not for filling the active navigation row.
 - Sidebar links use `{typography.body-md}`, with `{typography.label-sm}` for the current section. Adjacent links have no extra gap; their 44px minimum targets set the row rhythm. `{spacing.xs}` separates the brand from navigation. Navigation and account controls use `{rounded.md}` and retain a 44px minimum target.
-- The sidebar brand is an SVG symbol at the opposite end from the appearance control (the product mark, in `{colors.primary}` ink) revealed once with the system `fadeUp` motion. Its accessible name keeps the original brand spelling. Reduced-motion mode shows the static mark; forced-colors mode inherits the system text color via `currentColor`.
+- The sidebar brand pairs its SVG symbol in `{colors.primary}` ink with the visible product name, revealed once with the system `fadeUp` motion. Reduced-motion mode shows the static mark; forced-colors mode inherits the system text color via `currentColor`.
 - Below the desktop breakpoint the sidebar becomes an overlay and the workspace returns to a continuous, unframed page surface. The mobile bar must not cover content or safe areas.
+- The sidebar keeps the workspace canvas color and includes a compact tokenized action search below the brand, with an `Alt+K` hint and shortcut. Its native-button results open the existing candidate and employee creation flows on their respective pages; the results are keyboard accessible, and navigation uses the existing mobile Modal and desktop Sheet presentations. `Ctrl+K` remains assigned to the candidate-page search.
+- Free-text search fields across authenticated pages use the shared `SearchField` primitive and the concise localized placeholder `Buscar` / `Search`; contextual accessible labels continue to identify what each field searches, and existing keyboard shortcuts remain unchanged.
 
 **`career-workspace`** — personal career journey
 - Temporarily unpublished: `CAREER_JOURNEY_ENABLED` in `src/features/career/types.ts` is `false`. Sign-in goes to `/home`, direct visits to `/career-path` redirect there, and the “Tu día, tu enfoque” dialog is not mounted, including when navigation retains `careerMotivation` state. The journey and dialog implementation remain available for later activation. Authentication, permissions and saved data are preserved. The behavior below describes the enabled experience.

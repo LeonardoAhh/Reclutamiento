@@ -137,7 +137,7 @@ export function DataUpdateLockerPanel({ records, canEdit, onRecordUpdated }: Dat
             id="data-update-locker-search"
             className="data-update-queue__search"
             label={t("Buscar lockers")}
-            placeholder={t("Número, nombre, fecha, área o locker")}
+            placeholder={t("Buscar")}
             value={searchTerm}
             onChange={(event) => setSearchTerm(event.target.value)}
             onClear={() => setSearchTerm("")}

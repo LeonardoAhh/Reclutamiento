@@ -39,6 +39,7 @@ export const TEAM_PATH = "/team";
 export const LOGOUT_PATH = "/logout";
 export const VACANCY_ASSIGNMENTS_PATH = "/vacancy-assignments";
 export const HOME_PATH = "/home";
+export const CANDIDATES_PATH = "/candidates";
 export const ORGANIZATION_CHART_PATH = "/organization-chart";
 export const APP_BRAND_NAME = "ViñoPlastic";
 
@@ -48,7 +49,7 @@ export const NAV_SECTIONS: ReadonlyArray<NavSection> = [
     items: [
       { to: HOME_PATH, label: "Inicio", icon: House, end: true },
       { to: getConfiguracionHref("analisis"), label: "Análisis", icon: ChartSpline },
-      { to: "/candidates", label: "Candidatos", icon: UserSearch, mobilePriority: true },
+      { to: CANDIDATES_PATH, label: "Candidatos", icon: UserSearch, mobilePriority: true },
       { to: PLANTILLA_PATH, label: "Plantilla", icon: Contact },
       { to: "/overview", label: "Resumen", icon: ChartNoAxesCombined, end: false, mobilePriority: true },
     ],

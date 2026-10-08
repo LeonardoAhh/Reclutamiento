@@ -1,7 +1,8 @@
 import { useState, useMemo } from 'react';
-import { CircleAlert, CircleCheckBig, Search, UsersRound } from 'lucide-react';
+import { CircleAlert, CircleCheckBig, UsersRound } from 'lucide-react';
 import { Badge, StarliteBadge } from '@/components/ui/Badge';
 import { StatCard } from '@/components/ui/StatCard';
+import { SearchField } from '@/components/ui/SearchField';
 import { INCIDENCIA_LABELS } from '@/components/reporte-diario/constants';
 import './Asistencia.css';
 
@@ -230,12 +231,10 @@ export function Asistencia() {
 
           <div className="asistencia-toolbar">
             <div className="form-group search-group">
-              <label htmlFor="asistencia-search" className="sr-only">Buscar asistencia</label>
-              <Search size={16} className="search-icon" aria-hidden="true" />
-              <input
+              <SearchField
                 id="asistencia-search"
-                type="text"
-                placeholder="Buscar por nombre o número..."
+                label="Buscar asistencia"
+                placeholder="Buscar"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />

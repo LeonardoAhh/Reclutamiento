@@ -48,20 +48,40 @@
   column-gap: var(--design-spacing-xxs);
   align-items: center;
   margin-block-end: var(--design-spacing-xs);
-  padding-inline: var(--design-spacing-md);
+  padding-inline: var(--design-spacing-xxs);
   min-height: calc(var(--mobile-nav-height) + var(--border-width));
   flex-shrink: 0;
 }
 
-/* Marca de la aplicación; hereda la tinta de la app. */
-.sidebar__brand-mark {
+/* Marca y nombre del producto comparten la primera fila. */
+.sidebar__brand {
   grid-column: 1;
   grid-row: 1;
-  justify-self: start;
+  display: flex;
+  align-items: center;
+  min-inline-size: 0;
+  gap: var(--design-spacing-xs);
+}
+
+.sidebar__brand-mark {
   display: block;
-  width: var(--icon-size-xl);
-  height: var(--icon-size-xl);
+  flex: 0 0 var(--icon-size-lg);
+  width: var(--icon-size-lg);
+  height: var(--icon-size-lg);
   color: var(--color-primary);
+}
+
+.sidebar__brand-name {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+  letter-spacing: var(--type-heading-sm-tracking);
 }
 
 button.sidebar__close-btn {

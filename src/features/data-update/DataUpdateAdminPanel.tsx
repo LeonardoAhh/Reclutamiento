@@ -221,7 +221,7 @@ export function DataUpdateAdminPanel({
               id="data-update-admin-search"
               className="data-update-queue__search"
               label={t("Buscar en administración")}
-              placeholder={t("Número, nombre, área, sección, puesto o turno")}
+              placeholder={t("Buscar")}
               value={searchTerm}
               onChange={(event) => setSearchTerm(event.target.value)}
               onClear={() => setSearchTerm("")}

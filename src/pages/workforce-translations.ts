@@ -5,7 +5,7 @@ const englishCopy: Record<string, string> = {
   "Contenido principal": "Main content",
   "Cargando plantilla…": "Loading workforce…",
   "Buscar en la plantilla": "Search workforce",
-  "Buscar...": "Search...",
+  "Buscar": "Search",
   "Solo proyecto Starlite": "Starlite project only",
   "Nuevo empleado": "New employee",
   "Nuevo": "New",
