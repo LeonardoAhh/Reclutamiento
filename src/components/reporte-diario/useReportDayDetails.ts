@@ -187,8 +187,8 @@ export function useReportDayDetails({ selectedRows, selectedDay, selectedArea, c
       ? daysWithData[currentDayIndex + 1]
       : null;
 
-  const selectedDateTitle = useMemo(() => {
-    if (!selectedDay || !currentMonth) return "";
+  const selectedDateHeading = useMemo(() => {
+    if (!selectedDay || !currentMonth) return { date: "", week: "" };
     try {
       const dateStr = `${currentMonth}-${selectedDay}`;
       const date = new Date(dateStr + "T00:00:00");
@@ -204,12 +204,12 @@ export function useReportDayDetails({ selectedRows, selectedDay, selectedArea, c
       const weekNum = getISOWeek(date);
 
       return en
-        ? `${capWeekday}, ${capMonth} ${day}, ${year} - Week ${weekNum}`
-        : `${capWeekday} ${day} ${capMonth} ${year} - Semana ${weekNum}`;
+        ? { date: `${capWeekday}, ${capMonth} ${day}, ${year}`, week: `Week ${weekNum}` }
+        : { date: `${capWeekday} ${day} ${capMonth} ${year}`, week: `Semana ${weekNum}` };
     } catch {
-      return `${en ? "Incidents — day" : "Incidencias — día"} ${parseInt(selectedDay, 10)}`;
+      return { date: `${en ? "Incidents — day" : "Incidencias — día"} ${parseInt(selectedDay, 10)}`, week: "" };
     }
   }, [selectedDay, currentMonth, en]);
 
-  return { selectedDayIncidentSummary, selectedDayAreaSummary, selectedAreaDetailRows, selectedDayCounts, prevDay, nextDay, selectedDateTitle };
+  return { selectedDayIncidentSummary, selectedDayAreaSummary, selectedAreaDetailRows, selectedDayCounts, prevDay, nextDay, selectedDateHeading };
 }

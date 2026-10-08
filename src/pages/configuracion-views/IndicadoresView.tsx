@@ -113,6 +113,7 @@ export function IndicadoresView() {
   };
 
   const monthLabel = new Intl.DateTimeFormat(english ? 'en-US' : 'es-MX', { month: 'long', year: 'numeric' }).format(selectedMonth);
+  const shortMonthLabel = new Intl.DateTimeFormat(english ? 'en-US' : 'es-MX', { month: 'short', year: 'numeric' }).format(selectedMonth);
   const monthValue = `${selectedMonth.getFullYear()}-${String(selectedMonth.getMonth() + 1).padStart(2, '0')}`;
 
   return (
@@ -140,8 +141,10 @@ export function IndicadoresView() {
             <time
               className="indicadores-month-nav__label"
               dateTime={monthValue}
+              aria-label={monthLabel}
             >
-              {monthLabel}
+              <span className="indicadores-month-nav__short-label" aria-hidden="true">{shortMonthLabel}</span>
+              <span className="indicadores-month-nav__full-label" aria-hidden="true">{monthLabel}</span>
             </time>
             <button
               type="button"

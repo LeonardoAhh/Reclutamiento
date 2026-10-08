@@ -2,7 +2,7 @@
   {
     "numero_empleado": "4",
     "nombre": "PACHECO ALCAYA MARIA GABRIELA",
-    "seccion": "A. CALIDAD 1ER TURNO",
+    "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 A",
     "turno": "1",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
@@ -12,7 +12,7 @@
   {
     "numero_empleado": "54",
     "nombre": "URIAS SANCHEZ ARMANDO",
-    "seccion": "PRODUCCIÓN ADMTVO",
+    "sección": "PRODUCCIÓN ADMTVO",
     "puesto": "INGENIERO DE PROCESO C",
     "turno": "4",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -22,7 +22,7 @@
   {
     "numero_empleado": "645",
     "nombre": "PACHECO CORDOBA MA DE LOS ANGELES",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "AUXILIAR DE BÁSCULA A",
     "turno": "1",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
@@ -32,7 +32,7 @@
   {
     "numero_empleado": "773",
     "nombre": "ESPINOZA AGUILAR MARCELA",
-    "seccion": "A. CALIDAD 1ER TURNO",
+    "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 A",
     "turno": "1",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -42,7 +42,7 @@
   {
     "numero_empleado": "1102",
     "nombre": "ACUÑA PEREZ JOSEFINA",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA A",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
@@ -52,7 +52,7 @@
   {
     "numero_empleado": "1106",
     "nombre": "ANGELES MARCIAL ANALLELI",
-    "seccion": "METROLOGÍA",
+    "sección": "METROLOGÍA",
     "puesto": "METRÓLOGO A",
     "turno": "2",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -62,7 +62,7 @@
   {
     "numero_empleado": "1369",
     "nombre": "VAZQUEZ CAMPOS HORTENSIA",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
@@ -72,7 +72,7 @@
   {
     "numero_empleado": "1444",
     "nombre": "RIVERA ROBLES VERONICA",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "AUXILIAR SCRAP A",
     "turno": "1",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -82,7 +82,7 @@
   {
     "numero_empleado": "1467",
     "nombre": "MEJIA MEJIA ANA MARIA JUANA",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA A",
     "turno": "4",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -92,7 +92,7 @@
   {
     "numero_empleado": "1473",
     "nombre": "JUAREZ CALVO VERONICA CHRISTAL",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA A",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
@@ -102,7 +102,7 @@
   {
     "numero_empleado": "1526",
     "nombre": "SILVA GUERRERO ALLISON AISLINN",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "AUXILIAR DE SUPERVISOR A",
     "turno": "3",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -112,7 +112,7 @@
   {
     "numero_empleado": "1528",
     "nombre": "PILAR BARCENAS GUADALUPE",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "3",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -122,7 +122,7 @@
   {
     "numero_empleado": "1539",
     "nombre": "GUTIERREZ LOPEZ CATALINA YESENIA",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "CAPTURISTA RPS A",
     "turno": "1",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -132,7 +132,7 @@
   {
     "numero_empleado": "1542",
     "nombre": "PIMENTEL RUEDA MARIA DE JESUS",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "AUXILIAR DE SUPERVISOR A",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
@@ -142,7 +142,7 @@
   {
     "numero_empleado": "1671",
     "nombre": "AMADOR FRANCO IVAN GUILLERMO",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA A",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
@@ -152,7 +152,7 @@
   {
     "numero_empleado": "1677",
     "nombre": "SOSA MEDRANO MA ISABEL",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "CAPTURISTA RPS A",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
@@ -162,7 +162,7 @@
   {
     "numero_empleado": "1715",
     "nombre": "GARNICA SANCHEZ BEATRIZ",
-    "seccion": "A. CALIDAD 2DO. TURNO",
+    "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 A",
     "turno": "2",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -172,7 +172,7 @@
   {
     "numero_empleado": "1719",
     "nombre": "HURTADO BALDERAS ALEJANDRA",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "AUXILIAR DE BÁSCULA A",
     "turno": "4",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
@@ -182,7 +182,7 @@
   {
     "numero_empleado": "1731",
     "nombre": "NARANJO HERNANDEZ JOSE MANUEL",
-    "seccion": "PRODUCCIÓN ADMTVO",
+    "sección": "PRODUCCIÓN ADMTVO",
     "puesto": "INGENIERO DE PROCESO D",
     "turno": "3",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -192,7 +192,7 @@
   {
     "numero_empleado": "1757",
     "nombre": "GALVAN GUEVARA JAVIER",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "PREPARADOR A",
     "turno": "2",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -202,7 +202,7 @@
   {
     "numero_empleado": "1793",
     "nombre": "GUTIERREZ LOPEZ GUADALUPE",
-    "seccion": "CALIDAD ADMTVO",
+    "sección": "CALIDAD ADMTVO",
     "puesto": "SUPERVISOR DE ACABADOS - GP12 B",
     "turno": "1",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -212,7 +212,7 @@
   {
     "numero_empleado": "1877",
     "nombre": "SAGAHON MEZA ESPERANZA",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA A",
     "turno": "3",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -222,7 +222,7 @@
   {
     "numero_empleado": "1997",
     "nombre": "ROBLES LEDESMA MARIA ERICA",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "3",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -232,7 +232,7 @@
   {
     "numero_empleado": "1998",
     "nombre": "LUGO BOLAÑOS MIGUEL",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA A",
     "turno": "3",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -242,7 +242,7 @@
   {
     "numero_empleado": "2034",
     "nombre": "ELEUTERIO ROMERO ROSA ISELA",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "4",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -252,7 +252,7 @@
   {
     "numero_empleado": "2038",
     "nombre": "FLORES GARCIA JAVIER ISRAEL",
-    "seccion": "PRODUCCIÓN MONTAJE",
+    "sección": "PRODUCCIÓN MONTAJE",
     "puesto": "MONTADOR DE MOLDES B",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -262,7 +262,7 @@
   {
     "numero_empleado": "2043",
     "nombre": "MEJIA MARTINEZ RUBEN",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "MATERIALISTA A",
     "turno": "3",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -270,19 +270,9 @@
     "colonia": "PARADA EN LA PANADERIA LECAROZ"
   },
   {
-    "numero_empleado": "2091",
-    "nombre": "TREJO TREJO YEIMI",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
-    "puesto": "CHECK LIST A",
-    "turno": "2",
-    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "parada": "PIE DE LA CUESTA ",
-    "colonia": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
-  },
-  {
     "numero_empleado": "2095",
     "nombre": "GUZMAN AGUILAR LILIA",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA A",
     "turno": "4",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -292,7 +282,7 @@
   {
     "numero_empleado": "2106",
     "nombre": "ALEGRIA BALDERAS EVELIA",
-    "seccion": "A. CALIDAD 2DO. TURNO",
+    "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 A",
     "turno": "2",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
@@ -302,7 +292,7 @@
   {
     "numero_empleado": "2154",
     "nombre": "CAMPOS MEJIA HERNAN",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "MATERIALISTA A",
     "turno": "1",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -312,7 +302,7 @@
   {
     "numero_empleado": "2160",
     "nombre": "GUZMAN ALFARO DAVID ALEXEI",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "CAPTURISTA RPS A",
     "turno": "4",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -322,7 +312,7 @@
   {
     "numero_empleado": "2201",
     "nombre": "MARQUEZ HIPOLITO YAZMIN NAYELI",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "4",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -332,7 +322,7 @@
   {
     "numero_empleado": "2227",
     "nombre": "LEON TAPIA MARIO",
-    "seccion": "PRODUCCIÓN MONTAJE",
+    "sección": "PRODUCCIÓN MONTAJE",
     "puesto": "MONTADOR DE MOLDES B",
     "turno": "2",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -342,7 +332,7 @@
   {
     "numero_empleado": "2247",
     "nombre": "BIBIANO GARCIA FLOR",
-    "seccion": "PRODUCCIÓN ADMTVO",
+    "sección": "PRODUCCIÓN ADMTVO",
     "puesto": "SUPERVISOR DE PRODUCCIÓN C",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -352,7 +342,7 @@
   {
     "numero_empleado": "2249",
     "nombre": "LOPEZ HERRERA SARA",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
@@ -362,7 +352,7 @@
   {
     "numero_empleado": "2254",
     "nombre": "HERNANDEZ LOPEZ MARIA DE LOS REMEDIOS",
-    "seccion": "A. CALIDAD 1ER TURNO",
+    "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 B",
     "turno": "1",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -372,7 +362,7 @@
   {
     "numero_empleado": "2277",
     "nombre": "PEREZ CORTES ELIZABETH",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "4",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -382,7 +372,7 @@
   {
     "numero_empleado": "2286",
     "nombre": "CORTES VELAZQUEZ ANALLELY",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "AUXILIAR DE BÁSCULA A",
     "turno": "3",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -392,7 +382,7 @@
   {
     "numero_empleado": "2305",
     "nombre": "VILLA SERVIN LORENA",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "4",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -402,7 +392,7 @@
   {
     "numero_empleado": "2315",
     "nombre": "NIEVES MANDUJANO YOLANDA",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA A",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -412,7 +402,7 @@
   {
     "numero_empleado": "2330",
     "nombre": "LOYOLA CASTAÑON VICTOR",
-    "seccion": "METROLOGÍA",
+    "sección": "METROLOGÍA",
     "puesto": "METRÓLOGO A",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
@@ -422,7 +412,7 @@
   {
     "numero_empleado": "2338",
     "nombre": "VARGAS MEJIA SONIA ABIGAIL",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA A",
     "turno": "4",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
@@ -432,7 +422,7 @@
   {
     "numero_empleado": "2341",
     "nombre": "CORNEJO JUAREZ JOSE ALFREDO",
-    "seccion": "ALMACÉN 1ER TURNO ",
+    "sección": "ALMACÉN 1ER TURNO ",
     "puesto": "AUXILIAR DE ALMACÉN B",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -442,7 +432,7 @@
   {
     "numero_empleado": "2348",
     "nombre": "ANGELES ROJAS EFREN",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "MATERIALISTA A",
     "turno": "4",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -452,7 +442,7 @@
   {
     "numero_empleado": "2350",
     "nombre": "FLORES ORTIZ VALERIA MONSERRAT",
-    "seccion": "METROLOGÍA",
+    "sección": "METROLOGÍA",
     "puesto": "METRÓLOGO A",
     "turno": "4",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -462,7 +452,7 @@
   {
     "numero_empleado": "2365",
     "nombre": "PACHECO ALVAREZ MARISOL",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "AUXILIAR DE SUPERVISOR A",
     "turno": "1",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
@@ -472,7 +462,7 @@
   {
     "numero_empleado": "2391",
     "nombre": "GAYOSSO CRUZ ERIKA",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "3",
     "nombre ruta": "R4-SANTA ROSA",
@@ -482,7 +472,7 @@
   {
     "numero_empleado": "2393",
     "nombre": "LEDEZMA SOTELO MA. LOURDES",
-    "seccion": "A. CALIDAD 2DO. TURNO",
+    "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 B",
     "turno": "2",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -492,7 +482,7 @@
   {
     "numero_empleado": "2400",
     "nombre": "RESENDIZ SANCHEZ MARISOL",
-    "seccion": "A. CALIDAD 2DO. TURNO",
+    "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 A",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -502,7 +492,7 @@
   {
     "numero_empleado": "2420",
     "nombre": "CABALLERO MARTINEZ ROSALIA",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "3",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -512,7 +502,7 @@
   {
     "numero_empleado": "2440",
     "nombre": "GALLARDO DIAZ CIUNELY YETZABEL",
-    "seccion": "CALIDAD ADMTVO",
+    "sección": "CALIDAD ADMTVO",
     "puesto": "INSPECTOR DE CALIDAD A",
     "turno": "2",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -522,7 +512,7 @@
   {
     "numero_empleado": "2461",
     "nombre": "ARTEAGA PEREZ CARLOS",
-    "seccion": "ALMACÉN 2DO TURNO ",
+    "sección": "ALMACÉN 2DO TURNO ",
     "puesto": "ALMACENISTA DE MATERIA PRIMA",
     "turno": "2",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -532,7 +522,7 @@
   {
     "numero_empleado": "2479",
     "nombre": "FLORES DOMINGUEZ CORAL ESTEFANIA",
-    "seccion": "METROLOGÍA",
+    "sección": "METROLOGÍA",
     "puesto": "METRÓLOGO B",
     "turno": "4",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -542,7 +532,7 @@
   {
     "numero_empleado": "2494",
     "nombre": "GARCIA GONZALEZ GUILLERMINA",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "2",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -552,7 +542,7 @@
   {
     "numero_empleado": "2545",
     "nombre": "VARGAS GUZMAN RAQUEL",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
@@ -562,7 +552,7 @@
   {
     "numero_empleado": "2617",
     "nombre": "GONZALEZ SUAREZ KARLA DIANE",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "4",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -572,7 +562,7 @@
   {
     "numero_empleado": "2618",
     "nombre": "ALVAREZ ROMERO MARIA GUADALUPE",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA A",
     "turno": "4",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -582,7 +572,7 @@
   {
     "numero_empleado": "2635",
     "nombre": "LOPEZ CARRILLO JONATHAN EDUARDO",
-    "seccion": "METROLOGÍA",
+    "sección": "METROLOGÍA",
     "puesto": "METRÓLOGO A",
     "turno": "4",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -592,7 +582,7 @@
   {
     "numero_empleado": "2645",
     "nombre": "BELTRAN RAMIREZ MA CONSUELO ASUCENA",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "PREPARADOR B",
     "turno": "2",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
@@ -602,7 +592,7 @@
   {
     "numero_empleado": "2672",
     "nombre": "SOLIS OSORIO MIREYA",
-    "seccion": "A. CALIDAD 2DO. TURNO",
+    "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 B",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -612,7 +602,7 @@
   {
     "numero_empleado": "2676",
     "nombre": "CECILIANO GONZALEZ MARIA PUEBLITO AIDE",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "MATERIALISTA A",
     "turno": "4",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -622,7 +612,7 @@
   {
     "numero_empleado": "2706",
     "nombre": "ARREDONDO GATICA REBECA",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
@@ -632,7 +622,7 @@
   {
     "numero_empleado": "2710",
     "nombre": "JIMENEZ GARCIA SHEYLA ISABEL",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
@@ -642,7 +632,7 @@
   {
     "numero_empleado": "2714",
     "nombre": "CORONA GONZALEZ LUIS MIGUEL",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "AUXILIAR DE BÁSCULA A",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
@@ -652,7 +642,7 @@
   {
     "numero_empleado": "2725",
     "nombre": "VALDEZ CAZARES RICARDO LORENZO",
-    "seccion": "METROLOGÍA",
+    "sección": "METROLOGÍA",
     "puesto": "METRÓLOGO A",
     "turno": "2",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -662,7 +652,7 @@
   {
     "numero_empleado": "2734",
     "nombre": "MARTINEZ COBOS OMAR",
-    "seccion": "PRODUCCIÓN ADMTVO",
+    "sección": "PRODUCCIÓN ADMTVO",
     "puesto": "SUPERVISOR DE PRODUCCIÓN C",
     "turno": "2",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -672,7 +662,7 @@
   {
     "numero_empleado": "2741",
     "nombre": "GARCIA AVILES JAVIER",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "PREPARADOR A",
     "turno": "3",
     "nombre ruta": "R4-SANTA ROSA",
@@ -682,7 +672,7 @@
   {
     "numero_empleado": "2777",
     "nombre": "ROSAS ALMANZA MARIA ALEJANDRA",
-    "seccion": "CALIDAD ADMTVO",
+    "sección": "CALIDAD ADMTVO",
     "puesto": "INSPECTOR DE CALIDAD B",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
@@ -692,7 +682,7 @@
   {
     "numero_empleado": "2863",
     "nombre": "MENDOZA CASTILLO BRENDA",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA A",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
@@ -702,7 +692,7 @@
   {
     "numero_empleado": "2874",
     "nombre": "NATAREN AGUAS MARIA DEL CARMEN",
-    "seccion": "METROLOGÍA",
+    "sección": "METROLOGÍA",
     "puesto": "METRÓLOGO B",
     "turno": "3",
     "nombre ruta": "R4-SANTA ROSA",
@@ -712,7 +702,7 @@
   {
     "numero_empleado": "2912",
     "nombre": "LEYTON CRUZ NANCY",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA A",
     "turno": "3",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -722,7 +712,7 @@
   {
     "numero_empleado": "2916",
     "nombre": "BARON GARCIA KATIA",
-    "seccion": "A. CALIDAD 2DO. TURNO",
+    "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 B",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
@@ -732,7 +722,7 @@
   {
     "numero_empleado": "2932",
     "nombre": "RAMIREZ ESPINOZA ANDREA CELESTE",
-    "seccion": "A. CALIDAD 2DO. TURNO",
+    "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 B",
     "turno": "2",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -742,7 +732,7 @@
   {
     "numero_empleado": "2934",
     "nombre": "SILVAR FLORES MONICA CECILIA",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA A",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -752,7 +742,7 @@
   {
     "numero_empleado": "2942",
     "nombre": "PADRON GONZALEZ FLOR EDITH",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA A",
     "turno": "3",
     "nombre ruta": "R4-SANTA ROSA",
@@ -762,7 +752,7 @@
   {
     "numero_empleado": "2943",
     "nombre": "BRAVO ANDRADE MIRELLA",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
@@ -772,7 +762,7 @@
   {
     "numero_empleado": "2946",
     "nombre": "MARTINEZ HERNANDEZ MAARA ELIZABETH",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "AUXILIAR DE SUPERVISOR A",
     "turno": "4",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -782,7 +772,7 @@
   {
     "numero_empleado": "2949",
     "nombre": "VARGAS ONTIVEROS YOSELINE",
-    "seccion": "A. CALIDAD 1ER TURNO",
+    "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 B",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -792,7 +782,7 @@
   {
     "numero_empleado": "2950",
     "nombre": "ACUENTECO AGUSTIN MARIA TERESA",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA A",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -802,7 +792,7 @@
   {
     "numero_empleado": "2951",
     "nombre": "RIVERA LANDA FILIBERTO",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -812,7 +802,7 @@
   {
     "numero_empleado": "2981",
     "nombre": "FLORES OLVERA MARIA FERNANDA",
-    "seccion": "A. CALIDAD 1ER TURNO",
+    "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 B",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -822,7 +812,7 @@
   {
     "numero_empleado": "2994",
     "nombre": "QUEZADA GUILLEN JULIO EVEREST",
-    "seccion": "CALIDAD ADMTVO",
+    "sección": "CALIDAD ADMTVO",
     "puesto": "INSPECTOR DE CALIDAD C",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
@@ -832,7 +822,7 @@
   {
     "numero_empleado": "2996",
     "nombre": "MARTINEZ ESPINO PATRICIA",
-    "seccion": "A. CALIDAD 2DO. TURNO",
+    "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 B",
     "turno": "2",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -842,7 +832,7 @@
   {
     "numero_empleado": "3079",
     "nombre": "JUAREZ CALVO MARTHA GRISEL",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA A",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
@@ -852,7 +842,7 @@
   {
     "numero_empleado": "3093",
     "nombre": "ROMAN ZAMORA LETICIA",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA A",
     "turno": "3",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -862,7 +852,7 @@
   {
     "numero_empleado": "3105",
     "nombre": "OCHOA ORTUÑO JOSE MA.",
-    "seccion": "PRODUCCIÓN ADMTVO",
+    "sección": "PRODUCCIÓN ADMTVO",
     "puesto": "SUPERVISOR DE PRODUCCIÓN B",
     "turno": "3",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -872,7 +862,7 @@
   {
     "numero_empleado": "3118",
     "nombre": "SUAREZ ALANIS SABINO CRUZ",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "MATERIALISTA B",
     "turno": "1",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -882,7 +872,7 @@
   {
     "numero_empleado": "3144",
     "nombre": "GONZALEZ SANCHEZ NADIA YOSAHANDY",
-    "seccion": "A. CALIDAD 1ER TURNO",
+    "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 B",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
@@ -892,7 +882,7 @@
   {
     "numero_empleado": "3163",
     "nombre": "SILVA CARMONA MARIAN ITZEL",
-    "seccion": "CALIDAD ADMTVO",
+    "sección": "CALIDAD ADMTVO",
     "puesto": "INSPECTOR DE CALIDAD A",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -902,7 +892,7 @@
   {
     "numero_empleado": "3166",
     "nombre": "NAVARRO SOLANO KELLY",
-    "seccion": "A. CALIDAD 1ER TURNO",
+    "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 B",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -912,7 +902,7 @@
   {
     "numero_empleado": "3168",
     "nombre": "FLORES IBARRA VICTOR MANUEL",
-    "seccion": "PRODUCCIÓN ADMTVO",
+    "sección": "PRODUCCIÓN ADMTVO",
     "puesto": "SUPERVISOR DE PRODUCCIÓN B",
     "turno": "2",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -922,7 +912,7 @@
   {
     "numero_empleado": "3190",
     "nombre": "HERNANDEZ DE LA CRUZ GUADALUPE",
-    "seccion": "CALIDAD ADMTVO",
+    "sección": "CALIDAD ADMTVO",
     "puesto": "INSPECTOR DE CALIDAD C",
     "turno": "3",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -932,7 +922,7 @@
   {
     "numero_empleado": "3198",
     "nombre": "MORON ARREDONDO JENNY SEVERA",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "3",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -942,7 +932,7 @@
   {
     "numero_empleado": "3202",
     "nombre": "ZAMANO CAMACHO MARIA DEL ROCIO",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "3",
     "nombre ruta": "R4-SANTA ROSA",
@@ -952,7 +942,7 @@
   {
     "numero_empleado": "3256",
     "nombre": "ORTIZ FLORES ROMAN",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "4",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -962,7 +952,7 @@
   {
     "numero_empleado": "3257",
     "nombre": "TAFOLLA RODRIGUEZ ARTURO VIDAL",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "PREPARADOR A",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -972,7 +962,7 @@
   {
     "numero_empleado": "3263",
     "nombre": "CELESTINO HERNANDEZ RICARDO",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "MATERIALISTA B",
     "turno": "2",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -982,7 +972,7 @@
   {
     "numero_empleado": "3266",
     "nombre": "HERNANDEZ GALLARDO JOSE MARTIN",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "CHECK LIST B",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
@@ -992,7 +982,7 @@
   {
     "numero_empleado": "3276",
     "nombre": "CRUZ ESPINOZA LIDIA CONCEPCION",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "2",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -1002,7 +992,7 @@
   {
     "numero_empleado": "3289",
     "nombre": "CRUZ REYES ANTONIO",
-    "seccion": "ALMACÉN 2DO TURNO ",
+    "sección": "ALMACÉN 2DO TURNO ",
     "puesto": "AUXILIAR DE ALMACÉN A",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
@@ -1012,7 +1002,7 @@
   {
     "numero_empleado": "3306",
     "nombre": "ESCAMILLA VAZQUEZ KARLA HEIMI",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "MATERIALISTA A",
     "turno": "3",
     "nombre ruta": "R4-SANTA ROSA",
@@ -1022,7 +1012,7 @@
   {
     "numero_empleado": "3316",
     "nombre": "PEREZ SANCHEZ LUIS ALBERTO",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
@@ -1032,7 +1022,7 @@
   {
     "numero_empleado": "3324",
     "nombre": "ANGEL BLANCO RAUL ENRIQUE",
-    "seccion": "PRODUCCIÓN MONTAJE",
+    "sección": "PRODUCCIÓN MONTAJE",
     "puesto": "MONTADOR DE MOLDES D",
     "turno": "3",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -1042,7 +1032,7 @@
   {
     "numero_empleado": "3366",
     "nombre": "TREJO REYES FRANCISCA",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
@@ -1052,7 +1042,7 @@
   {
     "numero_empleado": "3375",
     "nombre": "SANTIZ GOMEZ BELINDA",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
@@ -1062,7 +1052,7 @@
   {
     "numero_empleado": "3381",
     "nombre": "JACINTO TEXMAYE BRENDA",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "4",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -1072,7 +1062,7 @@
   {
     "numero_empleado": "3389",
     "nombre": "HERNANDEZ MEJIA BLANCA",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "2",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -1082,7 +1072,7 @@
   {
     "numero_empleado": "3396",
     "nombre": "TREJO GARCIA EUGENIO",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
@@ -1092,7 +1082,7 @@
   {
     "numero_empleado": "3398",
     "nombre": "LEDESMA MORALES LYNDA JANETH",
-    "seccion": "A. CALIDAD 1ER TURNO",
+    "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 B",
     "turno": "1",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -1102,7 +1092,7 @@
   {
     "numero_empleado": "3403",
     "nombre": "MORALES ZUÑIGA JUAN FRANCISCO",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "4",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -1112,7 +1102,7 @@
   {
     "numero_empleado": "3414",
     "nombre": "PEREZ PEREZ JOSE RONALDO",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "PREPARADOR B",
     "turno": "4",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -1122,7 +1112,7 @@
   {
     "numero_empleado": "3432",
     "nombre": "ARIZA BENITEZ ESTEPHANIE ELISBETH",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "CAPTURISTA RPS B",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -1132,9 +1122,9 @@
   {
     "numero_empleado": "3466",
     "nombre": "AGUILAR GUERRERO JOSE ALONSO",
-    "seccion": "MANTENIMIENTO",
+    "sección": "MANTENIMIENTO",
     "puesto": "TÉCNICO DE MANTENIMIENTO B",
-    "turno": "1",
+    "turno": "2",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
     "parada": "LA BARRETA",
     "colonia": "TIENDA EN LA ENTRADA"
@@ -1142,7 +1132,7 @@
   {
     "numero_empleado": "3471",
     "nombre": "VARGAS VELAZQUEZ MARIA ELENA",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
@@ -1152,7 +1142,7 @@
   {
     "numero_empleado": "3473",
     "nombre": "MURILLO TLAZALO PABLO",
-    "seccion": "A. CALIDAD 2DO. TURNO",
+    "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 C",
     "turno": "2",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -1162,7 +1152,7 @@
   {
     "numero_empleado": "3520",
     "nombre": "SALINAS MARTINEZ ROSA MARIA",
-    "seccion": "RECURSOS HUMANOS",
+    "sección": "RECURSOS HUMANOS",
     "puesto": "AUXILIAR DE LIMPIEZA B",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -1172,7 +1162,7 @@
   {
     "numero_empleado": "3531",
     "nombre": "MORA JUAREZ JOSE OSWALDO",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
@@ -1182,7 +1172,7 @@
   {
     "numero_empleado": "3534",
     "nombre": "GUILLEN ALOR FELIPE",
-    "seccion": "MANTENIMIENTO",
+    "sección": "MANTENIMIENTO",
     "puesto": "TECNICO DE MANTENIMIENTO DE EDIFICIOS A",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -1192,7 +1182,7 @@
   {
     "numero_empleado": "3548",
     "nombre": "PEREZ CABELLO JUAN ANTONIO",
-    "seccion": "MOLDES",
+    "sección": "MOLDES",
     "puesto": "TÉCNICO DE MOLDES B",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -1202,7 +1192,7 @@
   {
     "numero_empleado": "3563",
     "nombre": "PEREZ PLATON SANDRA ESTHER",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "3",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -1212,7 +1202,7 @@
   {
     "numero_empleado": "3576",
     "nombre": "VIZCAYA AGUILLON MARIA GUADALUPE",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "2",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -1222,7 +1212,7 @@
   {
     "numero_empleado": "3582",
     "nombre": "VILLAMAR HINOJOSA DEISY",
-    "seccion": "PRODUCCIÓN ADMTVO",
+    "sección": "PRODUCCIÓN ADMTVO",
     "puesto": "SUPERVISOR DE PRODUCCIÓN C",
     "turno": "2",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -1232,7 +1222,7 @@
   {
     "numero_empleado": "3593",
     "nombre": "DE LA CRUZ BECERRA ENRIQUE",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
@@ -1242,7 +1232,7 @@
   {
     "numero_empleado": "3600",
     "nombre": "ROSAS FLORES DANIEL DAVID",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "4",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -1252,7 +1242,7 @@
   {
     "numero_empleado": "3610",
     "nombre": "DIAZ GUTIERREZ JOSE GUADALUPE",
-    "seccion": "PRODUCCIÓN ADMTVO",
+    "sección": "PRODUCCIÓN ADMTVO",
     "puesto": "SUPERVISOR DE PRODUCCIÓN C",
     "turno": "3",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -1262,7 +1252,7 @@
   {
     "numero_empleado": "3611",
     "nombre": "GONZALEZ VILLANUEVA PAULINA MIREYA",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "PREPARADOR A",
     "turno": "3",
     "nombre ruta": "R4-SANTA ROSA",
@@ -1272,7 +1262,7 @@
   {
     "numero_empleado": "3624",
     "nombre": "ALONSO MORENO GIOVANNA GUADALUPE",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "3",
     "nombre ruta": "R4-SANTA ROSA",
@@ -1282,7 +1272,7 @@
   {
     "numero_empleado": "3650",
     "nombre": "TELLES MORALES MAURICIO ADAN",
-    "seccion": "MANTENIMIENTO",
+    "sección": "MANTENIMIENTO",
     "puesto": "AUXILIAR DE MANTENIMIENTO B",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -1292,7 +1282,7 @@
   {
     "numero_empleado": "3669",
     "nombre": "DE LUNA CASTILLO ANA BERENICE",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "3",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -1302,7 +1292,7 @@
   {
     "numero_empleado": "3671",
     "nombre": "JIMENEZ ROMAN CRISTHIAN RICARDO",
-    "seccion": "CALIDAD ADMTVO",
+    "sección": "CALIDAD ADMTVO",
     "puesto": "INSPECTOR DE CALIDAD C",
     "turno": "2",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -1312,7 +1302,7 @@
   {
     "numero_empleado": "3672",
     "nombre": "GALLARDO CHAVEZ ODILIA",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "3",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -1322,7 +1312,7 @@
   {
     "numero_empleado": "3680",
     "nombre": "MUÑOZ ESPINOZA ERIKA PATRICIA",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
@@ -1332,7 +1322,7 @@
   {
     "numero_empleado": "3694",
     "nombre": "PEREZ BAHENA ALEJANDRA",
-    "seccion": "METROLOGÍA",
+    "sección": "METROLOGÍA",
     "puesto": "METRÓLOGO C",
     "turno": "3",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -1342,7 +1332,7 @@
   {
     "numero_empleado": "3706",
     "nombre": "VALLADARES MARTINEZ CRISTIAN",
-    "seccion": "METROLOGÍA",
+    "sección": "METROLOGÍA",
     "puesto": "METRÓLOGO C",
     "turno": "2",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -1352,7 +1342,7 @@
   {
     "numero_empleado": "3734",
     "nombre": "CORTEZ HILARIO CARLOS ALBERTO",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
@@ -1362,7 +1352,7 @@
   {
     "numero_empleado": "3745",
     "nombre": "JIMENEZ DE LA CRUZ ELVIRA",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "3",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -1372,7 +1362,7 @@
   {
     "numero_empleado": "3754",
     "nombre": "HERNANDEZ CAMACHO LILIANA",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -1382,7 +1372,7 @@
   {
     "numero_empleado": "3764",
     "nombre": "GONZALEZ RAMIREZ ISRAEL",
-    "seccion": "MOLDES",
+    "sección": "MOLDES",
     "puesto": "TÉCNICO DE MOLDES C",
     "turno": "2",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
@@ -1392,7 +1382,7 @@
   {
     "numero_empleado": "3772",
     "nombre": "MORENO ROMERO OSMAR",
-    "seccion": "PRODUCCIÓN ADMTVO",
+    "sección": "PRODUCCIÓN ADMTVO",
     "puesto": "INGENIERO DE PROCESO D",
     "turno": "4",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -1402,7 +1392,7 @@
   {
     "numero_empleado": "3773",
     "nombre": "PEREZ UGALDE KARLA MARIANA",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -1412,7 +1402,7 @@
   {
     "numero_empleado": "3780",
     "nombre": "SUAREZ HERNANDEZ DANIEL SANTIAGO",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "PREPARADOR B",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -1422,7 +1412,7 @@
   {
     "numero_empleado": "3785",
     "nombre": "FLORES OLVERA FERNANDO",
-    "seccion": "A. CALIDAD 1ER TURNO",
+    "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 B",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -1432,7 +1422,7 @@
   {
     "numero_empleado": "3790",
     "nombre": "GONZALEZ CARMONA GUADALUPE",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA B",
     "turno": "3",
     "nombre ruta": "R4-SANTA ROSA",
@@ -1442,7 +1432,7 @@
   {
     "numero_empleado": "3796",
     "nombre": "ALVARADO COSME ANGEL ALBERTO",
-    "seccion": "A. CALIDAD 2DO. TURNO",
+    "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 C",
     "turno": "2",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -1452,9 +1442,9 @@
   {
     "numero_empleado": "3801",
     "nombre": "MORALES PARRA EDUARDO",
-    "seccion": "MANTENIMIENTO",
+    "sección": "MANTENIMIENTO",
     "puesto": "TÉCNICO DE MANTENIMIENTO A",
-    "turno": "2",
+    "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
     "parada": "PIE DE LA CUESTA",
     "colonia": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
@@ -1462,7 +1452,7 @@
   {
     "numero_empleado": "3803",
     "nombre": "MARQUEZ EVANGELISTA YERANI",
-    "seccion": "A. CALIDAD 2DO. TURNO",
+    "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 C",
     "turno": "2",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -1472,7 +1462,7 @@
   {
     "numero_empleado": "3809",
     "nombre": "SIXTOS PINEDA LUIS ANGEL",
-    "seccion": "PRODUCCIÓN ADMTVO",
+    "sección": "PRODUCCIÓN ADMTVO",
     "puesto": "SUPERVISOR DE PRODUCCIÓN D",
     "turno": "4",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -1482,7 +1472,7 @@
   {
     "numero_empleado": "3816",
     "nombre": "GALICIA ROJAS JONATAN",
-    "seccion": "MANTENIMIENTO",
+    "sección": "MANTENIMIENTO",
     "puesto": "AUXILIAR DE MANTENIMIENTO A",
     "turno": "2",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -1490,19 +1480,9 @@
     "colonia": "PASEO QUERETARO ESQ. PIRINEOS"
   },
   {
-    "numero_empleado": "3818",
-    "nombre": "CALZADA HERNANDEZ MARIAM XIMENA",
-    "seccion": "RECURSOS HUMANOS",
-    "puesto": "ANALISTA DE RECURSOS HUMANOS",
-    "turno": "3",
-    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "parada": "PASEOS QUERETARO",
-    "colonia": "PARADA EN LA PANADERIA LECAROZ"
-  },
-  {
     "numero_empleado": "3831",
     "nombre": "ARTEAGA MEJIA SARAHI",
-    "seccion": "ALMACÉN 1ER TURNO ",
+    "sección": "ALMACÉN 1ER TURNO ",
     "puesto": "AUXILIAR DE ALMACÉN B",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -1512,7 +1492,7 @@
   {
     "numero_empleado": "3836",
     "nombre": "CORONEL GALVÁN DALILA",
-    "seccion": "A. CALIDAD 1ER TURNO",
+    "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 B",
     "turno": "1",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -1522,7 +1502,7 @@
   {
     "numero_empleado": "3870",
     "nombre": "SANCHEZ LUNA MOIRA DARELI",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "3",
     "nombre ruta": "R4-SANTA ROSA",
@@ -1532,7 +1512,7 @@
   {
     "numero_empleado": "3881",
     "nombre": "GARCIA DE LA CRUZ VICTORIA EDITH",
-    "seccion": "CALIDAD ADMTVO",
+    "sección": "CALIDAD ADMTVO",
     "puesto": "INSPECTOR DE CALIDAD D",
     "turno": "3",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -1542,7 +1522,7 @@
   {
     "numero_empleado": "3882",
     "nombre": "RICO RODRIGUEZ MARIA BIBIANA",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "4",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -1552,7 +1532,7 @@
   {
     "numero_empleado": "3883",
     "nombre": "AGUILAR HERNANDEZ SAMARA ODETTE",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "1",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
@@ -1562,7 +1542,7 @@
   {
     "numero_empleado": "3897",
     "nombre": "GONZALEZ GALLARETA VIANNEY",
-    "seccion": "A. CALIDAD 2DO. TURNO",
+    "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 B",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -1572,7 +1552,7 @@
   {
     "numero_empleado": "3899",
     "nombre": "URIBE VELAZQUEZ MARINA",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "3",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -1582,7 +1562,7 @@
   {
     "numero_empleado": "3930",
     "nombre": "LUNA SANCHEZ ALDO ALFREDO",
-    "seccion": "PRODUCCIÓN MONTAJE",
+    "sección": "PRODUCCIÓN MONTAJE",
     "puesto": "MONTADOR DE MOLDES B",
     "turno": "3",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -1592,7 +1572,7 @@
   {
     "numero_empleado": "3932",
     "nombre": "CASTAÑEDA HERNANDEZ ARELI",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "2",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -1602,7 +1582,7 @@
   {
     "numero_empleado": "3942",
     "nombre": "SANTANA ZEPEDA FRANCISCA",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "2",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -1612,7 +1592,7 @@
   {
     "numero_empleado": "3945",
     "nombre": "LOPEZ OLVERA JUAN DIEGO",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -1622,7 +1602,7 @@
   {
     "numero_empleado": "3957",
     "nombre": "SALVADOR URBINA LAURA NANCY",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "3",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -1632,7 +1612,7 @@
   {
     "numero_empleado": "3959",
     "nombre": "LOPEZ YAÑEZ DIEGO",
-    "seccion": "METROLOGÍA",
+    "sección": "METROLOGÍA",
     "puesto": "METRÓLOGO C",
     "turno": "1",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
@@ -1642,7 +1622,7 @@
   {
     "numero_empleado": "3960",
     "nombre": "GALVEZ LAZARO JUAN MANUEL",
-    "seccion": "METROLOGÍA",
+    "sección": "METROLOGÍA",
     "puesto": "METRÓLOGO C",
     "turno": "4",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -1652,7 +1632,7 @@
   {
     "numero_empleado": "3983",
     "nombre": "MARTINEZ HERNANDEZ CLAUDIA",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "CHECK LIST B",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
@@ -1662,7 +1642,7 @@
   {
     "numero_empleado": "3997",
     "nombre": "VILLA RAMIREZ IRIS",
-    "seccion": "A. CALIDAD 2DO. TURNO",
+    "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 C",
     "turno": "2",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -1672,7 +1652,7 @@
   {
     "numero_empleado": "3999",
     "nombre": "LUNA VELAZQUEZ MA. ESTHER",
-    "seccion": "RECURSOS HUMANOS",
+    "sección": "RECURSOS HUMANOS",
     "puesto": "AUXILIAR DE LIMPIEZA B",
     "turno": "2",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -1682,7 +1662,7 @@
   {
     "numero_empleado": "4000",
     "nombre": "MARQUEZ MORENO ALONDRA",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "1",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -1692,7 +1672,7 @@
   {
     "numero_empleado": "4010",
     "nombre": "HERNANDEZ HERNANDEZ ADAN ULISES",
-    "seccion": "ALMACÉN 1ER TURNO ",
+    "sección": "ALMACÉN 1ER TURNO ",
     "puesto": "AUXILIAR DE ALMACÉN C",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -1702,7 +1682,7 @@
   {
     "numero_empleado": "4017",
     "nombre": "CRUZ NAVARRETE DIANA ALHELI",
-    "seccion": "A. CALIDAD 1ER TURNO",
+    "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 C",
     "turno": "1",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -1712,7 +1692,7 @@
   {
     "numero_empleado": "4028",
     "nombre": "MEDINA SOTO MARIA DOLORES",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "4",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -1722,7 +1702,7 @@
   {
     "numero_empleado": "4040",
     "nombre": "VAZQUEZ IRETA SOFIA GUADALUPE",
-    "seccion": "CALIDAD ADMTVO",
+    "sección": "CALIDAD ADMTVO",
     "puesto": "SUPERVISOR DE ACABADOS - GP12 C",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -1732,7 +1712,7 @@
   {
     "numero_empleado": "4041",
     "nombre": "HERNANDEZ GARCIA JOVANIC TOMAS",
-    "seccion": "PRODUCCIÓN ADMTVO",
+    "sección": "PRODUCCIÓN ADMTVO",
     "puesto": "SUPERVISOR DE PRODUCCIÓN D",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
@@ -1742,7 +1722,7 @@
   {
     "numero_empleado": "4042",
     "nombre": "MUÑOZ SERVIN XIMENA",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "4",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -1752,7 +1732,7 @@
   {
     "numero_empleado": "4044",
     "nombre": "BARRIENTOS MONROY DIEGO",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "MATERIALISTA B",
     "turno": "2",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -1762,7 +1742,7 @@
   {
     "numero_empleado": "4049",
     "nombre": "GUADARRAMA VELAZQUEZ MARIA DE JESUS",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
@@ -1772,7 +1752,7 @@
   {
     "numero_empleado": "4054",
     "nombre": "ESCOBEDO DE LA CRUZ MARIA DANIELA",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
@@ -1782,7 +1762,7 @@
   {
     "numero_empleado": "4061",
     "nombre": "CRUZ SALINAS MARIA EUGENIA",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
@@ -1792,7 +1772,7 @@
   {
     "numero_empleado": "4063",
     "nombre": "HERNANDEZ CABRERA JUANA",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
@@ -1802,7 +1782,7 @@
   {
     "numero_empleado": "4068",
     "nombre": "SANCHEZ ORTIZ EFRAIN",
-    "seccion": "PRODUCCIÓN MONTAJE",
+    "sección": "PRODUCCIÓN MONTAJE",
     "puesto": "MONTADOR DE MOLDES D",
     "turno": "1",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
@@ -1812,7 +1792,7 @@
   {
     "numero_empleado": "4077",
     "nombre": "VILLANUEVA LUCIANO MARIA DEL CARMEN",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "4",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -1822,7 +1802,7 @@
   {
     "numero_empleado": "4078",
     "nombre": "SUSANO TEODORO YOSELIN",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "4",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -1832,7 +1812,7 @@
   {
     "numero_empleado": "4084",
     "nombre": "NUÑEZ RIVERA PAOLA GIOVANNA",
-    "seccion": "METROLOGÍA",
+    "sección": "METROLOGÍA",
     "puesto": "METRÓLOGO C",
     "turno": "1",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -1842,7 +1822,7 @@
   {
     "numero_empleado": "4096",
     "nombre": "MARTINEZ REMIGIO ARTURO",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "3",
     "nombre ruta": "R4-SANTA ROSA",
@@ -1852,7 +1832,7 @@
   {
     "numero_empleado": "4097",
     "nombre": "HERNANDEZ GARCIA DIEGO IVAN",
-    "seccion": "RECURSOS HUMANOS",
+    "sección": "RECURSOS HUMANOS",
     "puesto": "AUXILIAR DE LIMPIEZA B",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
@@ -1862,7 +1842,7 @@
   {
     "numero_empleado": "4098",
     "nombre": "HERNANDEZ VITE CESAR ARMANDO",
-    "seccion": "METROLOGÍA",
+    "sección": "METROLOGÍA",
     "puesto": "METRÓLOGO C",
     "turno": "3",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -1872,7 +1852,7 @@
   {
     "numero_empleado": "4103",
     "nombre": "MONTES DE OCA HERNANDEZ LORENA",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "3",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -1882,7 +1862,7 @@
   {
     "numero_empleado": "4106",
     "nombre": "ZEPEDA MONTES DE OCA EMMANUEL ANTONIO",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -1892,7 +1872,7 @@
   {
     "numero_empleado": "4111",
     "nombre": "HERNANDEZ PEREZ CARLOS LORENZO",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -1902,7 +1882,7 @@
   {
     "numero_empleado": "4112",
     "nombre": "MARTINEZ SOTO MARIA BRENDA",
-    "seccion": "A. CALIDAD 1ER TURNO",
+    "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 C",
     "turno": "1",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -1912,7 +1892,7 @@
   {
     "numero_empleado": "4114",
     "nombre": "BELTRAN MENDOZA MARIA FERNANDA",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
@@ -1922,7 +1902,7 @@
   {
     "numero_empleado": "4115",
     "nombre": "REYES MONROY FRANCISCO ALEJANDRO",
-    "seccion": "MANTENIMIENTO",
+    "sección": "MANTENIMIENTO",
     "puesto": "TÉCNICO DE MANTENIMIENTO B",
     "turno": "3",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -1932,7 +1912,7 @@
   {
     "numero_empleado": "4116",
     "nombre": "PAEZ ACEVEDO ITZEL",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "2",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -1942,7 +1922,7 @@
   {
     "numero_empleado": "4117",
     "nombre": "GUZMAN MENDOZA LAURA ROMINA",
-    "seccion": "CALIDAD ADMTVO",
+    "sección": "CALIDAD ADMTVO",
     "puesto": "INSPECTOR DE CALIDAD D",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -1952,7 +1932,7 @@
   {
     "numero_empleado": "4125",
     "nombre": "RUIZ DE VICENTE JUANA ABIGAIL",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
@@ -1962,7 +1942,7 @@
   {
     "numero_empleado": "4128",
     "nombre": "ESTRADA ELIZALDE MARTHA",
-    "seccion": "A. CALIDAD 1ER TURNO",
+    "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 C",
     "turno": "1",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -1972,7 +1952,7 @@
   {
     "numero_empleado": "4129",
     "nombre": "HERNANDEZ CITALAN JOSE DAVID",
-    "seccion": "A. CALIDAD 2DO. TURNO",
+    "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 D",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -1982,7 +1962,7 @@
   {
     "numero_empleado": "4137",
     "nombre": "HERNANDEZ HUERTA MARIA DE LOURDES",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "2",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
@@ -1992,7 +1972,7 @@
   {
     "numero_empleado": "4138",
     "nombre": "VARGAS VAZQUEZ NADIA IVONNE",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "2",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
@@ -2002,7 +1982,7 @@
   {
     "numero_empleado": "4142",
     "nombre": "LUGO DE JESUS DANIEL MARTIN",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -2012,7 +1992,7 @@
   {
     "numero_empleado": "4143",
     "nombre": "SANCHEZ GARCIA DIANA LIZBETH",
-    "seccion": "A. CALIDAD 2DO. TURNO",
+    "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 C",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
@@ -2022,7 +2002,7 @@
   {
     "numero_empleado": "4144",
     "nombre": "OLMEDO BAUTISTA JOSE ELIAS",
-    "seccion": "ALMACÉN 1ER TURNO ",
+    "sección": "ALMACÉN 1ER TURNO ",
     "puesto": "AUXILIAR DE ALMACÉN C",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -2032,7 +2012,7 @@
   {
     "numero_empleado": "4146",
     "nombre": "MARQUEZ HERRERA AMAIRANI",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "3",
     "nombre ruta": "R4-SANTA ROSA",
@@ -2042,7 +2022,7 @@
   {
     "numero_empleado": "4147",
     "nombre": "GONZALEZ MENDEZ SANDY ANAYELI",
-    "seccion": "ALMACÉN 1ER TURNO ",
+    "sección": "ALMACÉN 1ER TURNO ",
     "puesto": "AUXILIAR DE ALMACÉN C",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -2052,7 +2032,7 @@
   {
     "numero_empleado": "4154",
     "nombre": "DOMINGUEZ SANTOS FLORA",
-    "seccion": "A. CALIDAD 2DO. TURNO",
+    "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 C",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
@@ -2062,7 +2042,7 @@
   {
     "numero_empleado": "4162",
     "nombre": "CORDOBA OLGUIN MAHRAY",
-    "seccion": "A. CALIDAD 1ER TURNO",
+    "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 C",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -2072,7 +2052,7 @@
   {
     "numero_empleado": "4165",
     "nombre": "RANGEL GARDUÑO ELIZABETH",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
@@ -2082,7 +2062,7 @@
   {
     "numero_empleado": "4168",
     "nombre": "ANTONIO GARCIA ERIKA YAZMIN",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "1",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -2092,7 +2072,7 @@
   {
     "numero_empleado": "4169",
     "nombre": "LUNA JIMENEZ JENNIFER AMERICA",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "1",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
@@ -2102,7 +2082,7 @@
   {
     "numero_empleado": "4172",
     "nombre": "AGUILAR HIDALGO LISBET",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
@@ -2112,7 +2092,7 @@
   {
     "numero_empleado": "4177",
     "nombre": "RENDON GARCIA NAYELI ISABEL",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "4",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -2122,7 +2102,7 @@
   {
     "numero_empleado": "4178",
     "nombre": "ROSALES MARTINEZ MELINA ISABEL",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "4",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -2132,7 +2112,7 @@
   {
     "numero_empleado": "4179",
     "nombre": "VALENCIA GALINDO ZENON ESTEBAN",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA C",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -2142,7 +2122,7 @@
   {
     "numero_empleado": "4180",
     "nombre": "HERNANDEZ VILLA MARIA FERNANDA",
-    "seccion": "CALIDAD ADMTVO",
+    "sección": "CALIDAD ADMTVO",
     "puesto": "INSPECTOR DE CALIDAD D",
     "turno": "4",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -2152,7 +2132,7 @@
   {
     "numero_empleado": "4185",
     "nombre": "SANTOS ENCARNACION JUAN JOSE",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
@@ -2162,7 +2142,7 @@
   {
     "numero_empleado": "4188",
     "nombre": "ROSALES DE JESUS SILVIA",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "4",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -2172,7 +2152,7 @@
   {
     "numero_empleado": "4189",
     "nombre": "LUNA SANDOVAL ISRAEL",
-    "seccion": "PRODUCCIÓN ADMTVO",
+    "sección": "PRODUCCIÓN ADMTVO",
     "puesto": "SUPERVISOR DE PRODUCCIÓN D",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -2182,9 +2162,9 @@
   {
     "numero_empleado": "4192",
     "nombre": "BALDERAS HERNANDEZ RENE",
-    "seccion": "MANTENIMIENTO",
+    "sección": "MANTENIMIENTO",
     "puesto": "TÉCNICO DE MANTENIMIENTO B",
-    "turno": "2",
+    "turno": "3",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "parada": "PROL. BERNARDO QUINTANA",
     "colonia": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
@@ -2192,7 +2172,7 @@
   {
     "numero_empleado": "4193",
     "nombre": "GAYTAN RAMIREZ MARIA ISABEL",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -2202,9 +2182,9 @@
   {
     "numero_empleado": "4201",
     "nombre": "BAYLON SANCHEZ MARIO ANGEL",
-    "seccion": "MANTENIMIENTO",
+    "sección": "MANTENIMIENTO",
     "puesto": "TÉCNICO DE MANTENIMIENTO C",
-    "turno": "4",
+    "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
     "parada": "SANTA ROSA",
     "colonia": "EN EL PUENTE DE LA CRUZ "
@@ -2212,7 +2192,7 @@
   {
     "numero_empleado": "4203",
     "nombre": "CALIXTO GOMEZ KRYSTAL",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -2222,7 +2202,7 @@
   {
     "numero_empleado": "4208",
     "nombre": "MARTINEZ AGUILAR EMILIA",
-    "seccion": "A. CALIDAD 1ER TURNO",
+    "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 D",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -2232,7 +2212,7 @@
   {
     "numero_empleado": "4209",
     "nombre": "SERRANO AGUILAR EMANUEL",
-    "seccion": "A. CALIDAD 1ER TURNO",
+    "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 D",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -2242,7 +2222,7 @@
   {
     "numero_empleado": "4225",
     "nombre": "AMADOR MARTINEZ STEFANIA",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "3",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -2252,7 +2232,7 @@
   {
     "numero_empleado": "4226",
     "nombre": "CALDERON GOMEZ ALEXIS",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -2262,7 +2242,7 @@
   {
     "numero_empleado": "4227",
     "nombre": "GONZALEZ CRUZ ADRIAN",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "3",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -2272,7 +2252,7 @@
   {
     "numero_empleado": "4228",
     "nombre": "LEON GARCIA MARCOS",
-    "seccion": "CALIDAD ADMTVO",
+    "sección": "CALIDAD ADMTVO",
     "puesto": "INSPECTOR DE CALIDAD D",
     "turno": "2",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -2282,7 +2262,7 @@
   {
     "numero_empleado": "4229",
     "nombre": "DEL ANGEL CAMACHO LIZBETH DANIELA",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -2292,7 +2272,7 @@
   {
     "numero_empleado": "4230",
     "nombre": "HERNANDEZ LOPEZ JOSE ANTONIO",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
@@ -2302,9 +2282,9 @@
   {
     "numero_empleado": "4231",
     "nombre": "TABOADA GARCIA EMMANUEL",
-    "seccion": "MANTENIMIENTO",
+    "sección": "MANTENIMIENTO",
     "puesto": "TÉCNICO DE MANTENIMIENTO B",
-    "turno": "1",
+    "turno": "2",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
     "parada": "AV. DE LA LUZ",
     "colonia": "PARADA DE CAMIONES ESQ. MAYAS"
@@ -2312,7 +2292,7 @@
   {
     "numero_empleado": "4234",
     "nombre": "ARCADIO CRUZ INGRID ALEJANDRA",
-    "seccion": "CALIDAD ADMTVO",
+    "sección": "CALIDAD ADMTVO",
     "puesto": "INSPECTOR DE CALIDAD D",
     "turno": "1",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -2322,7 +2302,7 @@
   {
     "numero_empleado": "4235",
     "nombre": "AMADOR RICO HUMBERTO JESUS",
-    "seccion": "CALIDAD ADMTVO",
+    "sección": "CALIDAD ADMTVO",
     "puesto": "INSPECTOR DE CALIDAD D",
     "turno": "1",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
@@ -2332,7 +2312,7 @@
   {
     "numero_empleado": "4239",
     "nombre": "CALTZONTZI RUIZ VERONICA",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -2342,7 +2322,7 @@
   {
     "numero_empleado": "4240",
     "nombre": "VARGAS MEJIA ANA KAREN",
-    "seccion": "A. CALIDAD 2DO. TURNO",
+    "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 D",
     "turno": "2",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -2352,7 +2332,7 @@
   {
     "numero_empleado": "4251",
     "nombre": "GASPAR SANTOS YESENIA",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "2",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
@@ -2360,19 +2340,9 @@
     "colonia": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
   },
   {
-    "numero_empleado": "4253",
-    "nombre": "ZURITA LOPEZ DAGMARA EVELYN",
-    "seccion": "ALMACÉN 2DO TURNO ",
-    "puesto": "AUXILIAR DE ALMACÉN C",
-    "turno": "2",
-    "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "parada": "SAN JOSE ITURBIDE",
-    "colonia": "PARADA DEL MA. TERESA"
-  },
-  {
     "numero_empleado": "4259",
     "nombre": "BECERRA NUÑEZ SUSANA",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "2",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -2382,7 +2352,7 @@
   {
     "numero_empleado": "4260",
     "nombre": "SANCHEZ MARTINEZ NANCY CONCEPCION",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "2",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -2392,7 +2362,7 @@
   {
     "numero_empleado": "4262",
     "nombre": "GAYOSSO CRUZ BRANDON JESUS",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
@@ -2402,7 +2372,7 @@
   {
     "numero_empleado": "4265",
     "nombre": "RIVERA MONROY SELENE",
-    "seccion": "CALIDAD ADMTVO",
+    "sección": "CALIDAD ADMTVO",
     "puesto": "INSPECTOR DE CALIDAD D",
     "turno": "3",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -2412,7 +2382,7 @@
   {
     "numero_empleado": "4270",
     "nombre": "SANDOVAL BELLO JESUS",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "2",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -2422,7 +2392,7 @@
   {
     "numero_empleado": "4271",
     "nombre": "FONSECA SOLIS MARIA DEL CARMEN",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
@@ -2432,7 +2402,7 @@
   {
     "numero_empleado": "4272",
     "nombre": "CRUZ BERMUDEZ ABIGAIL",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "3",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -2442,7 +2412,7 @@
   {
     "numero_empleado": "4274",
     "nombre": "ANTONIO SABINO JOSE ROBERTO",
-    "seccion": "CALIDAD ADMTVO",
+    "sección": "CALIDAD ADMTVO",
     "puesto": "INSPECTOR DE CALIDAD D",
     "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -2452,7 +2422,7 @@
   {
     "numero_empleado": "4275",
     "nombre": "GUDIÑO LOPEZ MARIA GABRIELA",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -2462,7 +2432,7 @@
   {
     "numero_empleado": "4276",
     "nombre": "SOTO VARGAS DANIEL",
-    "seccion": "A. CALIDAD 2DO. TURNO",
+    "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "2",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
@@ -2472,7 +2442,7 @@
   {
     "numero_empleado": "4280",
     "nombre": "ARREDONDO MENDOZA MA. GUADALUPE",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
@@ -2482,7 +2452,7 @@
   {
     "numero_empleado": "4281",
     "nombre": "LAZARO VELAZQUEZ MARIA CONCEPCION",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "3",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -2492,7 +2462,7 @@
   {
     "numero_empleado": "4282",
     "nombre": "BAUTISTA GALINDO ROSA AVELINA",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "3",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -2502,7 +2472,7 @@
   {
     "numero_empleado": "4287",
     "nombre": "VARGAS LARA JACIM ALDAIR",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
@@ -2512,7 +2482,7 @@
   {
     "numero_empleado": "4292",
     "nombre": "ARRIAGA RUIZ GUADALUPE YAZMIN",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "3",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -2522,7 +2492,7 @@
   {
     "numero_empleado": "4294",
     "nombre": "NIETO ZAVALA CARMEN KARINA",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "3",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -2532,7 +2502,7 @@
   {
     "numero_empleado": "4295",
     "nombre": "ACOSTA SALAZAR ALAN BLADIMIR",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -2542,7 +2512,7 @@
   {
     "numero_empleado": "4299",
     "nombre": "MENDEZ MORALES MA. DE LOS ANGELES",
-    "seccion": "A. CALIDAD 1ER TURNO",
+    "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 D",
     "turno": "1",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -2552,7 +2522,7 @@
   {
     "numero_empleado": "4300",
     "nombre": "SANCHEZ AGUILAR MARIA CRUZ",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -2562,7 +2532,7 @@
   {
     "numero_empleado": "4303",
     "nombre": "JUAREZ GUTIERREZ ARLETTE ESMERALDA",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -2572,7 +2542,7 @@
   {
     "numero_empleado": "4304",
     "nombre": "GUADALUPE RIOS URIEL",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
@@ -2582,7 +2552,7 @@
   {
     "numero_empleado": "4308",
     "nombre": "ORTIZ HERNANDEZ MARIELA",
-    "seccion": "A. CALIDAD 1ER TURNO",
+    "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 D",
     "turno": "1",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -2592,7 +2562,7 @@
   {
     "numero_empleado": "4312",
     "nombre": "HERNANDEZ MAGDALENO ANDREA OLIVIA",
-    "seccion": "ALMACÉN 2DO TURNO ",
+    "sección": "ALMACÉN 2DO TURNO ",
     "puesto": "AUXILIAR DE ALMACÉN C",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -2602,7 +2572,7 @@
   {
     "numero_empleado": "4314",
     "nombre": "ACUÑA TELLEZ CRESCENCIO",
-    "seccion": "PRODUCCIÓN MONTAJE",
+    "sección": "PRODUCCIÓN MONTAJE",
     "puesto": "MONTADOR DE MOLDES B",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
@@ -2612,7 +2582,7 @@
   {
     "numero_empleado": "4318",
     "nombre": "SANTOS RAMIREZ HUSSAIT DEMETRIO",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "3",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -2622,7 +2592,7 @@
   {
     "numero_empleado": "4320",
     "nombre": "ARREDONDO MARTINEZ ESTELA",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
@@ -2632,7 +2602,7 @@
   {
     "numero_empleado": "4323",
     "nombre": "CARRILLO PACHECO MARIA GUADALUPE",
-    "seccion": "A. CALIDAD 2DO. TURNO",
+    "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 D",
     "turno": "2",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -2642,7 +2612,7 @@
   {
     "numero_empleado": "4324",
     "nombre": "OVIEDO HERNANDEZ LAKSHMI NICOLE",
-    "seccion": "A. CALIDAD 1ER TURNO",
+    "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 D",
     "turno": "1",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -2652,7 +2622,7 @@
   {
     "numero_empleado": "4326",
     "nombre": "RODRIGUEZ IBAÑEZ BRAYAN",
-    "seccion": "ALMACÉN 1ER TURNO ",
+    "sección": "ALMACÉN 1ER TURNO ",
     "puesto": "AUXILIAR DE ALMACÉN C",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -2662,7 +2632,7 @@
   {
     "numero_empleado": "4327",
     "nombre": "MARTINEZ PADRON JUANA VIANEY",
-    "seccion": "CALIDAD ADMTVO",
+    "sección": "CALIDAD ADMTVO",
     "puesto": "INSPECTOR DE CALIDAD D",
     "turno": "4",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -2672,7 +2642,7 @@
   {
     "numero_empleado": "4328",
     "nombre": "BAUTISTA SANCHEZ VIRGINIA",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
@@ -2680,19 +2650,9 @@
     "colonia": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
   },
   {
-    "numero_empleado": "4331",
-    "nombre": "GARCIA GARCIA FLOR DE LIZ",
-    "seccion": "A. CALIDAD 1ER TURNO",
-    "puesto": "OPERADOR DE ACABADOS GP-12 D",
-    "turno": "1",
-    "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "parada": "SAN JOSE ITURBIDE",
-    "colonia": "PARADA DE AUTOBUSES DE COPPEL"
-  },
-  {
     "numero_empleado": "4332",
     "nombre": "RODRIGUEZ ACOSTA MATILDE",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "4",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -2702,7 +2662,7 @@
   {
     "numero_empleado": "4335",
     "nombre": "FIGUEROA ESTEVES MIROSLAVA",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "3",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -2712,7 +2672,7 @@
   {
     "numero_empleado": "4336",
     "nombre": "HERNANDEZ GUTIERREZ CARLA",
-    "seccion": "CALIDAD ADMTVO",
+    "sección": "CALIDAD ADMTVO",
     "puesto": "INSPECTOR DE CALIDAD D",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
@@ -2722,7 +2682,7 @@
   {
     "numero_empleado": "4337",
     "nombre": "HERNANDEZ GUTIERREZ CRISTIAN JESUS",
-    "seccion": "MANTENIMIENTO",
+    "sección": "MANTENIMIENTO",
     "puesto": "TÉCNICO DE MANTENIMIENTO C",
     "turno": "4",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -2732,7 +2692,7 @@
   {
     "numero_empleado": "4343",
     "nombre": "VALENCIA GARCIA YAMILET IRAIS",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -2742,7 +2702,7 @@
   {
     "numero_empleado": "4349",
     "nombre": "BARRIENTOS PEREZ MARIA DE LOS ANGELES",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -2752,7 +2712,7 @@
   {
     "numero_empleado": "4354",
     "nombre": "GUEVARA MORA JUAN ANTONIO",
-    "seccion": "ALMACÉN 2DO TURNO ",
+    "sección": "ALMACÉN 2DO TURNO ",
     "puesto": "AUXILIAR DE ALMACÉN C",
     "turno": "2",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -2762,7 +2722,7 @@
   {
     "numero_empleado": "4358",
     "nombre": "ARVIZU SANCHEZ LORENA BEATRIZ",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -2772,7 +2732,7 @@
   {
     "numero_empleado": "4360",
     "nombre": "SANCHEZ JIMENEZ PILAR JAQUELINE",
-    "seccion": "A. CALIDAD 1ER TURNO",
+    "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 D",
     "turno": "1",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
@@ -2782,7 +2742,7 @@
   {
     "numero_empleado": "4365",
     "nombre": "PICHARDO VARGAS MARGARITA",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "3",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -2792,7 +2752,7 @@
   {
     "numero_empleado": "4367",
     "nombre": "ROSETE FELIPE HANIA",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
@@ -2800,9 +2760,19 @@
     "colonia": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
   },
   {
+    "numero_empleado": "4368",
+    "nombre": "CONTRERAS MONROY CARLOS",
+    "sección": "MANTENIMIENTO",
+    "puesto": "TÉCNICO DE MANTENIMIENTO A",
+    "turno": "1",
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "AV. DE LA LUZ",
+    "colonia": "PARADA DE CAMIONES FRENTE A BODEGA AURRERA"
+  },
+  {
     "numero_empleado": "4371",
     "nombre": "SEGURA QUEBRADO MIRIAM",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
@@ -2812,7 +2782,7 @@
   {
     "numero_empleado": "4372",
     "nombre": "SANTES VAZQUEZ NATIVIDAD",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
@@ -2822,7 +2792,7 @@
   {
     "numero_empleado": "4376",
     "nombre": "MEDINA SUAREZ JOCELYN GUADALUPE",
-    "seccion": "A. CALIDAD 2DO. TURNO",
+    "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 D",
     "turno": "2",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
@@ -2832,7 +2802,7 @@
   {
     "numero_empleado": "4377",
     "nombre": "RUIZ RUIZ CLARA",
-    "seccion": "A. CALIDAD 2DO. TURNO",
+    "sección": "A. CALIDAD 2DO. TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 D",
     "turno": "2",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
@@ -2842,7 +2812,7 @@
   {
     "numero_empleado": "4378",
     "nombre": "HERNANDEZ HERNANDEZ ITZEL",
-    "seccion": "A. CALIDAD 1ER TURNO",
+    "sección": "A. CALIDAD 1ER TURNO",
     "puesto": "OPERADOR DE ACABADOS GP-12 D",
     "turno": "1",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
@@ -2852,7 +2822,7 @@
   {
     "numero_empleado": "4379",
     "nombre": "HERNANDEZ CRUZ FERNANDO ANGEL",
-    "seccion": "MANTENIMIENTO",
+    "sección": "MANTENIMIENTO",
     "puesto": "AUXILIAR DE MANTENIMIENTO A",
     "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
@@ -2862,7 +2832,7 @@
   {
     "numero_empleado": "4380",
     "nombre": "ORTIZ ROSALES MARIA GUADALUPE",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "sección": "PRODUCCIÓN 4o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "4",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
@@ -2872,7 +2842,7 @@
   {
     "numero_empleado": "4382",
     "nombre": "GARCIA FRIAS RICARDO",
-    "seccion": "ALMACÉN 1ER TURNO ",
+    "sección": "ALMACÉN 1ER TURNO ",
     "puesto": "AUXILIAR DE ALMACÉN C",
     "turno": "1",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
@@ -2882,11 +2852,71 @@
   {
     "numero_empleado": "4383",
     "nombre": "GARCIA CARRILLO PABLO",
-    "seccion": "ALMACÉN 2DO TURNO ",
+    "sección": "ALMACÉN 2DO TURNO ",
     "puesto": "AUXILIAR DE ALMACÉN C",
     "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
     "parada": "PIE DE LA CUESTA",
     "colonia": "ESQ. CALLE AMARGURA EN LA PANADERIA LECAROZ"
+  },
+  {
+    "numero_empleado": "4386",
+    "nombre": "SALCEDO GUTIERREZ ELVIA LORENA",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
+    "puesto": "OPERADOR DE MÁQUINA D",
+    "turno": "1",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
+  },
+  {
+    "numero_empleado": "4387",
+    "nombre": "GARCIA VALENCIA ESTEFANIA",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
+    "puesto": "OPERADOR DE MÁQUINA D",
+    "turno": "1",
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "FRACC. MONTENEGRO",
+    "colonia": "PARADA EN LA CALLE YUCA Y BLV MONTENEGRO"
+  },
+  {
+    "numero_empleado": "4388",
+    "nombre": "VELAZQUEZ RIVERA ANDREA TERESA",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
+    "puesto": "OPERADOR DE MÁQUINA D",
+    "turno": "1",
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA EN LA PANADERIA LECAROZ"
+  },
+  {
+    "numero_empleado": "4389",
+    "nombre": "JAEN SANCHEZ SARAHI",
+    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "puesto": "OPERADOR DE MÁQUINA D",
+    "Turno": "1",
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "SANTA ROSA",
+    "colonia": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
+  },
+  {
+    "numero_empleado": "4390",
+    "nombre": "CRUZ GARCIA ALEIDA LIZETH",
+    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "puesto": "OPERADOR DE MÁQUINA D",
+    "Turno": "2",
+    "nombre ruta": "R4-SANTA ROSA",
+    "parada": "HDA SANTA ROSA ",
+    "colonia": "FARMACIA GUADALAJARA"
+  },
+  {
+    "numero_empleado": "4393",
+    "nombre": "TORRES SANCHEZ LUZ PAULINA",
+    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "puesto": "OPERADOR DE MÁQUINA D",
+    "Turno": "1",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "CRUZ ROJA MEXICANA"
   }
 ]

@@ -924,9 +924,17 @@
 
 .indicadores-page-header {
   display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: var(--spacing-md);
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+}
+
+.indicadores-page-header .config-page__title {
+  min-width: 0;
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  line-height: var(--type-heading-md-line);
+  letter-spacing: var(--type-heading-md-tracking);
 }
 
 .indicadores-period {
@@ -935,7 +943,8 @@
   justify-content: flex-end;
   gap: var(--spacing-sm);
   min-width: 0;
-  padding: var(--spacing-xs);
+  padding: 0;
+  flex-shrink: 0;
   color: var(--color-muted);
   background: transparent;
   border-radius: var(--rounded-md);
@@ -984,14 +993,6 @@
   font-weight: var(--type-heading-sm-weight);
   line-height: var(--type-heading-sm-line);
   letter-spacing: var(--type-heading-sm-tracking);
-}
-
-@media (min-width: 768px) {
-  .indicadores-page-header {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
 }
 
 /* KPI Cards */
@@ -1166,7 +1167,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-xs);
+  gap: var(--spacing-xxs);
   min-width: 0;
   flex: 0 1 auto;
 }
@@ -1183,6 +1184,10 @@
   white-space: nowrap;
 }
 
+.indicadores-month-nav__full-label {
+  display: none;
+}
+
 @media (min-width: 768px) {
   .indicadores-table-header {
     padding: var(--spacing-lg) var(--spacing-xl);
@@ -1190,6 +1195,26 @@
 
   .indicadores-period {
     width: min(100%, var(--feature-result-card-min));
+    padding: var(--spacing-xs);
+  }
+
+  .indicadores-page-header .config-page__title {
+    font-size: var(--type-heading-1-size);
+    font-weight: var(--type-heading-1-weight);
+    line-height: var(--type-heading-1-line);
+    letter-spacing: var(--type-heading-1-tracking);
+  }
+
+  .indicadores-month-nav {
+    gap: var(--spacing-xs);
+  }
+
+  .indicadores-month-nav__short-label {
+    display: none;
+  }
+
+  .indicadores-month-nav__full-label {
+    display: inline;
   }
 }
 

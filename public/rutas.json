@@ -1370,16 +1370,6 @@
     "colonia": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
   },
   {
-    "numero_empleado": "3764",
-    "nombre": "GONZALEZ RAMIREZ ISRAEL",
-    "sección": "MOLDES",
-    "puesto": "TÉCNICO DE MOLDES C",
-    "turno": "2",
-    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "parada": "LA MONJA",
-    "colonia": "SOBRE CARR EN EL PUENTE PEATONAL"
-  },
-  {
     "numero_empleado": "3772",
     "nombre": "MORENO ROMERO OSMAR",
     "sección": "PRODUCCIÓN ADMTVO",
@@ -2690,16 +2680,6 @@
     "colonia": "PARADA DE CAMIONES EN EL OXXO DE LA CALLE COAHUILA"
   },
   {
-    "numero_empleado": "4343",
-    "nombre": "VALENCIA GARCIA YAMILET IRAIS",
-    "sección": "PRODUCCIÓN 1ER. TURNO",
-    "puesto": "OPERADOR DE MÁQUINA D",
-    "turno": "1",
-    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "parada": "AV. DE LA LUZ",
-    "colonia": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
-  },
-  {
     "numero_empleado": "4349",
     "nombre": "BARRIENTOS PEREZ MARIA DE LOS ANGELES",
     "sección": "PRODUCCIÓN 1ER. TURNO",
@@ -2870,16 +2850,6 @@
     "colonia": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
   },
   {
-    "numero_empleado": "4387",
-    "nombre": "GARCIA VALENCIA ESTEFANIA",
-    "sección": "PRODUCCIÓN 1ER. TURNO",
-    "puesto": "OPERADOR DE MÁQUINA D",
-    "turno": "1",
-    "nombre ruta": "R4-SANTA ROSA",
-    "parada": "FRACC. MONTENEGRO",
-    "colonia": "PARADA EN LA CALLE YUCA Y BLV MONTENEGRO"
-  },
-  {
     "numero_empleado": "4388",
     "nombre": "VELAZQUEZ RIVERA ANDREA TERESA",
     "sección": "PRODUCCIÓN 1ER. TURNO",
@@ -2918,5 +2888,15 @@
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
     "parada": "SAN JOSE ITURBIDE",
     "colonia": "CRUZ ROJA MEXICANA"
+  },
+  {
+    "numero_empleado": "4394",
+    "nombre": "RIVERA CHAVEZ LUIS FERNANDO",
+    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "puesto": "OPERADOR DE MÁQUINA D",
+    "Turno": "1",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "parada": "SAN JOSE ITURBIDE",
+    "colonia": "PARADA EN LA ESCUELA 5 DE MAYO"
   }
 ]

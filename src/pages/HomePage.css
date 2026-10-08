@@ -87,6 +87,10 @@
   flex-wrap: wrap;
 }
 
+.home-page__employment-meta:lang(en) .home-page__employment-separator {
+  display: none;
+}
+
 .home-page__hero-footer {
   grid-column: 1 / -1;
   min-width: 0;
@@ -111,10 +115,11 @@
 }
 
 .home-page__hero-actions {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, calc(var(--touch-target-min) * 3)), 1fr));
   flex: 0 0 auto;
-  flex-wrap: wrap;
   align-items: stretch;
+  inline-size: 100%;
   max-inline-size: 100%;
   gap: var(--design-spacing-sm);
 }
@@ -133,14 +138,14 @@
 }
 
 .home-page__organization-action-label {
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .home-page__organization-badge {
   position: absolute;
   inset-block-start: 0;
-  inset-inline-end: 0;
-  transform: translate(35%, -35%);
+  inset-inline-end: var(--design-spacing-xs);
+  transform: translateY(-35%);
   background: var(--color-primary);
   color: var(--color-on-primary);
   border: var(--border-width) solid var(--color-surface);
@@ -291,6 +296,16 @@
     grid-column: 1 / -1;
     flex-direction: row;
     align-items: center;
+  }
+
+  .home-page__hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    inline-size: auto;
+  }
+
+  .home-page__employment-meta:lang(en) .home-page__employment-separator {
+    display: inline;
   }
 
   .home-page__employment-meta {

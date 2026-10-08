@@ -10,7 +10,7 @@ import type { AreaDetailRow, AreaStaffSummary, EmployeeRef, IncidentTab } from '
 import './ReportDayPage.css';
 
 interface ReportDayPageProps {
-  title: string;
+  heading: { date: string; week: string };
   month: string;
   day: string;
   loading: boolean;
@@ -32,7 +32,8 @@ interface ReportDayPageProps {
 export function ReportDayPage(props: ReportDayPageProps) {
   const { copy } = useReportLocale();
   const headingRef = useRef<HTMLHeadingElement>(null);
-  const title = props.title || copy('Detalle del día', 'Day details');
+  const dateTitle = props.heading.date || copy('Detalle del día', 'Day details');
+  const title = props.heading.week ? `${dateTitle} - ${props.heading.week}` : dateTitle;
   useEffect(() => { headingRef.current?.focus({ preventScroll: true }); }, [props.day]);
 
   return (
@@ -42,7 +43,12 @@ export function ReportDayPage(props: ReportDayPageProps) {
           <h1 ref={headingRef} tabIndex={-1} id="reporte-page-title" className="app-page-title" data-testid="selected-day-title">
             <Link to="/reports" className="report-day-page__title-link" aria-label={title + ': ' + copy('volver a Reporte diario', 'back to Daily report')}>
               <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
-              <span>{title}</span>
+              <span className="report-day-page__title-copy">
+                <span>{dateTitle}</span>
+                {props.heading.week && <span className="report-day-page__title-week">
+                  <span className="report-day-page__title-separator" aria-hidden="true">- </span>{props.heading.week}
+                </span>}
+              </span>
             </Link>
           </h1>
         </div>

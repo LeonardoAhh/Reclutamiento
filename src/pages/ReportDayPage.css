@@ -14,6 +14,17 @@
 .report-day-page__title-link svg {
   flex: 0 0 auto;
 }
+.report-day-page__title-copy {
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+}
+.report-day-page__title-week {
+  white-space: nowrap;
+}
+.report-day-page__title-separator {
+  display: none;
+}
 .report-day-page__navigation {
   display: flex;
   flex-wrap: wrap;
@@ -49,6 +60,14 @@
   border-radius: var(--workspace-radius);
 }
 @media (min-width: 768px) {
+  .report-day-page__title-copy {
+    flex-direction: row;
+    flex-wrap: wrap;
+    column-gap: var(--spacing-xs);
+  }
+  .report-day-page__title-separator {
+    display: inline;
+  }
   .report-day-page__navigation {
     inline-size: auto;
   }

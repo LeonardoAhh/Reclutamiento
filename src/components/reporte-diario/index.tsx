@@ -302,7 +302,7 @@ export default function ReporteDiarioContent() {
   }, [dayHeaders, selectedRows]);
 
   const { selectedDayIncidentSummary, selectedDayAreaSummary, selectedAreaDetailRows,
-    selectedDayCounts, prevDay, nextDay, selectedDateTitle } = useReportDayDetails({
+    selectedDayCounts, prevDay, nextDay, selectedDateHeading } = useReportDayDetails({
       selectedRows, selectedDay, selectedArea, currentMonth, en,
       dayHeaders, dayAusentismoPct, daySummaries,
     });
@@ -652,7 +652,7 @@ export default function ReporteDiarioContent() {
 
   if (dayRoute) {
     return <ReportDayPage
-      title={selectedDateTitle}
+      heading={selectedDateHeading}
       month={currentMonth}
       day={selectedDay}
       loading={validDayRoute && (loadingDb || dayReportLoading)}
