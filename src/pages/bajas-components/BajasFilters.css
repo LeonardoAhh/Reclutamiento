@@ -13,7 +13,7 @@
 .bajas-filters__group {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
   min-width: 140px;
   flex: 1 1 160px;
 }
@@ -24,13 +24,13 @@
   font-weight: 500;
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
 }
 
 .bajas-filters__reset {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
   height: var(--control-height);
   padding: 0 var(--spacing-md);
   background: transparent;
@@ -39,7 +39,7 @@
   color: var(--color-muted);
   font-size: var(--type-body-sm-size);
   cursor: pointer;
-  transition: all var(--motion-fast);
+  transition: all var(--transition-fast);
   white-space: nowrap;
 }
 

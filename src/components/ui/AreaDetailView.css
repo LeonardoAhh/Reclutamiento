@@ -21,7 +21,7 @@
 .area-detail-modal__stat {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
   padding: var(--spacing-sm) var(--spacing-md);
   min-width: 0;
   background: var(--color-surface);
@@ -47,7 +47,7 @@
 .area-detail-modal__stat-sep {
   color: var(--color-muted-soft);
   font-weight: var(--type-body-md-weight);
-  margin: 0 var(--spacing-xxs);
+  margin: 0 var(--design-spacing-xxs);
 }
 
 .area-detail-modal__stat-label {
@@ -100,9 +100,9 @@
 .area-detail-modal__coverage-pct {
   font-family: var(--font-display);
   font-size: var(--type-heading-lg-size);
-  font-weight: var(--font-semibold);
+  font-weight: var(--type-heading-lg-weight);
   line-height: var(--type-heading-lg-line);
-  letter-spacing: var(--tracking-tight);
+  letter-spacing: var(--type-heading-lg-tracking);
   font-variant-numeric: tabular-nums;
 }
 
@@ -150,9 +150,10 @@
   background: transparent;
   color: var(--color-charcoal);
   font-family: var(--font-body);
-  font-size: var(--type-caption-md-size);
-  font-weight: var(--font-medium);
-  letter-spacing: var(--tracking-snug);
+  font-size: var(--type-label-sm-size);
+  font-weight: var(--type-label-sm-weight);
+  line-height: var(--type-label-sm-line);
+  letter-spacing: var(--type-label-sm-tracking);
   cursor: pointer;
   white-space: nowrap;
   transition:
@@ -199,7 +200,7 @@
 .area-detail-modal__tab-incapacidad {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
   height: var(--icon-size-control);
   padding: 0 var(--spacing-xs);
   border-radius: var(--rounded-xs);
@@ -341,9 +342,11 @@
 
   .area-detail-modal__table th {
     color: var(--color-muted);
-    font-size: var(--type-caption-md-size);
-    font-weight: var(--font-semibold);
-    letter-spacing: var(--tracking-wide);
+    font-family: var(--font-body);
+    font-size: var(--type-caption-up-size);
+    font-weight: var(--type-caption-up-weight);
+    line-height: var(--type-caption-up-line);
+    letter-spacing: var(--type-caption-up-tracking);
     text-transform: uppercase;
   }
 
@@ -438,7 +441,7 @@
 .area-detail-modal__card-id {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
   min-width: 0;
 }
 
@@ -463,7 +466,7 @@
 .area-detail-modal__card-metric {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
 }
 
 .area-detail-modal__card-metric-value {
@@ -550,7 +553,7 @@
 
 .tooltip-title {
   font-weight: var(--font-semibold);
-  margin-bottom: var(--spacing-xxs);
+  margin-bottom: var(--design-spacing-xxs);
 }
 
 .area-detail__starlite-badge {

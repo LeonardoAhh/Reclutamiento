@@ -6,7 +6,7 @@
   display: flex;
   min-inline-size: 0;
   flex-direction: column;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
   padding: var(--spacing-md);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-md);
@@ -45,8 +45,8 @@
 .promote-mode {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--spacing-xxs);
-  padding: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
+  padding: var(--design-spacing-xxs);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-md);
   background: var(--color-surface);

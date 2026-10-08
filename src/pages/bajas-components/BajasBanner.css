@@ -1,12 +1,16 @@
 .bajas-banner {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-sm) var(--spacing-md);
+  gap: var(--design-spacing-xs);
+  padding: var(--design-spacing-xs) var(--design-spacing-sm);
   border-radius: var(--rounded-md);
-  border: 1px solid var(--color-hairline);
-  margin-bottom: var(--spacing-lg);
+  border: var(--border-width) solid var(--color-hairline);
+  margin-bottom: var(--design-spacing-md);
+  font-family: var(--font-body);
   font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
   color: var(--color-body);
   flex-wrap: wrap;
 }
@@ -24,47 +28,50 @@
 }
 
 .bajas-banner__body {
-  flex: 1 1 280px;
+  /* Ancho mínimo legible antes de que la acción pase a su propia línea. */
+  flex: 1 1 var(--content-min-inline-size);
   min-width: 0;
 }
 
+/* Acción secundaria: misma geometría que button-ghost-sm (44px, 8px, hairline de control). */
 .bajas-banner__action {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-xxs);
-  height: var(--control-height-sm);
-  padding: 0 var(--spacing-md);
-  background: var(--color-surface);
-  border: 1px solid var(--color-hairline);
+  gap: var(--design-spacing-xxs);
+  min-block-size: var(--touch-target-min);
+  min-inline-size: var(--touch-target-min);
+  padding: 0 var(--control-padding-x);
+  background: var(--color-canvas-elevated);
+  border: var(--border-width) solid var(--color-control-border);
   border-radius: var(--rounded-md);
   font-family: var(--font-body);
-  font-size: var(--type-body-sm-size);
-  font-weight: 500;
+  font-size: var(--type-button-md-size);
+  font-weight: var(--type-button-md-weight);
+  line-height: var(--type-button-md-line);
+  letter-spacing: var(--type-button-md-tracking);
   color: var(--color-ink);
   cursor: pointer;
   flex-shrink: 0;
-  transition: background-color var(--motion-fast);
+  transition: background-color var(--transition-fast);
 }
 
 .bajas-banner__action:hover:not(:disabled) {
-  background: var(--color-canvas-soft);
+  background: var(--color-surface-soft);
 }
 
 .bajas-banner__action:disabled {
-  opacity: 0.5;
+  opacity: var(--opacity-disabled);
   cursor: not-allowed;
 }
 
+/* Reutiliza los keyframes globales `spin` y la duración compartida del spinner. */
 .bajas-banner__spin {
-  animation: bajas-spin 1s linear infinite;
+  animation: spin var(--transition-spinner) infinite;
 }
 
-@keyframes bajas-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
+@media (prefers-reduced-motion: reduce) {
+  .bajas-banner__spin {
+    animation: none;
   }
 }

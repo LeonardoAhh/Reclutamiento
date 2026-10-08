@@ -6,8 +6,8 @@
 .starlite-badge {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-xxs);
-  padding: var(--spacing-xxs) var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
+  padding: var(--design-spacing-xxs) var(--spacing-xs);
   border-radius: var(--rounded-sm);
   background: var(--color-warning-tint);
   color: var(--color-accent-amber);
@@ -28,6 +28,6 @@
 }
 
 .starlite-badge--compact {
-  padding: var(--spacing-xxs);
+  padding: var(--design-spacing-xxs);
   gap: 0;
 }

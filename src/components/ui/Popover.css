@@ -58,7 +58,7 @@
 @keyframes popover-slide-up-and-fade {
   from {
     opacity: 0;
-    transform: translateY(var(--spacing-xxs));
+    transform: translateY(var(--design-spacing-xxs));
   }
   to {
     opacity: 1;
@@ -69,7 +69,7 @@
 @keyframes popover-slide-right-and-fade {
   from {
     opacity: 0;
-    transform: translateX(calc(var(--spacing-xxs) * -1));
+    transform: translateX(calc(var(--design-spacing-xxs) * -1));
   }
   to {
     opacity: 1;
@@ -80,7 +80,7 @@
 @keyframes popover-slide-down-and-fade {
   from {
     opacity: 0;
-    transform: translateY(calc(var(--spacing-xxs) * -1));
+    transform: translateY(calc(var(--design-spacing-xxs) * -1));
   }
   to {
     opacity: 1;
@@ -91,7 +91,7 @@
 @keyframes popover-slide-left-and-fade {
   from {
     opacity: 0;
-    transform: translateX(var(--spacing-xxs));
+    transform: translateX(var(--design-spacing-xxs));
   }
   to {
     opacity: 1;

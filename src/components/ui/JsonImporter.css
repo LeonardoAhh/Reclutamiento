@@ -10,10 +10,10 @@
 .json-importer__status {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
   font-size: var(--type-caption-md-size);
   font-weight: 500;
-  padding: var(--spacing-xxs) var(--spacing-md);
+  padding: var(--design-spacing-xxs) var(--spacing-md);
   border-radius: var(--rounded-pill);
 }
 

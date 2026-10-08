@@ -22,7 +22,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: var(--spacing-sm);
-  margin: 0 0 var(--spacing-xxs);
+  margin: 0 0 var(--design-spacing-xxs);
   color: var(--color-ink);
   font-family: var(--font-display);
   font-size: var(--type-heading-md-size);
@@ -87,7 +87,7 @@
 }
 
 .responsibilities-section__empty-title {
-  margin: 0 0 var(--spacing-xxs);
+  margin: 0 0 var(--design-spacing-xxs);
   color: var(--color-charcoal);
   font-size: var(--type-body-strong-size);
   font-weight: var(--type-body-strong-weight);

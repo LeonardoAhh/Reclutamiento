@@ -54,7 +54,7 @@
   inset-block-start: 0;
   inset-inline-start: var(--spacing-lg);
   transform: translateY(-50%);
-  padding: var(--spacing-xxs) var(--spacing-xs);
+  padding: var(--design-spacing-xxs) var(--spacing-xs);
   border: var(--border-width) solid var(--color-primary);
   border-radius: var(--rounded-sm);
   background: var(--color-primary);

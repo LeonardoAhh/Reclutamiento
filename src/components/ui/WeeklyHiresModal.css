@@ -116,7 +116,7 @@
 .weekly-hires-modal__delta {
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-body-strong-weight);
-  padding: var(--spacing-xxs) var(--spacing-xs);
+  padding: var(--design-spacing-xxs) var(--spacing-xs);
   border-radius: var(--rounded-xs);
   font-family: var(--font-sans);
 }
@@ -276,7 +276,7 @@
   border-bottom: var(--border-width) solid var(--color-hairline);
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
 }
 
 .weekly-hires-modal__mobile-list > .weekly-hires-modal__mobile-card:last-child {
@@ -295,7 +295,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
   min-width: 0;
 }
 
@@ -328,7 +328,7 @@
 .weekly-hires-modal__mobile-card-body {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
 }
 
 .weekly-hires-modal__mobile-puesto {

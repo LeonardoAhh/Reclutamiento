@@ -121,6 +121,7 @@ The system uses **Inter** for body, controls, and headings. Headings use Inter 6
 | `{typography.brand}` | 24px | 600 | 34px | -0.48px | Brand wordmark |
 | `{typography.label-sm}` | 14px | 500 | 20px | -0.28px | Strong labels, nav emphasis |
 | `{typography.mono-eyebrow}` | 12px | 500 | 16px | 0 | Uppercase monospace section eyebrows |
+| `{typography.caption-up}` | 12px | 600 | 16px | 0.72px | Short uppercase labels: table headers, eyebrows, tags |
 | `{typography.body-lg}` | 16px | 400 | 24px | 0 | Lead paragraphs, large body |
 | `{typography.body-md}` | 14px | 400 | 20px | 0 | Default body, nav links, table cells |
 | `{typography.body-sm}` | 12px | 400 | 16px | 0 | Captions, footnotes, metadata |

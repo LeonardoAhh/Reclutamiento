@@ -22,7 +22,7 @@
 .candidates-cited-today-modal__main {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
   min-width: 0;
 }
 
@@ -63,7 +63,7 @@
   margin: 0 0 var(--spacing-sm) 0;
   display: flex;
   align-items: center;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
 }
 
 .candidates-cited-today-modal__area-count {

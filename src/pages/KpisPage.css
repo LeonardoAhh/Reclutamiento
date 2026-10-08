@@ -26,7 +26,7 @@
   /* Sangrado al borde de pantalla para que el scroll horizontal respire. */
   margin-inline: calc(-1 * var(--container-padding-mobile, var(--spacing-md)));
   padding-inline: var(--container-padding-mobile, var(--spacing-md));
-  padding-block: var(--spacing-xxs);
+  padding-block: var(--design-spacing-xxs);
 }
 
 .kpis-page__tabs::-webkit-scrollbar {
@@ -200,7 +200,7 @@
   display: inline-flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: var(--spacing-xxs);
+  gap: var(--design-spacing-xxs);
 }
 
 .kpis-page__date-badge {

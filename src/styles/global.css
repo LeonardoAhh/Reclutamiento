@@ -325,16 +325,17 @@
      Se mantiene en px literal: candidateAccessCard.ts lo lee como número
      para dibujar el pase en canvas. Equivalencias con la escala canónica:
      xs=design-xxs · sm=design-xs · md=design-sm · lg=design-md · xl=design-lg · xxl=design-xl.
-     xxs (2px) y 2xl (48px) quedan fuera de la base de 4px de desing.md:
-     no usar en código nuevo. */
-  --spacing-xxs: 2px;
+     xxs y 2xl son alias obsoletos de la escala canónica: no usar en código nuevo. */
+  /* Obsoleto: 2px no pertenece a la base de 4px. Alias al paso mínimo. */
+  --spacing-xxs: var(--spacing-xs);
   --spacing-xs: 4px;
   --spacing-sm: 8px;
   --spacing-md: 12px;
   --spacing-lg: 16px;
   --spacing-xl: 24px;
   --spacing-xxl: 32px;
-  --spacing-2xl: 48px;
+  /* Obsoleto: 48px no pertenece a la escala. Alias a {spacing.2xl} (40px). */
+  --spacing-2xl: var(--design-spacing-xxl);
   --spacing-section: 96px;
 
   /* Escala canónica de desing.md para primitivas nuevas/migradas. */
@@ -395,6 +396,8 @@
   --container-padding-mobile: var(--design-spacing-md);
   /* Medida máxima de lectura definida por desing.md. */
   --content-reading-max-inline-size: 65ch;
+  /* Ancho mínimo legible de un bloque flexible antes de pasar a su propia línea. */
+  --content-min-inline-size: 17.5rem;
   /* Máximo de líneas para vistas previas de texto antes de revelar el contenido completo. */
   --content-preview-max-lines: 3;
   /* Diagramas: espacio para nodos y conectores legibles con movimiento pausado. */
@@ -492,7 +495,7 @@
   --action-count-size: 1.125rem;
   --action-count-offset: calc(-1 * var(--design-spacing-xxs));
   --empty-state-description-max-inline-size: 18.75rem;
-  --config-panel-min-height: calc(var(--spacing-section) + var(--spacing-2xl));
+  --config-panel-min-height: calc(var(--design-spacing-4xl) + var(--design-spacing-xxl));
 
   /* ── PWA / safe-area ─────────────────────────────────────────── */
   --safe-area-top: env(safe-area-inset-top, 0px);
@@ -525,10 +528,12 @@
   --font-mono: var(--font-code);
 
   /* Tight display tracking */
-  --tracking-tight: -0.03em;
-  --tracking-snug: -0.018em;
-  --tracking-wide: 0.02em;
-  --tracking-wider: 0.04em;
+  /* Obsoletos: el tracking forma parte de cada rol tipográfico (--type-*-tracking).
+     Se conservan como alias del rol equivalente; no usar en código nuevo. */
+  --tracking-tight: var(--type-heading-lg-tracking);
+  --tracking-snug: var(--type-label-sm-tracking);
+  --tracking-wide: var(--type-caption-up-tracking);
+  --tracking-wider: var(--type-caption-up-tracking);
 
   --radius-sm: var(--rounded-sm);
   --radius-md: var(--rounded-md);
@@ -545,7 +550,7 @@
 
   /* Legado: 3px no pertenece a la base de 4px; se alinea al paso mínimo. */
   --spacing-2xs: var(--spacing-xs);
-  --space-xxs: var(--spacing-xxs);
+  --space-xxs: var(--design-spacing-xxs);
   --space-xs: var(--spacing-xs);
   --space-sm: var(--spacing-sm);
   --space-md: var(--spacing-md);
@@ -593,7 +598,7 @@
   /* Barra móvil: touch target + aire vertical de la escala (56px). */
   --mobile-nav-height: calc(var(--touch-target-min) + var(--design-spacing-sm));
   --mobile-nav-content-space: calc(
-    var(--mobile-nav-height) + var(--spacing-2xl)
+    var(--mobile-nav-height) + var(--design-spacing-xxl)
   );
   --ease-apple: cubic-bezier(0.19, 1, 0.22, 1);
   --duration-skeleton: 1500ms;
