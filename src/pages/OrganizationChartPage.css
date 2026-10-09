@@ -2,7 +2,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--design-spacing-xl);
-  padding-block: var(--design-spacing-lg) var(--design-spacing-xxl);
+  padding-block-end: var(--design-spacing-xxl);
 }
 
 .organization-chart-page__title-link {

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { PageHeading } from '@/components/layout/PageHeading';
 import { ArrowLeft, Check, Copy } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -497,18 +498,16 @@ export function VacancyAssignmentsPage() {
     >
     <main className="vacancy-assignments-page container" aria-labelledby="vacancy-assignments-title">
       <header className="page-header">
-        <div className="page-header__content">
+        <PageHeading id="vacancy-assignments-title" className="app-page-title">
           <Link
             className="vacancy-assignments-page__title-link"
             to={PLANTILLA_PATH}
             aria-label={`${t("Volver a plantilla")}: ${t("Asignación de vacantes")}`}
           >
-            <h1 id="vacancy-assignments-title" className="app-page-title">
-              <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
-              {t("Asignación de vacantes")}
-            </h1>
+            <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
+            {t("Asignación de vacantes")}
           </Link>
-        </div>
+        </PageHeading>
         <div className="page-header__actions">
           <button
             type="button"

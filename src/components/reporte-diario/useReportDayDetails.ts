@@ -188,7 +188,7 @@ export function useReportDayDetails({ selectedRows, selectedDay, selectedArea, c
       : null;
 
   const selectedDateHeading = useMemo(() => {
-    if (!selectedDay || !currentMonth) return { date: "", week: "" };
+    if (!selectedDay || !currentMonth) return { date: "", compactDate: "", week: "", compactWeek: "" };
     try {
       const dateStr = `${currentMonth}-${selectedDay}`;
       const date = new Date(dateStr + "T00:00:00");
@@ -201,13 +201,27 @@ export function useReportDayDetails({ selectedRows, selectedDay, selectedArea, c
 
       const capWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
       const capMonth = monthName.charAt(0).toUpperCase() + monthName.slice(1);
+      const shortWeekday = format(date, "EEE", { locale });
+      const capShortWeekday = shortWeekday.charAt(0).toUpperCase() + shortWeekday.slice(1);
+      const shortMonth = format(date, "MMM", { locale });
       const weekNum = getISOWeek(date);
 
       return en
-        ? { date: `${capWeekday}, ${capMonth} ${day}, ${year}`, week: `Week ${weekNum}` }
-        : { date: `${capWeekday} ${day} ${capMonth} ${year}`, week: `Semana ${weekNum}` };
+        ? {
+          date: `${capWeekday}, ${capMonth} ${day}, ${year}`,
+          compactDate: `${capShortWeekday}, ${shortMonth} ${day}`,
+          week: `Week ${weekNum}`,
+          compactWeek: `Wk ${weekNum}`,
+        }
+        : {
+          date: `${capWeekday} ${day} ${capMonth} ${year}`,
+          compactDate: `${capShortWeekday} ${day} ${shortMonth}`,
+          week: `Semana ${weekNum}`,
+          compactWeek: `Sem ${weekNum}`,
+        };
     } catch {
-      return { date: `${en ? "Incidents — day" : "Incidencias — día"} ${parseInt(selectedDay, 10)}`, week: "" };
+      const date = `${en ? "Incidents — day" : "Incidencias — día"} ${parseInt(selectedDay, 10)}`;
+      return { date, compactDate: date, week: "", compactWeek: "" };
     }
   }, [selectedDay, currentMonth, en]);
 

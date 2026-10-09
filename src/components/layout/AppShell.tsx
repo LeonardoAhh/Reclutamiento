@@ -28,7 +28,7 @@ const PAGE_TITLES: Readonly<Record<string, string>> = {
 
 /**
  * Shell de la app autenticada.
- *  - Desktop (>=1080px): Sidebar fijo a la izquierda + contenido desplazado.
+ *  - Desktop (>=1080px): Sidebar fijo y header dentro del workspace.
  *  - Tablet/movil (<1080px): Header superior + Sidebar deslizable.
  */
 export function AppShell({ children }: { children: ReactNode }) {
@@ -115,6 +115,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       <div className="app-shell__workspace" inert={isMobileMenuOpen}>
         <Header
+          pageTitle={pageTitle}
           onMobileMenuToggle={toggleMobileMenu}
           mobileMenuOpen={isMobileMenuOpen}
           mobileMenuButtonRef={mobileMenuButtonRef}

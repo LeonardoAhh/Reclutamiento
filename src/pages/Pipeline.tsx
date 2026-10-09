@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, useRef } from 'react';
+import { PageHeading } from '@/components/layout/PageHeading';
 import { isBoneyardBuild } from '@/lib/boneyard';
 import { BONEYARD_SAMPLE_CANDIDATES } from '@/lib/boneyardFixtures';
 import { MotionConfig } from 'framer-motion';
@@ -331,11 +332,7 @@ export function Pipeline() {
         <main className="pipeline container">
       <div className={`pipeline-main-container ${selectedMobileCandidate ? 'mobile-hidden' : ''}`}>
         {/* ── Hero ── */}
-      <header className="page-header">
-        <div className="page-header__content">
-          <h1 className="app-page-title">{en ? 'Candidates' : 'Candidatos'}</h1>
-        </div>
-      </header>
+      <PageHeading className="app-page-title">{en ? 'Candidates' : 'Candidatos'}</PageHeading>
 
       <Toolbar label={en ? 'Candidate tools' : 'Herramientas de candidatos'} className="pipeline__toolbar">
           <ToolbarGroup label={en ? 'Search candidates' : 'Buscar candidatos'} className="pipeline__controls">

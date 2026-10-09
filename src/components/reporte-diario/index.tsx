@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { PageHeading } from '@/components/layout/PageHeading';
 import { Link, useMatch, useNavigate } from "react-router-dom";
 import { ReportDayPage } from "@/pages/ReportDayPage";
 import { getReportDayPath, REPORT_DAY_PATTERN } from "./navigation";
@@ -701,11 +702,9 @@ export default function ReporteDiarioContent() {
           }}
           aria-labelledby="reporte-page-title"
         >
-          <header className="reporte-hero__intro">
-            <h1 id="reporte-page-title" className="app-page-title">
+            <PageHeading id="reporte-page-title" className="app-page-title">
               {copy("Reporte Diario", "Daily Report")}
-            </h1>
-          </header>
+            </PageHeading>
 
           <div className="reporte-hero__workspace">
             <ReporteUploadPanel
@@ -861,11 +860,9 @@ export default function ReporteDiarioContent() {
         </span>
       )}
       <header className="reporte-header__top">
-        <div className="reporte-head__left">
-          <h1 id="reporte-page-title" className="app-page-title">
-            {copy("Reporte Diario", "Daily Report")}
-          </h1>
-        </div>
+        <PageHeading id="reporte-page-title" className="app-page-title">
+          {copy("Reporte Diario", "Daily Report")}
+        </PageHeading>
 
         <div
           className="reporte-head__grid"

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { PageHeading } from '@/components/layout/PageHeading';
 import { motion } from "framer-motion";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -696,9 +697,7 @@ export function KpisPage() {
       loadingLabel={t("Cargando resumen…")}
     >
       <main className="kpis-page container" id="page-kpis">
-      <header className="page-header">
-        <h1 ref={overviewTitleRef} tabIndex={-1} className="app-page-title">{t("Resumen")}</h1>
-      </header>
+      <PageHeading ref={overviewTitleRef} tabIndex={-1} className="app-page-title">{t("Resumen")}</PageHeading>
 
       {isDesktop ? (
         <>

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { PageHeading } from '@/components/layout/PageHeading';
 import * as Tabs from "@radix-ui/react-tabs";
 import { ChartNoAxesCombined, Download, FilePlus2, MessageCircle, RefreshCw, Trash2, UserRoundCheck } from "lucide-react";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
@@ -369,12 +370,18 @@ export function DataUpdatePage() {
     }
   };
 
+  const newCampaignButton = (
+    <button type="button" className="btn-primary data-update-campaign-action--new" onClick={() => setImportOpen(true)} disabled={!online}>
+      <FilePlus2 aria-hidden="true" />
+    </button>
+  );
+
   if (!canAccess) {
     return (
-      <main className="data-update-page data-update-page--has-heading container" aria-labelledby="data-update-title">
+      <main className="data-update-page container" aria-labelledby="data-update-title">
         <header className="page-header data-update-page__header">
           <div className="page-header__content">
-            <h1 id="data-update-title" className="app-page-title">{t("Actualización de datos")}</h1>
+            <PageHeading id="data-update-title" className="app-page-title">{t("Actualización de datos")}</PageHeading>
             <p>{t("No tienes acceso a este módulo.")}</p>
           </div>
         </header>
@@ -413,21 +420,15 @@ export function DataUpdatePage() {
   }
 
   return (
-    <main className="data-update-page data-update-page--has-heading container" aria-labelledby="data-update-title">
-      <header className="page-header data-update-page__header">
-        <div className="page-header__content">
-          <h1 id="data-update-title" className="app-page-title">{t("Actualización de datos")}</h1>
-
-        </div>
-        {isAdmin && (
+    <main className="data-update-page container" aria-labelledby="data-update-title">
+      <PageHeading id="data-update-title" className="app-page-title">{t("Actualización de datos")}</PageHeading>
+      {isAdmin && campaigns.length === 0 && (
+        <header className="page-header data-update-page__header">
           <div className="page-header__actions">
-            <button type="button" className="btn-primary" onClick={() => setImportOpen(true)} disabled={!online}>
-              <FilePlus2 aria-hidden="true" />
-              {t("Nueva campaña")}
-            </button>
+            {newCampaignButton}
           </div>
-        )}
-      </header>
+        </header>
+      )}
 
       {!online && <p className="data-update-offline" role="alert">{t("Este módulo necesita conexión. Reconéctate para consultar o guardar información.")}</p>}
       {error && <p className="form-error" role="alert">{t(error)}</p>}
@@ -455,10 +456,11 @@ export function DataUpdatePage() {
                 disabled={loading || busy}
               />
             </div>
-            <div className="data-update-campaign-actions">
-              <button type="button" className="btn-secondary" onClick={() => void loadDetail()} disabled={!online || loading || busy}>
+            <div className={`data-update-campaign-actions${isAdmin ? ' data-update-campaign-actions--admin' : ''}`}>
+              {isAdmin && newCampaignButton}
+              <button type="button" className="btn-secondary" onClick={() => void loadDetail()} disabled={!online || loading || busy} aria-label={t("Actualizar", "Refresh")}>
                 <RefreshCw aria-hidden="true" />
-                {t("Actualizar", "Refresh")}
+                <span className="data-update-campaign-action__label">{t("Actualizar", "Refresh")}</span>
               </button>
               {isAdmin && (
                 <button
@@ -475,7 +477,7 @@ export function DataUpdatePage() {
                     : t("Eliminar")}
                 >
                   <Trash2 aria-hidden="true" />
-                  {t("Eliminar")}
+                  <span className="data-update-campaign-action__label">{t("Eliminar")}</span>
                 </button>
               )}
               {isAdmin && !loading && detail && (
@@ -483,9 +485,10 @@ export function DataUpdatePage() {
                   type="button"
                   className="btn-secondary data-update-progress-trigger"
                   onClick={() => setProgressOpen(true)}
+                  aria-label={t("Ver avance")}
                 >
                   <ChartNoAxesCombined aria-hidden="true" />
-                  {t("Ver avance")}
+                  <span className="data-update-campaign-action__label">{t("Ver avance")}</span>
                 </button>
               )}
             </div>

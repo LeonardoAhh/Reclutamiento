@@ -1,6 +1,6 @@
 /* ─────────────────────────────────────────────
-   App Header — Visible en móvil, oculto en PC.
-   Lienzo plano (canvas) + hairline inferior de 1px.
+   App Header — acciones de workspace en todos los tamaños.
+   Lienzo continuo sin divisor visual.
 ───────────────────────────────────────────── */
 
 .app-header {
@@ -14,20 +14,19 @@
   padding-block-start: var(--safe-area-top);
 
   background: var(--workspace-surface);
-  border-block-end: var(--border-width) solid var(--color-hairline);
 }
 
 .app-header__inner {
   flex: 1 1 auto;
   position: relative;
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
   inline-size: 100%;
   max-inline-size: var(--container-max);
   min-block-size: var(--_app-header-row-size);
   margin-inline: auto;
-  gap: var(--spacing-lg);
+  gap: var(--design-spacing-sm);
   padding-inline-start: max(var(--container-padding), var(--safe-area-left));
   padding-inline-end: max(var(--container-padding), var(--safe-area-right));
   min-inline-size: 0;
@@ -36,7 +35,48 @@
 .app-header__left {
   display: flex;
   align-items: center;
-  flex: 0 0 auto;
+}
+
+.app-header__title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--design-spacing-sm);
+  grid-column: 1 / -1;
+  grid-row: 2;
+  min-inline-size: 0;
+  padding-block-end: var(--design-spacing-sm);
+}
+
+.app-header__title > .app-page-title {
+  min-inline-size: 0;
+}
+
+.app-header__title > .app-page-title > :is(a, button) {
+  min-block-size: var(--touch-target-min);
+}
+
+.app-header__title-accessory {
+  display: flex;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  align-items: center;
+}
+
+.app-header__title > .app-page-title,
+.app-header__fallback-title {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  line-height: var(--type-heading-md-line);
+  letter-spacing: var(--type-heading-md-tracking);
+  color: var(--color-muted);
+  overflow-wrap: anywhere;
+  margin: 0;
+}
+
+.app-header__title:has(> .app-page-title) > .app-header__fallback-title {
+  display: none;
 }
 
 .app-header__mobile-menu-btn {
@@ -65,12 +105,23 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  flex: 0 0 auto;
-  margin-inline-start: auto;
+  grid-column: 2;
+  grid-row: 1;
+  gap: var(--design-spacing-xs);
 }
 
 @media (min-width: 1080px) {
-  .app-header {
+  .app-header__left {
+    display: none;
+  }
+
+  .app-header__title {
+    grid-column: 1;
+    grid-row: 1;
+    padding-block-end: 0;
+  }
+
+  .app-header__mobile-menu-btn {
     display: none;
   }
 }

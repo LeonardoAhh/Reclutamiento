@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState } from 'react';
+import { PageHeading } from '@/components/layout/PageHeading';
 import { Link, Navigate } from 'react-router-dom';
 import { ArrowLeft, CalendarDays, Check, ChevronLeft, ChevronRight, Info, Trash2 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
@@ -113,17 +114,12 @@ export function LeaveRequestsPage() {
       fixture={isBuild ? <LeaveRequestsSkeletonFixture /> : undefined}
     >
     <main className="leave-requests-page container" aria-labelledby={`${id}-title`}>
-      <header className="leave-requests-page__header">
-        <div className="leave-requests-page__heading">
-          <h1 id={`${id}-title`} className="app-page-title">
+          <PageHeading id={`${id}-title`} className="app-page-title">
             <Link to={HOME_PATH} className="leave-requests-page__title-link">
               <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
               {t.title}
             </Link>
-          </h1>
-        </div>
-
-      </header>
+          </PageHeading>
       <section className="leave-requests-page__content" aria-label={t.team} aria-busy={loading}>
         {loading ? <p role="status">{t.loading}</p>
           : error ? <div className="leave-requests-page__error">

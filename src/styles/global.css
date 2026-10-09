@@ -453,7 +453,7 @@
   --menu-inline-size-md: calc(var(--menu-min-inline-size) + var(--design-spacing-3xl));
   /* Ancho compacto del menú de cuenta sin comprometer etiquetas ni touch targets. */
   --feature-account-menu-inline-size: calc(
-    var(--menu-min-inline-size) + var(--design-spacing-3xl)
+    var(--menu-min-inline-size) + var(--design-spacing-md)
   );
   --pipeline-table-date-inline-size: 7.5rem;
   --pipeline-table-actions-inline-size: 5rem;
@@ -1053,7 +1053,7 @@ code:not(pre code) {
   justify-content: space-between;
   flex-wrap: wrap;
   gap: var(--design-spacing-sm);
-  padding-block: var(--design-spacing-md);
+  padding-block: 0 var(--design-spacing-md);
   margin: 0 0 var(--design-spacing-sm);
 }
 
@@ -1086,7 +1086,7 @@ code:not(pre code) {
 
 @media (min-width: 768px) {
   .page-header {
-    padding-block: var(--design-spacing-lg);
+    padding-block-end: var(--design-spacing-lg);
     margin-bottom: var(--design-spacing-md);
   }
 

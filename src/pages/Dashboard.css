@@ -9,32 +9,12 @@
 
 .plantilla-layout {
   width: 100%;
-  display: grid;
-  grid-template-areas:
-    "header"
-    "main";
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: auto auto;
   background: var(--workspace-surface);
 }
 
-.plantilla-header {
-  grid-area: header;
-  min-width: 0;
-  padding-inline: calc(var(--focus-ring-width) + var(--focus-ring-offset));
-  padding-top: var(--design-spacing-md);
-}
-
 .plantilla-main {
-  grid-area: main;
   min-width: 0;
   padding-inline: calc(var(--focus-ring-width) + var(--focus-ring-offset));
-}
-
-@media (min-width: 768px) {
-  .plantilla-header {
-    padding-top: var(--design-spacing-lg);
-  }
 }
 
 /* ── Hero Band ── */
@@ -662,7 +642,7 @@
   flex-direction: column;
   min-width: 0;
   width: 100%;
-  padding-block: var(--spacing-lg);
+  padding-block-end: var(--spacing-lg);
 }
 
 /* ── Sidebar Internal Overrides ───────────────────────────────── */
@@ -681,7 +661,7 @@
 
 @media (min-width: 768px) {
   .dashboard__content-area {
-    padding-block: var(--spacing-xxl);
+    padding-block-end: var(--spacing-xxl);
   }
 
   .dashboard-sidebar__hero-content {

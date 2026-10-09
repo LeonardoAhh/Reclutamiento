@@ -1,4 +1,5 @@
 import { useState, useMemo, useRef } from "react";
+import { PageHeading } from '@/components/layout/PageHeading';
 import { Bus, CircleAlert } from "lucide-react";
 import { Copy as CopyIconData, LoaderCircle as LoaderCircleIconData } from "lucide";
 import { toBlob } from "html-to-image";
@@ -49,7 +50,9 @@ function getWeekLabel(range: IsoWeekRange, language: "es" | "en") {
 function toAvailableWeek(range: IsoWeekRange, language: "es" | "en"): AvailableWeek {
   return {
     value: getWeekKey(range),
-    label: getWeekLabel(range, language),
+    label: language === "es"
+      ? `Sem ${range.week} · ${range.year}`
+      : `Week ${range.week} · ${range.year}`,
     range,
   };
 }
@@ -220,23 +223,9 @@ export function FormatosView() {
         className="config-page formatos-page"
         aria-labelledby="formatos-page-title"
       >
-        <header className="formatos-page__header">
-          <h1 id="formatos-page-title" className="config-page__title app-page-title">
-            {copy.title}
-          </h1>
-          <label className="config-filter-field formatos-page__week-filter">
-            <CustomSelect
-              id="formatos-week"
-              value={selectedWeek.value}
-              onChange={setSelectedWeekKey}
-              aria-label={copy.hireWeek}
-              options={availableWeeks.map((week) => ({
-                value: week.value,
-                label: week.label,
-              }))}
-            />
-          </label>
-        </header>
+        <PageHeading id="formatos-page-title" className="config-page__title app-page-title">
+          {copy.title}
+        </PageHeading>
 
         <div className="config-page__content">
           {employeesError && (
@@ -253,6 +242,21 @@ export function FormatosView() {
               employees={weeklyEmployees}
               weekLabel={getWeekLabel(selectedWeek.range, "es")}
               printDate={localTodayIso()}
+              headingAccessory={
+                <CustomSelect
+                  id="formatos-week"
+                  className="weekly-formats__week-filter"
+                  dropdownClassName="weekly-formats__week-options"
+                  value={selectedWeek.value}
+                  onChange={setSelectedWeekKey}
+                  aria-label={copy.hireWeek}
+                  showPlaceholderOption={false}
+                  options={availableWeeks.map((week) => ({
+                    value: week.value,
+                    label: week.label,
+                  }))}
+                />
+              }
             />
 
             <section

@@ -34,6 +34,7 @@ export function RutaDayEmployeesPage() {
   const backHref = routeName ? `/routes?${new URLSearchParams({ route: routeName, ...(searchTerm ? { search: searchTerm } : {}) })}` : '/routes';
   const displayDay = validDay ? formatRouteDay(validDay, language).toLowerCase() : '';
   const title = validDay ? `${copy.employeesOfDay} ${displayDay}` : copy.employeesByDayPage;
+  const compactRouteName = route?.nombreRuta.match(/^\s*(R\d+)\s*-/i)?.[1] ?? route?.nombreRuta;
 
   useEffect(() => {
     headingRef.current?.focus();
@@ -48,7 +49,10 @@ export function RutaDayEmployeesPage() {
             <span>{title}</span>
           </Link>
         </h1>
-        {route && <p className="type-body-md">{route.nombreRuta}</p>}
+        {route && <p className="type-body-md ruta-day-page__route-name" aria-label={route.nombreRuta}>
+          <span className="ruta-day-page__route-name-compact" aria-hidden="true">{compactRouteName}</span>
+          <span className="ruta-day-page__route-name-full" aria-hidden="true">{route.nombreRuta}</span>
+        </p>}
       </header>
 
       {loading ? (

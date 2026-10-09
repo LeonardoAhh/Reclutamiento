@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
+import { PageHeading } from '@/components/layout/PageHeading';
 import { Search } from 'lucide-react';
 import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
 import { ButtonUtility } from '@/components/ui/ButtonUtility';
@@ -137,9 +138,9 @@ export function TabuladorView() {
     >
       <section className="tabulador-view config-page" aria-labelledby="tabulador-title">
       <header className="config-page__header tabulador-header">
-        <h1 id="tabulador-title" className="config-page__title app-page-title">
+        <PageHeading id="tabulador-title" className="config-page__title app-page-title">
           {copy.title}
-        </h1>
+        </PageHeading>
         {!loadError && (
           <div className="tabulador-search-header">
             <SearchField

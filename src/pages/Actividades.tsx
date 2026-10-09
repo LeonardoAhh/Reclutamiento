@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from "react";
+import { PageHeading } from '@/components/layout/PageHeading';
 import { isBoneyardBuild } from "@/lib/boneyard";
 import { BONEYARD_SAMPLE_ACTIVITIES } from "@/lib/boneyardFixtures";
 import * as Tabs from "@radix-ui/react-tabs";
@@ -606,9 +607,7 @@ export function Actividades() {
       loadingLabel={en ? "Loading activities..." : "Cargando actividades..."}
     >
       <main className="actividades-page container">
-        <header className="page-header">
-          <h1 className="app-page-title">{en ? "Activities" : "Actividades"}</h1>
-        </header>
+        <PageHeading className="app-page-title">{en ? "Activities" : "Actividades"}</PageHeading>
 
       <Tabs.Root className="actividades-tabs" defaultValue="vacancies">
         <Tabs.List className="actividades-tabs__list" aria-label={en ? "Activity sections" : "Secciones de actividades"}>

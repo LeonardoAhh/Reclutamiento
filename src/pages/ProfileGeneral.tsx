@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { PageHeading } from '@/components/layout/PageHeading';
 import * as Tabs from '@radix-ui/react-tabs';
 import { ClipboardCheck, LayoutDashboard, Settings2 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
@@ -50,7 +51,7 @@ export function ProfileGeneral() {
   if (!hasAccess) {
     return (
       <main className="profile-general container">
-        <header className="page-header"><div className="page-header__content"><h1 className="page-title">Perfil General</h1></div></header>
+        <PageHeading className="app-page-title">Perfil General</PageHeading>
         <section className="card profile-general__notice" role="alert">
           <h2>Acceso no disponible</h2>
           <p>Esta función está habilitada para Administrador y Reclutador.</p>
@@ -66,7 +67,7 @@ export function ProfileGeneral() {
       <main className="profile-general container" id="page-profile-general">
         <header className="page-header">
           <div className="page-header__content">
-            <h1 className="page-title">Perfil General</h1>
+            <PageHeading className="app-page-title">Perfil General</PageHeading>
             <p className="profile-general__subtitle">Alineación de contrataciones con el descriptivo de puesto.</p>
           </div>
         </header>

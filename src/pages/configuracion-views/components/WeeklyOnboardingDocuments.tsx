@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { BadgeCheck, FileSignature, Printer } from 'lucide-react';
 import { ButtonUtility } from '@/components/ui/ButtonUtility';
@@ -26,6 +26,7 @@ interface WeeklyOnboardingDocumentsProps {
   employees: Employee[];
   weekLabel: string;
   printDate: string;
+  headingAccessory?: ReactNode;
 }
 
 interface DocumentTableRowProps {
@@ -401,6 +402,7 @@ export function WeeklyOnboardingDocuments({
   employees: rawEmployees,
   weekLabel,
   printDate,
+  headingAccessory,
 }: WeeklyOnboardingDocumentsProps) {
   const { language } = useLanguage();
   const copy = getConfiguracionCopy(language).formats;
@@ -490,6 +492,7 @@ export function WeeklyOnboardingDocuments({
             {copy.onboardingFormats}
           </h2>
         </div>
+        {headingAccessory}
       </header>
 
       <div className="weekly-formats__grid">

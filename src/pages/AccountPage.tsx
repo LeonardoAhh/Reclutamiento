@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { PageHeading } from '@/components/layout/PageHeading';
 import { Link } from 'react-router-dom';
 import { TEAM_PATH } from '@/components/layout/navigation';
 import { Avatar } from "@/components/ui/Avatar";
@@ -45,7 +46,7 @@ export function AccountPage() {
     <main className="account-page container container--compact" aria-labelledby="account-profile-title">
       <div className="account-page__content">
         <section className="account-page__section account-page__section--profile" aria-labelledby="account-profile-title">
-          <h1 id="account-profile-title" className="app-page-title">{copy.title}</h1>
+          <PageHeading id="account-profile-title" className="app-page-title">{copy.title}</PageHeading>
           <button
             type="button"
             className="account-page__identity"

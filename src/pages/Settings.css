@@ -5,7 +5,6 @@
    ───────────────────────────────────────────────────────────────────────── */
 
 .settings {
-  padding-block-start: var(--design-spacing-md);
   padding-block-end: var(--spacing-xl);
   display: flex;
   flex-direction: column;
@@ -419,8 +418,3 @@
   }
 }
 
-@media (min-width: 768px) {
-  .settings {
-    padding-block-start: var(--design-spacing-lg);
-  }
-}

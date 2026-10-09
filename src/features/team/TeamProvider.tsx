@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { PageHeading } from '@/components/layout/PageHeading';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/lib/supabase';
 import { TransitionLoader } from '@/components/ui/TransitionLoader';
@@ -84,7 +85,7 @@ function AuthenticatedTeamProvider({ children }: { children: ReactNode }) {
   }), [members, refresh]);
 
   if (error && !members) return <main className="container container--compact">
-    <h1 className="app-page-title">{copy.titleUnavailable}</h1>
+    <PageHeading className="app-page-title">{copy.titleUnavailable}</PageHeading>
     <p role="alert">{translateTeamMessage(error, language)}</p>
     <button type="button" className="btn-primary" onClick={() => void refresh().catch(() => {})}>{copy.retry}</button>
   </main>;

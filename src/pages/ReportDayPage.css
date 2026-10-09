@@ -2,6 +2,13 @@
   min-inline-size: 0;
   padding-block-end: calc(var(--design-spacing-xxl) + var(--safe-area-bottom));
 }
+.app-header__title > .app-page-title.report-day-page__heading {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+  letter-spacing: var(--type-heading-sm-tracking);
+}
 .report-day-page__title-link {
   display: inline-flex;
   align-items: center;
@@ -16,24 +23,27 @@
 }
 .report-day-page__title-copy {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
+  column-gap: var(--spacing-xs);
   min-inline-size: 0;
 }
 .report-day-page__title-week {
+  flex: 0 0 auto;
   white-space: nowrap;
 }
 .report-day-page__title-separator {
-  display: none;
+  display: inline;
 }
 .report-day-page__navigation {
   display: flex;
   flex-wrap: wrap;
   gap: var(--design-spacing-xs);
   min-inline-size: 0;
-  inline-size: 100%;
+  inline-size: auto;
 }
 .report-day-page__navigation > .btn-ghost {
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   padding-inline: var(--design-spacing-sm);
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-body-sm-weight);
@@ -43,6 +53,9 @@
 }
 .report-day-page__navigation svg {
   flex-shrink: 0;
+}
+.report-day-page__navigation-label {
+  display: none;
 }
 .report-day-page__content {
   display: flex;
@@ -60,16 +73,14 @@
   border-radius: var(--workspace-radius);
 }
 @media (min-width: 768px) {
-  .report-day-page__title-copy {
-    flex-direction: row;
-    flex-wrap: wrap;
-    column-gap: var(--spacing-xs);
+  .app-header__title > .app-page-title.report-day-page__heading {
+    font-size: var(--type-heading-md-size);
+    font-weight: var(--type-heading-md-weight);
+    line-height: var(--type-heading-md-line);
+    letter-spacing: var(--type-heading-md-tracking);
   }
-  .report-day-page__title-separator {
+  .report-day-page__navigation-label {
     display: inline;
-  }
-  .report-day-page__navigation {
-    inline-size: auto;
   }
   .report-day-page__skeleton-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -85,6 +96,17 @@
   flex-direction: column;
   min-inline-size: 0;
   gap: var(--design-spacing-md);
+}
+.report-day-page__section-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--design-spacing-sm);
+  min-inline-size: 0;
+}
+.report-day-page__section-header > .report-day-page__section-title {
+  min-inline-size: 0;
 }
 .report-day-page__section-title {
   margin: 0;

@@ -4,16 +4,15 @@ import { fadeUp } from '@/lib/motion';
 import { BrandMarkPath } from '@/components/ui/BrandMark';
 
 interface SidebarBrandProps {
-  /** Nombre accesible de la marca; conserva la grafía original. */
-  name: string;
+  title: string;
 }
 
 /**
- * Marca de la sidebar: el símbolo de ViñoPlastic y su nombre visible.
+ * Identidad del usuario en la sidebar junto al símbolo de la aplicación.
  * Reutiliza el reveal `fadeUp` del sistema; con movimiento reducido se
  * muestra estático. El color lo hereda de `currentColor`.
  */
-export function SidebarBrand({ name }: SidebarBrandProps) {
+export function SidebarBrand({ title }: SidebarBrandProps) {
   const reduceMotion = useReducedMotion();
 
   return (
@@ -31,7 +30,7 @@ export function SidebarBrand({ name }: SidebarBrandProps) {
       >
         <BrandMarkPath />
       </motion.svg>
-      <span className="sidebar__brand-name">{name}</span>
+      <span className="sidebar__brand-title">{title}</span>
     </div>
   );
 }

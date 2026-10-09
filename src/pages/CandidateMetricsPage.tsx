@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { PageHeading } from '@/components/layout/PageHeading';
 import { Link, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, ArrowUpRight, UsersRound } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -35,9 +36,7 @@ export function CandidateMetricsPage() {
 
   return (
     <main className="candidate-metrics container" aria-labelledby="candidate-metrics-title">
-      <header className="page-header">
-        <div className="page-header__content">
-          <h1 ref={view ? undefined : headingRef} tabIndex={-1} id="candidate-metrics-title" className="app-page-title">
+          <PageHeading ref={view ? undefined : headingRef} tabIndex={-1} id="candidate-metrics-title" className="app-page-title">
             <Link
               className="candidate-metrics__title-link"
               to={view ? CANDIDATE_METRICS_PATH : '/candidates'}
@@ -48,9 +47,7 @@ export function CandidateMetricsPage() {
               <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
               {en ? 'Metrics and KPIs' : 'Métricas y KPIs'}
             </Link>
-          </h1>
-        </div>
-      </header>
+          </PageHeading>
       {metrics.loading && <p role="status">{en ? 'Loading metrics…' : 'Cargando métricas…'}</p>}
       {metrics.error && <div className="candidate-metrics__error">
         <p role="alert">{en ? 'Could not load candidate metrics.' : 'No se pudieron cargar las métricas de candidatos.'}</p>

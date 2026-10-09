@@ -10,18 +10,11 @@
   padding-block-end: var(--design-spacing-md);
 }
 
-.reporte-page:not(.reporte-page--day) {
-  padding-block-start: var(--design-spacing-md);
-}
-
 @media (min-width: 768px) {
   .reporte-page {
     padding-block-end: var(--design-spacing-lg);
   }
 
-  .reporte-page:not(.reporte-page--day) {
-    padding-block-start: var(--design-spacing-lg);
-  }
 }
 
 .reporte-container {
@@ -92,10 +85,6 @@
   }
 }
 
-.reporte-head__left {
-  min-width: 0;
-}
-
 /* Ensure other controls keep their intrinsic size */
 .reporte-head__grid > * {
   flex: 0 0 auto;
@@ -125,7 +114,6 @@
 
 @media (min-width: 768px) {
   .reporte-head__grid {
-    width: auto;
     margin-top: 0;
   }
 }
@@ -2268,16 +2256,6 @@ button.reporte-card:hover,
     padding-block: var(--spacing-xl);
     gap: var(--design-spacing-xxl);
   }
-}
-
-.reporte-hero__intro {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--spacing-sm);
-  text-align: left;
-  width: 100%;
-  max-width: var(--content-reading-max-inline-size);
 }
 
 .reporte-hero__workspace {

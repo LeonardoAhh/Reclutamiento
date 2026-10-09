@@ -1,19 +1,17 @@
-import { useEffect, useId, useRef, useState, type FocusEvent, type KeyboardEvent } from 'react';
-import { ContactRound, UserRoundPlus } from 'lucide-react';
+import { useEffect, useId, useRef, useState, type KeyboardEvent } from 'react';
+import { ContactRound, Search, UserRoundPlus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { SearchField } from '@/components/ui/SearchField';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { normalizeString } from '@/lib/utils';
 import { PLANTILLA_PATH } from '@/lib/plantillaNavigation';
 import { CANDIDATES_PATH } from './navigation';
 import type { SidebarCreateAction } from '@/lib/sidebarActionNavigation';
-import { DESKTOP_MEDIA_QUERY } from '@/lib/layout';
-import { useMediaQuery } from '@/hooks/useMediaQuery';
 import './SidebarActionSearch.css';
 
 interface SidebarActionSearchProps {
   mobileMenuOpen: boolean;
-  onNavigate?: () => void;
 }
 
 const ACTIONS = [
@@ -28,9 +26,8 @@ const ACTIONS = [
   keywords: string;
 }>;
 
-export function SidebarActionSearch({ mobileMenuOpen, onNavigate }: SidebarActionSearchProps) {
+export function SidebarActionSearch({ mobileMenuOpen }: SidebarActionSearchProps) {
   const { language } = useLanguage();
-  const isDesktop = useMediaQuery(DESKTOP_MEDIA_QUERY);
   const navigate = useNavigate();
   const listId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -43,27 +40,25 @@ export function SidebarActionSearch({ mobileMenuOpen, onNavigate }: SidebarActio
   );
 
   useEffect(() => {
-    if (!isDesktop && !mobileMenuOpen) return;
+    if (mobileMenuOpen) setOpen(false);
+  }, [mobileMenuOpen]);
+
+  useEffect(() => {
+    if (mobileMenuOpen) return;
     const focusSearch = (event: globalThis.KeyboardEvent) => {
       if (!event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.key.toLowerCase() !== 'k') return;
       event.preventDefault();
-      inputRef.current?.focus();
       setOpen(true);
+      inputRef.current?.focus();
     };
     window.addEventListener('keydown', focusSearch);
     return () => window.removeEventListener('keydown', focusSearch);
-  }, [isDesktop, mobileMenuOpen]);
+  }, [mobileMenuOpen]);
 
   function runAction(action: (typeof ACTIONS)[number]) {
-    inputRef.current?.focus();
     setOpen(false);
     setQuery('');
-    onNavigate?.();
     navigate(action.path, { state: { sidebarCreateAction: action.id } });
-  }
-
-  function handleBlur(event: FocusEvent<HTMLDivElement>) {
-    if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false);
   }
 
   function handleInputKeyDown(event: KeyboardEvent<HTMLInputElement>) {
@@ -86,41 +81,49 @@ export function SidebarActionSearch({ mobileMenuOpen, onNavigate }: SidebarActio
   }
 
   return (
-    <div
-      className="sidebar-action-search"
-      onBlur={handleBlur}
-      onKeyDownCapture={(event) => {
-        if (event.key !== 'Escape' || !open) return;
-        event.preventDefault();
-        event.stopPropagation();
-        inputRef.current?.focus();
-        setOpen(false);
-      }}
-    >
-      <div className="sidebar-action-search__field">
-        <SearchField
-          ref={inputRef}
-          label={language === 'en' ? 'Search actions' : 'Buscar acciones'}
-          placeholder={language === 'en' ? 'Search' : 'Buscar'}
-          value={query}
-          onChange={(event) => { setQuery(event.target.value); setOpen(true); }}
-          onFocus={() => setOpen(true)}
-          onClick={() => setOpen(true)}
-          onKeyDown={handleInputKeyDown}
-          onClear={() => { setQuery(''); setOpen(true); }}
-          clearLabel={language === 'en' ? 'Clear action search' : 'Limpiar búsqueda de acciones'}
-          aria-controls={open ? listId : undefined}
-          aria-expanded={open}
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          className="sidebar-action-search__trigger"
+          aria-label={language === 'en' ? 'Search actions' : 'Buscar acciones'}
           aria-keyshortcuts="Alt+K"
-          autoComplete="off"
-        />
-        {!query && (
-          <span className="sidebar-action-search__shortcut" aria-hidden="true">
-            <kbd>Alt</kbd><kbd>K</kbd>
+        >
+          <span className="sidebar-action-search__trigger-surface">
+            <Search size="var(--icon-size-sm)" aria-hidden="true" />
           </span>
-        )}
-      </div>
-      {open && (
+        </button>
+      </PopoverTrigger>
+      <PopoverContent
+        align="end"
+        className="sidebar-action-search"
+        aria-label={language === 'en' ? 'Search actions' : 'Buscar acciones'}
+        onOpenAutoFocus={(event) => {
+          event.preventDefault();
+          inputRef.current?.focus();
+        }}
+      >
+        <div className="sidebar-action-search__field">
+          <SearchField
+            ref={inputRef}
+            label={language === 'en' ? 'Search actions' : 'Buscar acciones'}
+            placeholder={language === 'en' ? 'Search' : 'Buscar'}
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            onKeyDown={handleInputKeyDown}
+            onClear={() => { setQuery(''); setOpen(true); }}
+            clearLabel={language === 'en' ? 'Clear action search' : 'Limpiar búsqueda de acciones'}
+            aria-controls={listId}
+            aria-expanded={open}
+            aria-keyshortcuts="Alt+K"
+            autoComplete="off"
+          />
+          {!query && (
+            <span className="sidebar-action-search__shortcut" aria-hidden="true">
+              <kbd>Alt</kbd><kbd>K</kbd>
+            </span>
+          )}
+        </div>
         <div id={listId} className="sidebar-action-search__results">
           {results.length > 0 ? (
             <ul className="sidebar-action-search__list" aria-label={language === 'en' ? 'Available actions' : 'Acciones disponibles'}>
@@ -148,7 +151,7 @@ export function SidebarActionSearch({ mobileMenuOpen, onNavigate }: SidebarActio
             </p>
           )}
         </div>
-      )}
-    </div>
+      </PopoverContent>
+    </Popover>
   );
 }

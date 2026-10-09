@@ -2,16 +2,6 @@
   gap: var(--spacing-lg);
 }
 
-.formatos-page__header {
-  display: flex;
-  flex-direction: column;
-  gap: var(--design-spacing-md);
-}
-
-.formatos-page__week-filter {
-  width: 100%;
-}
-
 .formatos-page__error {
   margin: 0 0 var(--spacing-md);
   padding: var(--spacing-md);
@@ -300,13 +290,54 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-lg);
-  margin-block: var(--spacing-xl) 0;
 }
 
 .weekly-formats__heading {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
   gap: var(--spacing-sm);
+}
+
+.weekly-formats__week-filter {
+  flex: 0 1 auto;
+  inline-size: fit-content;
+  min-width: 0;
+  margin-inline-start: auto;
+}
+
+.weekly-formats__week-filter .custom-select-trigger {
+  padding-inline: 0;
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+
+.weekly-formats__week-filter .custom-select-trigger:hover:not(:focus-visible),
+.weekly-formats__week-filter .custom-select-trigger:disabled {
+  border-color: transparent;
+  background: transparent;
+}
+
+.weekly-formats__week-options .custom-select-option {
+  flex-wrap: nowrap;
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
+}
+
+.weekly-formats__week-options .custom-select-option[data-state='checked'] {
+  font-weight: var(--type-body-strong-weight);
+}
+
+.weekly-formats__week-options .custom-select-option-label {
+  flex: 0 0 auto;
+  width: auto;
+  max-width: var(--radix-select-content-available-width);
+  white-space: nowrap;
 }
 
 .weekly-formats__title {
@@ -444,12 +475,6 @@
     max-width: var(--feature-calendar-column-max);
   }
 
-  .weekly-formats__heading {
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: space-between;
-  }
-
   .weekly-format-card__footer {
     flex-direction: row;
     align-items: center;
@@ -464,16 +489,6 @@
 }
 
 @media (min-width: 1024px) {
-  .formatos-page__header {
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: space-between;
-  }
-
-  .formatos-page__week-filter {
-    width: min(100%, var(--week-filter-inline-size));
-  }
-
   .weekly-formats__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }

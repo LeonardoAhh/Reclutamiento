@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { PageHeading } from '@/components/layout/PageHeading';
 import { BarChart3, SlidersHorizontal } from 'lucide-react';
 import { CartesianGrid, Label, LabelList, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { CustomSelect } from '@/components/ui/CustomSelect';
@@ -133,23 +134,9 @@ export function MotivosBaja() {
 
   return (
     <main className="motivos-baja container" aria-labelledby="motivos-baja-title">
-      <header className="motivos-baja__header">
-        <div className="motivos-baja__heading">
-          <div>
-            <h1 id="motivos-baja-title" className="app-page-title">
-              {copy.title}
-            </h1>
-          </div>
-          <button
-            type="button"
-            className="btn-ghost motivos-baja__capture-trigger"
-            onClick={() => setCaptureOpen(true)}
-            disabled={loading || Boolean(error)}
-          >
-            {copy.register}
-          </button>
-        </div>
-      </header>
+      <PageHeading id="motivos-baja-title" className="app-page-title">
+        {copy.title}
+      </PageHeading>
 
       <CapturarMotivoBajaModal
         isOpen={captureOpen}
@@ -172,59 +159,69 @@ export function MotivosBaja() {
           <div>
             <h2 id="motivos-trend-title">{copy.monthlyDepartures}</h2>
           </div>
-          <Popover>
-            <PopoverTrigger asChild>
-              <button type="button" className="btn-icon motivos-baja__filter-trigger" aria-label={copy.indicatorFilters}>
-                <SlidersHorizontal size="var(--icon-size-md)" aria-hidden="true" />
-              </button>
-            </PopoverTrigger>
-            <PopoverContent align="end" className="motivos-baja__filter-popover" aria-label={copy.indicatorFilters}>
-              <div className="motivos-baja__filters">
-                <div className="motivos-baja__filter">
-                  <label htmlFor="motivos-year">{copy.year}</label>
-                  <CustomSelect
-                    id="motivos-year"
-                    value={year}
-                    showPlaceholderOption={false}
-                    onChange={(value) => { setYear(value); setMonth('all'); }}
-                    options={[
-                      { value: 'all', label: copy.allYears },
-                      ...years.map((value) => ({ value, label: value })),
-                    ]}
-                  />
+          <div className="motivos-baja__panel-actions">
+            <button
+              type="button"
+              className="btn-ghost motivos-baja__capture-trigger"
+              onClick={() => setCaptureOpen(true)}
+              disabled={loading || Boolean(error)}
+            >
+              {copy.register}
+            </button>
+            <Popover>
+              <PopoverTrigger asChild>
+                <button type="button" className="btn-icon motivos-baja__filter-trigger" aria-label={copy.indicatorFilters}>
+                  <SlidersHorizontal size="var(--icon-size-md)" aria-hidden="true" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent align="end" className="motivos-baja__filter-popover" aria-label={copy.indicatorFilters}>
+                <div className="motivos-baja__filters">
+                  <div className="motivos-baja__filter">
+                    <label htmlFor="motivos-year">{copy.year}</label>
+                    <CustomSelect
+                      id="motivos-year"
+                      value={year}
+                      showPlaceholderOption={false}
+                      onChange={(value) => { setYear(value); setMonth('all'); }}
+                      options={[
+                        { value: 'all', label: copy.allYears },
+                        ...years.map((value) => ({ value, label: value })),
+                      ]}
+                    />
+                  </div>
+                  <div className="motivos-baja__filter">
+                    <label htmlFor="motivos-month">{copy.month}</label>
+                    <CustomSelect
+                      id="motivos-month"
+                      value={month}
+                      showPlaceholderOption={false}
+                      onChange={setMonth}
+                      options={[
+                        { value: 'all', label: copy.allMonths },
+                        ...months.map((value) => ({ value, label: monthLabel(value, language) })),
+                      ]}
+                    />
+                  </div>
+                  <div className="motivos-baja__filter">
+                    <label htmlFor="motivos-type">{copy.exitType}</label>
+                    <CustomSelect
+                      id="motivos-type"
+                      value={exitType}
+                      showPlaceholderOption={false}
+                      onChange={setExitType}
+                      options={[
+                        { value: 'all', label: copy.allTypes },
+                        ...exitTypes.map((value) => ({
+                          value,
+                          label: translateBajaCatalogLabel(toBajaSentenceCase(value), language),
+                        })),
+                      ]}
+                    />
+                  </div>
                 </div>
-                <div className="motivos-baja__filter">
-                  <label htmlFor="motivos-month">{copy.month}</label>
-                  <CustomSelect
-                    id="motivos-month"
-                    value={month}
-                    showPlaceholderOption={false}
-                    onChange={setMonth}
-                    options={[
-                      { value: 'all', label: copy.allMonths },
-                      ...months.map((value) => ({ value, label: monthLabel(value, language) })),
-                    ]}
-                  />
-                </div>
-                <div className="motivos-baja__filter">
-                  <label htmlFor="motivos-type">{copy.exitType}</label>
-                  <CustomSelect
-                    id="motivos-type"
-                    value={exitType}
-                    showPlaceholderOption={false}
-                    onChange={setExitType}
-                    options={[
-                      { value: 'all', label: copy.allTypes },
-                      ...exitTypes.map((value) => ({
-                        value,
-                        label: translateBajaCatalogLabel(toBajaSentenceCase(value), language),
-                      })),
-                    ]}
-                  />
-                </div>
-              </div>
-            </PopoverContent>
-          </Popover>
+              </PopoverContent>
+            </Popover>
+          </div>
         </div>
         {monthlyRows.length > 0 ? (
           <div className="motivos-baja__chart" role="img" aria-label={`${copy.chartLabel} ${monthlyRows.map((row) => `${row.month}, ${row.count}`).join('; ')}. ${monthlyRows.length > 1 ? copy.chartTrend : copy.chartNeedsMonths}`}>

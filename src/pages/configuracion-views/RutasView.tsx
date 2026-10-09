@@ -1,4 +1,5 @@
 import { useState, useRef, useMemo, useEffect } from "react";
+import { PageHeading } from '@/components/layout/PageHeading';
 import { Link, useLocation } from "react-router-dom";
 import {
   ArrowDownRight,
@@ -585,13 +586,9 @@ export function RutasView() {
       data-mobile-view={mobileView}
       aria-labelledby="rutas-page-title"
     >
-      <header className="rutas-header">
-        <div className="rutas-header__copy">
-          <h1 id="rutas-page-title" className="config-page__title app-page-title">
+          <PageHeading id="rutas-page-title" className="config-page__title app-page-title">
             {copy.title}
-          </h1>
-        </div>
-      </header>
+          </PageHeading>
 
       <section
         className="config-results-controls rutas-toolbar"

@@ -206,10 +206,10 @@ export function CareerJourney({ onClose, children }: CareerJourneyProps) {
       <div className={isSummary ? 'career-page__destination career-page__summary-content'
         : isDevelopmentSelection || isFirstActionSelection ? 'career-page__destination career-page__development'
         : showMessages ? 'career-page__destination' : 'career-page__content'}>
-        <h1 ref={headingRef} tabIndex={-1} id={titleId}
+        <h2 ref={headingRef} tabIndex={-1} id={titleId}
           className={step === 'positions' || isGoalSelection || isLeaving ? 'sr-only' : 'career-page__question type-display-1'}>
           {question}
-        </h1>
+        </h2>
         {showChoices ? (
           <div className="career-page__selection">
             <ul className="career-page__roles" data-selected={activeChoice !== undefined}

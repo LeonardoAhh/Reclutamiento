@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { PageHeading } from '@/components/layout/PageHeading';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton';
@@ -10,7 +11,7 @@ import type { AreaDetailRow, AreaStaffSummary, EmployeeRef, IncidentTab } from '
 import './ReportDayPage.css';
 
 interface ReportDayPageProps {
-  heading: { date: string; week: string };
+  heading: { date: string; compactDate: string; week: string; compactWeek: string };
   month: string;
   day: string;
   loading: boolean;
@@ -34,39 +35,22 @@ export function ReportDayPage(props: ReportDayPageProps) {
   const headingRef = useRef<HTMLHeadingElement>(null);
   const dateTitle = props.heading.date || copy('Detalle del día', 'Day details');
   const title = props.heading.week ? `${dateTitle} - ${props.heading.week}` : dateTitle;
+  const compactDateTitle = props.heading.compactDate || dateTitle;
   useEffect(() => { headingRef.current?.focus({ preventScroll: true }); }, [props.day]);
 
   return (
     <div className="report-day-page">
-      <header className="page-header">
-        <div className="page-header__content">
-          <h1 ref={headingRef} tabIndex={-1} id="reporte-page-title" className="app-page-title" data-testid="selected-day-title">
-            <Link to="/reports" className="report-day-page__title-link" aria-label={title + ': ' + copy('volver a Reporte diario', 'back to Daily report')}>
-              <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
-              <span className="report-day-page__title-copy">
-                <span>{dateTitle}</span>
-                {props.heading.week && <span className="report-day-page__title-week">
-                  <span className="report-day-page__title-separator" aria-hidden="true">- </span>{props.heading.week}
-                </span>}
-              </span>
-            </Link>
-          </h1>
-        </div>
-        {props.hasData && !props.loading && (
-            <nav className="report-day-page__navigation" aria-label={copy('Navegación entre días', 'Day navigation')}>
-              {props.prevDay ? <Link replace to={getReportDayPath(props.month, props.prevDay)} className="btn-ghost" aria-label={copy('Día anterior', 'Previous day')} data-testid="prev-day-btn">
-                <ChevronLeft size="var(--icon-size-sm)" aria-hidden="true" />{copy('Día anterior', 'Previous day')}
-              </Link> : <button type="button" className="btn-ghost" disabled aria-label={copy('Día anterior', 'Previous day')} data-testid="prev-day-btn">
-                <ChevronLeft size="var(--icon-size-sm)" aria-hidden="true" />{copy('Día anterior', 'Previous day')}
-              </button>}
-              {props.nextDay ? <Link replace to={getReportDayPath(props.month, props.nextDay)} className="btn-ghost" aria-label={copy('Día siguiente', 'Next day')} data-testid="next-day-btn">
-                {copy('Día siguiente', 'Next day')}<ChevronRight size="var(--icon-size-sm)" aria-hidden="true" />
-              </Link> : <button type="button" className="btn-ghost" disabled aria-label={copy('Día siguiente', 'Next day')} data-testid="next-day-btn">
-                {copy('Día siguiente', 'Next day')}<ChevronRight size="var(--icon-size-sm)" aria-hidden="true" />
-              </button>}
-            </nav>
-        )}
-      </header>
+      <PageHeading ref={headingRef} tabIndex={-1} id="reporte-page-title" className="app-page-title report-day-page__heading" data-testid="selected-day-title">
+        <Link to="/reports" className="report-day-page__title-link" aria-label={title + ': ' + copy('volver a Reporte diario', 'back to Daily report')}>
+          <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
+          <span className="report-day-page__title-copy">
+            <span>{compactDateTitle}</span>
+            {props.heading.week && <span className="report-day-page__title-week">
+              <span className="report-day-page__title-separator" aria-hidden="true"> · </span>{props.heading.compactWeek}
+            </span>}
+          </span>
+        </Link>
+      </PageHeading>
       {props.loading ? <LoadingSkeleton label={copy('Cargando detalle del día…', 'Loading day details…')} className="report-day-page__skeleton">
         <div className="report-day-page__skeleton-grid" aria-hidden="true">
           {Array.from({ length: 6 }, (_, index) => <span key={index} className="loading-skeleton__bone report-day-page__skeleton-card" />)}
@@ -77,7 +61,21 @@ export function ReportDayPage(props: ReportDayPageProps) {
       </div> : !props.hasData ? <p role="status">{copy('El reporte de este día no está disponible. Vuelve a Reporte diario para seleccionar un reporte.', 'This day report is unavailable. Return to Daily report to select a report.')}</p> : (
         <div className="report-day-page__content">
           <div className="report-day-page__section">
-            <h2 id="ras-heading" className="report-day-page__section-title">{copy('Resumen por área', 'Summary by area')}</h2>
+            <div className="report-day-page__section-header">
+              <h2 id="ras-heading" className="report-day-page__section-title">{copy('Resumen por área', 'Summary by area')}</h2>
+              <nav className="report-day-page__navigation" aria-label={copy('Navegación entre días', 'Day navigation')}>
+                {props.prevDay ? <Link replace to={getReportDayPath(props.month, props.prevDay)} className="btn-ghost" aria-label={copy('Día anterior', 'Previous day')} data-testid="prev-day-btn">
+                  <ChevronLeft size="var(--icon-size-sm)" aria-hidden="true" /><span className="report-day-page__navigation-label">{copy('Día anterior', 'Previous day')}</span>
+                </Link> : <button type="button" className="btn-ghost" disabled aria-label={copy('Día anterior', 'Previous day')} data-testid="prev-day-btn">
+                  <ChevronLeft size="var(--icon-size-sm)" aria-hidden="true" /><span className="report-day-page__navigation-label">{copy('Día anterior', 'Previous day')}</span>
+                </button>}
+                {props.nextDay ? <Link replace to={getReportDayPath(props.month, props.nextDay)} className="btn-ghost" aria-label={copy('Día siguiente', 'Next day')} data-testid="next-day-btn">
+                  <span className="report-day-page__navigation-label">{copy('Día siguiente', 'Next day')}</span><ChevronRight size="var(--icon-size-sm)" aria-hidden="true" />
+                </Link> : <button type="button" className="btn-ghost" disabled aria-label={copy('Día siguiente', 'Next day')} data-testid="next-day-btn">
+                  <span className="report-day-page__navigation-label">{copy('Día siguiente', 'Next day')}</span><ChevronRight size="var(--icon-size-sm)" aria-hidden="true" />
+                </button>}
+              </nav>
+            </div>
             <ReporteAreaSummary areas={props.areas} selectedArea={props.selectedArea} onSelectArea={props.onSelectArea} detailRows={props.detailRows} />
           </div>
           <section className="report-day-page__section" aria-labelledby="report-day-incidents-title">

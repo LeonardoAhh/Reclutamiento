@@ -885,7 +885,7 @@
 /* Main Content Area */
 .config-main {
   flex: 1;
-  padding-block: var(--spacing-lg);
+  padding-block-end: var(--spacing-lg);
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -910,31 +910,10 @@
   }
 }
 
-@media (min-width: 768px) {
-  .config-main {
-    padding-block-start: var(--design-spacing-lg);
-  }
-}
-
 /* ── Indicadores View ─────────────────────────────────────────── */
 
 .indicadores-view {
   gap: var(--spacing-xl);
-}
-
-.indicadores-page-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--spacing-sm);
-}
-
-.indicadores-page-header .config-page__title {
-  min-width: 0;
-  font-size: var(--type-heading-md-size);
-  font-weight: var(--type-heading-md-weight);
-  line-height: var(--type-heading-md-line);
-  letter-spacing: var(--type-heading-md-tracking);
 }
 
 .indicadores-period {
@@ -951,6 +930,7 @@
 }
 
 .indicadores-section__heading > svg,
+.indicadores-section__heading-label > svg,
 .indicadores-kpi-card__icon svg,
 .indicadores-kpi-trend svg,
 .indicadores-recruiter-icon,
@@ -968,6 +948,18 @@
 }
 
 .indicadores-section__heading {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-width: 0;
+}
+
+.indicadores-section__heading--period {
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.indicadores-section__heading-label {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
@@ -1184,6 +1176,10 @@
   white-space: nowrap;
 }
 
+.indicadores-month-nav__short-label {
+  display: none;
+}
+
 .indicadores-month-nav__full-label {
   display: none;
 }
@@ -1191,18 +1187,6 @@
 @media (min-width: 768px) {
   .indicadores-table-header {
     padding: var(--spacing-lg) var(--spacing-xl);
-  }
-
-  .indicadores-period {
-    width: min(100%, var(--feature-result-card-min));
-    padding: var(--spacing-xs);
-  }
-
-  .indicadores-page-header .config-page__title {
-    font-size: var(--type-heading-1-size);
-    font-weight: var(--type-heading-1-weight);
-    line-height: var(--type-heading-1-line);
-    letter-spacing: var(--type-heading-1-tracking);
   }
 
   .indicadores-month-nav {

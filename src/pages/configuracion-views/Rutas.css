@@ -11,24 +11,10 @@
    PAGE STRUCTURE
 ═══════════════════════════════════════════════════════════ */
 
-.rutas-header {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: var(--design-spacing-sm);
-}
-
 .rutas-toolbar {
   margin-bottom: 0;
   padding: var(--spacing-md);
   border-radius: var(--rounded-lg);
-}
-
-.rutas-header__copy {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xs);
-  min-width: 0;
 }
 
 /* ── Mobile-first: stacked, single column ── */
@@ -67,7 +53,6 @@
 
   /* Al ver el detalle de una ruta ocultamos la cabecera y la búsqueda.
      El botón "Todas las rutas" se conserva. */
-  .rutas-page[data-mobile-view="detail"] .rutas-header,
   .rutas-page[data-mobile-view="detail"] .rutas-toolbar {
     display: none;
   }

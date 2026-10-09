@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { PageHeading } from '@/components/layout/PageHeading';
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { FormWizard, type FormWizardStep } from "@/components/ui/FormWizard";
 import { toast } from "@/lib/notify";
@@ -536,7 +537,7 @@ export function DataUpdateWizard({
     <form className="data-update-wizard" onSubmit={submit} onBlur={() => void persist(currentStepRef.current)} noValidate>
       <header className="data-update-wizard__header">
         <div className="data-update-wizard__context">
-          <h1 className="app-page-title">{record.identity.name}</h1>
+          <PageHeading className="app-page-title">{record.identity.name}</PageHeading>
           <span className="type-caption-up text-muted">
             {t(`Empleado ${record.identity.employeeNumber}`)}
           </span>

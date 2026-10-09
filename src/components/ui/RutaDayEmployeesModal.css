@@ -3,7 +3,7 @@
   min-inline-size: 0;
   align-content: start;
   gap: var(--design-spacing-lg);
-  padding-block: var(--design-spacing-lg) var(--design-spacing-xxl);
+  padding-block: 0 var(--design-spacing-xxl);
 }
 
 .ruta-day-page__title-link svg {
@@ -13,15 +13,36 @@
 }
 
 .ruta-day-page__header {
-  display: grid;
+  display: flex;
   min-inline-size: 0;
-  gap: var(--design-spacing-xs);
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--design-spacing-sm);
 }
 
-.ruta-day-page__header p,
 .ruta-day-page__heading {
   margin: 0;
   overflow-wrap: anywhere;
+}
+
+.ruta-day-page__header p {
+  min-inline-size: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.ruta-day-page__route-name {
+  font-family: var(--font-display);
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  line-height: var(--type-heading-md-line);
+  letter-spacing: var(--type-heading-md-tracking);
+  color: var(--color-muted);
+}
+
+.ruta-day-page__route-name-full {
+  display: none;
 }
 
 .ruta-day-page__title-link {
@@ -139,6 +160,14 @@
 }
 
 @media (min-width: 768px) {
+  .ruta-day-page__route-name-compact {
+    display: none;
+  }
+
+  .ruta-day-page__route-name-full {
+    display: inline;
+  }
+
   .ruta-day-page__table {
     border-spacing: 0;
     border: var(--border-width) solid var(--color-hairline);

@@ -5,6 +5,7 @@ import {
   useState,
   type KeyboardEvent as ReactKeyboardEvent,
 } from 'react';
+import { PageHeading } from '@/components/layout/PageHeading';
 
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -305,11 +306,9 @@ export function AnalisisView() {
       loadingLabel={copy.loading}
     >
       <section className="analisis-view config-page" aria-labelledby="analisis-title">
-        <header className="config-page__header">
-          <h1 id="analisis-title" className="config-page__title app-page-title">
+          <PageHeading id="analisis-title" className="config-page__title app-page-title">
             {copy.title}
-          </h1>
-        </header>
+          </PageHeading>
       {employeesError && (
         <p className="config-search-error type-body-sm mt-sm" role="alert">
           {copy.loadError}

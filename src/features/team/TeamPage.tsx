@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState } from 'react';
+import { PageHeading } from '@/components/layout/PageHeading';
 import { ArrowLeft } from 'lucide-react';
 import { Link, Navigate } from 'react-router-dom';
 import { ACCOUNT_PATH, HOME_PATH } from '@/components/layout/navigation';
@@ -70,16 +71,12 @@ export function TeamPage() {
   if (profile?.role !== 'admin') return <Navigate to={HOME_PATH} replace />;
   return <>
     <main className="team-page container container--compact" aria-labelledby={`${id}-title`}>
-      <header className="page-header">
-        <div className="team-page__heading">
-          <h1 id={`${id}-title`} className="app-page-title">
+          <PageHeading id={`${id}-title`} className="app-page-title">
             <Link to={ACCOUNT_PATH} className="team-page__title-link" aria-label={`${copy.title}, ${copy.backToAccount}`}>
               <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
               {copy.title}
             </Link>
-          </h1>
-        </div>
-      </header>
+          </PageHeading>
       <section
         className="team-management"
         aria-label={copy.teamMembers}

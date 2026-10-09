@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { PageHeading } from '@/components/layout/PageHeading';
 import { ArrowLeft } from "lucide-react";
 import type { DataUpdateCampaignDetail, DataUpdateProfileOption, DataUpdateRecord } from "./types";
 import { useDataUpdateText } from "./translations";
@@ -61,27 +62,25 @@ export function DataUpdateProgressPage({
   }, []);
 
   return (
-    <main className="data-update-page data-update-page--has-heading data-update-progress-page container" aria-labelledby="data-update-progress-title">
-      <header className="page-header data-update-page__header">
-        <div className="page-header__content">
-          <h1 id="data-update-progress-title" className="app-page-title">
-            <button
-              ref={headingRef}
-              type="button"
-              className="data-update-progress-page__back-link"
-              onClick={onBack}
-              aria-label={`${t("Volver")}: ${t("Avance de la campaña")}`}
-            >
-              <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
-              {t("Avance de la campaña")}
-            </button>
-          </h1>
-          <p>{detail.campaign.name} · {detail.campaign.year}</p>
-        </div>
-      </header>
+    <main className="data-update-page data-update-progress-page container" aria-labelledby="data-update-progress-title">
+      <PageHeading id="data-update-progress-title" className="app-page-title">
+        <button
+          ref={headingRef}
+          type="button"
+          className="data-update-progress-page__back-link"
+          onClick={onBack}
+          aria-label={`${t("Volver")}: ${t("Avance de la campaña")}`}
+        >
+          <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
+          {t("Avance de la campaña")}
+        </button>
+      </PageHeading>
       <div className="data-update-progress-page__sections">
         <section className="data-update-progress-page__section" aria-labelledby="data-update-progress-global">
-          <h2 id="data-update-progress-global">{t("Global")}</h2>
+          <div className="data-update-progress-page__section-header">
+            <h2 id="data-update-progress-global">{t("Global")}</h2>
+            <p>{detail.campaign.name} · {detail.campaign.year}</p>
+          </div>
           <ProgressSummary records={detail.records} global />
         </section>
         <section className="data-update-progress-page__section" aria-labelledby="data-update-progress-mine">

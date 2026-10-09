@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { PageHeading } from '@/components/layout/PageHeading';
 import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { BackButton } from '@/components/ui/BackButton';
@@ -69,9 +70,9 @@ export function IndicadoresView() {
   if (error) {
     return (
       <section className="indicadores-view config-page" aria-labelledby="indicadores-page-title">
-        <h1 id="indicadores-page-title" className="config-page__title app-page-title">
+        <PageHeading id="indicadores-page-title" className="config-page__title app-page-title">
           {copy.title}
-        </h1>
+        </PageHeading>
         <div className="config-empty" role="alert">
           <p className="text-error type-body-md">{english ? copy.loadError : error}</p>
         </div>
@@ -123,41 +124,9 @@ export function IndicadoresView() {
       loadingLabel={copy.loading}
     >
       <section className="indicadores-view config-page" aria-labelledby="indicadores-page-title">
-      <header className="indicadores-page-header">
-        <h1 id="indicadores-page-title" className="config-page__title app-page-title">
+        <PageHeading id="indicadores-page-title" className="config-page__title app-page-title">
           {copy.title}
-        </h1>
-
-        <div className="indicadores-period" aria-label={copy.period}>
-          <div className="indicadores-month-nav">
-            <button
-              type="button"
-              className="step-nav-control"
-              onClick={handlePrevMonth}
-              aria-label={copy.previousMonth}
-            >
-              <ArrowLeft aria-hidden="true" />
-            </button>
-            <time
-              className="indicadores-month-nav__label"
-              dateTime={monthValue}
-              aria-label={monthLabel}
-            >
-              <span className="indicadores-month-nav__short-label" aria-hidden="true">{shortMonthLabel}</span>
-              <span className="indicadores-month-nav__full-label" aria-hidden="true">{monthLabel}</span>
-            </time>
-            <button
-              type="button"
-              className="step-nav-control"
-              onClick={handleNextMonth}
-              disabled={isCurrentMonth()}
-              aria-label={copy.nextMonth}
-            >
-              <ArrowRight aria-hidden="true" />
-            </button>
-          </div>
-        </div>
-      </header>
+        </PageHeading>
 
       {/* ── KPI Cards ───────────────────────────────────────────── */}
       {kpi && (
@@ -218,12 +187,43 @@ export function IndicadoresView() {
       )}
 
       {/* ── Historial de Metas ──────────────────────────────────── */}
-      {historicalGoals && historicalGoals.length > 0 && (
-        <section className="indicadores-section indicadores-historical-grid" aria-labelledby="indicadores-goals-title">
-          <div className="indicadores-section__heading">
+      <section className="indicadores-section indicadores-historical-grid" aria-labelledby="indicadores-goals-title">
+        <div className="indicadores-section__heading indicadores-section__heading--period">
+          <div className="indicadores-section__heading-label">
             <Award aria-hidden="true" />
             <h2 id="indicadores-goals-title">{copy.historicalGoals}</h2>
           </div>
+          <div className="indicadores-period" aria-label={copy.period}>
+            <div className="indicadores-month-nav">
+              <button
+                type="button"
+                className="step-nav-control"
+                onClick={handlePrevMonth}
+                aria-label={copy.previousMonth}
+              >
+                <ArrowLeft aria-hidden="true" />
+              </button>
+              <time
+                className="indicadores-month-nav__label"
+                dateTime={monthValue}
+                aria-label={monthLabel}
+              >
+                <span className="indicadores-month-nav__short-label" aria-hidden="true">{shortMonthLabel}</span>
+                <span className="indicadores-month-nav__full-label" aria-hidden="true">{monthLabel}</span>
+              </time>
+              <button
+                type="button"
+                className="step-nav-control"
+                onClick={handleNextMonth}
+                disabled={isCurrentMonth()}
+                aria-label={copy.nextMonth}
+              >
+                <ArrowRight aria-hidden="true" />
+              </button>
+            </div>
+          </div>
+        </div>
+        {historicalGoals && historicalGoals.length > 0 && (
           <div className="indicadores-historical-list">
             {historicalGoals.map(rec => (
               <Tooltip
@@ -262,8 +262,8 @@ export function IndicadoresView() {
               </Tooltip>
             ))}
           </div>
-        </section>
-      )}
+        )}
+      </section>
 
       {!kpi && (
         <div className="config-empty" role="status">

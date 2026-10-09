@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { PageHeading } from '@/components/layout/PageHeading';
 import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton';
@@ -23,16 +24,12 @@ export function ReportComparisonPage() {
 
   return (
     <main className="report-comparison-page container" aria-labelledby="report-comparison-title">
-      <header className="page-header">
-        <div className="page-header__content">
-          <h1 ref={headingRef} tabIndex={-1} id="report-comparison-title" className="app-page-title">
+          <PageHeading ref={headingRef} tabIndex={-1} id="report-comparison-title" className="app-page-title">
             <Link to="/reports" className="report-comparison-page__title-link" aria-label={copy('Comparativa mensual: volver a Reporte diario', 'Monthly comparison: back to Daily report')}>
               <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
               {copy('Comparativa mensual', 'Monthly comparison')}
             </Link>
-          </h1>
-        </div>
-      </header>
+          </PageHeading>
       {loading || summaries === null ? (
         <LoadingSkeleton label={copy('Cargando comparativa…', 'Loading comparison…')} className="reporte-cmp__body">
           <div aria-hidden="true" className="report-comparison-skeleton">

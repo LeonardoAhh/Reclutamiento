@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
+import { PageHeading } from '@/components/layout/PageHeading';
 import { Navigate } from 'react-router-dom';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import { CircleAlert, CircleCheckBig, LoaderCircle, RefreshCw, UserRoundPlus } from 'lucide-react';
@@ -180,7 +181,7 @@ export function Settings() {
     return (
       <main className="settings settings--denied" role="main">
         <section className="settings__denied-card">
-          <h1 className="app-page-title">Acceso restringido</h1>
+          <PageHeading className="app-page-title">Acceso restringido</PageHeading>
           <p className="settings__denied-text">
             Solo los administradores pueden gestionar usuarios. Pide a un admin
             que cambie tu rol si necesitas acceso.
@@ -195,7 +196,7 @@ export function Settings() {
       <header className="settings__hero">
         <div>
           <p className="settings__eyebrow">Administración</p>
-          <h1 className="app-page-title">Configuración</h1>
+          <PageHeading className="app-page-title">Configuración</PageHeading>
           <p className="settings__subtitle">
             Crea usuarios y administra los roles del equipo sin salir de la app.
           </p>

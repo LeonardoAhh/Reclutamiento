@@ -308,7 +308,11 @@ export function useIndicadoresStats(selectedMonth: Date) {
       
       const member = resolve(rawRecruiter);
       recruiter = member?.short_name ?? recruiter;
-      if (recruiter === 'Sin Reclutador' || member?.include_in_metrics === false) return;
+      if (
+        recruiter === 'Sin Reclutador' ||
+        recruiter.toLocaleLowerCase('es-MX') === 'thalia' ||
+        member?.include_in_metrics === false
+      ) return;
       
       recruiterSet.add(recruiter);
       

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { PageHeading } from '@/components/layout/PageHeading';
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
@@ -330,11 +331,9 @@ export function Dashboard() {
       loadingLabel={t("Cargando plantilla…")}
     >
     <main className="plantilla-layout container" aria-labelledby="plantilla-title">
-      <header className="plantilla-header">
-        <h1 id="plantilla-title" className="app-page-title">
+        <PageHeading id="plantilla-title" className="app-page-title">
           {t("Plantilla")}
-        </h1>
-      </header>
+        </PageHeading>
 
       <section
         className="plantilla-main"

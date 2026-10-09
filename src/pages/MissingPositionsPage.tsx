@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
+import { PageHeading } from '@/components/layout/PageHeading';
 import { ArrowLeft, Star } from 'lucide-react';
 import { Tooltip } from '@/components/ui/Tooltip';
 import type { PositionCoverage } from '@/lib/types';
@@ -100,9 +101,7 @@ export function MissingPositionsPage({
 
   return (
     <main className="missing-positions-page container" aria-labelledby="missing-positions-title">
-      <header className="page-header">
-        <div className="page-header__content">
-          <h1 id="missing-positions-title" className="app-page-title">
+          <PageHeading id="missing-positions-title" className="app-page-title">
             <button
               ref={titleRef}
               type="button"
@@ -113,9 +112,7 @@ export function MissingPositionsPage({
               <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
               {t("Vacantes Pendientes")}
             </button>
-          </h1>
-        </div>
-      </header>
+          </PageHeading>
       <div className="missing-positions-page__body">
         {missingPositions.length === 0 ? (
           <p className="missing-positions-page__empty">

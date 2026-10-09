@@ -10,13 +10,6 @@
 
 .account-page__content {
   gap: var(--design-spacing-xl);
-  padding-block-start: var(--design-spacing-md);
-}
-
-@media (min-width: 768px) {
-  .account-page__content {
-    padding-block-start: var(--design-spacing-lg);
-  }
 }
 
 .account-page__section {
@@ -206,7 +199,6 @@
 
   .account-page__content {
     gap: var(--design-spacing-xxl);
-    padding-block-start: var(--design-spacing-lg);
   }
 
   .account-page__section {
@@ -215,10 +207,6 @@
 
   .account-page__section--profile {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .account-page__section--profile > .app-page-title {
-    grid-column: 1 / -1;
   }
 
   .account-page__avatar {

@@ -1,14 +1,12 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Avatar } from "@/components/ui/Avatar";
 import { BrandMark } from "@/components/ui/BrandMark";
 import { useAuth } from "@/hooks/useAuth";
-import { useFeedback } from "@/hooks/useFeedback";
-import { useLoader } from "@/hooks/useLoader";
 import { HOME_PATH, LOGOUT_PATH } from "@/components/layout/navigation";
-import { toast } from "@/lib/notify";
 import { toNaturalCase } from "@/lib/utils";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useSignOut } from "./useSignOut";
 import "./LogoutPage.css";
 
 function getReturnPath(state: unknown): string {
@@ -24,13 +22,10 @@ function getReturnPath(state: unknown): string {
 export function LogoutPage() {
   const { language } = useLanguage();
   const english = language === "en";
-  const { profile, user, username, signOut } = useAuth();
+  const { profile, user, username } = useAuth();
   const { state } = useLocation();
   const navigate = useNavigate();
-  const loader = useLoader();
-  const { trigger } = useFeedback();
-  const pendingRef = useRef(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const { handleSignOut, isLoading } = useSignOut();
   const displayName = toNaturalCase(profile?.display_name || username, {
     preserveAcronyms: false,
   });
@@ -38,31 +33,6 @@ export function LogoutPage() {
   useEffect(() => {
     document.title = english ? "Sign out" : "Cerrar sesión";
   }, [english]);
-
-  async function handleSignOut() {
-    if (pendingRef.current) return;
-    pendingRef.current = true;
-    setIsLoading(true);
-    trigger("light");
-    loader.show({
-      title: english ? "Signing out…" : "Cerrando sesión…",
-      variant: "workspace-exit",
-    });
-    try {
-      await signOut();
-      trigger("success");
-    } catch {
-      toast.error({
-        title: english
-          ? "Could not sign out. Please try again."
-          : "No se pudo cerrar sesión. Inténtalo de nuevo.",
-      });
-    } finally {
-      loader.hide();
-      pendingRef.current = false;
-      setIsLoading(false);
-    }
-  }
 
   return (
     <div className="logout-page">

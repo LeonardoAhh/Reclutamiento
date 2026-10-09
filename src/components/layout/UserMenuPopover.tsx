@@ -4,35 +4,31 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
 import { Avatar } from "@/components/ui/Avatar";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import { ACCOUNT_PATH, LOGOUT_PATH } from "./navigation";
 import { Eclipse, Languages, UserRound } from "lucide-react";
-import { ChevronsUpDown, LogOut } from "lucide";
+import { LogOut } from "lucide";
 import { Link, useLocation } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/hooks/useTheme";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { DESKTOP_MEDIA_QUERY } from "@/lib/layout";
 import "./UserMenuPopover.css";
 
 interface UserMenuPopoverProps {
   displayName: string;
-  email?: string | null;
   avatarUrl?: string | null;
-  mobile: boolean;
-  onNavigate?: () => void;
 }
 
 export function UserMenuPopover({
   displayName,
-  email,
   avatarUrl,
-  mobile,
-  onNavigate,
 }: UserMenuPopoverProps) {
   const [open, setOpen] = useState(false);
+  const isDesktop = useMediaQuery(DESKTOP_MEDIA_QUERY);
   const location = useLocation();
   const { language, setLanguage, storageError: languageStorageError } = useLanguage();
   const { resolvedTheme, storageError: themeStorageError, setPreference } = useTheme();
@@ -48,26 +44,20 @@ export function UserMenuPopover({
         <DropdownMenuTrigger asChild>
           <button
             type="button"
-            className="sidebar__user-trigger"
+            className="user-menu-trigger"
             aria-label={english
-              ? `Open options for ${displayName}${email ? `, ${email}` : ""}`
-              : `Abrir opciones de ${displayName}${email ? `, ${email}` : ""}`}
+              ? `Open options for ${displayName}`
+              : `Abrir opciones de ${displayName}`}
           >
-            <Avatar name={displayName} src={avatarUrl} />
-            <span className="sidebar__user-identity" aria-hidden="true">
-              <span className="sidebar__user-name">{displayName}</span>
-              {email && <span className="sidebar__user-email">{email}</span>}
+            <span className="user-menu-trigger__surface">
+              <Avatar name={displayName} src={avatarUrl} />
+              <span className="user-menu-trigger__name" aria-hidden="true">{displayName}</span>
             </span>
-            <MorphingIcon
-              icon={ChevronsUpDown}
-              className="sidebar__user-icon"
-              aria-hidden="true"
-            />
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
-          align={mobile ? "start" : "end"}
-          side={mobile ? "top" : "right"}
+          align="end"
+          side="bottom"
           className="user-menu-popover"
           aria-label={english ? "User options" : "Opciones de usuario"}
           onEscapeKeyDown={(event) => event.stopPropagation()}
@@ -75,10 +65,7 @@ export function UserMenuPopover({
           <DropdownMenuGroup className="user-menu-popover__group">
             <DropdownMenuItem
               asChild
-              onSelect={() => {
-                setOpen(false);
-                onNavigate?.();
-              }}
+              onSelect={() => setOpen(false)}
             >
               <Link to={ACCOUNT_PATH} className="user-menu-popover__item">
                 <UserRound
@@ -89,8 +76,6 @@ export function UserMenuPopover({
               </Link>
             </DropdownMenuItem>
           </DropdownMenuGroup>
-
-          <DropdownMenuSeparator />
 
           <div
             className="user-menu-popover__preferences"
@@ -131,31 +116,28 @@ export function UserMenuPopover({
             </span>
           )}
 
-          <DropdownMenuSeparator />
-
-          <DropdownMenuGroup className="user-menu-popover__group">
-            <DropdownMenuItem
-              asChild
-              variant="destructive"
-              onSelect={() => {
-                setOpen(false);
-                onNavigate?.();
-              }}
-            >
-              <Link
-                to={LOGOUT_PATH}
-                state={{ returnTo: `${location.pathname}${location.search}${location.hash}` }}
-                className="user-menu-popover__item"
+          {!isDesktop && (
+            <DropdownMenuGroup className="user-menu-popover__group">
+              <DropdownMenuItem
+                asChild
+                variant="destructive"
+                onSelect={() => setOpen(false)}
               >
-                <MorphingIcon
-                  icon={LogOut}
-                  className="user-menu-popover__icon"
-                  aria-hidden="true"
-                />
-                <span>{english ? "Sign out" : "Cerrar sesión"}</span>
-              </Link>
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
+                <Link
+                  to={LOGOUT_PATH}
+                  state={{ returnTo: `${location.pathname}${location.search}${location.hash}` }}
+                  className="user-menu-popover__item"
+                >
+                  <MorphingIcon
+                    icon={LogOut}
+                    className="user-menu-popover__icon"
+                    aria-hidden="true"
+                  />
+                  <span>{english ? "Sign out" : "Cerrar sesión"}</span>
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
   );

@@ -1,4 +1,5 @@
 import { BajasImporter } from '@/components/ui/BajasImporter';
+import { PageHeaderAccessory, PageHeading } from '@/components/layout/PageHeading';
 import { TurnosUpdater } from '@/components/ui/TurnosUpdater';
 import { toast } from '@/lib/notify';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -31,9 +32,10 @@ export function BajasHero({
   const { language } = useLanguage();
   const english = language === 'en';
   return (
-    <header className="page-header">
-      <h1 className="app-page-title">Rotación</h1>
+    <>
+      <PageHeading className="app-page-title">Rotación</PageHeading>
       {showActions && (
+        <PageHeaderAccessory>
         <div className="bajas-hero__actions">
           <BajasImporter
             onImport={async (raw) => {
@@ -52,7 +54,8 @@ export function BajasHero({
           />
           <TurnosUpdater onPreview={updateTurnosOnly} onApply={applyTurnosUpdate} />
         </div>
+        </PageHeaderAccessory>
       )}
-    </header>
+    </>
   );
 }

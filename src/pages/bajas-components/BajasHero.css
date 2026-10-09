@@ -1,6 +1,7 @@
 .bajas-hero__actions {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--spacing-sm);
-  flex-shrink: 0;
+  max-inline-size: 100%;
 }

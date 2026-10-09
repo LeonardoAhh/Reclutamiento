@@ -1,4 +1,5 @@
 import { useLayoutEffect, useRef, useState } from "react";
+import { PageHeading } from '@/components/layout/PageHeading';
 import type { Ref } from "react";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -129,12 +130,12 @@ export function OrganizationChartPage() {
 
   return (
     <main className="organization-chart-page container" aria-labelledby="organization-chart-title">
-      <h1 id="organization-chart-title" className="app-page-title">
+      <PageHeading id="organization-chart-title" className="app-page-title">
         <Link to={HOME_PATH} className="organization-chart-page__title-link">
           <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
           {language === "en" ? "Organization chart" : "Organigrama"}
         </Link>
-      </h1>
+      </PageHeading>
       {chart === "manager" ? (
         <div className="organization-chart-page__tree">
           <Reveal as="article" className="organization-chart-page__root card">

@@ -33,6 +33,7 @@ interface CustomSelectProps extends SelectAriaProps {
   /** Mantiene el placeholder como opción para limpiar filtros no obligatorios. */
   showPlaceholderOption?: boolean;
   className?: string;
+  dropdownClassName?: string;
   disabled?: boolean;
   customTrigger?: ReactNode;
   triggerAppearance?: 'control' | 'plain';
@@ -53,6 +54,7 @@ export function CustomSelect({
   placeholder = 'Seleccionar...',
   showPlaceholderOption = true,
   className,
+  dropdownClassName,
   disabled = false,
   customTrigger,
   triggerAppearance = 'plain',
@@ -123,7 +125,7 @@ export function CustomSelect({
 
         <SelectPrimitive.Portal>
           <SelectPrimitive.Content
-            className="custom-select-dropdown"
+            className={cn('custom-select-dropdown', dropdownClassName)}
             position="popper"
             align="start"
             sideOffset={FLOATING_SURFACE_SIDE_OFFSET}

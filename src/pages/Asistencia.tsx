@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { PageHeading } from '@/components/layout/PageHeading';
 import { CircleAlert, CircleCheckBig, UsersRound } from 'lucide-react';
 import { Badge, StarliteBadge } from '@/components/ui/Badge';
 import { StatCard } from '@/components/ui/StatCard';
@@ -138,12 +139,10 @@ export function Asistencia() {
 
   return (
     <div className="asistencia-page container">
-      <header className="config-page__header">
-        <h1 className="config-page__title app-page-title">
+        <PageHeading className="config-page__title app-page-title">
           <UsersRound className="text-primary" size="var(--icon-size-lg)" aria-hidden="true" />
           Asistencia del Personal
-        </h1>
-      </header>
+        </PageHeading>
 
       {!data ? (
         <div className="feature-card" style={{ marginTop: 'var(--spacing-xl)', maxWidth: '800px' }}>

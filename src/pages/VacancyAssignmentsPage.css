@@ -12,6 +12,12 @@
   text-decoration: none;
 }
 
+.vacancy-assignments-page__title-link svg {
+  inline-size: var(--icon-size-md);
+  block-size: var(--icon-size-md);
+  flex: 0 0 auto;
+}
+
 .vacancy-assignments-page__title-link:hover {
   text-decoration: underline;
 }
@@ -19,22 +25,6 @@
 .vacancy-assignments-page__title-link:focus-visible {
   outline: var(--focus-ring-width) solid var(--color-focus);
   outline-offset: var(--focus-ring-offset);
-}
-
-.vacancy-assignments-page .app-page-title {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-}
-
-.vacancy-assignments-page .app-page-title svg {
-  inline-size: var(--icon-size-md);
-  block-size: var(--icon-size-md);
-  flex: 0 0 auto;
-}
-
-.vacancy-assignments-page .page-header__content {
-  gap: var(--design-spacing-xxs);
 }
 
 .vacancy-assignments-page__content {

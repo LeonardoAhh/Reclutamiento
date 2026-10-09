@@ -3,12 +3,6 @@ const placeholders = ['one', 'two', 'three'];
 export function LeaveRequestsSkeletonFixture() {
   return (
     <main className="leave-requests-page container" aria-hidden="true">
-      <header className="leave-requests-page__header">
-        <div className="leave-requests-page__heading">
-          <span className="leave-requests-page__skeleton-back" />
-          <h1 className="app-page-title">Vacaciones y permisos</h1>
-        </div>
-      </header>
       <section className="leave-requests-page__content">
         <div className="leave-requests-page__table-scroll">
           <table className="leave-requests-page__table">

@@ -1,17 +1,18 @@
-import { Fragment, useEffect, useRef } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { preloadRoute } from "@/lib/routePages";
 import { useAuth } from "@/hooks/useAuth";
 import { MorphMenuIcon } from "@/components/ui/MorphMenuIcon";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { LogOut } from "lucide-react";
+import { useSignOut } from "@/features/account/useSignOut";
 import "./Sidebar.css";
 
-import { APP_BRAND_NAME, getLocalizedNavigation } from "./navigation";
+import { getLocalizedNavigation } from "./navigation";
 import { SidebarBrand } from "./SidebarBrand";
-import { UserMenuPopover } from "./UserMenuPopover";
-import { SidebarActionSearch } from "./SidebarActionSearch";
-import { toNaturalCase } from "@/lib/utils";
+import { SidebarQuickActions } from "./SidebarQuickActions";
 import clsx from "clsx";
+import { useTeamDirectory } from "@/features/team/TeamProvider";
 
 type SidebarProps = {
   mobileMenuOpen?: boolean;
@@ -22,12 +23,17 @@ export function Sidebar({
   mobileMenuOpen = false,
   onCloseMobileMenu,
 }: SidebarProps) {
-  const { username, user, profile } = useAuth();
+  const { username, profile } = useAuth();
+  const { members } = useTeamDirectory();
   const { language } = useLanguage();
   const location = useLocation();
   const navSections = getLocalizedNavigation(language);
   const prevPathRef = useRef(location.pathname);
   const sidebarRef = useRef<HTMLElement>(null);
+  const [logoutConfirmationOpen, setLogoutConfirmationOpen] = useState(false);
+  const logoutTriggerRef = useRef<HTMLButtonElement>(null);
+  const logoutCancelRef = useRef<HTMLButtonElement>(null);
+  const { handleSignOut, isLoading: signOutLoading } = useSignOut();
 
   useEffect(() => {
     if (mobileMenuOpen) sidebarRef.current?.querySelector<HTMLButtonElement>('.sidebar__close-btn')?.focus();
@@ -65,7 +71,23 @@ export function Sidebar({
     onCloseMobileMenu?.();
   }, [location.pathname, onCloseMobileMenu]);
 
+  useEffect(() => {
+    if (logoutConfirmationOpen) logoutCancelRef.current?.focus();
+  }, [logoutConfirmationOpen]);
+
+  const cancelLogout = () => {
+    setLogoutConfirmationOpen(false);
+    window.requestAnimationFrame(() => logoutTriggerRef.current?.focus());
+  };
+
   if (!username) return null;
+
+  const linkedMember = members.find((member) => member.profile_id === profile?.id);
+  const position = linkedMember?.job_title.trim() || (
+    profile?.role === "admin"
+      ? language === "en" ? "Administrator" : "Administrador"
+      : language === "en" ? "Recruiter" : "Reclutador"
+  );
 
   return (
     <aside
@@ -79,7 +101,7 @@ export function Sidebar({
       data-testid="app-sidebar"
     >
       <div className="sidebar__top">
-        <SidebarBrand name={APP_BRAND_NAME} />
+        <SidebarBrand title={position} />
         <button
           type="button"
           className="sidebar__close-btn"
@@ -95,8 +117,6 @@ export function Sidebar({
           />
         </button>
       </div>
-
-      <SidebarActionSearch mobileMenuOpen={mobileMenuOpen} onNavigate={onCloseMobileMenu} />
 
       <nav className="sidebar__nav" id="sidebar-sections" aria-label={language === "en" ? "Sections" : "Secciones"}>
         {navSections.map((section) => {
@@ -147,20 +167,52 @@ export function Sidebar({
           );
         })}
       </nav>
-
-      <div className="sidebar__footer">
-        <div className="sidebar__user">
-          <UserMenuPopover
-            displayName={toNaturalCase(profile?.display_name || username, {
-              preserveAcronyms: false,
-            })}
-            email={user?.email}
-            avatarUrl={profile?.avatar_url ?? undefined}
-            mobile={Boolean(mobileMenuOpen)}
-            onNavigate={onCloseMobileMenu}
-          />
+      {profile && <SidebarQuickActions profile={profile} members={members} />}
+      <footer className="sidebar__footer">
+        <button
+          ref={logoutTriggerRef}
+          type="button"
+          className="sidebar__logout-trigger"
+          onClick={() => setLogoutConfirmationOpen(true)}
+          aria-expanded={logoutConfirmationOpen}
+          aria-controls="sidebar-logout-confirmation"
+          hidden={logoutConfirmationOpen}
+        >
+          <LogOut aria-hidden="true" />
+          <span>{language === "en" ? "Sign out" : "Cerrar sesión"}</span>
+        </button>
+        <div
+          id="sidebar-logout-confirmation"
+          className="sidebar__logout-confirmation"
+          role="group"
+          aria-label={language === "en" ? "Confirm sign out" : "Confirmar cierre de sesión"}
+          onKeyDown={(event) => {
+            if (event.key === "Escape") cancelLogout();
+          }}
+          hidden={!logoutConfirmationOpen}
+        >
+          <button
+            ref={logoutCancelRef}
+            type="button"
+            className="btn-secondary btn-sm"
+            onClick={cancelLogout}
+            disabled={signOutLoading}
+          >
+            {language === "en" ? "Cancel" : "Cancelar"}
+          </button>
+          <button
+            type="button"
+            className="btn-danger btn-sm"
+            onClick={() => void handleSignOut()}
+            disabled={signOutLoading}
+            aria-busy={signOutLoading}
+          >
+            {signOutLoading
+              ? language === "en" ? "Signing out…" : "Cerrando sesión…"
+              : language === "en" ? "Sign out" : "Cerrar sesión"}
+          </button>
         </div>
-      </div>
+      </footer>
     </aside>
   );
 }
