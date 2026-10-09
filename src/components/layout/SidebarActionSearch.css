@@ -30,6 +30,7 @@
   inline-size: min(var(--menu-inline-size-md), calc(100vw - var(--container-padding) - var(--container-padding)));
   min-inline-size: 0;
   padding: var(--design-spacing-xs);
+  box-shadow: var(--shadow-level-2);
 }
 
 .sidebar-action-search__field {

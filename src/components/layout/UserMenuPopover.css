@@ -63,7 +63,10 @@
 
 .dropdown-menu-content.user-menu-popover {
   width: min(
-    var(--feature-account-menu-inline-size),
+    calc(
+      var(--radix-dropdown-menu-trigger-width) + var(--touch-target-min) +
+        var(--design-spacing-xs)
+    ),
     var(--radix-dropdown-menu-content-available-width)
   );
   min-inline-size: 0;
