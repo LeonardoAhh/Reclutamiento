@@ -285,6 +285,8 @@ Cards are rectangles at 12–16px radius; normal controls are 8px; icon buttons 
 
 ### Inputs & Forms
 
+- On iOS WebKit, editable fields use the shared `--editable-text-min-size` floor mapped to `--type-body-lg-size` (16px), including search fields at tablet widths. Their existing typography remains unchanged elsewhere. Keep manual viewport zoom enabled.
+
 **`text-input`** — default form field
 - Background `{colors.canvas-elevated}`, ink text `{colors.ink}`, 1px `{colors.control-border}`, type `{typography.body-md}`, rounded `{rounded.md}`, padding `{spacing.xs} {spacing.sm}`, min-height `44px`.
 
@@ -311,6 +313,7 @@ Cards are rectangles at 12–16px radius; normal controls are 8px; icon buttons 
 **`candidate-create`** — new candidate entry
 - New candidate entry retains the shared Modal and existing three-step wizard on mobile. From tablet upward it uses the compact floating Sheet with the existing form fields in a single column, a scrollable body and the same Cancel/Save footer actions. The header retains its title, icon and close control, and closing returns focus to the opener.
 - Existing field validation, dependent position selectors, recruiter permissions, submission, errors and interview-pass confirmation stay unchanged. Candidate editing uses the same compact floating Sheet in one column from tablet upward and retains its existing Modal/wizard on mobile, with role-based field restrictions unchanged. Candidate deletion retains the separate DeleteConfirmModal.
+- The mobile candidate detail drill-down labels its neutral-colored back control with the selected candidate's name, preserves the back action, shows that name only once, and reduces the extra top spacing before the detail card.
 - Selecting a candidate from search results opens the existing profile preview in the shared Modal on mobile and compact floating Sheet from tablet upward. Show available candidate details as a vertical, labeled list to use the Sheet body without blank stretches; omit missing optional values. Preserve the existing Hire/Edit actions.
 
 **`candidate-interview-pass`** — shareable white document and preview dialog

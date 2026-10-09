@@ -724,22 +724,16 @@ export function Pipeline() {
         <div className="pipeline-mobile-detail-container">
           <BackButton
             className="config-mobile-back"
+            label={selectedMobileCandidate.nombre}
             onClick={() => setSelectedMobileCandidate(null)}
-            aria-label={en ? 'Back to Candidates' : 'Volver a Candidatos'}
+            aria-label={en
+              ? `Back to candidates: ${selectedMobileCandidate.nombre}`
+              : `Volver a candidatos: ${selectedMobileCandidate.nombre}`}
           />
 
           <article className="pipeline-mobile-detail__card">
             <div className="pipeline-mobile-detail__header">
               <div className="pipeline-mobile-detail__title">
-                {(() => {
-                  const { apellidos, nombres } = splitCandidateName(selectedMobileCandidate.nombre);
-                  return (
-                    <h2 className="pipeline-mobile-detail__name">
-                      <span className="pipeline-mobile-detail__name-apellidos">{apellidos.toUpperCase()}</span>
-                      {nombres && <span className="pipeline-mobile-detail__name-nombres">{nombres.toUpperCase()}</span>}
-                    </h2>
-                  );
-                })()}
                 <div className="pipeline-mobile-detail__puesto">
                   <div className="pipeline-mobile-detail__puesto-name">{selectedMobileCandidate.puesto}</div>
                   {selectedMobileCandidate.seccion?.trim() &&

@@ -60,7 +60,7 @@
   box-shadow: none;
   color: var(--color-ink);
   font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
+  font-size: max(var(--type-body-md-size), var(--editable-text-min-size, var(--type-body-md-size)));
   font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
   letter-spacing: var(--type-body-md-tracking);
@@ -107,7 +107,7 @@
 
 @media (min-width: 768px) {
   .search-field .search-field__input {
-    font-size: var(--type-body-sm-size);
+    font-size: max(var(--type-body-sm-size), var(--editable-text-min-size, var(--type-body-sm-size)));
     font-weight: var(--type-body-sm-weight);
     line-height: var(--type-body-sm-line);
     letter-spacing: var(--type-body-sm-tracking);

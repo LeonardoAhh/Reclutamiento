@@ -234,7 +234,7 @@
   background: transparent;
   resize: none;
   font-family: var(--font-body);
-  font-size: var(--type-body-sm-size);
+  font-size: max(var(--type-body-sm-size), var(--editable-text-min-size, var(--type-body-sm-size)));
   line-height: var(--type-body-sm-line);
   color: var(--color-ink);
 }

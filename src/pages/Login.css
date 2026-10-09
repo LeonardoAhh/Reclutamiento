@@ -337,7 +337,7 @@
   padding-block: var(--control-padding-y);
   padding-inline: var(--design-spacing-sm);
   font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
+  font-size: max(var(--type-body-md-size), var(--editable-text-min-size, var(--type-body-md-size)));
   font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
   letter-spacing: var(--type-body-md-tracking);

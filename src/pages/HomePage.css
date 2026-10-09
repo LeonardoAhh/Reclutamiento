@@ -86,15 +86,15 @@
   flex: 0 0 var(--touch-target-min);
   align-items: center;
   justify-content: center;
-  border: var(--border-width) solid var(--color-hairline);
+  border: 0;
   border-radius: var(--rounded-md);
-  background: var(--color-canvas-soft);
+  background: transparent;
   color: var(--color-body);
   cursor: pointer;
 }
 
 .home-page__pagination-button:hover:not(:disabled) {
-  background: var(--color-surface-strong);
+  background: transparent;
   color: var(--color-ink);
 }
 

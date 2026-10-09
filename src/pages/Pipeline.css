@@ -1463,8 +1463,21 @@
 
 /* ── Mobile Drill-Down Detail View ── */
 .pipeline-mobile-detail-container {
-  padding: var(--spacing-md) 0;
+  display: grid;
+  gap: var(--design-spacing-xs);
+  padding-block: var(--design-spacing-xs) 0;
   width: 100%;
+}
+
+.pipeline-mobile-detail-container .config-mobile-back {
+  margin-block-end: 0;
+  padding-inline: 0;
+  color: var(--color-body);
+  text-decoration: none;
+}
+
+.pipeline-mobile-detail-container .config-mobile-back:hover:not(:disabled) {
+  color: var(--color-ink);
 }
 
 .pipeline-mobile-detail__card {

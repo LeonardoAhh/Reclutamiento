@@ -384,6 +384,7 @@
   min-height: var(--touch-target-min);
   color: var(--color-ink);
   font: inherit;
+  font-size: max(1em, var(--editable-text-min-size, 1em));
 }
 
 .public-careers__search input::placeholder {

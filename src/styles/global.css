@@ -821,10 +821,27 @@ input,
 textarea,
 select {
   font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
+  font-size: max(var(--type-body-md-size), var(--editable-text-min-size, var(--type-body-md-size)));
   font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
   letter-spacing: var(--type-body-md-tracking);
+}
+
+/* WebKit en iOS amplía al enfocar campos con texto menor que body-lg. */
+@supports (-webkit-touch-callout: none) {
+  :where(
+    input:not([type="checkbox"], [type="radio"], [type="file"], [type="hidden"], [type="button"], [type="submit"], [type="reset"], [type="range"], [type="color"]),
+    textarea,
+    select,
+    [contenteditable="true"],
+    [contenteditable=""]
+  ) {
+    --editable-text-min-size: var(--type-body-lg-size);
+  }
+
+  :where([contenteditable="true"], [contenteditable=""]) {
+    font-size: max(1em, var(--editable-text-min-size));
+  }
 }
 
 strong,
@@ -1216,7 +1233,7 @@ code:not(pre code) {
   border: var(--border-width) solid var(--color-control-border);
   border-radius: var(--rounded-md);
   font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
+  font-size: max(var(--type-body-md-size), var(--editable-text-min-size, var(--type-body-md-size)));
   color: var(--color-ink);
   background: var(--color-surface);
   transition:

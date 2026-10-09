@@ -98,15 +98,15 @@
   grid-column: auto;
 }
 
-/* Controles más cómodos al tacto y sin zoom de iOS (16px). */
+/* Controles táctiles con el mínimo de texto editable compartido. */
 .form-wizard .form-group input,
 .form-wizard .form-group select {
   height: var(--control-height-lg);
-  font-size: var(--type-body-md-size);
+  font-size: max(var(--type-body-md-size), var(--editable-text-min-size, var(--type-body-md-size)));
 }
 
 .form-wizard .form-group textarea {
-  font-size: var(--type-body-md-size);
+  font-size: max(var(--type-body-md-size), var(--editable-text-min-size, var(--type-body-md-size)));
 }
 
 /* ── Footer (anclado abajo) ── */
