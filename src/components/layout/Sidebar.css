@@ -234,7 +234,7 @@ button.sidebar__close-btn {
 .sidebar__item {
   display: flex;
   align-items: center;
-  gap: var(--design-spacing-xs);
+  gap: var(--design-spacing-sm);
 
   min-height: var(--touch-target-min);
   padding: var(--design-spacing-xs) var(--design-spacing-sm);
@@ -357,16 +357,20 @@ button.sidebar__close-btn {
     padding-inline-end: max(var(--design-spacing-sm), var(--safe-area-right));
     overflow: hidden;
     background: var(--workspace-canvas);
+    --_app-sidebar-inset-inline-start: max(var(--design-spacing-sm), var(--safe-area-left));
   }
 
   .sidebar {
-    inset-block-start: 0;
+    inset-block-start: max(var(--design-spacing-sm), var(--safe-area-top));
+    inset-block-end: max(var(--design-spacing-sm), var(--safe-area-bottom));
+    inset-inline-start: var(--_app-sidebar-inset-inline-start);
     transform: none;
     visibility: visible;
     width: var(--_app-sidebar-w);
-    box-shadow: none;
-    padding-inline: max(var(--design-spacing-sm), var(--safe-area-left)) var(--design-spacing-sm);
-    padding-block-start: calc(var(--design-spacing-sm) + var(--safe-area-top));
+    padding: var(--design-spacing-sm);
+    border-radius: var(--workspace-radius);
+    background: var(--workspace-surface);
+    box-shadow: var(--workspace-shadow);
   }
 
   .sidebar__top {
@@ -397,12 +401,15 @@ button.sidebar__close-btn {
     block-size: 100%;
     min-block-size: 0;
     flex-direction: column;
-    margin-inline-start: var(--_app-sidebar-w);
+    margin-inline-start: calc(
+      var(--_app-sidebar-w) +
+      var(--_app-sidebar-inset-inline-start) +
+      var(--design-spacing-sm)
+    );
     overflow: hidden;
     background: var(--workspace-surface);
     border: var(--border-width) solid var(--workspace-border-color);
     border-radius: var(--workspace-radius);
-    box-shadow: var(--workspace-shadow);
   }
 
   .app-shell__main {

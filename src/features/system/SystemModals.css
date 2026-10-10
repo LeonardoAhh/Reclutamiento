@@ -18,7 +18,8 @@
 }
 
 .maintenance-mode-modal__status .badge--amber {
-  color: var(--color-warning-text);
+  background: var(--color-warning);
+  color: var(--color-on-warning);
 }
 
 .maintenance-mode-modal__copy,

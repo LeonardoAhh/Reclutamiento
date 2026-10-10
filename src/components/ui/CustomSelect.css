@@ -44,7 +44,7 @@ body[data-scroll-locked]:has(.custom-select-dropdown) {
   min-width: 0;
 }
 
-.custom-select-trigger:hover:not(:focus-visible) {
+.custom-select-trigger:hover:not(:focus-visible):where(:not(:disabled):not([data-disabled]):not([aria-invalid='true']):not(.custom-select-trigger--unstyled)) {
   border-color: var(--color-charcoal);
   background: var(--color-surface-soft);
 }
@@ -170,7 +170,7 @@ body[data-scroll-locked]:has(.custom-select-dropdown) {
 }
 
 .custom-select-option[data-highlighted] {
-  background: var(--color-surface-card);
+  background: var(--color-surface-soft);
 }
 
 .custom-select-option[data-state='checked'] {

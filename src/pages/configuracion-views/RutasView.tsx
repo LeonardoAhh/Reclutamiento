@@ -410,45 +410,44 @@ function RutaDetail({
   return (
     <div className="ruta-detail" key={animKey}>
       <div className="ruta-detail__body">
-        <RouteSearchMatches employees={searchMatches} />
-
-        {/* Dual column grids */}
-        <div className="ruta-detail__grids">
-          <section className="ruta-section">
-            <ShiftBars
-              turnosCount={ruta.turnosCount}
-              turnosCountPrev={ruta.turnosCountPrev}
-              maxCapacityPerShift={ruta.maxCapacityPerShift}
-              empleados={ruta.empleados}
-              empleadosPrev={ruta.empleadosPrev}
-              hasComparison={hasComparison}
-              animKey={animKey}
-            />
-            <p className="shift-bars__comparison-note">
-              {hasComparison
-                ? `${copy.comparisonChanged} ${formatReadableDate(comparisonDate, language === 'en' ? 'en-US' : 'es-MX')}.`
-                : copy.comparisonPending}
-            </p>
-          </section>
-
-          <section className="ruta-section">
-            <h2 className="ruta-section__title ruta-section__title-wrapper type-body-strong">
-              <CalendarRange
-                aria-hidden="true"
-                className="ruta-section__title-icon"
+        {searchTerm.trim() ? (
+          <RouteSearchMatches employees={searchMatches} />
+        ) : (
+          <div className="ruta-detail__grids">
+            <section className="ruta-section">
+              <ShiftBars
+                turnosCount={ruta.turnosCount}
+                turnosCountPrev={ruta.turnosCountPrev}
+                maxCapacityPerShift={ruta.maxCapacityPerShift}
+                empleados={ruta.empleados}
+                empleadosPrev={ruta.empleadosPrev}
+                hasComparison={hasComparison}
+                animKey={animKey}
               />
-              {copy.employeesByDay}
-            </h2>
-            <DailyCapacityBars
-              capacityPerDay={ruta.capacityPerDay}
-              routeName={ruta.nombreRuta}
-              searchTerm={searchTerm}
-              animKey={animKey}
-            />
-          </section>
-        </div>
+              <p className="shift-bars__comparison-note">
+                {hasComparison
+                  ? `${copy.comparisonChanged} ${formatReadableDate(comparisonDate, language === 'en' ? 'en-US' : 'es-MX')}.`
+                  : copy.comparisonPending}
+              </p>
+            </section>
 
-
+            <section className="ruta-section">
+              <h2 className="ruta-section__title ruta-section__title-wrapper type-body-strong">
+                <CalendarRange
+                  aria-hidden="true"
+                  className="ruta-section__title-icon"
+                />
+                {copy.employeesByDay}
+              </h2>
+              <DailyCapacityBars
+                capacityPerDay={ruta.capacityPerDay}
+                routeName={ruta.nombreRuta}
+                searchTerm={searchTerm}
+                animKey={animKey}
+              />
+            </section>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -584,6 +583,7 @@ export function RutasView() {
     <section
       className="rutas-page config-page"
       data-mobile-view={mobileView}
+      data-search-active={Boolean(searchNorm)}
       aria-labelledby="rutas-page-title"
     >
           <PageHeading id="rutas-page-title" className="config-page__title app-page-title">
@@ -631,20 +631,15 @@ export function RutasView() {
         </div>
       </section>
 
-      <div className="rutas-layout" data-mobile-view={mobileView}>
+      <div
+        className="rutas-layout"
+        data-mobile-view={searchNorm ? "detail" : mobileView}
+        data-search-active={Boolean(searchNorm)}
+      >
         <section
           className="rutas-list-panel"
-          aria-labelledby="rutas-list-title"
+          aria-label={copy.routeList}
         >
-          <header className="rutas-list-panel__header">
-            <h2 id="rutas-list-title">{copy.routesAvailable}</h2>
-            {!loading && !errorMsg && (
-              <span className="rutas-list-panel__count">
-                {filteredRutas.length} {copy.of} {rutas.length}
-              </span>
-            )}
-          </header>
-
           <BoneyardSkeleton
             name="configuracion-rutas"
             loading={loading}

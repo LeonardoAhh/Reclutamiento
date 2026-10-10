@@ -40,6 +40,15 @@
   }
 }
 
+.rutas-layout[data-search-active="true"] {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.rutas-layout[data-search-active="true"] .rutas-list-panel,
+.rutas-layout[data-search-active="true"] .rutas-back-btn {
+  display: none;
+}
+
 /* ═══════════════════════════════════════════════════════════
    MOBILE NAVIGATION STATE
    On small screens, list and detail are mutually exclusive views.
@@ -60,6 +69,10 @@
      El botón "Todas las rutas" se conserva. */
   .rutas-page[data-mobile-view="detail"] .rutas-toolbar {
     display: none;
+  }
+
+  .rutas-page[data-search-active="true"] .rutas-toolbar {
+    display: block;
   }
 }
 

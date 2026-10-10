@@ -100,8 +100,8 @@
 .button:focus-visible,
 .public-careers__chip:focus-visible,
 .public-careers__search input:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: var(--focus-ring-offset);
 }
 
 .button {

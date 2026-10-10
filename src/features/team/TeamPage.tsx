@@ -122,13 +122,15 @@ export function TeamPage() {
           const linked = profiles?.find(row => row.id === member.profile_id);
           const canDeactivate = member.profile_id !== profile?.id && linked?.role !== 'admin';
           return <li className="team-management__member" key={member.id}>
-            <div className="team-management__identity"><strong className="type-body-strong">{member.full_name}</strong>
+            <div className="team-management__identity">
+              <div className="team-management__name">
+                <strong className="type-body-strong">{member.full_name}</strong>
+                <Badge className="team-management__status" variant="default">
+                  {member.active ? copy.active : copy.inactive}
+                </Badge>
+              </div>
               <span className="type-body-md">{member.job_title || member.short_name}</span>
-              <span className="type-body-md">{linked ? copy.linkedAccount(linked.username) : member.profile_id ? copy.linked : copy.unlinked}</span>
             </div>
-            <Badge className="team-management__status" variant="default">
-              {member.active ? copy.active : copy.inactive}
-            </Badge>
             <div className="team-management__actions">
               <button type="button" className="btn-secondary" disabled={!profiles || busy} onClick={() => setEditing(member)} aria-label={`${copy.edit} ${member.short_name}`}>{copy.edit}</button>
               <button type="button" className="btn-secondary" disabled={!profiles || !canDeactivate || busy}

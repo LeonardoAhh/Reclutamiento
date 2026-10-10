@@ -23,7 +23,7 @@ button.section-summary-card {
 
 button.section-summary-card:hover {
   border-color: var(--color-hairline-strong);
-  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-ink) 6%, transparent);
+  box-shadow: var(--shadow-xs);
 }
 
 .section-summary-card--selected {
