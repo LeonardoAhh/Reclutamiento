@@ -337,7 +337,7 @@ export function AreaDetailView({
           )}
         </dl>
 
-        {/* Cobertura — hero con porcentaje grande + barra. El % ya queda
+        {/* Cobertura. El % ya queda
             anunciado como texto arriba (showLabel=false), así que la
             barra es puramente decorativa para lectores de pantalla. */}
         <div className="area-detail-modal__coverage">
@@ -572,10 +572,10 @@ export function AreaDetailView({
                           </span>
                         </div>
                       </td>
-                      <td className="text-center hide-on-mobile font-mono">
+                      <td className="text-center hide-on-mobile type-body-md">
                         {row.plantilla_autorizada}
                       </td>
-                      <td className="text-center hide-on-mobile font-mono">
+                      <td className="text-center hide-on-mobile type-body-md">
                         {row.backup > 0 ? (
                           <Tooltip
                             content={

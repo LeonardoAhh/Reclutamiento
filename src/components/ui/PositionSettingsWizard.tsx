@@ -222,7 +222,7 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
                   data-testid="pos-settings-step-seleccion"
                 >
                   <legend className="sr-only">{t('Puesto que se configurará')}</legend>
-                  <p className="pos-settings__intro type-body-sm text-muted">
+                  <p className="pos-settings__intro type-body-md text-muted">
                     {t('Selecciona un puesto para consultar y ajustar su distribución.')}
                   </p>
                   <div className="form-group">
@@ -281,10 +281,10 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
                 >
                   {selected && (
                     <div className="pos-settings__summary">
-                      <strong className="type-body-sm-strong text-ink">
+                      <strong className="type-body-strong text-ink">
                         {selected.puesto}
                       </strong>
-                      <span className="type-caption-sm text-muted">
+                      <span className="type-body-md text-muted">
                         {selected.area} · {selected.seccion}
                       </span>
                     </div>

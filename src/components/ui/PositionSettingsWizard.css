@@ -53,3 +53,20 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+.pos-settings-modal {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.pos-settings-modal .btn-primary,
+.pos-settings-modal .btn-secondary {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}

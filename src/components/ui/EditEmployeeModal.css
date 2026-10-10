@@ -5,6 +5,11 @@
 
 .edit-employee-modal .modal-body {
   padding: var(--spacing-xl);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 @media (max-width: 640px) {
@@ -36,4 +41,13 @@
 .edit-employee-modal .form-group > div[class*="CustomSelect"] {
   width: 100%;
   min-width: 0;
+}
+
+.edit-employee-modal .btn-primary,
+.edit-employee-modal .btn-secondary {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }

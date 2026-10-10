@@ -104,12 +104,3 @@
   display: none;
   appearance: none;
 }
-
-@media (min-width: 768px) {
-  .search-field .search-field__input {
-    font-size: max(var(--type-body-sm-size), var(--editable-text-min-size, var(--type-body-sm-size)));
-    font-weight: var(--type-body-sm-weight);
-    line-height: var(--type-body-sm-line);
-    letter-spacing: var(--type-body-sm-tracking);
-  }
-}

@@ -65,7 +65,7 @@ export function TaskDetailsModal({
             </div>
 
             <div className="form-group">
-              <h3 className="form-label">{en ? "Description" : "Descripción"}</h3>
+              <h3 className="activity-detail-heading">{en ? "Description" : "Descripción"}</h3>
               <div className="activity-desc-block">
                 {activity.descripcion || (en ? "No detailed description." : "Sin descripción detallada.")}
               </div>
@@ -74,7 +74,7 @@ export function TaskDetailsModal({
 
           {activity.reference_image && (
             <div className="form-group">
-              <span className="form-label">{en ? "Reference photo" : "Foto de Referencia"}</span>
+              <span className="activity-form-label">{en ? "Reference photo" : "Foto de Referencia"}</span>
               <AttachmentCard
                 name={
                   activity.reference_image.split("/").pop()?.split("?")[0] ||

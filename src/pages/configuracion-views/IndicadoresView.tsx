@@ -229,7 +229,7 @@ export function IndicadoresView() {
               <Tooltip
                 key={rec.name}
                 content={
-                  <div className="trend-tooltip">
+                  <div className="trend-tooltip indicadores-trend-tooltip">
                     <div className="trend-tooltip__section">
                       <strong className="trend-tooltip__title trend-tooltip__title--success">
                         {copy.achievedMonths} ({rec.details.length}):
@@ -316,7 +316,7 @@ export function IndicadoresView() {
                     return (
                       <td key={row.date}>
                         {val ? (
-                          <span className={`indicador-value font-bold ${valClass}`}>
+                          <span className={`indicador-value ${valClass}`}>
                             {val}
                           </span>
                         ) : (
@@ -325,7 +325,7 @@ export function IndicadoresView() {
                       </td>
                     );
                   })}
-                  <td className="text-right font-bold">
+                  <td className="type-body-strong text-right">
                     {(() => {
                       const totalRecruiter = kpi?.recruiterTotals[index]?.total ?? 0;
                       let classColor = "text-warning";
@@ -358,12 +358,12 @@ export function IndicadoresView() {
                     }
                     
                     return (
-                      <td key={row.date} className="font-bold">
+                      <td key={row.date} className="type-body-strong">
                         <span className={`indicador-value ${totalClass}`}>{row.total}</span>
                       </td>
                     );
                   })}
-                  <td className="text-right font-bold type-heading-sm">
+                  <td className="text-right type-body-strong">
                     {(() => {
                       const totalGeneral = kpi?.totalIngresos ?? 0;
                       let classColor = "text-warning";
@@ -399,7 +399,7 @@ export function IndicadoresView() {
               
               <div className="indicadores-mobile-detail__header">
                 <UserRound className="indicadores-recruiter-icon" aria-hidden="true" />
-                <h3 className="type-heading-md m-0">{displayRecruiter(selectedMobileRecruiter)}</h3>
+                <h3 className="type-body-strong m-0">{displayRecruiter(selectedMobileRecruiter)}</h3>
               </div>
               
               <ul className="indicadores-mobile-detail__list">
@@ -416,8 +416,8 @@ export function IndicadoresView() {
 
                   return (
                     <li key={row.date} className="indicadores-mobile-detail__item">
-                      <span className="type-body-sm font-medium">{row.date}</span>
-                      <span className="type-body-sm text-ink font-bold">
+                      <span className="type-body-md">{row.date}</span>
+                      <span className="type-body-strong text-ink">
                         {val ? (
                           <span className={valClass}>
                             {val} {copy.incomeCount}
@@ -432,8 +432,8 @@ export function IndicadoresView() {
               </ul>
               
               <div className="indicadores-mobile-detail__total">
-                <span className="type-body-sm font-bold">{copy.total}</span>
-                <span className="type-heading-sm text-primary">
+                <span className="type-body-strong">{copy.total}</span>
+                <span className="type-body-strong text-primary">
                   {kpi?.recruiterTotals[recruiters.indexOf(selectedMobileRecruiter)]?.total ?? 0}
                 </span>
               </div>
@@ -453,10 +453,10 @@ export function IndicadoresView() {
                   >
                     <div className="indicadores-mobile-list__info">
                       <UserRound className="indicadores-recruiter-icon" aria-hidden="true" />
-                      <span className="type-body-sm font-medium text-ink">{displayRecruiter(recruiter)}</span>
+                      <span className="type-body-strong text-ink">{displayRecruiter(recruiter)}</span>
                     </div>
                     <div className="indicadores-mobile-list__right">
-                      <span className="type-caption-sm text-muted">
+                      <span className="type-body-md text-muted">
                         {kpi?.recruiterTotals[index]?.total ?? 0} {copy.incomeCount}
                       </span>
                       <ArrowRight className="text-muted-soft" aria-hidden="true" />
@@ -529,8 +529,8 @@ export function IndicadoresView() {
                           <UserRound className="indicadores-recruiter-icon" aria-hidden="true" />
                           {displayRecruiter(recruiter)}
                         </th>
-                        <td className="text-right font-medium">{stats.totalIngresos}</td>
-                        <td className="text-right font-bold text-error">{stats.totalBajas > 0 ? stats.totalBajas : '-'}</td>
+                        <td className="type-body-md text-right">{stats.totalIngresos}</td>
+                        <td className="type-body-strong text-right text-error">{stats.totalBajas > 0 ? stats.totalBajas : '-'}</td>
                         <td className="text-right">
                           <span className={`indicador-value ${retention >= 70 ? 'text-success' : 'text-warning'}`}>
                             {retention}%
@@ -563,15 +563,15 @@ export function IndicadoresView() {
                         <div className="indicadores-mobile-list__info">
                           <UserRound className="indicadores-recruiter-icon" aria-hidden="true" />
                           <div className="indicadores-mobile-list__text">
-                            <span className="type-body-sm font-medium text-ink">{displayRecruiter(recruiter)}</span>
-                            <span className="type-caption-sm text-muted">{copy.hires}: {stats.totalIngresos} &nbsp;|&nbsp; {copy.leavers}: <span className="text-error font-medium">{stats.totalBajas}</span></span>
+                            <span className="type-body-strong text-ink">{displayRecruiter(recruiter)}</span>
+                            <span className="type-body-md text-muted">{copy.hires}: {stats.totalIngresos} &nbsp;|&nbsp; {copy.leavers}: <span className="type-body-md text-error">{stats.totalBajas}</span></span>
                           </div>
                         </div>
                         <div className="indicadores-mobile-list__right">
-                          <span className={`type-body-sm font-bold ${retention >= 70 ? 'text-success' : 'text-warning'}`}>
+                          <span className={`type-body-strong ${retention >= 70 ? 'text-success' : 'text-warning'}`}>
                             {retention}%
                           </span>
-                          <span className="type-caption-sm text-muted">
+                          <span className="type-body-md text-muted">
                             {copy.averageShort} {avgDays}{copy.daysShort}
                           </span>
                         </div>
@@ -598,7 +598,7 @@ export function IndicadoresView() {
                   
                   return (
                     <div key={`bajas-col-${recruiter}`} className="indicadores-bajas-col">
-                      <h4 className="indicadores-bajas-header type-body-sm font-bold uppercase">{displayRecruiter(recruiter)}</h4>
+                      <h4 className="indicadores-bajas-header type-body-strong uppercase">{displayRecruiter(recruiter)}</h4>
                       <ul className="indicadores-bajas-list">
                         {bajasOfRecruiter.map((baja, i) => {
                           const TARGET_RETENTION_DAYS = 90;
@@ -615,20 +615,20 @@ export function IndicadoresView() {
                           return (
                             <li key={`baja-detail-${i}`} className="indicadores-bajas-item">
                               <div className="indicadores-bajas-item-header">
-                                  <span className="type-body-sm font-medium text-ink">{baja.nombre}</span>
+                                  <span className="type-body-strong text-ink">{baja.nombre}</span>
                                   {baja.numEmpleado && (
-                                    <span className="type-caption-sm text-muted">#{baja.numEmpleado}</span>
+                                    <span className="type-body-md text-muted">#{baja.numEmpleado}</span>
                                   )}
                               </div>
                               <div className="indicadores-bajas-item-details">
-                                  <span className="type-caption-sm text-muted">
+                                  <span className="type-body-md text-muted">
                                     <strong>{copy.hireDate}</strong> {baja.fechaIngreso}
                                   </span>
-                                  <span className="type-caption-sm text-muted">
+                                  <span className="type-body-md text-muted">
                                     <strong>{copy.leavingDate}</strong> {baja.fechaBaja} ({baja.dias} {english ? 'days' : 'días'})
                                   </span>
                                   <span 
-                                    className={`type-caption-sm font-medium ${efficiencyClass}`}
+                                    className={`type-body-strong ${efficiencyClass}`}
                                     aria-label={`${copy.hiringEfficiency}: ${efficiency} percent`}
                                   >
                                     <strong>{copy.efficiency}</strong> {efficiency}%

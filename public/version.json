@@ -1,8 +1,8 @@
 {
-  "version": "0.4.0",
-  "fecha": "2026-10-09",
+  "version": "2.0",
+  "fecha": "2026-10-10",
   "nivel": "success",
   "titulo": "We are ready!",
-  "mensaje": "New interface, new features, and improved performance.",
+  "mensaje": "Made with ❤️ by the team.",
   "notificar": true
 }

@@ -645,7 +645,7 @@ export function DataUpdatePage() {
                             )}
                             <div>
                               <div className="data-update-work-card__name-row">
-                                <span className="data-update-work-card__identity type-caption-up text-muted">
+                                <span className="data-update-work-card__identity type-body-md text-muted">
                                   <span>{record.identity.employeeNumber}</span>
                                   {record.identity.shift && <span>{t("Turno: ")}{record.identity.shift}</span>}
                                 </span>
@@ -732,7 +732,7 @@ export function DataUpdatePage() {
                             return (
                               <article key={record.id} className="card data-update-record-card data-update-completed-card">
                                 <div>
-                                  <span className="type-caption-up text-muted">{record.identity.employeeNumber}</span>
+                                  <span className="type-body-md text-muted">{record.identity.employeeNumber}</span>
                                   <h3>{record.identity.name}</h3>
                                 </div>
                                 <dl className="data-update-completed-card__details">

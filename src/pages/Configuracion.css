@@ -169,7 +169,6 @@
   align-items: center;
   margin: 0;
   padding: 0;
-  line-height: var(--type-caption-sm-line);
 }
 
 .config-segmented-control,
@@ -202,6 +201,11 @@
   padding-inline: var(--spacing-sm);
   color: var(--color-muted);
   border-radius: calc(var(--rounded-xs) - 1px);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .config-segmented-control__button.is-active,
@@ -459,8 +463,11 @@
   background: var(--color-surface);
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-md);
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--font-medium);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  font-family: var(--font-body);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .config-card__details-toggle svg {
@@ -723,11 +730,14 @@
 
 .config-calendar-header__abbr {
   color: var(--color-muted-soft);
-  font-size: var(--type-caption-sm-size);
-  font-weight: var(--font-semibold);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
   text-align: center;
   text-decoration: none;
   cursor: default;
+  font-family: var(--font-body);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
 }
 
 .config-calendar {
@@ -753,20 +763,24 @@
 }
 
 .config-calendar__day-number {
-  font-size: var(--type-caption-sm-size);
-  font-weight: var(--font-medium);
-  line-height: var(--type-caption-sm-line);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  font-family: var(--font-body);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .config-calendar__day-code {
   max-width: 100%;
   color: inherit;
   font-size: var(--type-caption-up-size);
-  font-weight: var(--font-semibold);
+  font-weight: var(--type-caption-up-weight);
   line-height: var(--type-caption-up-line);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-family: var(--font-body);
+  letter-spacing: var(--type-caption-up-tracking);
 }
 
 .config-calendar__day--blank {
@@ -810,7 +824,11 @@
   align-items: center;
   gap: var(--spacing-xs);
   color: var(--color-muted);
-  font-size: var(--type-caption-sm-size);
+  font-size: var(--type-body-md-size);
+  font-family: var(--font-body);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .config-calendar-legend__swatch {
@@ -914,6 +932,11 @@
 
 .indicadores-view {
   gap: var(--spacing-xl);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .indicadores-period {
@@ -969,22 +992,22 @@
 .indicadores-section__heading h2 {
   margin: 0;
   color: var(--color-ink);
-  font-family: var(--font-display);
-  font-size: var(--type-heading-md-size);
-  font-weight: var(--type-heading-md-weight);
-  line-height: var(--type-heading-md-line);
-  letter-spacing: var(--type-heading-md-tracking);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
   overflow-wrap: anywhere;
 }
 
 .indicadores-section__heading h3 {
   margin: 0;
   color: var(--color-ink);
-  font-family: var(--font-display);
-  font-size: var(--type-heading-sm-size);
-  font-weight: var(--type-heading-sm-weight);
-  line-height: var(--type-heading-sm-line);
-  letter-spacing: var(--type-heading-sm-tracking);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 /* KPI Cards */
@@ -1059,12 +1082,13 @@
 
 .indicadores-kpi-label {
   margin: 0;
-  font-size: var(--type-caption-sm-size);
-  font-weight: var(--font-medium);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
   color: var(--color-muted);
   text-transform: uppercase;
   letter-spacing: var(--type-caption-up-tracking);
-  line-height: var(--type-caption-sm-line);
+  line-height: var(--type-caption-up-line);
+  font-family: var(--font-body);
 }
 
 .indicadores-historical-grid {
@@ -1092,6 +1116,10 @@
   transition:
     background var(--transition-fast),
     border-color var(--transition-fast);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .indicadores-historical-card:hover {
@@ -1100,35 +1128,49 @@
 }
 
 .indicadores-historical-card__name {
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--font-medium);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  font-family: var(--font-body);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .indicadores-historical-card__value {
   color: var(--color-muted);
-  font-size: var(--type-caption-sm-size);
+  font-size: var(--type-body-md-size);
+  font-family: var(--font-body);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .indicadores-kpi-value {
   margin: 0;
-  font-family: var(--font-display);
-  font-size: var(--type-display-lg-size);
-  font-weight: var(--type-display-lg-weight);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
   color: var(--color-ink);
-  line-height: var(--type-display-lg-line);
-  letter-spacing: var(--type-display-lg-tracking);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .indicadores-kpi-value--name {
-  font-size: var(--type-heading-md-size);
+  font-size: var(--type-body-strong-size);
   overflow-wrap: anywhere;
+  font-family: var(--font-body);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .indicadores-kpi-sub {
   margin: 0;
-  font-size: var(--type-caption-sm-size);
+  font-size: var(--type-body-md-size);
   color: var(--color-muted);
-  line-height: var(--type-caption-sm-line);
+  line-height: var(--type-body-md-line);
+  font-family: var(--font-body);
+  font-weight: var(--type-body-md-weight);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 /* Content surface */
@@ -1169,11 +1211,13 @@
   min-width: 0;
   color: var(--color-ink);
   font-size: var(--type-body-md-size);
-  font-weight: var(--font-medium);
+  font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
   text-align: center;
   text-transform: capitalize;
   white-space: nowrap;
+  font-family: var(--font-body);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .indicadores-month-nav__short-label {
@@ -1211,7 +1255,11 @@
 .indicadores-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: var(--type-body-sm-size);
+  font-size: var(--type-body-md-size);
+  font-family: var(--font-body);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 /* Header */
@@ -1263,7 +1311,7 @@
 /* Row header (reclutador) */
 .indicadores-table-row-header {
   white-space: nowrap;
-  font-weight: var(--font-medium);
+  font-weight: var(--type-body-strong-weight);
   padding: var(--spacing-xs) var(--spacing-md);
   border-bottom: var(--border-width) solid var(--color-hairline-soft);
   vertical-align: middle;
@@ -1274,6 +1322,10 @@
   left: 0;
   background-color: var(--color-surface);
   z-index: 1;
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .indicadores-recruiter-icon {
@@ -1295,15 +1347,21 @@
 
 /* Valor numérico */
 .indicador-value {
-  font-weight: var(--font-semibold);
-  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-strong-weight);
+  font-size: var(--type-body-strong-size);
   font-variant-numeric: tabular-nums;
-  line-height: var(--type-body-sm-line);
+  line-height: var(--type-body-strong-line);
+  font-family: var(--font-body);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .indicador-value--total {
   color: var(--color-ink);
-  font-weight: var(--font-bold);
+  font-weight: var(--type-body-strong-weight);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 /* Footer / Total por fecha */
@@ -1315,7 +1373,11 @@
   background-color: var(--color-surface-soft);
   text-align: center;
   vertical-align: middle;
-  font-weight: var(--font-semibold);
+  font-weight: var(--type-body-strong-weight);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .indicadores-table tfoot th:first-child {
@@ -1327,8 +1389,12 @@
 
 .indicadores-table tfoot td:last-child {
   text-align: right;
-  font-weight: var(--font-bold);
+  font-weight: var(--type-body-strong-weight);
   color: var(--color-primary);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 /* Reduced motion */
@@ -1519,11 +1585,11 @@
 }
 
 .analisis-hero__card-count {
-  font-family: var(--font-display);
-  font-size: var(--type-heading-md-size);
-  font-weight: var(--type-heading-md-weight);
-  line-height: var(--type-heading-md-line);
-  letter-spacing: var(--type-heading-md-tracking);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
   font-variant-numeric: tabular-nums;
 }
 
@@ -1564,6 +1630,11 @@
 
 .analisis-view {
   gap: var(--spacing-lg);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .analisis-view .config-results-controls {
@@ -1584,6 +1655,11 @@
 .analisis-view__empty .animated-empty-state__subtitle {
   max-width: var(--feature-result-card-min);
   margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .analisis-view .config-initial-state,
@@ -1652,6 +1728,11 @@
 
 .tabulador-view {
   gap: var(--spacing-lg);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .tabulador-header {
@@ -1949,17 +2030,20 @@
   gap: var(--design-spacing-xxs);
   margin-inline-start: var(--spacing-sm);
   font-family: var(--font-body);
-  font-size: var(--type-caption-sm-size);
-  font-weight: var(--font-bold);
-  line-height: var(--type-caption-sm-line);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .indicadores-kpi-total-suffix {
   margin-inline-start: var(--spacing-xs);
   color: var(--color-muted);
   font-family: var(--font-body);
-  font-size: var(--type-caption-sm-size);
-  font-weight: var(--font-normal);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .indicadores-mobile-list__row {
@@ -2002,4 +2086,70 @@
   flex-wrap: wrap;
   gap: var(--spacing-md);
   margin-top: var(--spacing-xs);
+}
+
+.analisis-view__empty .animated-empty-state__title {
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.analisis-view .btn-utility {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.analisis-view .badge,
+.analisis-view .status-badge {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+}
+
+.indicadores-trend-tooltip .trend-tooltip__title {
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.indicadores-trend-tooltip .trend-tooltip__list {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.indicadores-view .config-mobile-back {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.indicadores-bajas-item-details strong {
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.tabulador-view .config-tab,
+.tabulador-view .btn-utility {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }

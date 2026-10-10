@@ -29,9 +29,6 @@ const STYLES = {
         gap: "var(--spacing-sm)",
     },
     employeeId: {
-        fontFamily: "var(--font-code)",
-        fontSize: "var(--type-caption-sm-size)",
-        lineHeight: "var(--type-caption-sm-line)",
         color: "var(--color-muted)",
     },
     kpiGrid: {
@@ -48,18 +45,11 @@ const STYLES = {
         textAlign: "center" as const,
     },
     kpiLabel: {
-        fontSize: "var(--type-caption-sm-size)",
         textTransform: "uppercase" as const,
-        letterSpacing: "var(--type-caption-up-tracking)",
         color: "var(--color-muted)",
-        lineHeight: "var(--type-caption-sm-line)",
         margin: 0,
     },
     kpiValue: {
-        fontSize: "var(--type-heading-sm-size)",
-        fontWeight: "var(--type-heading-sm-weight)",
-        lineHeight: "var(--type-heading-sm-line)",
-        letterSpacing: "var(--type-heading-sm-tracking)",
         margin: 0,
     },
     calendarSection: {
@@ -111,12 +101,8 @@ const STYLES = {
         marginTop: "var(--spacing-lg)",
     },
     incidentLabel: {
-        fontSize: "var(--type-caption-sm-size)",
-        fontWeight: "var(--type-body-strong-weight)",
         color: "var(--color-muted)",
         textTransform: "uppercase" as const,
-        letterSpacing: "var(--type-caption-up-tracking)",
-        lineHeight: "var(--type-caption-sm-line)",
         marginBottom: "var(--spacing-sm)",
     },
     incidentTableWrapper: {
@@ -126,8 +112,6 @@ const STYLES = {
     },
     table: {
         minWidth: "100%",
-        fontSize: "var(--type-body-sm-size)",
-        lineHeight: "var(--type-body-sm-line)",
         borderCollapse: "collapse" as const,
     },
     thead: {
@@ -137,12 +121,8 @@ const STYLES = {
     th: {
         padding: "var(--spacing-sm) var(--spacing-md)",
         textAlign: "left" as const,
-        fontSize: "var(--type-caption-sm-size)",
-        fontWeight: "var(--type-body-strong-weight)",
         textTransform: "uppercase" as const,
-        letterSpacing: "var(--type-caption-up-tracking)",
         color: "var(--color-muted)",
-        lineHeight: "var(--type-caption-sm-line)",
     },
     tbody: {},
     tr: {
@@ -151,11 +131,6 @@ const STYLES = {
     td: {
         base: {
             padding: "var(--spacing-sm) var(--spacing-md)",
-        },
-        day: {
-            fontFamily: "var(--font-code)",
-            fontSize: "var(--type-caption-sm-size)",
-            lineHeight: "var(--type-caption-sm-line)",
         },
         type: {
             color: "var(--color-ink)",
@@ -238,8 +213,8 @@ function KpiCards({ stats }: KpiCardsProps) {
 
                 return (
                     <div key={label} style={STYLES.kpiCard}>
-                        <p style={STYLES.kpiLabel}>{copy(label, englishLabel)}</p>
-                        <p style={{ ...STYLES.kpiValue, color: valueColor }}>{value}</p>
+                        <p className="reporte-employee-detail__metric-label" style={STYLES.kpiLabel}>{copy(label, englishLabel)}</p>
+                        <p className="reporte-employee-detail__metric-value" style={{ ...STYLES.kpiValue, color: valueColor }}>{value}</p>
                     </div>
                 );
             })}
@@ -320,15 +295,15 @@ function IncidentTable({ incidents, year, month }: IncidentTableProps) {
 
     return (
         <div style={STYLES.incidentSection}>
-            <p style={STYLES.incidentLabel}>
+            <p className="reporte-employee-detail__incident-label" style={STYLES.incidentLabel}>
                 {copy("Detalle de incidencias", "Incident details")} ({incidents.length})
             </p>
             <div style={STYLES.incidentTableWrapper}>
-                <table style={STYLES.table}>
+                <table className="reporte-employee-detail__table" style={STYLES.table}>
                     <thead style={STYLES.thead}>
                         <tr>
                             {TABLE_HEADERS.map((header) => (
-                                <th key={header.spanish} scope="col" style={STYLES.th}>
+                                <th key={header.spanish} scope="col" className="reporte-employee-detail__table-heading" style={STYLES.th}>
                                     {copy(header.spanish, header.english)}
                                 </th>
                             ))}
@@ -342,7 +317,7 @@ function IncidentTable({ incidents, year, month }: IncidentTableProps) {
 
                             return (
                                 <tr key={day} style={STYLES.tr}>
-                                    <td style={{ ...STYLES.td.base, ...STYLES.td.day }}>
+                                    <td className="reporte-employee-detail__date" style={STYLES.td.base}>
                                         {weekday} {dayNum}
                                     </td>
                                     <td style={STYLES.td.base}>
@@ -393,12 +368,12 @@ export default function ReporteEmployeeDetail({
             onClose={onClose}
             title={
                 <div style={{ ...STYLES.titleRow, textTransform: 'capitalize' }}>
-                    <span style={{ ...STYLES.employeeId, textTransform: 'none' }}>#{employee.numero_empleado}</span>
+                    <span className="reporte-employee-detail__employee-id" style={{ ...STYLES.employeeId, textTransform: 'none' }}>#{employee.numero_empleado}</span>
                     <span>{employee.nombre.toLowerCase()}</span>
                 </div>
             }
             size="lg"
-            className="reporte-employee-detail-modal"
+            className="reporte-employee-detail-modal report-dialog"
         >
             <div className="modal-body">
                 <div className="reporte-employee-detail__tabs" role="tablist" aria-label={copy("Secciones del detalle de empleado", "Employee detail sections")}>

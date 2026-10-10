@@ -75,10 +75,10 @@
 
 .app-toaster__hint {
   font-family: var(--font-body);
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-sm-weight);
-  line-height: var(--type-body-sm-line);
-  letter-spacing: var(--type-body-sm-tracking);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
   color: var(--color-on-dark-soft);
 }
 
@@ -147,10 +147,10 @@
   max-inline-size: 100%;
   padding: var(--design-spacing-xs) var(--design-spacing-sm);
   font-family: var(--font-body);
-  font-size: var(--type-button-md-size);
-  font-weight: var(--type-button-md-weight);
-  line-height: var(--type-button-md-line);
-  letter-spacing: var(--type-button-md-tracking);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
   border: var(--border-width) solid var(--color-on-dark-soft);
   border-radius: var(--rounded-md);
   overflow-wrap: anywhere;

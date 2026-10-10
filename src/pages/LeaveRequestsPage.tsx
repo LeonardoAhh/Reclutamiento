@@ -146,7 +146,7 @@ export function LeaveRequestsPage() {
                   {' – '}<time dateTime={row.endDate}>{date(row.endDate)}</time></td>
                 <td><time dateTime={row.requestedAt}>{formatDateTimeMx(row.requestedAt, dateLocale)}</time></td>
                 <td><div className="leave-requests-page__status">
-                  <Badge minimal variant={row.status === 'approved' ? 'success' : 'default'}>{statusLabel(row, language)}</Badge>
+                  <Badge className="leave-requests-page__status-badge" minimal variant={row.status === 'approved' ? 'success' : 'default'}>{statusLabel(row, language)}</Badge>
                   {row.requiresNoticeException && <Tooltip content={noticeLabel(row, language)}>
                     <button type="button" className="btn-icon leave-requests-page__notice"
                       aria-label={noticeLabel(row, language)}>
@@ -204,7 +204,7 @@ export function LeaveRequestsPage() {
                   </div>
                   <div className="leave-requests-page__card-details">
                     <div className="leave-requests-page__card-state">
-                      <Badge minimal variant={row.status === 'approved' ? 'success' : 'default'}>{statusLabel(row, language)}</Badge>
+                      <Badge className="leave-requests-page__status-badge" minimal variant={row.status === 'approved' ? 'success' : 'default'}>{statusLabel(row, language)}</Badge>
                     </div>
                     <div className="leave-requests-page__card-requested">
                       <span className="leave-requests-page__card-label">{t.requested}</span>
@@ -237,7 +237,7 @@ export function LeaveRequestsPage() {
         <button type="button" className="btn-secondary" disabled={page === 0} onClick={() => setPage(value => value - 1)}>
           <ChevronLeft aria-hidden="true" /> {t.previous}
         </button>
-        <span className="type-body-sm" role="status">{t.page} {page + 1} {t.of} {Math.ceil(total / LEAVE_PAGE_SIZE)}</span>
+        <span className="type-body-md" role="status">{t.page} {page + 1} {t.of} {Math.ceil(total / LEAVE_PAGE_SIZE)}</span>
         <button type="button" className="btn-secondary" disabled={(page + 1) * LEAVE_PAGE_SIZE >= total}
           onClick={() => setPage(value => value + 1)}>{t.next} <ChevronRight aria-hidden="true" /></button>
       </nav>}

@@ -73,6 +73,7 @@ export function MaintenanceModeModal({
 
   return (
     <Modal
+      className="account-dialog"
       isOpen={isOpen}
       title={english ? "Maintenance mode" : "Modo mantenimiento"}
       onClose={handleClose}
@@ -110,8 +111,13 @@ export function MaintenanceModeModal({
     >
       <div className="modal-body maintenance-mode-modal__body">
         <div className="maintenance-mode-modal__status">
-          <span className="type-label-sm">{english ? "Current status" : "Estado actual"}</span>
-          <Badge variant={isMaintenance ? "amber" : "default"} aria-live="polite">
+          <span className="type-caption-up">{english ? "Current status" : "Estado actual"}</span>
+          <Badge
+            variant={isMaintenance ? "amber" : "default"}
+            className={!isMaintenance && !loading && !configurationUnavailable
+              ? "maintenance-mode-modal__inactive" : undefined}
+            aria-live="polite"
+          >
             {loading
               ? english ? "Checking…" : "Consultando…"
               : configurationUnavailable
@@ -130,7 +136,7 @@ export function MaintenanceModeModal({
 
         {maintenanceError && (
           <div className="maintenance-mode-modal__error-group">
-            <p className="maintenance-mode-modal__error type-body-sm" role="alert">
+            <p className="maintenance-mode-modal__error type-body-md" role="alert">
               {translateMaintenanceError(maintenanceError, english)}
             </p>
             <button

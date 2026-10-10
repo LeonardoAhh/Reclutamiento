@@ -45,13 +45,21 @@
 }
 
 .rdp-month_caption {
-  font-size: var(--type-label-sm-size);
-  font-weight: var(--type-label-sm-weight);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .rdp-weekday {
   color: var(--color-muted);
   opacity: 1;
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
 }
 
 .rdp-day_button:not(:disabled):hover {

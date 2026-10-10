@@ -55,7 +55,7 @@ export function TeamMemberForm({ member, profiles, onClose, onSaved }: Props) {
     ['job_title', copy.jobTitle, 200],
   ] as const;
   const Dialog = isMobile ? Modal : FormSheet;
-  return <Dialog isOpen title={member ? copy.editMember : copy.addMember} size="md"
+  return <Dialog isOpen className="team-dialog" title={member ? copy.editMember : copy.addMember} size="md"
     closeLabel={language === 'en' ? 'Close' : 'Cerrar'}
     onClose={() => { if (!busy) onClose(); }} footerActions={<>
       <button type="button" className="btn-secondary" disabled={busy} onClick={onClose}>{copy.cancel}</button>
@@ -84,12 +84,12 @@ export function TeamMemberForm({ member, profiles, onClose, onSaved }: Props) {
           <option value="">{copy.noLinkedAccountOption}</option>
           {profiles.map(profile => <option key={profile.id} value={profile.id}>{profile.display_name || profile.username} ({profile.username})</option>)}
         </select>
-        <p className="type-body-sm" id={`${id}-account-help`}>{copy.linkedAccountHelp}</p>
+        <p className="type-body-md" id={`${id}-account-help`}>{copy.linkedAccountHelp}</p>
       </div>
       <div className="form-group team-form__wide"><label htmlFor={`${id}-aliases`}>{copy.aliases}</label>
         <textarea id={`${id}-aliases`} value={aliases} disabled={busy} rows={4} maxLength={20000} aria-describedby={`${id}-aliases-help`}
           onChange={event => setAliases(event.target.value)} />
-        <p id={`${id}-aliases-help`} className="type-body-sm">{copy.aliasesHelp}</p>
+        <p id={`${id}-aliases-help`} className="type-body-md">{copy.aliasesHelp}</p>
       </div>
       <label className="team-check"><input type="checkbox" checked={form.selectable} disabled={busy}
         onChange={event => setForm({ ...form, selectable: event.target.checked })} />{copy.available}</label>

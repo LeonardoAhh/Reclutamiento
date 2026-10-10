@@ -13,6 +13,11 @@
   box-shadow: var(--shadow-elevated);
   transform-origin: var(--radix-popover-content-transform-origin);
   will-change: transform, opacity;
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .popover-header {
@@ -26,20 +31,20 @@
   margin: 0;
   color: var(--color-ink);
   font-family: var(--font-body);
-  font-size: var(--type-body-sm-strong-size);
-  font-weight: var(--type-body-sm-strong-weight);
-  line-height: var(--type-body-sm-strong-line);
-  letter-spacing: var(--type-body-sm-strong-tracking);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .popover-description {
   margin: 0;
   color: var(--color-muted);
   font-family: var(--font-body);
-  font-size: var(--type-caption-sm-size);
-  font-weight: var(--type-caption-sm-weight);
-  line-height: var(--type-caption-sm-line);
-  letter-spacing: var(--type-caption-sm-tracking);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .popover-content[data-state='open'][data-side='top'] {

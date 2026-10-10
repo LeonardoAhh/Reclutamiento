@@ -138,7 +138,7 @@ export function ActivitiesSection({
         </div>
 
         {isAdmin && (
-          <button type="button" className="btn-primary btn-sm" onClick={onCreate}>
+          <button type="button" className="btn-primary btn-sm activities-create-action" onClick={onCreate}>
             <Plus size="var(--icon-size-sm)" aria-hidden="true" />
             <span>{en ? "Create" : "Crear"}</span>
           </button>

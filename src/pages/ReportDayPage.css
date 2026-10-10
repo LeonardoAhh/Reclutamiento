@@ -1,13 +1,11 @@
 .report-day-page {
   min-inline-size: 0;
   padding-block-end: calc(var(--design-spacing-xxl) + var(--safe-area-bottom));
-}
-.app-header__title > .app-page-title.report-day-page__heading {
-  font-family: var(--font-display);
-  font-size: var(--type-heading-sm-size);
-  font-weight: var(--type-heading-sm-weight);
-  line-height: var(--type-heading-sm-line);
-  letter-spacing: var(--type-heading-sm-tracking);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 .report-day-page__title-link {
   display: inline-flex;
@@ -45,11 +43,12 @@
 .report-day-page__navigation > .btn-ghost {
   flex: 0 1 auto;
   padding-inline: var(--design-spacing-sm);
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-sm-weight);
-  line-height: var(--type-body-sm-line);
-  letter-spacing: var(--type-body-sm-tracking);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
   white-space: nowrap;
+  font-family: var(--font-body);
 }
 .report-day-page__navigation svg {
   flex-shrink: 0;
@@ -73,12 +72,6 @@
   border-radius: var(--workspace-radius);
 }
 @media (min-width: 768px) {
-  .app-header__title > .app-page-title.report-day-page__heading {
-    font-size: var(--type-heading-md-size);
-    font-weight: var(--type-heading-md-weight);
-    line-height: var(--type-heading-md-line);
-    letter-spacing: var(--type-heading-md-tracking);
-  }
   .report-day-page__navigation-label {
     display: inline;
   }
@@ -110,10 +103,18 @@
 }
 .report-day-page__section-title {
   margin: 0;
-  font-family: var(--font-display);
-  font-size: var(--type-heading-md-size);
-  font-weight: var(--type-heading-md-weight);
-  line-height: var(--type-heading-md-line);
-  letter-spacing: var(--type-heading-md-tracking);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
   color: var(--color-ink);
+}
+
+.report-day-page .btn-secondary {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }

@@ -538,7 +538,7 @@ export function DataUpdateWizard({
       <header className="data-update-wizard__header">
         <div className="data-update-wizard__context">
           <PageHeading className="app-page-title">{record.identity.name}</PageHeading>
-          <span className="type-caption-up text-muted">
+          <span className="type-body-md text-muted">
             {t(`Empleado ${record.identity.employeeNumber}`)}
           </span>
         </div>

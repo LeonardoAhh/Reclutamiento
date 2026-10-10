@@ -128,12 +128,12 @@ export function EmployeeIncidenceCalendar({
     <section className="config-card__calendar-section" aria-labelledby={titleId}>
       <header className="config-calendar-header-actions">
         <div className="config-calendar-heading">
-          <h4 id={titleId} className="config-card__section-title type-caption-up text-muted">
+          <h4 id={titleId} className="config-card__section-title type-body-strong text-muted">
             {copy.incidenceCalendar}
           </h4>
           {selectedEntry && (
             <p
-              className="config-calendar-summary type-caption-sm text-muted"
+              className="config-calendar-summary type-body-md text-muted"
               aria-live="polite"
               aria-atomic="true"
             >
@@ -246,7 +246,7 @@ export function EmployeeIncidenceCalendar({
           </div>
         </div>
       ) : (
-        <p className="config-calendar-empty type-body-sm text-muted" role="status">
+        <p className="config-calendar-empty type-body-md text-muted" role="status">
           {copy.noReports}
         </p>
       )}

@@ -123,8 +123,8 @@ export function TeamPage() {
           const canDeactivate = member.profile_id !== profile?.id && linked?.role !== 'admin';
           return <li className="team-management__member" key={member.id}>
             <div className="team-management__identity"><strong className="type-body-strong">{member.full_name}</strong>
-              <span className="type-body-sm">{member.job_title || member.short_name}</span>
-              <span className="type-body-sm">{linked ? copy.linkedAccount(linked.username) : member.profile_id ? copy.linked : copy.unlinked}</span>
+              <span className="type-body-md">{member.job_title || member.short_name}</span>
+              <span className="type-body-md">{linked ? copy.linkedAccount(linked.username) : member.profile_id ? copy.linked : copy.unlinked}</span>
             </div>
             <Badge className="team-management__status" variant="default">
               {member.active ? copy.active : copy.inactive}
@@ -144,11 +144,11 @@ export function TeamPage() {
     </main>
     {editing !== undefined && profiles && <TeamMemberForm member={editing} profiles={profiles.filter(row => row.id === editing?.profile_id || !members.some(member => member.profile_id === row.id))}
       onClose={() => setEditing(undefined)} onSaved={refresh} />}
-    {confirm && <ConfirmModal isOpen title={`${confirm.active ? copy.confirmDeactivate : copy.confirmReactivate} ${confirm.short_name}`} isDestructive={confirm.active}
+    {confirm && <ConfirmModal isOpen className="team-dialog" title={`${confirm.active ? copy.confirmDeactivate : copy.confirmReactivate} ${confirm.short_name}`} isDestructive={confirm.active}
       description={confirm.active ? copy.deactivateDescription : copy.reactivateDescription}
       confirmLabel={confirm.active ? copy.confirmDeactivate : copy.confirmReactivate} cancelLabel={copy.cancel} loadingLabel={copy.saving} isLoading={busy} errorMessage={error ? translateTeamMessage(error, language) : undefined}
       onCancel={() => { if (!busy) { setConfirm(null); setError(''); } }} onConfirm={() => void changeStatus()} />}
-    {removing && <ConfirmModal isOpen title={copy.deleteMember(removing.short_name)} isDestructive
+    {removing && <ConfirmModal isOpen className="team-dialog" title={copy.deleteMember(removing.short_name)} isDestructive
       description={removing.profile_id ? copy.deleteLinkedDescription : copy.deleteUnlinkedDescription}
       confirmLabel={copy.delete} cancelLabel={copy.cancel} loadingLabel={copy.saving} isLoading={busy} errorMessage={error ? translateTeamMessage(error, language) : undefined}
       onCancel={() => { if (!busy) { setRemoving(null); setError(''); } }} onConfirm={() => void removeMember()} />}

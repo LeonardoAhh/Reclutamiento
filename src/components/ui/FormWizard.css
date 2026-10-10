@@ -28,19 +28,22 @@
 }
 
 .form-wizard__step-count {
+  text-transform: uppercase;
+  color: var(--color-muted);
   font-family: var(--font-body);
   font-size: var(--type-caption-up-size);
   font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
   letter-spacing: var(--type-caption-up-tracking);
-  text-transform: uppercase;
-  color: var(--color-muted);
 }
 
 .form-wizard__step-title {
+  color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--type-body-strong-size);
   font-weight: var(--type-body-strong-weight);
-  color: var(--color-ink);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .form-wizard__bar {

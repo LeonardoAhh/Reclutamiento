@@ -153,7 +153,7 @@ export function OrganizationChartPage() {
           </Reveal>
           <section className="organization-chart-page__reports" aria-labelledby="organization-chart-reports-title">
             <span className="organization-chart-page__stem" aria-hidden="true" />
-            <h2 id="organization-chart-reports-title" className="type-heading-md">{language === "en" ? "Report to the manager" : "Reportan al gerente"}</h2>
+            <h2 id="organization-chart-reports-title" className="type-body-strong">{language === "en" ? "Report to the manager" : "Reportan al gerente"}</h2>
             <div className="organization-chart-page__branch" aria-hidden="true">
               <span /><span /><span />
             </div>

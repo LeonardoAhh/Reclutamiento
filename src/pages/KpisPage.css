@@ -13,6 +13,11 @@
 
 .kpis-page {
   padding-bottom: var(--spacing-xxl);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 /* ── Tabs por grupo (solo móvil) ────────────────────────────────────── */
@@ -46,10 +51,10 @@
   background: var(--color-surface-card);
   color: var(--color-ink);
   font-family: var(--font-body);
-  font-size: var(--type-body-strong-size);
-  font-weight: var(--type-body-strong-weight);
-  line-height: var(--type-body-strong-line);
-  letter-spacing: var(--type-body-strong-tracking);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
   text-align: start;
   cursor: pointer;
   transition: background-color var(--transition-fast);
@@ -72,14 +77,15 @@
   background: var(--color-surface-card);
   color: var(--color-body);
   font-family: var(--font-body);
-  font-size: var(--type-button-size);
-  font-weight: var(--type-button-weight);
-  line-height: var(--type-button-line);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
   cursor: pointer;
   transition:
     background var(--transition-fast),
     color var(--transition-fast),
     border-color var(--transition-fast);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .kpis-page__tab--active {
@@ -208,13 +214,19 @@
 }
 
 .kpis-page__date-badge {
-  font-family: var(--font-mono);
-  font-size: var(--type-caption-sm-size);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
   color: var(--color-muted);
-  background: var(--color-surface-sunken);
-  padding: var(--spacing-xs) var(--spacing-md);
-  border-radius: var(--rounded-full);
+  background: var(--color-canvas-soft);
+  padding: var(--design-spacing-xxs) var(--design-spacing-xs);
+  border-radius: var(--rounded-sm);
   white-space: nowrap;
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+  display: inline-flex;
+  align-items: center;
+  border: var(--border-width) solid var(--color-hairline);
 }
 
 /* Botón de detalle ghost (PC, visible cuando la card está revelada). */
@@ -266,4 +278,32 @@
   .kpis-page__chart-chevron {
     transition: none;
   }
+}
+
+.kpis-page .stat-card__label {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+  display: flex;
+  align-items: center;
+  min-inline-size: 0;
+  min-block-size: calc(var(--type-caption-up-size) * var(--type-caption-up-line) + var(--design-spacing-xxs) * 2 + var(--border-width) * 2);
+}
+
+.kpis-page .stat-card__value {
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.kpis-page .stat-card__subtitle {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }

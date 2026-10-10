@@ -179,6 +179,7 @@ export default function ReporteKpiDashboard({
             </div>
 
             <Modal
+                className="report-dialog"
                 isOpen={isWorstAreaModalOpen}
                 onClose={() => setIsWorstAreaModalOpen(false)}
                 title={`${copy("Incidencias", "Incidents")} · ${worstAreaLabel}`}

@@ -5,6 +5,7 @@ import { Modal } from "./Modal";
 export interface ConfirmModalProps {
   isOpen: boolean;
   title: string;
+  className?: string;
   description?: React.ReactNode;
   confirmLabel?: string;
   cancelLabel?: string;
@@ -25,6 +26,7 @@ export interface ConfirmModalProps {
 export function ConfirmModal({
   isOpen,
   title,
+  className,
   description,
   confirmLabel,
   cancelLabel,
@@ -45,7 +47,7 @@ export function ConfirmModal({
       title={title}
       onClose={() => { if (hideCloseButton || !isLoading) onCancel(); }}
       size="xs"
-      className="modal-alert"
+      className={["modal-alert", className].filter(Boolean).join(" ")}
       placement={placement}
       hideCloseButton={hideCloseButton}
       footerActions={
@@ -67,7 +69,7 @@ export function ConfirmModal({
     >
       <div className="modal-body">
         {description && (
-          <div className="text-sm text-charcoal">{description}</div>
+          <div className="type-body-md text-charcoal">{description}</div>
         )}
         {errorMessage && (
           <p className="form-error-text" role="alert">

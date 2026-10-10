@@ -46,6 +46,7 @@ export function CreateVacancyModal({
 
   return (
     <Modal
+      className="activities-form-dialog"
       isOpen={isOpen}
       onClose={onClose}
       title={en ? "Assign vacancy" : "Asignar Vacante"}

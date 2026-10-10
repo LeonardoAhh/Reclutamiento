@@ -2,6 +2,11 @@
   display: grid;
   gap: var(--design-spacing-md);
   padding-block-end: var(--design-spacing-xxl);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .leave-requests-page__pagination {
@@ -60,7 +65,9 @@
   color: var(--color-body);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .leave-requests-page__table th,
@@ -74,7 +81,6 @@
 
 .leave-requests-page__table th {
   color: var(--color-ink);
-  font-weight: var(--font-semibold);
 }
 
 .leave-requests-page__table tbody th,
@@ -132,16 +138,20 @@
 }
 
 .leave-requests-page__empty .animated-empty-state__title {
-  font-size: var(--type-heading-sm-size);
-  font-weight: var(--type-heading-sm-weight);
-  line-height: var(--type-heading-sm-line);
-  letter-spacing: var(--type-heading-sm-tracking);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .leave-requests-page__empty .animated-empty-state__subtitle {
   margin: 0;
+  font-family: var(--font-body);
   font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .leave-requests-page__table .leave-requests-page__row-actions {
@@ -228,7 +238,9 @@
     color: var(--color-body);
     font-family: var(--font-body);
     font-size: var(--type-body-md-size);
+    font-weight: var(--type-body-md-weight);
     line-height: var(--type-body-md-line);
+    letter-spacing: var(--type-body-md-tracking);
   }
 
   .leave-requests-page__card-header {
@@ -243,11 +255,12 @@
     min-inline-size: 0;
     margin: 0;
     color: var(--color-ink);
-    font-size: var(--type-heading-sm-size);
-    font-weight: var(--type-heading-sm-weight);
-    line-height: var(--type-heading-sm-line);
-    letter-spacing: var(--type-heading-sm-tracking);
     overflow-wrap: anywhere;
+    font-family: var(--font-body);
+    font-size: var(--type-body-strong-size);
+    font-weight: var(--type-body-strong-weight);
+    line-height: var(--type-body-strong-line);
+    letter-spacing: var(--type-body-strong-tracking);
   }
 
   .leave-requests-page__card-requester {
@@ -265,8 +278,6 @@
   .leave-requests-page__card-label,
   .leave-requests-page__card-requested {
     color: var(--color-muted);
-    font-size: var(--type-body-sm-size);
-    line-height: var(--type-body-sm-line);
   }
 
   .leave-requests-page__card-period {
@@ -292,9 +303,12 @@
 
   .leave-requests-page__card-period time {
     color: var(--color-ink);
-    font-size: var(--type-body-md-size);
-    font-weight: var(--font-semibold);
     overflow-wrap: anywhere;
+    font-family: var(--font-body);
+    font-size: var(--type-body-md-size);
+    font-weight: var(--type-body-md-weight);
+    line-height: var(--type-body-md-line);
+    letter-spacing: var(--type-body-md-tracking);
   }
 
   .leave-requests-page__card-details {
@@ -338,4 +352,36 @@
   .leave-requests-page__cards {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
+
+.leave-requests-page__table thead th {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+}
+
+.leave-requests-page__table tbody th {
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.leave-requests-page__card-label, .leave-requests-page__status-badge.badge {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+}
+
+.leave-requests-page__card-type, .leave-requests-page__card-requested, .leave-requests-page .btn-secondary {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }

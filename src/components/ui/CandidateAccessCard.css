@@ -15,8 +15,11 @@
 .candidate-access-card__hint {
   margin: 0;
   color: var(--color-muted);
+  font-family: var(--font-body);
   font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .candidate-access-card__preview {
@@ -53,8 +56,11 @@
   border-radius: var(--rounded-lg);
   background: var(--color-surface-card);
   color: var(--color-muted);
-  font-size: var(--type-body-sm-size);
-  line-height: var(--type-body-sm-line);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .candidate-access-card__spinner {
@@ -81,6 +87,11 @@
 
 .candidate-access-card__actions > button {
   width: 100%;
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 @media (min-width: 768px) {

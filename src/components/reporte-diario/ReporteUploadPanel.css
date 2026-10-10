@@ -16,10 +16,10 @@
   margin: 0;
   color: var(--color-ink);
   font-family: var(--font-body);
-  font-size: var(--type-body-sm-strong-size);
-  font-weight: var(--type-body-sm-strong-weight);
-  line-height: var(--type-body-sm-strong-line);
-  letter-spacing: var(--type-body-sm-strong-tracking);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .reporte-upload-method .reporte-hero__dropzone {

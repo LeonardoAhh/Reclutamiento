@@ -21,7 +21,7 @@ export function RecruiterSummary({ recruiterStats }: { recruiterStats: Recruiter
                   <header className="recruiter-metrics__card-head">
                     <div className="recruiter-metrics__card-meta">
                       <h3 className="recruiter-metrics__card-name">
-                        <ReclutadorBadge nombre={r.name} showRole />
+                        <ReclutadorBadge nombre={r.name} showRole className="recruiter-metrics__name-badge" />
                       </h3>
                       <div className="recruiter-metrics__card-totals">
                         <span className="recruiter-metrics__card-total">

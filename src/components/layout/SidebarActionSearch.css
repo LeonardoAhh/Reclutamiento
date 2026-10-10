@@ -59,11 +59,11 @@
   color: var(--color-ink);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-sm);
-  font-family: var(--font-code);
-  font-size: var(--type-mono-eyebrow-size);
-  font-weight: var(--type-mono-eyebrow-weight);
-  line-height: var(--type-mono-eyebrow-line);
-  letter-spacing: var(--type-mono-eyebrow-tracking);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
 }
 
 .sidebar-action-search__results {
@@ -112,8 +112,8 @@
   padding: var(--design-spacing-sm);
   color: var(--color-muted);
   font-family: var(--font-body);
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-sm-weight);
-  line-height: var(--type-body-sm-line);
-  letter-spacing: var(--type-body-sm-tracking);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }

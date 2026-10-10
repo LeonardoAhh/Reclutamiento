@@ -93,6 +93,7 @@ export function DataUpdateShiftImportModal({
 
   return (
     <Modal
+      className="data-update-dialog"
       isOpen={isOpen}
       title={t("Actualizar turnos")}
       onClose={close}
@@ -114,7 +115,7 @@ export function DataUpdateShiftImportModal({
       }
     >
       <div className="modal-body data-update-import">
-        <p className="data-update-shifts__intro type-caption-sm text-muted">
+        <p className="data-update-shifts__intro type-body-md text-muted">
           {t("Campaña")}: {campaignName}. {t('El JSON debe contener solo "Numero Empleado" y "Turno".')}
         </p>
         <div className="data-update-import__file">
@@ -134,7 +135,7 @@ export function DataUpdateShiftImportModal({
               }}
             />
           </label>
-          <span className="data-update-shifts__filename type-caption-sm text-muted">
+          <span className="data-update-shifts__filename type-body-md text-muted">
             {reading ? t("Leyendo archivo…") : fileName || t("Sin archivo seleccionado")}
           </span>
         </div>
@@ -163,7 +164,7 @@ export function DataUpdateShiftImportModal({
                   <li key={change.employeeNumber} className="data-update-shifts__item">
                     <span className="data-update-shifts__identity">
                       <strong>{change.employeeName}</strong>
-                      <span className="type-caption-sm text-muted">{change.employeeNumber}</span>
+                      <span className="type-body-md text-muted">{change.employeeNumber}</span>
                     </span>
                     <span className="data-update-shifts__transition">
                       {change.previousShift || "—"} → {change.shift}

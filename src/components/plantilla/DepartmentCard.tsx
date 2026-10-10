@@ -43,9 +43,9 @@ export function DepartmentCard({ area, projection, onOpen, incapacidadCount }: D
           </div>
         </div>
         <div id={coverageId} className="dept-card__body dept-card__coverage">
-          <div className="dept-card__coverage-heading type-body-sm">
+          <div className="dept-card__coverage-heading type-body-md">
             <span>{t('Cobertura actual')}</span>
-            <strong className="type-body-sm-strong">
+            <strong className="type-body-strong">
               {!current ? t('No disponible') : percentage === null ? t('No aplica') : formatPercentage(percentage)}
             </strong>
           </div>
@@ -59,12 +59,12 @@ export function DepartmentCard({ area, projection, onOpen, incapacidadCount }: D
             />
           )}
           {current && current.target > 0 && (
-            <span className="dept-card__coverage-note type-caption-sm">
+            <span className="dept-card__coverage-note type-body-md">
               {current.covered} {language === 'en' ? 'of' : 'de'} {current.target} {t('puestos cubiertos')}
             </span>
           )}
           {projection && (projection.undatedEmployees > 0 || projection.ambiguousEmployees > 0) && (
-            <span className="dept-card__coverage-note type-caption-sm">
+            <span className="dept-card__coverage-note type-body-md">
               {t('Sin incluir:')} {projection.undatedEmployees} {t('sin fecha válida')}; {projection.ambiguousEmployees} {t('con puesto ambiguo.')}
             </span>
           )}

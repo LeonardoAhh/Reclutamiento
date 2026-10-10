@@ -325,6 +325,7 @@ export default function ReporteAreaSummary({
 
             {/* Modal de detalle de ausencias */}
             <Modal
+                className="report-dialog"
                 isOpen={isDetailOpen && selectedArea !== null}
                 onClose={() => {
                     setIsDetailOpen(false);

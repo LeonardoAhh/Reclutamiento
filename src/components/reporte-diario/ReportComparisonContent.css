@@ -1,5 +1,10 @@
 .report-comparison-page {
   padding-block-end: calc(var(--design-spacing-xxl) + var(--safe-area-bottom));
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 .reporte-cmp__body {
   display: flex;
@@ -9,11 +14,11 @@
 }
 .reporte-cmp__heading {
   margin: 0;
-  font-family: var(--font-display);
-  font-size: var(--type-heading-md-size);
-  font-weight: var(--type-heading-md-weight);
-  line-height: var(--type-heading-md-line);
-  letter-spacing: var(--type-heading-md-tracking);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
   color: var(--color-ink);
 }
 .reporte-cmp__quarters {
@@ -50,18 +55,18 @@
 }
 .reporte-cmp__quarter-label {
   font-family: var(--font-body);
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-sm-weight);
-  line-height: var(--type-body-sm-line);
-  letter-spacing: var(--type-body-sm-tracking);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
   color: var(--color-body);
 }
 .reporte-cmp__quarter-value {
-  font-family: var(--font-display);
-  font-size: var(--type-heading-md-size);
-  font-weight: var(--type-heading-md-weight);
-  line-height: var(--type-heading-md-line);
-  letter-spacing: var(--type-heading-md-tracking);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
   overflow-wrap: anywhere;
 }
 .reporte-cmp__quarter-value--ok { color: var(--color-success-text); }
@@ -96,10 +101,10 @@
   table-layout: fixed;
   border-collapse: collapse;
   font-family: var(--font-body);
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-sm-weight);
-  line-height: var(--type-body-sm-line);
-  letter-spacing: var(--type-body-sm-tracking);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
   color: var(--color-ink);
   overflow-wrap: anywhere;
 }
@@ -109,10 +114,18 @@
   text-align: start;
 }
 .reporte-cmp__table th {
-  font-weight: var(--type-body-strong-weight);
+  font-weight: var(--type-caption-up-weight);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
 }
 .reporte-cmp__table .reporte-cmp__num { text-align: end; font-variant-numeric: tabular-nums; }
-.reporte-cmp__mes, .reporte-cmp__strong { font-weight: var(--type-body-strong-weight); }
+.reporte-cmp__mes, .reporte-cmp__strong { font-weight: var(--type-body-strong-weight);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking); }
 .reporte-cmp__muted { color: var(--color-body); }
 .reporte-cmp__table .reporte-inc-badge {
   max-inline-size: 100%;
@@ -129,6 +142,10 @@
   gap: var(--design-spacing-xs);
   font-weight: var(--type-body-strong-weight);
   font-variant-numeric: tabular-nums;
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 .reporte-cmp__trend svg { flex-shrink: 0; }
 .reporte-cmp__trend--error { color: var(--color-error-text); }
@@ -172,4 +189,12 @@
   inline-size: 100%;
   block-size: var(--touch-target-min);
   border-radius: var(--rounded-md);
+}
+
+.report-comparison-page .btn-secondary {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }

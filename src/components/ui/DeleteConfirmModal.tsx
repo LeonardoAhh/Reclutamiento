@@ -6,6 +6,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 interface DeleteConfirmModalProps {
   isOpen: boolean;
   title: string;
+  className?: string;
   onConfirm: () => void;
   onCancel: () => void;
   isLoading?: boolean;
@@ -15,6 +16,7 @@ interface DeleteConfirmModalProps {
 export function DeleteConfirmModal({
   isOpen,
   title,
+  className,
   onConfirm,
   onCancel,
   isLoading = false,
@@ -26,6 +28,7 @@ export function DeleteConfirmModal({
   return (
     <ModalPresentationProvider value="modal">
       <ConfirmModal
+        className={className}
         isOpen={isOpen}
         title={title}
         description={en ? 'This action cannot be undone.' : 'Esta acción no se puede deshacer.'}

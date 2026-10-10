@@ -84,6 +84,7 @@ export function EditActivityModal({
 
   return (
     <Modal
+      className="activities-form-dialog"
       isOpen={isOpen}
       onClose={onClose}
       title={modalTitle}
@@ -144,7 +145,7 @@ export function EditActivityModal({
         </div>
 
         <div className="form-group">
-          <span className="form-label">{en ? "Reference photo" : "Foto de Referencia"}</span>
+          <span className="activity-form-label">{en ? "Reference photo" : "Foto de Referencia"}</span>
           <div className="reference-upload-area">
             {referenceImagePreview || existingReferenceImage ? (
               <AttachmentCard

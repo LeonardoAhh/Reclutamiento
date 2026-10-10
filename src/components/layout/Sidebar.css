@@ -60,30 +60,59 @@
   display: flex;
   align-items: center;
   min-inline-size: 0;
-  gap: var(--design-spacing-xs);
-  padding: var(--design-spacing-xs) var(--design-spacing-sm);
-  border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
-  background: var(--color-surface-card);
+  gap: var(--design-spacing-sm);
+  padding: var(--design-spacing-xs) var(--design-spacing-xxs);
+  border: 0;
+  background: transparent;
 }
 
 .sidebar__brand-mark {
-  display: block;
-  flex: 0 0 var(--icon-size-lg);
-  width: var(--icon-size-lg);
-  height: var(--icon-size-lg);
-  color: var(--color-primary);
+  display: grid;
+  place-items: center;
+  flex: 0 0 calc(var(--touch-target-min) - var(--design-spacing-xs));
+  inline-size: calc(var(--touch-target-min) - var(--design-spacing-xs));
+  block-size: calc(var(--touch-target-min) - var(--design-spacing-xs));
+  border-radius: var(--rounded-md);
+  color: var(--color-on-primary);
+  background: var(--color-primary);
+}
+
+.sidebar__brand-mark svg {
+  inline-size: 60%;
+  block-size: 60%;
+}
+
+.sidebar__brand-text {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-inline-size: 0;
 }
 
 .sidebar__brand-title {
-  min-inline-size: 0;
-  overflow-wrap: anywhere;
   color: var(--color-ink);
   font-family: var(--font-body);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+  letter-spacing: var(--type-heading-sm-tracking);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar__brand-subtitle {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  color: var(--color-body);
+  font-family: var(--font-body);
   font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-sm-strong-weight);
+  font-weight: var(--type-body-sm-weight);
   line-height: var(--type-body-sm-line);
   letter-spacing: var(--type-body-sm-tracking);
+  overflow-wrap: anywhere;
+  overflow: hidden;
 }
 
 button.sidebar__close-btn {
@@ -135,7 +164,7 @@ button.sidebar__close-btn {
   align-items: center;
   gap: var(--design-spacing-xs);
   padding-inline: var(--design-spacing-sm);
-  border: 0;
+  border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-md);
   background: transparent;
   color: var(--color-error-text);
@@ -146,6 +175,11 @@ button.sidebar__close-btn {
   letter-spacing: var(--type-body-md-tracking);
   text-align: start;
   cursor: pointer;
+}
+
+.sidebar__logout-trigger:is(:hover, :focus-visible) {
+  background: var(--color-error-deep);
+  color: var(--color-on-error);
 }
 
 .sidebar__logout-trigger svg {
@@ -171,10 +205,11 @@ button.sidebar__close-btn {
   min-height: var(--touch-target-min);
   padding-inline: var(--design-spacing-sm);
   border: var(--border-width) solid var(--color-hairline);
-  font-size: var(--type-button-md-size);
-  font-weight: var(--type-button-md-weight);
-  line-height: var(--type-button-md-line);
-  letter-spacing: var(--type-button-md-tracking);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
   white-space: nowrap;
 }
 
@@ -230,10 +265,6 @@ button.sidebar__close-btn {
 .sidebar__item--active:hover {
   color: var(--color-navigation-rail-on-active);
   background: var(--color-navigation-rail-active);
-  font-size: var(--type-label-sm-size);
-  font-weight: var(--type-label-sm-weight);
-  line-height: var(--type-label-sm-line);
-  letter-spacing: var(--type-label-sm-tracking);
 }
 
 /* Pressed: retroalimentación sutil dentro de la escala de superficies neutras. */
@@ -284,10 +315,10 @@ button.sidebar__close-btn {
   border: var(--border-width) solid var(--color-navigation-rail-elevated);
   border-radius: var(--rounded-full);
   font-family: var(--font-body);
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  line-height: var(--type-caption-up-line);
-  letter-spacing: var(--type-caption-up-tracking);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 /* App shell: layout sidebar + contenido.

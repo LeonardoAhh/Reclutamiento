@@ -3,6 +3,11 @@
   grid-template-columns: minmax(0, 1fr);
   gap: var(--design-spacing-xl);
   padding-block-end: var(--design-spacing-xxl);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .organization-chart-page__title-link {
@@ -72,6 +77,11 @@
   background: var(--color-surface-card);
   color: var(--color-ink);
   box-shadow: var(--shadow-xs);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
 }
 
 .organization-chart-page__details {
@@ -93,12 +103,13 @@
   align-items: center;
   justify-content: center;
   color: var(--color-canvas);
+  text-align: center;
+  text-wrap: balance;
+  font-family: var(--font-body);
   font-size: var(--type-body-strong-size);
   font-weight: var(--type-body-strong-weight);
   line-height: var(--type-body-strong-line);
   letter-spacing: var(--type-body-strong-tracking);
-  text-align: center;
-  text-wrap: balance;
 }
 
 .organization-chart-page__root h2,

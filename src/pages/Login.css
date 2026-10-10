@@ -10,6 +10,11 @@
   max-inline-size: var(--container-max);
   margin-inline: auto;
   background: var(--workspace-canvas);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .login__form-panel {
@@ -115,11 +120,11 @@
 .login-story__title {
   margin: 0;
   color: var(--color-ink);
-  font-family: var(--font-display);
-  font-size: var(--type-heading-lg-size);
-  font-weight: var(--type-heading-lg-weight);
-  line-height: var(--type-heading-lg-line);
-  letter-spacing: var(--type-heading-lg-tracking);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
   text-wrap: balance;
 }
 
@@ -127,10 +132,10 @@
   margin: 0;
   color: var(--color-body);
   font-family: var(--font-body);
-  font-size: var(--type-body-lg-size);
-  font-weight: var(--type-body-lg-weight);
-  line-height: var(--type-body-lg-line);
-  letter-spacing: var(--type-body-lg-tracking);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
   text-wrap: pretty;
 }
 
@@ -194,10 +199,10 @@
 .login__preferences-separator {
   color: var(--color-muted);
   font-family: var(--font-body);
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-sm-weight);
-  line-height: var(--type-body-sm-line);
-  letter-spacing: var(--type-body-sm-tracking);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .login__language-toggle {
@@ -222,10 +227,10 @@
   margin: 0;
   color: var(--color-muted);
   font-family: var(--font-body);
-  font-size: var(--type-caption-sm-size);
-  font-weight: var(--type-caption-sm-weight);
-  line-height: var(--type-caption-sm-line);
-  letter-spacing: var(--type-caption-sm-tracking);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
   text-align: start;
   overflow-wrap: anywhere;
 }
@@ -248,15 +253,15 @@
 .login__brand-name {
   min-inline-size: 0;
   overflow-wrap: anywhere;
-  font-family: var(--font-display);
-  font-size: var(--type-heading-sm-size);
-  font-weight: var(--type-heading-sm-weight);
-  line-height: var(--type-heading-sm-line);
-  letter-spacing: var(--type-heading-sm-tracking);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .login__title {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: var(--type-heading-lg-size);
   font-weight: var(--type-heading-lg-weight);
   line-height: var(--type-heading-lg-line);
@@ -317,10 +322,10 @@
 
 .login__field-label {
   font-family: var(--font-body);
-  font-size: var(--type-body-sm-strong-size);
-  font-weight: var(--type-body-sm-strong-weight);
-  line-height: var(--type-body-sm-strong-line);
-  letter-spacing: var(--type-body-sm-strong-tracking);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
   color: var(--color-ink);
 }
 
@@ -392,10 +397,10 @@
 /* ── Caps Lock warning ── */
 .login__caps-warning {
   font-family: var(--font-body);
-  font-size: var(--type-caption-sm-size);
-  font-weight: var(--type-caption-sm-weight);
-  line-height: var(--type-caption-sm-line);
-  letter-spacing: var(--type-caption-sm-tracking);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
   color: var(--color-warning-text);
   margin: 0;
 }
@@ -435,6 +440,11 @@
 .login__submit {
   inline-size: 100%;
   min-block-size: var(--control-min-block-size);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .login__footer {
@@ -475,4 +485,11 @@
   .login__checkbox-text {
     transition: none;
   }
+}
+.login__preferences .theme-select__notice {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }

@@ -19,6 +19,11 @@
 .assignment-meta__badge {
   max-inline-size: 100%;
   white-space: normal;
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .assignment-meta__value .reclutador-badge__name,
@@ -34,11 +39,6 @@
   border-radius: var(--rounded-sm);
   background: var(--color-surface-soft);
   color: var(--color-ink);
-  font-family: var(--font-body);
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  line-height: var(--type-caption-up-line);
-  letter-spacing: var(--type-caption-up-tracking);
 }
 
 .assignment-meta__badge svg {

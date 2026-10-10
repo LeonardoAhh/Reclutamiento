@@ -2,12 +2,10 @@ import { useId, useLayoutEffect, useRef, useState, type FormEvent } from "react"
 import { RotateCcw } from "lucide-react";
 import { Link } from "react-router-dom";
 import { enUS, es } from "date-fns/locale";
-import { validation } from "robot-toast/robots";
 import type { Profile } from "@/hooks/useAuth";
 import type { TeamMember } from "@/features/team/types";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Calendar } from "@/components/ui/Calendar";
-import { BrandMark } from "@/components/ui/BrandMark";
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { leaveErrorText } from "@/features/leave/translations";
 import {
@@ -192,34 +190,28 @@ export function SidebarQuickActions({ profile, members }: SidebarQuickActionsPro
                       }}
                     />
                   </div>
-                  <div className="home-page__leave-art">
-                    <div className="home-page__leave-bubble">
-                      <p role="status" aria-atomic="true">
-                        {!leaveDraft.startDate ? (en ? "Select start and end dates" : "Selecciona inicio y fin") : <>
-                          <span aria-hidden="true">
-                            {!leaveDraft.endDate
-                              ? `${date(leaveDraft.startDate).replace(/,?\s+\d{4}$/, "")} · ${en ? "Select end" : "Elige fin"}`
-                              : formatCompactDateRange(leaveDraft.startDate, leaveDraft.endDate, dateLocale)}
-                          </span>
-                          <span className="sr-only">
-                            {!leaveDraft.endDate
-                              ? (en ? `Start ${date(leaveDraft.startDate)}. Select the end date.` : `Inicio ${date(leaveDraft.startDate)}. Elige la fecha de fin.`)
-                              : `${date(leaveDraft.startDate)} ${en ? "to" : "al"} ${date(leaveDraft.endDate)}`}
-                          </span>
-                        </>}
-                      </p>
-                      {requiresNoticeException(leaveDraft) && <p className="home-page__leave-bubble-note">
-                        {en ? "Approval required" : "Requiere autorización"}
-                      </p>}
-                      {leaveDraft.startDate && <button type="button" className="btn-icon home-page__leave-clear" aria-label={en ? "Clear selected dates" : "Limpiar fechas seleccionadas"} title={en ? "Clear dates" : "Limpiar fechas"} disabled={leaveSaving}
-                        onClick={() => { setLeaveDraft(draft => ({ ...draft, startDate: "", endDate: "" })); setLeaveError(""); }}>
-                        <RotateCcw aria-hidden="true" />
-                      </button>}
-                    </div>
-                    <div className="home-page__leave-art-icons" aria-hidden="true">
-                      <BrandMark className="home-page__leave-brand" />
-                      <img className="home-page__leave-robot" src={validation} alt="" />
-                    </div>
+                  <div className="home-page__leave-bubble">
+                    <p role="status" aria-atomic="true">
+                      {!leaveDraft.startDate ? (en ? "Select start and end dates" : "Selecciona inicio y fin") : <>
+                        <span aria-hidden="true">
+                          {!leaveDraft.endDate
+                            ? `${date(leaveDraft.startDate).replace(/,?\s+\d{4}$/, "")} · ${en ? "Select end" : "Elige fin"}`
+                            : formatCompactDateRange(leaveDraft.startDate, leaveDraft.endDate, dateLocale)}
+                        </span>
+                        <span className="sr-only">
+                          {!leaveDraft.endDate
+                            ? (en ? `Start ${date(leaveDraft.startDate)}. Select the end date.` : `Inicio ${date(leaveDraft.startDate)}. Elige la fecha de fin.`)
+                            : `${date(leaveDraft.startDate)} ${en ? "to" : "al"} ${date(leaveDraft.endDate)}`}
+                        </span>
+                      </>}
+                    </p>
+                    {requiresNoticeException(leaveDraft) && <p className="home-page__leave-bubble-note">
+                      {en ? "Approval required" : "Requiere autorización"}
+                    </p>}
+                    {leaveDraft.startDate && <button type="button" className="btn-icon home-page__leave-clear" aria-label={en ? "Clear selected dates" : "Limpiar fechas seleccionadas"} title={en ? "Clear dates" : "Limpiar fechas"} disabled={leaveSaving}
+                      onClick={() => { setLeaveDraft(draft => ({ ...draft, startDate: "", endDate: "" })); setLeaveError(""); }}>
+                      <RotateCcw aria-hidden="true" />
+                    </button>}
                   </div>
                 </div>
                 <fieldset className="home-page__leave-dates">

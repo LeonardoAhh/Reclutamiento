@@ -82,6 +82,7 @@ export function CreateAssignmentModal({
 
   return (
     <Modal
+      className="activities-form-dialog"
       isOpen={isOpen}
       onClose={onClose}
       title={modalTitle}
@@ -143,7 +144,7 @@ export function CreateAssignmentModal({
         </div>
 
         <div className="form-group">
-          <span className="form-label">{en ? "Reference photo" : "Foto de Referencia"}</span>
+          <span className="activity-form-label">{en ? "Reference photo" : "Foto de Referencia"}</span>
           <div className="reference-upload-area">
             {referenceImagePreview ? (
               <AttachmentCard

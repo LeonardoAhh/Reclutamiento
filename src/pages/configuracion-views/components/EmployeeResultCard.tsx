@@ -55,10 +55,10 @@ export function EmployeeResultCard({
   const isCompactPreview = isCompact && !isExpanded;
   const identityLabelClassName = isCompactPreview
     ? 'sr-only'
-    : 'notion-prop__label type-body-sm text-muted';
+    : 'notion-prop__label type-caption-up text-muted';
   const identityValueClassName = isCompactPreview
-    ? 'notion-prop__value type-body-sm text-muted'
-    : 'notion-prop__value type-body-sm-strong text-charcoal';
+    ? 'notion-prop__value type-body-md text-muted'
+    : 'notion-prop__value type-body-md text-charcoal';
   const renewalDate = employee.isBaja
     ? null
     : addDaysToIso(employee.fecha_ingreso, 90);
@@ -94,7 +94,7 @@ export function EmployeeResultCard({
         </div>
         <h3
           id={employeeTitleId}
-          className="config-card__employee-title type-body-sm-strong text-muted"
+          className="config-card__employee-title type-body-strong text-muted"
         >
           {copy.number} {employeeNumber}
         </h3>
@@ -117,7 +117,7 @@ export function EmployeeResultCard({
           <div className="config-card__details-heading">
             <h4
               id={`details-${resultId}`}
-              className={`config-card__section-title type-caption-up text-muted${isCompactPreview ? ' sr-only' : ''}`}
+              className={`config-card__section-title type-body-strong text-muted${isCompactPreview ? ' sr-only' : ''}`}
             >
               {copy.laborInformation}
             </h4>
@@ -141,7 +141,7 @@ export function EmployeeResultCard({
             <div className="notion-prop notion-prop--wide">
               <dt className={identityLabelClassName}>{copy.employeeName}</dt>
               <dd className="notion-prop__value">
-                <span className="type-heading-sm text-ink">{employeeName}</span>
+                <span className="type-body-strong text-ink">{employeeName}</span>
               </dd>
             </div>
             <div className="notion-prop">
@@ -177,44 +177,44 @@ export function EmployeeResultCard({
               }`}
             >
               <div className="notion-prop">
-                <dt className="notion-prop__label type-body-sm text-muted">
+                <dt className="notion-prop__label type-caption-up text-muted">
                   {copy.section}
                 </dt>
-                <dd className="notion-prop__value type-body-sm-strong text-charcoal">
+                <dd className="notion-prop__value type-body-md text-charcoal">
                   {localizeValue(employee.seccion)}
                 </dd>
               </div>
               <div className="notion-prop">
-                <dt className="notion-prop__label type-body-sm text-muted">
+                <dt className="notion-prop__label type-caption-up text-muted">
                   {copy.hireDate}
                 </dt>
-                <dd className="notion-prop__value type-body-sm-strong text-charcoal">
+                <dd className="notion-prop__value type-body-md text-charcoal">
                   {toTitleCase(formatReadableDate(employee.fecha_ingreso, language === 'en' ? 'en-US' : 'es-MX'))}
                 </dd>
               </div>
               {!employee.isBaja && (
                 <div className="notion-prop">
-                  <dt className="notion-prop__label type-body-sm text-muted">
+                  <dt className="notion-prop__label type-caption-up text-muted">
                     {copy.contractRenewal}
                   </dt>
-                  <dd className="notion-prop__value type-body-sm-strong text-charcoal">
+                  <dd className="notion-prop__value type-body-md text-charcoal">
                     {toTitleCase(formatReadableDate(renewalDate, language === 'en' ? 'en-US' : 'es-MX'))}
                   </dd>
                 </div>
               )}
               {employee.isBaja && (
                 <div className="notion-prop">
-                  <dt className="notion-prop__label type-body-sm text-muted">{copy.departureDate}</dt>
-                  <dd className="notion-prop__value type-body-sm-strong text-charcoal">
+                  <dt className="notion-prop__label type-caption-up text-muted">{copy.departureDate}</dt>
+                  <dd className="notion-prop__value type-body-md text-charcoal">
                     {toTitleCase(formatReadableDate(employee.fecha_baja, language === 'en' ? 'en-US' : 'es-MX'))}
                   </dd>
                 </div>
               )}
               {employee.isBaja && (
                 <div className="notion-prop">
-                  <dt className="notion-prop__label type-body-sm text-muted">{copy.departureReason}</dt>
+                  <dt className="notion-prop__label type-caption-up text-muted">{copy.departureReason}</dt>
                   <dd
-                    className="notion-prop__value type-body-sm-strong text-charcoal"
+                    className="notion-prop__value type-body-md text-charcoal"
                   >
                     {localizeValue(employee.motivo_baja)}
                   </dd>
@@ -222,8 +222,8 @@ export function EmployeeResultCard({
               )}
               {!(employee.isBaja && !employee.turno) && (
                 <div className="notion-prop">
-                  <dt className="notion-prop__label type-body-sm text-muted">{copy.shift}</dt>
-                  <dd className={`notion-prop__value type-body-sm-strong ${employee.turno ? 'text-charcoal' : 'text-muted'}`}>
+                  <dt className="notion-prop__label type-caption-up text-muted">{copy.shift}</dt>
+                  <dd className={`notion-prop__value type-body-md ${employee.turno ? 'text-charcoal' : 'text-muted'}`}>
                     {employee.turno ? displayValue(employee.turno) : copy.notApplicable}
                   </dd>
                 </div>

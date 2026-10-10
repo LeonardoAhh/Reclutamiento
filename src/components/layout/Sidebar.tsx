@@ -82,13 +82,6 @@ export function Sidebar({
 
   if (!username) return null;
 
-  const linkedMember = members.find((member) => member.profile_id === profile?.id);
-  const position = linkedMember?.job_title.trim() || (
-    profile?.role === "admin"
-      ? language === "en" ? "Administrator" : "Administrador"
-      : language === "en" ? "Recruiter" : "Reclutador"
-  );
-
   return (
     <aside
       ref={sidebarRef}
@@ -101,7 +94,7 @@ export function Sidebar({
       data-testid="app-sidebar"
     >
       <div className="sidebar__top">
-        <SidebarBrand title={position} />
+        <SidebarBrand />
         <button
           type="button"
           className="sidebar__close-btn"

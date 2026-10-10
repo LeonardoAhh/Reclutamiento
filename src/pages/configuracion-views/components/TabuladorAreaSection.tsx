@@ -24,22 +24,22 @@ export function TabuladorAreaSection({ area, puestos, searchTokens, language }: 
   return (
     <section className="tabulador-area-section" aria-labelledby={areaId}>
       <header className="tabulador-area-header">
-        <h2 id={areaId} className="tabulador-area-title type-heading-sm text-ink">
+        <h2 id={areaId} className="tabulador-area-title type-body-strong text-ink">
           <HighlightText text={area} tokens={searchTokens} />
         </h2>
-        <span className="tabulador-area-count type-caption-sm text-muted">
+        <span className="tabulador-area-count type-body-md text-muted">
           {puestos.length} {language === 'en' ? puestos.length === 1 ? 'position' : 'positions' : `puesto${puestos.length === 1 ? '' : 's'}`}
         </span>
       </header>
 
       <div className="tabulador-desktop-table">
-        <table className="tabulador-table type-body-sm">
+        <table className="tabulador-table type-body-md">
           <caption className="sr-only">{copy.currentSalaries} {area}</caption>
           <colgroup>
             <col className="tabulador-table__position-column" />
             <col className="tabulador-table__amount-column" span={2} />
           </colgroup>
-          <thead className="type-caption-sm text-muted">
+          <thead className="type-caption-up text-muted">
             <tr>
               <th scope="col">{copy.position}</th>
               <th scope="col">{copy.dailySalary} (2026)</th>
@@ -50,15 +50,15 @@ export function TabuladorAreaSection({ area, puestos, searchTokens, language }: 
             {puestos.map((puesto) => (
               <tr key={`${puesto.ÁREA}-${puesto.PUESTO}-${puesto.TIPO}`}>
                 <th scope="row">
-                  <span className="tabulador-position-name type-body-sm-strong text-ink">
+                  <span className="tabulador-position-name type-body-strong text-ink">
                     <HighlightText text={localizeTabulatorFallback(puesto.PUESTO, language)} tokens={searchTokens} />
                   </span>
-                  <span className="type-caption-sm text-muted">
+                  <span className="type-caption-up text-muted">
                     <HighlightText text={localizeTabulatorFallback(puesto.TIPO, language)} tokens={searchTokens} />
                   </span>
                 </th>
                 <td className="tabulador-amount text-charcoal">{puesto.SALARIO_DIARIO}</td>
-                <td className="tabulador-amount type-body-sm-strong text-ink">{puesto.SUELDO_MENSUAL}</td>
+                <td className="tabulador-amount type-body-strong text-ink">{puesto.SUELDO_MENSUAL}</td>
               </tr>
             ))}
           </tbody>
@@ -69,21 +69,21 @@ export function TabuladorAreaSection({ area, puestos, searchTokens, language }: 
         {puestos.map((puesto) => (
           <li key={`card-${puesto.ÁREA}-${puesto.PUESTO}-${puesto.TIPO}`} className="tabulador-card">
             <div className="tabulador-card__head">
-              <span className="tabulador-position-name type-body-sm-strong text-ink">
+              <span className="tabulador-position-name type-body-strong text-ink">
                 <HighlightText text={localizeTabulatorFallback(puesto.PUESTO, language)} tokens={searchTokens} />
               </span>
-              <span className="tabulador-card__tipo type-caption-sm text-muted">
+              <span className="tabulador-card__tipo type-caption-up text-muted">
                 <HighlightText text={localizeTabulatorFallback(puesto.TIPO, language)} tokens={searchTokens} />
               </span>
             </div>
             <dl className="tabulador-card__figures">
               <div className="tabulador-card__figure">
-                <dt className="type-caption-sm text-muted">{copy.dailySalary} 2026</dt>
-                <dd className="tabulador-card__value tabulador-amount type-body-sm text-charcoal">{puesto.SALARIO_DIARIO}</dd>
+                <dt className="type-caption-up text-muted">{copy.dailySalary} 2026</dt>
+                <dd className="tabulador-card__value tabulador-amount type-body-md text-charcoal">{puesto.SALARIO_DIARIO}</dd>
               </div>
               <div className="tabulador-card__figure">
-                <dt className="type-caption-sm text-muted">{copy.monthlySalary} 2026</dt>
-                <dd className="tabulador-card__value tabulador-amount type-body-sm-strong text-ink">{puesto.SUELDO_MENSUAL}</dd>
+                <dt className="type-caption-up text-muted">{copy.monthlySalary} 2026</dt>
+                <dd className="tabulador-card__value tabulador-amount type-body-strong text-ink">{puesto.SUELDO_MENSUAL}</dd>
               </div>
             </dl>
           </li>

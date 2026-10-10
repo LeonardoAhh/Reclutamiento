@@ -4,6 +4,11 @@
   align-content: start;
   gap: var(--design-spacing-lg);
   padding-block: 0 var(--design-spacing-xxl);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .ruta-day-page__title-link svg {
@@ -33,11 +38,11 @@
 }
 
 .ruta-day-page__route-name {
-  font-family: var(--font-display);
-  font-size: var(--type-heading-md-size);
-  font-weight: var(--type-heading-md-weight);
-  line-height: var(--type-heading-md-line);
-  letter-spacing: var(--type-heading-md-tracking);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
   color: var(--color-muted);
 }
 
@@ -53,10 +58,6 @@
   gap: var(--design-spacing-sm);
   color: var(--color-ink);
   text-decoration: none;
-}
-
-.ruta-day-page__title-link:hover {
-  color: var(--color-primary);
 }
 
 .ruta-day-page__notice {
@@ -141,22 +142,32 @@
   min-inline-size: 0;
   padding: 0;
   color: var(--color-body);
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-sm-weight);
-  line-height: var(--type-body-sm-line);
-  letter-spacing: var(--type-body-sm-tracking);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
   text-align: start;
   overflow-wrap: anywhere;
+  font-family: var(--font-body);
 }
 
 .ruta-day-page__table tbody .ruta-day-page__name {
   grid-row: 1;
   color: var(--color-ink);
-  font-weight: var(--type-heading-sm-weight);
+  font-weight: var(--type-body-strong-weight);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .ruta-day-page__mobile-label {
   color: var(--color-muted);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
 }
 
 @media (min-width: 768px) {
@@ -191,11 +202,12 @@
     padding: var(--design-spacing-sm) var(--design-spacing-md);
     border-block-end: var(--border-width) solid var(--color-hairline);
     color: var(--color-muted);
-    font-size: var(--type-caption-sm-size);
-    font-weight: var(--type-caption-sm-weight);
-    line-height: var(--type-caption-sm-line);
-    letter-spacing: var(--type-caption-sm-tracking);
+    font-size: var(--type-caption-up-size);
+    font-weight: var(--type-caption-up-weight);
+    line-height: var(--type-caption-up-line);
+    letter-spacing: var(--type-caption-up-tracking);
     text-align: start;
+    font-family: var(--font-body);
   }
 
   .ruta-day-page__skeleton-row {
@@ -225,4 +237,12 @@
   .ruta-day-page__mobile-label {
     display: none;
   }
+}
+
+.ruta-day-page .btn-text {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }

@@ -27,18 +27,23 @@
 }
 
 .candidates-cited-today-modal__name {
-  font-size: var(--type-body-sm-size);
+  font-size: var(--type-body-strong-size);
   font-weight: var(--type-body-strong-weight);
   color: var(--color-ink);
-  line-height: var(--type-body-sm-line);
+  line-height: var(--type-body-strong-line);
   min-width: 0;
+  font-family: var(--font-body);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .candidates-cited-today-modal__puesto {
-  font-size: var(--type-caption-sm-size);
+  font-size: var(--type-body-md-size);
   color: var(--color-muted);
-  line-height: var(--type-caption-sm-line);
+  line-height: var(--type-body-md-line);
   text-transform: uppercase;
+  font-family: var(--font-body);
+  font-weight: var(--type-body-md-weight);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .candidates-cited-today-modal__meta {
@@ -56,18 +61,63 @@
 }
 
 .candidates-cited-today-modal__area-title {
-  font-size: var(--type-caption-sm-size);
+  font-size: var(--type-body-strong-size);
   font-weight: var(--type-body-strong-weight);
-  letter-spacing: var(--type-caption-up-tracking);
+  letter-spacing: var(--type-body-strong-tracking);
   text-transform: uppercase;
   margin: 0 0 var(--spacing-sm) 0;
   display: flex;
   align-items: center;
   gap: var(--design-spacing-xxs);
+  font-family: var(--font-body);
+  line-height: var(--type-body-strong-line);
 }
 
 .candidates-cited-today-modal__area-count {
   color: var(--color-muted);
+  font-weight: var(--type-body-md-weight);
+  font-size: var(--type-body-md-size);
+  font-family: var(--font-body);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.candidates-cited-today-modal {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.candidates-cited-today-modal .expandable-section__title {
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
   font-weight: var(--type-body-strong-weight);
-  font-size: var(--type-caption-sm-size);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.candidates-cited-today-modal .expandable-section__badge {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.candidates-cited-today-modal .badge {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+}
+
+.candidates-cited-today-modal .reclutador-badge {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }

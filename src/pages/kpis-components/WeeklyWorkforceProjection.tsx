@@ -16,7 +16,7 @@ interface Props {
 
 function CoveragePercentage({ value, unavailableLabel }: { value: number | null; unavailableLabel: string }) {
   if (value === null) {
-    return <span className="type-caption-sm text-muted">{unavailableLabel}</span>;
+    return <span className="type-body-md text-muted">{unavailableLabel}</span>;
   }
   return <span>{formatPercentage(value)}</span>;
 }
@@ -39,13 +39,13 @@ export function WorkforceProjection({ projection }: Props) {
               <header className="workforce-projection__card-header">
                 <h3 className="type-caption-up text-muted">{t(label)}</h3>
                 {current.target > 0 && hasVacancies && (
-                  <span className="workforce-projection__card-badge type-caption-xs text-error">
+                  <span className="workforce-projection__card-badge type-caption-up text-error">
                     {current.vacancies} {t(current.vacancies === 1 ? 'vacante' : 'vacantes')}
                   </span>
                 )}
               </header>
               <div className="workforce-projection__card-body">
-                <span className="type-heading-md text-ink">
+                <span className="type-body-strong text-ink">
                   <CoveragePercentage value={projection.current[key].percentage} unavailableLabel={t('No aplica')} />
                 </span>
               </div>
@@ -55,12 +55,12 @@ export function WorkforceProjection({ projection }: Props) {
       </div>
 
       {projection.undatedEmployees > 0 && (
-        <p className="workforce-projection__note type-caption-sm text-error">
+        <p className="workforce-projection__note type-body-md text-error">
           {projection.undatedEmployees} {t('registros sin fecha válida de ingreso no están incluidos.')}
         </p>
       )}
       {projection.ambiguousEmployees > 0 && (
-        <p className="workforce-projection__note type-caption-sm text-error">
+        <p className="workforce-projection__note type-body-md text-error">
           {projection.ambiguousEmployees} {t('registros coinciden con varios puestos y no están incluidos. Revisa su área, sección y puesto.')}
         </p>
       )}

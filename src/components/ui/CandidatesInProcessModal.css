@@ -19,11 +19,13 @@
 }
 
 .candidates-in-process-modal__section-title {
-  font-family: var(--font-display);
-  font-size: var(--type-heading-md-size);
-  font-weight: var(--type-heading-md-weight);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
   margin: 0 0 var(--spacing-sm);
   color: var(--color-ink);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .candidates-in-process-modal__puesto-list {
@@ -61,10 +63,12 @@
 }
 
 .candidates-in-process-modal__puesto-name {
-  font-size: var(--type-body-md-size);
+  font-size: var(--type-body-strong-size);
   font-weight: var(--type-body-strong-weight);
   color: var(--color-ink);
-  line-height: var(--type-body-md-line);
+  line-height: var(--type-body-strong-line);
+  font-family: var(--font-body);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .candidates-in-process-modal__puesto-badges {
@@ -75,10 +79,45 @@
 }
 
 .candidates-in-process-modal__puesto-count {
-  font-family: var(--font-display);
-  font-size: var(--type-heading-sm-size);
-  font-weight: var(--type-heading-sm-weight);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
   min-width: 28px;
   text-align: right;
   color: var(--color-primary);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.candidates-in-process-modal {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.candidates-in-process-modal .expandable-section__title {
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.candidates-in-process-modal .expandable-section__badge {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.candidates-in-process-modal .badge,
+.candidates-in-process-modal .candidate-status-badge {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
 }

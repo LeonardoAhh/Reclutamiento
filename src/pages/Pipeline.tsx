@@ -569,7 +569,7 @@ export function Pipeline() {
                         </div>
                         <div className="pipeline__ccard-mobile-info__meta">
                           {c.reclutador && (
-                            <ReclutadorBadge nombre={c.reclutador} size="sm" />
+                            <ReclutadorBadge nombre={c.reclutador} size="sm" className="pipeline__recruiter-badge" />
                           )}
                           {fechaCitaFmt && (
                             <span className="pipeline__ccard-mobile-info__chip">
@@ -619,7 +619,7 @@ export function Pipeline() {
                       role={isDesktop ? "cell" : undefined}
                     >
                       {c.reclutador ? (
-                        <ReclutadorBadge nombre={c.reclutador} size="sm" />
+                        <ReclutadorBadge nombre={c.reclutador} size="sm" className="pipeline__recruiter-badge" />
                       ) : (
                         <span className="pipeline__muted">—</span>
                       )}

@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import * as AvatarPrimitive from '@radix-ui/react-avatar';
 import './Avatar.css';
 
@@ -6,6 +7,8 @@ type AvatarProps = {
   name: string;
   /** URL de la imagen del avatar. */
   src?: string | null;
+  /** Contenido alternativo cuando no hay una imagen disponible. */
+  fallback?: ReactNode;
 };
 
 /** Extrae hasta 2 iniciales (ej. leonardo@mail.com -> LE, Juan Perez -> JP). */
@@ -21,7 +24,7 @@ function getInitials(name: string) {
  * Muestra una imagen si src carga correctamente. Radix gestiona el fallback
  * accesible; sin imagen, las iniciales usan la superficie neutral del sistema.
  */
-export function Avatar({ name, src }: AvatarProps) {
+export function Avatar({ name, src, fallback }: AvatarProps) {
   return (
     <AvatarPrimitive.Root
       className="ui-avatar"
@@ -36,7 +39,7 @@ export function Avatar({ name, src }: AvatarProps) {
         />
       )}
       <AvatarPrimitive.Fallback className="ui-avatar__fallback">
-        {getInitials(name) || 'U'}
+        {fallback ?? (getInitials(name) || 'U')}
       </AvatarPrimitive.Fallback>
     </AvatarPrimitive.Root>
   );

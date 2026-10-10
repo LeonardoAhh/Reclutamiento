@@ -30,10 +30,10 @@
 
 .transition-loader__brand {
   font-family: var(--font-body);
-  font-size: var(--type-brand-size);
-  font-weight: var(--type-brand-weight);
-  line-height: var(--type-brand-line);
-  letter-spacing: var(--type-brand-tracking);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
   color: var(--color-ink);
 }
 

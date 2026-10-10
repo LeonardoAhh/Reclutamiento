@@ -354,7 +354,6 @@ export function KpiHeroChart({
 
   // ── Tamaños según variante ──────────────────
   const chartHeight = height ?? (presentation ? 420 : 280);
-  const TICK_FONT_SIZE = presentation ? 15 : 13;
   const Y_AXIS_WIDTH = presentation ? 58 : 40;
   const MARGIN = {
     top: presentation ? 24 : 16,
@@ -462,9 +461,7 @@ export function KpiHeroChart({
                       tickLine={false}
                       tick={{
                         fill: PALETTE.axis,
-                        fontSize: TICK_FONT_SIZE,
-                        fontWeight: 400,
-                        fontFamily: 'inherit',
+                        className: 'kpi-hero-axis-label',
                       }}
                       dy={presentation ? 12 : 8}
                     />
@@ -475,9 +472,7 @@ export function KpiHeroChart({
                       tickLine={false}
                       tick={{
                         fill: PALETTE.axis,
-                        fontSize: TICK_FONT_SIZE,
-                        fontWeight: 400,
-                        fontFamily: 'inherit',
+                        className: 'kpi-hero-axis-label',
                       }}
                       tickFormatter={formatYLeft}
                       width={Y_AXIS_WIDTH}

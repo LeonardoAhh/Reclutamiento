@@ -24,31 +24,32 @@
   gap: var(--spacing-sm);
   margin: 0 0 var(--design-spacing-xxs);
   color: var(--color-ink);
-  font-family: var(--font-display);
-  font-size: var(--type-heading-md-size);
-  font-weight: var(--type-heading-md-weight);
-  line-height: var(--type-heading-md-line);
-  letter-spacing: var(--type-heading-md-tracking);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .responsibilities-section__count {
   color: var(--color-muted);
   font-family: var(--font-body);
-  font-size: var(--type-caption-xs-size);
-  font-weight: var(--type-caption-xs-weight);
-  line-height: var(--type-caption-xs-line);
-  letter-spacing: var(--type-caption-xs-tracking);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .responsibilities-section__description {
   max-inline-size: var(--content-reading-max-inline-size);
   margin: 0;
   color: var(--color-muted);
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-sm-weight);
-  line-height: var(--type-body-sm-line);
-  letter-spacing: var(--type-body-sm-tracking);
   overflow-wrap: anywhere;
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .responsibilities-section__panel {
@@ -89,6 +90,7 @@
 .responsibilities-section__empty-title {
   margin: 0 0 var(--design-spacing-xxs);
   color: var(--color-charcoal);
+  font-family: var(--font-body);
   font-size: var(--type-body-strong-size);
   font-weight: var(--type-body-strong-weight);
   line-height: var(--type-body-strong-line);
@@ -99,9 +101,10 @@
   max-inline-size: var(--content-reading-max-inline-size);
   margin: 0;
   color: var(--color-muted);
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-sm-weight);
-  line-height: var(--type-body-sm-line);
-  letter-spacing: var(--type-body-sm-tracking);
   overflow-wrap: anywhere;
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }

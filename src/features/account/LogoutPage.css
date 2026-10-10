@@ -4,6 +4,11 @@
   min-block-size: 100vh;
   min-block-size: 100dvh;
   background: var(--workspace-canvas);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .logout-page__header {
@@ -14,11 +19,11 @@
   display: inline-flex;
   align-items: center;
   color: var(--color-ink);
-  font-family: var(--font-display);
-  font-size: var(--type-heading-sm-size);
-  font-weight: var(--type-heading-sm-weight);
-  line-height: var(--type-heading-sm-line);
-  letter-spacing: var(--type-heading-sm-tracking);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .logout-page__brand-icon {
@@ -47,7 +52,7 @@
 .logout-page__content h1 {
   margin: 0;
   color: var(--color-ink);
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: var(--type-heading-md-size);
   font-weight: var(--type-heading-md-weight);
   line-height: var(--type-heading-md-line);
@@ -71,6 +76,11 @@
   flex: 0 0 var(--touch-target-min);
   inline-size: var(--touch-target-min);
   block-size: var(--touch-target-min);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .logout-page__identity-copy {
@@ -82,20 +92,22 @@
 
 .logout-page__identity-copy strong {
   color: var(--color-ink);
-  font-size: var(--type-body-sm-strong-size);
-  font-weight: var(--type-body-sm-strong-weight);
-  line-height: var(--type-body-sm-strong-line);
-  letter-spacing: var(--type-body-sm-strong-tracking);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
   overflow-wrap: anywhere;
+  font-family: var(--font-body);
 }
 
 .logout-page__identity-copy span {
   color: var(--color-muted);
-  font-size: var(--type-caption-sm-size);
-  font-weight: var(--type-caption-sm-weight);
-  line-height: var(--type-caption-sm-line);
-  letter-spacing: var(--type-caption-sm-tracking);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
   overflow-wrap: anywhere;
+  font-family: var(--font-body);
 }
 
 .logout-page__actions {
@@ -106,4 +118,9 @@
 
 .logout-page__actions > button {
   inline-size: 100%;
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }

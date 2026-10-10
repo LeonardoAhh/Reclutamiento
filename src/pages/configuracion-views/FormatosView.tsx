@@ -80,7 +80,7 @@ export function FormatosView() {
 
   // Crear un mapa de búsqueda rápida para las rutas desde el JSON
   const rutaLookup = useMemo(() => {
-    const lookup = new Map<string, { nombreRuta: string; parada: string }>();
+    const lookup = new Map<string, { nombreRuta: string; colonia: string }>();
     if (!rutas) return lookup;
 
     rutas.forEach((grupoRuta) => {
@@ -89,7 +89,7 @@ export function FormatosView() {
         const numKey = String(empRuta.numeroEmpleado).trim().replace(/^0+/, "");
         lookup.set(numKey, {
           nombreRuta: empRuta.nombreRuta,
-          parada: empRuta.parada,
+          colonia: empRuta.colonia,
         });
       });
     });
@@ -142,7 +142,7 @@ export function FormatosView() {
         return {
           ...employee,
           ruta_final: employee.ruta || routeData?.nombreRuta || "",
-          parada_final: employee.parada || routeData?.parada || "",
+          colonia_final: routeData?.colonia?.trim() || "",
         };
       });
   }, [employees, rutaLookup, selectedRouteDate]);
@@ -230,7 +230,7 @@ export function FormatosView() {
         <div className="config-page__content">
           {employeesError && (
             <p
-              className="formatos-page__error type-body-sm text-error"
+              className="formatos-page__error type-body-md text-error"
               role="alert"
             >
               {copy.employeeProblem}
@@ -280,7 +280,7 @@ export function FormatosView() {
             >
               <div className="config-results-controls__filters recordatorios-route-controls__grid">
                 <label className="config-filter-field recordatorios-route-date-field">
-                  <span className="config-filter-label type-caption-sm text-muted">
+                  <span className="config-filter-label type-caption-up text-muted">
                     {copy.hireDate}
                   </span>
                   <input
@@ -417,8 +417,8 @@ export function FormatosView() {
                               data-label={copy.stop}
                               className="type-body-sm text-charcoal recordatorios-table__cell--left"
                             >
-                              {emp.parada_final ? (
-                                emp.parada_final
+                              {emp.colonia_final ? (
+                                emp.colonia_final
                               ) : (
                                 <span className="text-error recordatorios-missing-data">
                                   <CircleAlert size={14} aria-hidden="true" />{" "}

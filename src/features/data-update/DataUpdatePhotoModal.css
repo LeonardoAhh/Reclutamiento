@@ -4,6 +4,11 @@
   align-items: center;
   gap: var(--design-spacing-sm);
   text-align: center;
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .data-update-photo-modal .lightbox-modal__visual {
@@ -25,4 +30,12 @@
   inline-size: 100%;
   block-size: 100%;
   border-radius: var(--rounded-md);
+}
+
+.data-update-photo-modal__error .btn-secondary {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }

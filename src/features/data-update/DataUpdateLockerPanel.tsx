@@ -164,7 +164,7 @@ export function DataUpdateLockerPanel({ records, canEdit, onRecordUpdated }: Dat
               <article key={record.id} className="card data-update-record-card data-update-locker-card">
                 <div className="data-update-admin-card__header">
                   <div className="data-update-admin-card__identity">
-                    <span className="type-caption-up text-muted">{record.identity.employeeNumber}</span>
+                    <span className="type-body-md text-muted">{record.identity.employeeNumber}</span>
                     <h3>{record.identity.name}</h3>
                   </div>
                   {canEdit && (
@@ -225,6 +225,7 @@ export function DataUpdateLockerPanel({ records, canEdit, onRecordUpdated }: Dat
       )}
 
       <Modal
+        className="data-update-dialog"
         isOpen={selectedRecord !== null}
         title={t("Asignar locker")}
         size="xs"

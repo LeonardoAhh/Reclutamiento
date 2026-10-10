@@ -1101,6 +1101,12 @@ code:not(pre code) {
   overflow-wrap: anywhere;
 }
 
+.app-page-title > :is(a, button),
+.app-page-title > :is(a, button):is(:hover, :focus, :active, :visited) {
+  color: inherit;
+  text-decoration: none;
+}
+
 @media (min-width: 768px) {
   .page-header {
     padding-block-end: var(--design-spacing-lg);
@@ -1218,12 +1224,12 @@ code:not(pre code) {
 }
 
 .form-group label {
-  font-family: var(--font-body);
-  font-size: var(--type-label-sm-size);
-  font-weight: var(--type-label-sm-weight);
-  line-height: var(--type-label-sm-line);
-  letter-spacing: var(--type-label-sm-tracking);
   color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
 }
 
 .form-group input:not(:where([type="checkbox"], [type="radio"], [type="file"], [type="hidden"])),
@@ -1287,13 +1293,13 @@ code:not(pre code) {
 }
 
 .form-error {
-  font-family: var(--font-body);
-  font-size: var(--type-caption-sm-size);
-  font-weight: var(--type-caption-sm-weight);
-  line-height: var(--type-caption-sm-line);
-  letter-spacing: var(--type-caption-sm-tracking);
   color: var(--color-error-text);
   margin-top: var(--design-spacing-xxs);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 /* ── Teléfono: wrapper + iconos de validación ──────────────── */
@@ -1327,16 +1333,16 @@ code:not(pre code) {
   background: var(--color-success-subtle);
 }
 
-/* Mensajes de campo: mismo rol tipográfico que .form-error (caption, sin mayúsculas). */
+/* Mensajes de campo: mismo rol body-md que .form-error, sin mayúsculas. */
 .form-error-text,
 .form-warning-text,
 .form-success-text {
   margin-top: var(--design-spacing-xxs);
   font-family: var(--font-body);
-  font-size: var(--type-caption-sm-size);
-  font-weight: var(--type-caption-sm-weight);
-  line-height: var(--type-caption-sm-line);
-  letter-spacing: var(--type-caption-sm-tracking);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .form-error-text {
@@ -1774,14 +1780,14 @@ code:not(pre code) {
 }
 
 .modal-title h2 {
-  font-family: var(--font-display);
-  font-size: var(--type-heading-md-size);
-  font-weight: var(--type-heading-md-weight);
   color: var(--color-ink);
-  line-height: var(--type-heading-md-line);
-  letter-spacing: var(--type-heading-md-tracking);
   margin: 0;
   overflow-wrap: anywhere;
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .modal-close,

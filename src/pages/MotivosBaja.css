@@ -3,6 +3,11 @@
   flex-direction: column;
   gap: var(--spacing-lg);
   padding-block-end: var(--spacing-xxl);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .motivos-baja__panel-heading {
@@ -31,8 +36,11 @@
 .motivos-baja__panel-heading p,
 .motivos-baja__empty {
   color: var(--color-muted);
-  font-size: var(--type-body-sm-size);
-  line-height: var(--type-body-sm-line);
+  font-size: var(--type-body-md-size);
+  line-height: var(--type-body-md-line);
+  font-family: var(--font-body);
+  font-weight: var(--type-body-md-weight);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .motivos-baja__pagination {
@@ -50,23 +58,32 @@
 }
 
 .motivos-baja__panel-heading h2 {
-  font-size: var(--type-heading-sm-size);
-  font-weight: var(--type-heading-sm-weight);
-  line-height: var(--type-heading-sm-line);
-  letter-spacing: var(--type-heading-sm-tracking);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+  font-family: var(--font-body);
 }
 
 .motivos-baja__message {
   margin: var(--spacing-md) 0 0;
-  font-size: var(--type-body-sm-size);
-  line-height: var(--type-body-sm-line);
+  font-size: var(--type-body-md-size);
+  line-height: var(--type-body-md-line);
   overflow-wrap: anywhere;
+  font-family: var(--font-body);
+  font-weight: var(--type-body-md-weight);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .motivos-baja__capture-trigger {
   color: var(--color-muted);
   border-color: var(--color-muted);
   border-style: dotted;
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .modal-body.motivos-baja__capture-form {
@@ -111,9 +128,11 @@
 
 .motivos-baja__filter label {
   color: var(--color-muted);
-  font-size: var(--type-caption-md-size);
-  font-weight: var(--type-caption-md-weight);
-  line-height: var(--type-caption-md-line);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  font-family: var(--font-body);
+  letter-spacing: var(--type-caption-up-tracking);
 }
 
 .motivos-baja__dashboard {
@@ -145,7 +164,11 @@
   display: flex;
   justify-content: space-between;
   gap: var(--spacing-md);
-  font-size: var(--type-body-sm-size);
+  font-size: var(--type-body-md-size);
+  font-family: var(--font-body);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .motivos-baja__bar-label span {
@@ -161,13 +184,21 @@
 
 .motivos-baja__bar-count {
   color: var(--color-muted);
-  font-size: var(--type-caption-md-size);
-  line-height: var(--type-caption-md-line);
+  font-size: var(--type-body-md-size);
+  line-height: var(--type-body-md-line);
+  font-family: var(--font-body);
+  font-weight: var(--type-body-md-weight);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .motivos-baja__bar-label strong {
   flex: 0 0 auto;
   font-variant-numeric: tabular-nums;
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .motivos-baja__bar-track {
@@ -188,6 +219,11 @@
   width: 100%;
   table-layout: fixed;
   border-collapse: collapse;
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .motivos-baja__records-employee {
@@ -218,10 +254,11 @@
 
 .motivos-baja__records th {
   color: var(--color-body);
-  font-size: var(--type-label-sm-size);
-  font-weight: var(--type-label-sm-weight);
-  line-height: var(--type-label-sm-line);
-  letter-spacing: var(--type-label-sm-tracking);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+  font-family: var(--font-body);
 }
 
 @media (max-width: 767px) {
@@ -270,9 +307,11 @@
   .motivos-baja__records td::before {
     content: attr(data-label);
     color: var(--color-muted);
-    font-size: var(--type-caption-sm-size);
-    font-weight: var(--type-caption-sm-weight);
-    line-height: var(--type-caption-sm-line);
+    font-size: var(--type-caption-up-size);
+    font-weight: var(--type-caption-up-weight);
+    line-height: var(--type-caption-up-line);
+    font-family: var(--font-body);
+    letter-spacing: var(--type-caption-up-tracking);
   }
 }
 
@@ -306,4 +345,47 @@
     gap: var(--spacing-xl);
     padding-block-end: var(--design-spacing-xxl);
   }
+}
+
+.motivos-baja__capture-dialog {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.motivos-baja .btn-secondary,
+.motivos-baja__capture-dialog :is(.btn-primary, .btn-secondary) {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.motivos-baja__capture-dialog .form-group :is(input, textarea) {
+  font-family: var(--font-body);
+  font-size: max(var(--type-body-md-size), var(--editable-text-min-size, var(--type-body-md-size)));
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.motivos-baja__chart .recharts-cartesian-axis-tick-value,
+.motivos-baja__chart .recharts-default-legend,
+.motivos-baja__chart .recharts-default-tooltip {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.motivos-baja__chart .recharts-label {
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }

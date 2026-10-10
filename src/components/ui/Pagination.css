@@ -20,14 +20,14 @@
 }
 
 .pagination__text {
-  font-family: var(--font-body);
-  font-size: var(--type-caption-md-size);
-  font-weight: var(--type-caption-md-weight);
-  line-height: var(--type-caption-md-line);
-  letter-spacing: var(--type-caption-md-tracking);
   color: var(--color-muted);
   min-inline-size: var(--pagination-label-min-inline-size);
   text-align: center;
   white-space: nowrap;
   user-select: none;
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }

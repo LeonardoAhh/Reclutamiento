@@ -37,17 +37,23 @@
    sólo el orden VISUAL para que el número grande siga apareciendo arriba. */
 .area-detail-modal__stat-value {
   order: -1;
-  font-family: var(--font-display);
-  font-size: var(--type-heading-sm-size);
-  font-weight: var(--font-semibold);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
   color: var(--color-ink);
   font-variant-numeric: tabular-nums;
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .area-detail-modal__stat-sep {
   color: var(--color-muted-soft);
   font-weight: var(--type-body-md-weight);
   margin: 0 var(--design-spacing-xxs);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .area-detail-modal__stat-label {
@@ -61,6 +67,7 @@
   text-transform: uppercase;
   letter-spacing: var(--type-caption-up-tracking);
   white-space: nowrap;
+  line-height: var(--type-caption-up-line);
 }
 
 .area-detail-modal__stat-label svg {
@@ -98,11 +105,11 @@
 }
 
 .area-detail-modal__coverage-pct {
-  font-family: var(--font-display);
-  font-size: var(--type-heading-lg-size);
-  font-weight: var(--type-heading-lg-weight);
-  line-height: var(--type-heading-lg-line);
-  letter-spacing: var(--type-heading-lg-tracking);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
   font-variant-numeric: tabular-nums;
 }
 
@@ -113,6 +120,7 @@
   color: var(--color-muted);
   text-transform: uppercase;
   letter-spacing: var(--type-caption-up-tracking);
+  line-height: var(--type-caption-up-line);
 }
 
 /* La barra hereda geometría del sistema dentro del resumen. */
@@ -150,10 +158,10 @@
   background: transparent;
   color: var(--color-charcoal);
   font-family: var(--font-body);
-  font-size: var(--type-label-sm-size);
-  font-weight: var(--type-label-sm-weight);
-  line-height: var(--type-label-sm-line);
-  letter-spacing: var(--type-label-sm-tracking);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
   cursor: pointer;
   white-space: nowrap;
   transition:
@@ -171,7 +179,6 @@
 .area-detail-modal__tab.is-active:hover {
   color: var(--color-on-primary);
   background: var(--color-primary);
-  font-weight: var(--type-body-sm-strong-weight);
 }
 
 .area-detail-modal__tab-count {
@@ -186,9 +193,11 @@
   border: var(--border-width) solid var(--color-hairline);
   color: var(--color-charcoal);
   font-family: var(--font-body);
-  font-size: var(--type-caption-md-size);
-  font-weight: var(--font-semibold);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
   font-variant-numeric: tabular-nums;
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .area-detail-modal__tab.is-active .area-detail-modal__tab-count {
@@ -207,9 +216,11 @@
   background: color-mix(in srgb, var(--color-accent-amber) 18%, var(--color-canvas));
   color: var(--color-accent-amber);
   font-family: var(--font-body);
-  font-size: var(--type-caption-md-size);
-  font-weight: var(--font-semibold);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
   font-variant-numeric: tabular-nums;
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
 }
 
 /* ── Tab panel ── */
@@ -237,7 +248,10 @@
   padding: var(--spacing-xl);
   color: var(--color-muted);
   font-family: var(--font-body);
-  font-size: var(--type-caption-md-size);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 /* Mobile: contenido apilado y sin desplazamiento horizontal principal. */
@@ -366,7 +380,6 @@
   }
 
   .cell-puesto__name {
-    font-weight: var(--font-semibold);
     color: var(--color-ink);
     display: block;
     min-width: 0;
@@ -379,18 +392,14 @@
 }
 
 .area-detail-modal__summary-heading h3 {
-  /* Eyebrow label, no un heading pesado: el área ya está en el título.
-     Se estiliza como las demás captions del summary
-     ("VACANTES", "COBERTURA DEL ÁREA") para no competir visualmente
-     mientras conserva su rol semántico de heading para lectores de
-     pantalla. */
   font-family: var(--font-body);
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  letter-spacing: var(--type-caption-up-tracking);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  letter-spacing: var(--type-body-strong-tracking);
   text-transform: uppercase;
   color: var(--color-muted);
   margin: 0;
+  line-height: var(--type-body-strong-line);
 }
 
 /* Badge stack for process status */
@@ -447,11 +456,12 @@
 
 .area-detail-modal__card-name {
   font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
+  font-size: var(--type-body-strong-size);
   font-weight: var(--type-body-strong-weight);
-  line-height: var(--type-body-md-line);
+  line-height: var(--type-body-strong-line);
   color: var(--color-ink);
   word-break: break-word;
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .area-detail-modal__card-meta {
@@ -470,19 +480,22 @@
 }
 
 .area-detail-modal__card-metric-value {
-  font-family: var(--font-display);
-  font-size: var(--type-heading-sm-size);
-  font-weight: var(--type-heading-sm-weight);
-  line-height: 1;
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
   color: var(--color-ink);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .area-detail-modal__card-metric-label {
-  font-size: var(--type-caption-sm-size);
-  line-height: 1;
+  font-size: var(--type-caption-up-size);
+  line-height: var(--type-caption-up-line);
   color: var(--color-muted);
   text-transform: uppercase;
   letter-spacing: var(--type-caption-up-tracking);
+  font-family: var(--font-body);
+  font-weight: var(--type-caption-up-weight);
 }
 
 .area-detail-modal__card-estado {
@@ -498,6 +511,11 @@
   flex: 1;
   flex-direction: column;
   gap: var(--spacing-lg);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .area-detail__header {
@@ -513,11 +531,11 @@
   min-width: 0;
   margin: 0;
   color: var(--color-ink);
-  font-family: var(--font-display);
-  font-size: var(--type-heading-lg-size);
-  font-weight: var(--type-heading-lg-weight);
-  line-height: var(--type-heading-lg-line);
-  letter-spacing: var(--type-heading-lg-tracking);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
   overflow-wrap: anywhere;
 }
 
@@ -544,7 +562,11 @@
 /* ── Refactored classes from AreaDetailView.tsx inline styles ── */
 .vacancy-highlight {
   color: var(--color-error);
-  font-weight: var(--font-semibold);
+  font-weight: var(--type-body-strong-weight);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .tooltip-preline {
@@ -552,8 +574,12 @@
 }
 
 .tooltip-title {
-  font-weight: var(--font-semibold);
+  font-weight: var(--type-body-strong-weight);
   margin-bottom: var(--design-spacing-xxs);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .area-detail__starlite-badge {

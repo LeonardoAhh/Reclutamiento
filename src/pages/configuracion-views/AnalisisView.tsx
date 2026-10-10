@@ -310,7 +310,7 @@ export function AnalisisView() {
             {copy.title}
           </PageHeading>
       {employeesError && (
-        <p className="config-search-error type-body-sm mt-sm" role="alert">
+        <p className="config-search-error type-body-md mt-sm" role="alert">
           {copy.loadError}
         </p>
       )}
@@ -417,7 +417,7 @@ export function AnalisisView() {
         >
           <div className="config-results-controls__filters">
             <fieldset className="config-filter-group">
-              <legend className="config-filter-label type-caption-sm text-muted">
+              <legend className="config-filter-label type-caption-up text-muted">
                 {copy.status}
               </legend>
               <div className="config-segmented-control">
@@ -442,7 +442,7 @@ export function AnalisisView() {
             </fieldset>
 
             <label className="config-filter-field">
-              <span className="config-filter-label type-caption-sm text-muted">
+              <span className="config-filter-label type-caption-up text-muted">
                 {copy.department}
               </span>
               <CustomSelect
@@ -456,7 +456,7 @@ export function AnalisisView() {
             </label>
 
             <label className="config-filter-field">
-              <span className="config-filter-label type-caption-sm text-muted">
+              <span className="config-filter-label type-caption-up text-muted">
                 {copy.shift}
               </span>
               <CustomSelect
@@ -483,7 +483,7 @@ export function AnalisisView() {
 
           {canUseCompactView && (
             <div className="config-filter-field">
-              <span className="config-filter-label type-caption-sm text-muted">
+              <span className="config-filter-label type-caption-up text-muted">
                 {copy.view}
               </span>
               <div
@@ -533,7 +533,7 @@ export function AnalisisView() {
         ) : filteredEmployees.length > 0 ? (
           <div className="config-results-wrapper">
             <p
-              className="config-results__count type-caption-sm text-muted"
+              className="config-results__count type-body-md text-muted"
               aria-live="polite"
             >
               {copy.resultRange} {firstVisibleResult}–{lastVisibleResult} {copy.of}{' '}

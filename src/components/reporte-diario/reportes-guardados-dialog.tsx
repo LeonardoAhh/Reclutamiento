@@ -92,6 +92,7 @@ export default function ReportesGuardadosDialog({
       )}
 
       <Dialog
+        className="report-dialog"
         isOpen={isOpen && (isMobile || pendingDelete === null)}
         {...(isMobile ? {} : { returnFocusRef: triggerRef })}
         onClose={() => setIsOpen(false)}
@@ -155,6 +156,7 @@ export default function ReportesGuardadosDialog({
       </Dialog>
 
       <DeleteConfirmModal
+        className="report-dialog"
         isOpen={pendingDelete !== null}
         title={copy("Eliminar reporte", "Delete report")}
         onConfirm={() => void confirmDeletion()}

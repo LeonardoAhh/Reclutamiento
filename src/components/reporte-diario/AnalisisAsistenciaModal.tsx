@@ -57,6 +57,7 @@ export function AnalisisAsistenciaModal({
 
   return (
     <Modal
+      className="report-dialog"
       isOpen={isOpen}
       onClose={handleClose}
       title={copy("Análisis de asistencia", "Attendance analysis")}

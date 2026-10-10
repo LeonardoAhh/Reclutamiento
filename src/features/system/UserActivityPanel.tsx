@@ -127,7 +127,7 @@ export function UserActivityPanel() {
   if (loading) {
     return (
       <div className="user-activity-panel__state" aria-busy="true">
-        <p className="type-body-sm text-muted" role="status">
+        <p className="type-body-md text-muted" role="status">
           {english ? "Loading activity…" : "Cargando actividad…"}
         </p>
       </div>
@@ -139,7 +139,7 @@ export function UserActivityPanel() {
       <ul className="user-activity-panel__list">
         {error && (
           <li className="user-activity-panel__state" role="alert">
-            <p className="type-body-sm text-muted">
+            <p className="type-body-md text-muted">
               {english && error === "No fue posible cargar la lista de usuarios."
                 ? "Could not load the user list."
                 : error}
@@ -154,7 +154,7 @@ export function UserActivityPanel() {
         )}
 
         {!error && sortedProfiles.length === 0 && (
-          <li className="user-activity-panel__state type-body-sm text-muted">
+          <li className="user-activity-panel__state type-body-md text-muted">
             {english ? "No profiles are available." : "No hay perfiles disponibles."}
           </li>
         )}
@@ -165,11 +165,11 @@ export function UserActivityPanel() {
 
           return (
             <li key={profile.id} className="user-activity-panel__card">
-              <span className="user-activity-panel__name type-label-sm">
+              <span className="user-activity-panel__name type-body-strong">
                 {profile.display_name || profile.username}
               </span>
               <span
-                className={`user-activity-panel__status type-body-sm${
+                className={`user-activity-panel__status type-body-md${
                   isOnline ? " user-activity-panel__status--online" : ""
                 }`}
               >

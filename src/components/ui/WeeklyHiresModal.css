@@ -6,6 +6,11 @@
 
 .weekly-hires-modal {
   /* El componente Modal ya maneja el layout base */
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .weekly-hires-modal__body {
@@ -39,11 +44,12 @@
 }
 
 .weekly-hires-modal__big-number {
-  font-family: var(--font-display);
-  font-size: var(--type-display-lg-size);
-  font-weight: var(--type-display-lg-weight);
-  line-height: 1;
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
   color: var(--color-ink);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .weekly-hires-modal__big-number--bajas {
@@ -59,10 +65,14 @@
 }
 
 .weekly-hires-modal__big-label {
-  font-size: var(--type-caption-md-size);
+  font-size: var(--type-caption-up-size);
   color: var(--color-muted);
   text-align: center;
   margin: 0;
+  font-family: var(--font-body);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
 }
 
 /* ── Week content (dentro de acordeones) ── */
@@ -95,17 +105,20 @@
   text-transform: uppercase;
   letter-spacing: var(--type-caption-up-tracking);
   color: var(--color-muted);
+  font-family: var(--font-body);
+  line-height: var(--type-caption-up-line);
 }
 
 .weekly-hires-modal__week-stat-value {
-  font-family: var(--font-display);
-  font-size: var(--type-display-lg-size);
-  font-weight: var(--type-display-lg-weight);
-  line-height: 1;
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
   color: var(--color-ink);
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .weekly-hires-modal__week-stat-value--bajas {
@@ -114,11 +127,13 @@
 
 /* ── Delta (cambio vs semana anterior) ── */
 .weekly-hires-modal__delta {
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-strong-weight);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
   padding: var(--design-spacing-xxs) var(--spacing-xs);
   border-radius: var(--rounded-xs);
-  font-family: var(--font-sans);
+  font-family: var(--font-body);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .weekly-hires-modal__delta--up {
@@ -144,10 +159,13 @@
 }
 
 .weekly-hires-modal__puestos-title {
-  font-size: var(--type-heading-sm-size);
-  font-weight: var(--type-heading-sm-weight);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
   color: var(--color-ink);
   margin: 0;
+  font-family: var(--font-body);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .weekly-hires-modal__puesto-list {
@@ -182,19 +200,23 @@
 }
 
 .weekly-hires-modal__puesto-name {
-  font-size: var(--type-body-md-size);
+  font-size: var(--type-body-strong-size);
   font-weight: var(--type-body-strong-weight);
   color: var(--color-ink);
-  line-height: var(--type-body-md-line);
+  line-height: var(--type-body-strong-line);
+  font-family: var(--font-body);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .weekly-hires-modal__puesto-count {
-  font-family: var(--font-display);
-  font-size: var(--type-heading-sm-size);
-  font-weight: var(--type-heading-sm-weight);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
   color: var(--color-primary);
   min-width: 32px;
   text-align: right;
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 /* ── Section ── */
@@ -205,10 +227,13 @@
 }
 
 .weekly-hires-modal__section-title {
-  font-size: var(--type-heading-sm-size);
-  font-weight: var(--type-heading-sm-weight);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
   color: var(--color-ink);
   margin: 0;
+  font-family: var(--font-body);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 /* ── Table ── */
@@ -222,7 +247,11 @@
   width: 100%;
   table-layout: fixed;
   border-collapse: collapse;
-  font-size: var(--type-body-sm-size);
+  font-size: var(--type-body-md-size);
+  font-family: var(--font-body);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .weekly-hires-modal__table th:nth-child(1),
@@ -253,6 +282,8 @@
   letter-spacing: var(--type-caption-up-tracking);
   color: var(--color-muted);
   border-bottom: var(--border-width) solid var(--color-hairline);
+  font-family: var(--font-body);
+  line-height: var(--type-caption-up-line);
 }
 
 .weekly-hires-modal__table tbody tr {
@@ -305,12 +336,20 @@
   flex-wrap: wrap;
   gap: var(--spacing-sm);
   min-width: 0;
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .weekly-hires-modal__mobile-apellidos {
-  font-weight: var(--font-bold);
+  font-weight: var(--type-body-strong-weight);
   color: var(--color-ink);
-  font-size: var(--type-body-sm-size);
+  font-size: var(--type-body-strong-size);
+  font-family: var(--font-body);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .weekly-hires-modal__mobile-nombres {
@@ -320,9 +359,12 @@
 }
 
 .weekly-hires-modal__mobile-date {
-  font-family: var(--font-display);
-  font-size: var(--type-caption-md-size);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
   color: var(--color-muted);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .weekly-hires-modal__mobile-card-body {
@@ -332,15 +374,22 @@
 }
 
 .weekly-hires-modal__mobile-puesto {
-  font-size: var(--type-body-sm-size);
+  font-size: var(--type-body-strong-size);
   color: var(--color-ink);
+  font-family: var(--font-body);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .weekly-hires-modal__mobile-seccion {
-  font-size: var(--type-caption-sm-size);
+  font-size: var(--type-body-md-size);
   color: var(--color-muted);
   text-transform: uppercase;
-  line-height: var(--type-caption-sm-line);
+  line-height: var(--type-body-md-line);
+  font-family: var(--font-body);
+  font-weight: var(--type-body-md-weight);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 /* ── Responsive modal list ── */
@@ -351,10 +400,13 @@
 }
 
 .weekly-hires-modal__cell-mono {
-  font-family: var(--font-mono);
-  font-size: var(--type-caption-md-size);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
   color: var(--color-muted);
   white-space: nowrap;
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .weekly-hires-modal__future-header {
@@ -409,16 +461,8 @@
     gap: var(--spacing-xs);
   }
 
-  .weekly-hires-modal__week-stat-value {
-    font-size: var(--type-heading-md-size);
-  }
-
   .weekly-hires-modal__table-wrap {
     max-height: 300px;
-  }
-
-  .weekly-hires-modal__table {
-    font-size: var(--type-caption-md-size);
   }
 
   .weekly-hires-modal__table th,
@@ -445,4 +489,28 @@
 
 .weekly-hires-modal__table-wrap::-webkit-scrollbar-thumb:hover {
   background: var(--color-muted);
+}
+
+.weekly-hires-modal .expandable-section__title {
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.weekly-hires-modal .expandable-section__badge {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.weekly-hires-modal .badge {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
 }

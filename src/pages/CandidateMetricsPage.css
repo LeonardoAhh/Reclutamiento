@@ -1,5 +1,10 @@
 .candidate-metrics {
   padding-block-end: calc(var(--design-spacing-xxl) + var(--safe-area-bottom));
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 .candidate-metrics__title-link {
   display: inline-flex;
@@ -12,9 +17,6 @@
 }
 .candidate-metrics__title-link svg {
   flex: 0 0 auto;
-}
-.candidate-metrics__title-link:hover {
-  text-decoration: underline;
 }
 .candidate-metrics__title-link:focus-visible {
   outline: var(--focus-ring-width) solid var(--color-focus);
@@ -29,13 +31,13 @@
 .candidate-metrics__menu { gap: var(--design-spacing-lg); }
 .candidate-metrics__heading, .recruiter-metrics__card-name {
   margin: 0;
-  font-family: var(--font-display);
-  font-size: var(--type-heading-sm-size);
-  font-weight: var(--type-heading-sm-weight);
-  line-height: var(--type-heading-sm-line);
-  letter-spacing: var(--type-heading-sm-tracking);
   color: var(--color-ink);
   overflow-wrap: anywhere;
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 .candidate-metrics__recruiters, .recruiter-metrics__grid {
   display: grid;
@@ -56,12 +58,12 @@
   box-shadow: var(--workspace-shadow);
   color: var(--color-ink);
   text-decoration: none;
-  font-family: var(--font-body);
-  font-size: var(--type-body-strong-size);
-  font-weight: var(--type-body-strong-weight);
-  line-height: var(--type-body-strong-line);
-  letter-spacing: var(--type-body-strong-tracking);
   overflow-wrap: anywhere;
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 .candidate-metrics__link > svg { flex-shrink: 0; }
 .candidate-metrics__link-body {
@@ -72,12 +74,12 @@
   gap: var(--design-spacing-xs);
 }
 .candidate-metrics__hint, .recruiter-metrics__card-total, .recruiter-metrics__stat-count, .recruiter-metrics__table-period {
-  font-family: var(--font-body);
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-sm-weight);
-  line-height: var(--type-body-sm-line);
-  letter-spacing: var(--type-body-sm-tracking);
   color: var(--color-body);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 .recruiter-metrics__card {
   display: flex;
@@ -116,20 +118,20 @@
   text-align: center;
 }
 .recruiter-metrics__stat-value {
-  font-family: var(--font-display);
-  font-size: var(--type-heading-md-size);
-  font-weight: var(--type-heading-md-weight);
-  line-height: var(--type-heading-md-line);
-  letter-spacing: var(--type-heading-md-tracking);
   color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 .recruiter-metrics__stat-label, .recruiter-metrics__card-efectividad {
-  font-family: var(--font-body);
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-strong-weight);
-  line-height: var(--type-body-sm-line);
-  letter-spacing: var(--type-body-sm-tracking);
   color: var(--color-body);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
 }
 .recruiter-metrics__card-bar {
   display: flex;
@@ -166,9 +168,9 @@
   text-align: start;
   border-block-end: var(--border-width) solid var(--color-hairline);
 }
-.recruiter-metrics__table th { font-weight: var(--type-body-strong-weight); color: var(--color-ink); }
+.recruiter-metrics__table th { color: var(--color-ink); font-family: var(--font-body); font-size: var(--type-caption-up-size); font-weight: var(--type-caption-up-weight); line-height: var(--type-caption-up-line); letter-spacing: var(--type-caption-up-tracking); }
 .recruiter-metrics__table .recruiter-metrics__table-number { text-align: end; }
-.recruiter-metrics__table-week-label { display: block; font-weight: var(--type-body-strong-weight); }
+.recruiter-metrics__table-week-label { display: block; font-family: var(--font-body); font-size: var(--type-body-strong-size); font-weight: var(--type-body-strong-weight); line-height: var(--type-body-strong-line); letter-spacing: var(--type-body-strong-tracking); }
 .recruiter-metrics__table-period { display: block; }
 .recruiter-metrics__table-copy-col { inline-size: 1%; }
 .recruiter-metrics__copy-btn {
@@ -190,7 +192,7 @@
   justify-content: center;
   padding: var(--design-spacing-md);
 }
-.recruiter-metrics__week-heading { text-align: center; color: var(--color-body); margin-block-end: var(--design-spacing-md); }
+.recruiter-metrics__week-heading { text-align: center; color: var(--color-body); margin-block-end: var(--design-spacing-md); font-family: var(--font-body); font-size: var(--type-body-strong-size); font-weight: var(--type-body-strong-weight); line-height: var(--type-body-strong-line); letter-spacing: var(--type-body-strong-tracking); }
 .recruiter-metrics__current-week-stats { margin-block-end: var(--design-spacing-md); }
 .recruiter-metrics__weekly-copy { inline-size: 100%; justify-content: center; }
 .candidate-metrics__error { margin-block-end: var(--design-spacing-md); color: var(--color-error); }
@@ -199,4 +201,20 @@
 }
 @media (min-width: 1080px) {
   .recruiter-metrics__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+.recruiter-metrics__name-badge {
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.candidate-metrics :is(.btn-utility, .btn-secondary) {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }

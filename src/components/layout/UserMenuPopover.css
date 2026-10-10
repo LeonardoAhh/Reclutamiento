@@ -20,7 +20,7 @@
 .user-menu-trigger__surface {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: var(--design-spacing-xs);
   min-inline-size: calc(var(--touch-target-min) - var(--design-spacing-sm));
   min-block-size: calc(var(--touch-target-min) - var(--design-spacing-sm));
@@ -38,20 +38,27 @@
 .user-menu-trigger .ui-avatar {
   inline-size: var(--icon-size-lg);
   block-size: var(--icon-size-lg);
+  border: 0;
   border-radius: var(--rounded-md);
+}
+
+.user-menu-trigger__avatar-icon {
+  inline-size: var(--icon-size-control);
+  block-size: var(--icon-size-control);
 }
 
 .user-menu-trigger__name {
   display: inline;
+  text-align: start;
   min-inline-size: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   font-family: var(--font-body);
-  font-size: var(--type-label-sm-size);
-  font-weight: var(--type-label-sm-weight);
-  line-height: var(--type-label-sm-line);
-  letter-spacing: var(--type-label-sm-tracking);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 @media (min-width: 768px) {
@@ -61,12 +68,15 @@
 
 }
 
+@media (min-width: 1080px) {
+  .user-menu-trigger__name {
+    display: none;
+  }
+}
+
 .dropdown-menu-content.user-menu-popover {
   width: min(
-    calc(
-      var(--radix-dropdown-menu-trigger-width) + var(--touch-target-min) +
-        var(--design-spacing-xs)
-    ),
+    var(--feature-account-menu-inline-size),
     var(--radix-dropdown-menu-content-available-width)
   );
   min-inline-size: 0;
@@ -97,10 +107,10 @@
   padding-inline: var(--design-spacing-sm);
   color: var(--color-muted);
   font-family: var(--font-body);
-  font-size: var(--type-caption-sm-size);
-  font-weight: var(--type-caption-sm-weight);
-  line-height: var(--type-caption-sm-line);
-  letter-spacing: var(--type-caption-sm-tracking);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
   text-align: center;
   overflow-wrap: anywhere;
 }

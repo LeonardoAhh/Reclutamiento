@@ -100,6 +100,7 @@ export function CampaignImportModal({
 
   return (
     <Dialog
+      className="data-update-dialog"
       isOpen={isOpen}
       title={t("Nueva campaña")}
       onClose={close}
@@ -158,7 +159,7 @@ export function CampaignImportModal({
                   onChange={() => toggleParticipant(profile.id)}
                 />
                 <span>{profile.label}</span>
-                <span className="text-muted type-caption-sm">{t(profile.role)}</span>
+                <span className="text-muted type-caption-up">{t(profile.role)}</span>
               </label>
             ))}
           </div>
@@ -180,7 +181,7 @@ export function CampaignImportModal({
                 onChange={(event) => void readFile(event.target.files?.[0])}
               />
             </label>
-            <span className="type-caption-sm text-muted">{fileName || t("Sin archivo seleccionado")}</span>
+            <span className="type-body-md text-muted">{fileName || t("Sin archivo seleccionado")}</span>
           </div>
         </section>
 

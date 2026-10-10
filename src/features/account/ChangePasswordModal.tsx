@@ -18,7 +18,7 @@ export function ChangePasswordModal({ isOpen, onClose }: ChangePasswordModalProp
       title={language === 'en' ? 'Change password' : 'Cambiar contraseña'}
       closeLabel={language === 'en' ? 'Close' : 'Cerrar'}
       size="xs"
-      className="change-password-modal"
+      className="change-password-modal account-dialog"
     >
       <div className="modal-body">
         <PasswordChangeForm ref={formRef} onCancel={onClose} />

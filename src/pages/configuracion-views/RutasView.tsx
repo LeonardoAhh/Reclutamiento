@@ -163,7 +163,7 @@ function ShiftBars({
 
         const tooltipContent =
           added.length > 0 || removed.length > 0 ? (
-            <div className="trend-tooltip">
+            <div className="trend-tooltip rutas-trend-tooltip">
               {added.length > 0 && (
                 <div className="trend-tooltip__section">
                   <strong className="trend-tooltip__title trend-tooltip__title--success">
@@ -224,7 +224,7 @@ function ShiftBars({
               } as React.CSSProperties
             }
           >
-            <span className="shift-bars__label type-body-sm">
+            <span className="shift-bars__label type-caption-up">
               {copy.shift} {turno}
             </span>
             <div
@@ -246,7 +246,7 @@ function ShiftBars({
               className={`shift-bars__stats${hasComparison ? " shift-bars__stats--comparison" : ""}`}
             >
               <span
-                className={`shift-bars__count type-body-sm${isOverCapacity ? " shift-bars__count--over" : ""}`}
+                className={`shift-bars__count type-body-strong${isOverCapacity ? " shift-bars__count--over" : ""}`}
               >
                 {assignedCapacity ? `${count} / ${assignedCapacity}` : count}
               </span>
@@ -316,10 +316,10 @@ function Placeholder() {
       <span className="rutas-placeholder__icon" aria-hidden="true">
         <Route />
       </span>
-      <h2 id="rutas-placeholder-title" className="type-heading-md">
+      <h2 id="rutas-placeholder-title" className="type-body-strong">
         {copy.selectRoute}
       </h2>
-      <p className="type-body-sm">
+      <p className="type-body-md">
         {copy.selectRouteHelp}
       </p>
     </div>
@@ -344,7 +344,7 @@ function RouteSearchMatches({ employees }: RouteSearchMatchesProps) {
       <header className="ruta-search-results__header">
         <h2
           id="ruta-search-results-title"
-          className="ruta-section__title ruta-section__title-wrapper type-heading-sm"
+          className="ruta-section__title ruta-section__title-wrapper type-body-strong"
         >
           <UserRoundSearch
             aria-hidden="true"
@@ -432,7 +432,7 @@ function RutaDetail({
           </section>
 
           <section className="ruta-section">
-            <h2 className="ruta-section__title ruta-section__title-wrapper type-heading-sm">
+            <h2 className="ruta-section__title ruta-section__title-wrapper type-body-strong">
               <CalendarRange
                 aria-hidden="true"
                 className="ruta-section__title-icon"
@@ -660,7 +660,7 @@ export function RutasView() {
                 <li className="rutas-error">
                   <div role="alert">
                     <p className="type-body-strong">{copy.loadError}</p>
-                    <p className="type-body-sm">{english ? "Check your connection and try again." : errorMsg}</p>
+                    <p className="type-body-md">{english ? "Check your connection and try again." : errorMsg}</p>
                   </div>
                 </li>
               )}
@@ -669,7 +669,7 @@ export function RutasView() {
                 !errorMsg &&
                 !searchNorm &&
                 filteredRutas.length === 0 && (
-                  <li className="rutas-empty type-body-sm">
+                  <li className="rutas-empty type-body-md">
                     {copy.noRoutesInFile}
                   </li>
                 )}
@@ -679,7 +679,7 @@ export function RutasView() {
                 searchNorm &&
                 filteredRutas.length === 0 && (
                   <li className="rutas-empty">
-                    <p className="type-body-sm">
+                    <p className="type-body-md">
                       {copy.noMatchingRoutes}
                     </p>
                     <button

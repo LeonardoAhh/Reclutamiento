@@ -20,6 +20,11 @@
 }
 
 .home-page__lesson-action a {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
   display: inline-flex;
   align-items: center;
   min-height: var(--touch-target-min);
@@ -77,6 +82,17 @@
   height: var(--icon-size-sm);
   align-self: start;
   color: var(--color-muted);
+}
+
+.home-page__eyebrow {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+  color: var(--color-muted);
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
 }
 
 .home-page__lesson-title {
@@ -153,10 +169,11 @@
 .home-page__labor-list strong {
   margin: 0;
   color: var(--color-ink);
-  font-size: var(--type-label-sm-size);
-  font-weight: var(--type-label-sm-weight);
-  line-height: var(--type-label-sm-line);
-  letter-spacing: var(--type-label-sm-tracking);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .home-page__lesson-content p {
@@ -173,6 +190,11 @@
 }
 
 .home-page__legal-footer {
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
   display: flex;
   flex-wrap: wrap;
   align-items: center;

@@ -92,6 +92,7 @@ export function CapturarMotivoBajaModal({ isOpen, onClose, existingEmployees, on
 
   return (
     <Dialog
+      className="motivos-baja__capture-dialog"
       isOpen={isOpen}
       title={copy.captureTitle}
       size="md"

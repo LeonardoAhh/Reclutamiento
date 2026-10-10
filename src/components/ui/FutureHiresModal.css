@@ -6,6 +6,11 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .future-hires-modal__empty {
@@ -16,6 +21,10 @@
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-lg);
   font-size: var(--type-body-md-size);
+  font-family: var(--font-body);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .future-hires-modal__section {
@@ -48,8 +57,12 @@
 .future-hires-modal__table {
   width: 100%;
   border-collapse: collapse;
-  font-size: var(--type-caption-md-size);
+  font-size: var(--type-body-md-size);
   text-align: left;
+  font-family: var(--font-body);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .future-hires-modal__table th {
@@ -62,6 +75,8 @@
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-hairline);
   white-space: nowrap;
+  font-family: var(--font-body);
+  line-height: var(--type-caption-up-line);
 }
 
 .future-hires-modal__table td {
@@ -76,9 +91,13 @@
 }
 
 .future-hires-modal__cell-mono {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   color: var(--color-body);
   white-space: nowrap;
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .future-hires-modal__cell-name {
@@ -96,14 +115,21 @@
   white-space: nowrap;
   flex: 1 1 auto;
   font-weight: var(--type-body-strong-weight);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .future-hires-modal__cell-turno {
-  font-size: var(--type-caption-sm-size);
+  font-size: var(--type-body-md-size);
   color: var(--color-muted);
   text-transform: uppercase;
-  line-height: var(--type-caption-sm-line);
+  line-height: var(--type-body-md-line);
   white-space: nowrap;
+  font-family: var(--font-body);
+  font-weight: var(--type-body-md-weight);
+  letter-spacing: var(--type-body-md-tracking);
 }
 /* ── Tarjetas Móvil ── */
 .future-hires-modal__mobile-list {
@@ -137,10 +163,12 @@
 }
 
 .future-hires-modal__mobile-apellidos {
-  font-size: var(--type-body-sm-size);
-  font-weight: 600;
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
   color: var(--color-ink);
-  line-height: 1.2;
+  line-height: var(--type-body-strong-line);
+  font-family: var(--font-body);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .future-hires-modal__mobile-nombres {
@@ -150,10 +178,13 @@
 }
 
 .future-hires-modal__mobile-date {
-  font-family: var(--font-mono);
-  font-size: var(--type-caption-sm-size);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
   color: var(--color-muted);
   white-space: nowrap;
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .future-hires-modal__mobile-card-body {
@@ -163,15 +194,36 @@
 }
 
 .future-hires-modal__mobile-puesto {
-  font-size: var(--type-body-sm-size);
+  font-size: var(--type-body-strong-size);
   font-weight: var(--type-body-strong-weight);
   color: var(--color-ink);
-  line-height: var(--type-body-sm-line);
+  line-height: var(--type-body-strong-line);
+  font-family: var(--font-body);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .future-hires-modal__mobile-turno {
-  font-size: var(--type-caption-sm-size);
+  font-size: var(--type-body-md-size);
   color: var(--color-muted);
   text-transform: uppercase;
-  line-height: var(--type-caption-sm-line);
+  line-height: var(--type-body-md-line);
+  font-family: var(--font-body);
+  font-weight: var(--type-body-md-weight);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.future-hires-modal .badge {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+}
+
+.future-hires-modal__action {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }

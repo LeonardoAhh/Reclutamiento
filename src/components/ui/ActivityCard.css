@@ -54,6 +54,7 @@
 
 .activity-card__title {
   margin: 0;
+  font-family: var(--font-body);
   font-size: var(--type-body-strong-size);
   font-weight: var(--type-body-strong-weight);
   line-height: var(--type-body-strong-line);
@@ -88,10 +89,11 @@
   padding: var(--design-spacing-xxs) var(--spacing-xs);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-sm);
-  font-size: var(--type-caption-xs-size);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
   font-weight: var(--type-caption-up-weight);
-  line-height: var(--type-caption-xs-line);
-  letter-spacing: var(--type-caption-xs-tracking);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
 }
 
 .activity-card__status {
@@ -131,14 +133,15 @@
   min-inline-size: 0;
   margin: 0;
   color: var(--color-charcoal);
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-sm-weight);
-  line-height: var(--type-body-sm-line);
-  letter-spacing: var(--type-body-sm-tracking);
   overflow-wrap: anywhere;
   overflow: hidden;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .activity-card__description--muted {

@@ -12,6 +12,11 @@
   gap: var(--design-spacing-sm);
 }
 
+.maintenance-mode-modal__status .maintenance-mode-modal__inactive {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
 .maintenance-mode-modal__status .badge--amber {
   color: var(--color-warning-text);
 }

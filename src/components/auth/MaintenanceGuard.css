@@ -101,14 +101,21 @@
 }
 
 /* ── Estado de comprobación (sr + visual) ────────────────────────────────── */
+.maintenance-actions > :is(.btn-primary, .btn-secondary) {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
 .maintenance-status {
   margin: 0;
   min-block-size: 1lh;
   font-family: var(--font-body);
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-sm-weight);
-  line-height: var(--type-body-sm-line);
-  letter-spacing: var(--type-body-sm-tracking);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
   color: var(--color-muted);
 }
 

@@ -54,7 +54,7 @@ export function RecognitionPreferencesModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      className="recognition-preferences-modal"
+      className="recognition-preferences-modal account-dialog"
       size="xs"
       title={english ? 'Recognition' : 'Reconocimientos'}
       closeLabel={english ? 'Close' : 'Cerrar'}
@@ -94,7 +94,7 @@ export function RecognitionPreferencesModal({
           />
         </div>
 
-        <label className="recognition-preferences-modal__check type-body-sm">
+        <label className="recognition-preferences-modal__check type-body-md">
           <input
             type="checkbox"
             checked={dismissedThisMonth}
@@ -103,8 +103,8 @@ export function RecognitionPreferencesModal({
           <span>{english ? 'Hide this month' : 'Ocultar este mes'}</span>
         </label>
 
-        {saveError && <p role="alert" className="recognition-preferences-modal__intro type-body-sm">{english ? 'Could not save. Try again.' : 'No se pudo guardar. Intenta de nuevo.'}</p>}
-        <p id="recognition-storage-note" className="recognition-preferences-modal__note type-caption-sm">
+        {saveError && <p role="alert" className="recognition-preferences-modal__intro type-body-md">{english ? 'Could not save. Try again.' : 'No se pudo guardar. Intenta de nuevo.'}</p>}
+        <p id="recognition-storage-note" className="recognition-preferences-modal__note type-body-md">
           {english ? 'Saved in this browser.' : 'Se guarda en este navegador.'}
         </p>
       </div>

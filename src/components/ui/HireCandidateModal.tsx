@@ -120,7 +120,7 @@ export function HireCandidateModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      className="employee-modal"
+      className="employee-modal hire-candidate-modal"
       icon={<UserRoundPlus size={20} className="color-primary" aria-hidden="true" />}
       title={`${en ? 'Hire' : 'Contratar a'} ${candidate.nombre}`}
       size="sm"

@@ -40,8 +40,11 @@
 .hire-hint {
   margin-top: var(--spacing-md);
   color: var(--color-muted);
-  font-size: var(--type-body-sm-size);
-  line-height: var(--type-body-sm-line);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .hire-hint code {
@@ -55,8 +58,12 @@
 }
 
 .hire-hint strong {
-  font-weight: var(--type-body-strong-weight);
   color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 /* ── Success state icon ── */
@@ -66,4 +73,28 @@
   justify-content: center;
   background: var(--color-success-tint);
   color: var(--color-success);
+}
+
+.hire-candidate-modal .delete-warning__title {
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.hire-candidate-modal .delete-warning__sub {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.hire-candidate-modal :is(.btn-primary, .btn-secondary) {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }

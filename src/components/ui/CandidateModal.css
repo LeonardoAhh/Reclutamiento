@@ -19,12 +19,13 @@
   display: inline-flex;
   align-items: center;
   margin-left: var(--spacing-xs);
-  font-size: var(--type-caption-md-size);
-  font-weight: var(--font-regular);
   color: var(--color-muted);
   text-transform: none;
-  letter-spacing: 0;
-  line-height: 1.2;
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .candidate-modal__hint::before {
@@ -35,5 +36,17 @@
 
 .candidate-modal__hint--warning {
   color: var(--color-error);
-  font-weight: var(--font-semibold);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.candidate-modal :is(.btn-primary, .btn-secondary) {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }

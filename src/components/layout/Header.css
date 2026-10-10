@@ -65,11 +65,11 @@
 
 .app-header__title > .app-page-title,
 .app-header__fallback-title {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: var(--type-heading-md-size);
-  font-weight: var(--type-heading-md-weight);
-  line-height: var(--type-heading-md-line);
-  letter-spacing: var(--type-heading-md-tracking);
+  font-weight: var(--font-bold);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
   color: var(--color-muted);
   overflow-wrap: anywhere;
   margin: 0;

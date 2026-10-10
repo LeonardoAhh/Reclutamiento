@@ -8,6 +8,11 @@
   background: var(--color-surface);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-lg);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .workforce-projection__header {
@@ -51,8 +56,12 @@
 }
 
 .workforce-projection__card-badge {
-  font-weight: var(--font-semibold);
+  font-weight: var(--type-caption-up-weight);
   font-variant-numeric: tabular-nums;
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
 }
 
 .workforce-projection__card-body {

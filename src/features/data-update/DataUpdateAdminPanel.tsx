@@ -350,18 +350,18 @@ export function DataUpdateAdminPanel({
               <div className="data-update-admin-card__header">
                 <div className="data-update-admin-card__identity">
                   <div className="data-update-admin-card__meta">
-                    <span className="type-caption-up text-muted">
+                    <span className="type-body-md text-muted">
                       <span className="sr-only">{t("Número de empleado: ")}</span>
                       {record.identity.employeeNumber}
                     </span>
                     {record.identity.area && (
-                      <span className="data-update-admin-card__meta-item type-caption-up text-muted">
+                      <span className="data-update-admin-card__meta-item type-body-md text-muted">
                         <span aria-hidden="true">●</span>
                         <span><span className="sr-only">{t("Área: ")}</span>{record.identity.area}</span>
                       </span>
                     )}
                     {record.identity.shift && (
-                      <span className="data-update-admin-card__meta-item type-caption-up text-muted">
+                      <span className="data-update-admin-card__meta-item type-body-md text-muted">
                         <span aria-hidden="true">●</span>
                         <span><span className="sr-only">{t("Turno: ")}</span>{record.identity.shift}</span>
                       </span>

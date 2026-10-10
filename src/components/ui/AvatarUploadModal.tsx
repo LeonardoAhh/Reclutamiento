@@ -234,6 +234,7 @@ export function AvatarUploadModal({ isOpen, onClose }: AvatarUploadModalProps) {
   if (confirmingDelete) {
     return (
       <ConfirmModal
+        className="account-dialog"
         isOpen={isOpen}
         title={english ? "Delete picture" : "Eliminar foto"}
         description={english ? "This action cannot be undone." : "Esta acción no se puede deshacer."}
@@ -255,6 +256,7 @@ export function AvatarUploadModal({ isOpen, onClose }: AvatarUploadModalProps) {
 
   return (
     <Modal
+      className="account-dialog"
       isOpen={isOpen}
       onClose={handleClose}
       title={english ? "Profile picture" : "Avatar"}

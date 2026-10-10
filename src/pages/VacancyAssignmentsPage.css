@@ -1,6 +1,11 @@
 .vacancy-assignments-page {
   min-inline-size: 0;
   padding-block-end: var(--design-spacing-xl);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .vacancy-assignments-page__title-link {
@@ -16,10 +21,6 @@
   inline-size: var(--icon-size-md);
   block-size: var(--icon-size-md);
   flex: 0 0 auto;
-}
-
-.vacancy-assignments-page__title-link:hover {
-  text-decoration: underline;
 }
 
 .vacancy-assignments-page__title-link:focus-visible {
@@ -66,16 +67,22 @@
   min-inline-size: 0;
   margin: 0;
   color: var(--color-ink);
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: var(--type-body-strong-size);
   font-weight: var(--type-body-strong-weight);
   overflow-wrap: anywhere;
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .vacancy-report-modal__group-count {
   color: var(--color-muted);
-  font-size: var(--type-caption-sm-size);
+  font-size: var(--type-body-md-size);
   text-align: end;
+  font-family: var(--font-body);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .vacancy-report-modal__rows {
@@ -114,6 +121,11 @@
   color: inherit;
   text-align: start;
   cursor: pointer;
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .vacancy-report-modal__row-main:focus-visible {
@@ -123,9 +135,12 @@
 
 .vacancy-report-modal__puesto {
   color: var(--color-ink);
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-sm-weight);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
   overflow-wrap: anywhere;
+  font-family: var(--font-body);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .vacancy-report-modal__badges {
@@ -143,6 +158,11 @@
 
 .vacancy-report-modal__action {
   gap: var(--spacing-xs);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 @media (max-width: 767px) {

@@ -82,21 +82,23 @@
   min-width: 0;
   overflow: hidden;
   color: var(--color-ink);
-  font-size: var(--type-body-sm-strong-size);
-  font-weight: var(--type-body-sm-strong-weight);
-  line-height: var(--type-body-sm-strong-line);
-  letter-spacing: var(--type-body-sm-strong-tracking);
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .attachment-card__metadata {
   display: block;
   color: var(--color-muted);
-  font-size: var(--type-caption-xs-size);
-  font-weight: var(--type-caption-xs-weight);
-  line-height: var(--type-caption-xs-line);
-  letter-spacing: var(--type-caption-xs-tracking);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .attachment-card__remove {
