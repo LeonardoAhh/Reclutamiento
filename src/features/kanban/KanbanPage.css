@@ -14,7 +14,7 @@
 }
 .kanban-column {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-rows: auto minmax(0, 1fr);
   min-width: 0;
   background: var(--color-canvas-elevated);
   border: var(--border-width) solid var(--color-hairline);
@@ -52,17 +52,11 @@
 }
 .kanban-column__list > li { min-width: 0; }
 .kanban-column[data-empty] .kanban-column__list { padding: 0; }
-.kanban-column[data-empty] .kanban-column__footer { border-top: 0; }
-.kanban-column[data-empty]:not([data-create]) .kanban-column__header {
+.kanban-column[data-empty] .kanban-column__header {
   border-bottom: 0;
   border-end-start-radius: var(--rounded-lg);
   border-end-end-radius: var(--rounded-lg);
 }
-.kanban-column__footer {
-  padding: var(--design-spacing-sm);
-  border-top: var(--border-width) solid var(--color-hairline);
-}
-.kanban-column__add { width: 100%; justify-content: flex-start; }
 .kanban-task {
   display: flex;
   flex-direction: column;
@@ -168,11 +162,6 @@
 }
 .kanban-skeleton__title { inline-size: 70%; }
 .kanban-skeleton__text { inline-size: 85%; }
-.kanban-skeleton__action {
-  inline-size: 60%;
-  block-size: var(--touch-target-min);
-  border-radius: var(--rounded-md);
-}
 .kanban-content__header {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, auto);
@@ -181,9 +170,7 @@
   min-width: 0;
 }
 .kanban-content__header > :is(p, h2) { min-width: 0; }
-.kanban-view-button {
-  grid-column: 2;
-  justify-self: end;
+.kanban-toolbar-button {
   display: inline-flex;
   align-items: center;
   gap: var(--design-spacing-xxs);
@@ -204,8 +191,17 @@
   text-align: start;
   overflow-wrap: anywhere;
 }
-.kanban-view-button svg { flex: none; }
-.kanban-view-button:disabled { opacity: var(--opacity-disabled); cursor: not-allowed; }
+.kanban-toolbar-button:hover:not(:disabled) { background: var(--color-surface-soft); }
+.kanban-toolbar-button:disabled { opacity: var(--opacity-disabled); cursor: not-allowed; }
+.kanban-toolbar-button svg { flex: none; }
+.kanban-content__add {
+  grid-column: 1;
+  justify-self: start;
+}
+.kanban-view-button {
+  grid-column: 2;
+  justify-self: end;
+}
 .kanban-dialog-form {
   display: flex;
   flex-direction: column;

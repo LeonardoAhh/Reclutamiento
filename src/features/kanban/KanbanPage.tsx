@@ -1,5 +1,5 @@
 import { useCallback, useId, useRef, useState } from 'react';
-import { Archive, ArrowLeft } from 'lucide-react';
+import { Archive, ArrowLeft, Plus } from 'lucide-react';
 import { PageHeading } from '@/components/layout/PageHeading';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -31,6 +31,7 @@ function KanbanWorkspace({ userId, archived, focusView, onChangeView }: {
   const now = useKanbanClock();
   const id = useId();
   const viewRef = useRef<HTMLButtonElement>(null);
+  const addButtonRef = useRef<HTMLButtonElement>(null);
   const [editor, setEditor] = useState<KanbanEditor | null>(null);
   const [message, setMessage] = useState('');
   const viewFocusDone = useRef(false);
@@ -76,11 +77,24 @@ function KanbanWorkspace({ userId, archived, focusView, onChangeView }: {
     return saved;
   }
   const viewAction = (
-        <button ref={attachViewButton} type="button" className="kanban-view-button" disabled={board.busy || editor !== null}
+        <button ref={attachViewButton} type="button" className="kanban-toolbar-button kanban-view-button" disabled={board.busy || editor !== null}
           aria-controls={id} onClick={() => onChangeView(!archived)}>
           {archived ? <ArrowLeft size="var(--icon-size-sm)" aria-hidden="true" /> : <Archive size="var(--icon-size-sm)" aria-hidden="true" />}
           {archived ? t.backToBoard : t.archiveView}
         </button>
+  );
+  const addAction = !archived && (
+    <button
+      ref={addButtonRef}
+      type="button"
+      className="kanban-toolbar-button kanban-content__add"
+      disabled={disabled || editor !== null}
+      aria-label={`${t.addCard}: ${t.statuses.pending}`}
+      onClick={() => openEditor(null, 'pending')}
+    >
+      <Plus size="var(--icon-size-sm)" aria-hidden="true" />
+      {t.addCard}
+    </button>
   );
   return (
     <div className="container kanban-page type-body-md">
@@ -101,16 +115,15 @@ function KanbanWorkspace({ userId, archived, focusView, onChangeView }: {
         {!archived && <h2 id={`${id}-heading`} className="sr-only">{t.board}</h2>}
         <div className="kanban-content__header">
           {archived ? <h2 id={`${id}-heading`} className="type-body-strong">{t.archiveView}</h2>
-            : board.ready && board.tasks.length === 0 ? <p className="type-body-md">
-              <span className="type-body-strong">{t.empty}.</span>{' '}{t.emptyText}
-            </p> : null}
+            : addAction}
           {viewAction}
         </div>
         {board.loading && !board.ready && <KanbanSkeleton label={t.loading} />}
         {board.ready && archived && board.tasks.length === 0 && <p className="type-body-md">{t.archiveEmpty}</p>}
         {board.ready && (archived ? <ArchivedTasks tasks={board.tasks} copy={t} disabled={disabled} onRestore={archive} />
           : <KanbanBoard tasks={board.tasks} copy={t} disabled={disabled} busy={board.busy} now={now}
-            editor={editor} error={actionError} onCreate={status => openEditor(null, status)} onEdit={task => openEditor(task)}
+            editor={editor} error={actionError} onEdit={task => openEditor(task)}
+            getAddButton={() => addButtonRef.current}
             onDelete={remove} onMove={move} onArchive={archive}
             onSave={save} onCloseEditor={() => { setEditor(null); board.clearActionError(); }} />)}
       </section>

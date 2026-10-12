@@ -22,9 +22,6 @@ export function KanbanSkeleton({ label }: { label: string }) {
               </div>
             </div>
           </div>
-          {status === 'pending' && <div className="kanban-column__footer">
-            <span className="loading-skeleton__bone kanban-skeleton__action" />
-          </div>}
         </div>
       ))}
     </LoadingSkeleton>

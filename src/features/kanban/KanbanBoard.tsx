@@ -2,8 +2,7 @@ import { useId, useRef, useState, type ReactNode } from 'react';
 import { DndContext, KeyboardSensor, MouseSensor, TouchSensor, useDndContext, useDroppable, useSensor, useSensors,
   type DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { Plus } from 'lucide-react';
-import { Badge } from '@/components/ui/Badge';
+import { Badge } from '@/components/ui/Badge'
 import { KanbanStatusBadge } from './KanbanBadge';
 import { isTaskStatus, TASK_STATUSES, type KanbanTask, type TaskDraft, type TaskStatus } from './types';
 import { TaskForm } from './TaskForm';
@@ -23,7 +22,7 @@ interface KanbanBoardProps {
   busy: boolean;
   error: string;
   editor: KanbanEditor | null;
-  onCreate: (status: TaskStatus) => void;
+  getAddButton: () => HTMLButtonElement | null;
   onEdit: (task: KanbanTask) => void;
   onDelete: (task: KanbanTask) => Promise<boolean>;
   onMove: (task: KanbanTask, status: TaskStatus, beforeId: string | null) => Promise<boolean>;
@@ -39,14 +38,13 @@ function DropColumn({ status, disabled, empty, headingId, children }: {
   const { over } = useDndContext();
   const highlighted = isOver || over?.data.current?.status === status;
   return <section ref={setNodeRef} className="kanban-column" aria-labelledby={headingId}
-    data-create={status === 'pending' || undefined} data-empty={empty || undefined} data-drag-over={highlighted || undefined}>{children}</section>;
+    data-empty={empty || undefined} data-drag-over={highlighted || undefined}>{children}</section>;
 }
 export function KanbanBoard({ tasks, copy: t, disabled, busy, error, editor,
-  onCreate, onEdit, onDelete, onMove, onArchive, now, onSave, onCloseEditor }: KanbanBoardProps) {
+  getAddButton, onEdit, onDelete, onMove, onArchive, now, onSave, onCloseEditor }: KanbanBoardProps) {
   const id = useId();
   const [dragging, setDragging] = useState(false);
   const headings = useRef<Partial<Record<TaskStatus, HTMLHeadingElement | null>>>({});
-  const addButtons = useRef<Partial<Record<TaskStatus, HTMLButtonElement | null>>>({});
   const editButtons = useRef<Record<string, HTMLButtonElement | null>>({});
   const sensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
@@ -56,8 +54,8 @@ export function KanbanBoard({ tasks, copy: t, disabled, busy, error, editor,
   const locked = disabled || editor !== null;
   function restoreEditorFocus(status: TaskStatus, taskId?: string) {
     requestAnimationFrame(() => {
-      const target = taskId ? editButtons.current[taskId] : addButtons.current[status];
-      (target ?? headings.current[status])?.focus();
+      const target = taskId ? editButtons.current[taskId] : null;
+      (target ?? getAddButton() ?? headings.current[status])?.focus();
     });
   }
   function closeEditor() {
@@ -134,15 +132,6 @@ export function KanbanBoard({ tasks, copy: t, disabled, busy, error, editor,
                 ))}
               </ul>
               </SortableContext>
-              {status === 'pending' && <footer className="kanban-column__footer">
-                {(
-                  <button type="button" className="btn-ghost kanban-column__add" disabled={locked || dragging}
-                    ref={node => { addButtons.current[status] = node; }}
-                    aria-label={`${t.addCard}: ${t.statuses[status]}`} onClick={() => onCreate(status)}>
-                    <Plus size="var(--icon-size-sm)" aria-hidden="true" />{t.addCard}
-                  </button>
-                )}
-              </footer>}
             </DropColumn>
           );
         })}
