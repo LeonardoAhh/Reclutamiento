@@ -10,9 +10,7 @@ import "./Sidebar.css";
 
 import { getLocalizedNavigation } from "./navigation";
 import { SidebarBrand } from "./SidebarBrand";
-import { SidebarQuickActions } from "./SidebarQuickActions";
 import clsx from "clsx";
-import { useTeamDirectory } from "@/features/team/TeamProvider";
 
 type SidebarProps = {
   mobileMenuOpen?: boolean;
@@ -24,7 +22,6 @@ export function Sidebar({
   onCloseMobileMenu,
 }: SidebarProps) {
   const { username, profile } = useAuth();
-  const { members } = useTeamDirectory();
   const { language } = useLanguage();
   const location = useLocation();
   const navSections = getLocalizedNavigation(language);
@@ -160,19 +157,20 @@ export function Sidebar({
           );
         })}
       </nav>
-      {profile && <SidebarQuickActions profile={profile} members={members} />}
       <footer className="sidebar__footer">
         <button
           ref={logoutTriggerRef}
           type="button"
-          className="sidebar__logout-trigger"
+          className="sidebar__logout-trigger sidebar__logout-action"
           onClick={() => setLogoutConfirmationOpen(true)}
           aria-expanded={logoutConfirmationOpen}
           aria-controls="sidebar-logout-confirmation"
           hidden={logoutConfirmationOpen}
         >
-          <LogOut aria-hidden="true" />
-          <span>{language === "en" ? "Sign out" : "Cerrar sesión"}</span>
+          <span className="sidebar__logout-surface sidebar__logout-surface--trigger">
+            <LogOut aria-hidden="true" />
+            <span>{language === "en" ? "Sign out" : "Cerrar sesión"}</span>
+          </span>
         </button>
         <div
           id="sidebar-logout-confirmation"
@@ -187,22 +185,26 @@ export function Sidebar({
           <button
             ref={logoutCancelRef}
             type="button"
-            className="btn-secondary btn-sm"
+            className="sidebar__logout-action"
             onClick={cancelLogout}
             disabled={signOutLoading}
           >
-            {language === "en" ? "Cancel" : "Cancelar"}
+            <span className="sidebar__logout-surface">
+              {language === "en" ? "Cancel" : "Cancelar"}
+            </span>
           </button>
           <button
             type="button"
-            className="btn-danger btn-sm"
+            className="sidebar__logout-action"
             onClick={() => void handleSignOut()}
             disabled={signOutLoading}
             aria-busy={signOutLoading}
           >
-            {signOutLoading
-              ? language === "en" ? "Signing out…" : "Cerrando sesión…"
-              : language === "en" ? "Sign out" : "Cerrar sesión"}
+            <span className="sidebar__logout-surface sidebar__logout-surface--confirm">
+              {signOutLoading
+                ? language === "en" ? "Signing out…" : "Cerrando sesión…"
+                : language === "en" ? "Sign out" : "Cerrar sesión"}
+            </span>
           </button>
         </div>
       </footer>

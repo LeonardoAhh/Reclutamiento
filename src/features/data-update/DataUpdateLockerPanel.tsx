@@ -158,7 +158,7 @@ export function DataUpdateLockerPanel({ records, canEdit, onRecordUpdated }: Dat
           <button type="button" className="btn-secondary" onClick={() => setSearchTerm("")}>{t("Limpiar búsqueda")}</button>
         </div>
       ) : (
-        <>
+        <div className="data-update-results-panel">
           <div id="data-update-locker-list" className="data-update-record-grid">
             {pagination.pageItems.map((record) => (
               <article key={record.id} className="card data-update-record-card data-update-locker-card">
@@ -218,10 +218,9 @@ export function DataUpdateLockerPanel({ records, canEdit, onRecordUpdated }: Dat
               canGoPrev={pagination.canGoPrev}
               canGoNext={pagination.canGoNext}
               ariaLabel={t("Paginación de lockers")}
-              sticky
             />
           )}
-        </>
+        </div>
       )}
 
       <Modal

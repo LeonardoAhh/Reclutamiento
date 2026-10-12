@@ -344,6 +344,7 @@ export function DataUpdateAdminPanel({
           </button>
         </div>
       ) : (
+        <div className="data-update-results-panel">
         <div id="data-update-admin-list" className="data-update-record-grid">
           {pagination.pageItems.map((record) => (
             <article key={record.id} className="card data-update-record-card data-update-admin-card">
@@ -459,7 +460,6 @@ export function DataUpdateAdminPanel({
             </article>
           ))}
         </div>
-      )}
 
       {pagination.totalPages > 1 && (
         <Pagination
@@ -471,8 +471,9 @@ export function DataUpdateAdminPanel({
           canGoPrev={pagination.canGoPrev}
           canGoNext={pagination.canGoNext}
           ariaLabel={t("Paginación de administración de registros")}
-          sticky
         />
+      )}
+        </div>
       )}
 
       <ConfirmModal

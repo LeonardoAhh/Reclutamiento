@@ -7,23 +7,64 @@ import { AvatarUploadModal } from "@/components/ui/AvatarUploadModal";
 import { Badge } from "@/components/ui/Badge";
 import { RecognitionPreferencesModal } from "@/components/ui/RecognitionPreferencesModal";
 import { ChangePasswordModal } from "@/features/account/ChangePasswordModal";
-import { MaintenanceModeModal } from "@/features/system/MaintenanceModeModal";
 import { UserActivityPanel } from "@/features/system/UserActivityPanel";
 import { useAuth } from "@/hooks/useAuth";
 import { useMaintenanceMode } from "@/hooks/useMaintenanceMode";
+import { toast } from "@/lib/notify";
 import { toNaturalCase } from "@/lib/utils";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { accountCopy } from "./account-translations";
 import "./AccountPage.css";
 
-type AccountDialog = "avatar" | "password" | "recognition" | "maintenance" | null;
+function translateMaintenanceError(message: string, english: boolean) {
+  if (!english) return message;
+  const messages: Readonly<Record<string, string>> = {
+    "No existe la configuración principal de mantenimiento.": "The main maintenance configuration does not exist.",
+    "No fue posible consultar el modo mantenimiento. Intenta de nuevo.": "Could not check maintenance mode. Try again.",
+    "Supabase no confirmó el cambio de mantenimiento.": "Supabase did not confirm the maintenance mode change.",
+    "No fue posible cambiar el modo mantenimiento. Intenta de nuevo.": "Could not change maintenance mode. Try again.",
+    "No fue posible escuchar cambios de mantenimiento en tiempo real.": "Could not listen for real-time maintenance changes.",
+  };
+  return messages[message] ?? message;
+}
+type AccountDialog = "avatar" | "password" | "recognition" | null;
 
 export function AccountPage() {
-  const { profile, user, username } = useAuth();
+  const { profile, user, username, profileLoading, loading: authLoading } = useAuth();
   const { language } = useLanguage();
   const copy = accountCopy(language);
   const maintenance = useMaintenanceMode();
   const [dialog, setDialog] = useState<AccountDialog>(null);
+  const [pendingMaintenance, setPendingMaintenance] = useState<boolean | null>(null);
+  const [savingMaintenance, setSavingMaintenance] = useState(false);
+  const maintenanceUnavailable = authLoading || profileLoading || maintenance.loading || Boolean(maintenance.error);
+
+  const handleMaintenanceAction = async () => {
+    if (profile?.role !== "admin" || maintenanceUnavailable || savingMaintenance) return;
+    if (pendingMaintenance === null) {
+      setPendingMaintenance(!maintenance.enabled);
+      return;
+    }
+    if (pendingMaintenance === maintenance.enabled) {
+      setPendingMaintenance(null);
+      return;
+    }
+
+    setSavingMaintenance(true);
+    try {
+      const result = await maintenance.update(pendingMaintenance);
+      if (result.ok) {
+        toast.success({
+          title: language === "en"
+            ? pendingMaintenance ? "Maintenance mode enabled" : "Maintenance mode disabled"
+            : pendingMaintenance ? "Mantenimiento activado" : "Mantenimiento desactivado",
+        });
+      }
+      setPendingMaintenance(null);
+    } finally {
+      setSavingMaintenance(false);
+    }
+  };
 
   if (!profile) return null;
 
@@ -104,20 +145,53 @@ export function AccountPage() {
                   <span className="account-page__row-description">{copy.teamDescription}</span>
                 </span>
               </Link>
-              <button
-                type="button"
-                className="account-page__row account-page__row--status"
-                aria-label={copy.maintenance}
-                aria-describedby="account-maintenance-description account-maintenance-status"
-                onClick={() => setDialog("maintenance")}
-                disabled={maintenance.loading}
-              >
+              <div className="account-page__row account-page__row--status account-page__row--maintenance">
                 <span className="account-page__row-title">{copy.maintenance}</span>
-                <Badge id="account-maintenance-status" className="account-page__status" aria-live="polite">
-                  {maintenanceLabel}
-                </Badge>
                 <span id="account-maintenance-description" className="account-page__row-description">{copy.maintenanceDescription}</span>
-              </button>
+                <div className="account-page__maintenance-controls">
+                  <Badge id="account-maintenance-status" className="account-page__status" aria-live="polite">
+                    {maintenanceLabel}
+                  </Badge>
+                  <button
+                    type="button"
+                    className="account-page__maintenance-action"
+                    data-confirming={pendingMaintenance !== null}
+                    onClick={() => void handleMaintenanceAction()}
+                    onBlur={() => {
+                      if (!savingMaintenance) setPendingMaintenance(null);
+                    }}
+                    onKeyDown={(event) => {
+                      if (event.key === "Escape") setPendingMaintenance(null);
+                    }}
+                    disabled={maintenanceUnavailable || savingMaintenance}
+                    aria-busy={savingMaintenance}
+                    aria-describedby="account-maintenance-description account-maintenance-status"
+                  >
+                    <span className="account-page__maintenance-action-surface">
+                      {savingMaintenance
+                        ? copy.saving
+                        : pendingMaintenance !== null
+                          ? copy.confirmMaintenance
+                          : maintenance.enabled ? copy.disableMaintenance : copy.enableMaintenance}
+                    </span>
+                  </button>
+                  {maintenance.error && (
+                    <button
+                      type="button"
+                      className="account-page__maintenance-action"
+                      onClick={() => void maintenance.refresh()}
+                      disabled={maintenance.loading || savingMaintenance}
+                    >
+                      <span className="account-page__maintenance-action-surface">{copy.retry}</span>
+                    </button>
+                  )}
+                </div>
+                {maintenance.error && (
+                  <p className="account-page__maintenance-error" role="alert">
+                    {translateMaintenanceError(maintenance.error, language === "en")}
+                  </p>
+                )}
+              </div>
             </div>
             <div className="account-page__activity">
               <h3>{copy.userActivity}</h3>
@@ -132,9 +206,7 @@ export function AccountPage() {
       {dialog === "recognition" && (
         <RecognitionPreferencesModal isOpen onClose={closeDialog} />
       )}
-      {dialog === "maintenance" && (
-        <MaintenanceModeModal isOpen onClose={closeDialog} />
-      )}
+
     </main>
   );
 }

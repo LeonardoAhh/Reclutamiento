@@ -270,6 +270,14 @@
   }
 }
 
+.config-results-panel {
+  min-inline-size: 0;
+  padding: var(--design-spacing-xs);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  background: var(--color-surface-card);
+}
+
 .config-results__count {
   margin: 0 0 var(--spacing-md);
   overflow-wrap: anywhere;

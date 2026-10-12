@@ -227,6 +227,14 @@
   display: none;
 }
 
+.data-update-results-panel {
+  min-inline-size: 0;
+  padding: var(--design-spacing-xs);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  background: var(--color-surface-card);
+}
+
 .data-update-record-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);

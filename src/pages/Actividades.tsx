@@ -21,7 +21,6 @@ import {
   AssignableActivityType,
 } from "@/lib/types";
 import { useTeamDirectory } from '@/features/team/TeamProvider';
-import { AssignVacancyModal } from "@/components/ui/AssignVacancyModal";
 import {
   CreateActivityModal,
   type CreateActivityModalProps,
@@ -93,9 +92,6 @@ export function Actividades() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState<Activity | null>(
-    null,
-  );
-  const [assignModalVacancy, setAssignModalVacancy] = useState<Activity | null>(
     null,
   );
   const [proofs, setProofs] = useState<ActivityProof[]>([]);
@@ -177,6 +173,16 @@ export function Actividades() {
     [reclutadores, en],
   );
 
+  const vacancyRecruiterOptions = useMemo(
+    () => [
+      { value: "", label: en ? "Unassigned" : "Sin asignar" },
+      ...reclutadores.map((reclutador) => ({
+        value: reclutador.id,
+        label: reclutador.username,
+      })),
+    ],
+    [reclutadores, en],
+  );
   const { positions } = usePositions();
 
   const areasOptions = useMemo(
@@ -262,7 +268,7 @@ export function Actividades() {
       asignado_a: recruiterId || null,
     });
     setIsAssigningVacancy(false);
-    if (updated) setAssignModalVacancy(null);
+    return Boolean(updated);
   };
 
   const handleCreateVacante = async (e: React.FormEvent) => {
@@ -630,8 +636,12 @@ export function Actividades() {
             currentUserId={profile?.id}
             isNew={isNewActivity}
             onCreate={() => setIsCreateVacanteModalOpen(true)}
-            onAssign={setAssignModalVacancy}
-            onDelete={handleDelete}
+            recruiterOptions={vacancyRecruiterOptions}
+            isAssigning={isAssigningVacancy}
+            onAssign={(vacancyId, assigneeId) => {
+              void handleAssignVacancy(vacancyId, assigneeId);
+            }}
+            onDelete={(vacancy) => vacancy.id ? deleteActivity(vacancy.id) : Promise.resolve(false)}
           />
         </Tabs.Content>
 
@@ -796,26 +806,6 @@ export function Actividades() {
         onDeleteProof={handleDeleteProof}
         onUploadProof={handleFileUpload}
         isUploadingProof={isUploadingProof}
-      />
-
-      <AssignVacancyModal
-        isOpen={Boolean(assignModalVacancy)}
-        onClose={() => {
-          if (!isAssigningVacancy) setAssignModalVacancy(null);
-        }}
-        isAssigning={isAssigningVacancy}
-        vacancyId={assignModalVacancy?.id}
-        currentAssignee={assignModalVacancy?.asignado_a || ""}
-        options={[
-          { value: "", label: en ? "Unassigned" : "Sin asignar" },
-          ...reclutadores.map((reclutador) => ({
-            value: reclutador.id,
-            label: reclutador.username,
-          })),
-        ]}
-        onAssign={(vacancyId, assigneeId) => {
-          void handleAssignVacancy(vacancyId, assigneeId);
-        }}
       />
 
       <DeleteConfirmModal

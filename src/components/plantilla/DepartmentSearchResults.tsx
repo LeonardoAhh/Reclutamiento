@@ -9,6 +9,7 @@ import './DepartmentSearchResults.css';
 
 interface DepartmentSearchResultsProps {
   employees: Employee[];
+  singleColumnOnDesktop?: boolean;
   onEdit: (employee: Employee) => void;
   onPromote: (employee: Employee) => void;
   onIncapacidad: (employee: Employee) => void;
@@ -54,6 +55,7 @@ function getSectionLabel(section: string, area: string): string {
 
 export function DepartmentSearchResults({
   employees,
+  singleColumnOnDesktop = false,
   onEdit,
   onPromote,
   onIncapacidad,
@@ -77,7 +79,9 @@ export function DepartmentSearchResults({
         </p>
       </header>
 
-      <div className="department-search-results__grid">
+      <div
+        className={`department-search-results__grid${singleColumnOnDesktop ? ' department-search-results__grid--single-column' : ''}`}
+      >
         {groups.map((group) => (
           <section className="department-search-group" key={group.area}>
             <header className="department-search-group__header">

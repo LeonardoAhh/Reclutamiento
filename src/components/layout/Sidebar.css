@@ -55,8 +55,8 @@
 
 /* El símbolo y el puesto del usuario comparten una superficie delimitada. */
 .sidebar__brand {
-  grid-column: 1 / -1;
-  grid-row: 2;
+  grid-column: 1;
+  grid-row: 1;
   display: flex;
   align-items: center;
   min-inline-size: 0;
@@ -157,35 +157,92 @@ button.sidebar__close-btn {
   display: none;
 }
 
-.sidebar__logout-trigger {
+.sidebar__logout-action {
   display: inline-flex;
   inline-size: 100%;
+  min-inline-size: 0;
   min-block-size: var(--touch-target-min);
   align-items: center;
-  gap: var(--design-spacing-xs);
-  padding-inline: var(--design-spacing-sm);
-  border: var(--border-width) solid var(--color-hairline);
+  justify-content: center;
+  padding: 0;
+  border: 0;
   border-radius: var(--rounded-md);
   background: transparent;
-  color: var(--color-error-text);
+  color: var(--color-ink);
   font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-  text-align: start;
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-strong-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
+  text-align: center;
   cursor: pointer;
 }
 
-.sidebar__logout-trigger:is(:hover, :focus-visible) {
+.sidebar__logout-surface {
+  display: inline-flex;
+  min-inline-size: 0;
+  inline-size: 100%;
+  min-block-size: var(--icon-size-lg);
+  align-items: center;
+  justify-content: center;
+  gap: var(--design-spacing-xs);
+  padding-inline: var(--design-spacing-xs);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  background: var(--color-canvas-elevated);
+  overflow-wrap: anywhere;
+}
+
+.sidebar__logout-surface--trigger {
+  justify-content: flex-start;
+  background: transparent;
+  color: var(--color-error-text);
+}
+
+.sidebar__logout-surface--confirm {
+  border-color: var(--color-error-deep);
   background: var(--color-error-deep);
   color: var(--color-on-error);
 }
 
+.sidebar__logout-action:hover:not(:disabled) .sidebar__logout-surface:not(.sidebar__logout-surface--confirm) {
+  border-color: var(--color-control-border);
+  background: var(--color-surface-soft);
+}
+
+.sidebar__logout-action:hover:not(:disabled) .sidebar__logout-surface--trigger {
+  border-color: var(--color-control-border);
+  background: var(--color-error-subtle);
+}
+
+.sidebar__logout-action:disabled {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
+}
+
+.sidebar__logout-action:focus-visible {
+  outline: none;
+}
+
+.sidebar__logout-action:focus-visible .sidebar__logout-surface {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: var(--focus-ring-offset);
+}
+
+@media (forced-colors: active) {
+  .sidebar__logout-action:focus-visible {
+    outline: none !important;
+  }
+
+  .sidebar__logout-action:focus-visible .sidebar__logout-surface {
+    outline-color: Highlight;
+  }
+}
+
 .sidebar__logout-trigger svg {
   flex: 0 0 auto;
-  inline-size: var(--icon-size-md);
-  block-size: var(--icon-size-md);
+  inline-size: var(--icon-size-sm);
+  block-size: var(--icon-size-sm);
 }
 
 .sidebar__logout-confirmation {
@@ -197,30 +254,6 @@ button.sidebar__close-btn {
 .sidebar__logout-confirmation[hidden],
 .sidebar__logout-trigger[hidden] {
   display: none;
-}
-
-.sidebar__logout-confirmation > button {
-  inline-size: 100%;
-  min-inline-size: 0;
-  min-height: var(--touch-target-min);
-  padding-inline: var(--design-spacing-sm);
-  border: var(--border-width) solid var(--color-hairline);
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-  white-space: nowrap;
-}
-
-.sidebar__logout-confirmation > .btn-secondary {
-  background: var(--color-surface);
-}
-
-.sidebar__logout-confirmation > .btn-danger {
-  background: var(--color-error-deep);
-  border-color: var(--color-error-deep);
-  color: var(--color-on-error);
 }
 
 .sidebar__list {

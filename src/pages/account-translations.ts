@@ -19,6 +19,11 @@ const translations = {
     unavailable: "No disponible",
     active: "Activo",
     inactive: "Inactivo",
+    enableMaintenance: "Activar",
+    disableMaintenance: "Desactivar",
+    confirmMaintenance: "Confirmar",
+    saving: "Guardando…",
+    retry: "Reintentar",
   },
   en: {
     title: "My account",
@@ -38,6 +43,11 @@ const translations = {
     unavailable: "Unavailable",
     active: "Active",
     inactive: "Inactive",
+    enableMaintenance: "Enable",
+    disableMaintenance: "Disable",
+    confirmMaintenance: "Confirm",
+    saving: "Saving…",
+    retry: "Retry",
   },
 } as const;
 

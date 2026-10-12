@@ -142,10 +142,101 @@
 }
 
 .account-page__row--status .account-page__row-description {
-  grid-column: 1 / -1;
+  grid-column: 1;
   grid-row: 2;
 }
 
+.account-page__row--maintenance {
+  cursor: default;
+}
+
+.account-page__maintenance-controls {
+  display: flex;
+  min-inline-size: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  gap: var(--design-spacing-xxs);
+}
+
+.account-page__maintenance-action {
+  display: inline-flex;
+  min-block-size: var(--touch-target-min);
+  min-inline-size: 0;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: var(--rounded-md);
+  background: transparent;
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-strong-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
+  cursor: pointer;
+}
+
+.account-page__maintenance-action-surface {
+  display: inline-flex;
+  min-block-size: var(--icon-size-lg);
+  align-items: center;
+  padding-inline: var(--design-spacing-xs);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  background: transparent;
+  color: var(--color-ink);
+}
+
+.account-page__maintenance-action:hover:not(:disabled):not([data-confirming="true"]) .account-page__maintenance-action-surface {
+  border-color: var(--color-control-border);
+  background: transparent;
+}
+
+.account-page__maintenance-action[data-confirming="true"] .account-page__maintenance-action-surface {
+  border-color: var(--color-control-border);
+  background: transparent;
+  color: var(--color-ink);
+}
+
+.account-page__maintenance-action:disabled {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
+}
+
+.account-page__maintenance-action:focus-visible {
+  outline: none;
+}
+
+.account-page__maintenance-action:focus-visible .account-page__maintenance-action-surface {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: var(--focus-ring-offset);
+}
+
+@media (forced-colors: active) {
+  .account-page__maintenance-action:focus-visible {
+    outline: none !important;
+  }
+
+  .account-page__maintenance-action:focus-visible .account-page__maintenance-action-surface {
+    outline-color: Highlight;
+  }
+}
+
+.account-page__maintenance-error {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  margin: 0;
+  color: var(--color-error-text);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
 .account-page__row-title,
 .account-page__activity h3 {
   color: var(--color-ink);
@@ -157,10 +248,9 @@
 }
 
 .account-page__status {
-  grid-column: 2;
-  grid-row: 1;
-  justify-self: end;
-  align-self: start;
+  min-block-size: var(--icon-size-lg);
+  padding-block: 0;
+  padding-inline: var(--design-spacing-xs);
   background: var(--color-primary);
   color: var(--color-on-primary);
   border: var(--border-width) solid var(--color-primary);
@@ -230,14 +320,6 @@
     padding: var(--design-spacing-lg);
   }
 
-  .account-page__row--status .account-page__row-description {
-    grid-column: 1;
-  }
-
-  .account-page__row--status .account-page__status {
-    grid-row: 1 / span 2;
-    align-self: center;
-  }
 
   .account-page__activity .user-activity-panel__card {
     grid-template-columns: minmax(0, 1fr) auto;

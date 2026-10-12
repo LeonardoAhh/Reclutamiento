@@ -10,7 +10,7 @@ import { useIsMobile } from "@/hooks/useIsMobile";
 type HomeLeaveDialogProps = Pick<ComponentProps<typeof Modal>,
   "isOpen" | "onClose" | "onBack" | "title" | "children" | "footerActions" | "size" | "className"
 > & {
-  triggerRef: RefObject<HTMLButtonElement | null>;
+  triggerRef: RefObject<HTMLElement | null>;
 };
 
 export function HomeLeaveDialog({ triggerRef, ...props }: HomeLeaveDialogProps) {

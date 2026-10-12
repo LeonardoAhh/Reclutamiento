@@ -98,7 +98,7 @@ export function Pipeline() {
     return 'activos';
   });
   const [currentPage, setCurrentPage] = useState(1);
-  const ITEMS_PER_PAGE = 9;
+  const ITEMS_PER_PAGE = 8;
   const [modalMode, setModalMode] = useState<ModalMode>(null);
   const [selected, setSelected] = useState<Candidate | null>(null);
   const [quickProfile, setQuickProfile] = useState<Candidate | null>(null);
@@ -217,9 +217,13 @@ export function Pipeline() {
   }, [macroStatus]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
+  const visiblePage = Math.min(currentPage, totalPages);
+  useEffect(() => {
+    if (currentPage > totalPages) setCurrentPage(totalPages);
+  }, [currentPage, totalPages]);
   const paginatedCandidates = filtered.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
+    (visiblePage - 1) * ITEMS_PER_PAGE,
+    visiblePage * ITEMS_PER_PAGE
   );
 
 
@@ -483,7 +487,7 @@ export function Pipeline() {
               )}
             </section>
           ) : (
-            <>
+            <div className="pipeline__results">
             <section
               className="pipeline__card-list"
               aria-label={en ? 'Candidate list' : 'Lista de candidatos'}
@@ -665,15 +669,14 @@ export function Pipeline() {
             </section>
 
             <Pagination
-              currentPage={currentPage}
+              currentPage={visiblePage}
               totalPages={totalPages}
               onPageChange={setCurrentPage}
-              canGoPrev={currentPage > 1}
-              canGoNext={currentPage < totalPages}
+              canGoPrev={visiblePage > 1}
+              canGoNext={visiblePage < totalPages}
               ariaLabel={en ? 'Candidate pages' : 'Paginación de candidatos'}
-              sticky
             />
-            </>
+            </div>
           )}
 
           {/* ── Modales ── */}

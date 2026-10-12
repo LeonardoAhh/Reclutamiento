@@ -12,44 +12,15 @@
   margin-block-end: var(--spacing-lg);
 }
 
-.responsibilities-section__heading {
-  min-inline-size: 0;
-}
-
 .responsibilities-section__title {
-  display: flex;
   min-inline-size: 0;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--spacing-sm);
-  margin: 0 0 var(--design-spacing-xxs);
+  margin: 0;
   color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--type-body-strong-size);
   font-weight: var(--type-body-strong-weight);
   line-height: var(--type-body-strong-line);
   letter-spacing: var(--type-body-strong-tracking);
-}
-
-.responsibilities-section__count {
-  color: var(--color-muted);
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-}
-
-.responsibilities-section__description {
-  max-inline-size: var(--content-reading-max-inline-size);
-  margin: 0;
-  color: var(--color-muted);
-  overflow-wrap: anywhere;
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
 }
 
 .responsibilities-section__panel {

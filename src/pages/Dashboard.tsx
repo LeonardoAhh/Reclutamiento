@@ -448,6 +448,7 @@ export function Dashboard() {
                   {(hasSearchQuery || showOnlyStarlite) && matchingEmployees.length > 0 && (
                     <DepartmentSearchResults
                       employees={matchingEmployees}
+                      singleColumnOnDesktop={hasSearchQuery}
                       onEdit={openEditFor}
                       onPromote={openPromoteFor}
                       onIncapacidad={setIncapacidadTarget}

@@ -541,41 +541,42 @@ export function AnalisisView() {
               {employeePagination.totalItems === 1 ? copy.employee : copy.employees}
             </p>
 
-            <div
-              className={`config-results${viewMode === 'compact' ? ' config-results--compact' : ''}`}
-            >
-              {employeePagination.pageItems.map((employee) => {
-                const resultId = getEmployeeResultId(employee);
+            <div className="config-results-panel">
+              <div
+                className={`config-results${viewMode === 'compact' ? ' config-results--compact' : ''}`}
+              >
+                {employeePagination.pageItems.map((employee) => {
+                  const resultId = getEmployeeResultId(employee);
 
-                return (
-                  <EmployeeResultCard
-                    key={resultId}
-                    employee={employee}
-                    resultId={resultId}
-                    viewMode={viewMode}
-                    isRiskFilter={riskFilter === 'riesgo_baja' || riskFilter === 'faltas_planta'}
-                    isExpanded={expandedResultId === resultId}
-                    autoExpand={isSingleResult}
-                    reports={allReports}
-                    reportsLoading={reportsLoading}
-                    onToggle={() => handleToggleCompactResult(resultId)}
-                  />
-                );
-              })}
+                  return (
+                    <EmployeeResultCard
+                      key={resultId}
+                      employee={employee}
+                      resultId={resultId}
+                      viewMode={viewMode}
+                      isRiskFilter={riskFilter === 'riesgo_baja' || riskFilter === 'faltas_planta'}
+                      isExpanded={expandedResultId === resultId}
+                      autoExpand={isSingleResult}
+                      reports={allReports}
+                      reportsLoading={reportsLoading}
+                      onToggle={() => handleToggleCompactResult(resultId)}
+                    />
+                  );
+                })}
+              </div>
+
+              <Pagination
+                currentPage={employeePagination.currentPage}
+                totalPages={employeePagination.totalPages}
+                onPageChange={employeePagination.goToPage}
+                onPrev={employeePagination.prevPage}
+                onNext={employeePagination.nextPage}
+                canGoPrev={employeePagination.canGoPrev}
+                canGoNext={employeePagination.canGoNext}
+                ariaLabel={copy.pagination}
+                hideOnSinglePage
+              />
             </div>
-
-            <Pagination
-              currentPage={employeePagination.currentPage}
-              totalPages={employeePagination.totalPages}
-              onPageChange={employeePagination.goToPage}
-              onPrev={employeePagination.prevPage}
-              onNext={employeePagination.nextPage}
-              canGoPrev={employeePagination.canGoPrev}
-              canGoNext={employeePagination.canGoNext}
-              ariaLabel={copy.pagination}
-              hideOnSinglePage
-              sticky
-            />
           </div>
         ) : (
           <div className="config-empty" role="status">

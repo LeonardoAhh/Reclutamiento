@@ -47,6 +47,10 @@
   margin-top: var(--spacing-md);
 }
 
+.motivos-baja__pagination .pagination--sticky {
+  border-block-start: 0;
+}
+
 .motivos-baja__panel {
   background: var(--color-surface);
   border: var(--border-width) solid var(--color-hairline);

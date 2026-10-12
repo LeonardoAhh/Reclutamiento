@@ -7,7 +7,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
 import { Avatar } from "@/components/ui/Avatar";
-import { Tooltip } from "@/components/ui/Tooltip";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import { ACCOUNT_PATH, LOGOUT_PATH } from "./navigation";
 import { Eclipse, Languages, UserRound } from "lucide-react";
@@ -42,23 +41,21 @@ export function UserMenuPopover({
 
   return (
       <DropdownMenu open={open} onOpenChange={setOpen}>
-        <Tooltip content={english ? "My account" : "Mi cuenta"} side="bottom">
-          <DropdownMenuTrigger asChild>
-            <button
-              type="button"
-              className="user-menu-trigger"
-              aria-label={english
-                ? `Open options for ${displayName}`
-                : `Abrir opciones de ${displayName}`}
-            >
-              <span className="user-menu-trigger__surface">
-                <Avatar name={displayName} src={avatarUrl}
-                  fallback={<UserRound className="user-menu-trigger__avatar-icon" aria-hidden="true" />} />
-                <span className="user-menu-trigger__name" aria-hidden="true">{displayName}</span>
-              </span>
-            </button>
-          </DropdownMenuTrigger>
-        </Tooltip>
+        <DropdownMenuTrigger asChild>
+          <button
+            type="button"
+            className="user-menu-trigger"
+            aria-label={english
+              ? `Open My account options for ${displayName}`
+              : `Abrir opciones de Mi cuenta para ${displayName}`}
+          >
+            <span className="user-menu-trigger__surface">
+              <Avatar name={displayName} src={avatarUrl}
+                fallback={<UserRound className="user-menu-trigger__avatar-icon" aria-hidden="true" />} />
+              <span className="user-menu-trigger__name" aria-hidden="true">{english ? "My account" : "Mi cuenta"}</span>
+            </span>
+          </button>
+        </DropdownMenuTrigger>
         <DropdownMenuContent
           align="end"
           side="bottom"

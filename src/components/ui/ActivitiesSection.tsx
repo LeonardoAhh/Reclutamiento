@@ -103,7 +103,6 @@ export function ActivitiesSection({
 }: ActivitiesSectionProps) {
   const { language } = useLanguage();
   const en = language === "en";
-  const countLabel = `${activities.length} ${activities.length === 1 ? (en ? "activity" : "actividad") : (en ? "activities" : "actividades")}`;
   const statusFilters = en ? [
     { key: "todas", label: "All" }, { key: "pendiente", label: "Pending" },
     { key: "en_proceso", label: "In progress" }, { key: "completada", label: "Completed" },
@@ -119,23 +118,12 @@ export function ActivitiesSection({
       aria-labelledby="activity-tracking-heading"
     >
       <header className="activity-tracking-section__header">
-        <div className="activity-tracking-section__heading">
-          <h2
-            id="activity-tracking-heading"
-            className="activity-tracking-section__title"
-          >
-            <span>{en ? "Activities" : "Actividades"}</span>
-            <span
-              className="activity-tracking-section__count"
-              aria-label={countLabel}
-            >
-              {activities.length}
-            </span>
-          </h2>
-          <p className="activity-tracking-section__description">
-            {en ? "Track progress and evidence." : "Seguimiento con avance y evidencias."}
-          </p>
-        </div>
+        <h2
+          id="activity-tracking-heading"
+          className="activity-tracking-section__title"
+        >
+          {en ? "Activities" : "Actividades"}
+        </h2>
 
         {isAdmin && (
           <button type="button" className="btn-primary btn-sm activities-create-action" onClick={onCreate}>

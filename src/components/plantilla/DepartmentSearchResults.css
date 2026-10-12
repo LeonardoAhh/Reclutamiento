@@ -52,6 +52,12 @@
   gap: var(--design-spacing-md);
 }
 
+@media (min-width: 1080px) {
+  .department-search-results__grid--single-column {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 .department-search-group {
   align-self: start;
   min-inline-size: 0;

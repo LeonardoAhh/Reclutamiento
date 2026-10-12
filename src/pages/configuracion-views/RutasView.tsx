@@ -591,7 +591,7 @@ export function RutasView() {
           </PageHeading>
 
       <section
-        className="config-results-controls rutas-toolbar"
+        className="rutas-toolbar"
         aria-label={copy.tools}
       >
         <div className="rutas-toolbar-flex">

@@ -1,20 +1,12 @@
+import { useState } from "react";
 import {
   BriefcaseBusiness,
-  EllipsisVertical,
   Plus,
-  Trash2,
-  UserRoundPlus,
 } from "lucide-react";
 import type { Activity, AuthorizedPosition } from "@/lib/types";
 import { useLanguage } from "@/contexts/LanguageContext";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/DropdownMenu";
 import { AssignmentMeta } from "@/components/ui/AssignmentMeta";
+import { CustomSelect, type Option } from "@/components/ui/CustomSelect";
 import "./VacancyAssignmentSection.css";
 
 interface VacancyAssignmentSectionProps {
@@ -24,8 +16,10 @@ interface VacancyAssignmentSectionProps {
   currentUserId?: string;
   isNew: (vacancy: Activity) => boolean;
   onCreate: () => void;
-  onAssign: (vacancy: Activity) => void;
-  onDelete: (vacancy: Activity) => void;
+  recruiterOptions: readonly Option[];
+  isAssigning: boolean;
+  onAssign: (vacancyId: string, assigneeId: string) => void;
+  onDelete: (vacancy: Activity) => Promise<boolean>;
 }
 
 interface ActivityWithAssignee extends Activity {
@@ -49,12 +43,28 @@ export function VacancyAssignmentSection({
   currentUserId,
   isNew,
   onCreate,
+  recruiterOptions,
+  isAssigning,
   onAssign,
   onDelete,
 }: VacancyAssignmentSectionProps) {
   const { language } = useLanguage();
   const en = language === "en";
-  const countLabel = `${vacancies.length} ${vacancies.length === 1 ? (en ? "vacancy" : "vacante") : (en ? "vacancies" : "vacantes")}`;
+  const [confirmingDeleteId, setConfirmingDeleteId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const confirmDelete = async (vacancy: Activity) => {
+    if (!vacancy.id || deletingId) return;
+    if (confirmingDeleteId !== vacancy.id) {
+      setConfirmingDeleteId(vacancy.id);
+      return;
+    }
+    setDeletingId(vacancy.id);
+    try {
+      if (await onDelete(vacancy)) setConfirmingDeleteId(null);
+    } finally {
+      setDeletingId(null);
+    }
+  };
   const vacancyGroups = Array.from(
     vacancies
       .reduce<Map<string, VacancyGroup>>((groups, vacancy) => {
@@ -94,25 +104,12 @@ export function VacancyAssignmentSection({
       aria-labelledby="vacancy-assignment-heading"
     >
       <header className="vacancy-assignment-section__header">
-        <div className="vacancy-assignment-section__heading">
-          <h2
-            id="vacancy-assignment-heading"
-            className="vacancy-assignment-section__title"
-          >
-            {isAdmin ? (en ? "Vacancy assignments" : "Asignación de Vacantes") : (en ? "Your vacancies" : "Tus Vacantes")}
-            <span
-              className="vacancy-assignment-section__count"
-              aria-label={countLabel}
-            >
-              {vacancies.length}
-            </span>
-          </h2>
-          <p className="vacancy-assignment-section__description">
-            {isAdmin
-              ? (en ? "Assign active vacancies to team recruiters." : "Asigna las vacantes activas a los reclutadores del equipo.")
-              : (en ? "Vacancies assigned to you." : "Vacantes que te han sido asignadas.")}
-          </p>
-        </div>
+        <h2
+          id="vacancy-assignment-heading"
+          className="vacancy-assignment-section__title"
+        >
+          {isAdmin ? (en ? "Vacancy assignments" : "Asignación de Vacantes") : (en ? "Your vacancies" : "Tus Vacantes")}
+        </h2>
 
         {isAdmin && (
           <button type="button" className="btn-primary btn-sm activities-create-action" onClick={onCreate}>
@@ -220,54 +217,49 @@ export function VacancyAssignmentSection({
                     }
                     currentUserId={currentUserId}
                   />
+                  {isAdmin && (
+                    <div className="vacancy-assignment-card__footer-actions">
+                      <CustomSelect
+                        className="vacancy-assignment-card__select"
+                        value={vacancy.asignado_a || ""}
+                        options={recruiterOptions}
+                        showPlaceholderOption={false}
+                        disabled={isAssigning || deletingId !== null}
+                        aria-label={`${en ? "Assign recruiter for" : "Asignar reclutador a"} ${vacancy.titulo}`}
+                        customTrigger={
+                          <span className="vacancy-assignment-card__action-label">
+                            {en ? "Assign to..." : "Asignar a..."}
+                          </span>
+                        }
+                        onChange={(assigneeId) => {
+                          if (vacancy.id) onAssign(vacancy.id, assigneeId);
+                        }}
+                      />
+                      <button
+                        type="button"
+                        className="vacancy-assignment-card__action vacancy-assignment-card__action--delete"
+                        onClick={() => void confirmDelete(vacancy)}
+                        onBlur={() => {
+                          if (deletingId !== vacancy.id) setConfirmingDeleteId(null);
+                        }}
+                        onKeyDown={(event) => {
+                          if (event.key === "Escape") setConfirmingDeleteId(null);
+                        }}
+                        disabled={deletingId !== null || !vacancy.id}
+                        aria-busy={deletingId === vacancy.id}
+                        aria-label={`${confirmingDeleteId === vacancy.id ? (en ? "Confirm deletion of" : "Confirmar eliminación de") : (en ? "Delete" : "Eliminar")} ${vacancy.titulo}`}
+                      >
+                        <span className="vacancy-assignment-card__action-label">
+                          {deletingId === vacancy.id
+                            ? (en ? "Deleting..." : "Eliminando...")
+                            : confirmingDeleteId === vacancy.id
+                              ? (en ? "Confirm" : "Confirmar")
+                              : (en ? "Delete" : "Eliminar")}
+                        </span>
+                      </button>
+                    </div>
+                  )}
                 </footer>
-
-                {isAdmin && (
-                  <div className="vacancy-assignment-card__actions">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <button
-                          type="button"
-                          className="vacancy-assignment-card__menu"
-                          aria-label={`${en ? "Options for" : "Opciones de"} ${vacancy.titulo}`}
-                        >
-                          <EllipsisVertical
-                            size="var(--icon-size-sm)"
-                            aria-hidden="true"
-                          />
-                        </button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        <DropdownMenuItem
-                          asChild
-                          onSelect={(event) => {
-                            event.stopPropagation();
-                            onAssign(vacancy);
-                          }}
-                        >
-                          <button type="button">
-                            <UserRoundPlus aria-hidden="true" />
-                            <span>{en ? "Assign to..." : "Asignar a..."}</span>
-                          </button>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          asChild
-                          variant="destructive"
-                          onSelect={(event) => {
-                            event.stopPropagation();
-                            onDelete(vacancy);
-                          }}
-                        >
-                          <button type="button">
-                            <Trash2 aria-hidden="true" />
-                            <span>{en ? "Delete" : "Eliminar"}</span>
-                          </button>
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                )}
               </article>
             );
           })}

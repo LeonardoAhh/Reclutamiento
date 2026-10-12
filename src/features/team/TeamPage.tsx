@@ -3,7 +3,6 @@ import { PageHeading } from '@/components/layout/PageHeading';
 import { ArrowLeft } from 'lucide-react';
 import { Link, Navigate } from 'react-router-dom';
 import { ACCOUNT_PATH, HOME_PATH } from '@/components/layout/navigation';
-import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { Badge } from '@/components/ui/Badge';
 import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton';
 import { SearchField } from '@/components/ui/SearchField';
@@ -39,26 +38,26 @@ export function TeamPage() {
       .catch(() => { if (live) setError('No se pudieron cargar las cuentas. Actualiza la página para volver a intentar.'); });
     return () => { live = false; };
   }, [profile?.role]);
-  async function changeStatus() {
-    if (!confirm || busy) return;
+  async function changeStatus(member: TeamMember) {
+    if (!confirm || confirm.id !== member.id || confirm.active !== member.active || busy) return;
     setBusy(true); setError(''); setMessage('');
     try {
-      await setTeamMemberStatus(confirm.id, !confirm.active);
+      await setTeamMemberStatus(member.id, !member.active);
       await refresh();
-      setMessage(copy.statusChanged(confirm.short_name, confirm.active));
+      setMessage(copy.statusChanged(member.short_name, member.active));
       setConfirm(null);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'No se pudo cambiar el estado. Comprueba la conexión y vuelve a intentar.');
       await refresh().catch(() => { /* El proveedor presenta el fallo de lectura. */ });
     } finally { setBusy(false); }
   }
-  async function removeMember() {
-    if (!removing || busy) return;
+  async function removeMember(member: TeamMember) {
+    if (!removing || removing.id !== member.id || member.active || busy) return;
     setBusy(true); setError(''); setMessage('');
     try {
-      await archiveTeamMember(removing.id);
+      await archiveTeamMember(member.id);
       await refresh();
-      setMessage(copy.removedFromTeam(removing.short_name));
+      setMessage(copy.removedFromTeam(member.short_name));
       setRemoving(null);
       requestAnimationFrame(() => searchRef.current?.focus());
     } catch (cause) {
@@ -113,7 +112,7 @@ export function TeamPage() {
             </ul>
           </LoadingSkeleton>
         )}
-        {error && !confirm && !removing && <p className="form-error-text" role="alert">{translateTeamMessage(error, language)}</p>}
+        {error && <p className="form-error-text" role="alert">{translateTeamMessage(error, language)}</p>}
         {message && <p role="status">{message}</p>}
         {(profiles || error) && filtered.length === 0 && <div><p>{search ? copy.noMatches : copy.empty}</p>
           {search && <button type="button" className="btn-secondary" onClick={() => setSearch('')}>{copy.clearSearch}</button>}
@@ -121,6 +120,11 @@ export function TeamPage() {
         {(profiles || error) && <ul className="team-management__list">{filtered.map(member => {
           const linked = profiles?.find(row => row.id === member.profile_id);
           const canDeactivate = member.profile_id !== profile?.id && linked?.role !== 'admin';
+          const confirmingStatus = confirm?.id === member.id && confirm.active === member.active;
+          const confirmingRemoval = removing?.id === member.id;
+          const statusNoteId = `${id}-${member.id}-status-note`;
+          const removalNoteId = `${id}-${member.id}-removal-note`;
+          const statusAction = member.active ? copy.giveAccess : copy.reactivate;
           return <li className="team-management__member" key={member.id}>
             <div className="team-management__identity">
               <div className="team-management__name">
@@ -134,25 +138,41 @@ export function TeamPage() {
             <div className="team-management__actions">
               <button type="button" className="btn-secondary" disabled={!profiles || busy} onClick={() => setEditing(member)} aria-label={`${copy.edit} ${member.short_name}`}>{copy.edit}</button>
               <button type="button" className="btn-secondary" disabled={!profiles || !canDeactivate || busy}
-                onClick={() => { setError(''); setConfirm(member); }} aria-label={`${member.active ? copy.giveAccess : copy.reactivate} ${member.short_name}`}>
-                {member.active ? copy.giveAccess : copy.reactivate}</button>
+                onClick={() => {
+                  setError('');
+                  if (confirmingStatus) void changeStatus(member);
+                  else { setRemoving(null); setConfirm(member); }
+                }}
+                onBlur={() => { if (!busy) setConfirm(current => current?.id === member.id ? null : current); }}
+                onKeyDown={event => { if (event.key === 'Escape') setConfirm(null); }}
+                aria-busy={busy && confirmingStatus}
+                aria-label={`${confirmingStatus ? `${copy.confirm} ${statusAction.toLowerCase()}` : statusAction} ${member.short_name}`}
+                aria-describedby={confirmingStatus ? statusNoteId : undefined}>
+                {busy && confirmingStatus ? copy.saving : confirmingStatus ? copy.confirm : statusAction}</button>
               {!member.active && canDeactivate && <button type="button" className="btn-secondary" disabled={!profiles || busy}
-                onClick={() => { setError(''); setRemoving(member); }} aria-label={`${copy.delete} ${member.short_name}`}>
-                {copy.delete}</button>}
+                onClick={() => {
+                  setError('');
+                  if (confirmingRemoval) void removeMember(member);
+                  else { setConfirm(null); setRemoving(member); }
+                }}
+                onBlur={() => { if (!busy) setRemoving(current => current?.id === member.id ? null : current); }}
+                onKeyDown={event => { if (event.key === 'Escape') setRemoving(null); }}
+                aria-busy={busy && confirmingRemoval}
+                aria-label={`${confirmingRemoval ? `${copy.confirm} ${copy.delete.toLowerCase()}` : copy.delete} ${member.short_name}`}
+                aria-describedby={confirmingRemoval ? removalNoteId : undefined}>
+                {busy && confirmingRemoval ? copy.saving : confirmingRemoval ? copy.confirm : copy.delete}</button>}
             </div>
+            {confirmingStatus && <p id={statusNoteId} className="team-management__confirmation-note type-body-md">
+              {member.active ? copy.deactivateDescription : copy.reactivateDescription}
+            </p>}
+            {confirmingRemoval && <p id={removalNoteId} className="team-management__confirmation-note type-body-md">
+              {member.profile_id ? copy.deleteLinkedDescription : copy.deleteUnlinkedDescription}
+            </p>}
           </li>;
         })}</ul>}
       </section>
     </main>
     {editing !== undefined && profiles && <TeamMemberForm member={editing} profiles={profiles.filter(row => row.id === editing?.profile_id || !members.some(member => member.profile_id === row.id))}
       onClose={() => setEditing(undefined)} onSaved={refresh} />}
-    {confirm && <ConfirmModal isOpen className="team-dialog" title={`${confirm.active ? copy.confirmDeactivate : copy.confirmReactivate} ${confirm.short_name}`} isDestructive={confirm.active}
-      description={confirm.active ? copy.deactivateDescription : copy.reactivateDescription}
-      confirmLabel={confirm.active ? copy.confirmDeactivate : copy.confirmReactivate} cancelLabel={copy.cancel} loadingLabel={copy.saving} isLoading={busy} errorMessage={error ? translateTeamMessage(error, language) : undefined}
-      onCancel={() => { if (!busy) { setConfirm(null); setError(''); } }} onConfirm={() => void changeStatus()} />}
-    {removing && <ConfirmModal isOpen className="team-dialog" title={copy.deleteMember(removing.short_name)} isDestructive
-      description={removing.profile_id ? copy.deleteLinkedDescription : copy.deleteUnlinkedDescription}
-      confirmLabel={copy.delete} cancelLabel={copy.cancel} loadingLabel={copy.saving} isLoading={busy} errorMessage={error ? translateTeamMessage(error, language) : undefined}
-      onCancel={() => { if (!busy) { setRemoving(null); setError(''); } }} onConfirm={() => void removeMember()} />}
   </>;
 }

@@ -14,19 +14,29 @@ export interface UsePaginationResult<T> {
   canGoPrev: boolean;
 }
 
+function requirePositiveInteger(value: number): number {
+  if (!Number.isSafeInteger(value) || value < 1) {
+    throw new RangeError('Pagination page size must be a positive integer');
+  }
+  return value;
+}
+
 export function usePagination<T>(
   items: T[],
   initialPageSize: number = 10,
   initialPage: number = 1,
 ): UsePaginationResult<T> {
-  const [pageSize, setPageSizeState] = useState(initialPageSize);
-  const [currentPage, setCurrentPage] = useState(initialPage);
+  const [pageSize, setPageSizeState] = useState(() => requirePositiveInteger(initialPageSize));
+  const [storedPage, setCurrentPage] = useState(
+    () => Number.isSafeInteger(initialPage) ? Math.max(1, initialPage) : 1,
+  );
 
   const totalItems = items.length;
   const totalPages = useMemo(
     () => Math.max(1, Math.ceil(totalItems / pageSize)),
     [totalItems, pageSize],
   );
+  const currentPage = Math.min(storedPage, totalPages);
 
   const pageItems = useMemo(() => {
     const start = (currentPage - 1) * pageSize;
@@ -34,17 +44,17 @@ export function usePagination<T>(
   }, [items, currentPage, pageSize]);
 
   useEffect(() => {
-    setPageSizeState(initialPageSize);
+    setPageSizeState(requirePositiveInteger(initialPageSize));
   }, [initialPageSize]);
 
   useEffect(() => {
-    setCurrentPage(1);
-  }, [items.length, pageSize]);
+    if (storedPage > totalPages) setCurrentPage(totalPages);
+  }, [storedPage, totalPages]);
 
   const goToPage = useCallback(
     (page: number) => {
-      const clamped = Math.max(1, Math.min(page, totalPages));
-      setCurrentPage(clamped);
+      if (!Number.isSafeInteger(page)) return;
+      setCurrentPage(Math.max(1, Math.min(page, totalPages)));
     },
     [totalPages],
   );
@@ -58,7 +68,7 @@ export function usePagination<T>(
   }, [currentPage, goToPage]);
 
   const setPageSize = useCallback((size: number) => {
-    setPageSizeState(size);
+    setPageSizeState(requirePositiveInteger(size));
   }, []);
 
   return {

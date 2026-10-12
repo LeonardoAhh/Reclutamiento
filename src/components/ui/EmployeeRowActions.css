@@ -4,3 +4,25 @@
   position: relative;
   display: inline-flex;
 }
+
+.employee-row-actions__inline {
+  display: none;
+}
+
+@media (min-width: 1080px) {
+  .employee-row-actions__menu {
+    display: none;
+  }
+
+  .employee-row-actions__inline {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: var(--design-spacing-xs);
+  }
+
+  .employee-row-actions__inline svg {
+    inline-size: var(--icon-size-control);
+    block-size: var(--icon-size-control);
+  }
+}

@@ -1,6 +1,5 @@
-import { useId, useLayoutEffect, useRef, useState, type FormEvent } from "react";
+import { useId, useLayoutEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { RotateCcw } from "lucide-react";
-import { Link } from "react-router-dom";
 import { enUS, es } from "date-fns/locale";
 import type { Profile } from "@/hooks/useAuth";
 import type { TeamMember } from "@/features/team/types";
@@ -12,15 +11,12 @@ import {
   canReviewLeaveRequests,
   createLeaveRequest,
   leaveTypeLabel,
-  LEAVE_REQUESTS_PATH,
   LEAVE_TYPE_OPTIONS,
   requiresNoticeException,
   validateLeaveDraft,
   type LeaveDraft,
 } from "@/features/leave/requests";
 import { formatCompactDateRange, formatReadableDate, isoToLocalDateString, localDateToIso, localTodayIso, TZ_MX } from "@/lib/dates";
-import { preloadRoute } from "@/lib/routePages";
-import { ORGANIZATION_CHART_PATH } from "./navigation";
 import { HomeLeaveDialog } from "@/pages/home/HomeLeaveDialog";
 import { homeText } from "@/pages/homeTranslations";
 import { LEAVE_POLICY_NOTICE } from "@/pages/homeContent";
@@ -29,9 +25,10 @@ import "./SidebarQuickActions.css";
 type SidebarQuickActionsProps = {
   profile: Profile | null;
   members: readonly TeamMember[];
+  children: (actions: { canReviewRequests: boolean; openLeavePolicy: (focusTarget: HTMLElement) => void }) => ReactNode;
 };
 
-export function SidebarQuickActions({ profile, members }: SidebarQuickActionsProps) {
+export function SidebarQuickActions({ profile, members, children }: SidebarQuickActionsProps) {
   const { language } = useLanguage();
   const en = language === "en";
   const dateLocale = en ? "en-US" : "es-MX";
@@ -41,7 +38,7 @@ export function SidebarQuickActions({ profile, members }: SidebarQuickActionsPro
   const [leaveDraft, setLeaveDraft] = useState<LeaveDraft>({ type: "vacation", startDate: "", endDate: "" });
   const [leaveSaving, setLeaveSaving] = useState(false);
   const [leaveError, setLeaveError] = useState("");
-  const leaveTriggerRef = useRef<HTMLButtonElement>(null);
+  const leaveTriggerRef = useRef<HTMLElement>(null);
   const leaveFormId = useId();
   const leaveFormRef = useRef<HTMLFormElement>(null);
   const leaveSuccessRef = useRef<HTMLHeadingElement>(null);
@@ -66,7 +63,8 @@ export function SidebarQuickActions({ profile, members }: SidebarQuickActionsPro
 
   const leaveCalendarToday = leaveCalendarDate(localTodayIso())!;
 
-  function openLeavePolicy() {
+  function openLeavePolicy(focusTarget: HTMLElement) {
+    leaveTriggerRef.current = focusTarget;
     if (leaveStep === "saved") {
       setLeaveDraft({ type: "vacation", startDate: "", endDate: "" });
       leaveSubmissionRef.current = null;
@@ -110,44 +108,10 @@ export function SidebarQuickActions({ profile, members }: SidebarQuickActionsPro
   }
 
   const canReviewRequests = canReviewLeaveRequests(profile, members);
-  const requestLabel = en ? "Leave" : "Solicitar";
-  const manageLabel = en ? "Requests" : "Gestionar";
-  const organizationLabel = en ? "Org chart" : "Organigrama";
-
   return (
     <>
-      <div className="sidebar__quick-actions" role="group" aria-label={en ? "Quick actions" : "Accesos rápidos"}>
-        {canReviewRequests ? (
-          <Link
-            className="sidebar__quick-action"
-            to={LEAVE_REQUESTS_PATH}
-            onPointerEnter={() => preloadRoute(LEAVE_REQUESTS_PATH)}
-            onFocus={() => preloadRoute(LEAVE_REQUESTS_PATH)}
-          >
-            <span className="sidebar__quick-action-label">{manageLabel}</span>
-          </Link>
-        ) : (
-          <button
-            ref={leaveTriggerRef}
-            type="button"
-            className="sidebar__quick-action"
-            aria-haspopup="dialog"
-            aria-expanded={leavePolicyOpen}
-            onClick={openLeavePolicy}
-          >
-            <span className="sidebar__quick-action-label">{requestLabel}</span>
-          </button>
-        )}
-        <Link
-          className="sidebar__quick-action"
-          to={ORGANIZATION_CHART_PATH}
-          onPointerEnter={() => preloadRoute(ORGANIZATION_CHART_PATH)}
-          onFocus={() => preloadRoute(ORGANIZATION_CHART_PATH)}
-        >
-          <span className="sidebar__quick-action-label">{organizationLabel}</span>
-        </Link>
-      </div>
-      {!canReviewRequests && (
+      {children({ canReviewRequests, openLeavePolicy })}
+      {profile && !canReviewRequests && (
         <HomeLeaveDialog
           triggerRef={leaveTriggerRef}
           isOpen={leavePolicyOpen}

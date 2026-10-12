@@ -627,7 +627,7 @@ export function DataUpdatePage() {
                     </button>
                   </div>
                 ) : (
-                  <>
+                  <div className="data-update-results-panel">
                     <div id="data-update-record-list" className="data-update-record-grid">
                       {pageWorkGroups.flatMap((group) =>
                         group.records.map((record, index) => (
@@ -675,10 +675,9 @@ export function DataUpdatePage() {
                         canGoPrev={recordPagination.canGoPrev}
                         canGoNext={recordPagination.canGoNext}
                         ariaLabel={t("Paginación de registros asignados")}
-                        sticky
                       />
                     )}
-                  </>
+                  </div>
                 )}
               </section>
             </Tabs.Content>
@@ -724,7 +723,7 @@ export function DataUpdatePage() {
                         </button>
                       </div>
                     ) : (
-                      <>
+                      <div className="data-update-results-panel">
                         <div id="data-update-completed-list" className="data-update-record-grid">
                           {completedPagination.pageItems.map((record) => {
                             const phone = record.data.mobilePhone.trim();
@@ -780,10 +779,9 @@ export function DataUpdatePage() {
                             canGoPrev={completedPagination.canGoPrev}
                             canGoNext={completedPagination.canGoNext}
                             ariaLabel={t("Paginación de registros completados")}
-                            sticky
                           />
                         )}
-                      </>
+                      </div>
                     )}
                   </>
                 )}

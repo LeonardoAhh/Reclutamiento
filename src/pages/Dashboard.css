@@ -180,7 +180,7 @@
 }
 
 .dept-card {
-  background: var(--color-canvas);
+  background: var(--color-surface-card);
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-lg);
   overflow: hidden;
@@ -373,7 +373,7 @@
 /* Alert state: cuando el depto tiene vacantes o urgentes pendientes,
    el border-left se oscurece para indicar urgencia */
 .dept-card--alert {
-  background: var(--color-canvas);
+  background: var(--color-surface-card);
 }
 
 .dept-card--alert:hover {

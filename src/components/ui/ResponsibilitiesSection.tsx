@@ -108,7 +108,6 @@ export function ResponsibilitiesSection({
 }: ResponsibilitiesSectionProps) {
   const { language } = useLanguage();
   const copy = suppliedCopy ?? (language === "en" ? RESPONSIBILITIES_COPY_EN : RESPONSIBILITIES_COPY);
-  const countLabel = `${responsibilities.length} ${responsibilities.length === 1 ? copy.singular : copy.plural}`;
 
   return (
     <section
@@ -116,23 +115,12 @@ export function ResponsibilitiesSection({
       aria-labelledby={copy.headingId}
     >
       <header className="responsibilities-section__header">
-        <div className="responsibilities-section__heading">
-          <h2
-            id={copy.headingId}
-            className="responsibilities-section__title"
-          >
-            <span>{copy.title}</span>
-            <span
-              className="responsibilities-section__count"
-              aria-label={countLabel}
-            >
-              {responsibilities.length}
-            </span>
-          </h2>
-          <p className="responsibilities-section__description">
-            {copy.description}
-          </p>
-        </div>
+        <h2
+          id={copy.headingId}
+          className="responsibilities-section__title"
+        >
+          {copy.title}
+        </h2>
 
         {isAdmin && (
           <button type="button" className="btn-primary btn-sm activities-create-action" onClick={onCreate}>

@@ -16,12 +16,6 @@
    PAGE STRUCTURE
 ═══════════════════════════════════════════════════════════ */
 
-.rutas-toolbar {
-  margin-bottom: 0;
-  padding: var(--spacing-md);
-  border-radius: var(--rounded-lg);
-}
-
 /* ── Mobile-first: stacked, single column ── */
 .rutas-layout {
   display: grid;

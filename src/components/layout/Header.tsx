@@ -4,6 +4,8 @@ import type { Language } from "@/contexts/LanguageContext";
 import { useAuth } from "@/hooks/useAuth";
 import { toNaturalCase } from "@/lib/utils";
 import { SidebarActionSearch } from "./SidebarActionSearch";
+import { SidebarQuickActions } from "./SidebarQuickActions";
+import { useTeamDirectory } from "@/features/team/TeamProvider";
 import { UserMenuPopover } from "./UserMenuPopover";
 import "./Header.css";
 
@@ -17,6 +19,7 @@ interface HeaderProps {
 
 export function Header({ pageTitle, onMobileMenuToggle, mobileMenuOpen = false, mobileMenuButtonRef, language }: HeaderProps) {
   const { username, profile } = useAuth();
+  const { members } = useTeamDirectory();
 
   return (
     <header className="app-header" id="main-header">
@@ -47,7 +50,11 @@ export function Header({ pageTitle, onMobileMenuToggle, mobileMenuOpen = false, 
         </div>
 
         <div className="app-header__actions">
-          <SidebarActionSearch mobileMenuOpen={mobileMenuOpen} />
+          <SidebarQuickActions profile={profile} members={members}>
+            {(quickActions) => (
+              <SidebarActionSearch mobileMenuOpen={mobileMenuOpen} quickActions={profile ? quickActions : undefined} />
+            )}
+          </SidebarQuickActions>
           {username && (
             <UserMenuPopover
               displayName={toNaturalCase(profile?.display_name || username, {

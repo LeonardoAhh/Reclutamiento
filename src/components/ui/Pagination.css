@@ -1,32 +1,48 @@
-/* ─────────────────────────────────────────────────────────────────────────
-   Pagination.css — Mobile-first · shared white-theme tokens
-   Shared page controls: previous, page count, next.
-   ───────────────────────────────────────────────────────────────────────── */
-
 .pagination {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-sm) 0;
-  width: 100%;
+  gap: var(--design-spacing-xxs);
+  padding: var(--design-spacing-xs) 0;
+  inline-size: 100%;
 }
 
 .pagination--sticky {
   position: sticky;
   inset-block-end: 0;
   z-index: var(--layer-sticky-navigation);
-  padding-block-end: calc(var(--spacing-sm) + var(--safe-area-bottom));
+  padding-block-end: calc(var(--design-spacing-xs) + var(--safe-area-bottom));
+  border-block-start: var(--border-width) solid var(--color-hairline);
+  background: var(--color-surface-card);
 }
 
 .pagination__text {
-  color: var(--color-muted);
-  min-inline-size: var(--pagination-label-min-inline-size);
-  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--design-spacing-xxs);
+  min-inline-size: 0;
+  color: var(--color-body);
   white-space: nowrap;
-  user-select: none;
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.pagination__input {
+  box-sizing: border-box;
+  min-inline-size: var(--touch-target-min);
+  block-size: var(--touch-target-min);
+  padding-inline: var(--design-spacing-xxs);
+  border: var(--border-width) solid var(--color-control-border);
+  border-radius: var(--rounded-md);
+  background: var(--color-canvas-elevated);
+  color: var(--color-ink);
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: max(var(--type-body-md-size), var(--editable-text-min-size, var(--type-body-md-size)));
   font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
   letter-spacing: var(--type-body-md-tracking);
