@@ -33,6 +33,14 @@
   background: inherit;
   color: var(--color-ink);
 }
+.kanban-column__header-actions,
+.kanban-column__pagination {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: var(--design-spacing-xxs);
+}
+.kanban-column__pagination[aria-hidden="true"] { visibility: hidden; }
 .badge.kanban-column__count {
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);

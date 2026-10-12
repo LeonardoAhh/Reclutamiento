@@ -122,7 +122,7 @@ function KanbanWorkspace({ userId, archived, focusView, onChangeView }: {
         {board.ready && archived && board.tasks.length === 0 && <p className="type-body-md">{t.archiveEmpty}</p>}
         {board.ready && (archived ? <ArchivedTasks tasks={board.tasks} copy={t} disabled={disabled} onRestore={archive} />
           : <KanbanBoard tasks={board.tasks} copy={t} disabled={disabled} busy={board.busy} now={now}
-            editor={editor} error={actionError} onEdit={task => openEditor(task)}
+            editor={editor} error={actionError} language={language} onEdit={task => openEditor(task)}
             getAddButton={() => addButtonRef.current}
             onDelete={remove} onMove={move} onArchive={archive}
             onSave={save} onCloseEditor={() => { setEditor(null); board.clearActionError(); }} />)}
