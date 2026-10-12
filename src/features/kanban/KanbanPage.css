@@ -26,7 +26,7 @@
   justify-content: space-between;
   gap: var(--design-spacing-xs);
   min-width: 0;
-  padding: var(--design-spacing-md);
+  padding: var(--design-spacing-xs) var(--design-spacing-md);
   border-bottom: var(--border-width) solid var(--color-hairline);
   border-start-start-radius: var(--rounded-lg);
   border-start-end-radius: var(--rounded-lg);
@@ -80,6 +80,7 @@
 .kanban-task--card {
   position: relative;
   gap: var(--design-spacing-xxs);
+  padding: var(--design-spacing-sm);
   border-color: var(--color-hairline-strong);
   box-shadow: var(--shadow-xs);
 }
@@ -129,7 +130,14 @@
 }
 .kanban-task__open:active { cursor: grabbing; }
 .kanban-task__open:disabled { cursor: not-allowed; }
-.kanban-task__description { white-space: pre-wrap; color: var(--color-body); }
+.kanban-task__description {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  white-space: pre-wrap;
+  color: var(--color-body);
+}
 .kanban-task__actions, .kanban-feedback {
   display: flex;
   flex-wrap: wrap;
