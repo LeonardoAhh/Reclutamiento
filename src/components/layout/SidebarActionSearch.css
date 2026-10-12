@@ -98,6 +98,7 @@
   line-height: var(--type-body-md-line);
   letter-spacing: var(--type-body-md-tracking);
   text-align: start;
+  text-decoration: none;
   cursor: pointer;
 }
 

@@ -17,6 +17,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 
 const PAGE_TITLES: Readonly<Record<string, string>> = {
   [HOME_PATH]: 'Inicio',
+  '/kanban': 'Kanban',
   [CAREER_PATH]: 'Tu camino profesional',
   '/employee-turnover': 'Rotación',
   '/departure-reasons': 'Motivos de baja',

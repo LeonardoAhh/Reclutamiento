@@ -81,3 +81,6 @@ create policy "candidates_modify_recruiter"
 `061_leave_request_admin_delete.sql` habilita la eliminación de cualquier solicitud pendiente para administradores y conserva la eliminación propia para coordinadores activos. Mantiene la confirmación del cliente, RLS y el bloqueo de borrados directos; la RPC anterior queda como llamada compatible. Se aplica después de 060 y no elimina solicitudes al desplegarse.
 
 `062_leave_request_approval.sql` permite a administradores autorizar solicitudes pendientes de otras personas y registra quién y cuándo autorizó. La RPC restringe el cambio de estado; no concede actualización directa de la tabla. El rango de fechas sigue bloqueado para reclutadores tanto si la solicitud está pendiente como si está autorizada. Se aplica después de 061 y conserva los registros existentes.
+
+
+`063_personal_kanban.sql` crea un tablero individual por usuario con RLS por propietario, CRUD y control de versiones contra sobrescrituras concurrentes. No comparte pendientes ni altera activities. Aplicar después de 062; preparar este archivo no ejecuta la migración. Para revertir la interfaz, retirar la ruta y la acción de búsqueda, conservando la tabla y sus datos.

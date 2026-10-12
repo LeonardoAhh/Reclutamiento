@@ -1,0 +1,34 @@
+﻿.kanban-badge {
+  gap: var(--design-spacing-xxs);
+  min-height: var(--icon-size-lg);
+  padding: var(--design-spacing-xxs) var(--design-spacing-xs);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-sm);
+  background: var(--color-canvas-elevated);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.kanban-badge[data-kind="activity"] { --kanban-badge-accent: var(--color-accent-purple); }
+.kanban-badge[data-kind="process"] { --kanban-badge-accent: var(--color-accent-orange); }
+.kanban-badge[data-kind="interview"] { --kanban-badge-accent: var(--color-accent-teal); }
+.kanban-badge[data-kind="todo"] { --kanban-badge-accent: var(--color-magenta); }
+.kanban-badge[data-kind] { border-color: var(--kanban-badge-accent); }
+.kanban-badge[data-kind] > svg { color: var(--kanban-badge-accent); }
+.kanban-badge[data-state="pending"] {
+  background: var(--color-warning-subtle);
+  color: var(--color-warning-text);
+}
+.kanban-badge[data-state="in_progress"] {
+  background: var(--color-primary-tint);
+  color: var(--color-primary);
+}
+.kanban-badge[data-state="completed"] {
+  background: var(--color-success-subtle);
+  color: var(--color-success-text);
+}

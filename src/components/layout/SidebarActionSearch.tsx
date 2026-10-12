@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState, type KeyboardEvent } from 'react';
-import { CalendarDays, ContactRound, Network, Search, UserRoundPlus } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { CalendarDays, Columns3, ContactRound, Network, Search, UserRoundPlus } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { KANBAN_PATH } from '@/features/kanban/types';
 import { SearchField } from '@/components/ui/SearchField';
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
@@ -48,7 +49,7 @@ export function SidebarActionSearch({ mobileMenuOpen, quickActions }: SidebarAct
   const desktopInputRef = useRef<HTMLInputElement>(null);
   const mobileTriggerRef = useRef<HTMLButtonElement>(null);
   const activeInputRef = isDesktop ? desktopInputRef : inputRef;
-  const actionRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const actionRefs = useRef<Array<HTMLButtonElement | HTMLAnchorElement | null>>([]);
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const actions = [
@@ -60,6 +61,7 @@ export function SidebarActionSearch({ mobileMenuOpen, quickActions }: SidebarAct
       keywords: 'solicitudes permisos vacaciones requests leave gestionar solicitar',
     }] : []),
     ORGANIZATION_ACTION,
+    { id: 'kanban' as const, path: KANBAN_PATH, icon: Columns3, es: 'Kanban', en: 'Kanban', keywords: 'tablero board pendientes tareas actividades procesos entrevistas tasks activities processes interviews' },
   ];
   const normalizedQuery = normalizeString(query);
   const results = actions.filter((action) =>
@@ -95,6 +97,8 @@ export function SidebarActionSearch({ mobileMenuOpen, quickActions }: SidebarAct
     setQuery('');
     if (action.id === 'requests') {
       navigate(LEAVE_REQUESTS_PATH);
+    } else if (action.id === 'kanban') {
+      navigate(KANBAN_PATH);
     } else if (action.id === 'org-chart') {
       navigate(ORGANIZATION_CHART_PATH);
     } else {
@@ -113,7 +117,7 @@ export function SidebarActionSearch({ mobileMenuOpen, quickActions }: SidebarAct
     }
   }
 
-  function handleActionKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
+  function handleActionKeyDown(event: KeyboardEvent<HTMLElement>, index: number) {
     if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
       event.preventDefault();
       const next = index + (event.key === 'ArrowDown' ? 1 : -1);
@@ -205,6 +209,19 @@ export function SidebarActionSearch({ mobileMenuOpen, quickActions }: SidebarAct
             <ul className="sidebar-action-search__list" aria-label={language === 'en' ? 'Available actions' : 'Acciones disponibles'}>
               {results.map((action, index) => {
                 const Icon = action.icon;
+                if (action.id === 'kanban') return (
+                  <li key={action.id}>
+                    <Link to={KANBAN_PATH} className="sidebar-action-search__action"
+                      ref={(node) => { actionRefs.current[index] = node; }}
+                      onClick={() => { setOpen(false); setQuery(''); }}
+                      onKeyDown={(event) => handleActionKeyDown(event, index)}
+                      onPointerEnter={() => preloadRoute(KANBAN_PATH)}
+                      onFocus={() => preloadRoute(KANBAN_PATH)}>
+                      <Icon size="var(--icon-size-md)" aria-hidden="true" />
+                      <span>{language === 'en' ? action.en : action.es}</span>
+                    </Link>
+                  </li>
+                );
                 return (
                   <li key={action.id}>
                     <button

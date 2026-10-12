@@ -203,7 +203,7 @@ export function Sidebar({
             <span className="sidebar__logout-surface sidebar__logout-surface--confirm">
               {signOutLoading
                 ? language === "en" ? "Signing out…" : "Cerrando sesión…"
-                : language === "en" ? "Sign out" : "Cerrar sesión"}
+                : language === "en" ? "Confirm" : "Confirmar"}
             </span>
           </button>
         </div>

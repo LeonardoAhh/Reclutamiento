@@ -30,6 +30,7 @@ import { REPORT_COMPARISON_PATH, REPORT_DAY_ROUTE } from '@/components/reporte-d
 import { CANDIDATE_METRICS_PATH } from '@/pages/candidate-metrics/navigation';
 import { CAREER_JOURNEY_ENABLED, CAREER_PATH } from '@/features/career/types';
 import { LEAVE_REQUESTS_PATH } from '@/features/leave/requests';
+import { KANBAN_PATH } from '@/features/kanban/types';
 import { useLanguage } from '@/contexts/LanguageContext';
 import {
   AccountPage,
@@ -42,6 +43,7 @@ import {
   DataUpdatePage,
   HomePage,
   KpisPage,
+  KanbanPage,
   LeaveRequestsPage,
   MotivosBaja,
   OrganizationChartPage,
@@ -169,6 +171,7 @@ function App() {
                 </Route>
                 <Route path="/departure-reasons" element={<MotivosBaja />} />
                 <Route path={ACTIVIDADES_PATH} element={<Actividades />} />
+                <Route path={KANBAN_PATH} element={<KanbanPage />} />
                 <Route path={DATA_UPDATE_PATH} element={<DataUpdatePage />} />
                 <Route path={ACCOUNT_PATH} element={<AccountPage />} />
                 <Route path={TEAM_PATH} element={<TeamPage />} />

@@ -15,6 +15,7 @@ import { REPORT_COMPARISON_PATH } from '@/components/reporte-diario/navigation';
 import { CANDIDATE_METRICS_PATH } from '@/pages/candidate-metrics/navigation';
 import { CAREER_PATH } from '@/features/career/types';
 import { LEAVE_REQUESTS_PATH } from '@/features/leave/requests';
+import { KANBAN_PATH } from '@/features/kanban/types';
 
 /** Las páginas de ruta no reciben props: toman sus datos del router y contexto. */
 type AnyComponent = ComponentType;
@@ -44,6 +45,7 @@ export function lazyWithPreload<T extends AnyComponent>(
   return component;
 }
 
+export const KanbanPage = lazyWithPreload(() => import('@/features/kanban/KanbanPage').then(({ KanbanPage }) => ({ default: KanbanPage })));
 export const CareerPage = lazyWithPreload(() => import('@/features/career/CareerPage').then(({ CareerPage }) => ({ default: CareerPage })));
 export const Dashboard = lazyWithPreload(() => import('@/pages/Dashboard').then(({ Dashboard }) => ({ default: Dashboard })));
 export const CandidateMetricsPage = lazyWithPreload(() => import('@/pages/CandidateMetricsPage').then(({ CandidateMetricsPage }) => ({ default: CandidateMetricsPage })));
@@ -101,6 +103,7 @@ const CONFIGURACION_BONES: Readonly<Record<string, RouteBones>> = {
 /** Orden relevante: las rutas exactas anidadas van antes que sus prefijos. */
 const ROUTE_PAGES: readonly RoutePage[] = [
   { matches: exact(HOME_PATH), page: HomePage },
+  { matches: exact(KANBAN_PATH), page: KanbanPage },
   { matches: exact(ORGANIZATION_CHART_PATH), page: OrganizationChartPage },
   { matches: exact(LEAVE_REQUESTS_PATH), page: LeaveRequestsPage, bones: pageBones('leave-requests-page') },
   { matches: exact(CAREER_PATH), page: CareerPage },

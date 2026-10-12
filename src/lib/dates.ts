@@ -219,6 +219,21 @@ export function formatReadableDate(iso: string | null | undefined, locale = 'es-
 }
 
 
+/** Fecha para metadatos compactos (10 Oct 26), con mes localizado y zona MX. */
+export function formatMetadataDate(iso: string | null | undefined, locale = 'es-MX'): string {
+  if (!iso?.trim()) return '—';
+  const dateOnly = parseDdMmYyyy(iso.trim());
+  const date = dateOnly ? new Date(`${dateOnly}T12:00:00${MX_UTC_OFFSET}`) : new Date(iso);
+  if (Number.isNaN(date.getTime())) return '—';
+  const parts = new Intl.DateTimeFormat(locale, {
+    day: 'numeric', month: 'short', year: '2-digit', timeZone: TZ_MX,
+  }).formatToParts(date);
+  const day = parts.find(part => part.type === 'day')?.value ?? '';
+  const month = (parts.find(part => part.type === 'month')?.value ?? '').replace(/\./g, '');
+  const year = parts.find(part => part.type === 'year')?.value ?? '';
+  return `${day} ${month.charAt(0).toLocaleUpperCase(locale)}${month.slice(1)} ${year}`;
+}
+
 /** Rango compacto para superficies estrechas; conserva ambos años si cambian. */
 export function formatCompactDateRange(startInput: string, endInput: string, locale = 'es-MX'): string {
   const start = parseDdMmYyyy(startInput);
