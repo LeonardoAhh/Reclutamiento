@@ -123,6 +123,14 @@ export function localDateToIso(input: string | null | undefined): string | null 
   return d.toISOString();
 }
 
+/** Convierte fecha y hora de controles locales MX a un instante ISO. */
+export function localDateTimeToIso(date: string, time: string): string | null {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || Number(date.slice(0, 4)) < 1
+    || addDaysToIso(date, 0)?.padStart(10, '0') !== date || !/^([01]\d|2[0-3]):[0-5]\d$/.test(time)) return null;
+  const instant = new Date(`${date}T${time}:00${MX_UTC_OFFSET}`);
+  return Number.isNaN(instant.getTime()) ? null : instant.toISOString();
+}
+
 /**
  * Extrae el día calendario (`YYYY-MM-DD`) de un ISO, evaluando en TZ MX.
  * Inverso de `localDateToIso`; safe para round-trip con

@@ -16,6 +16,7 @@ export interface ModalProps {
   labelledById?: string;
   /** Botones de acción que se mostrarán en el footer */
   footerActions?: React.ReactNode;
+  headerActions?: React.ReactNode;
   size?: "xs" | "sm" | "md" | "lg" | "xl";
   placement?: "center" | "bottom";
   presentation?: "modal" | "sheet";
@@ -66,6 +67,7 @@ export function Modal({
   className = "",
   labelledById,
   footerActions,
+  headerActions,
   size = "md",
   placement,
   presentation: presentationOverride,
@@ -176,6 +178,7 @@ export function Modal({
         className={className}
         labelledById={labelledById}
         footerActions={footerActions}
+        headerActions={headerActions}
         size={size}
         hideCloseButton={hideCloseButton}
         closeLabel={closeLabel}
@@ -230,6 +233,7 @@ export function Modal({
               <h2 id={titleId}>{title}</h2>
             </div>
           </div>
+          {headerActions}
           {!hideCloseButton && (
             <button
               type="button"

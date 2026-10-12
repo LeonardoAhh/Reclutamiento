@@ -84,3 +84,11 @@ create policy "candidates_modify_recruiter"
 
 
 `063_personal_kanban.sql` crea un tablero individual por usuario con RLS por propietario, CRUD y control de versiones contra sobrescrituras concurrentes. No comparte pendientes ni altera activities. Aplicar después de 062; preparar este archivo no ejecuta la migración. Para revertir la interfaz, retirar la ruta y la acción de búsqueda, conservando la tabla y sus datos.
+
+`064_kanban_planning.sql` amplía el tablero con fecha/hora objetivo, checklist validada, orden manual y archivo reversible. Aplicar después de 063 y antes de desplegar esta interfaz. No actualiza pendientes existentes: campos opcionales quedan vacíos, checklist vacía y posición 0 conserva el orden previo por creación. RLS permanece por propietario; las RPC comprueban identidad, rol vigente, acceso de aplicación, contraseña y versión. El archivado se realiza en servidor sin conceder actualización directa de archived_at; ordenar devuelve las versiones de las filas afectadas.
+
+Verificación posterior al despliegue: crear un pendiente con fecha/hora y pasos, recargar y comprobar persistencia; ordenar dos tarjetas dentro de una columna y mover entre estados; archivar un completado y restaurarlo; comprobar que otra cuenta no pueda leer ni modificar esos registros y que una versión obsoleta produzca conflicto. La migración queda preparada, sin ejecución automática.
+
+Reversión compatible: volver a la interfaz anterior conservando columnas, funciones y datos; retirar los accesos nuevos de UI sin borrar checklist, fechas, posiciones ni archivo. Los clientes anteriores pueden seguir leyendo y editando campos anteriores, pero no reconocen el archivo; mostrarán también esas filas. No eliminar columnas ni funciones para revertir. No se incluye una contracción destructiva.
+
+Reintentos de 064: ejecutar el archivo completo actualizado. Las funciones usan CREATE OR REPLACE, las columnas e índice IF NOT EXISTS y las restricciones se añaden solo si falta su nombre en kanban_tasks. Esto resuelve 42723 por valid_kanban_checklist ya existente sin eliminar funciones ni datos. La migración no se ejecuta desde el cliente.

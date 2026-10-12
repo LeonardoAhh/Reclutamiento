@@ -11,7 +11,7 @@ type FormSheetProps = ModalProps & {
 };
 
 export function FormSheet({
-  isOpen, onClose, onBack, className, icon, title, footerActions, children,
+  isOpen, onClose, onBack, className, icon, title, footerActions, headerActions, children,
   hideCloseButton = false, closeLabel, labelledById, returnFocusRef,
 }: FormSheetProps) {
   const triggerRef = useRef<HTMLElement | null>(null);
@@ -46,6 +46,7 @@ export function FormSheet({
             ) : icon}
             <SheetTitle>{labelledById ? <span id={labelledById}>{title}</span> : title}</SheetTitle>
           </div>
+          {headerActions}
         </SheetHeader>
         <div className="modal-scroll-region">{children}</div>
         {footerActions && <SheetFooter>{footerActions}</SheetFooter>}

@@ -1,11 +1,15 @@
-import { useId, useState } from 'react';
+import { useCallback, useId, useRef, useState } from 'react';
+import { Archive, ArrowLeft } from 'lucide-react';
 import { PageHeading } from '@/components/layout/PageHeading';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { kanbanCopy } from './copy';
 import { KanbanBoard, type KanbanEditor } from './KanbanBoard';
+import { KanbanSkeleton } from './KanbanSkeleton';
+import { ArchivedTasks } from './ArchivedTasks';
 import type { KanbanTask, TaskDraft, TaskStatus } from './types';
 import { useKanban } from './useKanban';
+import { useKanbanClock } from './useKanbanClock';
 import './KanbanPage.css';
 
 export function KanbanPage() {
@@ -13,12 +17,30 @@ export function KanbanPage() {
   return profile ? <PersonalKanban key={profile.id} userId={profile.id} /> : null;
 }
 function PersonalKanban({ userId }: { userId: string }) {
+  const [archived, setArchived] = useState(false);
+  const [focusView, setFocusView] = useState(false);
+  return <KanbanWorkspace key={String(archived)} userId={userId} archived={archived} focusView={focusView}
+    onChangeView={value => { setFocusView(true); setArchived(value); }} />;
+}
+function KanbanWorkspace({ userId, archived, focusView, onChangeView }: {
+  userId: string; archived: boolean; focusView: boolean; onChangeView: (value: boolean) => void;
+}) {
   const { language } = useLanguage();
   const t = kanbanCopy[language];
-  const board = useKanban(userId);
+  const board = useKanban(userId, archived);
+  const now = useKanbanClock();
   const id = useId();
+  const viewRef = useRef<HTMLButtonElement>(null);
   const [editor, setEditor] = useState<KanbanEditor | null>(null);
   const [message, setMessage] = useState('');
+  const viewFocusDone = useRef(false);
+  const attachViewButton = useCallback((node: HTMLButtonElement | null) => {
+    viewRef.current = node;
+    if (node && focusView && !viewFocusDone.current) {
+      viewFocusDone.current = true;
+      node.focus();
+    }
+  }, [focusView]);
   const disabled = board.busy || board.loading || !board.ready;
   const actionError = board.actionError ? t.errors[board.actionError] : '';
   function openEditor(task: KanbanTask | null, status: TaskStatus = 'pending') {
@@ -32,10 +54,10 @@ function PersonalKanban({ userId }: { userId: string }) {
     if (saved) { setEditor(null); setMessage(t.saved); }
     return saved;
   }
-  async function move(task: KanbanTask, status: TaskStatus) {
+  async function move(task: KanbanTask, status: TaskStatus, beforeId: string | null) {
     setMessage('');
-    const saved = await board.save(task.id, { ...task, status }, task.version);
-    if (saved) setMessage(`${t.changed}: ${task.title}, ${t.statuses[status]}`);
+    const saved = await board.reorder(task, status, beforeId);
+    if (saved) setMessage(`${t.reordered}: ${task.title}, ${t.statuses[status]}`);
     return saved;
   }
   async function remove(task: KanbanTask) {
@@ -44,30 +66,57 @@ function PersonalKanban({ userId }: { userId: string }) {
     if (removed) { setEditor(null); setMessage(t.deleted); }
     return removed;
   }
+  async function archive(task: KanbanTask) {
+    setMessage('');
+    const saved = await board.archive(task, !archived);
+    if (saved) {
+      setEditor(null); setMessage(archived ? t.restored : t.archived);
+      if (archived) requestAnimationFrame(() => viewRef.current?.focus());
+    }
+    return saved;
+  }
+  const viewAction = (
+        <button ref={attachViewButton} type="button" className="kanban-view-button" disabled={board.busy || editor !== null}
+          aria-controls={id} onClick={() => onChangeView(!archived)}>
+          {archived ? <ArrowLeft size="var(--icon-size-sm)" aria-hidden="true" /> : <Archive size="var(--icon-size-sm)" aria-hidden="true" />}
+          {archived ? t.backToBoard : t.archiveView}
+        </button>
+  );
   return (
     <div className="container kanban-page type-body-md">
       <PageHeading className="app-page-title">{t.title}</PageHeading>
-      <p className={board.loading ? "type-body-md" : "sr-only"} role="status">{board.loading ? t.loading : message}</p>
+
+      {!(board.loading && !board.ready) && <p className="sr-only" role="status">{board.loading ? t.loading : message}</p>}
       {board.loadError && <div className="kanban-feedback">
         <p className="form-error-text" role="alert">{t.errors[board.loadError]}</p>
         <button type="button" className="btn-secondary" disabled={board.loading || board.busy || editor !== null}
           onClick={() => { void board.load(); }}>{t.retry}</button>
       </div>}
-      {actionError && !editor && <p className="form-error-text" role="alert">{actionError}</p>}
-      <section aria-busy={board.loading} aria-labelledby={id} className="kanban-content">
-        <h2 id={id} className="sr-only">{t.board}</h2>
-        {board.ready && board.tasks.length === 0 && <div className="kanban-notice">
-          <p className="type-body-strong">{t.empty}</p>
-          <p className="type-body-md">{t.emptyText}</p>
-        </div>}
-        {board.ready && <KanbanBoard tasks={board.tasks} copy={t} disabled={disabled} busy={board.busy}
-          editor={editor} error={actionError} onCreate={status => openEditor(null, status)} onEdit={task => openEditor(task)}
-          onDelete={remove} onMove={move}
-          onSave={save} onCloseEditor={() => { setEditor(null); board.clearActionError(); }} />}
+      {actionError && !editor && <div className="kanban-feedback">
+        <p className="form-error-text" role="alert">{actionError}</p>
+        <button type="button" className="btn-secondary" disabled={disabled}
+          onClick={() => { board.clearActionError(); void board.load(); }}>{t.retry}</button>
+      </div>}
+      <section id={id} aria-busy={board.loading} aria-labelledby={`${id}-heading`} className="kanban-content">
+        {!archived && <h2 id={`${id}-heading`} className="sr-only">{t.board}</h2>}
+        <div className="kanban-content__header">
+          {archived ? <h2 id={`${id}-heading`} className="type-body-strong">{t.archiveView}</h2>
+            : board.ready && board.tasks.length === 0 ? <p className="type-body-md">
+              <span className="type-body-strong">{t.empty}.</span>{' '}{t.emptyText}
+            </p> : null}
+          {viewAction}
+        </div>
+        {board.loading && !board.ready && <KanbanSkeleton label={t.loading} />}
+        {board.ready && archived && board.tasks.length === 0 && <p className="type-body-md">{t.archiveEmpty}</p>}
+        {board.ready && (archived ? <ArchivedTasks tasks={board.tasks} copy={t} disabled={disabled} onRestore={archive} />
+          : <KanbanBoard tasks={board.tasks} copy={t} disabled={disabled} busy={board.busy} now={now}
+            editor={editor} error={actionError} onCreate={status => openEditor(null, status)} onEdit={task => openEditor(task)}
+            onDelete={remove} onMove={move} onArchive={archive}
+            onSave={save} onCloseEditor={() => { setEditor(null); board.clearActionError(); }} />)}
       </section>
       {board.ready && board.tasks.length < board.total && <div className="kanban-more">
         <button type="button" className="btn-secondary" disabled={disabled || editor !== null}
-          onClick={() => { void board.load(board.tasks.length); }}>{t.more}</button>
+          onClick={() => { void board.load(board.tasks.map(task => task.id)); }}>{t.more}</button>
       </div>}
     </div>
   );
