@@ -1,0 +1,16 @@
+.activity-reference-image {
+  display: block;
+  min-inline-size: 0;
+  min-block-size: var(--touch-target-min);
+  overflow: hidden;
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  background: var(--color-canvas-soft);
+}
+
+.activity-reference-image img {
+  display: block;
+  inline-size: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: contain;
+}

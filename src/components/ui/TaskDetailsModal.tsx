@@ -3,7 +3,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { Modal } from "./Modal";
 import { CustomSelect } from "./CustomSelect";
 import { AttachmentCard } from "./AttachmentCard";
-import { ExpandableReferenceImage } from "./ExpandableReferenceImage";
+import { ReferenceImageLink } from "./ReferenceImageLink";
 import { Activity, ActivityStatus, ActivityProof } from "@/lib/types";
 
 interface TaskDetailsModalProps {
@@ -62,7 +62,7 @@ export function TaskDetailsModal({
     >
       {activity && (
         <div className="modal-body">
-          {activity.reference_image && <ExpandableReferenceImage key={activity.reference_image} src={activity.reference_image} />}
+          {activity.reference_image && <ReferenceImageLink src={activity.reference_image} />}
           <div className="activity-detail-grid">
             <div className="form-group">
               <label htmlFor="detail-estado">{en ? "Status" : "Estado"}</label>

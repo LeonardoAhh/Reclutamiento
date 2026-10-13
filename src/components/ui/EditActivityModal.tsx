@@ -7,7 +7,7 @@ import { SmartTextarea } from "./SmartTextarea";
 import { AttachmentCard } from "./AttachmentCard";
 import { AssignmentMeta, type AssignmentPerson } from "./AssignmentMeta";
 import { getResponsibilityContent } from "./responsibilityContent";
-import { ExpandableReferenceImage } from "./ExpandableReferenceImage";
+import { ReferenceImageLink } from "./ReferenceImageLink";
 import type { Activity, AssignableActivityType } from "@/lib/types";
 
 const EDIT_MODAL_CONTENT: Record<
@@ -144,7 +144,7 @@ export function EditActivityModal({
       }
     >
       {showingPreview && previewActivity ? <div className="responsibility-detail type-body-md">
-        {previewActivity.reference_image && <ExpandableReferenceImage key={previewActivity.reference_image} src={previewActivity.reference_image} />}
+        {previewActivity.reference_image && <ReferenceImageLink src={previewActivity.reference_image} />}
         {previewContent?.description && <p className="responsibility-detail__description">{previewContent.description}</p>}
         {previewContent?.area && <p className="responsibility-detail__area">{previewContent.area}</p>}
         <div className="responsibility-detail__assignment">
