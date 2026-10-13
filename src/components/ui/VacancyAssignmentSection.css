@@ -7,7 +7,7 @@
 .vacancy-assignment-section__header {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  align-items: start;
+  align-items: center;
   gap: var(--spacing-md);
   margin-block-end: var(--spacing-lg);
 }
@@ -17,10 +17,10 @@
   margin: 0;
   color: var(--color-ink);
   font-family: var(--font-body);
-  font-size: var(--type-body-strong-size);
-  font-weight: var(--type-body-strong-weight);
-  line-height: var(--type-body-strong-line);
-  letter-spacing: var(--type-body-strong-tracking);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+  letter-spacing: var(--type-heading-sm-tracking);
 }
 
 .vacancy-assignment-groups,
@@ -86,6 +86,7 @@
   min-inline-size: 0;
   flex-direction: column;
   gap: var(--spacing-md);
+  border-color: var(--color-hairline-strong);
 }
 
 .vacancy-assignment-card__body {
@@ -182,7 +183,7 @@
   gap: var(--design-spacing-xs);
   margin-block-start: auto;
   padding-block-start: var(--design-spacing-sm);
-  border-block-start: var(--border-width) solid var(--color-hairline);
+  border-block-start: var(--border-width) solid var(--color-hairline-strong);
 }
 
 .vacancy-assignment-card__footer .assignment-meta {
@@ -211,8 +212,8 @@
 .vacancy-assignment-card__footer .assignment-meta__badge {
   padding-block: 0;
   padding-inline: var(--design-spacing-xs);
-  border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-md);
+  border: var(--border-width) solid var(--color-hairline-strong);
+  border-radius: var(--rounded-sm);
   background: var(--color-surface);
 }
 
@@ -241,7 +242,6 @@
 
 .vacancy-assignment-card__select .custom-select-trigger:hover:not(:disabled) .vacancy-assignment-card__action-label {
   border-color: var(--color-charcoal);
-  background: var(--color-surface-soft);
 }
 .vacancy-assignment-card__action {
   display: inline-flex;
@@ -271,7 +271,7 @@
   padding-inline: var(--design-spacing-xs);
   border: var(--border-width) solid var(--color-control-border);
   border-radius: var(--rounded-md);
-  background: var(--color-canvas-elevated);
+  background: transparent;
   white-space: nowrap;
 }
 
@@ -305,22 +305,15 @@
 
 .vacancy-assignment-card__action:hover .vacancy-assignment-card__action-label {
   border-color: var(--color-charcoal);
-  background: var(--color-surface-soft);
 }
 
 .vacancy-assignment-card__action--delete {
   color: var(--color-error-text);
 }
 
-.vacancy-assignment-card__action--delete .vacancy-assignment-card__action-label {
-  border-color: var(--color-control-border);
-  background: var(--color-canvas-elevated);
-}
-
 .vacancy-assignment-card__action--delete:hover .vacancy-assignment-card__action-label,
 .vacancy-assignment-card__action--delete[aria-busy="true"] .vacancy-assignment-card__action-label {
   border-color: var(--color-error-text);
-  background: var(--color-error-subtle);
 }
 
 .vacancy-assignment-section__empty {
@@ -328,7 +321,7 @@
   flex-direction: column;
   align-items: center;
   padding: var(--spacing-xxl) var(--spacing-lg);
-  border: var(--border-width) dashed var(--color-hairline);
+  border: var(--border-width) dashed var(--color-hairline-strong);
   border-radius: var(--rounded-lg);
   background: var(--color-surface-card);
   text-align: center;

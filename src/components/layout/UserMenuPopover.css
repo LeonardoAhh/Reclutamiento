@@ -6,14 +6,14 @@
   min-block-size: var(--touch-target-min);
   max-inline-size: var(--feature-account-menu-inline-size);
   padding: 0;
-  border-color: transparent;
+  border: 0;
   border-radius: var(--rounded-md);
   background: transparent;
   color: var(--color-ink);
 }
 
 .user-menu-trigger.dropdown-menu-trigger:is(:hover, [data-state="open"]) {
-  border-color: transparent;
+  border: 0;
   background: transparent;
 }
 
@@ -26,13 +26,9 @@
   min-block-size: calc(var(--touch-target-min) - var(--design-spacing-sm));
   max-inline-size: 100%;
   padding-inline: var(--design-spacing-xxs);
-  border: var(--border-width) solid var(--color-control-border);
+  border: 0;
   border-radius: var(--rounded-md);
-  background: var(--color-canvas-elevated);
-}
-
-.user-menu-trigger.dropdown-menu-trigger:is(:hover, [data-state="open"]) .user-menu-trigger__surface {
-  background: var(--color-surface-soft);
+  background: transparent;
 }
 
 .user-menu-trigger .ui-avatar {

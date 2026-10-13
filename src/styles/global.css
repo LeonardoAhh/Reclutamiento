@@ -26,15 +26,24 @@
   --color-surface-strong: #dde1e6;
   --color-surface-dark: #23262a;
   --color-surface-dark-elevated: #343b43;
-  --color-document-paper: #ffffff; /* Salida oficial imprimible, independiente del tema */
-  --color-document-ink: #000000; /* Texto de salidas oficiales */
-  --color-document-muted: #615d59; /* Texto secundario de salidas oficiales */
-  --color-document-soft: #f2f2f2; /* Panel secundario de salidas oficiales */
-  --color-document-hairline: #d9d9d9; /* Bordes de salidas oficiales */
-  --color-document-table-header: #8c8c8c; /* Encabezados de tablas imprimibles */
-  --color-document-table-row-alternate: #e5e5e5; /* Filas alternas imprimibles */
-  --color-document-primary: #000000; /* Encabezado de salidas oficiales */
-  --color-document-on-primary: #ffffff; /* Texto sobre encabezado oficial */
+  --color-document-paper: #ffffff;
+  /* Salida oficial imprimible, independiente del tema */
+  --color-document-ink: #000000;
+  /* Texto de salidas oficiales */
+  --color-document-muted: #615d59;
+  /* Texto secundario de salidas oficiales */
+  --color-document-soft: #f2f2f2;
+  /* Panel secundario de salidas oficiales */
+  --color-document-hairline: #d9d9d9;
+  /* Bordes de salidas oficiales */
+  --color-document-table-header: #8c8c8c;
+  /* Encabezados de tablas imprimibles */
+  --color-document-table-row-alternate: #e5e5e5;
+  /* Filas alternas imprimibles */
+  --color-document-primary: #000000;
+  /* Encabezado de salidas oficiales */
+  --color-document-on-primary: #ffffff;
+  /* Texto sobre encabezado oficial */
 
   /* ── Hairlines ──────────────────────────────────────────────── */
   --color-hairline: #d4d9e0;
@@ -58,8 +67,10 @@
   --color-on-warning: var(--color-ink);
   --color-on-dark-hover: var(--color-hairline);
   --color-shadow-rgb: 27 29 32;
-  --color-scene-light: #ffffff; /* Iluminación neutral de la escena decorativa (leído por WebGL: debe ser color literal). */
-  --color-shimmer-overlay: color-mix(in srgb, var(--color-scene-light) 30%, transparent); /* Brillo decorativo de progreso. */
+  --color-scene-light: #ffffff;
+  /* Iluminación neutral de la escena decorativa (leído por WebGL: debe ser color literal). */
+  --color-shimmer-overlay: color-mix(in srgb, var(--color-scene-light) 30%, transparent);
+  /* Brillo decorativo de progreso. */
   --color-on-dark: #e2e5e9;
   --color-on-dark-soft: #a0a7b1;
   --color-focus-on-inverted: var(--color-on-dark);
@@ -304,10 +315,8 @@
   --control-padding-x: var(--design-spacing-sm);
   --control-padding-y: var(--design-spacing-xs);
   /* Campo y botón comparten altura exterior; el texto puede crecer con el zoom. */
-  --control-min-block-size: max(
-    var(--touch-target-min),
-    calc(var(--type-button-size) * var(--type-button-line) + var(--control-padding-y) * 2 + var(--border-width) * 2)
-  );
+  --control-min-block-size: max(var(--touch-target-min),
+      calc(var(--type-button-size) * var(--type-button-line) + var(--control-padding-y) * 2 + var(--border-width) * 2));
   --textarea-min-block-size: calc(var(--touch-target-min) * 2);
   --select-content-max-block-size: 15.625rem;
   --icon-size-sm: 1rem;
@@ -430,15 +439,10 @@
   /* Ancho compacto del selector de semana junto al título de una página. */
   --week-filter-inline-size: 20rem;
   /* Anchura del espacio inicial para cargar y consultar reportes diarios. */
-  --feature-report-onboarding-max-inline-size: var(
-    --container-compact-max-inline-size
-  );
+  --feature-report-onboarding-max-inline-size: var(--container-compact-max-inline-size);
   --feature-navigation-rail-inline-size: 15rem;
   /* Ancho útil de superficies flotantes abiertas dentro del rail móvil. */
-  --feature-navigation-popover-inline-size: calc(
-    var(--feature-navigation-rail-inline-size) - var(--design-spacing-md) -
-      var(--design-spacing-md)
-  );
+  --feature-navigation-popover-inline-size: calc(var(--feature-navigation-rail-inline-size) - var(--design-spacing-md) - var(--design-spacing-md));
   --feature-reminders-panel-max-inline-size: 20rem;
   --feature-reminders-panel-max-block-size: 30rem;
   /* Altura legible para detalles extensos de validación antes de scroll interno. */
@@ -452,9 +456,7 @@
   /* Ancho medio para menús de filtros con opciones cortas. */
   --menu-inline-size-md: calc(var(--menu-min-inline-size) + var(--design-spacing-3xl));
   /* Ancho compacto del menú de cuenta sin comprometer etiquetas ni touch targets. */
-  --feature-account-menu-inline-size: calc(
-    var(--menu-min-inline-size) + var(--design-spacing-md)
-  );
+  --feature-account-menu-inline-size: calc(var(--menu-min-inline-size) + var(--design-spacing-md));
   --pipeline-table-date-inline-size: 7.5rem;
   --pipeline-table-actions-inline-size: 5rem;
   --pagination-label-min-inline-size: 5.625rem;
@@ -597,9 +599,7 @@
   --header-height: var(--design-spacing-3xl);
   /* Barra móvil: touch target + aire vertical de la escala (56px). */
   --mobile-nav-height: calc(var(--touch-target-min) + var(--design-spacing-sm));
-  --mobile-nav-content-space: calc(
-    var(--mobile-nav-height) + var(--design-spacing-xxl)
-  );
+  --mobile-nav-content-space: calc(var(--mobile-nav-height) + var(--design-spacing-xxl));
   --ease-apple: cubic-bezier(0.19, 1, 0.22, 1);
   --duration-skeleton: 1500ms;
   --opacity-disabled: 0.5;
@@ -744,6 +744,7 @@ video {
 
 /* Preferencia de accesibilidad: prevalece sobre animaciones de las features. */
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
@@ -829,13 +830,12 @@ select {
 
 /* WebKit en iOS amplía al enfocar campos con texto menor que body-lg. */
 @supports (-webkit-touch-callout: none) {
-  :where(
-    input:not([type="checkbox"], [type="radio"], [type="file"], [type="hidden"], [type="button"], [type="submit"], [type="reset"], [type="range"], [type="color"]),
+
+  :where(input:not([type="checkbox"], [type="radio"], [type="file"], [type="hidden"], [type="button"], [type="submit"], [type="reset"], [type="range"], [type="color"]),
     textarea,
     select,
     [contenteditable="true"],
-    [contenteditable=""]
-  ) {
+    [contenteditable=""]) {
     --editable-text-min-size: var(--type-body-lg-size);
   }
 
@@ -1101,8 +1101,8 @@ code:not(pre code) {
   overflow-wrap: anywhere;
 }
 
-.app-page-title > :is(a, button),
-.app-page-title > :is(a, button):is(:hover, :focus, :active, :visited) {
+.app-page-title> :is(a, button),
+.app-page-title> :is(a, button):is(:hover, :focus, :active, :visited) {
   color: inherit;
   text-decoration: none;
 }
@@ -1165,30 +1165,39 @@ code:not(pre code) {
 .text-ink {
   color: var(--color-ink);
 }
+
 .text-body {
   color: var(--color-body);
 }
+
 .text-body-strong {
   color: var(--color-body-strong);
 }
+
 .text-charcoal {
   color: var(--color-charcoal);
 }
+
 .text-muted {
   color: var(--color-muted);
 }
+
 .text-muted-soft {
   color: var(--color-muted-soft);
 }
+
 .text-primary {
   color: var(--color-primary);
 }
+
 .text-success {
   color: var(--color-success-text);
 }
+
 .text-warning {
   color: var(--color-warning-text);
 }
+
 .text-error {
   color: var(--color-error-text);
 }
@@ -1319,6 +1328,7 @@ code:not(pre code) {
 .phone-validation-icon.valid {
   color: var(--color-success);
 }
+
 .phone-validation-icon.invalid {
   color: var(--color-error);
 }
@@ -1412,14 +1422,17 @@ code:not(pre code) {
   color: var(--color-on-primary);
   border-color: var(--color-primary);
 }
+
 .btn-primary:hover:not(:disabled) {
   background: var(--color-primary-active);
   border-color: var(--color-primary-active);
 }
+
 .btn-primary:active:not(:disabled) {
   background: var(--color-primary-active);
   transform: scale(var(--scale-pressed));
 }
+
 .btn-primary:disabled {
   background: var(--color-primary-disabled);
   border-color: var(--color-primary-disabled);
@@ -1435,14 +1448,17 @@ code:not(pre code) {
   border-color: var(--color-control-border);
   box-shadow: none;
 }
+
 .btn-secondary:hover:not(:disabled) {
   background: var(--color-surface-soft);
   border-color: var(--color-charcoal);
 }
+
 .btn-secondary:active:not(:disabled) {
   background: var(--color-hairline);
   transform: scale(var(--scale-pressed));
 }
+
 .btn-secondary:disabled,
 .btn-danger:disabled,
 .btn-ghost:disabled,
@@ -1458,9 +1474,11 @@ code:not(pre code) {
   color: var(--color-on-error);
   border-color: var(--color-error-deep);
 }
+
 .btn-danger:hover:not(:disabled) {
   box-shadow: var(--shadow-xs);
 }
+
 .btn-danger:active:not(:disabled) {
   background: var(--color-error-text);
   transform: scale(var(--scale-pressed));
@@ -1472,6 +1490,7 @@ code:not(pre code) {
   color: var(--color-charcoal);
   border-color: transparent;
 }
+
 .btn-ghost:hover:not(:disabled) {
   background: var(--color-surface-soft);
   color: var(--color-ink);
@@ -1504,6 +1523,7 @@ code:not(pre code) {
   transition: color var(--transition-fast);
   text-decoration: underline;
 }
+
 .btn-text:hover:not(:disabled) {
   color: var(--color-link-deep);
 }
@@ -1525,10 +1545,12 @@ code:not(pre code) {
     color var(--transition-fast),
     background var(--transition-fast);
 }
+
 .btn-icon:hover:not(:disabled) {
   color: var(--color-ink);
   background: var(--color-surface-soft);
 }
+
 .btn-icon--danger:hover:not(:disabled) {
   color: var(--color-error);
 }
@@ -1684,21 +1706,21 @@ code:not(pre code) {
 
 /* Base móvil: se conserva el sheet existente y se respetan las safe areas. */
 
-.modal-content > .modal-header {
+.modal-content>.modal-header {
   padding-left: max(var(--modal-content-padding), var(--safe-area-left));
   padding-right: max(var(--modal-content-padding), var(--safe-area-right));
 }
 
-.modal-content > .modal-scroll-region > .modal-body {
+.modal-content>.modal-scroll-region>.modal-body {
   padding-left: max(var(--modal-content-padding), var(--safe-area-left));
   padding-right: max(var(--modal-content-padding), var(--safe-area-right));
 }
 
-.modal-content .modal-body > * {
+.modal-content .modal-body>* {
   flex-shrink: 0;
 }
 
-.modal-content > .modal-footer {
+.modal-content>.modal-footer {
   padding-left: max(var(--modal-content-padding), var(--safe-area-left));
   padding-right: max(var(--modal-content-padding), var(--safe-area-right));
   padding-bottom: calc(var(--modal-content-padding) + var(--safe-area-bottom));
@@ -1717,11 +1739,11 @@ code:not(pre code) {
     animation: slideUpModal var(--transition-slow) forwards;
   }
 
-  .modal-content .modal-body > * {
+  .modal-content .modal-body>* {
     flex-shrink: 1;
   }
 
-  .modal-content > .modal-footer {
+  .modal-content>.modal-footer {
     padding-block: var(--design-spacing-sm);
   }
 }
@@ -1743,8 +1765,8 @@ code:not(pre code) {
   align-items: center;
 }
 
-.modal-overlay--bottom > .modal-content,
-.modal-overlay--center > .modal-content {
+.modal-overlay--bottom>.modal-content,
+.modal-overlay--center>.modal-content {
   border-radius: var(--rounded-lg);
   max-height: var(--modal-max-block-size);
 }
@@ -1767,8 +1789,8 @@ code:not(pre code) {
   flex: 1 1 auto;
 }
 
-.modal-title > svg,
-.modal-title > [data-icon] {
+.modal-title>svg,
+.modal-title>[data-icon] {
   flex-shrink: 0;
   width: var(--icon-size-md);
   height: var(--icon-size-md);
@@ -1855,9 +1877,9 @@ code:not(pre code) {
   background: var(--color-surface);
 }
 
-.modal-footer > .btn-primary,
-.modal-footer > .btn-secondary,
-.modal-footer > .btn-danger {
+.modal-footer>.btn-primary,
+.modal-footer>.btn-secondary,
+.modal-footer>.btn-danger {
   flex: 1 1 auto;
 }
 
@@ -1866,9 +1888,9 @@ code:not(pre code) {
     justify-content: flex-end;
   }
 
-  .modal-footer > .btn-primary,
-  .modal-footer > .btn-secondary,
-  .modal-footer > .btn-danger {
+  .modal-footer>.btn-primary,
+  .modal-footer>.btn-secondary,
+  .modal-footer>.btn-danger {
     flex: 0 1 auto;
   }
 }
@@ -1878,6 +1900,7 @@ code:not(pre code) {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -1888,6 +1911,7 @@ code:not(pre code) {
     opacity: 0;
     transform: translateY(var(--design-spacing-md));
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -1899,6 +1923,7 @@ code:not(pre code) {
     opacity: 0;
     transform: translateY(var(--design-spacing-xl));
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -1906,6 +1931,7 @@ code:not(pre code) {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .modal-content,
   .modal-overlay {
     animation: none;
@@ -1985,9 +2011,11 @@ code:not(pre code) {
   0% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(calc(-1 * var(--motion-float-distance)));
   }
+
   100% {
     transform: translateY(0);
   }
@@ -1995,6 +2023,7 @@ code:not(pre code) {
 
 /* Decoración en bucle: se detiene por completo con movimiento reducido. */
 @media (prefers-reduced-motion: reduce) {
+
   .animated-empty-state,
   .animated-empty-state__icon svg {
     animation: none;
@@ -2041,16 +2070,16 @@ code:not(pre code) {
 :focus-visible:not(:where([data-focus-ring] > input, [data-focus-ring] > textarea, label > input.sr-only, .toggle-switch input, .ui-checkbox__input)),
 [data-focus-ring]:has(> :is(input, textarea):focus-visible),
 label:has(> input.sr-only:focus-visible),
-.toggle-switch input:focus-visible + .toggle-switch__slider,
-.ui-checkbox__input:focus-visible ~ .ui-checkbox__indicator {
+.toggle-switch input:focus-visible+.toggle-switch__slider,
+.ui-checkbox__input:focus-visible~.ui-checkbox__indicator {
   outline: var(--focus-ring-width) solid var(--color-focus);
   outline-offset: var(--focus-ring-offset);
 }
 
 /* El input conserva el foco real; su superficie visible dibuja el anillo.
    Se mantiene también en forced-colors para evitar un segundo indicador. */
-[data-focus-ring] > :is(input, textarea):focus-visible,
-label > input.sr-only:focus-visible,
+[data-focus-ring]> :is(input, textarea):focus-visible,
+label>input.sr-only:focus-visible,
 .toggle-switch input:focus-visible,
 .ui-checkbox__input:focus-visible {
   outline: none;
@@ -2063,12 +2092,15 @@ label > input.sr-only:focus-visible,
 .color-error {
   color: var(--color-error-text);
 }
+
 .color-success {
   color: var(--color-success-text);
 }
+
 .color-warning {
   color: var(--color-warning-text);
 }
+
 .color-primary {
   color: var(--color-primary);
 }
@@ -2123,15 +2155,15 @@ label > input.sr-only:focus-visible,
   box-shadow: var(--shadow-sm);
 }
 
-.toggle-switch input[type="checkbox"]:checked + .toggle-switch__slider {
+.toggle-switch input[type="checkbox"]:checked+.toggle-switch__slider {
   background-color: var(--color-primary);
 }
 
-.toggle-switch input[type="checkbox"]:checked + .toggle-switch__slider::before {
+.toggle-switch input[type="checkbox"]:checked+.toggle-switch__slider::before {
   transform: translateX(var(--toggle-thumb-travel));
 }
 
-.toggle-switch input[type="checkbox"]:disabled + .toggle-switch__slider {
+.toggle-switch input[type="checkbox"]:disabled+.toggle-switch__slider {
   opacity: var(--opacity-disabled);
   cursor: not-allowed;
 }
@@ -2162,15 +2194,17 @@ label > input.sr-only:focus-visible,
 }
 
 @media (forced-colors: active) {
+
   :focus-visible:not(:where([data-focus-ring] > input, [data-focus-ring] > textarea, label > input.sr-only, .toggle-switch input, .ui-checkbox__input)),
   [data-focus-ring]:has(> :is(input, textarea):focus-visible),
   label:has(> input.sr-only:focus-visible),
-  .toggle-switch input:focus-visible + .toggle-switch__slider,
-  .ui-checkbox__input:focus-visible ~ .ui-checkbox__indicator {
+  .toggle-switch input:focus-visible+.toggle-switch__slider,
+  .ui-checkbox__input:focus-visible~.ui-checkbox__indicator {
     outline: var(--focus-ring-width) solid Highlight !important;
     outline-offset: var(--focus-ring-offset) !important;
     box-shadow: none !important;
   }
+
   /* Los colores del sistema conservan la posición y el contraste del switch. */
   .toggle-switch__slider {
     forced-color-adjust: none;
@@ -2178,13 +2212,16 @@ label > input.sr-only:focus-visible,
     background: Canvas;
     border: var(--border-width) solid ButtonText;
   }
+
   .toggle-switch__slider::before {
     background: ButtonText;
   }
-  .toggle-switch input[type="checkbox"]:checked + .toggle-switch__slider {
+
+  .toggle-switch input[type="checkbox"]:checked+.toggle-switch__slider {
     background: Highlight;
   }
-  .toggle-switch input[type="checkbox"]:checked + .toggle-switch__slider::before {
+
+  .toggle-switch input[type="checkbox"]:checked+.toggle-switch__slider::before {
     background: HighlightText;
   }
 }

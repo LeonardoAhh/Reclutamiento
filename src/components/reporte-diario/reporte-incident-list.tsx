@@ -17,7 +17,7 @@ export function DataTable({ rows }: { rows: EmployeeRef[] }) {
     const { copy } = useReportLocale();
     return (
         <div className="reporte-incidents__table-wrap">
-            <table className="reporte-incidents__table">
+            <table className="reporte-incidents__table data-table">
                 <thead>
                     <tr>
                         {TABLE_HEADERS.map((header) => (

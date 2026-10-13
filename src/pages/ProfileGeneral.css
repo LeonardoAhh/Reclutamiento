@@ -108,7 +108,7 @@
 }
 
 .profile-general__notice {
-  border-color: var(--color-warning);
+  border-color: var(--color-warning-text);
 }
 
 .profile-general__employee-select {

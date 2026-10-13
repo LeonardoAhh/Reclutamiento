@@ -17,7 +17,7 @@
 .team-management__skeleton-name { inline-size: 82%; block-size: var(--type-body-md-size); }
 .team-management__skeleton-detail { inline-size: 72%; }
 .team-management__skeleton-detail--short { inline-size: 48%; }
-.team-management__skeleton-status { grid-column: 2; grid-row: 1; inline-size: calc(var(--touch-target-min) + var(--design-spacing-md)); block-size: var(--touch-target-min); border-radius: var(--rounded-full); }
+.team-management__skeleton-status { grid-column: 2; grid-row: 1; inline-size: calc(var(--touch-target-min) + var(--design-spacing-md)); block-size: var(--touch-target-min); border-radius: var(--rounded-sm); }
 .team-management__skeleton-actions { display: flex; grid-column: 1 / -1; flex-wrap: wrap; gap: var(--space-sm); margin-block-start: var(--space-sm); }
 .team-management__skeleton-action { inline-size: calc(var(--touch-target-min) * 2); block-size: var(--touch-target-min); border-radius: var(--rounded-md); }
 .team-management__status {

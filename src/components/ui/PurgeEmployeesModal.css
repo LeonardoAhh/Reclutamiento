@@ -20,8 +20,8 @@
   gap: var(--spacing-sm);
   padding: var(--spacing-md);
   border-radius: var(--rounded-md);
-  background: color-mix(in srgb, var(--color-danger) 8%, transparent);
-  border: 1px solid color-mix(in srgb, var(--color-danger) 25%, transparent);
+  background: var(--color-error-subtle);
+  border: var(--border-width) solid var(--color-error-text);
   color: var(--color-ink);
 }
 
@@ -46,7 +46,7 @@
 .purge-employees-modal__success-msg code,
 .purge-employees-modal__step-confirm code,
 .purge-employees-modal__step-title code {
-  font-family: var(--font-mono, monospace);
+  font-family: var(--font-mono);
   background: var(--color-surface);
   border: var(--border-width) solid var(--color-hairline);
   padding: 1px 6px;
@@ -83,8 +83,8 @@
 }
 
 .purge-employees-modal__step.is-done {
-  border-color: var(--color-success);
-  background: color-mix(in srgb, var(--color-success) 4%, transparent);
+  border-color: var(--color-success-text);
+  background: var(--color-success-subtle);
 }
 
 .purge-employees-modal__step-head {
@@ -111,8 +111,8 @@
 }
 
 .purge-employees-modal__step.is-done .purge-employees-modal__step-num {
-  background: var(--color-success);
-  border-color: var(--color-success);
+  background: var(--color-success-text);
+  border-color: var(--color-success-text);
   color: var(--color-on-success);
 }
 
@@ -150,9 +150,9 @@
   width: 100%;
   padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: var(--rounded-xs);
-  border: 1px solid var(--color-hairline);
+  border: var(--border-width) solid var(--color-control-border);
   background: var(--color-surface);
-  font-family: var(--font-mono, monospace);
+  font-family: var(--font-mono);
   font-size: max(var(--type-body-md-size), var(--editable-text-min-size, var(--type-body-md-size)));
   letter-spacing: 0.05em;
   text-transform: none;

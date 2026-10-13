@@ -25,7 +25,7 @@
 }
 
 .candidate-status-badge[data-status="entrevista"] .candidate-status-badge__dot {
-  background: var(--color-accent-amber);
+  background: var(--color-warning-text);
 }
 
 .candidate-status-badge[data-status="entrega_documentos"] .candidate-status-badge__dot {

@@ -24,7 +24,7 @@
   min-inline-size: 0;
   margin-block-end: var(--spacing-xl);
   overflow-x: auto;
-  border-block-end: var(--border-width) solid var(--color-hairline);
+  border-block-end: var(--border-width) solid var(--color-hairline-strong);
   scrollbar-width: none;
 }
 
@@ -54,7 +54,6 @@
 }
 
 .actividades-tabs__trigger:hover {
-  background: var(--color-surface-soft);
   color: var(--color-ink);
 }
 
@@ -190,7 +189,7 @@
   align-items: center;
   justify-content: center;
   gap: var(--spacing-sm);
-  border: 1px dashed var(--color-hairline-strong);
+  border: 1px dashed var(--color-control-border);
   padding: var(--spacing-xl) var(--spacing-lg);
   text-align: center;
   border-radius: var(--rounded-lg);
@@ -241,7 +240,7 @@
 .smart-textarea-wrapper {
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--color-hairline);
+  border: 1px solid var(--color-control-border);
   border-radius: var(--rounded-xs);
   background: var(--color-surface);
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
@@ -378,7 +377,7 @@
   justify-content: center;
   gap: var(--spacing-sm);
   padding: var(--spacing-lg);
-  border: 1px dashed var(--color-hairline);
+  border: var(--border-width) dashed var(--color-control-border);
   border-radius: var(--rounded-md);
   background: var(--color-surface);
   color: var(--color-muted);

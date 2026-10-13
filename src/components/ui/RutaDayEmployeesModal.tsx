@@ -81,7 +81,7 @@ export function RutaDayEmployeesPage() {
         <p className="ruta-day-page__notice">{copy.noEmployeesAssigned} {displayDay}.</p>
       ) : (
         <section aria-label={`${language === 'en' ? 'Employees on' : 'Empleados de'} ${route.nombreRuta} ${language === 'en' ? 'on' : 'el'} ${displayDay}`}>
-          <table className="ruta-day-page__table">
+          <table className="ruta-day-page__table data-table data-table--cards">
             <thead>
               <tr>
                 <th scope="col">{copy.number}</th>

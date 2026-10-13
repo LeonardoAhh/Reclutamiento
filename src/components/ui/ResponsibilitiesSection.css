@@ -7,7 +7,7 @@
 .responsibilities-section__header {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  align-items: start;
+  align-items: center;
   gap: var(--spacing-md);
   margin-block-end: var(--spacing-lg);
 }
@@ -17,10 +17,10 @@
   margin: 0;
   color: var(--color-ink);
   font-family: var(--font-body);
-  font-size: var(--type-body-strong-size);
-  font-weight: var(--type-body-strong-weight);
-  line-height: var(--type-body-strong-line);
-  letter-spacing: var(--type-body-strong-tracking);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+  letter-spacing: var(--type-heading-sm-tracking);
 }
 
 .responsibilities-section__panel {
@@ -47,7 +47,7 @@
   flex-direction: column;
   align-items: center;
   padding: var(--spacing-xxl) var(--spacing-lg);
-  border: var(--border-width) dashed var(--color-hairline);
+  border: var(--border-width) dashed var(--color-hairline-strong);
   border-radius: var(--rounded-lg);
   background: var(--color-surface-card);
   text-align: center;

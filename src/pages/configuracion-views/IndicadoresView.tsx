@@ -284,7 +284,7 @@ export function IndicadoresView() {
           </div>
         </div>
         <div className="table-responsive indicadores-desktop-only">
-          <table className="indicadores-table" aria-label={copy.incomeBreakdown}>
+          <table className="indicadores-table data-table" aria-label={copy.incomeBreakdown}>
             <caption className="sr-only">{copy.detailedIncomeBreakdown}</caption>
             <thead>
               <tr>
@@ -501,7 +501,7 @@ export function IndicadoresView() {
               </div>
             </div>
             <div className="table-responsive indicadores-desktop-only">
-              <table className="indicadores-table" aria-label={copy.recruiterEffectiveness}>
+              <table className="indicadores-table data-table" aria-label={copy.recruiterEffectiveness}>
                 <caption className="sr-only">{copy.retentionSummary}</caption>
                 <thead>
                   <tr>

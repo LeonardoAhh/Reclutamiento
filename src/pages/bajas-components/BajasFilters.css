@@ -34,7 +34,7 @@
   height: var(--control-height);
   padding: 0 var(--spacing-md);
   background: transparent;
-  border: 1px solid var(--color-hairline);
+  border: var(--border-width) solid var(--color-control-border);
   border-radius: var(--rounded-md);
   color: var(--color-muted);
   font-size: var(--type-body-sm-size);
@@ -46,5 +46,5 @@
 .bajas-filters__reset:hover {
   background: var(--color-canvas-soft);
   color: var(--color-ink);
-  border-color: var(--color-hairline-strong);
+  border-color: var(--color-control-border);
 }

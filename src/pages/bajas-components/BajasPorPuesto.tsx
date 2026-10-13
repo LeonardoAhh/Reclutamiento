@@ -49,7 +49,7 @@ export function BajasPorPuesto({
       ) : (
         <>
           <div className="bajas-por-puesto__table-container">
-            <table className="bajas-por-puesto__table">
+            <table className="bajas-por-puesto__table data-table">
               <thead>
                 <tr>
                   <th scope="col" className="bajas-por-puesto__th bajas-por-puesto__th--main">

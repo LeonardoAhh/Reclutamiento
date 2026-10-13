@@ -88,7 +88,7 @@
 }
 
 .public-careers__language-toggle {
-  border: 1px solid var(--color-hairline);
+  border: var(--border-width) solid var(--color-control-border);
   background: var(--color-canvas-elevated);
   color: var(--color-ink);
   padding: 0 var(--design-spacing-sm);
@@ -131,7 +131,7 @@
 }
 
 .button--secondary {
-  border-color: var(--color-hairline);
+  border-color: var(--color-control-border);
   background: var(--color-surface-card);
   color: var(--color-ink);
 }
@@ -365,7 +365,7 @@
   display: flex;
   align-items: center;
   gap: var(--design-spacing-xs);
-  border: 1px solid var(--color-hairline);
+  border: var(--border-width) solid var(--color-control-border);
   border-radius: var(--rounded-md);
   background: var(--color-canvas-elevated);
   padding: 0 var(--design-spacing-sm);
@@ -401,7 +401,7 @@
 }
 
 .public-careers__chip {
-  border: 1px solid var(--color-hairline);
+  border: var(--border-width) solid var(--color-control-border);
   background: transparent;
   color: var(--color-body);
   padding: 0 var(--design-spacing-sm);
@@ -448,7 +448,7 @@
 
 .public-careers__job-type {
   border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-pill);
+  border-radius: var(--rounded-sm);
   padding: var(--design-spacing-xxs) var(--design-spacing-sm);
   background: var(--color-canvas-elevated);
   color: var(--color-mute);
@@ -479,7 +479,7 @@
 
 .public-careers__tag-list li {
   padding: var(--design-spacing-xxs) var(--design-spacing-sm);
-  border-radius: var(--rounded-pill);
+  border-radius: var(--rounded-sm);
   background: var(--color-link-soft);
   color: var(--color-link-deep);
   font-size: var(--type-body-sm-size);

@@ -83,7 +83,7 @@
 }
 
 .search-field:has(.search-field__input[aria-invalid='true']) {
-  border-color: var(--color-error);
+  border-color: var(--color-error-text);
   background: var(--color-error-subtle);
 }
 

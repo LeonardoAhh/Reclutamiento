@@ -71,7 +71,7 @@ export default function ReportesGuardadosDialog({
           ref={triggerRef}
           data-testid="open-saved-reports-btn"
         >
-          <Archive size={16} aria-hidden="true" />
+          <Archive size="var(--icon-size-sm)" aria-hidden="true" />
           <span className="reporte-saved__trigger-label">{triggerLabel ?? copy("Reportes", "Reports")}</span>
         </button>
       ) : (
@@ -84,7 +84,7 @@ export default function ReportesGuardadosDialog({
           ref={triggerRef}
           data-testid="open-saved-reports-btn"
         >
-          <Archive size={16} aria-hidden="true" />
+          <Archive size="var(--icon-size-sm)" aria-hidden="true" />
           <span className="reporte-saved__count" aria-hidden="true">
             {count}
           </span>

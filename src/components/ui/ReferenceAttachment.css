@@ -7,7 +7,7 @@
   align-items: center;
   gap: var(--spacing-md);
   padding: var(--spacing-sm);
-  border: var(--border-width) solid var(--color-hairline);
+  border: var(--border-width) solid var(--color-control-border);
   border-radius: var(--rounded-md);
   background: var(--color-surface);
   color: var(--color-ink);
@@ -19,7 +19,7 @@
 }
 
 .reference-attachment:hover {
-  border-color: var(--color-hairline-strong);
+  border-color: var(--color-control-border);
   background: var(--color-surface-soft);
 }
 

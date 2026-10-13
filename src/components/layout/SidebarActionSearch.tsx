@@ -1,13 +1,9 @@
-import { useEffect, useId, useRef, useState, type KeyboardEvent } from 'react';
-import { CalendarDays, Columns3, ContactRound, Network, Search, UserRoundPlus } from 'lucide-react';
+import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
+import { CalendarDays, Columns3, ContactRound, LayoutGrid, Network, UserRoundPlus } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { KANBAN_PATH } from '@/features/kanban/types';
-import { SearchField } from '@/components/ui/SearchField';
-import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
-import { useMediaQuery } from '@/hooks/useMediaQuery';
-import { DESKTOP_MEDIA_QUERY } from '@/lib/layout';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { normalizeString } from '@/lib/utils';
 import { PLANTILLA_PATH } from '@/lib/plantillaNavigation';
 import { LEAVE_REQUESTS_PATH } from '@/features/leave/requests';
 import { preloadRoute } from '@/lib/routePages';
@@ -24,33 +20,27 @@ interface SidebarActionSearchProps {
 }
 
 const CREATE_ACTIONS = [
-  { id: 'create-candidate', path: CANDIDATES_PATH, icon: UserRoundPlus, es: 'Crear candidato', en: 'Create candidate', keywords: 'candidatos candidates' },
-  { id: 'create-employee', path: PLANTILLA_PATH, icon: ContactRound, es: 'Crear empleado', en: 'Create employee', keywords: 'empleados plantilla employees workforce' },
+  { id: 'create-candidate', path: CANDIDATES_PATH, icon: UserRoundPlus, es: 'Crear candidato', en: 'Create candidate' },
+  { id: 'create-employee', path: PLANTILLA_PATH, icon: ContactRound, es: 'Crear empleado', en: 'Create employee' },
 ] as const satisfies ReadonlyArray<{
   id: SidebarCreateAction;
   path: string;
   icon: typeof UserRoundPlus;
   es: string;
   en: string;
-  keywords: string;
 }>;
 
 const ORGANIZATION_ACTION = {
   id: 'org-chart', path: ORGANIZATION_CHART_PATH, icon: Network,
-  es: 'Organigrama', en: 'Org chart', keywords: 'organigrama org chart',
+  es: 'Organigrama', en: 'Org chart',
 } as const;
 
 export function SidebarActionSearch({ mobileMenuOpen, quickActions }: SidebarActionSearchProps) {
   const { language } = useLanguage();
-  const isDesktop = useMediaQuery(DESKTOP_MEDIA_QUERY);
   const navigate = useNavigate();
-  const listId = useId();
-  const inputRef = useRef<HTMLInputElement>(null);
-  const desktopInputRef = useRef<HTMLInputElement>(null);
-  const mobileTriggerRef = useRef<HTMLButtonElement>(null);
-  const activeInputRef = isDesktop ? desktopInputRef : inputRef;
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const actionRefs = useRef<Array<HTMLButtonElement | HTMLAnchorElement | null>>([]);
-  const [query, setQuery] = useState('');
+  const openingLeavePolicyRef = useRef(false);
   const [open, setOpen] = useState(false);
   const actions = [
     ...CREATE_ACTIONS,
@@ -58,15 +48,10 @@ export function SidebarActionSearch({ mobileMenuOpen, quickActions }: SidebarAct
       id: 'requests' as const, icon: CalendarDays,
       es: quickActions.canReviewRequests ? 'Gestionar' : 'Solicitar',
       en: quickActions.canReviewRequests ? 'Requests' : 'Leave',
-      keywords: 'solicitudes permisos vacaciones requests leave gestionar solicitar',
     }] : []),
     ORGANIZATION_ACTION,
-    { id: 'kanban' as const, path: KANBAN_PATH, icon: Columns3, es: 'Kanban', en: 'Kanban', keywords: 'tablero board pendientes tareas actividades procesos entrevistas tasks activities processes interviews' },
+    { id: 'kanban' as const, path: KANBAN_PATH, icon: Columns3, es: 'Kanban', en: 'Kanban' },
   ];
-  const normalizedQuery = normalizeString(query);
-  const results = actions.filter((action) =>
-    normalizeString(`${action.es} ${action.en} ${action.keywords}`).includes(normalizedQuery),
-  );
 
   useEffect(() => {
     if (mobileMenuOpen) setOpen(false);
@@ -74,27 +59,26 @@ export function SidebarActionSearch({ mobileMenuOpen, quickActions }: SidebarAct
 
   useEffect(() => {
     if (mobileMenuOpen) return;
-    const focusSearch = (event: globalThis.KeyboardEvent) => {
+    const openQuickAccess = (event: globalThis.KeyboardEvent) => {
       if (!event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.key.toLowerCase() !== 'k') return;
       event.preventDefault();
+      triggerRef.current?.focus();
       setOpen(true);
-      activeInputRef.current?.focus();
     };
-    window.addEventListener('keydown', focusSearch);
-    return () => window.removeEventListener('keydown', focusSearch);
-  }, [mobileMenuOpen, activeInputRef]);
+    window.addEventListener('keydown', openQuickAccess);
+    return () => window.removeEventListener('keydown', openQuickAccess);
+  }, [mobileMenuOpen]);
 
   function runAction(action: (typeof actions)[number]) {
     if (action.id === 'requests' && quickActions && !quickActions.canReviewRequests) {
-      const focusTarget = isDesktop ? desktopInputRef.current : mobileTriggerRef.current;
+      const focusTarget = triggerRef.current;
       if (!focusTarget) return;
+      openingLeavePolicyRef.current = true;
       setOpen(false);
-      setQuery('');
       quickActions.openLeavePolicy(focusTarget);
       return;
     }
     setOpen(false);
-    setQuery('');
     if (action.id === 'requests') {
       navigate(LEAVE_REQUESTS_PATH);
     } else if (action.id === 'kanban') {
@@ -106,151 +90,88 @@ export function SidebarActionSearch({ mobileMenuOpen, quickActions }: SidebarAct
     }
   }
 
-  function handleInputKeyDown(event: KeyboardEvent<HTMLInputElement>) {
-    if (event.key === 'ArrowDown' && results.length > 0) {
-      event.preventDefault();
-      setOpen(true);
-      actionRefs.current[0]?.focus();
-    } else if (event.key === 'Enter' && results.length > 0) {
-      event.preventDefault();
-      runAction(results[0]);
-    }
-  }
-
   function handleActionKeyDown(event: KeyboardEvent<HTMLElement>, index: number) {
     if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
       event.preventDefault();
-      const next = index + (event.key === 'ArrowDown' ? 1 : -1);
-      (next < 0 || next >= results.length ? activeInputRef.current : actionRefs.current[next])?.focus();
+      const next = (index + (event.key === 'ArrowDown' ? 1 : -1) + actions.length) % actions.length;
+      actionRefs.current[next]?.focus();
     }
   }
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      {isDesktop && (
-        <PopoverAnchor asChild>
-          <div className="sidebar-action-search__desktop">
-            <SearchField
-              ref={desktopInputRef}
-              label={language === 'en' ? 'Search' : 'Buscar'}
-              placeholder={language === 'en' ? 'Search' : 'Buscar'}
-              value={query}
-              onFocus={() => setOpen(true)}
-              onClick={() => setOpen(true)}
-              onChange={(event) => { setQuery(event.target.value); setOpen(true); }}
-              onKeyDown={handleInputKeyDown}
-              onClear={() => { setQuery(''); setOpen(true); }}
-              clearLabel={language === 'en' ? 'Clear action search' : 'Limpiar b\u00fasqueda de acciones'}
-              aria-controls={listId}
-              aria-expanded={open}
-              aria-keyshortcuts="Alt+K"
-              autoComplete="off"
-            />
-          </div>
-        </PopoverAnchor>
-      )}
-      {!isDesktop && (
-        <PopoverTrigger asChild>
-          <button
-            type="button"
-            className="sidebar-action-search__trigger"
-            ref={mobileTriggerRef}
-            aria-label={language === 'en' ? 'Search' : 'Buscar'}
-            aria-keyshortcuts="Alt+K"
-          >
-            <span className="sidebar-action-search__trigger-surface">
-              <Search size="var(--icon-size-sm)" aria-hidden="true" />
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          className="sidebar-action-search__trigger"
+          ref={triggerRef}
+          aria-label={language === 'en' ? 'Quick access' : 'Accesos rápidos'}
+          aria-keyshortcuts="Alt+K"
+        >
+          <span className="sidebar-action-search__trigger-surface">
+            <LayoutGrid size="var(--icon-size-sm)" aria-hidden="true" />
+            <span className="sidebar-action-search__trigger-label" aria-hidden="true">
+              {language === 'en' ? 'Shortcuts' : 'Accesos'}
             </span>
-          </button>
-        </PopoverTrigger>
-      )}
+          </span>
+        </button>
+      </PopoverTrigger>
       <PopoverContent
         align="end"
         className="sidebar-action-search"
-        aria-label={language === 'en' ? 'Search' : 'Buscar'}
+        aria-label={language === 'en' ? 'Quick access' : 'Accesos rápidos'}
         onOpenAutoFocus={(event) => {
           event.preventDefault();
-          activeInputRef.current?.focus();
+          actionRefs.current[0]?.focus();
         }}
         onCloseAutoFocus={(event) => {
-          if (isDesktop) event.preventDefault();
-        }}
-        onInteractOutside={(event) => {
-          if (isDesktop && desktopInputRef.current?.parentElement?.contains(event.target as Node)) {
+          if (openingLeavePolicyRef.current) {
             event.preventDefault();
+            openingLeavePolicyRef.current = false;
           }
         }}
       >
-        {!isDesktop && (
-          <div className="sidebar-action-search__field">
-          <SearchField
-            ref={inputRef}
-            label={language === 'en' ? 'Search' : 'Buscar'}
-            placeholder={language === 'en' ? 'Search' : 'Buscar'}
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            onKeyDown={handleInputKeyDown}
-            onClear={() => { setQuery(''); setOpen(true); }}
-            clearLabel={language === 'en' ? 'Clear action search' : 'Limpiar búsqueda de acciones'}
-            aria-controls={listId}
-            aria-expanded={open}
-            aria-keyshortcuts="Alt+K"
-            autoComplete="off"
-          />
-          {!query && (
-            <span className="sidebar-action-search__shortcut" aria-hidden="true">
-              <kbd>Alt</kbd><kbd>K</kbd>
-            </span>
-          )}
-          </div>
-        )}
-        <div id={listId} className="sidebar-action-search__results">
-          {results.length > 0 ? (
-            <ul className="sidebar-action-search__list" aria-label={language === 'en' ? 'Available actions' : 'Acciones disponibles'}>
-              {results.map((action, index) => {
-                const Icon = action.icon;
-                if (action.id === 'kanban') return (
-                  <li key={action.id}>
-                    <Link to={KANBAN_PATH} className="sidebar-action-search__action"
-                      ref={(node) => { actionRefs.current[index] = node; }}
-                      onClick={() => { setOpen(false); setQuery(''); }}
-                      onKeyDown={(event) => handleActionKeyDown(event, index)}
-                      onPointerEnter={() => preloadRoute(KANBAN_PATH)}
-                      onFocus={() => preloadRoute(KANBAN_PATH)}>
-                      <Icon size="var(--icon-size-md)" aria-hidden="true" />
-                      <span>{language === 'en' ? action.en : action.es}</span>
-                    </Link>
-                  </li>
-                );
-                return (
-                  <li key={action.id}>
-                    <button
-                      ref={(node) => { actionRefs.current[index] = node; }}
-                      type="button"
-                      className="sidebar-action-search__action"
-                      onClick={() => runAction(action)}
-                      onKeyDown={(event) => handleActionKeyDown(event, index)}
-                      onPointerEnter={() => {
-                        if (action.id === 'org-chart') preloadRoute(ORGANIZATION_CHART_PATH);
-                        if (action.id === 'requests' && quickActions?.canReviewRequests) preloadRoute(LEAVE_REQUESTS_PATH);
-                      }}
-                      onFocus={() => {
-                        if (action.id === 'org-chart') preloadRoute(ORGANIZATION_CHART_PATH);
-                        if (action.id === 'requests' && quickActions?.canReviewRequests) preloadRoute(LEAVE_REQUESTS_PATH);
-                      }}
-                    >
-                      <Icon size="var(--icon-size-md)" aria-hidden="true" />
-                      <span>{language === 'en' ? action.en : action.es}</span>
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          ) : (
-            <p className="sidebar-action-search__empty" role="status">
-              {language === 'en' ? 'No matching actions' : 'Sin acciones coincidentes'}
-            </p>
-          )}
+        <div className="sidebar-action-search__results">
+          <ul className="sidebar-action-search__list" aria-label={language === 'en' ? 'Available actions' : 'Acciones disponibles'}>
+            {actions.map((action, index) => {
+              const Icon = action.icon;
+              if (action.id === 'kanban') return (
+                <li key={action.id}>
+                  <Link to={KANBAN_PATH} className="sidebar-action-search__action"
+                    ref={(node) => { actionRefs.current[index] = node; }}
+                    onClick={() => setOpen(false)}
+                    onKeyDown={(event) => handleActionKeyDown(event, index)}
+                    onPointerEnter={() => preloadRoute(KANBAN_PATH)}
+                    onFocus={() => preloadRoute(KANBAN_PATH)}>
+                    <Icon size="var(--icon-size-md)" aria-hidden="true" />
+                    <span>{language === 'en' ? action.en : action.es}</span>
+                  </Link>
+                </li>
+              );
+              return (
+                <li key={action.id}>
+                  <button
+                    ref={(node) => { actionRefs.current[index] = node; }}
+                    type="button"
+                    className="sidebar-action-search__action"
+                    onClick={() => runAction(action)}
+                    onKeyDown={(event) => handleActionKeyDown(event, index)}
+                    onPointerEnter={() => {
+                      if (action.id === 'org-chart') preloadRoute(ORGANIZATION_CHART_PATH);
+                      if (action.id === 'requests' && quickActions?.canReviewRequests) preloadRoute(LEAVE_REQUESTS_PATH);
+                    }}
+                    onFocus={() => {
+                      if (action.id === 'org-chart') preloadRoute(ORGANIZATION_CHART_PATH);
+                      if (action.id === 'requests' && quickActions?.canReviewRequests) preloadRoute(LEAVE_REQUESTS_PATH);
+                    }}
+                  >
+                    <Icon size="var(--icon-size-md)" aria-hidden="true" />
+                    <span>{language === 'en' ? action.en : action.es}</span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
         </div>
       </PopoverContent>
     </Popover>

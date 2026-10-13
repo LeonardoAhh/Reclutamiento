@@ -873,7 +873,7 @@ export default function ReporteDiarioContent() {
               className="reporte-status-banner reporte-status-banner--file"
               data-testid="reporte-filename"
             >
-              <FileBraces size={16} className="text-primary" aria-hidden="true" />
+              <FileBraces size="var(--icon-size-sm)" className="text-primary" aria-hidden="true" />
               <span className="reporte-head__grid-text">{fileName === "Autoguardado" ? copy("Autoguardado", "Autosaved") : fileName === selectedMes ? month(fileName) : fileName}</span>
               <button
                 type="button"
@@ -883,7 +883,7 @@ export default function ReporteDiarioContent() {
                 className="reporte-iconbtn"
                 data-testid="clear-file-btn"
               >
-                <FileX2 size={14} aria-hidden="true" />
+                <FileX2 size="var(--icon-size-sm)" aria-hidden="true" />
               </button>
             </div>
           )}
@@ -1009,7 +1009,7 @@ export default function ReporteDiarioContent() {
 
               {currentMonth && rows.length > 0 && (
                 <motion.div
-                  className="reporte-card"
+                  className="reporte-card reporte-card--calendar"
                   variants={{
                     hidden: { opacity: 0, y: 12 },
                     visible: {

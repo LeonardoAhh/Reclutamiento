@@ -191,7 +191,7 @@ export function EmployeeBulkUpdateModal({
                   aria-label="Cambios de puesto, categoría y turno"
                   tabIndex={0}
                 >
-                  <table className="employee-bulk-update__table">
+                  <table className="employee-bulk-update__table data-table data-table--cards">
                     <thead>
                       <tr>
                         <th scope="col">Empleado</th>

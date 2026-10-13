@@ -4,7 +4,7 @@
    ======================================== */
 
 .expandable-section {
-  border: 1px solid var(--color-hairline);
+  border: var(--border-width) solid var(--color-control-border);
   border-radius: var(--rounded-md);
   background: var(--color-surface-card);
   overflow: hidden;
@@ -12,7 +12,7 @@
 }
 
 .expandable-section:hover {
-  border-color: var(--color-hairline-strong);
+  border-color: var(--color-control-border);
 }
 
 /* ── Trigger (botón que expande/colapsa) ── */
@@ -50,12 +50,15 @@
 }
 
 .expandable-section__badge {
+  font-family: var(--font-body);
   font-size: var(--type-caption-md-size);
   font-weight: var(--type-caption-md-weight);
+  line-height: var(--type-caption-md-line);
+  letter-spacing: var(--type-caption-md-tracking);
   color: var(--color-muted);
-  padding: 2px var(--spacing-xs);
+  padding: var(--design-spacing-xxs) var(--spacing-xs);
   background: var(--color-surface-cream-strong);
-  border-radius: var(--rounded-xs);
+  border-radius: var(--rounded-sm);
   white-space: nowrap;
 }
 

@@ -78,7 +78,7 @@
 
 .area-detail-modal__stat--amber {
   background: var(--color-warning-tint);
-  border-color: var(--color-warning);
+  border-color: var(--color-warning-text);
 }
 .area-detail-modal__stat--amber .area-detail-modal__stat-value,
 .area-detail-modal__stat--amber .area-detail-modal__stat-label {

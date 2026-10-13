@@ -20,7 +20,8 @@
 
 .home-page__lessons {
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--design-spacing-lg);
+  align-items: stretch;
+  gap: var(--design-spacing-md);
 }
 
 .home-page__pagination svg {
@@ -47,7 +48,7 @@
 }
 
 .home-page__section-title {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   color: var(--color-ink);
   overflow-wrap: anywhere;
   font-size: var(--type-heading-md-size);

@@ -499,7 +499,7 @@ export function AreaDetailView({
           </ul>
         ) : (
           <div className="area-detail-modal__table-wrapper">
-            <table className="area-detail-modal__table">
+            <table className="area-detail-modal__table data-table">
               <caption className="sr-only">{t('Puestos del departamento')} {dept.area}</caption>
               <thead>
                 <tr>

@@ -6,7 +6,7 @@
   gap: var(--spacing-xs);
   padding: var(--spacing-md);
   border-radius: var(--rounded-lg);
-  border: var(--border-width) solid var(--color-hairline);
+  border: var(--border-width) solid var(--color-control-border);
   background: var(--color-surface-card);
   min-width: 0;
   overflow: hidden;
@@ -22,7 +22,7 @@ button.section-summary-card {
 }
 
 button.section-summary-card:hover {
-  border-color: var(--color-hairline-strong);
+  border-color: var(--color-control-border);
   box-shadow: var(--shadow-xs);
 }
 
@@ -34,11 +34,11 @@ button.section-summary-card:hover {
 }
 
 .section-summary-card--has-incidents:not(.section-summary-card--selected) {
-  border-color: color-mix(in srgb, var(--color-error) 25%, var(--color-hairline));
+  border-color: var(--color-error-text);
 }
 
 .section-summary-card--no-incidents:not(.section-summary-card--selected) {
-  border-color: var(--color-hairline);
+  border-color: var(--color-control-border);
 }
 
 .section-summary-card__header {
@@ -92,7 +92,7 @@ button.section-summary-card:hover {
 }
 .section-summary-card__badge--error {
   color: var(--color-on-error);
-  background: var(--color-error);
+  background: var(--color-error-deep);
 }
 .section-summary-card__badge--warning {
   color: var(--color-on-warning);

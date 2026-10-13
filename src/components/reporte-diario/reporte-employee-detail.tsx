@@ -107,7 +107,7 @@ const STYLES = {
     },
     incidentTableWrapper: {
         borderRadius: "var(--rounded-lg)",
-        border: "1px solid var(--color-hairline)",
+        border: "var(--border-width) solid var(--color-hairline)",
         overflow: "hidden",
     },
     table: {
@@ -115,22 +115,22 @@ const STYLES = {
         borderCollapse: "collapse" as const,
     },
     thead: {
-        borderBottom: "1px solid var(--color-hairline)",
-        background: "var(--color-surface-soft)",
+        borderBottom: "var(--border-width) solid var(--color-hairline-strong)",
+        background: "var(--color-canvas-soft)",
     },
     th: {
-        padding: "var(--spacing-sm) var(--spacing-md)",
+        padding: "var(--design-spacing-xs) var(--design-spacing-md)",
         textAlign: "left" as const,
         textTransform: "uppercase" as const,
-        color: "var(--color-muted)",
+        color: "var(--color-body)",
     },
     tbody: {},
     tr: {
-        borderBottom: "1px solid var(--color-hairline-soft)",
+        borderBottom: "var(--border-width) solid var(--color-hairline-strong)",
     },
     td: {
         base: {
-            padding: "var(--spacing-sm) var(--spacing-md)",
+            padding: "var(--design-spacing-xs) var(--design-spacing-md)",
         },
         type: {
             color: "var(--color-ink)",
@@ -299,7 +299,7 @@ function IncidentTable({ incidents, year, month }: IncidentTableProps) {
                 {copy("Detalle de incidencias", "Incident details")} ({incidents.length})
             </p>
             <div style={STYLES.incidentTableWrapper}>
-                <table className="reporte-employee-detail__table" style={STYLES.table}>
+                <table className="reporte-employee-detail__table data-table" style={STYLES.table}>
                     <thead style={STYLES.thead}>
                         <tr>
                             {TABLE_HEADERS.map((header) => (

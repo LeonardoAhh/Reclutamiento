@@ -482,7 +482,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0;
-  border: 1px solid var(--color-hairline);
+  border: var(--border-width) solid var(--color-control-border);
   border-radius: var(--rounded-md);
   background: var(--color-surface-card);
   overflow: hidden;
@@ -811,11 +811,11 @@
   font-weight: var(--type-caption-up-weight);
   line-height: var(--type-caption-up-line);
   letter-spacing: var(--type-caption-up-tracking);
-  color: var(--color-warning);
-  background: var(--color-warning-tint);
+  color: var(--color-warning-text);
+  background: var(--color-warning-subtle);
   padding: var(--design-spacing-xxs) var(--spacing-sm);
   border-radius: var(--rounded-sm);
-  border: 1px solid color-mix(in srgb, var(--color-warning) 30%, transparent);
+  border: var(--border-width) solid var(--color-warning-text);
 }
 
 .pipeline__vinoplastic-badge {
@@ -826,11 +826,11 @@
   font-weight: var(--type-caption-up-weight);
   line-height: var(--type-caption-up-line);
   letter-spacing: var(--type-caption-up-tracking);
-  color: var(--color-primary);
-  background: var(--color-primary-tint);
+  color: var(--color-on-primary);
+  background: var(--color-primary);
   padding: var(--design-spacing-xxs) var(--spacing-sm);
   border-radius: var(--rounded-sm);
-  border: 1px solid color-mix(in srgb, var(--color-primary) 30%, transparent);
+  border: var(--border-width) solid var(--color-primary);
 }
 
 .pipeline__starlite-icon {
@@ -890,7 +890,7 @@
   justify-content: center;
   min-width: var(--touch-target-min);
   min-height: var(--touch-target-min);
-  border: 1px solid var(--color-hairline);
+  border: var(--border-width) solid var(--color-control-border);
   border-radius: var(--rounded-md);
   background: var(--color-canvas);
   color: var(--color-body);
@@ -933,7 +933,7 @@
   min-width: 16px;
   height: 16px;
   padding: 0 var(--design-spacing-xxs);
-  border-radius: var(--rounded-pill);
+  border-radius: var(--rounded-sm);
   background: var(--color-primary);
   color: var(--color-on-primary);
   font-size: var(--type-caption-md-size);
@@ -1154,7 +1154,7 @@
 .pipeline__cell-status
   .custom-select-trigger[aria-expanded="true"]
   .candidate-status-badge {
-  border-color: color-mix(in srgb, currentColor 24%, transparent);
+  border-color: var(--color-control-border);
   cursor: pointer;
 }
 

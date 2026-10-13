@@ -101,7 +101,7 @@
   gap: var(--spacing-xs) var(--spacing-sm);
   padding: var(--spacing-md);
   margin-block-end: var(--spacing-sm);
-  border: var(--border-width) solid var(--color-hairline);
+  border: var(--border-width) solid var(--color-hairline-strong);
   border-radius: var(--rounded-lg);
   background: var(--color-surface-card);
   cursor: pointer;
@@ -213,7 +213,7 @@
   letter-spacing: var(--type-body-md-tracking);
 }
 
-.missing-positions-page__count-badge,
+.missing-positions-page__count-value,
 .missing-positions-page__count-empty {
   font-size: var(--type-body-strong-size);
   font-variant-numeric: tabular-nums;
@@ -223,24 +223,17 @@
   letter-spacing: var(--type-body-strong-tracking);
 }
 
-.missing-positions-page__count-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-inline-size: var(--spacing-xxl);
-  min-block-size: var(--spacing-xxl);
-  padding-inline: var(--spacing-xs);
-  border-radius: var(--rounded-full);
-  background: transparent;
+.missing-positions-page__count-value {
+  color: var(--color-ink);
 }
 
-.missing-positions-page__count-badge--error {
-  color: color-mix(in srgb, var(--color-error) 80%, var(--color-ink));
+.missing-positions-page__count-value--error {
+  color: var(--color-error-text);
 }
 
-.missing-positions-page__count-badge--warning,
-.missing-positions-page__count-badge--starlite {
-  color: color-mix(in srgb, var(--color-accent-amber) 80%, var(--color-ink));
+.missing-positions-page__count-value--warning,
+.missing-positions-page__count-value--starlite {
+  color: var(--color-warning-text);
 }
 
 .missing-positions-page__count-empty {
@@ -328,7 +321,7 @@
     z-index: 1;
     inline-size: auto;
     padding: var(--spacing-sm) var(--spacing-md);
-    border-bottom: var(--border-width) solid var(--color-hairline);
+    border-bottom: var(--border-width) solid var(--color-hairline-strong);
     color: var(--color-body);
     font-family: var(--font-body);
     font-size: var(--type-caption-up-size);
@@ -345,7 +338,7 @@
     display: table-cell;
     inline-size: auto;
     padding: var(--spacing-sm) var(--spacing-md);
-    border-bottom: var(--border-width) solid var(--color-hairline-soft);
+    border-bottom: var(--border-width) solid var(--color-hairline-strong);
   }
 
   .missing-positions-page__table thead th:first-child {

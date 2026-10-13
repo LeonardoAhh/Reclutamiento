@@ -4,6 +4,7 @@
   min-inline-size: 0;
   flex-direction: column;
   gap: var(--spacing-md);
+  border-color: var(--color-hairline-strong);
 }
 
 .responsibility-card__header {
@@ -121,6 +122,5 @@
 }
 
 .responsibility-card__menu:hover {
-  background: var(--color-surface-soft);
   color: var(--color-ink);
 }

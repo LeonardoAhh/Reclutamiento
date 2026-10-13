@@ -138,7 +138,7 @@ export function WeeklyHiresModal({
         </div>
       ) : (
         <div className="weekly-hires-modal__table-wrap">
-          <table className="weekly-hires-modal__table">
+          <table className="weekly-hires-modal__table data-table">
             <thead>
               <tr>
                 <th>{t('Puesto')}</th>
@@ -190,7 +190,7 @@ export function WeeklyHiresModal({
         </div>
       ) : (
         <div className="weekly-hires-modal__table-wrap">
-          <table className="weekly-hires-modal__table">
+          <table className="weekly-hires-modal__table data-table">
             <thead>
               <tr>
                 <th>{t('Puesto')}</th>

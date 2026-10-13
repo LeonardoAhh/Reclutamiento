@@ -1,26 +1,21 @@
-/* Badge — pill labels from the shared white theme. */
+/* Badges compartidos: superficies opacas y radios compactos en ambos temas. */
 
 .badge {
   display: inline-flex;
   align-items: center;
   gap: var(--design-spacing-xxs);
   padding: var(--design-spacing-xxs) var(--design-spacing-sm);
-  border-radius: var(--rounded-full);
+  border-radius: var(--rounded-sm);
   font-family: var(--font-body);
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-sm-strong-weight);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
   white-space: nowrap;
-  line-height: var(--type-body-sm-line);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
 }
 
 .badge svg {
   flex-shrink: 0;
-}
-
-.badge.badge--minimal {
-  background: transparent;
-  padding: 0;
-  gap: var(--design-spacing-xxs);
 }
 
 .badge--default {
@@ -34,32 +29,32 @@
 }
 
 .badge--coral {
-  background: var(--color-primary-tint);
-  color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
 }
 
 .badge--teal {
-  background: color-mix(in srgb, var(--color-accent-teal) 15%, transparent);
-  color: var(--color-accent-teal);
+  background: var(--color-accent-teal);
+  color: var(--color-on-neutral);
 }
 
 .badge--amber {
-  background: var(--color-warning-tint);
-  color: var(--color-warning);
+  background: var(--color-warning-subtle);
+  color: var(--color-warning-text);
 }
 
 .badge--success {
-  background: var(--color-success-tint);
+  background: var(--color-success-subtle);
   color: var(--color-success-text);
 }
 
 .badge--error {
-  background: var(--color-error-tint);
-  color: var(--color-error);
+  background: var(--color-error-subtle);
+  color: var(--color-error-text);
 }
 
 .badge--error-solid {
-  background: var(--color-error);
+  background: var(--color-error-deep);
   color: var(--color-on-error);
 }
 
@@ -70,7 +65,7 @@
   align-items: center;
   height: var(--icon-size-lg);
   padding-inline: var(--design-spacing-xs);
-  border-radius: var(--rounded-md);
+  border-radius: var(--rounded-sm);
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-label-sm-weight);
   line-height: var(--type-body-sm-line);
@@ -104,7 +99,7 @@
   min-height: var(--design-spacing-lg);
   padding-inline: var(--design-spacing-xs);
   background: var(--color-surface-soft);
-  border-radius: var(--rounded-full);
+  border-radius: var(--rounded-sm);
   font-size: var(--type-caption-sm-size);
   line-height: var(--type-caption-sm-line);
   color: var(--color-ink);
@@ -132,7 +127,7 @@
   min-height: var(--icon-size-lg);
   padding-inline: var(--design-spacing-xs);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-md);
+  border-radius: var(--rounded-sm);
   background: var(--color-surface);
   color: var(--color-ink);
   font-family: var(--font-body);
@@ -157,7 +152,7 @@
   width: var(--icon-size-lg);
   height: var(--icon-size-lg);
   justify-content: center;
-  border-radius: var(--rounded-full);
+  border-radius: var(--rounded-sm);
 }
 
 .reclutador-badge--icon-only.reclutador-badge--sm {
@@ -210,7 +205,7 @@
   align-items: center;
   gap: var(--design-spacing-xxs);
   padding: var(--design-spacing-xxs) var(--design-spacing-xs);
-  border-radius: var(--rounded-md);
+  border-radius: var(--rounded-sm);
   font-family: var(--font-body);
   font-size: var(--type-caption-up-size);
   font-weight: var(--font-semibold);
@@ -242,11 +237,11 @@
 }
 
 .status-badge--starlite .status-badge__icon {
-  color: var(--color-warning);
+  color: var(--color-warning-text);
 }
 
 .status-badge--incapacidad .status-badge__icon {
-  color: var(--color-warning);
+  color: var(--color-warning-text);
 }
 
 .status-badge--proximo-ingreso .status-badge__icon {

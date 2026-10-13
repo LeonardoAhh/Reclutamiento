@@ -13,7 +13,7 @@
   line-height: var(--type-button-line);
   letter-spacing: var(--type-button-tracking);
   border-radius: var(--rounded-md);
-  border: var(--border-width) solid var(--color-hairline);
+  border: var(--border-width) solid var(--color-control-border);
   cursor: pointer;
   transition:
     background var(--transition-fast),

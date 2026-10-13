@@ -126,7 +126,7 @@ export function MissingPositionsPage({
               role="region"
               aria-label={t("Tabla de puestos faltantes")}
             >
-              <table className="missing-positions-page__table">
+              <table className="missing-positions-page__table data-table data-table--cards">
                 <colgroup>
                   <col className="missing-positions-page__position-column" />
                   <col className="missing-positions-page__metric-column" />
@@ -225,7 +225,7 @@ export function MissingPositionsPage({
                         </td>
                         <td data-label={t('Plantilla')} className="missing-positions-page__num-col">
                           {faltanPlantilla > 0 ? (
-                            <span className="missing-positions-page__count-badge missing-positions-page__count-badge--error">
+                            <span className="missing-positions-page__count-value missing-positions-page__count-value--error">
                               {faltanPlantilla}
                             </span>
                           ) : (
@@ -234,7 +234,7 @@ export function MissingPositionsPage({
                         </td>
                         <td data-label={t('Backup')} className="missing-positions-page__num-col">
                           {faltanBackup > 0 ? (
-                            <span className="missing-positions-page__count-badge missing-positions-page__count-badge--warning">
+                            <span className="missing-positions-page__count-value missing-positions-page__count-value--warning">
                               {faltanBackup}
                             </span>
                           ) : (
@@ -243,7 +243,7 @@ export function MissingPositionsPage({
                         </td>
                         <td data-label={t('Starlite')} className="missing-positions-page__num-col">
                           {r.netStarlite > 0 ? (
-                            <span className="missing-positions-page__count-badge missing-positions-page__count-badge--starlite">
+                            <span className="missing-positions-page__count-value missing-positions-page__count-value--starlite">
                               {r.netStarlite}
                             </span>
                           ) : (

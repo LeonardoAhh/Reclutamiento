@@ -53,7 +53,7 @@ export function WeeklyMetrics({ stats }: { stats: WeekStat[] }) {
 
     return (
       <div className="recruiter-metrics__table-wrap">
-        <table className="recruiter-metrics__table">
+        <table className="recruiter-metrics__table data-table">
           {showHeader && (
             <thead>
               <tr>

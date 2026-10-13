@@ -251,7 +251,7 @@ export function Asistencia() {
           </div>
 
           <div className="asistencia-table-wrapper">
-            <table className="asistencia-table">
+            <table className="asistencia-table data-table">
               <thead>
                 <tr>
                   <th>No. Empleado</th>

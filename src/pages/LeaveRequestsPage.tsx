@@ -132,7 +132,7 @@ export function LeaveRequestsPage() {
             <p className="animated-empty-state__subtitle">{t.emptyText}</p>
           </div>
           : <><div className="leave-requests-page__table-scroll" role="region" aria-label={t.table} tabIndex={0}>
-            <table className="leave-requests-page__table">
+            <table className="leave-requests-page__table data-table">
               <caption className="sr-only">{t.caption}</caption>
               <thead><tr>
                 <th scope="col">{t.requester}</th><th scope="col">{t.type}</th><th scope="col">{t.dates}</th>
@@ -146,7 +146,7 @@ export function LeaveRequestsPage() {
                   {' – '}<time dateTime={row.endDate}>{date(row.endDate)}</time></td>
                 <td><time dateTime={row.requestedAt}>{formatDateTimeMx(row.requestedAt, dateLocale)}</time></td>
                 <td><div className="leave-requests-page__status">
-                  <Badge className="leave-requests-page__status-badge" minimal variant={row.status === 'approved' ? 'success' : 'default'}>{statusLabel(row, language)}</Badge>
+                  <Badge className="leave-requests-page__status-badge" variant={row.status === 'approved' ? 'success' : 'default'}>{statusLabel(row, language)}</Badge>
                   {row.requiresNoticeException && <Tooltip content={noticeLabel(row, language)}>
                     <button type="button" className="btn-icon leave-requests-page__notice"
                       aria-label={noticeLabel(row, language)}>
@@ -204,7 +204,7 @@ export function LeaveRequestsPage() {
                   </div>
                   <div className="leave-requests-page__card-details">
                     <div className="leave-requests-page__card-state">
-                      <Badge className="leave-requests-page__status-badge" minimal variant={row.status === 'approved' ? 'success' : 'default'}>{statusLabel(row, language)}</Badge>
+                      <Badge className="leave-requests-page__status-badge" variant={row.status === 'approved' ? 'success' : 'default'}>{statusLabel(row, language)}</Badge>
                     </div>
                     <div className="leave-requests-page__card-requested">
                       <span className="leave-requests-page__card-label">{t.requested}</span>

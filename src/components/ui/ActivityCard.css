@@ -87,7 +87,7 @@
 .activity-card__status,
 .activity-card__new {
   padding: var(--design-spacing-xxs) var(--spacing-xs);
-  border: var(--border-width) solid var(--color-hairline);
+  border: var(--border-width) solid var(--color-control-border);
   border-radius: var(--rounded-sm);
   font-family: var(--font-body);
   font-size: var(--type-caption-up-size);
@@ -101,21 +101,21 @@
 }
 
 .activity-card[data-status="pendiente"] .activity-card__status {
-  border-color: var(--color-warning-tint);
-  background: var(--color-warning-tint);
-  color: var(--color-warning);
+  border-color: var(--color-warning-text);
+  background: var(--color-warning-subtle);
+  color: var(--color-warning-text);
 }
 
 .activity-card[data-status="en_proceso"] .activity-card__status {
-  border-color: var(--color-hairline);
-  background: var(--color-primary-tint);
-  color: var(--color-primary);
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
 }
 
 .activity-card[data-status="completada"] .activity-card__status {
-  border-color: var(--color-success-tint);
-  background: var(--color-success-tint);
-  color: var(--color-success);
+  border-color: var(--color-success-text);
+  background: var(--color-success-subtle);
+  color: var(--color-success-text);
 }
 
 .activity-card__new {

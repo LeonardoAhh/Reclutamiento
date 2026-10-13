@@ -25,6 +25,7 @@ import { BackButton } from "@/components/ui/BackButton";
 import { SearchField } from "@/components/ui/SearchField";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { formatRouteDay, getConfiguracionCopy } from "./configuracion-translations";
+import { RouteItinerarySection } from "./RouteItinerarySection";
 
 import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
 import "./Rutas.css";
@@ -448,6 +449,7 @@ function RutaDetail({
             </section>
           </div>
         )}
+        {!searchTerm.trim() && <RouteItinerarySection routeName={ruta.nombreRuta} />}
       </div>
     </div>
   );

@@ -154,7 +154,7 @@ export function FutureHiresModal({
         </div>
       ) : (
         <div className="future-hires-modal__table-wrap">
-          <table className="future-hires-modal__table">
+          <table className="future-hires-modal__table data-table">
             <thead>
               <tr>
                 <th>{t('Puesto')}</th>

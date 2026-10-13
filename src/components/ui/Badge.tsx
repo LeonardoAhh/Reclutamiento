@@ -5,13 +5,12 @@ import './Badge.css';
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   children: React.ReactNode;
   variant?: 'default' | 'neutral-solid' | 'coral' | 'teal' | 'amber' | 'success' | 'error' | 'error-solid';
-  minimal?: boolean;
   className?: string;
 }
 
-export function Badge({ children, variant = 'default', minimal = false, className = '', ...props }: BadgeProps) {
+export function Badge({ children, variant = 'default', className = '', ...props }: BadgeProps) {
   return (
-    <span className={`badge badge--${variant} ${minimal ? 'badge--minimal' : ''} ${className}`.trim()} {...props}>
+    <span className={`badge badge--${variant} ${className}`.trim()} {...props}>
       {children}
     </span>
   );

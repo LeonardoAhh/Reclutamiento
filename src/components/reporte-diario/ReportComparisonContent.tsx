@@ -56,7 +56,7 @@ export function ReportComparisonContent({ summaries }: { summaries: ReporteDiari
 
           <h2 className="reporte-cmp__heading">{copy("Detalle mensual", "Monthly details")}</h2>
           <div className="reporte-cmp__table-wrap">
-            <table className="reporte-cmp__table">
+            <table className="reporte-cmp__table data-table">
               <caption className="sr-only">{copy("Comparativa mensual", "Monthly comparison")}</caption>
               <thead>
                 <tr>

@@ -42,7 +42,7 @@ export function MotivosBajaRecords({ bajas, year, month, exitType }: MotivosBaja
 
   return (
     <>
-      <table className="motivos-baja__records">
+      <table className="motivos-baja__records data-table data-table--cards">
         <thead>
           <tr>
             <th scope="col" className="motivos-baja__records-employee" aria-label={copy.employeeColumn} aria-sort="descending">{copy.employeeNumber}</th>

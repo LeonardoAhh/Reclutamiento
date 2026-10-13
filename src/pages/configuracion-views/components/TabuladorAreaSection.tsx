@@ -33,7 +33,7 @@ export function TabuladorAreaSection({ area, puestos, searchTokens, language }: 
       </header>
 
       <div className="tabulador-desktop-table">
-        <table className="tabulador-table type-body-md">
+        <table className="tabulador-table data-table type-body-md">
           <caption className="sr-only">{copy.currentSalaries} {area}</caption>
           <colgroup>
             <col className="tabulador-table__position-column" />

@@ -5,7 +5,7 @@ export function LeaveRequestsSkeletonFixture() {
     <main className="leave-requests-page container" aria-hidden="true">
       <section className="leave-requests-page__content">
         <div className="leave-requests-page__table-scroll">
-          <table className="leave-requests-page__table">
+          <table className="leave-requests-page__table data-table">
             <thead>
               <tr>
                 {['Solicitante', 'Tipo', 'Fechas', 'Solicitada el', 'Estado', 'Acciones'].map((column) => (

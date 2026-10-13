@@ -185,7 +185,7 @@
   min-block-size: var(--icon-size-lg);
   align-items: center;
   padding-inline: var(--design-spacing-xs);
-  border: var(--border-width) solid var(--color-hairline);
+  border: var(--border-width) solid var(--color-control-border);
   border-radius: var(--rounded-md);
   background: transparent;
   color: var(--color-ink);

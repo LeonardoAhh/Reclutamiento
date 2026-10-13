@@ -40,7 +40,7 @@
 .home-page__lesson-body {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
+  align-items: start;
   width: 100%;
   min-width: 0;
   gap: var(--design-spacing-sm);
@@ -57,12 +57,6 @@
   border-radius: inherit;
   background: transparent;
   cursor: pointer;
-}
-
-@media (min-width: 768px) {
-  .home-page__lesson-body {
-    aspect-ratio: 16 / 9;
-  }
 }
 
 .home-page__lesson-copy {
@@ -98,11 +92,11 @@
 .home-page__lesson-title {
   margin: 0;
   color: var(--color-ink);
-  font-family: var(--font-display);
-  font-size: var(--type-heading-sm-size);
-  font-weight: var(--type-heading-sm-weight);
-  line-height: var(--type-heading-sm-line);
-  letter-spacing: var(--type-heading-sm-tracking);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
   overflow-wrap: anywhere;
 }
 

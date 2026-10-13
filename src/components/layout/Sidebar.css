@@ -327,7 +327,7 @@ button.sidebar__close-btn {
   color: var(--color-navigation-rail-text-strong);
   background: var(--color-navigation-rail-elevated);
   border: var(--border-width) solid var(--color-navigation-rail-elevated);
-  border-radius: var(--rounded-full);
+  border-radius: var(--rounded-sm);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);

@@ -171,7 +171,7 @@ export function TurnosUpdater({ onPreview, onApply }: TurnosUpdaterProps) {
               {previewData.preview.length === 0 ? (
                 <p className="turnos-updater__empty">No hay cambios para aplicar.</p>
               ) : (
-                <table className="turnos-updater__table">
+                <table className="turnos-updater__table data-table">
                   <thead>
                     <tr>
                       <th>Num. Empleado</th>

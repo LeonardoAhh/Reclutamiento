@@ -6,7 +6,7 @@
 .hire-mode-tabs {
   display: flex;
   background: var(--color-surface);
-  border: var(--border-width) solid var(--color-hairline);
+  border: var(--border-width) solid var(--color-control-border);
   padding: 4px;
   border-radius: var(--rounded-md);
   gap: 4px;
@@ -34,7 +34,7 @@
 .hire-mode-tabs .hire-mode-active {
   background: var(--color-surface);
   color: var(--color-ink);
-  border-color: var(--color-hairline);
+  border-color: var(--color-control-border);
 }
 
 .hire-hint {

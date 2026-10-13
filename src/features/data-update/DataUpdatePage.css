@@ -59,7 +59,7 @@
   padding: var(--design-spacing-md);
   color: var(--color-warning-text);
   background: var(--color-warning-subtle);
-  border: var(--border-width) solid var(--color-warning);
+  border: var(--border-width) solid var(--color-warning-text);
   border-radius: var(--rounded-lg);
 }
 
@@ -400,7 +400,7 @@
   gap: var(--design-spacing-xs);
   padding: var(--design-spacing-xs);
   background: var(--color-surface-soft);
-  border: var(--border-width) solid var(--color-hairline);
+  border: var(--border-width) solid var(--color-control-border);
   border-radius: var(--rounded-md);
 }
 
@@ -467,6 +467,11 @@
   flex-direction: column;
   justify-content: space-between;
   gap: var(--design-spacing-md);
+}
+
+.data-update-results-panel .data-update-record-card {
+  background: var(--color-canvas-elevated);
+  border-color: var(--color-hairline-strong);
 }
 
 .data-update-completed-card__details {
@@ -607,7 +612,7 @@
 .data-update-status {
   align-self: flex-start;
   padding: var(--design-spacing-xxs) var(--design-spacing-xs);
-  border: var(--border-width) solid var(--color-hairline-strong);
+  border: var(--border-width) solid var(--color-control-border);
   border-radius: var(--rounded-xs);
   color: var(--color-body);
   background: var(--color-surface-soft);
@@ -622,13 +627,13 @@
 .data-update-status--en_proceso {
   color: var(--color-warning-text);
   background: var(--color-warning-subtle);
-  border-color: var(--color-warning);
+  border-color: var(--color-warning-text);
 }
 
 .data-update-status--completado {
   color: var(--color-success-text);
   background: var(--color-success-subtle);
-  border-color: var(--color-success);
+  border-color: var(--color-success-text);
 }
 
 .data-update-status--icon {
@@ -833,7 +838,7 @@
   padding-inline: var(--design-spacing-sm);
   color: var(--color-ink);
   background: var(--color-surface);
-  border: var(--border-width) solid var(--color-hairline-strong);
+  border: var(--border-width) solid var(--color-control-border);
   border-radius: var(--rounded-xs);
   cursor: pointer;
   font-family: var(--font-body);
@@ -853,7 +858,7 @@
 
 .data-update-binary-field[aria-invalid="true"] .data-update-binary-field__options label {
   background: var(--color-error-subtle);
-  border-color: var(--color-error);
+  border-color: var(--color-error-text);
 }
 
 .data-update-relationship-fields {

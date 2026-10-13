@@ -321,7 +321,7 @@
   display: inline-flex;
   align-items: center;
   padding: var(--design-spacing-xxs) var(--spacing-sm);
-  border-radius: var(--rounded-full);
+  border-radius: var(--rounded-sm);
   background: var(--color-hairline-soft);
   color: var(--color-charcoal);
   font-family: var(--font-body);
@@ -534,6 +534,78 @@
   align-items: center;
   gap: var(--spacing-sm);
   margin: 0 0 var(--spacing-md);
+}
+
+.route-itinerary__list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--design-spacing-xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.route-itinerary__stop {
+  display: grid;
+  grid-template-columns: min-content minmax(0, 1fr);
+  gap: var(--design-spacing-xs) var(--design-spacing-md);
+  min-width: 0;
+  padding: var(--design-spacing-sm) var(--design-spacing-md);
+  border: var(--border-width) solid var(--color-hairline-soft);
+  border-radius: var(--rounded-md);
+  background: var(--color-canvas-elevated);
+}
+
+.route-itinerary__number {
+  color: var(--color-muted);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.route-itinerary__place,
+.route-itinerary__times {
+  min-width: 0;
+}
+
+.route-itinerary__place h3,
+.route-itinerary__place p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.route-itinerary__place p {
+  color: var(--color-body);
+}
+
+.route-itinerary__times {
+  display: grid;
+  grid-column: 2;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--design-spacing-xs);
+  margin: 0;
+}
+
+.route-itinerary__times dt {
+  color: var(--color-muted);
+}
+
+.route-itinerary__times dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (min-width: 1080px) {
+  .route-itinerary__stop {
+    grid-template-columns: min-content minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+  }
+
+  .route-itinerary__times {
+    grid-column: 3;
+  }
 }
 
 .shift-bars {

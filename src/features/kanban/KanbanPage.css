@@ -299,7 +299,7 @@
   line-height: var(--type-body-md-line);
   letter-spacing: var(--type-body-md-tracking);
 }
-.kanban-checklist__row .kanban-checklist__input[aria-invalid="true"] { border-color: var(--color-error); }
+.kanban-checklist__row .kanban-checklist__input[aria-invalid="true"] { border-color: var(--color-error-text); }
 .kanban-checklist__row[data-completed] .kanban-checklist__input { color: var(--color-mute); text-decoration: line-through; }
 .kanban-checklist__remove { min-width: var(--touch-target-min); padding: 0; }
 .kanban-checklist__tools { display: flex; flex-wrap: wrap; gap: var(--design-spacing-xxs); min-width: 0; }

@@ -114,7 +114,7 @@ function DetailList({ rows }: { rows: AreaDetailRow[] }) {
         <div className="reporte-incidents__detail-list">
             {/* Desktop: tabla */}
             <div className="reporte-incidents__table-wrap">
-                <table className="reporte-incidents__table">
+                <table className="reporte-incidents__table data-table">
                     <thead>
                         <tr>
                             <th scope="col">{copy("Empleado", "Employee")}</th>

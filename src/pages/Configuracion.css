@@ -177,7 +177,7 @@
   height: var(--control-height);
   padding: var(--design-spacing-xxs);
   background: var(--color-surface-soft);
-  border: var(--border-width) solid var(--color-hairline);
+  border: var(--border-width) solid var(--color-control-border);
   border-radius: var(--rounded-xs);
 }
 
@@ -222,7 +222,7 @@
   padding: var(--spacing-xs) var(--spacing-xl) var(--spacing-xs) var(--spacing-sm);
   color: var(--color-ink);
   background: var(--color-surface);
-  border: var(--border-width) solid var(--color-hairline-strong);
+  border: var(--border-width) solid var(--color-control-border);
   border-radius: var(--rounded-xs);
 }
 
@@ -469,7 +469,7 @@
   padding-inline: var(--spacing-sm);
   color: var(--color-muted);
   background: var(--color-surface);
-  border: 1px solid var(--color-hairline);
+  border: var(--border-width) solid var(--color-control-border);
   border-radius: var(--rounded-md);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
@@ -1193,11 +1193,12 @@
 .indicadores-table-card {
   padding: 0;
   overflow: hidden;
+  background: var(--color-surface-card);
 }
 
 .indicadores-table-header {
   padding: var(--spacing-md);
-  border-bottom: var(--border-width) solid var(--color-hairline-soft);
+  border-bottom: var(--border-width) solid var(--color-hairline-strong);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1328,7 +1329,7 @@
   gap: var(--spacing-sm);
   position: sticky;
   left: 0;
-  background-color: var(--color-surface);
+  background-color: var(--color-surface-card);
   z-index: 1;
   font-family: var(--font-body);
   font-size: var(--type-body-strong-size);
@@ -1766,7 +1767,7 @@
   grid-auto-columns: 1fr;
   gap: var(--spacing-xs);
   padding: var(--design-spacing-xxs);
-  border: 1px solid var(--color-hairline);
+  border: 1px solid var(--color-control-border);
   border-radius: var(--rounded-lg);
   background: var(--color-surface-soft);
 }
