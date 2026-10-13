@@ -37,23 +37,27 @@ interface KanbanBoardProps {
   onSave: (draft: TaskDraft) => Promise<boolean>;
   onCloseEditor: () => void;
 }
-function DropColumn({ status, disabled, empty, headingId, children }: {
-  status: TaskStatus; disabled: boolean; empty: boolean; headingId: string; children: ReactNode;
+function DropColumn({ status, disabled, empty, pending, headingId, children }: {
+  status: TaskStatus; disabled: boolean; empty: boolean; pending: boolean; headingId: string; children: ReactNode;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: status, disabled });
   const { over } = useDndContext();
   const highlighted = isOver || over?.data.current?.status === status;
   return <section ref={setNodeRef} className="kanban-column" aria-labelledby={headingId}
-    data-empty={empty || undefined} data-drag-over={highlighted || undefined}>{children}</section>;
+    data-empty={empty || undefined} data-drag-over={highlighted || undefined}
+    data-drop-pending={pending || undefined}>{children}</section>;
 }
 
-function KanbanColumn({ status, tasks, copy: t, locked, dragging, now, headingId, headingRef,
-  editButtonRef, onEdit, language, pageSize }: {
+function KanbanColumn({ status, tasks, copy: t, locked, dragging, pending, arrivingTaskId, onArrivalEnd,
+  now, headingId, headingRef, editButtonRef, onEdit, language, pageSize }: {
   status: TaskStatus;
   tasks: KanbanTask[];
   copy: KanbanCopy;
   locked: boolean;
   dragging: boolean;
+  pending: boolean;
+  arrivingTaskId: string | null;
+  onArrivalEnd: () => void;
   now: number;
   headingId: string;
   headingRef: (node: HTMLHeadingElement | null) => void;
@@ -71,7 +75,7 @@ function KanbanColumn({ status, tasks, copy: t, locked, dragging, now, headingId
   const empty = rows.length === 0 && !dragging;
 
   return (
-    <DropColumn status={status} disabled={locked} empty={empty} headingId={headingId}>
+    <DropColumn status={status} disabled={locked} empty={empty} pending={pending} headingId={headingId}>
       <header className="kanban-column__header">
         <h3 id={headingId} className="type-body-strong" tabIndex={-1} ref={headingRef}>
           <KanbanStatusBadge status={status} copy={t} />
@@ -101,6 +105,7 @@ function KanbanColumn({ status, tasks, copy: t, locked, dragging, now, headingId
           {rows.map(task => (
             <li key={task.id}>
               <KanbanTaskCard task={task} copy={t} disabled={locked} now={now}
+                arriving={task.id === arrivingTaskId} onArrivalEnd={onArrivalEnd}
                 editButtonRef={node => editButtonRef(task.id, node)}
                 onEdit={() => onEdit(task)} />
             </li>
@@ -115,6 +120,8 @@ export function KanbanBoard({ tasks, copy: t, disabled, busy, error, editor, lan
   getAddButton, onEdit, onDelete, onMove, onArchive, now, onSave, onCloseEditor }: KanbanBoardProps) {
   const id = useId();
   const [dragging, setDragging] = useState(false);
+  const [pendingDropStatus, setPendingDropStatus] = useState<TaskStatus | null>(null);
+  const [arrivingTaskId, setArrivingTaskId] = useState<string | null>(null);
   const isDesktop = useMediaQuery(DESKTOP_MEDIA_QUERY);
   const pageSize = isDesktop ? 4 : 2;
   const headings = useRef<Partial<Record<TaskStatus, HTMLHeadingElement | null>>>({});
@@ -150,9 +157,17 @@ export function KanbanBoard({ tasks, copy: t, disabled, busy, error, editor, lan
     const after = rect ? rect.top + rect.height / 2 > over.rect.top + over.rect.height / 2 : sameColumnAfter;
     const drop = resolveTaskDrop(tasks, String(active.id), String(over.id),
       target?.status === source?.status ? sameColumnAfter : after);
-    if (source && drop) void onMove(source, drop.status, drop.beforeId).then(saved => {
-      if (saved) requestAnimationFrame(() => editButtons.current[source.id]?.focus());
-    });
+    if (source && drop) {
+      const changingColumn = source.status !== drop.status;
+      if (changingColumn) setPendingDropStatus(drop.status);
+      void onMove(source, drop.status, drop.beforeId).then(saved => {
+        setPendingDropStatus(null);
+        if (saved) {
+          if (changingColumn) setArrivingTaskId(source.id);
+          requestAnimationFrame(() => editButtons.current[source.id]?.focus());
+        }
+      });
+    }
   }
   async function archive() {
     if (!editor?.task) return;
@@ -175,7 +190,8 @@ export function KanbanBoard({ tasks, copy: t, disabled, busy, error, editor, lan
   const taskTitle = (taskId: string | number) => tasks.find(task => task.id === taskId)?.title ?? '';
   return (
     <DndContext id={id} sensors={sensors} collisionDetection={kanbanCollision}
-      onDragStart={() => setDragging(true)} onDragCancel={() => setDragging(false)} onDragEnd={endDrag}
+      onDragStart={() => { setArrivingTaskId(null); setDragging(true); }}
+      onDragCancel={() => setDragging(false)} onDragEnd={endDrag}
       accessibility={{ screenReaderInstructions: { draggable: t.dragInstructions }, announcements: {
         onDragStart: ({ active }) => `${t.drag}: ${taskTitle(active.id)}. ${t.dragInstructions}`,
         onDragOver: ({ over }) => moveAnnouncement(over?.id),
@@ -194,6 +210,9 @@ export function KanbanBoard({ tasks, copy: t, disabled, busy, error, editor, lan
               copy={t}
               locked={locked}
               dragging={dragging}
+              pending={pendingDropStatus === status}
+              arrivingTaskId={arrivingTaskId}
+              onArrivalEnd={() => setArrivingTaskId(null)}
               now={now}
               headingId={headingId}
               headingRef={node => { headings.current[status] = node; }}

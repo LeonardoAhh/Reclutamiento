@@ -14,22 +14,27 @@ interface KanbanTaskCardProps {
   copy: KanbanCopy;
   disabled: boolean;
   now: number;
+  arriving: boolean;
+  onArrivalEnd: () => void;
   onEdit: () => void;
   editButtonRef: (node: HTMLButtonElement | null) => void;
 }
-export function KanbanTaskCard({ task, copy: t, disabled, now, onEdit, editButtonRef }: KanbanTaskCardProps) {
+export function KanbanTaskCard({ task, copy: t, disabled, now, arriving, onArrivalEnd, onEdit, editButtonRef }: KanbanTaskCardProps) {
   const id = useId();
   const { language } = useLanguage();
   const locale = language === 'en' ? 'en-US' : 'es-MX';
-  const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, isDragging } = useSortable({
-    id: task.id, data: { status: task.status }, disabled, transition: null,
+  const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, isDragging, isOver } = useSortable({
+    id: task.id, data: { status: task.status }, disabled,
   });
   const { role: _role, tabIndex: _tabIndex, ...dragAttributes } = attributes;
   const overdue = isTaskOverdue(task, now);
   const completed = task.checklist.filter(step => step.done).length;
   return (
     <article ref={setNodeRef} className="kanban-task kanban-task--card" aria-labelledby={id}
-      data-dragging={isDragging || undefined} style={transform ? { transform: CSS.Transform.toString(transform) } : undefined}>
+      data-dragging={isDragging || undefined} data-drag-over={isOver && !isDragging || undefined}
+      data-arriving={arriving || undefined}
+      onAnimationEnd={arriving ? event => { if (event.target === event.currentTarget) onArrivalEnd(); } : undefined}
+      style={transform ? { transform: CSS.Transform.toString(transform) } : undefined}>
       <button ref={node => { setActivatorNodeRef(node); editButtonRef(node); }}
         type="button" className="kanban-task__open" {...dragAttributes} {...listeners} disabled={disabled}
         aria-label={`${t.edit}: ${task.title}`} onClick={onEdit} />

@@ -1,5 +1,5 @@
 import { useCallback, useId, useRef, useState } from 'react';
-import { Archive, ArrowLeft, Plus } from 'lucide-react';
+import { Archive, ArrowLeft, SquarePlus } from 'lucide-react';
 import { PageHeading } from '@/components/layout/PageHeading';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -79,7 +79,7 @@ function KanbanWorkspace({ userId, archived, focusView, onChangeView }: {
   const viewAction = (
         <button ref={attachViewButton} type="button" className="kanban-toolbar-button kanban-view-button" disabled={board.busy || editor !== null}
           aria-controls={id} onClick={() => onChangeView(!archived)}>
-          {archived ? <ArrowLeft size="var(--icon-size-sm)" aria-hidden="true" /> : <Archive size="var(--icon-size-sm)" aria-hidden="true" />}
+          {archived ? <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" /> : <Archive size="var(--icon-size-md)" aria-hidden="true" />}
           {archived ? t.backToBoard : t.archiveView}
         </button>
   );
@@ -92,7 +92,7 @@ function KanbanWorkspace({ userId, archived, focusView, onChangeView }: {
       aria-label={`${t.addCard}: ${t.statuses.pending}`}
       onClick={() => openEditor(null, 'pending')}
     >
-      <Plus size="var(--icon-size-sm)" aria-hidden="true" />
+      <SquarePlus size="var(--icon-size-md)" aria-hidden="true" />
       {t.addCard}
     </button>
   );

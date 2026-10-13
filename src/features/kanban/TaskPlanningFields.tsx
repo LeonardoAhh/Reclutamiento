@@ -1,4 +1,4 @@
-import { Plus, X } from 'lucide-react';
+import { CircleMinus, ListPlus } from 'lucide-react';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { CHECKLIST_MAX_ITEMS, CHECKLIST_TEXT_LIMIT, type TaskDraft } from './types';
 import { templateSteps } from './templates';
@@ -47,14 +47,14 @@ export function TaskPlanningFields({ id, draft, copy: t, disabled, creating, inv
             onChange={event => updateStep(step.id, { text: event.target.value })} /></div>
           <button type="button" className="btn-ghost kanban-checklist__remove" aria-label={`${t.removeStep}: ${step.text || index + 1}`}
             onClick={() => onChange({ ...draft, checklist: draft.checklist.filter(item => item.id !== step.id) })}>
-            <X size="var(--icon-size-sm)" aria-hidden="true" />
+            <CircleMinus size="var(--icon-size-md)" aria-hidden="true" />
           </button>
         </li>)}
       </ul>}
       <div className="kanban-checklist__tools">
         <button type="button" className="btn-ghost" disabled={draft.checklist.length >= CHECKLIST_MAX_ITEMS}
           onClick={() => onChange({ ...draft, checklist: [...draft.checklist, { id: crypto.randomUUID(), text: '', done: false }] })}>
-          <Plus size="var(--icon-size-sm)" aria-hidden="true" />{t.addStep}
+          <ListPlus size="var(--icon-size-md)" aria-hidden="true" />{t.addStep}
         </button>
         {creating && draft.checklist.length === 0 && <button type="button" className="btn-ghost"
           onClick={() => onChange({ ...draft, checklist: templateSteps(draft.kind, t).map(text => ({ id: crypto.randomUUID(), text, done: false })) })}>

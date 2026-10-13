@@ -125,7 +125,7 @@ export function TaskForm({ initial, initialStatus, copy: t, busy, error, onClose
     aria-label={`${confirmDelete ? t.confirm : t.remove}: ${initial.title}`}
     aria-describedby={confirmDelete ? `${id}-delete-notice` : undefined} onBlur={() => setConfirmDelete(false)}
     onClick={() => { if (confirmDelete) void onDelete(); else setConfirmDelete(true); }}>
-    <Trash2 size="var(--icon-size-sm)" aria-hidden="true" />{confirmDelete ? t.confirm : t.remove}
+    <Trash2 size="var(--icon-size-md)" aria-hidden="true" />{confirmDelete ? t.confirm : t.remove}
   </button> : undefined;
   const form = <form ref={formRef} id={`${id}-form`} className={`kanban-dialog-form${wizard ? ' modal-wizard-form' : ''}`}
     aria-label={creating ? t.create : t.editTitle}
@@ -150,7 +150,7 @@ export function TaskForm({ initial, initialStatus, copy: t, busy, error, onClose
       {initial?.status === 'completed' && onArchive && <div>
         <button type="button" className="btn-ghost" disabled={busy || discard || dirty}
           aria-describedby={dirty ? `${id}-archive-help` : undefined} onClick={() => { void onArchive(); }}>
-          <Archive size="var(--icon-size-sm)" aria-hidden="true" />{t.archive}
+          <Archive size="var(--icon-size-md)" aria-hidden="true" />{t.archive}
         </button>
         {dirty && <p id={`${id}-archive-help`} className="type-body-sm kanban-form__help">{t.archiveHelp}</p>}
       </div>}

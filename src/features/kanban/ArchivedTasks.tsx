@@ -25,7 +25,7 @@ export function ArchivedTasks({ tasks, copy: t, disabled, onRestore }: {
         {task.description && <p className="kanban-task__description type-body-md">{task.description}</p>}
         <button type="button" className="btn-ghost kanban-archive__restore" disabled={disabled}
           aria-label={`${t.restore}: ${task.title}`} onClick={() => { void onRestore(task); }}>
-          <ArchiveRestore size="var(--icon-size-sm)" aria-hidden="true" />{t.restore}
+          <ArchiveRestore size="var(--icon-size-md)" aria-hidden="true" />{t.restore}
         </button>
       </article>
     </li>)}

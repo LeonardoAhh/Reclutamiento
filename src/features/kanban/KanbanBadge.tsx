@@ -1,19 +1,19 @@
-﻿import { CircleCheck, CircleDashed, CircleDot, ClipboardList, ListTodo, MessagesSquare, Workflow, type LucideIcon } from 'lucide-react';
+﻿import { BadgeCheck, CircleGauge, ClipboardPenLine, Clock3, ListChecks, MessageSquareText, Waypoints, type LucideIcon } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import type { TaskKind, TaskStatus } from './types';
 import type { KanbanCopy } from './copy';
 import './KanbanBadge.css';
 
 const KIND_ICONS: Record<TaskKind, LucideIcon> = {
-  activity: ClipboardList,
-  process: Workflow,
-  interview: MessagesSquare,
-  todo: ListTodo,
+  activity: ClipboardPenLine,
+  process: Waypoints,
+  interview: MessageSquareText,
+  todo: ListChecks,
 };
 const STATUS_ICONS: Record<TaskStatus, LucideIcon> = {
-  pending: CircleDashed,
-  in_progress: CircleDot,
-  completed: CircleCheck,
+  pending: Clock3,
+  in_progress: CircleGauge,
+  completed: BadgeCheck,
 };
 export function KanbanKindBadge({ kind, copy }: { kind: TaskKind; copy: KanbanCopy }) {
   const Icon = KIND_ICONS[kind];
