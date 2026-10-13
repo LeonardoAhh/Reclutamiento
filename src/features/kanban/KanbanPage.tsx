@@ -77,11 +77,11 @@ function KanbanWorkspace({ userId, archived, focusView, onChangeView }: {
     return saved;
   }
   const viewAction = (
-        <button ref={attachViewButton} type="button" className="kanban-toolbar-button kanban-view-button" disabled={board.busy || editor !== null}
-          aria-controls={id} onClick={() => onChangeView(!archived)}>
-          {archived ? <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" /> : <Archive size="var(--icon-size-md)" aria-hidden="true" />}
-          {archived ? t.backToBoard : t.archiveView}
-        </button>
+    <button ref={attachViewButton} type="button" className="kanban-toolbar-button kanban-view-button"
+      disabled={board.busy || editor !== null} aria-controls={id} onClick={() => onChangeView(!archived)}>
+      {archived ? <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" /> : <Archive size="var(--icon-size-md)" aria-hidden="true" />}
+      {archived ? t.backToBoard : t.archiveView}
+    </button>
   );
   const addAction = !archived && (
     <button
@@ -97,8 +97,8 @@ function KanbanWorkspace({ userId, archived, focusView, onChangeView }: {
     </button>
   );
   return (
-    <div className="container kanban-page type-body-md">
-      <PageHeading className="app-page-title">{t.title}</PageHeading>
+    <main className="container kanban-page type-body-md" aria-labelledby={`${id}-title`}>
+      <PageHeading id={`${id}-title`} className="app-page-title">{t.title}</PageHeading>
 
       {!(board.loading && !board.ready) && <p className="sr-only" role="status">{board.loading ? t.loading : message}</p>}
       {board.loadError && <div className="kanban-feedback">
@@ -122,7 +122,7 @@ function KanbanWorkspace({ userId, archived, focusView, onChangeView }: {
         {board.ready && archived && board.tasks.length === 0 && <p className="type-body-md">{t.archiveEmpty}</p>}
         {board.ready && (archived ? <ArchivedTasks tasks={board.tasks} copy={t} disabled={disabled} onRestore={archive} />
           : <KanbanBoard tasks={board.tasks} copy={t} disabled={disabled} busy={board.busy} now={now}
-            editor={editor} error={actionError} language={language} onEdit={task => openEditor(task)}
+            editor={editor} error={actionError} onEdit={task => openEditor(task)}
             getAddButton={() => addButtonRef.current}
             onDelete={remove} onMove={move} onArchive={archive}
             onSave={save} onCloseEditor={() => { setEditor(null); board.clearActionError(); }} />)}
@@ -131,6 +131,6 @@ function KanbanWorkspace({ userId, archived, focusView, onChangeView }: {
         <button type="button" className="btn-secondary" disabled={disabled || editor !== null}
           onClick={() => { void board.load(board.tasks.map(task => task.id)); }}>{t.more}</button>
       </div>}
-    </div>
+    </main>
   );
 }

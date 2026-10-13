@@ -111,7 +111,7 @@ export async function createUser(
 export async function listProfiles(): Promise<Profile[]> {
   const { data, error } = await supabase
     .from('profiles')
-    .select('id, username, display_name, role, created_at, last_login_at')
+    .select('id, username, display_name, role, created_at, last_login_at, avatar_url')
     .order('username', { ascending: true });
 
   if (error) {

@@ -3,12 +3,31 @@ import { Clock } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { enUS, es } from "date-fns/locale";
 import { ButtonUtility } from "@/components/ui/ButtonUtility";
+import { Avatar } from "@/components/ui/Avatar";
+import { Tooltip } from "@/components/ui/Tooltip";
 import type { Profile } from "@/hooks/useAuth";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { subscribeOnlineUserIds } from "@/lib/presence";
 import { supabase } from "@/lib/supabase";
 import { listProfiles } from "@/lib/users";
 import "./UserActivityPanel.css";
+
+function ActivityAvatar({ name, src, online }: { name: string; src?: string | null; online: boolean }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Tooltip content={name} side="right" open={open} onOpenChange={setOpen}>
+      <button type="button" className="user-activity-panel__avatar" aria-label={name}
+        onClick={(event) => {
+          event.preventDefault();
+          setOpen(true);
+        }}>
+        <Avatar name={name} src={src} title="" />
+        {online && <span className="user-activity-panel__avatar-badge" aria-hidden="true" />}
+      </button>
+    </Tooltip>
+  );
+}
 
 function formatLastAccess(value: string | null | undefined, now: number, language: "es" | "en") {
   if (!value) return language === "en" ? "No access" : "Sin acceso";
@@ -44,7 +63,11 @@ function formatCompactLastAccess(lastAccess: string, language: "es" | "en") {
     .replace(/ días?$/, " d");
 }
 
-export function UserActivityPanel() {
+interface UserActivityPanelProps {
+  variant?: "default" | "avatars";
+}
+
+export function UserActivityPanel({ variant = "default" }: UserActivityPanelProps) {
   const { language } = useLanguage();
   const english = language === "en";
   const [profiles, setProfiles] = useState<Profile[]>([]);
@@ -162,12 +185,16 @@ export function UserActivityPanel() {
         {sortedProfiles.map((profile) => {
           const isOnline = onlineUsers.has(profile.id);
           const lastAccess = formatLastAccess(profile.last_login_at, now, language);
+          const displayName = profile.display_name || profile.username;
 
           return (
-            <li key={profile.id} className="user-activity-panel__card">
-              <span className="user-activity-panel__name type-body-strong">
-                {profile.display_name || profile.username}
-              </span>
+            <li key={profile.id} className="user-activity-panel__card" data-presentation={variant}>
+              {variant === "avatars" && (
+                <ActivityAvatar name={displayName} src={profile.avatar_url} online={isOnline} />
+              )}
+              {variant === "default" && <span className="user-activity-panel__name type-body-strong">
+                {displayName}
+              </span>}
               <span
                 className={`user-activity-panel__status type-body-md${
                   isOnline ? " user-activity-panel__status--online" : ""
@@ -175,10 +202,10 @@ export function UserActivityPanel() {
               >
                 {isOnline ? (
                   <>
-                    <span
+                    {variant === "default" && <span
                       className="user-activity-panel__online-dot"
                       aria-hidden="true"
-                    />
+                    />}
                     {english ? "Online" : "En línea"}
                   </>
                 ) : (

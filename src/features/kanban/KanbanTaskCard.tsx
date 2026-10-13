@@ -14,12 +14,10 @@ interface KanbanTaskCardProps {
   copy: KanbanCopy;
   disabled: boolean;
   now: number;
-  arriving: boolean;
-  onArrivalEnd: () => void;
   onEdit: () => void;
   editButtonRef: (node: HTMLButtonElement | null) => void;
 }
-export function KanbanTaskCard({ task, copy: t, disabled, now, arriving, onArrivalEnd, onEdit, editButtonRef }: KanbanTaskCardProps) {
+export function KanbanTaskCard({ task, copy: t, disabled, now, onEdit, editButtonRef }: KanbanTaskCardProps) {
   const id = useId();
   const { language } = useLanguage();
   const locale = language === 'en' ? 'en-US' : 'es-MX';
@@ -32,8 +30,6 @@ export function KanbanTaskCard({ task, copy: t, disabled, now, arriving, onArriv
   return (
     <article ref={setNodeRef} className="kanban-task kanban-task--card" aria-labelledby={id}
       data-dragging={isDragging || undefined} data-drag-over={isOver && !isDragging || undefined}
-      data-arriving={arriving || undefined}
-      onAnimationEnd={arriving ? event => { if (event.target === event.currentTarget) onArrivalEnd(); } : undefined}
       style={transform ? { transform: CSS.Transform.toString(transform) } : undefined}>
       <button ref={node => { setActivatorNodeRef(node); editButtonRef(node); }}
         type="button" className="kanban-task__open" {...dragAttributes} {...listeners} disabled={disabled}
@@ -46,7 +42,7 @@ export function KanbanTaskCard({ task, copy: t, disabled, now, arriving, onArriv
         </time>
       </header>
       <div className="kanban-task__body">
-        <h4 id={id} className="type-body-strong">{task.title}</h4>
+        <h4 id={id} className="kanban-task__title type-body-strong">{task.title}</h4>
         {task.description && <p className="kanban-task__description type-body-md">{task.description}</p>}
       </div>
       {(task.due_date || task.checklist.length > 0) && <footer className="kanban-task__metadata type-body-sm">

@@ -29,6 +29,53 @@
   text-transform: capitalize;
 }
 
+.user-activity-panel__card[data-presentation="avatars"] {
+  position: relative;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  row-gap: var(--design-spacing-xxs);
+}
+
+.user-activity-panel__avatar {
+  position: relative;
+  display: grid;
+  place-items: center;
+  inline-size: var(--touch-target-min);
+  block-size: var(--touch-target-min);
+  padding: 0;
+  border: 0;
+  border-radius: var(--rounded-full);
+  background: transparent;
+  color: var(--color-ink);
+  cursor: pointer;
+}
+
+.user-activity-panel__avatar-badge {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-end: 0;
+  inline-size: var(--design-spacing-xs);
+  block-size: var(--design-spacing-xs);
+  border: var(--border-width) solid var(--color-surface-card);
+  border-radius: var(--rounded-full);
+  background: var(--color-success-text);
+}
+
+.user-activity-panel__card[data-presentation="avatars"] .user-activity-panel__status {
+  justify-content: center;
+  color: var(--color-mute);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
+  text-align: center;
+}
+
+.user-activity-panel__card[data-presentation="avatars"] .user-activity-panel__status--online {
+  color: var(--color-success-text);
+}
+
 .user-activity-panel__status {
   min-width: 0;
   display: inline-flex;

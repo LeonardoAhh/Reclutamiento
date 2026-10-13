@@ -9,6 +9,7 @@ type AvatarProps = {
   src?: string | null;
   /** Contenido alternativo cuando no hay una imagen disponible. */
   fallback?: ReactNode;
+  title?: string;
 };
 
 /** Extrae hasta 2 iniciales (ej. leonardo@mail.com -> LE, Juan Perez -> JP). */
@@ -24,12 +25,12 @@ function getInitials(name: string) {
  * Muestra una imagen si src carga correctamente. Radix gestiona el fallback
  * accesible; sin imagen, las iniciales usan la superficie neutral del sistema.
  */
-export function Avatar({ name, src, fallback }: AvatarProps) {
+export function Avatar({ name, src, fallback, title = name }: AvatarProps) {
   return (
     <AvatarPrimitive.Root
       className="ui-avatar"
       aria-hidden="true"
-      title={name}
+      title={title}
     >
       {src && (
         <AvatarPrimitive.Image

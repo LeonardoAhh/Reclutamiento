@@ -11,11 +11,13 @@ interface TooltipProps {
   children: ReactNode;
   side?: 'top' | 'right' | 'bottom' | 'left';
   delayMs?: number;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
-export function Tooltip({ content, children, side = 'top', delayMs }: TooltipProps) {
+export function Tooltip({ content, children, side = 'top', delayMs, open, onOpenChange }: TooltipProps) {
   return (
-    <TooltipPrimitive.Root delayDuration={delayMs}>
+    <TooltipPrimitive.Root delayDuration={delayMs} open={open} onOpenChange={onOpenChange}>
       <TooltipPrimitive.Trigger asChild>{children}</TooltipPrimitive.Trigger>
       <TooltipPrimitive.Portal>
         <TooltipPrimitive.Content

@@ -1,21 +1,23 @@
-import { useId, useImperativeHandle, useRef, useState, type FormEvent, type Ref } from 'react';
+import { useEffect, useId, useRef, useState, type FormEvent } from 'react';
 import { changePassword } from '@/lib/auth';
 import { useLanguage } from '@/contexts/LanguageContext';
-import './ChangePasswordModal.css';
+import { useInlineConfirm } from '@/hooks/useInlineConfirm';
+import './PasswordChangeForm.css';
 
 type Field = 'current' | 'new' | 'confirm' | 'form';
 type FormError = { field: Field; message: string } | null;
 
 interface PasswordChangeFormProps {
-  ref?: Ref<{ close: () => void }>;
   onCancel: () => void;
+  /** Enfoca la contraseña actual cuando el panel ya terminó de abrirse. */
+  focusOnMount?: boolean;
   onChanged?: () => void | Promise<void>;
   submitLabel?: string;
   cancelLabel?: string;
 }
 
 export function PasswordChangeForm({
-  ref, onCancel, onChanged, submitLabel = 'Cambiar contraseña', cancelLabel = 'Cancelar',
+  onCancel, focusOnMount = false, onChanged, submitLabel = 'Cambiar contraseña', cancelLabel = 'Cancelar',
 }: PasswordChangeFormProps) {
   const { language } = useLanguage();
   const english = language === 'en';
@@ -26,6 +28,8 @@ export function PasswordChangeForm({
   const newErrorId = useId();
   const confirmErrorId = useId();
   const newHintId = useId();
+  const discardNoticeId = useId();
+  const discard = useInlineConfirm();
   const currentRef = useRef<HTMLInputElement>(null);
   const newRef = useRef<HTMLInputElement>(null);
   const confirmRef = useRef<HTMLInputElement>(null);
@@ -44,12 +48,19 @@ export function PasswordChangeForm({
     setSuccess(false);
   }
 
+  useEffect(() => {
+    if (focusOnMount) currentRef.current?.focus({ preventScroll: true });
+  }, [focusOnMount]);
+
+  const dirty = Boolean(currentPassword || newPassword || confirmation);
+
   function handleClose() {
     if (submitting) return;
-    if (
-      (currentPassword || newPassword || confirmation) &&
-      !window.confirm(english ? 'Discard the entered passwords?' : '¿Descartar las contraseñas ingresadas?')
-    ) return;
+    if (dirty && !discard.confirming) {
+      discard.request(true);
+      return;
+    }
+    discard.cancel();
     resetForm();
     onCancel();
   }
@@ -62,8 +73,6 @@ export function PasswordChangeForm({
       if (field === 'confirm') confirmRef.current?.focus();
     });
   }
-
-  useImperativeHandle(ref, () => ({ close: handleClose }));
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -182,9 +191,16 @@ export function PasswordChangeForm({
 
       {error?.field === 'form' && <span className="form-error" role="alert">{error.message}</span>}
       {success && <span className="form-success-text" role="status">{english ? 'Your password was changed.' : 'Tu contraseña se cambió correctamente.'}</span>}
+      <p id={discardNoticeId} className="sr-only" role="status">
+        {discard.confirming ? (english ? 'Press again to discard the entered passwords.' : 'Pulsa de nuevo para descartar las contraseñas ingresadas.') : ''}
+      </p>
       <div className="password-change-form__actions">
-        <button type="button" className="btn-secondary" onClick={handleClose} disabled={submitting}>
-          {english && cancelLabel === 'Cancelar' ? 'Cancel' : cancelLabel}
+        <button type="button" className="btn-secondary" onClick={handleClose} disabled={submitting}
+          data-confirming={discard.confirming || undefined}
+          aria-describedby={discard.confirming ? discardNoticeId : undefined} {...discard.triggerProps}>
+          {discard.confirming
+            ? (english ? 'Discard' : 'Descartar')
+            : english && cancelLabel === 'Cancelar' ? 'Cancel' : cancelLabel}
         </button>
         <button type="submit" className="btn-primary" disabled={submitting} aria-busy={submitting}>
           {submitting ? (english ? 'Saving…' : 'Guardando…') : english && submitLabel === 'Cambiar contraseña' ? 'Change password' : submitLabel}

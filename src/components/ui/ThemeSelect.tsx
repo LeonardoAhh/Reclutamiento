@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { useId, type ReactNode } from 'react';
 import { Eclipse } from 'lucide-react';
 import { useTheme } from '@/hooks/useTheme';
 import './ThemeSelect.css';
@@ -6,9 +6,10 @@ import './ThemeSelect.css';
 interface ThemeSelectProps {
   language?: 'es' | 'en';
   className?: string;
+  children?: ReactNode;
 }
 
-export function ThemeSelect({ language = 'es', className }: ThemeSelectProps) {
+export function ThemeSelect({ language = 'es', className, children }: ThemeSelectProps) {
   const id = useId();
   const { resolvedTheme, storageError, setPreference } = useTheme();
   const nextTheme = resolvedTheme === 'dark' ? 'light' : 'dark';
@@ -30,7 +31,7 @@ export function ThemeSelect({ language = 'es', className }: ThemeSelectProps) {
         aria-describedby={storageError ? `${id}-storage` : undefined}
         onClick={() => setPreference(nextTheme)}
       >
-        <Eclipse aria-hidden="true" />
+        {children ?? <Eclipse aria-hidden="true" />}
       </button>
       {storageError && (
         <p id={`${id}-storage`} className="theme-select__notice" role="status">

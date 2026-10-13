@@ -6,7 +6,7 @@ import { toNaturalCase } from "@/lib/utils";
 import { SidebarActionSearch } from "./SidebarActionSearch";
 import { SidebarQuickActions } from "./SidebarQuickActions";
 import { useTeamDirectory } from "@/features/team/TeamProvider";
-import { UserMenuPopover } from "./UserMenuPopover";
+import { AccountLink } from "./AccountLink";
 import "./Header.css";
 
 interface HeaderProps {
@@ -56,7 +56,7 @@ export function Header({ pageTitle, onMobileMenuToggle, mobileMenuOpen = false, 
             )}
           </SidebarQuickActions>
           {username && (
-            <UserMenuPopover
+            <AccountLink
               displayName={toNaturalCase(profile?.display_name || username, {
                 preserveAcronyms: false,
               })}

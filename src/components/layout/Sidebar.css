@@ -154,7 +154,11 @@ button.sidebar__close-btn {
 }
 
 .sidebar__footer {
-  display: none;
+  display: block;
+  flex: 0 0 auto;
+  margin-block-start: var(--design-spacing-sm);
+  padding-block-start: var(--design-spacing-sm);
+  border-block-start: var(--border-width) solid var(--color-hairline);
 }
 
 .sidebar__logout-action {
@@ -391,14 +395,6 @@ button.sidebar__close-btn {
     grid-template-columns: minmax(var(--touch-target-min), 1fr) auto;
     min-block-size: var(--_app-header-size);
     margin-block-end: var(--design-spacing-sm);
-  }
-
-  .sidebar__footer {
-    display: block;
-    flex: 0 0 auto;
-    margin-block-start: var(--design-spacing-sm);
-    padding-block-start: var(--design-spacing-sm);
-    border-block-start: var(--border-width) solid var(--color-hairline);
   }
 
   .sidebar__brand {

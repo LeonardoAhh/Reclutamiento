@@ -20,7 +20,8 @@ export const kanbanCopy = {
     archive: 'Archivar', archiveView: 'Archivo', archived: 'Archivado', restore: 'Restaurar',
     restored: 'Restaurado', archivedOn: 'Archivado el', backToBoard: 'Volver',
     archiveEmpty: 'Sin pendientes archivados.', archiveHelp: 'Guarda antes de archivar.',
-    reordered: 'Orden guardado', descriptionLimit: 'Máximo 4000 caracteres.',
+    reordered: 'Orden guardado', page: 'Página', of: 'de', paginationFor: 'Paginación de',
+    previousPage: 'Página anterior', nextPage: 'Página siguiente', descriptionLimit: 'Máximo 4000 caracteres.',
     invalidDue: 'Fecha u hora inválida.', timeNeedsDate: 'Primero elige una fecha.',
     invalidChecklist: 'Pasos: 1–240 caracteres (máx. 50).',
     templates: {
@@ -62,7 +63,8 @@ export const kanbanCopy = {
     archive: 'Archive', archiveView: 'Archive', archived: 'Archived', restore: 'Restore',
     restored: 'Restored', archivedOn: 'Archived on', backToBoard: 'Back',
     archiveEmpty: 'No archived tasks.', archiveHelp: 'Save before archiving.',
-    reordered: 'Order saved', descriptionLimit: 'Maximum 4000 characters.',
+    reordered: 'Order saved', page: 'Page', of: 'of', paginationFor: 'Pagination for',
+    previousPage: 'Previous page', nextPage: 'Next page', descriptionLimit: 'Maximum 4000 characters.',
     invalidDue: 'Invalid date or time.', timeNeedsDate: 'Choose a date first.',
     invalidChecklist: 'Steps: 1–240 characters (max. 50).',
     templates: {

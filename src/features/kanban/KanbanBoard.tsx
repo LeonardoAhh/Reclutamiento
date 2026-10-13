@@ -1,17 +1,11 @@
-import { useId, useRef, useState, type ReactNode } from 'react';
-import { DndContext, KeyboardSensor, MouseSensor, TouchSensor, useDndContext, useDroppable, useSensor, useSensors,
+import { useId, useRef, useState } from 'react';
+import { DndContext, KeyboardSensor, MouseSensor, TouchSensor, useSensor, useSensors,
   type DragEndEvent } from '@dnd-kit/core';
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Badge } from '@/components/ui/Badge'
 import { useMediaQuery } from '@/hooks/useMediaQuery';
-import { usePagination } from '@/hooks/usePagination';
 import { DESKTOP_MEDIA_QUERY } from '@/lib/layout';
-import type { Language } from '@/contexts/LanguageContext';
-import { KanbanStatusBadge } from './KanbanBadge';
 import { isTaskStatus, TASK_STATUSES, type KanbanTask, type TaskDraft, type TaskStatus } from './types';
 import { TaskForm } from './TaskForm';
-import { KanbanTaskCard } from './KanbanTaskCard';
+import { KanbanColumn } from './KanbanColumn';
 import { kanbanCollision, kanbanKeyboardCoordinates, resolveTaskDrop } from './drag';
 import type { KanbanCopy } from './copy';
 
@@ -27,7 +21,6 @@ interface KanbanBoardProps {
   busy: boolean;
   error: string;
   editor: KanbanEditor | null;
-  language: Language;
   getAddButton: () => HTMLButtonElement | null;
   onEdit: (task: KanbanTask) => void;
   onDelete: (task: KanbanTask) => Promise<boolean>;
@@ -37,91 +30,11 @@ interface KanbanBoardProps {
   onSave: (draft: TaskDraft) => Promise<boolean>;
   onCloseEditor: () => void;
 }
-function DropColumn({ status, disabled, empty, pending, headingId, children }: {
-  status: TaskStatus; disabled: boolean; empty: boolean; pending: boolean; headingId: string; children: ReactNode;
-}) {
-  const { setNodeRef, isOver } = useDroppable({ id: status, disabled });
-  const { over } = useDndContext();
-  const highlighted = isOver || over?.data.current?.status === status;
-  return <section ref={setNodeRef} className="kanban-column" aria-labelledby={headingId}
-    data-empty={empty || undefined} data-drag-over={highlighted || undefined}
-    data-drop-pending={pending || undefined}>{children}</section>;
-}
-
-function KanbanColumn({ status, tasks, copy: t, locked, dragging, pending, arrivingTaskId, onArrivalEnd,
-  now, headingId, headingRef, editButtonRef, onEdit, language, pageSize }: {
-  status: TaskStatus;
-  tasks: KanbanTask[];
-  copy: KanbanCopy;
-  locked: boolean;
-  dragging: boolean;
-  pending: boolean;
-  arrivingTaskId: string | null;
-  onArrivalEnd: () => void;
-  now: number;
-  headingId: string;
-  headingRef: (node: HTMLHeadingElement | null) => void;
-  editButtonRef: (taskId: string, node: HTMLButtonElement | null) => void;
-  onEdit: (task: KanbanTask) => void;
-  language: Language;
-  pageSize: number;
-}) {
-  const pagination = usePagination(tasks, pageSize);
-  const rows = pagination.pageItems;
-  const pageLabel = language === 'en' ? 'Page' : 'Página';
-  const paginationLabel = language === 'en' ? 'Pagination for' : 'Paginación de';
-  const previousLabel = language === 'en' ? 'Previous page' : 'Página anterior';
-  const nextLabel = language === 'en' ? 'Next page' : 'Página siguiente';
-  const empty = rows.length === 0 && !dragging;
-
-  return (
-    <DropColumn status={status} disabled={locked} empty={empty} pending={pending} headingId={headingId}>
-      <header className="kanban-column__header">
-        <h3 id={headingId} className="type-body-strong" tabIndex={-1} ref={headingRef}>
-          <KanbanStatusBadge status={status} copy={t} />
-        </h3>
-        <div className="kanban-column__header-actions">
-          <nav className="kanban-column__pagination"
-            aria-label={`${paginationLabel} ${t.statuses[status]}`}
-            aria-hidden={pagination.totalPages <= 1}>
-            <button type="button" className="step-nav-control" onClick={pagination.prevPage}
-              disabled={!pagination.canGoPrev} aria-label={previousLabel}>
-              <ChevronLeft aria-hidden="true" />
-            </button>
-            <span className="sr-only" aria-live="polite" aria-atomic="true">
-              {pageLabel} {pagination.currentPage} {language === 'en' ? 'of' : 'de'} {pagination.totalPages}
-            </span>
-            <button type="button" className="step-nav-control" onClick={pagination.nextPage}
-              disabled={!pagination.canGoNext} aria-label={nextLabel}>
-              <ChevronRight aria-hidden="true" />
-            </button>
-          </nav>
-          <Badge className="kanban-column__count">{tasks.length}</Badge>
-        </div>
-      </header>
-      <SortableContext items={rows.map(task => task.id)} strategy={verticalListSortingStrategy}>
-        <ul className="kanban-column__list">
-          {rows.length === 0 && dragging && <li className="kanban-column__empty type-body-md">{t.dropHere}</li>}
-          {rows.map(task => (
-            <li key={task.id}>
-              <KanbanTaskCard task={task} copy={t} disabled={locked} now={now}
-                arriving={task.id === arrivingTaskId} onArrivalEnd={onArrivalEnd}
-                editButtonRef={node => editButtonRef(task.id, node)}
-                onEdit={() => onEdit(task)} />
-            </li>
-          ))}
-        </ul>
-      </SortableContext>
-    </DropColumn>
-  );
-}
-
-export function KanbanBoard({ tasks, copy: t, disabled, busy, error, editor, language,
+export function KanbanBoard({ tasks, copy: t, disabled, busy, error, editor,
   getAddButton, onEdit, onDelete, onMove, onArchive, now, onSave, onCloseEditor }: KanbanBoardProps) {
   const id = useId();
   const [dragging, setDragging] = useState(false);
   const [pendingDropStatus, setPendingDropStatus] = useState<TaskStatus | null>(null);
-  const [arrivingTaskId, setArrivingTaskId] = useState<string | null>(null);
   const isDesktop = useMediaQuery(DESKTOP_MEDIA_QUERY);
   const pageSize = isDesktop ? 4 : 2;
   const headings = useRef<Partial<Record<TaskStatus, HTMLHeadingElement | null>>>({});
@@ -162,10 +75,7 @@ export function KanbanBoard({ tasks, copy: t, disabled, busy, error, editor, lan
       if (changingColumn) setPendingDropStatus(drop.status);
       void onMove(source, drop.status, drop.beforeId).then(saved => {
         setPendingDropStatus(null);
-        if (saved) {
-          if (changingColumn) setArrivingTaskId(source.id);
-          requestAnimationFrame(() => editButtons.current[source.id]?.focus());
-        }
+        if (saved) requestAnimationFrame(() => editButtons.current[source.id]?.focus());
       });
     }
   }
@@ -190,7 +100,7 @@ export function KanbanBoard({ tasks, copy: t, disabled, busy, error, editor, lan
   const taskTitle = (taskId: string | number) => tasks.find(task => task.id === taskId)?.title ?? '';
   return (
     <DndContext id={id} sensors={sensors} collisionDetection={kanbanCollision}
-      onDragStart={() => { setArrivingTaskId(null); setDragging(true); }}
+      onDragStart={() => setDragging(true)}
       onDragCancel={() => setDragging(false)} onDragEnd={endDrag}
       accessibility={{ screenReaderInstructions: { draggable: t.dragInstructions }, announcements: {
         onDragStart: ({ active }) => `${t.drag}: ${taskTitle(active.id)}. ${t.dragInstructions}`,
@@ -211,14 +121,11 @@ export function KanbanBoard({ tasks, copy: t, disabled, busy, error, editor, lan
               locked={locked}
               dragging={dragging}
               pending={pendingDropStatus === status}
-              arrivingTaskId={arrivingTaskId}
-              onArrivalEnd={() => setArrivingTaskId(null)}
               now={now}
               headingId={headingId}
               headingRef={node => { headings.current[status] = node; }}
               editButtonRef={(taskId, node) => { editButtons.current[taskId] = node; }}
               onEdit={onEdit}
-              language={language}
               pageSize={pageSize}
             />
           );
