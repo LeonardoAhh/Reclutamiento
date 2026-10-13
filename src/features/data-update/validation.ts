@@ -8,7 +8,6 @@ import {
 import { normalizeString } from "@/lib/utils";
 import { localTodayIso } from "@/lib/dates";
 import {
-  DATA_UPDATE_PHOTO_MAX_BYTES,
   DATA_UPDATE_RAW_FIELDS,
   EDITABLE_FIELDS,
   MEXICO_STATES,
@@ -250,19 +249,4 @@ export function isDataUpdatePhoneValid(value: string): boolean {
 
 export function isDataUpdatePayrollReceiptStatusValid(value: string): boolean {
   return PAYROLL_RECEIPT_OPTIONS.some((option) => option === value);
-}
-
-const PHOTO_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
-
-export function validateDataUpdatePhoto(file: File): string | null {
-  if (!PHOTO_TYPES.has(file.type)) return "Selecciona una imagen JPEG, PNG o WebP.";
-  if (file.size === 0) return "La imagen está vacía. Vuelve a tomarla o selecciona otra.";
-  if (file.size > DATA_UPDATE_PHOTO_MAX_BYTES) return "La imagen debe pesar máximo 5 MB.";
-  return null;
-}
-
-export function getDataUpdatePhotoExtension(file: File): string {
-  if (file.type === "image/png") return "png";
-  if (file.type === "image/webp") return "webp";
-  return "jpg";
 }

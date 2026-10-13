@@ -1,8 +1,7 @@
-import { type ChangeEvent } from "react";
-import { Camera, ImageUp, PencilLine, RefreshCw } from "lucide-react";
+import { PencilLine } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { formatShortDate } from "@/lib/dates";
-import { DATA_UPDATE_PHOTO_ACCEPT, EDITABLE_FIELDS } from "./constants";
+import { EDITABLE_FIELDS } from "./constants";
 import type {
   DataUpdateEditableData,
   DataUpdateEditableTextKey,
@@ -10,17 +9,7 @@ import type {
 } from "./types";
 import { useDataUpdateText } from "./translations";
 
-interface PhotoStepProps {
-  identity: DataUpdateIdentity;
-  photoUrl: string | null;
-  photoBusy: boolean;
-  photoStatus: string | null;
-  canRetry: boolean;
-  onPhotoChange: (file: File | undefined) => void;
-  onRetry: () => void;
-}
-
-interface ReviewStepProps {
+interface DataUpdateReviewStepProps {
   data: DataUpdateEditableData;
   onEditStep: (step: number) => void;
 }
@@ -38,75 +27,7 @@ const REVIEW_GROUPS: ReadonlyArray<{
   { title: "Tallas e hijos", step: 5, keys: ["shirtSize", "shoeSize"], includeChildren: true },
 ];
 
-export function PhotoStep({
-  identity,
-  photoUrl,
-  photoBusy,
-  photoStatus,
-  canRetry,
-  onPhotoChange,
-  onRetry,
-}: PhotoStepProps) {
-  const t = useDataUpdateText();
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    onPhotoChange(event.target.files?.[0]);
-    event.target.value = "";
-  };
-
-  return (
-    <section className="data-update-step" aria-labelledby="photo-step-title">
-      <div>
-        <h2 id="photo-step-title">{t("Fotografía")}</h2>
-        <p className="text-muted">{t("La fotografía es obligatoria para finalizar. Formatos JPEG, PNG o WebP, máximo 5 MB.")}</p>
-      </div>
-
-      <div className="data-update-photo">
-        {photoUrl ? (
-          <img src={photoUrl} alt={t(photoBusy ? `Vista previa de ${identity.name}, pendiente de guardar` : `Fotografía de ${identity.name}`)} />
-        ) : (
-          <div className="data-update-photo__empty" aria-hidden="true"><Camera /></div>
-        )}
-        <p className="data-update-photo__status" role="status" aria-atomic="true">
-          {photoStatus}
-          {photoBusy && <span>{t("Espera para continuar. La vista previa todavía no confirma el guardado.")}</span>}
-        </p>
-        <div className="data-update-photo__actions" aria-busy={photoBusy || undefined}>
-          <label className="btn-primary" aria-disabled={photoBusy || undefined}>
-            {photoUrl ? <RefreshCw aria-hidden="true" /> : <Camera aria-hidden="true" />}
-            {t(photoUrl ? "Volver a tomar" : "Usar cámara")}
-            <input
-              className="sr-only"
-              type="file"
-              accept={DATA_UPDATE_PHOTO_ACCEPT}
-              capture="environment"
-              disabled={photoBusy}
-              onChange={handleFileChange}
-            />
-          </label>
-          <label className="btn-secondary" aria-disabled={photoBusy || undefined}>
-            <ImageUp aria-hidden="true" />
-            {t("Elegir archivo")}
-            <input
-              className="sr-only"
-              type="file"
-              accept={DATA_UPDATE_PHOTO_ACCEPT}
-              disabled={photoBusy}
-              onChange={handleFileChange}
-            />
-          </label>
-          {canRetry && (
-            <button type="button" className="btn-secondary" onClick={onRetry} disabled={photoBusy}>
-              <RefreshCw aria-hidden="true" />
-              {t("Reintentar carga")}
-            </button>
-          )}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-export function ReviewStep({ data, onEditStep }: ReviewStepProps) {
+export function ReviewStep({ data, onEditStep }: DataUpdateReviewStepProps) {
   const t = useDataUpdateText();
   const { language } = useLanguage();
   return (

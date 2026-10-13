@@ -49,9 +49,9 @@ function KanbanWorkspace({ userId, archived, focusView, onChangeView }: {
     setMessage('');
     setEditor({ id: task?.id ?? crypto.randomUUID(), task, status: task?.status ?? status });
   }
-  async function save(draft: TaskDraft) {
+  async function save(draft: TaskDraft, coverFile: File | null, coverUploadId: string | null) {
     if (!editor) return false;
-    const saved = await board.save(editor.id, draft, editor.task?.version ?? null);
+    const saved = await board.save(editor.id, draft, editor.task?.version ?? null, coverFile, coverUploadId);
     if (saved) { setEditor(null); setMessage(t.saved); }
     return saved;
   }
@@ -97,7 +97,7 @@ function KanbanWorkspace({ userId, archived, focusView, onChangeView }: {
     </button>
   );
   return (
-    <main className="container kanban-page type-body-md" aria-labelledby={`${id}-title`}>
+    <main className="kanban-page type-body-md" aria-labelledby={`${id}-title`}>
       <PageHeading id={`${id}-title`} className="app-page-title">{t.title}</PageHeading>
 
       {!(board.loading && !board.ready) && <p className="sr-only" role="status">{board.loading ? t.loading : message}</p>}
@@ -110,6 +110,11 @@ function KanbanWorkspace({ userId, archived, focusView, onChangeView }: {
         <p className="form-error-text" role="alert">{actionError}</p>
         <button type="button" className="btn-secondary" disabled={disabled}
           onClick={() => { board.clearActionError(); void board.load(); }}>{t.retry}</button>
+      </div>}
+      {board.cleanupPending && <div className="kanban-feedback">
+        <p className="form-error-text" role="alert">{t.photoCleanupFailed}</p>
+        <button type="button" className="btn-secondary" disabled={disabled}
+          onClick={() => { void board.retryCleanup(); }}>{t.retry}</button>
       </div>}
       <section id={id} aria-busy={board.loading} aria-labelledby={`${id}-heading`} className="kanban-content">
         {!archived && <h2 id={`${id}-heading`} className="sr-only">{t.board}</h2>}

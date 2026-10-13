@@ -3,19 +3,10 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import type { Activity, ActivityStatus } from "@/lib/types";
 import { ActivityCard } from "@/components/ui/ActivityCard";
 import { Pagination } from "@/components/ui/Pagination";
-import { SearchField } from "@/components/ui/SearchField";
 import { Toolbar, ToolbarGroup } from "@/components/ui/Toolbar";
-import { CustomSelect, type Option } from "@/components/ui/CustomSelect";
 import "./ActivitiesSection.css";
 
 type ActivityStatusFilter = ActivityStatus | "todas";
-type ActivitySortOrder = "newest" | "oldest" | "status";
-
-interface RecruiterOption {
-  id: string;
-  display_name?: string | null;
-  username?: string | null;
-}
 
 interface ActivitiesPagination {
   currentPage: number;
@@ -31,26 +22,16 @@ interface ActivitiesSectionProps {
   activities: Activity[];
   filteredActivities: Activity[];
   pageItems: Activity[];
-  recruiters: RecruiterOption[];
   isAdmin: boolean;
   currentUserId?: string;
   statusFilter: ActivityStatusFilter;
-  searchQuery: string;
-  sortOrder: ActivitySortOrder;
-  recruiterFilter: string;
   statusCounts: Record<ActivityStatusFilter, number>;
   pagination: ActivitiesPagination;
   isNew: (activity: Activity) => boolean;
   onStatusFilterChange: (status: ActivityStatusFilter) => void;
-  onSearchQueryChange: (query: string) => void;
-  onSortOrderChange: (order: ActivitySortOrder) => void;
-  onRecruiterFilterChange: (recruiterId: string) => void;
   onClearFilters: () => void;
   onCreate: () => void;
   onOpen: (activity: Activity) => void;
-  onEdit: (activity: Activity) => void;
-  onDelete: (activity: Activity) => void;
-  onViewReference: (source: string) => void;
 }
 
 interface ActivityWithAssignee extends Activity {
@@ -70,36 +51,20 @@ const STATUS_FILTERS: Array<{
   { key: "completada", label: "Completadas" },
 ];
 
-const SORT_OPTIONS: readonly Option[] = [
-  { value: "newest", label: "Más recientes" },
-  { value: "oldest", label: "Más antiguas" },
-  { value: "status", label: "Por estado" },
-];
-
 export function ActivitiesSection({
   activities,
   filteredActivities,
   pageItems,
-  recruiters,
   isAdmin,
   currentUserId,
   statusFilter,
-  searchQuery,
-  sortOrder,
-  recruiterFilter,
   statusCounts,
   pagination,
   isNew,
   onStatusFilterChange,
-  onSearchQueryChange,
-  onSortOrderChange,
-  onRecruiterFilterChange,
   onClearFilters,
   onCreate,
   onOpen,
-  onEdit,
-  onDelete,
-  onViewReference,
 }: ActivitiesSectionProps) {
   const { language } = useLanguage();
   const en = language === "en";
@@ -107,10 +72,6 @@ export function ActivitiesSection({
     { key: "todas", label: "All" }, { key: "pendiente", label: "Pending" },
     { key: "en_proceso", label: "In progress" }, { key: "completada", label: "Completed" },
   ] as typeof STATUS_FILTERS : STATUS_FILTERS;
-  const sortOptions = en ? [
-    { value: "newest", label: "Newest" }, { value: "oldest", label: "Oldest" },
-    { value: "status", label: "By status" },
-  ] : SORT_OPTIONS;
 
   return (
     <section
@@ -161,59 +122,6 @@ export function ActivitiesSection({
               ))}
             </ToolbarGroup>
 
-            <ToolbarGroup
-              className="activity-tracking-section__filters"
-              label={en ? "Search and sort activities" : "Buscar y ordenar actividades"}
-            >
-              <div className="activity-tracking-section__search">
-                <SearchField
-                  id="activity-search"
-                  label={en ? "Search activities" : "Buscar actividades"}
-                  placeholder={en ? "Search" : "Buscar"}
-                  value={searchQuery}
-                  onChange={(event) => onSearchQueryChange(event.target.value)}
-                />
-              </div>
-
-              <label className="sr-only" htmlFor="activity-sort">
-                {en ? "Sort activities" : "Ordenar actividades"}
-              </label>
-              <CustomSelect
-                id="activity-sort"
-                className="activity-tracking-section__select"
-                value={sortOrder}
-                onChange={(value) => {
-                  if (value === "newest" || value === "oldest" || value === "status") {
-                    onSortOrderChange(value);
-                  }
-                }}
-                options={sortOptions}
-                showPlaceholderOption={false}
-              />
-
-              {isAdmin && recruiters.length > 0 && (
-                <>
-                  <label className="sr-only" htmlFor="activity-recruiter">
-                    {en ? "Filter by recruiter" : "Filtrar por reclutador"}
-                  </label>
-                  <CustomSelect
-                    id="activity-recruiter"
-                    className="activity-tracking-section__select"
-                    value={recruiterFilter}
-                    onChange={onRecruiterFilterChange}
-                    options={[
-                      { value: "", label: en ? "All" : "Todos" },
-                      { value: "__team__", label: en ? "Whole team" : "Todo el equipo" },
-                      ...recruiters.map((recruiter) => ({
-                        value: recruiter.id,
-                        label: recruiter.display_name || recruiter.username || "",
-                      })),
-                    ]}
-                    showPlaceholderOption={false}
-                  />
-                </>
-              )}
-            </ToolbarGroup>
           </Toolbar>
         )}
 
@@ -255,60 +163,52 @@ export function ActivitiesSection({
             </button>
           </div>
         ) : (
-          <div
-            className="activity-tracking-section__grid"
-            role="list"
-            aria-label={en ? "Activities" : "Actividades"}
-          >
-            {pageItems.map((activity) => {
-              const activityWithAssignee = activity as ActivityWithAssignee;
-              const assignee = activity.asignado_a
-                ? {
-                    id: activity.asignado_a,
-                    display_name:
-                      activityWithAssignee.asignado_a_profile?.display_name,
-                    username:
-                      activityWithAssignee.asignado_a_profile?.username,
-                  }
-                : undefined;
-
-              return (
-                <ActivityCard
-                  key={activity.id}
-                  title={activity.titulo}
-                  description={activity.descripcion ?? undefined}
-                  status={activity.estado}
-                  assignee={assignee}
-                  referenceImage={activity.reference_image ?? undefined}
-                  isNew={isNew(activity)}
-                  isAdmin={isAdmin}
-                  currentUserId={currentUserId}
-                  onClick={() => onOpen(activity)}
-                  onEdit={() => onEdit(activity)}
-                  onDelete={() => onDelete(activity)}
-                  onViewReference={() => {
-                    if (activity.reference_image) {
-                      onViewReference(activity.reference_image);
+          <div className="assignment-results activity-tracking-section__results">
+            <div
+              className="activity-tracking-section__grid"
+              role="list"
+              aria-label={en ? "Activities" : "Actividades"}
+            >
+              {pageItems.map((activity) => {
+                const activityWithAssignee = activity as ActivityWithAssignee;
+                const assignee = activity.asignado_a
+                  ? {
+                      id: activity.asignado_a,
+                      display_name:
+                        activityWithAssignee.asignado_a_profile?.display_name,
+                      username:
+                        activityWithAssignee.asignado_a_profile?.username,
                     }
-                  }}
-                />
-              );
-            })}
+                  : undefined;
+
+                return (
+                  <ActivityCard
+                    key={activity.id}
+                    title={activity.titulo}
+                    description={activity.descripcion ?? undefined}
+                    status={activity.estado}
+                    assignee={assignee}
+                    referenceImage={activity.reference_image ?? undefined}
+                    isNew={isNew(activity)}
+                    currentUserId={currentUserId}
+                    onClick={() => onOpen(activity)}
+                  />
+                );
+              })}
+            </div>
+            <Pagination
+              currentPage={pagination.currentPage}
+              totalPages={pagination.totalPages}
+              onPageChange={pagination.onPageChange}
+              onPrev={pagination.onPrev}
+              onNext={pagination.onNext}
+              canGoPrev={pagination.canGoPrev}
+              canGoNext={pagination.canGoNext}
+              ariaLabel={en ? "Activity pages" : "Paginación de actividades"}
+              hideOnSinglePage
+            />
           </div>
         )}
-
-        <Pagination
-          currentPage={pagination.currentPage}
-          totalPages={pagination.totalPages}
-          onPageChange={pagination.onPageChange}
-          onPrev={pagination.onPrev}
-          onNext={pagination.onNext}
-          canGoPrev={pagination.canGoPrev}
-          canGoNext={pagination.canGoNext}
-          ariaLabel={en ? "Activity pages" : "Paginación de actividades"}
-          sticky
-          hideOnSinglePage
-        />
       </div>
     </section>
   );

@@ -92,32 +92,19 @@
   letter-spacing: var(--type-body-md-tracking);
 }
 
-.activity-tracking-section__filters {
-  display: flex;
-  min-inline-size: 0;
-  flex-wrap: wrap;
-  gap: var(--spacing-sm);
-}
-
-.activity-tracking-section__search {
-  position: relative;
-  min-inline-size: min(100%, var(--feature-activity-search-min-inline-size));
-  flex: 999 1 var(--feature-activity-search-min-inline-size);
-}
-
-.activity-tracking-section__select {
-  min-inline-size: min(100%, var(--menu-min-inline-size));
-  flex: 1 1 var(--menu-min-inline-size);
-}
-
-
 .activity-tracking-section__grid {
   display: grid;
-  grid-template-columns: repeat(
-    auto-fill,
-    minmax(min(100%, var(--feature-activity-card-min-inline-size)), 1fr)
-  );
+  align-items: start;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--spacing-md);
+}
+
+@media (min-width: 768px) {
+  .activity-tracking-section__grid { grid-template-columns: repeat(2, minmax(0, var(--feature-activity-card-min-inline-size))); }
+}
+
+@media (min-width: 1080px) {
+  .activity-tracking-section__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 
 .activity-tracking-section__empty {

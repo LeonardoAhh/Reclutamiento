@@ -3,6 +3,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import type { Activity } from "@/lib/types";
 import { Pagination } from "@/components/ui/Pagination";
 import { ResponsabilidadCard } from "@/components/ui/ResponsabilidadCard";
+import { getResponsibilityContent } from "@/components/ui/responsibilityContent";
 import "./ResponsibilitiesSection.css";
 
 interface ResponsibilitiesPagination {
@@ -37,9 +38,7 @@ export interface ResponsibilitiesSectionProps {
   pagination: ResponsibilitiesPagination;
   isNew: (activity: Activity) => boolean;
   onCreate: () => void;
-  onEdit: (activity: Activity) => void;
-  onDelete: (activity: Activity) => void;
-  onViewReference: (source: string) => void;
+  onOpen: (activity: Activity) => void;
   copy?: AssignmentSectionCopy;
 }
 
@@ -77,22 +76,6 @@ interface ActivityWithAssignee extends Activity {
   } | null;
 }
 
-function getResponsibilityContent(activity: Activity) {
-  const rawDescription = activity.descripcion ?? "";
-  if (!rawDescription.includes(" - ")) {
-    return {
-      area: undefined,
-      description: rawDescription || undefined,
-    };
-  }
-
-  const [area, ...descriptionParts] = rawDescription.split(" - ");
-  return {
-    area: area || undefined,
-    description: descriptionParts.join(" - ") || undefined,
-  };
-}
-
 export function ResponsibilitiesSection({
   responsibilities,
   pageItems,
@@ -101,9 +84,7 @@ export function ResponsibilitiesSection({
   pagination,
   isNew,
   onCreate,
-  onEdit,
-  onDelete,
-  onViewReference,
+  onOpen,
   copy: suppliedCopy,
 }: ResponsibilitiesSectionProps) {
   const { language } = useLanguage();
@@ -151,7 +132,7 @@ export function ResponsibilitiesSection({
             </p>
           </div>
         ) : (
-          <>
+          <div className="assignment-results">
             <div
               className="responsibilities-section__grid"
               role="list"
@@ -179,15 +160,8 @@ export function ResponsibilitiesSection({
                     assignee={assignee}
                     referenceImage={activity.reference_image ?? undefined}
                     isNew={isNew(activity)}
-                    isAdmin={isAdmin}
                     currentUserId={currentUserId}
-                    onEdit={() => onEdit(activity)}
-                    onDelete={() => onDelete(activity)}
-                    onViewReference={() => {
-                      if (activity.reference_image) {
-                        onViewReference(activity.reference_image);
-                      }
-                    }}
+                    onOpen={() => onOpen(activity)}
                   />
                 );
               })}
@@ -202,10 +176,9 @@ export function ResponsibilitiesSection({
               canGoPrev={pagination.canGoPrev}
               canGoNext={pagination.canGoNext}
               ariaLabel={copy.paginationLabel}
-              sticky
               hideOnSinglePage
             />
-          </>
+          </div>
         )}
       </div>
     </section>

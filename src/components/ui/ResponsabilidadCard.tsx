@@ -1,14 +1,7 @@
-import { EllipsisVertical, ListRestart, SquarePen, Trash2 } from "lucide-react";
+import { ListRestart } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/DropdownMenu";
 import { AssignmentMeta } from "@/components/ui/AssignmentMeta";
-import { ReferenceAttachment } from "@/components/ui/ReferenceAttachment";
+import { Badge } from "@/components/ui/Badge";
 import "./ResponsabilidadCard.css";
 
 export interface ResponsabilidadCardProps {
@@ -18,11 +11,8 @@ export interface ResponsabilidadCardProps {
   assignee?: { id: string; display_name?: string | null; username?: string | null };
   referenceImage?: string;
   isNew?: boolean;
-  isAdmin?: boolean;
   currentUserId?: string;
-  onEdit?: () => void;
-  onDelete?: () => void;
-  onViewReference?: () => void;
+  onOpen: () => void;
 }
 
 export function ResponsabilidadCard({
@@ -32,18 +22,19 @@ export function ResponsabilidadCard({
   assignee,
   referenceImage,
   isNew = false,
-  isAdmin = false,
   currentUserId,
-  onEdit,
-  onDelete,
-  onViewReference,
+  onOpen,
 }: ResponsabilidadCardProps) {
   const { language } = useLanguage();
   const en = language === "en";
   return (
     <article className="card responsibility-card" role="listitem">
+      <button type="button" className="responsibility-card__open" onClick={onOpen}
+        aria-label={`${en ? "View" : "Ver"}: ${title}`} />
+      {referenceImage && <img className="responsibility-card__cover" src={referenceImage} alt="" loading="lazy" />}
+      <div className="responsibility-card__content">
       {isNew && (
-        <span className="responsibility-card__status">{en ? "New" : "Nueva"}</span>
+        <Badge className="badge--compact responsibility-card__status" data-state="new">{en ? "New" : "Nueva"}</Badge>
       )}
       <header className="responsibility-card__header">
         <div className="responsibility-card__icon">
@@ -56,49 +47,6 @@ export function ResponsabilidadCard({
           </div>
         </div>
 
-        {isAdmin && (onEdit || onDelete) && (
-          <div className="responsibility-card__actions">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button
-                  type="button"
-                  className="responsibility-card__menu"
-                  aria-label={`${en ? "Options for" : "Opciones de"} ${title}`}
-                >
-                  <EllipsisVertical
-                    size="var(--icon-size-sm)"
-                    aria-hidden="true"
-                  />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                {onEdit && (
-                  <DropdownMenuItem asChild onSelect={onEdit}>
-                    <button type="button">
-                      <SquarePen aria-hidden="true" />
-                      <span>{en ? "Edit" : "Editar"}</span>
-                    </button>
-                  </DropdownMenuItem>
-                )}
-                {onDelete && (
-                  <>
-                    {onEdit && <DropdownMenuSeparator />}
-                    <DropdownMenuItem
-                      asChild
-                      variant="destructive"
-                      onSelect={onDelete}
-                    >
-                      <button type="button">
-                        <Trash2 aria-hidden="true" />
-                        <span>{en ? "Delete" : "Eliminar"}</span>
-                      </button>
-                    </DropdownMenuItem>
-                  </>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        )}
       </header>
 
       {description && (
@@ -112,15 +60,9 @@ export function ResponsabilidadCard({
             {area}
           </p>
         )}
-        <AssignmentMeta assignee={assignee} currentUserId={currentUserId} />
-        {referenceImage && onViewReference && (
-          <ReferenceAttachment
-            src={referenceImage}
-            contextLabel={title}
-            onOpen={onViewReference}
-          />
-        )}
+        <AssignmentMeta assignee={assignee} currentUserId={currentUserId} appearance="compact" />
       </footer>
+      </div>
     </article>
   );
 }

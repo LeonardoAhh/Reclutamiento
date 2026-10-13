@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import assert from "node:assert/strict";
 import test from "node:test";
 import { ROUTE_ITINERARIES, getRouteItinerary } from "./route-itineraries";

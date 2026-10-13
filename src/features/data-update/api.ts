@@ -2,12 +2,8 @@ import { supabase } from "@/lib/supabase";
 import { listTeamMembers } from '@/features/team/api';
 import type { TeamMember } from '@/features/team/types';
 import { toNaturalCase } from "@/lib/utils";
-import {
-  isDataUpdateLockerArea,
-  DATA_UPDATE_PHOTO_BUCKET,
-  DATA_UPDATE_SIGNED_URL_SECONDS,
-} from "./constants";
-import { getDataUpdatePhotoExtension, splitEmergencyContact } from "./validation";
+import { isDataUpdateLockerArea } from "./constants";
+import { splitEmergencyContact } from "./validation";
 import type {
   DataUpdateAuditEntry,
   DataUpdateCampaign,
@@ -174,7 +170,6 @@ export function dataUpdateError(error: unknown): string {
   if (message.includes("DATA_UPDATE_INVALID_REVIEW") || message.includes("DATA_UPDATE_INVALID_INCIDENT")) return "Revisa los campos y la observación de la incidencia.";
   if (message.includes("DATA_UPDATE_INCIDENT_REQUIRED")) return "Selecciona al menos un campo y escribe una observación.";
   if (message.includes("DATA_UPDATE_REQUIRED_FIELDS")) return "Completa todos los campos antes de finalizar.";
-  if (message.includes("DATA_UPDATE_PHOTO_REQUIRED")) return "La fotografía es obligatoria.";
   if (message.includes("DATA_UPDATE_INVALID_PHOTO")) return "La fotografía no pertenece a este registro o ya no está disponible.";
   if (message.includes("DATA_UPDATE_IDENTITY_PENDING")) return "Confirma los datos de identificación o registra una incidencia.";
   if (message.includes("DATA_UPDATE_INVALID_TRANSPORT")) return "Selecciona una combinación válida de ruta, parada y ubicación.";
@@ -492,34 +487,4 @@ export async function listDataUpdateAudit(recordIds: string[]): Promise<DataUpda
       createdAt: textValue(row.created_at),
     };
   });
-}
-
-export async function uploadDataUpdatePhoto(record: DataUpdateRecord, file: File): Promise<string> {
-  const extension = getDataUpdatePhotoExtension(file);
-  const path = `${record.campaignId}/${record.id}/${crypto.randomUUID()}.${extension}`;
-  const { error } = await supabase.storage.from(DATA_UPDATE_PHOTO_BUCKET).upload(path, file, {
-    contentType: file.type,
-    upsert: false,
-  });
-  if (error) throw new Error(dataUpdateError(error));
-  return path;
-}
-
-export async function removeDataUpdatePhoto(path: string): Promise<void> {
-  const { error } = await supabase.storage.from(DATA_UPDATE_PHOTO_BUCKET).remove([path]);
-  if (error) throw new Error(dataUpdateError(error));
-}
-
-export async function downloadDataUpdatePhoto(path: string): Promise<Blob> {
-  const { data, error } = await supabase.storage.from(DATA_UPDATE_PHOTO_BUCKET).download(path);
-  if (error || !data) throw new Error(dataUpdateError(error));
-  return data;
-}
-
-export async function getDataUpdatePhotoUrl(path: string): Promise<string> {
-  const { data, error } = await supabase.storage
-    .from(DATA_UPDATE_PHOTO_BUCKET)
-    .createSignedUrl(path, DATA_UPDATE_SIGNED_URL_SECONDS);
-  if (error || !data?.signedUrl) throw new Error(dataUpdateError(error));
-  return data.signedUrl;
 }

@@ -58,6 +58,31 @@
   color: var(--color-on-error);
 }
 
+.badge--compact,
+.reclutador-badge.badge--compact,
+.assignment-meta__badge.badge--compact {
+  gap: var(--design-spacing-xxs);
+  min-height: var(--icon-size-lg);
+  padding: var(--design-spacing-xxs) var(--design-spacing-xs);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-sm);
+  background: var(--color-canvas-elevated);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.badge--compact[data-state="pending"] { background: var(--color-warning-subtle); color: var(--color-warning-text); }
+.badge--compact[data-state="in_progress"],
+.badge--compact[data-state="new"] { background: var(--color-primary); color: var(--color-on-primary); }
+.badge--compact[data-state="completed"] { background: var(--color-success-subtle); color: var(--color-success-text); }
+.badge--compact[data-state="notes"] { background: var(--color-canvas-soft); color: var(--color-ink); }
+
 /* ── Project Badges ── */
 
 .project-badge {

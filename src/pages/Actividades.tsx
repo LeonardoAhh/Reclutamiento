@@ -90,6 +90,7 @@ export function Actividades() {
   const [isCreateVacanteModalOpen, setIsCreateVacanteModalOpen] =
     useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [previewResponsibility, setPreviewResponsibility] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState<Activity | null>(
     null,
@@ -111,8 +112,6 @@ export function Actividades() {
 
   const reclutadores = useMemo(() => members.flatMap(member => member.active && member.selectable && member.profile_id && member.profile_role === 'reclutador'
     ? [{ id: member.profile_id, display_name: member.full_name, username: member.short_name }] : []), [members]);
-  const historicRecruiters = useMemo(() => members.flatMap(member => member.profile_id && member.profile_role === 'reclutador'
-    ? [{ id: member.profile_id, display_name: member.full_name, username: member.short_name }] : []), [members]);
   const [referenceImageFile, setReferenceImageFile] = useState<File | null>(
     null,
   );
@@ -124,11 +123,6 @@ export function Actividades() {
   const [statusFilter, setStatusFilter] = useState<ActivityStatus | "todas">(
     "pendiente",
   );
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortOrder, setSortOrder] = useState<"newest" | "oldest" | "status">(
-    "newest",
-  );
-  const [recruiterFilter, setRecruiterFilter] = useState("");
 
   /* ── Edit form state ───────────────────────────────────────────────── */
   const [editTitulo, setEditTitulo] = useState("");
@@ -330,13 +324,6 @@ export function Actividades() {
   };
 
   const openDetails = async (activity: Activity) => {
-    if (activity.tipo === "rutinaria") {
-      if (activity.reference_image) {
-        setLightboxSrc(activity.reference_image);
-      }
-      return;
-    }
-
     const requestId = ++proofsRequestRef.current;
     setSelectedActivity(activity);
     setProofs([]);
@@ -416,6 +403,7 @@ export function Actividades() {
 
   const openEdit = (activity: Activity, e?: React.MouseEvent) => {
     e?.stopPropagation();
+    setPreviewResponsibility(false);
     setSelectedActivity(activity);
     setEditTitulo(activity.titulo);
     setEditDescripcion(activity.descripcion || "");
@@ -424,6 +412,11 @@ export function Actividades() {
     setEditReferenceImagePreview(null);
     setEditExistingReferenceImage(activity.reference_image || null);
     setIsEditModalOpen(true);
+  };
+
+  const openResponsibility = (activity: Activity) => {
+    openEdit(activity);
+    setPreviewResponsibility(true);
   };
 
   const handleEdit = async (e: React.FormEvent) => {
@@ -453,6 +446,7 @@ export function Actividades() {
     setIsEditing(false);
     if (act) {
       setIsEditModalOpen(false);
+      setPreviewResponsibility(false);
       setSelectedActivity(null);
     }
   };
@@ -467,6 +461,10 @@ export function Actividades() {
         setConfirmState((state) => ({ ...state, isLoading: true }));
         const ok = await deleteActivity(activity.id!);
         if (ok) {
+          setIsEditModalOpen(false);
+          setPreviewResponsibility(false);
+          setIsDetailModalOpen(false);
+          setSelectedActivity(null);
           setConfirmState((state) => ({
             ...state,
             isOpen: false,
@@ -514,51 +512,16 @@ export function Actividades() {
       result = result.filter((a) => a.estado === statusFilter);
     }
 
-    // Filter by recruiter (admin only)
-    if (recruiterFilter) {
-      if (recruiterFilter === "__team__") {
-        result = result.filter((a) => !a.asignado_a);
-      } else {
-        result = result.filter((a) => a.asignado_a === recruiterFilter);
-      }
-    }
-
-    // Search by title/description
-    if (searchQuery.trim()) {
-      const q = searchQuery.trim().toLowerCase();
-      result = result.filter(
-        (a) =>
-          a.titulo.toLowerCase().includes(q) ||
-          (a.descripcion && a.descripcion.toLowerCase().includes(q)),
-      );
-    }
-
-    // Sort
-    const STATUS_ORDER: Record<ActivityStatus, number> = {
-      pendiente: 0,
-      en_proceso: 1,
-      completada: 2,
-    };
-
     result = [...result].sort((a, b) => {
-      // 0. Nuevas primero, sin importar el sort order
       const aNew = isNewActivity(a);
       const bNew = isNewActivity(b);
       if (aNew && !bNew) return -1;
       if (!aNew && bNew) return 1;
-
-      if (sortOrder === "oldest") {
-        return (a.created_at ?? "").localeCompare(b.created_at ?? "");
-      }
-      if (sortOrder === "status") {
-        return STATUS_ORDER[a.estado] - STATUS_ORDER[b.estado];
-      }
-      // newest (default)
       return (b.created_at ?? "").localeCompare(a.created_at ?? "");
     });
 
     return result;
-  }, [allUnicas, statusFilter, recruiterFilter, searchQuery, sortOrder]);
+  }, [allUnicas, statusFilter]);
 
   /* ── Pagination ──────────────────────────────────────────────────────── */
   const {
@@ -570,7 +533,7 @@ export function Actividades() {
     prevPage: prevresponsabilidadesPage,
     canGoNext: canGoNextResponsabilidades,
     canGoPrev: canGoPrevResponsabilidades,
-  } = usePagination(responsabilidades, 10);
+  } = usePagination(responsabilidades, 16);
 
   const {
     pageItems: actividadesPaginadas,
@@ -581,7 +544,7 @@ export function Actividades() {
     prevPage: prevActividadesPage,
     canGoNext: canGoNextActividades,
     canGoPrev: canGoPrevActividades,
-  } = usePagination(unicas, 12);
+  } = usePagination(unicas, 16);
 
   const createAssignmentModalProps: Omit<
     CreateActivityModalProps,
@@ -662,9 +625,7 @@ export function Actividades() {
             }}
             isNew={isNewActivity}
             onCreate={() => setCreateModalType("rutinaria")}
-            onEdit={openEdit}
-            onDelete={handleDelete}
-            onViewReference={setLightboxSrc}
+            onOpen={openResponsibility}
           />
         </Tabs.Content>
 
@@ -673,13 +634,9 @@ export function Actividades() {
             activities={allUnicas}
             filteredActivities={unicas}
             pageItems={actividadesPaginadas}
-            recruiters={historicRecruiters}
             isAdmin={isAdmin}
             currentUserId={profile?.id}
             statusFilter={statusFilter}
-            searchQuery={searchQuery}
-            sortOrder={sortOrder}
-            recruiterFilter={recruiterFilter}
             statusCounts={statusCounts}
             pagination={{
               currentPage: actividadesPage,
@@ -692,20 +649,9 @@ export function Actividades() {
             }}
             isNew={isNewActivity}
             onStatusFilterChange={setStatusFilter}
-            onSearchQueryChange={setSearchQuery}
-            onSortOrderChange={setSortOrder}
-            onRecruiterFilterChange={setRecruiterFilter}
-            onClearFilters={() => {
-              setStatusFilter("pendiente");
-              setSearchQuery("");
-              setRecruiterFilter("");
-              setSortOrder("newest");
-            }}
+            onClearFilters={() => setStatusFilter("todas")}
             onCreate={() => setCreateModalType("unica")}
             onOpen={openDetails}
-            onEdit={openEdit}
-            onDelete={handleDelete}
-            onViewReference={setLightboxSrc}
           />
         </Tabs.Content>
       </Tabs.Root>
@@ -757,9 +703,9 @@ export function Actividades() {
 
       {/* ── Modal: Edit ──────────────────────────────────────────── */}
       <EditActivityModal
-        isOpen={isEditModalOpen}
+        isOpen={isEditModalOpen && !confirmState.isOpen && !lightboxSrc}
         onClose={() => {
-          if (!isEditing) setIsEditModalOpen(false);
+          if (!isEditing) { setIsEditModalOpen(false); setPreviewResponsibility(false); }
         }}
         isEditing={isEditing}
         activityType={
@@ -784,11 +730,20 @@ export function Actividades() {
         setReferenceImagePreview={setEditReferenceImagePreview}
         setExistingReferenceImage={setEditExistingReferenceImage}
         onSubmit={handleEdit}
+        previewActivity={previewResponsibility ? selectedActivity : null}
+        previewAssignee={selectedActivity?.asignado_a ? {
+          id: selectedActivity.asignado_a,
+          display_name: members.find(member => member.profile_id === selectedActivity.asignado_a)?.full_name,
+        } : undefined}
+        currentUserId={profile?.id}
+        onStartEditing={() => setPreviewResponsibility(false)}
+        onDelete={isAdmin && previewResponsibility && selectedActivity ? () => handleDelete(selectedActivity) : undefined}
       />
 
       </ModalPresentationProvider>
 
       {/* ── Modal: Detail / Proofs ─────────────────────────────────── */}
+      <ModalPresentationProvider value={isMobile ? "modal" : "sheet"}>
       <TaskDetailsModal
         isOpen={isDetailModalOpen && !confirmState.isOpen && !lightboxSrc}
         onClose={() => {
@@ -803,10 +758,17 @@ export function Actividades() {
         proofs={proofs}
         isImage={isImage}
         isAdmin={isAdmin}
+        onEdit={isAdmin && selectedActivity ? () => {
+          proofsRequestRef.current += 1;
+          setIsDetailModalOpen(false);
+          openEdit(selectedActivity);
+        } : undefined}
+        onDelete={isAdmin && selectedActivity ? () => handleDelete(selectedActivity) : undefined}
         onDeleteProof={handleDeleteProof}
         onUploadProof={handleFileUpload}
         isUploadingProof={isUploadingProof}
       />
+      </ModalPresentationProvider>
 
       <DeleteConfirmModal
         isOpen={confirmState.isOpen}

@@ -15,8 +15,8 @@
   margin: 0;
 }
 
-.assignment-meta__value .reclutador-badge,
-.assignment-meta__badge {
+.assignment-meta__value .reclutador-badge:not(.badge--compact),
+.assignment-meta__badge:not(.badge--compact) {
   max-inline-size: 100%;
   white-space: normal;
   font-family: var(--font-body);
@@ -29,6 +29,10 @@
 .assignment-meta__value .reclutador-badge__name,
 .assignment-meta__badge span {
   overflow-wrap: anywhere;
+}
+
+.assignment-meta__value .badge--compact {
+  max-inline-size: 100%;
 }
 
 .assignment-meta__badge {

@@ -1,4 +1,4 @@
-import { ClipboardClock, Trash2, FileUp } from "lucide-react";
+import { ClipboardClock, Trash2, FileUp, SquarePen } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Modal } from "./Modal";
 import { CustomSelect } from "./CustomSelect";
@@ -16,6 +16,8 @@ interface TaskDetailsModalProps {
   proofs: ActivityProof[];
   isImage: (filename: string) => boolean;
   isAdmin: boolean;
+  onEdit?: () => void;
+  onDelete?: () => void;
   onDeleteProof: (id: string, url: string) => void;
   onUploadProof: (e: React.ChangeEvent<HTMLInputElement>) => void;
   isUploadingProof: boolean;
@@ -32,6 +34,8 @@ export function TaskDetailsModal({
   proofs,
   isImage,
   isAdmin,
+  onEdit,
+  onDelete,
   onDeleteProof,
   onUploadProof,
   isUploadingProof,
@@ -40,14 +44,24 @@ export function TaskDetailsModal({
   const en = language === "en";
   return (
     <Modal
+      className="activity-detail-dialog"
       isOpen={isOpen}
       onClose={onClose}
       title={activity?.titulo ?? (en ? "Task details" : "Detalles de Tarea")}
       icon={<ClipboardClock size="var(--icon-size-md)" aria-hidden="true" />}
       size="sm"
+      headerActions={isAdmin && <div className="responsibility-detail__actions">
+        {onEdit && <button type="button" className="responsibility-detail__edit" onClick={onEdit}>
+          <SquarePen size="var(--icon-size-md)" aria-hidden="true" />{en ? "Edit" : "Editar"}
+        </button>}
+        {onDelete && <button type="button" className="responsibility-detail__edit responsibility-detail__delete" onClick={onDelete}>
+          <Trash2 size="var(--icon-size-md)" aria-hidden="true" />{en ? "Delete" : "Eliminar"}
+        </button>}
+      </div>}
     >
       {activity && (
         <div className="modal-body">
+          {activity.reference_image && <img className="responsibility-detail__cover" src={activity.reference_image} alt="" />}
           <div className="activity-detail-grid">
             <div className="form-group">
               <label htmlFor="detail-estado">{en ? "Status" : "Estado"}</label>
@@ -71,22 +85,6 @@ export function TaskDetailsModal({
               </div>
             </div>
           </div>
-
-          {activity.reference_image && (
-            <div className="form-group">
-              <span className="activity-form-label">{en ? "Reference photo" : "Foto de Referencia"}</span>
-              <AttachmentCard
-                name={
-                  activity.reference_image.split("/").pop()?.split("?")[0] ||
-                  (en ? "Image" : "Imagen")
-                }
-                metadata={en ? "Attached image" : "Imagen adjunta"}
-                imageSrc={activity.reference_image}
-                onPreview={() => onLightboxOpen(activity.reference_image!)}
-                previewLabel={`${en ? "Enlarge reference for" : "Ampliar referencia de"} ${activity.titulo}`}
-              />
-            </div>
-          )}
 
           <hr className="activity-detail-divider" />
 

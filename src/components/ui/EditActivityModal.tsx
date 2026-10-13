@@ -1,10 +1,13 @@
-import { SquarePen, X, ImagePlus } from "lucide-react";
+import { useEffect, useRef } from 'react';
+import { SquarePen, Trash2, X, ImagePlus } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Modal } from "./Modal";
 import { CustomSelect } from "./CustomSelect";
 import { SmartTextarea } from "./SmartTextarea";
 import { AttachmentCard } from "./AttachmentCard";
-import type { AssignableActivityType } from "@/lib/types";
+import { AssignmentMeta, type AssignmentPerson } from "./AssignmentMeta";
+import { getResponsibilityContent } from "./responsibilityContent";
+import type { Activity, AssignableActivityType } from "@/lib/types";
 
 const EDIT_MODAL_CONTENT: Record<
   AssignableActivityType,
@@ -52,6 +55,11 @@ export interface EditActivityModalProps {
   setExistingReferenceImage: (url: string | null) => void;
 
   onSubmit: (e: React.FormEvent) => void;
+  previewActivity?: Activity | null;
+  previewAssignee?: AssignmentPerson;
+  currentUserId?: string;
+  onStartEditing?: () => void;
+  onDelete?: () => void;
 }
 
 export function EditActivityModal({
@@ -73,6 +81,11 @@ export function EditActivityModal({
   setReferenceImagePreview,
   setExistingReferenceImage,
   onSubmit,
+  previewActivity,
+  previewAssignee,
+  currentUserId,
+  onStartEditing,
+  onDelete,
 }: EditActivityModalProps) {
   const { language } = useLanguage();
   const en = language === "en";
@@ -81,16 +94,33 @@ export function EditActivityModal({
   const titleId = `${fieldIdPrefix}-titulo`;
   const assigneeId = `${fieldIdPrefix}-asignado`;
   const descriptionId = `${fieldIdPrefix}-descripcion`;
+  const showingPreview = activityType === 'rutinaria' && Boolean(previewActivity);
+  const previewContent = previewActivity ? getResponsibilityContent(previewActivity) : null;
+  const titleRef = useRef<HTMLInputElement>(null);
+  const wasShowingPreview = useRef(false);
+  useEffect(() => {
+    if (!isOpen) { wasShowingPreview.current = false; return; }
+    if (wasShowingPreview.current && !showingPreview) titleRef.current?.focus();
+    wasShowingPreview.current = showingPreview;
+  }, [isOpen, showingPreview]);
 
   return (
     <Modal
-      className="activities-form-dialog"
+      className={showingPreview ? 'activities-form-dialog responsibility-detail-dialog' : 'activities-form-dialog'}
       isOpen={isOpen}
       onClose={onClose}
-      title={modalTitle}
-      icon={<SquarePen size="var(--icon-size-md)" aria-hidden="true" />}
+      title={showingPreview ? previewActivity?.titulo : modalTitle}
+      icon={showingPreview ? undefined : <SquarePen size="var(--icon-size-md)" aria-hidden="true" />}
       size="sm"
-      footerActions={
+      headerActions={showingPreview && <div className="responsibility-detail__actions">
+        {onStartEditing && <button type="button" className="responsibility-detail__edit" onClick={onStartEditing}>
+          <SquarePen size="var(--icon-size-md)" aria-hidden="true" />{en ? 'Edit' : 'Editar'}
+        </button>}
+        {onDelete && <button type="button" className="responsibility-detail__edit responsibility-detail__delete" onClick={onDelete}>
+          <Trash2 size="var(--icon-size-md)" aria-hidden="true" />{en ? 'Delete' : 'Eliminar'}
+        </button>}
+      </div>}
+      footerActions={!showingPreview &&
         <>
           <button
             type="button"
@@ -112,10 +142,19 @@ export function EditActivityModal({
         </>
       }
     >
-      <form id={formId} className="modal-body" onSubmit={onSubmit} noValidate>
+      {showingPreview && previewActivity ? <div className="responsibility-detail type-body-md">
+        {previewActivity.reference_image && <img className="responsibility-detail__cover" src={previewActivity.reference_image} alt="" />}
+        {previewContent?.description && <p className="responsibility-detail__description">{previewContent.description}</p>}
+        {previewContent?.area && <p className="responsibility-detail__area">{previewContent.area}</p>}
+        <div className="responsibility-detail__assignment">
+          <span className="type-body-sm">{en ? 'Assignment' : 'Asignación'}</span>
+          <AssignmentMeta assignee={previewAssignee} currentUserId={currentUserId} />
+        </div>
+      </div> : <form id={formId} className="modal-body" onSubmit={onSubmit} noValidate>
         <div className="form-group">
           <label htmlFor={titleId}>{en ? "Title" : "Título"}</label>
           <input
+            ref={titleRef}
             id={titleId}
             required
             type="text"
@@ -190,7 +229,7 @@ export function EditActivityModal({
             )}
           </div>
         </div>
-      </form>
+      </form>}
     </Modal>
   );
 }

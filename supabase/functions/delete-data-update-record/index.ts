@@ -5,7 +5,6 @@
 import { requirePasswordChangeComplete } from '../_shared/password-change-access.ts';
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.0";
 
-const PHOTO_BUCKET = "data-update-photos";
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 const CORS_HEADERS: Record<string, string> = {
@@ -84,7 +83,7 @@ Deno.serve(async (request: Request) => {
 
   const { data: record, error: recordError } = await admin
     .from("data_update_records")
-    .select("id, photo_path")
+    .select("id")
     .eq("id", recordId)
     .maybeSingle();
   if (recordError) {
@@ -92,15 +91,6 @@ Deno.serve(async (request: Request) => {
   }
   if (!record) {
     return jsonResponse({ ok: true, deleted: false });
-  }
-
-  if (typeof record.photo_path === "string" && record.photo_path.length > 0) {
-    const { error: photoError } = await admin.storage
-      .from(PHOTO_BUCKET)
-      .remove([record.photo_path]);
-    if (photoError) {
-      return jsonResponse({ ok: false, message: "No se pudo eliminar la fotografía. El colaborador se conservó." }, 500);
-    }
   }
 
   const { data: deletedRecord, error: deleteError } = await admin

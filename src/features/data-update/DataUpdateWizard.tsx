@@ -1,16 +1,12 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { PageHeading } from '@/components/layout/PageHeading';
-import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { FormWizard, type FormWizardStep } from "@/components/ui/FormWizard";
 import { toast } from "@/lib/notify";
 import {
   completeDataUpdateRecord,
   dataUpdateError,
-  getDataUpdatePhotoUrl,
-  removeDataUpdatePhoto,
   reviewDataUpdateIdentity,
   saveDataUpdateRecord,
-  uploadDataUpdatePhoto,
 } from "./api";
 import {
   DATA_UPDATE_AUTOSAVE_DELAY_MS,
@@ -26,7 +22,7 @@ import {
   TransportStep,
 } from "./EditableDataSteps";
 import { IdentityReviewStep } from "./IdentityReviewStep";
-import { PhotoStep, ReviewStep } from "./PhotoReviewStep";
+import { ReviewStep } from "./ReviewStep";
 import type {
   DataUpdateCampaignDetail,
   DataUpdateEditableData,
@@ -41,7 +37,6 @@ import {
   isDataUpdateEmailValid,
   isDataUpdatePayrollReceiptStatusValid,
   isDataUpdatePhoneValid,
-  validateDataUpdatePhoto,
   validateEditableData,
 } from "./validation";
 import { useDataUpdateText } from "./translations";
@@ -70,8 +65,8 @@ interface DataUpdateWizardProps {
   onCompleted: (record: DataUpdateRecord) => void;
 }
 
-function signature(data: DataUpdateEditableData, step: number, photoPath: string | null) {
-  return JSON.stringify({ data, step, photoPath });
+function signature(data: DataUpdateEditableData, step: number) {
+  return JSON.stringify({ data, step });
 }
 
 export function DataUpdateWizard({
@@ -91,11 +86,6 @@ export function DataUpdateWizard({
     () => new Set(incidents.map((incident) => incident.fieldName)),
   );
   const [incidentNote, setIncidentNote] = useState(incidents[0]?.note ?? "");
-  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
-  const [photoBusy, setPhotoBusy] = useState(false);
-  const [photoStatus, setPhotoStatus] = useState<string | null>(null);
-  const [pendingPhotoFile, setPendingPhotoFile] = useState<File | null>(null);
-  const [retryPhotoFile, setRetryPhotoFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [saveState, setSaveState] = useState<SaveState>("saved");
   const [revealedErrorSteps, setRevealedErrorSteps] = useState<Set<number>>(() => new Set());
@@ -105,15 +95,13 @@ export function DataUpdateWizard({
     () => initialRecord.currentStep > 5 || initialRecord.data.childrenBirthDates.length > 0,
   );
   const [notice, setNotice] = useState<string | null>(null);
-  const objectPhotoUrlRef = useRef<string | null>(null);
   const recordRef = useRef(initialRecord);
   const dataRef = useRef(initialRecord.data);
-  const photoPathRef = useRef(initialRecord.photoPath);
   const currentStepRef = useRef(Math.min(initialRecord.currentStep, DATA_UPDATE_STEP_COUNT - 1));
   const saveQueueRef = useRef<Promise<boolean>>(Promise.resolve(true));
   const queuedSignatureRef = useRef("");
   const savedSignatureRef = useRef(
-    signature(initialRecord.data, currentStepRef.current, initialRecord.photoPath),
+    signature(initialRecord.data, currentStepRef.current),
   );
   const reviewSignatureRef = useRef(
     JSON.stringify({ review: initialRecord.identityReview, incidents: incidents.map(({ fieldName, note }) => ({ fieldName, note })) }),
@@ -128,29 +116,6 @@ export function DataUpdateWizard({
     recordRef.current = merged;
     setRecord(merged);
   };
-
-  useEffect(() => {
-    let active = true;
-    if (!record.photoPath) {
-      setPhotoUrl(null);
-      return () => { active = false; };
-    }
-    void getDataUpdatePhotoUrl(record.photoPath)
-      .then((url) => {
-        if (!active) return;
-        if (objectPhotoUrlRef.current) {
-          URL.revokeObjectURL(objectPhotoUrlRef.current);
-          objectPhotoUrlRef.current = null;
-        }
-        setPhotoUrl(url);
-      })
-      .catch(() => { if (active) setNotice(t("No fue posible cargar la vista previa de la fotografía.")); });
-    return () => { active = false; };
-  }, [record.photoPath, t]);
-
-  useEffect(() => () => {
-    if (objectPhotoUrlRef.current) URL.revokeObjectURL(objectPhotoUrlRef.current);
-  }, []);
 
   const changeField = (field: DataUpdateEditableTextKey, value: string) => {
     setData((current) => {
@@ -179,8 +144,7 @@ export function DataUpdateWizard({
       return Promise.resolve(false);
     }
     const dataSnapshot = dataRef.current;
-    const photoSnapshot = photoPathRef.current;
-    const nextSignature = signature(dataSnapshot, step, photoSnapshot);
+    const nextSignature = signature(dataSnapshot, step);
     if (nextSignature === savedSignatureRef.current) return saveQueueRef.current;
     if (nextSignature === queuedSignatureRef.current) return saveQueueRef.current;
     queuedSignatureRef.current = nextSignature;
@@ -192,7 +156,7 @@ export function DataUpdateWizard({
           version: recordRef.current.version,
           data: dataSnapshot,
           step,
-          photoPath: photoSnapshot,
+          photoPath: recordRef.current.photoPath,
         });
         updateRecord(saved);
         savedSignatureRef.current = nextSignature;
@@ -245,7 +209,6 @@ export function DataUpdateWizard({
   };
 
   const beforeStepChange = async (currentStep: number, nextStep: number) => {
-    if (photoBusy) return false;
     if (!online) {
       setNotice(t("Necesitas conexión para continuar."));
       return false;
@@ -287,70 +250,6 @@ export function DataUpdateWizard({
   const changeRelationshipOther = (value: string) => {
     setRelationshipOther(value);
     changeField("emergencyRelationship", value);
-  };
-
-  const handlePhoto = async (file: File | undefined) => {
-    if (!file || photoBusy) return;
-    const validationError = validateDataUpdatePhoto(file);
-    if (validationError) {
-      setNotice(t(validationError));
-      return;
-    }
-    if (!online) {
-      setNotice(t("Necesitas conexión para cargar la fotografía."));
-      return;
-    }
-    setPhotoBusy(true);
-    setPhotoStatus(t("Preparando fotografía…"));
-    setRetryPhotoFile(null);
-    setNotice(null);
-    const previousPath = photoPathRef.current;
-    const previousUrl = photoUrl;
-    let uploadedPath: string | null = null;
-    try {
-      if (objectPhotoUrlRef.current) URL.revokeObjectURL(objectPhotoUrlRef.current);
-      const objectUrl = URL.createObjectURL(file);
-      objectPhotoUrlRef.current = objectUrl;
-      setPhotoUrl(objectUrl);
-      setPhotoStatus(t("Subiendo fotografía…"));
-      uploadedPath = await uploadDataUpdatePhoto(recordRef.current, file);
-      photoPathRef.current = uploadedPath;
-      setPhotoStatus(t("Guardando fotografía…"));
-      const saved = await persist(currentStepRef.current);
-      if (!saved) throw new Error(t("No fue posible vincular la fotografía al registro."));
-      if (previousPath && previousPath !== uploadedPath) {
-        await removeDataUpdatePhoto(previousPath).catch(() => undefined);
-      }
-      setPhotoStatus(t("Fotografía guardada."));
-      toast.success({ title: t("Fotografía guardada") });
-    } catch (caught) {
-      if (uploadedPath) await removeDataUpdatePhoto(uploadedPath).catch(() => undefined);
-      if (objectPhotoUrlRef.current) {
-        URL.revokeObjectURL(objectPhotoUrlRef.current);
-        objectPhotoUrlRef.current = null;
-      }
-      photoPathRef.current = previousPath;
-      setPhotoUrl(previousUrl);
-      setPhotoStatus(null);
-      setRetryPhotoFile(file);
-      setNotice(t(dataUpdateError(caught)));
-    } finally {
-      setPhotoBusy(false);
-    }
-  };
-
-  const requestPhoto = (file: File | undefined) => {
-    if (!file) return;
-    const validationError = validateDataUpdatePhoto(file);
-    if (validationError) {
-      setNotice(t(validationError));
-      return;
-    }
-    if (photoPathRef.current) {
-      setPendingPhotoFile(file);
-      return;
-    }
-    void handlePhoto(file);
   };
 
   const transportValid = campaign.transportOptions.some(
@@ -487,38 +386,16 @@ export function DataUpdateWizard({
       ),
     },
     {
-      id: "photo",
-      title: t("Fotografía"),
-      isValid: !photoBusy && Boolean(photoPathRef.current),
-      onInvalid: () => {
-        setNotice(t("Agrega una fotografía para continuar."));
-        window.requestAnimationFrame(() => {
-          document.querySelector<HTMLInputElement>(".data-update-photo input[type='file']")?.focus();
-        });
-      },
-      content: (
-        <PhotoStep
-          identity={record.identity}
-          photoUrl={photoUrl}
-          photoBusy={photoBusy}
-          photoStatus={photoStatus}
-          canRetry={Boolean(retryPhotoFile)}
-          onPhotoChange={requestPhoto}
-          onRetry={() => { if (retryPhotoFile) void handlePhoto(retryPhotoFile); }}
-        />
-      ),
-    },
-    {
       id: "review",
       title: t("Revisión"),
-      isValid: Boolean(photoPathRef.current) && allDataValid,
+      isValid: allDataValid,
       content: (goToStep) => <ReviewStep data={data} onEditStep={goToStep} />,
     },
-  ], [record.identity, review, incidentFields, incidentNote, incidents, data, campaign, photoUrl, photoBusy, photoStatus, retryPhotoFile, relationshipChoice, relationshipOther, childrenCountConfirmed, identityValid, transportValid, contactValid, addressValid, additionalValid, familyValid, allDataValid, revealedErrorSteps, online, t]);
+  ], [record.identity, review, incidentFields, incidentNote, incidents, data, campaign, relationshipChoice, relationshipOther, childrenCountConfirmed, identityValid, transportValid, contactValid, addressValid, additionalValid, familyValid, allDataValid, revealedErrorSteps, online, t]);
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();
-    if (!online || photoBusy || !photoPathRef.current || !allDataValid) return;
+    if (!online || !allDataValid) return;
     setSubmitting(true);
     setNotice(null);
     try {
@@ -557,26 +434,11 @@ export function DataUpdateWizard({
         submitLabel={t("Actualizar")}
         submittingLabel={t("Actualizando...")}
         submitting={submitting}
-        submitDisabled={!online || photoBusy || !photoPathRef.current || !allDataValid}
-        navigationPending={photoBusy}
+        submitDisabled={!online || !allDataValid}
         onCancel={onCancel}
         onBeforeStepChange={beforeStepChange}
         focusStepOnChange
         notice={notice ? <p className="form-error" role="alert">{notice}</p> : null}
-      />
-      <ConfirmModal
-        isOpen={pendingPhotoFile !== null}
-        title={t("Reemplazar fotografía")}
-        description={t("La fotografía nueva sustituirá la que ya está guardada.")}
-        confirmLabel={t("Reemplazar")}
-        cancelLabel={t("Conservar actual")}
-        onConfirm={() => {
-          const file = pendingPhotoFile;
-          setPendingPhotoFile(null);
-          if (file) void handlePhoto(file);
-        }}
-        onCancel={() => setPendingPhotoFile(null)}
-        isDestructive={false}
       />
     </form>
   );

@@ -9,10 +9,6 @@ import type {
 const EXCEL_MIME_TYPE =
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
-function photoFileName(value: string | null): string {
-  return value?.split("/").pop() ?? "";
-}
-
 function addTable(
   worksheet: import("exceljs").Worksheet,
   name: string,
@@ -83,8 +79,6 @@ export async function exportDataUpdateCampaign(input: {
     "Responsable",
     "Estado de revisión",
     "Revisión de identificación",
-    "Fotografía",
-    "Archivo de fotografía",
     "Fecha de finalización",
   ];
   const dataRows = input.detail.records.map((record) => [
@@ -98,8 +92,6 @@ export async function exportDataUpdateCampaign(input: {
     record.assignedName ?? record.assignedTo,
     record.status,
     record.identityReview,
-    record.photoPath ? "Capturada" : "Pendiente",
-    photoFileName(record.photoPath),
     record.completedAt ?? "",
   ]);
   addTable(dataSheet, "DatosActualizados", dataHeaders, dataRows);
@@ -115,18 +107,17 @@ export async function exportDataUpdateCampaign(input: {
     ["status", "Estado de revisión"],
     ["identityReview", "Revisión de identificación"],
     ["assignedTo", "Responsable"],
-    ["photoPath", "Fotografía"],
   ]);
   const logRows: Array<Array<string | number>> = [
-    ...input.audit.map((entry) => {
+    ...input.audit.filter((entry) => entry.fieldName !== "photoPath").map((entry) => {
       const record = recordsById.get(entry.recordId);
       return [
         "Cambio",
         record?.identity.employeeNumber ?? "",
         record?.identity.name ?? "",
         fieldLabels.get(entry.fieldName) ?? entry.fieldName,
-        entry.fieldName === "photoPath" ? photoFileName(entry.previousValue) : entry.previousValue ?? "",
-        entry.fieldName === "photoPath" ? photoFileName(entry.nextValue) : entry.nextValue ?? "",
+        entry.previousValue ?? "",
+        entry.nextValue ?? "",
         "",
         entry.changedByName ?? entry.changedBy,
         entry.createdAt,

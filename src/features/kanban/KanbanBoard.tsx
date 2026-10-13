@@ -27,7 +27,7 @@ interface KanbanBoardProps {
   onMove: (task: KanbanTask, status: TaskStatus, beforeId: string | null) => Promise<boolean>;
   onArchive: (task: KanbanTask) => Promise<boolean>;
   now: number;
-  onSave: (draft: TaskDraft) => Promise<boolean>;
+  onSave: (draft: TaskDraft, coverFile: File | null, coverUploadId: string | null) => Promise<boolean>;
   onCloseEditor: () => void;
 }
 export function KanbanBoard({ tasks, copy: t, disabled, busy, error, editor,
@@ -56,8 +56,8 @@ export function KanbanBoard({ tasks, copy: t, disabled, busy, error, editor,
     onCloseEditor();
     restoreEditorFocus(editor.status, editor.task?.id);
   }
-  async function save(draft: TaskDraft) {
-    if (await onSave(draft)) restoreEditorFocus(draft.status, editor?.task?.id);
+  async function save(draft: TaskDraft, coverFile: File | null, coverUploadId: string | null) {
+    if (await onSave(draft, coverFile, coverUploadId)) restoreEditorFocus(draft.status, editor?.task?.id);
   }
   function endDrag({ active, over }: DragEndEvent) {
     setDragging(false);

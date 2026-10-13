@@ -4,6 +4,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useMotionTokens } from '@/hooks/useMotionTokens';
 import { formatDateTimeMx, formatMetadataDate } from '@/lib/dates';
 import { KanbanKindBadge } from './KanbanBadge';
+import { KanbanCover } from './KanbanCover';
 import type { KanbanTask } from './types';
 import type { KanbanCopy } from './copy';
 
@@ -20,6 +21,8 @@ export function ArchivedTasks({ tasks, copy: t, disabled, onRestore }: {
         initial={{ opacity: 0, y: motionTokens.distance }} animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -motionTokens.distance }} transition={motionTokens.transition}>
         <article className="kanban-task kanban-task--archived">
+          <KanbanCover path={task.cover_path} copy={t} />
+          <div className="kanban-task__content">
           <header className="kanban-task__header">
             <KanbanKindBadge kind={task.kind} copy={t} />
             {task.archived_at && <time dateTime={task.archived_at} className="kanban-task__created type-body-sm"
@@ -35,6 +38,7 @@ export function ArchivedTasks({ tasks, copy: t, disabled, onRestore }: {
               <ArchiveRestore size="var(--icon-size-md)" aria-hidden="true" />{t.restore}
             </button>
           </footer>
+          </div>
         </article>
       </motion.li>)}
     </AnimatePresence>

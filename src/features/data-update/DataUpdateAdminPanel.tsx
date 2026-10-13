@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { ChevronDown, EllipsisVertical, FileArchive, FileJson2, FileSpreadsheet, Image as ImageIcon, PencilLine, RotateCcw, Trash2 } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { ChevronDown, EllipsisVertical, FileJson2, FileSpreadsheet, PencilLine, RotateCcw, Trash2 } from "lucide-react";
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { Pagination } from "@/components/ui/Pagination";
@@ -23,9 +23,7 @@ import {
 } from "./api";
 import { compareDataUpdateRecords, DATA_UPDATE_PAGE_SIZE } from "./constants";
 import { exportDataUpdateCampaign } from "./exportExcel";
-import { exportDataUpdatePhotos, type DataUpdatePhotoExportProgress } from "./exportPhotos";
 import { DataUpdateShiftImportModal } from "./DataUpdateShiftImportModal";
-import { DataUpdatePhotoModal } from "./DataUpdatePhotoModal";
 import { DataUpdateStatus } from "./DataUpdateStatus";
 import { useDataUpdateText } from "./translations";
 import type { DataUpdateCampaignDetail, DataUpdateProfileOption, DataUpdateRecord } from "./types";
@@ -84,16 +82,13 @@ export function DataUpdateAdminPanel({
       ].join(" "));
       return terms.every((term) => searchableText.includes(term));
     });
-  }, [searchTerm, selectedShift, showOnlyPending, sortedRecords]);
+  }, [searchTerm, selectedShift, showOnlyPending, sortedRecords]  );
   const pagination = usePagination(visibleRecords, DATA_UPDATE_PAGE_SIZE);
-  const [photoExportProgress, setPhotoExportProgress] = useState<DataUpdatePhotoExportProgress | null>(null);
   const [pendingDeleteRecord, setPendingDeleteRecord] = useState<DataUpdateRecord | null>(null);
   const [deleteRecordError, setDeleteRecordError] = useState<string | null>(null);
   const [deletingRecord, setDeletingRecord] = useState(false);
   const [shiftImportOpen, setShiftImportOpen] = useState(false);
-  const [photoToView, setPhotoToView] = useState<{ name: string; path: string } | null>(null);
   const [openActionsRecordId, setOpenActionsRecordId] = useState<string | null>(null);
-  const photoReturnFocusRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     setSelectedShift("");
@@ -162,43 +157,6 @@ export function DataUpdateAdminPanel({
     } catch (caught) {
       toast.error({ title: t(dataUpdateError(caught)) });
     } finally {
-      onBusyChange(false);
-    }
-  };
-
-  const exportPhotos = async () => {
-    onBusyChange(true);
-    try {
-      const result = await exportDataUpdatePhotos(detail, setPhotoExportProgress);
-      if (result.downloaded === 0) {
-        if (result.failed > 0) {
-          toast.error({
-            title: t("No se pudieron descargar las fotografías"),
-            description: t("Revisa tu conexión y vuelve a intentarlo."),
-          });
-        } else {
-          toast.info({ title: t("No hay fotografías disponibles para descargar") });
-        }
-        return;
-      }
-
-      const omitted = result.missing + result.failed;
-      toast.success({
-        title: t("Fotografías descargadas"),
-        description: omitted > 0
-          ? `${result.downloaded} ${t("incluidas;")} ${omitted} ${t("no disponibles.")}`
-          : `${result.downloaded} ${t("fotografías incluidas en el ZIP.")}`,
-      });
-      if (result.failed > 0) {
-        toast.warning({
-          title: t("Algunas fotografías no se pudieron incluir"),
-          description: `${result.failed} ${t("archivos presentaron un error. Puedes volver a intentarlo.")}`,
-        });
-      }
-    } catch (caught) {
-      toast.error({ title: t(dataUpdateError(caught)) });
-    } finally {
-      setPhotoExportProgress(null);
       onBusyChange(false);
     }
   };
@@ -286,22 +244,6 @@ export function DataUpdateAdminPanel({
             <FileSpreadsheet aria-hidden="true" />
             Excel
           </button>
-          <button
-            type="button"
-            className="btn-secondary"
-            onClick={() => void exportPhotos()}
-            disabled={busy || detail.records.length === 0}
-            aria-busy={photoExportProgress !== null}
-            aria-live="polite"
-            aria-label={photoExportProgress
-              ? `${t("Preparando")} ${photoExportProgress.completed} ${t("de")} ${photoExportProgress.total} ${t("fotografías")}`
-              : t("Descargar fotografías de la campaña")}
-          >
-            <FileArchive aria-hidden="true" />
-            {photoExportProgress
-              ? `${t("Preparando")} ${photoExportProgress.completed} ${t("de")} ${photoExportProgress.total}`
-              : t("Fotos")}
-          </button>
         </ToolbarGroup>
       </Toolbar>
 
@@ -383,7 +325,6 @@ export function DataUpdateAdminPanel({
                       className="dropdown-menu-trigger"
                       disabled={busy}
                       aria-label={`${t("Acciones de")} ${record.identity.name}`}
-                      onClick={(event) => { photoReturnFocusRef.current = event.currentTarget; }}
                     >
                       <EllipsisVertical aria-hidden="true" />
                     </button>
@@ -391,25 +332,7 @@ export function DataUpdateAdminPanel({
                   <PopoverContent
                     align="end"
                     className="data-update-admin-card__popover"
-                    onCloseAutoFocus={(event) => {
-                      if (photoToView) event.preventDefault();
-                    }}
                   >
-                    {record.photoPath && (
-                      <button
-                        type="button"
-                        className="data-update-admin-card__action"
-                        onClick={() => {
-                          if (record.photoPath) {
-                            setOpenActionsRecordId(null);
-                            setPhotoToView({ name: record.identity.name, path: record.photoPath });
-                          }
-                        }}
-                      >
-                        <ImageIcon aria-hidden="true" />
-                        <span>{t("Ver foto")}</span>
-                      </button>
-                    )}
                     {record.status === "completado" ? (
                       <button
                         type="button"
@@ -493,17 +416,6 @@ export function DataUpdateAdminPanel({
         loadingLabel={t("Eliminando…")}
         errorMessage={deleteRecordError ? t(deleteRecordError) : undefined}
       />
-      {photoToView && (
-        <DataUpdatePhotoModal
-          name={photoToView.name}
-          path={photoToView.path}
-          onClose={() => {
-            const trigger = photoReturnFocusRef.current;
-            setPhotoToView(null);
-            requestAnimationFrame(() => trigger?.focus());
-          }}
-        />
-      )}
     </section>
   );
 }

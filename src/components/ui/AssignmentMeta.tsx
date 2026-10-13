@@ -12,11 +12,13 @@ export interface AssignmentPerson {
 interface AssignmentMetaProps {
   assignee?: AssignmentPerson;
   currentUserId?: string;
+  appearance?: "default" | "compact";
 }
 
 export function AssignmentMeta({
   assignee,
   currentUserId,
+  appearance = "default",
 }: AssignmentMetaProps) {
   const { language } = useLanguage();
   const en = language === "en";
@@ -29,7 +31,7 @@ export function AssignmentMeta({
         <dd className="assignment-meta__value">
           {assignee ? (
             isCurrentUser ? (
-              <span className="assignment-meta__badge">
+              <span className={`assignment-meta__badge${appearance === "compact" ? " badge--compact" : ""}`}>
                 <UserRound
                   size="var(--icon-size-sm)"
                   aria-hidden="true"
@@ -43,10 +45,11 @@ export function AssignmentMeta({
                 }
                 size="sm"
                 showRole={false}
+                className={appearance === "compact" ? "badge--compact" : undefined}
               />
             )
           ) : (
-            <span className="assignment-meta__badge">
+            <span className={`assignment-meta__badge${appearance === "compact" ? " badge--compact" : ""}`}>
               <UsersRound
                 size="var(--icon-size-sm)"
                 aria-hidden="true"

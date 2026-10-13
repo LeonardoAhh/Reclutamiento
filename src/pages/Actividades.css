@@ -14,6 +14,24 @@
   letter-spacing: var(--type-body-md-tracking);
 }
 
+.actividades-page .assignment-results {
+  display: flex;
+  box-sizing: border-box;
+  min-inline-size: 0;
+  max-inline-size: var(--assignment-results-max-inline-size, var(--feature-assignment-grid-max-inline-size));
+  flex-direction: column;
+  padding: var(--design-spacing-sm);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  background: var(--color-surface-card);
+}
+
+.actividades-page .assignment-results .pagination {
+  margin-block-start: var(--design-spacing-sm);
+  border-block-start: var(--border-width) solid var(--color-hairline);
+  background: var(--color-surface-card);
+}
+
 /* ── Navegación principal por secciones ─────────────────────────────── */
 .actividades-tabs {
   min-inline-size: 0;

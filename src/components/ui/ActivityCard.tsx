@@ -1,22 +1,7 @@
-import {
-  CircleCheckBig,
-  CircleDashed,
-  Clock,
-  EllipsisVertical,
-  SquarePen,
-  Trash2,
-} from "lucide-react";
-import type { ElementType } from "react";
+import { BadgeCheck, CircleGauge, Clock3, type LucideIcon } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/DropdownMenu";
 import { AssignmentMeta } from "@/components/ui/AssignmentMeta";
-import { ReferenceAttachment } from "@/components/ui/ReferenceAttachment";
+import { Badge } from "@/components/ui/Badge";
 import "./ActivityCard.css";
 
 type ActivityCardStatus = "pendiente" | "en_proceso" | "completada";
@@ -32,12 +17,8 @@ export interface ActivityCardProps {
   };
   referenceImage?: string;
   isNew?: boolean;
-  isAdmin?: boolean;
   currentUserId?: string;
   onClick: () => void;
-  onEdit?: () => void;
-  onDelete?: () => void;
-  onViewReference?: () => void;
 }
 
 const STATUS_LABEL: Record<ActivityCardStatus, string> = {
@@ -46,10 +27,16 @@ const STATUS_LABEL: Record<ActivityCardStatus, string> = {
   completada: "Completada",
 };
 
-const STATUS_ICON: Record<ActivityCardStatus, ElementType> = {
-  pendiente: CircleDashed,
-  en_proceso: Clock,
-  completada: CircleCheckBig,
+const STATUS_ICONS: Record<ActivityCardStatus, LucideIcon> = {
+  pendiente: Clock3,
+  en_proceso: CircleGauge,
+  completada: BadgeCheck,
+};
+
+const BADGE_STATE: Record<ActivityCardStatus, string> = {
+  pendiente: "pending",
+  en_proceso: "in_progress",
+  completada: "completed",
 };
 
 export function ActivityCard({
@@ -59,87 +46,35 @@ export function ActivityCard({
   assignee,
   referenceImage,
   isNew = false,
-  isAdmin = false,
   currentUserId,
   onClick,
-  onEdit,
-  onDelete,
-  onViewReference,
 }: ActivityCardProps) {
   const { language } = useLanguage();
   const en = language === "en";
-  const Icon = STATUS_ICON[status];
   const normalizedDescription = description?.trim();
+  const StatusIcon = STATUS_ICONS[status];
 
   return (
     <article className="card activity-card" role="listitem" data-status={status}>
-      {isNew && <span className="activity-card__new">{en ? "New" : "Nueva"}</span>}
+      <button type="button" className="activity-card__open" onClick={onClick}
+        aria-label={`${en ? "View" : "Consultar"} ${title}`} />
+      {referenceImage && <img className="activity-card__cover" src={referenceImage} alt="" loading="lazy" />}
+      <div className="activity-card__content">
+      {isNew && <Badge className="badge--compact activity-card__new" data-state="new">{en ? "New" : "Nueva"}</Badge>}
       <header className="activity-card__header">
-        <div className="activity-card__icon">
-          <Icon size="var(--icon-size-md)" aria-hidden="true" />
-        </div>
-
         <div className="activity-card__heading">
           <div className="activity-card__title-row">
-            <h3 className="activity-card__title">
-              <button
-                type="button"
-                className="activity-card__open"
-                onClick={onClick}
-                aria-label={`${en ? "View" : "Consultar"} ${title}`}
-              >
-                {title}
-              </button>
-            </h3>
-            <span className="activity-card__status">
-              {en ? ({ pendiente: "Pending", en_proceso: "In progress", completada: "Completed" })[status] : STATUS_LABEL[status]}
-            </span>
+            <div className="activity-card__meta-row">
+              <Badge className="badge--compact activity-card__status" data-state={BADGE_STATE[status]}>
+                <StatusIcon size="var(--icon-size-sm)" aria-hidden="true" />
+                {en ? ({ pendiente: "Pending", en_proceso: "In progress", completada: "Completed" })[status] : STATUS_LABEL[status]}
+              </Badge>
+              <AssignmentMeta assignee={assignee} currentUserId={currentUserId} appearance="compact" />
+            </div>
+            <h3 className="activity-card__title">{title}</h3>
           </div>
         </div>
 
-        {isAdmin && (onEdit || onDelete) && (
-          <div className="activity-card__actions">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button
-                  type="button"
-                  className="activity-card__menu"
-                  aria-label={`${en ? "Options for" : "Opciones de"} ${title}`}
-                >
-                  <EllipsisVertical
-                    size="var(--icon-size-sm)"
-                    aria-hidden="true"
-                  />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                {onEdit && (
-                  <DropdownMenuItem asChild onSelect={onEdit}>
-                    <button type="button">
-                      <SquarePen aria-hidden="true" />
-                      <span>{en ? "Edit" : "Editar"}</span>
-                    </button>
-                  </DropdownMenuItem>
-                )}
-                {onDelete && (
-                  <>
-                    {onEdit && <DropdownMenuSeparator />}
-                    <DropdownMenuItem
-                      asChild
-                      variant="destructive"
-                      onSelect={onDelete}
-                    >
-                      <button type="button">
-                        <Trash2 aria-hidden="true" />
-                        <span>{en ? "Delete" : "Eliminar"}</span>
-                      </button>
-                    </DropdownMenuItem>
-                  </>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        )}
       </header>
 
       <p
@@ -148,16 +83,7 @@ export function ActivityCard({
         {normalizedDescription || (en ? "No description" : "Sin descripción")}
       </p>
 
-      <footer className="activity-card__footer">
-        <AssignmentMeta assignee={assignee} currentUserId={currentUserId} />
-        {referenceImage && onViewReference && (
-          <ReferenceAttachment
-            src={referenceImage}
-            contextLabel={title}
-            onOpen={onViewReference}
-          />
-        )}
-      </footer>
+      </div>
     </article>
   );
 }

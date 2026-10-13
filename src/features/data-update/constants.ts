@@ -5,12 +5,7 @@ import type {
   DataUpdateRecord,
 } from "./types";
 
-export const DATA_UPDATE_PHOTO_BUCKET = "data-update-photos";
-export const DATA_UPDATE_PHOTO_ACCEPT = "image/jpeg,image/png,image/webp";
-export const DATA_UPDATE_PHOTO_MAX_BYTES = 5 * 1024 * 1024;
-export const DATA_UPDATE_PHOTO_EXPORT_JPEG_QUALITY = 0.95;
-export const DATA_UPDATE_SIGNED_URL_SECONDS = 300;
-export const DATA_UPDATE_STEP_COUNT = 8;
+export const DATA_UPDATE_STEP_COUNT = 7;
 export const DATA_UPDATE_AUTOSAVE_DELAY_MS = 800;
 export const DATA_UPDATE_PAGE_SIZE = 6;
 export const DATA_UPDATE_PHONE_COUNTRY_CODE = "52";

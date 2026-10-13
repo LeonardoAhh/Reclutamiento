@@ -1,11 +1,11 @@
 import { supabase } from '@/lib/supabase';
 import { isKanbanTask, validateTaskDraft, type KanbanTask, type TaskDraft, type TaskStatus } from './types';
 
-export type KanbanErrorCode = 'load' | 'save' | 'delete' | 'conflict' | 'permission' | 'setup' | 'invalid';
+export type KanbanErrorCode = 'load' | 'save' | 'delete' | 'conflict' | 'permission' | 'setup' | 'invalid' | 'photo';
 export class KanbanError extends Error {
   constructor(public readonly code: KanbanErrorCode) { super(code); }
 }
-const TASK_SELECT = 'id, title, description, kind, status, version, created_at, due_date, due_time, checklist, position, archived_at';
+const TASK_SELECT = 'id, title, description, kind, status, version, created_at, due_date, due_time, checklist, position, archived_at, cover_path';
 export const KANBAN_PAGE_SIZE = 100;
 function fail(error: { code?: string }, fallback: KanbanErrorCode): never {
   if (error.code === '42501') throw new KanbanError('permission');
@@ -41,7 +41,7 @@ export async function listKanbanTasks(userId: string, archived: boolean, exclude
 export async function saveKanbanTask(userId: string, id: string, draft: TaskDraft, version: number | null, resetPosition = false) {
   const fields = {
     title: draft.title.trim(), description: draft.description.trim(), kind: draft.kind, status: draft.status,
-    due_date: draft.due_date, due_time: draft.due_time,
+    due_date: draft.due_date, due_time: draft.due_time, cover_path: draft.cover_path,
     checklist: draft.checklist.map(item => ({ ...item, text: item.text.trim() })),
   };
   if (validateTaskDraft(fields)) throw new KanbanError('invalid');
@@ -53,6 +53,7 @@ export async function saveKanbanTask(userId: string, id: string, draft: TaskDraf
       const saved = taskFromRow(existing.data);
       if (saved.title !== fields.title || saved.description !== fields.description || saved.kind !== fields.kind
         || saved.status !== fields.status || saved.due_date !== fields.due_date || saved.due_time !== fields.due_time
+        || saved.cover_path !== fields.cover_path
         || saved.checklist.length !== fields.checklist.length
         || saved.checklist.some((step, index) => step.id !== fields.checklist[index].id
           || step.text !== fields.checklist[index].text || step.done !== fields.checklist[index].done)) throw new KanbanError('conflict');

@@ -13,8 +13,7 @@
 .data-update-page__header,
 .data-update-section-heading,
 .data-update-campaign-toolbar,
-.data-update-record-card__footer,
-.data-update-photo__actions {
+.data-update-record-card__footer {
   display: flex;
   flex-direction: column;
   gap: var(--design-spacing-sm);
@@ -1138,61 +1137,11 @@
   border-radius: var(--rounded-xs);
 }
 
-.data-update-photo {
-  display: grid;
-  gap: var(--design-spacing-md);
-}
-
-.data-update-photo img,
-.data-update-photo__empty {
-  width: 100%;
-  max-width: var(--feature-data-update-photo-max-inline-size);
-  aspect-ratio: 3 / 4;
-  margin-inline: auto;
-  border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
-  background: var(--color-surface-soft);
-}
-
-.data-update-photo img {
-  object-fit: cover;
-  image-orientation: from-image;
-}
-
-.data-update-photo__empty {
-  display: grid;
-  place-items: center;
-  color: var(--color-muted);
-}
-
-.data-update-photo__empty svg {
-  inline-size: var(--icon-size-xl);
-  block-size: var(--icon-size-xl);
-}
-
-.data-update-photo__actions svg,
 .data-update-admin svg,
 .data-update-page__header svg,
 .data-update-campaign-toolbar svg {
   inline-size: var(--icon-size-sm);
   block-size: var(--icon-size-sm);
-}
-
-.data-update-photo__status {
-  display: grid;
-  gap: var(--design-spacing-xs);
-  color: var(--color-ink);
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-  text-align: center;
-}
-
-.data-update-photo__actions label[aria-disabled="true"] {
-  opacity: var(--opacity-disabled);
-  pointer-events: none;
 }
 
 .data-update-review {
@@ -1478,8 +1427,7 @@
 
   .data-update-page__header,
   .data-update-section-heading,
-  .data-update-record-card__footer,
-  .data-update-photo__actions {
+  .data-update-record-card__footer {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
@@ -1592,10 +1540,6 @@
 
   .data-update-wizard__header {
     padding: var(--design-spacing-lg);
-  }
-
-  .data-update-photo__actions {
-    justify-content: center;
   }
 
   .data-update-import__file {

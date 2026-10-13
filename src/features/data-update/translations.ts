@@ -3,7 +3,6 @@ import { useCallback } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const englishCopy: ReadonlyMap<string, string> = new Map([
-  ["Cargando fotografía…", "Loading photo…"],
   ["Actualización de datos", "Data update"],
   ["No tienes acceso a este módulo.", "You do not have access to this module."],
   ["Este módulo necesita conexión. Reconéctate para consultar o guardar información.", "This module requires an internet connection. Reconnect to view or save information."],
@@ -51,9 +50,6 @@ const englishCopy: ReadonlyMap<string, string> = new Map([
   ["En proceso", "In progress"],
   ["Teléfono móvil", "Mobile phone"],
   ["¿Recibes recibos de nómina?", "Do you receive pay stubs?"],
-  ["La imagen está vacía. Vuelve a tomarla o selecciona otra.", "The image is empty. Retake it or choose another."],
-  ["La imagen debe pesar máximo 5 MB.", "The image must be no larger than 5 MB."],
-  ["Selecciona una imagen JPEG, PNG o WebP.", "Select a JPEG, PNG, or WebP image."],
   ["Una fecha de nacimiento es obligatoria.", "A date of birth is required."],
   ["Se eliminará una fecha de nacimiento ya capturada.", "One entered date of birth will be deleted."],
   ["El archivo debe contener un arreglo JSON de colaboradores.", "The file must contain a JSON array of employees."],
@@ -66,9 +62,6 @@ const englishCopy: ReadonlyMap<string, string> = new Map([
   ["deberá seleccionar el Estado de nacimiento.", "you must select a birth state."],
   ["El archivo no contiene JSON válido.", "The file does not contain valid JSON."],
   ["Selecciona un archivo .json.", "Select a .json file."],
-  ["No fue posible cargar la vista previa de la fotografía.", "Could not load the photo preview."],
-  ["No fue posible cargar la fotografía.", "Could not load the photo."],
-  ["La fotografía nueva sustituirá la que ya está guardada.", "The new photo will replace the currently saved one."],
   ["Cancelar", "Cancel"],
   ["Guardar", "Save"],
   ["Escribe el número de locker.", "Enter a locker number."],
@@ -78,15 +71,6 @@ const englishCopy: ReadonlyMap<string, string> = new Map([
   ["Reasigna responsables, reabre registros y exporta la campaña.", "Reassign owners, reopen records, and export the campaign."],
   ["Excel", "Excel"],
   ["Excel generado", "Excel file generated"],
-  ["No se pudieron descargar las fotografías", "Could not download the photos"],
-  ["No hay fotografías disponibles para descargar", "No photos are available to download"],
-  ["Fotografías descargadas", "Photos downloaded"],
-  ["Algunas fotografías no se pudieron incluir", "Some photos could not be included"],
-  ["archivos presentaron un error. Puedes volver a intentarlo.", "files encountered an error. You can try again."],
-  ["incluidas;", "included;"],
-  ["no disponibles.", "unavailable."],
-  ["fotografías incluidas en el ZIP.", "photos included in the ZIP file."],
-  ["fotografías", "photos"],
   ["Preparando", "Preparing"],
   ["Buscar registros", "Search records"],
   ["Actualizar turnos", "Update shifts"],
@@ -100,13 +84,6 @@ const englishCopy: ReadonlyMap<string, string> = new Map([
   ["Confirma que estos datos permitan contactar y ubicar al colaborador.", "Confirm this information can be used to contact and locate the employee."],
   ["Si un dato no aplica, escribe N/A o Ninguna según corresponda.", "If a field does not apply, enter N/A or None as appropriate."],
   ["Talla MX en centímetros; solo números enteros.", "Mexican size in centimeters; whole numbers only."],
-  ["La fotografía es obligatoria para finalizar. Formatos JPEG, PNG o WebP, máximo 5 MB.", "A photo is required to finish. JPEG, PNG, or WebP; 5 MB maximum."],
-  ["Agrega una fotografía para continuar.", "Add a photo to continue."],
-  ["Espera para continuar. La vista previa todavía no confirma el guardado.", "Wait before continuing. The preview does not confirm that the photo is saved."],
-  ["Reemplazar", "Replace"],
-  ["Conservar actual", "Keep current"],
-  ["Fotografía guardada.", "Photo saved."],
-  ["Fotografía guardada", "Photo saved"],
   ["Actualización completada", "Update completed"],
   ["Actualizando...", "Updating..."],
   ["Actualizando…", "Updating…"],
@@ -121,7 +98,6 @@ const englishCopy: ReadonlyMap<string, string> = new Map([
   ["Paginación de administración de registros", "Administration records pagination"],
   ["Paginación de registros completados", "Completed records pagination"],
   ["Paginación de registros asignados", "Assigned records pagination"],
-  ["Fotografía", "Photo"],
   ["Texto de búsqueda", "Search text"],
   ["Nombre de campaña", "Campaign name"],
   ["Año", "Year"],
@@ -236,7 +212,6 @@ const englishCopy: ReadonlyMap<string, string> = new Map([
   ["Un empleado ya no está en esta campaña. Recarga y revisa el archivo.", "An employee is no longer in this campaign. Reload and check the file."],
   ["Escribe un nombre para la campaña.", "Enter a campaign name."],
   ["El archivo no contiene colaboradores válidos.", "The file contains no valid employees."],
-  ["La fotografía es obligatoria.", "A photo is required."],
   ["Confirma los datos de identificación o registra una incidencia.", "Confirm the identity information or report an issue."],
   ["Selecciona al menos un participante.", "Select at least one participant."],
   ["Uno de los participantes no está disponible o no tiene un rol permitido.", "One of the participants is unavailable or does not have an allowed role."],
@@ -271,11 +246,7 @@ const englishCopy: ReadonlyMap<string, string> = new Map([
   ["Buscar en administración", "Search administration"],
   ["Actualizar turnos desde JSON", "Update shifts from JSON"],
   ["Exportar campaña a Excel", "Export campaign to Excel"],
-  ["Descargar fotografías de la campaña", "Download campaign photos"],
-  ["Preparando fotografías", "Preparing photos"],
-  ["Fotos", "Photos"],
   ["Limpiar búsqueda", "Clear search"],
-  ["Ver foto", "View photo"],
   ["Reabrir", "Reopen"],
   ["Responsable", "Assignee"],
   ["Eliminar colaborador", "Delete employee"],
@@ -343,19 +314,9 @@ const englishCopy: ReadonlyMap<string, string> = new Map([
   ["Selecciona una talla de zapatos entera entre 15 y 31 cm.", "Select a whole-number shoe size between 15 and 31 cm."],
   ["Escribe un teléfono móvil de 10 dígitos.", "Enter a 10-digit mobile phone number."],
   ["Escribe un teléfono de emergencia de 10 dígitos.", "Enter a 10-digit emergency phone number."],
-  ["Volver a tomar", "Retake photo"],
-  ["Usar cámara", "Use camera"],
-  ["Elegir archivo", "Choose file"],
-  ["Reintentar carga", "Retry upload"],
   ["Empleado", "Employee"],
-  ["Reemplazar fotografía", "Replace photo"],
   ["Necesitas conexión para guardar este registro.", "You need an internet connection to save this record."],
   ["Necesitas conexión para continuar.", "You need an internet connection to continue."],
-  ["Necesitas conexión para cargar la fotografía.", "You need an internet connection to upload the photo."],
-  ["Preparando fotografía…", "Preparing photo…"],
-  ["Subiendo fotografía…", "Uploading photo…"],
-  ["Guardando fotografía…", "Saving photo…"],
-  ["No fue posible vincular la fotografía al registro.", "Could not attach the photo to the record."],
   ["Sin conexión · cambios pendientes", "Offline · changes pending"],
   ["Sin conexión", "Offline"],
   ["Cambios pendientes", "Changes pending"],
@@ -373,7 +334,6 @@ const englishCopy: ReadonlyMap<string, string> = new Map([
   ["número de empleado duplicado", "duplicate employee number"],
   ["Leyendo archivo…", "Reading file…"],
   ["Vista previa de turnos", "Shift preview"],
-  ["No se pudo cargar la fotografía.", "Could not load the photo."],
   ["Asignar", "Assign"],
   ["Nombre", "Name"],
   ["Fecha de ingreso", "Hire date"],
@@ -394,9 +354,6 @@ const englishCopy: ReadonlyMap<string, string> = new Map([
   ["Creando…", "Creating…"],
   ["Hay ", "There are "],
   ["Empleado ", "Employee "],
-  ["Fotografía de ", "Photo of "],
-  ["Vista previa de ", "Preview of "],
-  [", pendiente de guardar", ", not yet saved"],
   ["Row", "Row"],
   ["el número", "employee number"],
   ["está duplicado.", "is duplicated."],
@@ -455,12 +412,6 @@ export function dataUpdateText(language: Language, spanishText: string): string 
 
   const employeeNumber = /^Empleado (.+)$/.exec(spanishText);
   if (employeeNumber) return `Employee ${employeeNumber[1]}`;
-
-  const photoAlt = /^Fotografía de (.+)$/.exec(spanishText);
-  if (photoAlt) return `Photo of ${photoAlt[1]}`;
-
-  const previewAlt = /^Vista previa de (.+), pendiente de guardar$/.exec(spanishText);
-  if (previewAlt) return `Preview of ${previewAlt[1]}, not yet saved`;
 
   return spanishText;
 }

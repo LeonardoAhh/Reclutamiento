@@ -1,7 +1,7 @@
 import { addDaysToIso } from '@/lib/dates';
 
 export const KANBAN_PATH = '/kanban';
-export const TASK_STATUSES = ['pending', 'in_progress', 'completed'] as const;
+export const TASK_STATUSES = ['pending', 'in_progress', 'completed', 'notes'] as const;
 export const TASK_KINDS = ['activity', 'process', 'interview', 'todo'] as const;
 export const CHECKLIST_MAX_ITEMS = 50;
 export const CHECKLIST_TEXT_LIMIT = 240;
@@ -16,6 +16,7 @@ export interface TaskDraft {
   due_date: string | null;
   due_time: string | null;
   checklist: ChecklistItem[];
+  cover_path: string | null;
 }
 export interface KanbanTask extends TaskDraft {
   id: string;
@@ -24,7 +25,7 @@ export interface KanbanTask extends TaskDraft {
   position: number;
   archived_at: string | null;
 }
-export type DraftError = 'required' | 'descriptionLimit' | 'invalidDue' | 'timeNeedsDate' | 'invalidChecklist';
+export type DraftError = 'required' | 'descriptionLimit' | 'invalidDue' | 'timeNeedsDate' | 'invalidChecklist' | 'invalidCover';
 export function isTaskStatus(value: unknown): value is TaskStatus {
   return TASK_STATUSES.some(status => status === value);
 }
@@ -53,12 +54,18 @@ export function isChecklist(value: unknown): value is ChecklistItem[] {
     return true;
   });
 }
+export function isCoverPath(value: unknown): value is string | null {
+  const uuid = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
+  return value === null || (typeof value === 'string'
+    && new RegExp(`^${uuid}/${uuid}/${uuid}\\.webp$`, 'i').test(value));
+}
 export function validateTaskDraft(draft: TaskDraft): DraftError | null {
   if (!draft.title.trim() || draft.title.trim().length > 160) return 'required';
   if (draft.description.trim().length > 4000) return 'descriptionLimit';
   if (!validDueDate(draft.due_date) || !validDueTime(draft.due_time)) return 'invalidDue';
   if (draft.due_time && !draft.due_date) return 'timeNeedsDate';
   if (!isChecklist(draft.checklist)) return 'invalidChecklist';
+  if (!isCoverPath(draft.cover_path)) return 'invalidCover';
   return null;
 }
 export function isKanbanTask(value: unknown): value is KanbanTask {
@@ -76,8 +83,11 @@ export function isKanbanTask(value: unknown): value is KanbanTask {
     && (value.archived_at === null || value.status === 'completed')
     && 'due_date' in value && validDueDate(value.due_date)
     && 'due_time' in value && validDueTime(value.due_time) && !(value.due_time && !value.due_date)
-    && 'checklist' in value && isChecklist(value.checklist);
+    && 'checklist' in value && isChecklist(value.checklist)
+    && 'cover_path' in value && isCoverPath(value.cover_path)
+    && (value.cover_path === null || (typeof value.cover_path === 'string'
+      && value.cover_path.split('/')[1] === value.id));
 }
 export const EMPTY_DRAFT: TaskDraft = {
-  title: '', description: '', kind: 'activity', status: 'pending', due_date: null, due_time: null, checklist: [],
+  title: '', description: '', kind: 'activity', status: 'pending', due_date: null, due_time: null, checklist: [], cover_path: null,
 };

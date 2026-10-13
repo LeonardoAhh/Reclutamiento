@@ -6,6 +6,7 @@ import {
 import type { Activity, AuthorizedPosition } from "@/lib/types";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { AssignmentMeta } from "@/components/ui/AssignmentMeta";
+import { Badge } from "@/components/ui/Badge";
 import { CustomSelect, type Option } from "@/components/ui/CustomSelect";
 import "./VacancyAssignmentSection.css";
 
@@ -138,7 +139,7 @@ export function VacancyAssignmentSection({
           {vacancyGroups.map((group) => (
             <section
               key={group.key}
-              className="vacancy-assignment-group"
+              className={`assignment-results vacancy-assignment-group vacancy-assignment-group--${Math.min(group.vacancies.length, 4)}`}
               aria-label={`${en ? "Vacancies for" : "Vacantes de"} ${group.label}`}
             >
               <header className="vacancy-assignment-group__header">
@@ -176,9 +177,9 @@ export function VacancyAssignmentSection({
                 role="listitem"
               >
                 {isNew(vacancy) && (
-                  <span className="vacancy-assignment-card__status">
+                  <Badge className="badge--compact vacancy-assignment-card__status" data-state="new">
                     {en ? "New" : "Nueva"}
-                  </span>
+                  </Badge>
                 )}
                 <div className="vacancy-assignment-card__body">
                   <div className="vacancy-assignment-card__icon">
@@ -203,6 +204,7 @@ export function VacancyAssignmentSection({
 
                 <footer className="vacancy-assignment-card__footer">
                   <AssignmentMeta
+                    appearance="compact"
                     assignee={
                       vacancy.asignado_a
                         ? {

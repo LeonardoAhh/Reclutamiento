@@ -5,6 +5,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { formatDateTimeMx, formatMetadataDate, localDateToIso } from '@/lib/dates';
 import { KanbanKindBadge } from './KanbanBadge';
+import { KanbanCover } from './KanbanCover';
 import { isTaskOverdue } from './presentation';
 import type { KanbanTask } from './types';
 import type { KanbanCopy } from './copy';
@@ -33,7 +34,9 @@ export function KanbanTaskCard({ task, copy: t, disabled, now, onEdit, editButto
       style={transform ? { transform: CSS.Transform.toString(transform) } : undefined}>
       <button ref={node => { setActivatorNodeRef(node); editButtonRef(node); }}
         type="button" className="kanban-task__open" {...dragAttributes} {...listeners} disabled={disabled}
-        aria-label={`${t.edit}: ${task.title}`} onClick={onEdit} />
+        aria-label={`${t.view}: ${task.title}`} onClick={onEdit} />
+      <KanbanCover path={task.cover_path} copy={t} />
+      <div className="kanban-task__content">
       <header className="kanban-task__header">
         <KanbanKindBadge kind={task.kind} copy={t} />
         <time dateTime={task.created_at} className="kanban-task__created type-body-sm"
@@ -60,6 +63,7 @@ export function KanbanTaskCard({ task, copy: t, disabled, now, onEdit, editButto
           </div>
         </div>}
       </footer>}
+      </div>
     </article>
   );
 }

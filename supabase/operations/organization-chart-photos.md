@@ -1,13 +1,17 @@
-# Fotos del organigrama
+# Retiro del bucket de fotos de actualización de datos
 
-Desplegar `organization-chart-photos` junto con `_shared`:
+Antes de eliminar `data-update-photos` en Supabase:
 
-```sh
-supabase functions deploy organization-chart-photos --no-verify-jwt
-```
+1. Aplica la migración `066_data_update_optional_photos.sql`; el cierre y la sincronización ya no usan el bucket ni exigen una foto, y se eliminan las políticas RLS exclusivas de ese bucket.
+2. Despliega las funciones actualizadas, que ya no borran objetos del bucket al eliminar registros o campañas:
 
-La función valida el JWT con Auth y conserva las comprobaciones existentes de cuenta activa y cambio de contraseña. Permite cualquier rol autenticado. Usa las variables de servidor existentes `SUPABASE_URL`, `SUPABASE_ANON_KEY` y `SUPABASE_SERVICE_ROLE_KEY`.
+   ```sh
+   supabase functions deploy delete-data-update-record --no-verify-jwt
+   supabase functions deploy delete-data-update-campaign --no-verify-jwt
+   ```
 
-Solo entrega URLs firmadas de una hora para la lista de empleados autorizada en el servidor. No admite números ni rutas enviados por el cliente, no devuelve expedientes y no modifica RLS ni el bucket privado. Selecciona la foto disponible con `updated_at` más reciente entre campañas; sin foto devuelve `null`. El frontend renueva las URLs a los 50 minutos y no las persiste.
+3. Despliega la versión nueva de la aplicación para retirar captura, consulta y exportación de fotos.
+4. Elimina desde Supabase Dashboard la función `organization-chart-photos` si todavía está desplegada. Ya no hay un cliente que la invoque.
+5. Elimina el bucket desde Supabase Dashboard. Esto elimina los archivos almacenados; la columna histórica `photo_path` permanece en la base de datos, pero la aplicación ya no la usa para acceder a fotos.
 
-Validación posterior al despliegue: sesión ausente rechazada; usuario autenticado obtiene únicamente los empleados permitidos; foto ausente muestra icono; navegación entre vistas conserva imágenes. No se han ejecutado estas comprobaciones contra el servicio remoto.
+Se retiró el uso de `data-update-photos` para captura, consulta y exportación administrativa, y para servir URLs al organigrama. Las imágenes estáticas locales y otros buckets no se modifican. No se han ejecutado estos pasos contra el servicio remoto.
