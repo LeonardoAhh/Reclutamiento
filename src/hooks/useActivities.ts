@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import {
   Activity,
@@ -35,16 +35,38 @@ function sortActivitiesByCreatedAt(rows: Activity[]): Activity[] {
   });
 }
 
+// Al volver del visor de imágenes, muestra la lista conocida mientras se revalida con Supabase.
+let activitiesCache: { ownerKey: string; rows: Activity[] } | null = null;
+
 export function useActivities() {
   const { profile } = useAuth();
   const { language } = useLanguage();
   const english = language === 'en';
-  const [activities, setActivities] = useState<Activity[]>([]);
-  const [loading, setLoading] = useState(true);
+  const ownerKey = profile ? `${profile.id}:${profile.role}` : null;
+  const initialRows = ownerKey && activitiesCache?.ownerKey === ownerKey ? activitiesCache.rows : null;
+  const [activities, setActivities] = useState<Activity[]>(() => initialRows ?? []);
+  const [loading, setLoading] = useState(() => initialRows === null);
+  const activitiesRef = useRef(activities);
+  const ownerKeyRef = useRef(ownerKey);
+
+  const commitActivities = useCallback((expectedOwnerKey: string | null, update: (current: Activity[]) => Activity[]) => {
+    if (!expectedOwnerKey || ownerKeyRef.current !== expectedOwnerKey) return;
+    const next = update(activitiesRef.current);
+    activitiesRef.current = next;
+    activitiesCache = { ownerKey: expectedOwnerKey, rows: next };
+    setActivities(next);
+  }, []);
 
   const fetchActivities = useCallback(async () => {
     if (!profile) return;
-    setLoading(true);
+    const requestOwnerKey = `${profile.id}:${profile.role}`;
+    const cachedRows = activitiesCache?.ownerKey === requestOwnerKey ? activitiesCache.rows : null;
+    if (ownerKeyRef.current !== requestOwnerKey) {
+      ownerKeyRef.current = requestOwnerKey;
+      activitiesRef.current = cachedRows ?? [];
+      setActivities(cachedRows ?? []);
+    }
+    setLoading(cachedRows === null);
     try {
       let query = supabase
         .from('activities')
@@ -58,13 +80,13 @@ export function useActivities() {
       
       const { data, error } = await query;
       if (error) throw error;
-      setActivities(data as Activity[]);
+      commitActivities(requestOwnerKey, () => data as Activity[]);
     } catch (err: any) {
       toast.error({ title: english ? 'Could not load activities' : 'Error al cargar actividades', description: err.message });
     } finally {
-      setLoading(false);
+      if (ownerKeyRef.current === requestOwnerKey) setLoading(false);
     }
-  }, [profile, english]);
+  }, [profile, english, commitActivities]);
 
   useEffect(() => {
     fetchActivities();
@@ -89,7 +111,7 @@ export function useActivities() {
       
       if (error) throw error;
       const saved = data as Activity;
-      setActivities((current) =>
+      commitActivities(ownerKey, (current) =>
         sortActivitiesByCreatedAt([
           saved,
           ...current.filter((activity) => activity.id !== saved.id),
@@ -113,7 +135,7 @@ export function useActivities() {
         
       if (error) throw error;
       const saved = data as Activity;
-      setActivities(prev => prev.map(a => a.id === id ? saved : a));
+      commitActivities(ownerKey, prev => prev.map(a => a.id === id ? saved : a));
       toast.success({ title: english ? 'Status updated' : 'Estado actualizado' });
       return saved;
     } catch (err: any) {
@@ -248,7 +270,7 @@ export function useActivities() {
 
       if (error) throw error;
       const saved = data as Activity;
-      setActivities((current) =>
+      commitActivities(ownerKey, (current) =>
         current.map((activity) => activity.id === id ? saved : activity)
       );
       toast.success({ title: english ? 'Activity updated' : 'Actividad actualizada' });
@@ -263,7 +285,7 @@ export function useActivities() {
     try {
       const { error } = await supabase.from('activities').delete().eq('id', id);
       if (error) throw error;
-      setActivities(prev => prev.filter(a => a.id !== id));
+      commitActivities(ownerKey, prev => prev.filter(a => a.id !== id));
       toast.success({ title: english ? 'Activity deleted' : 'Actividad eliminada' });
       return true;
     } catch (err: any) {

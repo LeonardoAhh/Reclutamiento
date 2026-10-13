@@ -31,10 +31,12 @@ import { CANDIDATE_METRICS_PATH } from '@/pages/candidate-metrics/navigation';
 import { CAREER_JOURNEY_ENABLED, CAREER_PATH } from '@/features/career/types';
 import { LEAVE_REQUESTS_PATH } from '@/features/leave/requests';
 import { KANBAN_PATH } from '@/features/kanban/types';
+import { ACTIVITY_IMAGE_ROUTE } from '@/pages/activityImageNavigation';
 import { useLanguage } from '@/contexts/LanguageContext';
 import {
   AccountPage,
   Actividades,
+  ActivityImagePage,
   Bajas,
   CandidateMetricsPage,
   CareerPage,
@@ -171,6 +173,7 @@ function App() {
                 </Route>
                 <Route path="/departure-reasons" element={<MotivosBaja />} />
                 <Route path={ACTIVIDADES_PATH} element={<Actividades />} />
+                <Route path={ACTIVITY_IMAGE_ROUTE} element={<ActivityImagePage />} />
                 <Route path={KANBAN_PATH} element={<KanbanPage />} />
                 <Route path={DATA_UPDATE_PATH} element={<DataUpdatePage />} />
                 <Route path={ACCOUNT_PATH} element={<AccountPage />} />

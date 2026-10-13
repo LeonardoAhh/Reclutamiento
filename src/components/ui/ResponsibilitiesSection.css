@@ -101,7 +101,6 @@
 .responsibility-detail__description {
   margin: 0;
   color: var(--color-body);
-  white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
 

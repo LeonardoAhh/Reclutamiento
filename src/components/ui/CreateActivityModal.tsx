@@ -151,6 +151,7 @@ export function CreateAssignmentModal({
                 name={referenceImageFile?.name || (en ? "Image" : "Imagen")}
                 metadata={`${en ? "Image" : "Imagen"} · ${referenceImageFile ? (referenceImageFile.size / 1024).toFixed(0) : 0} KB`}
                 imageSrc={referenceImagePreview}
+                confirmRemove
                 onRemove={() => {
                     setReferenceImageFile(null);
                     setReferenceImagePreview(null);

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { SquarePen, Trash2, X, ImagePlus } from "lucide-react";
+import { SquarePen, X, ImagePlus } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Modal } from "./Modal";
 import { CustomSelect } from "./CustomSelect";
@@ -8,6 +8,8 @@ import { AttachmentCard } from "./AttachmentCard";
 import { AssignmentMeta, type AssignmentPerson } from "./AssignmentMeta";
 import { getResponsibilityContent } from "./responsibilityContent";
 import { ReferenceImageLink } from "./ReferenceImageLink";
+import { InlineDeleteAction } from "./InlineDeleteAction";
+import { ActivityDescription } from "./ActivityDescription";
 import type { Activity, AssignableActivityType } from "@/lib/types";
 
 const EDIT_MODAL_CONTENT: Record<
@@ -60,7 +62,7 @@ export interface EditActivityModalProps {
   previewAssignee?: AssignmentPerson;
   currentUserId?: string;
   onStartEditing?: () => void;
-  onDelete?: () => void;
+  onDelete?: () => Promise<boolean>;
 }
 
 export function EditActivityModal({
@@ -113,14 +115,11 @@ export function EditActivityModal({
       title={showingPreview ? previewActivity?.titulo : modalTitle}
       icon={showingPreview ? undefined : <SquarePen size="var(--icon-size-md)" aria-hidden="true" />}
       size="sm"
-      headerActions={showingPreview && <div className="responsibility-detail__actions">
-        {onStartEditing && <button type="button" className="responsibility-detail__edit" onClick={onStartEditing}>
+      headerActions={showingPreview && isOpen && onDelete
+        ? <InlineDeleteAction key={previewActivity?.id} onEdit={onStartEditing} onDelete={onDelete} />
+        : showingPreview && onStartEditing && <button type="button" className="responsibility-detail__edit" onClick={onStartEditing}>
           <SquarePen size="var(--icon-size-md)" aria-hidden="true" />{en ? 'Edit' : 'Editar'}
         </button>}
-        {onDelete && <button type="button" className="responsibility-detail__edit responsibility-detail__delete" onClick={onDelete}>
-          <Trash2 size="var(--icon-size-md)" aria-hidden="true" />{en ? 'Delete' : 'Eliminar'}
-        </button>}
-      </div>}
       footerActions={!showingPreview &&
         <>
           <button
@@ -144,8 +143,8 @@ export function EditActivityModal({
       }
     >
       {showingPreview && previewActivity ? <div className="responsibility-detail type-body-md">
-        {previewActivity.reference_image && <ReferenceImageLink src={previewActivity.reference_image} />}
-        {previewContent?.description && <p className="responsibility-detail__description">{previewContent.description}</p>}
+        {previewActivity.reference_image && previewActivity.id && <ReferenceImageLink src={previewActivity.reference_image} activityId={previewActivity.id} tab="responsibilities" />}
+        {previewContent?.description && <ActivityDescription text={previewContent.description} className="responsibility-detail__description" />}
         {previewContent?.area && <p className="responsibility-detail__area">{previewContent.area}</p>}
         <div className="responsibility-detail__assignment">
           <span className="type-body-sm">{en ? 'Assignment' : 'Asignación'}</span>
@@ -200,6 +199,7 @@ export function EditActivityModal({
                     : (en ? "Attached image" : "Imagen adjunta")
                 }
                 imageSrc={referenceImagePreview || existingReferenceImage!}
+                confirmRemove
                 onRemove={() => {
                     setReferenceImageFile(null);
                     setReferenceImagePreview(null);

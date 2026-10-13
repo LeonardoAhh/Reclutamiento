@@ -1,25 +1,28 @@
-import { ClipboardClock, Trash2, FileUp, SquarePen } from "lucide-react";
+import { ClipboardClock, Trash2, FileUp } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Modal } from "./Modal";
 import { CustomSelect } from "./CustomSelect";
 import { AttachmentCard } from "./AttachmentCard";
 import { ReferenceImageLink } from "./ReferenceImageLink";
+import { InlineDeleteAction } from "./InlineDeleteAction";
+import { ActivityDescription } from "./ActivityDescription";
 import { Activity, ActivityStatus, ActivityProof } from "@/lib/types";
 
 interface TaskDetailsModalProps {
   isOpen: boolean;
   onClose: () => void;
   activity: Activity | null;
+  statusFilter: ActivityStatus | "todas";
   onStatusChange: (status: ActivityStatus) => void;
   isUpdatingStatus: boolean;
-  onLightboxOpen: (src: string) => void;
+  onImageOpen: (proofId: string) => void;
   proofsLoading: boolean;
   proofs: ActivityProof[];
   isImage: (filename: string) => boolean;
   isAdmin: boolean;
   onEdit?: () => void;
-  onDelete?: () => void;
-  onDeleteProof: (id: string, url: string) => void;
+  onDelete?: () => Promise<boolean>;
+  onDeleteProof: (id: string, url: string) => Promise<boolean>;
   onUploadProof: (e: React.ChangeEvent<HTMLInputElement>) => void;
   isUploadingProof: boolean;
 }
@@ -28,9 +31,10 @@ export function TaskDetailsModal({
   isOpen,
   onClose,
   activity,
+  statusFilter,
   onStatusChange,
   isUpdatingStatus,
-  onLightboxOpen,
+  onImageOpen,
   proofsLoading,
   proofs,
   isImage,
@@ -51,18 +55,12 @@ export function TaskDetailsModal({
       title={activity?.titulo ?? (en ? "Task details" : "Detalles de Tarea")}
       icon={<ClipboardClock size="var(--icon-size-md)" aria-hidden="true" />}
       size="sm"
-      headerActions={isAdmin && <div className="responsibility-detail__actions">
-        {onEdit && <button type="button" className="responsibility-detail__edit" onClick={onEdit}>
-          <SquarePen size="var(--icon-size-md)" aria-hidden="true" />{en ? "Edit" : "Editar"}
-        </button>}
-        {onDelete && <button type="button" className="responsibility-detail__edit responsibility-detail__delete" onClick={onDelete}>
-          <Trash2 size="var(--icon-size-md)" aria-hidden="true" />{en ? "Delete" : "Eliminar"}
-        </button>}
-      </div>}
+      headerActions={isOpen && isAdmin && onDelete &&
+        <InlineDeleteAction key={activity?.id} onEdit={onEdit} onDelete={onDelete} />}
     >
       {activity && (
         <div className="modal-body">
-          {activity.reference_image && <ReferenceImageLink src={activity.reference_image} />}
+          {activity.reference_image && activity.id && <ReferenceImageLink src={activity.reference_image} activityId={activity.id} tab="activities" status={statusFilter} />}
           <div className="activity-detail-grid">
             <div className="form-group">
               <label htmlFor="detail-estado">{en ? "Status" : "Estado"}</label>
@@ -82,7 +80,9 @@ export function TaskDetailsModal({
             <div className="form-group">
               <h3 className="activity-detail-heading">{en ? "Description" : "Descripción"}</h3>
               <div className="activity-desc-block">
-                {activity.descripcion || (en ? "No detailed description." : "Sin descripción detallada.")}
+                {activity.descripcion
+                  ? <ActivityDescription text={activity.descripcion} />
+                  : (en ? "No detailed description." : "Sin descripción detallada.")}
               </div>
             </div>
           </div>
@@ -113,12 +113,13 @@ export function TaskDetailsModal({
                   imageSrc={
                     isImage(proof.file_name) ? proof.file_url : undefined
                   }
+                  confirmRemove
                   href={
                     isImage(proof.file_name) ? undefined : proof.file_url
                   }
                   onPreview={
                     isImage(proof.file_name)
-                      ? () => onLightboxOpen(proof.file_url)
+                      ? () => onImageOpen(proof.id!)
                       : undefined
                   }
                   previewLabel={`${en ? "Open" : "Abrir"} ${proof.file_name}`}

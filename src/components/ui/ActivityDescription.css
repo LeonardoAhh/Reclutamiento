@@ -1,0 +1,50 @@
+.activity-description {
+  display: grid;
+  min-inline-size: 0;
+  gap: var(--design-spacing-sm);
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.activity-description :is(p, ul) {
+  margin: 0;
+}
+
+.activity-description p,
+.activity-description li {
+  white-space: pre-line;
+}
+
+.activity-description__bullets {
+  display: grid;
+  gap: var(--design-spacing-xs);
+  padding-inline-start: var(--design-spacing-lg);
+}
+
+.activity-description__checklist {
+  display: grid;
+  gap: var(--design-spacing-xs);
+  padding: 0;
+  list-style: none;
+}
+
+.activity-description__checklist li {
+  display: flex;
+  min-inline-size: 0;
+  align-items: flex-start;
+  gap: var(--design-spacing-xs);
+}
+
+.activity-description__checklist svg {
+  flex: none;
+  color: var(--color-mute);
+}
+
+.activity-description__checklist li[data-completed] svg {
+  color: var(--color-success-text);
+}
+
+.activity-description__checklist li[data-completed] > span {
+  color: var(--color-mute);
+  text-decoration: line-through;
+}

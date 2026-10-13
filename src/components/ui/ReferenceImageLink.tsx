@@ -1,23 +1,26 @@
 import { useLanguage } from "@/contexts/LanguageContext";
+import { Link } from "react-router-dom";
+import { getActivityImagePath, type ActivityImageStatus, type ActivityImageTab } from "@/pages/activityImageNavigation";
 import "./ReferenceImageLink.css";
 
 interface ReferenceImageLinkProps {
   src: string;
+  activityId: string;
+  tab: ActivityImageTab;
+  status?: ActivityImageStatus;
 }
 
-export function ReferenceImageLink({ src }: ReferenceImageLinkProps) {
+export function ReferenceImageLink({ src, activityId, tab, status }: ReferenceImageLinkProps) {
   const { language } = useLanguage();
   const en = language === "en";
 
   return (
-    <a
+    <Link
       className="activity-reference-image"
-      href={src}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={en ? "Open full image in a new tab" : "Abrir imagen completa en una pestaña nueva"}
+      to={getActivityImagePath(activityId, tab, undefined, status)}
+      aria-label={en ? "View full image" : "Ver imagen completa"}
     >
       <img src={src} alt="" />
-    </a>
+    </Link>
   );
 }

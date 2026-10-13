@@ -16,6 +16,7 @@ import { CANDIDATE_METRICS_PATH } from '@/pages/candidate-metrics/navigation';
 import { CAREER_PATH } from '@/features/career/types';
 import { LEAVE_REQUESTS_PATH } from '@/features/leave/requests';
 import { KANBAN_PATH } from '@/features/kanban/types';
+import { ACTIVITY_IMAGE_ROUTE } from '@/pages/activityImageNavigation';
 
 /** Las páginas de ruta no reciben props: toman sus datos del router y contexto. */
 type AnyComponent = ComponentType;
@@ -58,6 +59,7 @@ export const ReporteDiario = lazyWithPreload(() => import('@/pages/ReporteDiario
 export const MotivosBaja = lazyWithPreload(() => import('@/pages/MotivosBaja').then(({ MotivosBaja }) => ({ default: MotivosBaja })));
 export const Configuracion = lazyWithPreload(() => import('@/pages/Configuracion').then(({ Configuracion }) => ({ default: Configuracion })));
 export const Actividades = lazyWithPreload(() => import('@/pages/Actividades').then(({ Actividades }) => ({ default: Actividades })));
+export const ActivityImagePage = lazyWithPreload(() => import('@/pages/ActivityImagePage').then(({ ActivityImagePage }) => ({ default: ActivityImagePage })));
 export const DataUpdatePage = lazyWithPreload(() => import('@/features/data-update/DataUpdatePage').then(({ DataUpdatePage }) => ({ default: DataUpdatePage })));
 export const AccountPage = lazyWithPreload(() => import('@/pages/AccountPage').then(({ AccountPage }) => ({ default: AccountPage })));
 export const TeamPage = lazyWithPreload(() => import('@/features/team/TeamPage').then(({ TeamPage }) => ({ default: TeamPage })));
@@ -121,6 +123,7 @@ const ROUTE_PAGES: readonly RoutePage[] = [
   },
   { matches: exact('/departure-reasons'), page: MotivosBaja },
   { matches: exact(ACTIVIDADES_PATH), page: Actividades, bones: pageBones('actividades-page') },
+  { matches: (pathname) => pathname.startsWith(`${ACTIVIDADES_PATH}/image/`), page: ActivityImagePage },
   { matches: exact(DATA_UPDATE_PATH), page: DataUpdatePage },
   { matches: exact(ACCOUNT_PATH), page: AccountPage },
   { matches: exact(TEAM_PATH), page: TeamPage },

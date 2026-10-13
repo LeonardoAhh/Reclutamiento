@@ -3,6 +3,7 @@ import { PageHeading } from '@/components/layout/PageHeading';
 import { isBoneyardBuild } from "@/lib/boneyard";
 import { BONEYARD_SAMPLE_ACTIVITIES } from "@/lib/boneyardFixtures";
 import * as Tabs from "@radix-ui/react-tabs";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useActivities } from "@/hooks/useActivities";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { ModalPresentationProvider } from "@/components/ui/ModalPresentation";
@@ -28,11 +29,10 @@ import {
 import { CreateResponsibilityModal } from "@/components/ui/CreateResponsibilityModal";
 import { CreateVacancyModal } from "@/components/ui/CreateVacancyModal";
 import { EditActivityModal } from "@/components/ui/EditActivityModal";
-import { LightboxModal } from "@/components/ui/LightboxModal";
 import { TaskDetailsModal } from "@/components/ui/TaskDetailsModal";
 import { VacancyAssignmentSection } from "@/components/ui/VacancyAssignmentSection";
 import { toast } from "@/lib/notify";
-import { DeleteConfirmModal } from "@/components/ui/DeleteConfirmModal";
+import { getActivityImagePath } from "./activityImageNavigation";
 import "./Actividades.css";
 
 function isImage(filename: string): boolean {
@@ -43,6 +43,8 @@ function isImage(filename: string): boolean {
 
 export function Actividades() {
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { language } = useLanguage();
   const en = language === "en";
   const { members } = useTeamDirectory();
@@ -121,9 +123,11 @@ export function Actividades() {
   >(null);
 
   /* ── Filter / Search / Sort state ────────────────────────────────────── */
-  const [statusFilter, setStatusFilter] = useState<ActivityStatus | "todas">(
-    "pendiente",
-  );
+  const [statusFilter, setStatusFilter] = useState<ActivityStatus | "todas">(() => {
+    const requested = searchParams.get("status");
+    return requested === "todas" || requested === "pendiente" || requested === "en_proceso" || requested === "completada"
+      ? requested : "pendiente";
+  });
 
   /* ── Edit form state ───────────────────────────────────────────────── */
   const [editTitulo, setEditTitulo] = useState("");
@@ -137,25 +141,12 @@ export function Actividades() {
   const [editExistingReferenceImage, setEditExistingReferenceImage] = useState<
     string | null
   >(null);
-  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
   const [proofsLoading, setProofsLoading] = useState(false);
   const [isUploadingProof, setIsUploadingProof] = useState(false);
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isAssigningVacancy, setIsAssigningVacancy] = useState(false);
   const proofsRequestRef = useRef(0);
-
-  const [confirmState, setConfirmState] = useState<{
-    isOpen: boolean;
-    title: string;
-    isLoading: boolean;
-    onConfirm: () => void;
-  }>({
-    isOpen: false,
-    title: "",
-    isLoading: false,
-    onConfirm: () => {},
-  });
 
   const teamRecruiterOptions = useMemo(
     () => [
@@ -381,26 +372,10 @@ export function Actividades() {
     e.target.value = "";
   };
 
-  const handleDeleteProof = (proofId: string, url: string) => {
-    setConfirmState({
-      isOpen: true,
-      title: en ? "Delete evidence" : "Eliminar prueba",
-      isLoading: false,
-      onConfirm: async () => {
-        setConfirmState((state) => ({ ...state, isLoading: true }));
-        const ok = await deleteProof(proofId, url);
-        if (ok) {
-          setProofs((prev) => prev.filter((p) => p.id !== proofId));
-          setConfirmState((state) => ({
-            ...state,
-            isOpen: false,
-            isLoading: false,
-          }));
-        } else {
-          setConfirmState((state) => ({ ...state, isLoading: false }));
-        }
-      },
-    });
+  const handleDeleteProof = async (proofId: string, url: string) => {
+    const ok = await deleteProof(proofId, url);
+    if (ok) setProofs((prev) => prev.filter((proof) => proof.id !== proofId));
+    return ok;
   };
 
   const openEdit = (activity: Activity, e?: React.MouseEvent) => {
@@ -460,30 +435,16 @@ export function Actividades() {
     }
   };
 
-  const handleDelete = (activity: Activity, e?: React.MouseEvent) => {
-    e?.stopPropagation();
-    setConfirmState({
-      isOpen: true,
-      title: en ? "Delete activity" : "Eliminar actividad",
-      isLoading: false,
-      onConfirm: async () => {
-        setConfirmState((state) => ({ ...state, isLoading: true }));
-        const ok = await deleteActivity(activity.id!);
-        if (ok) {
-          setIsEditModalOpen(false);
-          setPreviewResponsibility(false);
-          setIsDetailModalOpen(false);
-          setSelectedActivity(null);
-          setConfirmState((state) => ({
-            ...state,
-            isOpen: false,
-            isLoading: false,
-          }));
-        } else {
-          setConfirmState((state) => ({ ...state, isLoading: false }));
-        }
-      },
-    });
+  const handleDelete = async (activity: Activity) => {
+    if (!activity.id) return false;
+    const ok = await deleteActivity(activity.id);
+    if (ok) {
+      setIsEditModalOpen(false);
+      setPreviewResponsibility(false);
+      setIsDetailModalOpen(false);
+      setSelectedActivity(null);
+    }
+    return ok;
   };
 
   /* ── Derived data ──────────────────────────────────────────────────── */
@@ -587,7 +548,10 @@ export function Actividades() {
       <main className="actividades-page container">
         <PageHeading className="app-page-title">{en ? "Activities" : "Actividades"}</PageHeading>
 
-      <Tabs.Root className="actividades-tabs" defaultValue="vacancies">
+      <Tabs.Root className="actividades-tabs" defaultValue={
+        searchParams.get("tab") === "responsibilities" ? "responsibilities"
+          : searchParams.get("tab") === "activities" ? "activities" : "vacancies"
+      }>
         <Tabs.List className="actividades-tabs__list" aria-label={en ? "Activity sections" : "Secciones de actividades"}>
           <Tabs.Trigger className="actividades-tabs__trigger" value="vacancies">
             {en ? "Vacancies" : "Vacantes"}
@@ -712,7 +676,7 @@ export function Actividades() {
 
       {/* ── Modal: Edit ──────────────────────────────────────────── */}
       <EditActivityModal
-        isOpen={isEditModalOpen && !confirmState.isOpen && !lightboxSrc}
+        isOpen={isEditModalOpen}
         onClose={() => {
           if (!isEditing) { setIsEditModalOpen(false); setPreviewResponsibility(false); }
         }}
@@ -755,15 +719,18 @@ export function Actividades() {
       {/* ── Modal: Detail / Proofs ─────────────────────────────────── */}
       <ModalPresentationProvider value={isMobile ? "modal" : "sheet"}>
       <TaskDetailsModal
-        isOpen={isDetailModalOpen && !confirmState.isOpen && !lightboxSrc}
+        isOpen={isDetailModalOpen}
         onClose={() => {
           proofsRequestRef.current += 1;
           setIsDetailModalOpen(false);
         }}
         activity={selectedActivity}
+        statusFilter={statusFilter}
         onStatusChange={handleStatusChange}
         isUpdatingStatus={isUpdatingStatus}
-        onLightboxOpen={setLightboxSrc}
+        onImageOpen={(proofId) => {
+          if (selectedActivity?.id) navigate(getActivityImagePath(selectedActivity.id, "activities", proofId, statusFilter));
+        }}
         proofsLoading={proofsLoading}
         proofs={proofs}
         isImage={isImage}
@@ -780,23 +747,6 @@ export function Actividades() {
       />
       </ModalPresentationProvider>
 
-      <DeleteConfirmModal
-        isOpen={confirmState.isOpen}
-        title={confirmState.title}
-        isLoading={confirmState.isLoading}
-        onConfirm={confirmState.onConfirm}
-        onCancel={() => {
-          if (!confirmState.isLoading) {
-            setConfirmState((state) => ({ ...state, isOpen: false }));
-          }
-        }}
-      />
-
-      <LightboxModal
-        isOpen={Boolean(lightboxSrc)}
-        onClose={() => setLightboxSrc(null)}
-        src={lightboxSrc}
-      />
     </main>
   </BoneyardSkeleton>
   );

@@ -1,0 +1,90 @@
+.activity-image-page {
+  display: flex;
+  min-inline-size: 0;
+  max-inline-size: var(--container-wide-max-inline-size);
+  flex-direction: column;
+  gap: var(--design-spacing-md);
+  margin-inline: auto;
+  padding-inline-start: max(var(--container-padding), var(--safe-area-left));
+  padding-inline-end: max(var(--container-padding), var(--safe-area-right));
+  padding-block-end: calc(var(--design-spacing-xxl) + var(--safe-area-bottom));
+}
+
+.activity-image-page__title-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--design-spacing-sm);
+  min-inline-size: 0;
+  color: inherit;
+  text-decoration: none;
+  border-radius: var(--rounded-xs);
+}
+
+.activity-image-page__title-link svg {
+  flex: 0 0 auto;
+}
+
+.activity-image-page__title-link:hover {
+  color: inherit;
+}
+
+.activity-image-page__error {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--design-spacing-sm);
+}
+
+:is(.activity-image-page__figure, .activity-image-page__skeleton) {
+  min-inline-size: 0;
+  inline-size: 100%;
+  max-inline-size: var(--container-compact-max-inline-size);
+  align-self: center;
+  margin: 0;
+}
+
+.activity-image-page__skeleton {
+  display: grid;
+  justify-items: center;
+  gap: var(--design-spacing-sm);
+}
+
+.activity-image-page__skeleton-title {
+  inline-size: min(100%, var(--content-min-inline-size));
+  block-size: calc(var(--type-body-md-size) * var(--type-body-md-line));
+  border-radius: var(--rounded-sm);
+}
+
+.activity-image-page__skeleton-image {
+  inline-size: 100%;
+  aspect-ratio: 16 / 10;
+  max-block-size: var(--feature-image-viewer-max-block-size);
+  border-radius: var(--rounded-lg);
+}
+
+.activity-image-page__figure {
+  position: relative;
+}
+
+.activity-image-page__figure img {
+  display: block;
+  max-inline-size: 100%;
+  max-block-size: var(--feature-image-viewer-max-block-size);
+  block-size: auto;
+  margin-inline: auto;
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  object-fit: contain;
+}
+
+.activity-image-page__figure img:not([data-loaded="true"]) {
+  position: absolute;
+  visibility: hidden;
+}
+
+.activity-image-page__figure figcaption {
+  margin-block-end: var(--design-spacing-sm);
+  color: var(--color-mute);
+  text-align: center;
+  overflow-wrap: anywhere;
+}

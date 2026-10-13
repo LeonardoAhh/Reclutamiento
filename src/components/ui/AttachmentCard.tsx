@@ -1,4 +1,6 @@
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+import { Check, X } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { AttachmentTypeIcon } from "./AttachmentTypeIcon";
 import "./AttachmentCard.css";
 
@@ -13,7 +15,8 @@ interface AttachmentCardProps {
   href?: string;
   onPreview?: () => void;
   previewLabel?: string;
-  onRemove?: () => void;
+  onRemove?: () => void | Promise<boolean | void>;
+  confirmRemove?: boolean;
   removeLabel?: string;
   removeIcon?: ReactNode;
 }
@@ -30,9 +33,29 @@ export function AttachmentCard({
   onPreview,
   previewLabel,
   onRemove,
+  confirmRemove = false,
   removeLabel,
   removeIcon,
 }: AttachmentCardProps) {
+  const [confirmingRemove, setConfirmingRemove] = useState(false);
+  const [removing, setRemoving] = useState(false);
+  const { language } = useLanguage();
+  const en = language === "en";
+  useEffect(() => { setConfirmingRemove(false); }, [imageSrc, href]);
+
+  const handleRemove = async () => {
+    if (!onRemove || removing) return;
+    if (confirmRemove && !confirmingRemove) {
+      setConfirmingRemove(true);
+      return;
+    }
+    setRemoving(true);
+    try {
+      if (await onRemove() !== false) setConfirmingRemove(false);
+    } finally {
+      setRemoving(false);
+    }
+  };
   const previewContent = imageSrc ? (
     <img className="attachment-card__image" src={imageSrc} alt="" />
   ) : (
@@ -83,16 +106,20 @@ export function AttachmentCard({
         <span className="attachment-card__metadata">{metadata}</span>
       </div>
 
-      {onRemove && (
-        <button
-          type="button"
-          className="attachment-card__remove"
-          onClick={onRemove}
-          aria-label={removeLabel ?? `Quitar ${name}`}
-        >
-          {removeIcon}
+      {onRemove && <div className="attachment-card__remove-actions">
+        {confirmingRemove && <button type="button" className="attachment-card__remove"
+          disabled={removing} onClick={() => setConfirmingRemove(false)}
+          aria-label={en ? `Cancel removal of ${name}` : `Cancelar eliminación de ${name}`}>
+          <X size="var(--icon-size-sm)" aria-hidden="true" />
+        </button>}
+        <button type="button" className="attachment-card__remove"
+          disabled={removing} aria-busy={removing} onClick={() => void handleRemove()}
+          aria-label={confirmingRemove
+            ? `${en ? "Confirm removal of" : "Confirmar eliminación de"} ${name}`
+            : removeLabel ?? `Quitar ${name}`}>
+          {confirmingRemove ? <Check size="var(--icon-size-sm)" aria-hidden="true" /> : removeIcon}
         </button>
-      )}
+      </div>}
     </>
   );
 

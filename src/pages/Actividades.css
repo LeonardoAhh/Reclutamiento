@@ -156,7 +156,6 @@
   border-radius: var(--rounded-md);
   color: var(--color-charcoal);
   border: 1px solid var(--color-hairline);
-  white-space: pre-wrap;
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
