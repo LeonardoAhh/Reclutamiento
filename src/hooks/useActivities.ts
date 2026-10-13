@@ -9,6 +9,7 @@ import {
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from '@/lib/notify';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { CoverError, prepareKanbanCover } from '@/features/kanban/cover';
 
 const ACTIVITY_SELECT = `
   id,
@@ -190,12 +191,12 @@ export function useActivities() {
   const uploadReferenceImage = async (activityId: string, file: File) => {
     if (!profile) return null;
     try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${activityId}/ref_${crypto.randomUUID()}.${fileExt}`;
+      const prepared = await prepareKanbanCover(file);
+      const fileName = `${activityId}/ref_${crypto.randomUUID()}.webp`;
       
       const { error: uploadError } = await supabase.storage
         .from('activity-proofs')
-        .upload(fileName, file);
+        .upload(fileName, prepared, { contentType: 'image/webp' });
         
       if (uploadError) throw uploadError;
       
@@ -204,9 +205,36 @@ export function useActivities() {
         .getPublicUrl(fileName);
         
       return publicUrlData.publicUrl;
-    } catch (err: any) {
-      toast.error({ title: english ? 'Could not upload the photo' : 'Error al subir foto', description: err.message });
+    } catch (err: unknown) {
+      const coverError = err instanceof CoverError ? err.code : null;
+      const description = coverError === 'format'
+        ? (english ? 'Use a JPG, PNG or WebP image.' : 'Usa una imagen JPG, PNG o WebP.')
+        : coverError === 'sourceSize'
+          ? (english ? 'The original image must be under 10 MB.' : 'La imagen original debe pesar menos de 10 MB.')
+          : coverError === 'compressedSize'
+            ? (english ? 'Could not reduce the image to 300 KB. Try another.' : 'No se pudo reducir la imagen a 300 KB. Prueba otra.')
+            : coverError === 'processing'
+              ? (english ? 'Could not process the image.' : 'No se pudo procesar la imagen.')
+              : err instanceof Error ? err.message : undefined;
+      toast.error({ title: english ? 'Could not upload the photo' : 'Error al subir foto', description });
       return null;
+    }
+  };
+
+  const removeReferenceImage = async (activityId: string, imageUrl: string) => {
+    try {
+      const bucket = supabase.storage.from('activity-proofs');
+      const expected = new URL(bucket.getPublicUrl(`${activityId}/`).data.publicUrl);
+      const current = new URL(imageUrl);
+      if (current.origin !== expected.origin || !current.pathname.startsWith(expected.pathname)) return false;
+      const fileName = decodeURIComponent(current.pathname.slice(expected.pathname.length));
+      if (!/^ref_[^/]+\.[a-z0-9]+$/i.test(fileName)) return false;
+      const { error } = await bucket.remove([`${activityId}/${fileName}`]);
+      if (error) throw error;
+      return true;
+    } catch {
+      toast.error({ title: english ? 'Could not remove the previous photo' : 'No se pudo borrar la foto anterior' });
+      return false;
     }
   };
 
@@ -254,6 +282,7 @@ export function useActivities() {
     deleteActivity,
     uploadProof,
     uploadReferenceImage,
+    removeReferenceImage,
     getProofs,
     deleteProof,
   };

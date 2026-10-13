@@ -70,6 +70,7 @@ export function Actividades() {
     deleteActivity,
     uploadProof,
     uploadReferenceImage,
+    removeReferenceImage,
     getProofs,
     deleteProof,
   } = useActivities();
@@ -308,7 +309,8 @@ export function Actividades() {
     if (act && referenceImageFile) {
       const url = await uploadReferenceImage(act.id!, referenceImageFile);
       if (url) {
-        await updateActivity(act.id!, { reference_image: url });
+        const updated = await updateActivity(act.id!, { reference_image: url });
+        if (!updated) await removeReferenceImage(act.id!, url);
       }
     }
 
@@ -432,9 +434,11 @@ export function Actividades() {
         selectedActivity.id!,
         editReferenceImageFile,
       );
-      if (url) {
-        newImageUrl = url;
+      if (!url) {
+        setIsEditing(false);
+        return;
       }
+      newImageUrl = url;
     }
 
     const act = await updateActivity(selectedActivity.id!, {
@@ -443,6 +447,11 @@ export function Actividades() {
       asignado_a: editAsignadoA || null,
       reference_image: newImageUrl,
     });
+    if (act && selectedActivity.reference_image && selectedActivity.reference_image !== newImageUrl) {
+      await removeReferenceImage(selectedActivity.id!, selectedActivity.reference_image);
+    } else if (!act && editReferenceImageFile && newImageUrl) {
+      await removeReferenceImage(selectedActivity.id!, newImageUrl);
+    }
     setIsEditing(false);
     if (act) {
       setIsEditModalOpen(false);

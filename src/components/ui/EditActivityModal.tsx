@@ -7,6 +7,7 @@ import { SmartTextarea } from "./SmartTextarea";
 import { AttachmentCard } from "./AttachmentCard";
 import { AssignmentMeta, type AssignmentPerson } from "./AssignmentMeta";
 import { getResponsibilityContent } from "./responsibilityContent";
+import { ExpandableReferenceImage } from "./ExpandableReferenceImage";
 import type { Activity, AssignableActivityType } from "@/lib/types";
 
 const EDIT_MODAL_CONTENT: Record<
@@ -143,7 +144,7 @@ export function EditActivityModal({
       }
     >
       {showingPreview && previewActivity ? <div className="responsibility-detail type-body-md">
-        {previewActivity.reference_image && <img className="responsibility-detail__cover" src={previewActivity.reference_image} alt="" />}
+        {previewActivity.reference_image && <ExpandableReferenceImage key={previewActivity.reference_image} src={previewActivity.reference_image} />}
         {previewContent?.description && <p className="responsibility-detail__description">{previewContent.description}</p>}
         {previewContent?.area && <p className="responsibility-detail__area">{previewContent.area}</p>}
         <div className="responsibility-detail__assignment">
@@ -215,7 +216,7 @@ export function EditActivityModal({
                 <span>{en ? "Upload reference photo" : "Subir foto de referencia"}</span>
                 <input
                   type="file"
-                  accept="image/*"
+                  accept="image/jpeg,image/png,image/webp"
                   className="sr-only"
                   onChange={(e) => {
                     const file = e.target.files?.[0];
