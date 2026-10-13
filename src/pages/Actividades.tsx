@@ -718,9 +718,10 @@ export function Actividades() {
         setTitulo={setEditTitulo}
         asignadoA={editAsignadoA}
         setAsignadoA={setEditAsignadoA}
-        recruitersOptions={teamRecruiterOptions.some(option => option.value === selectedActivity?.asignado_a)
-          ? teamRecruiterOptions : [...teamRecruiterOptions, { value: selectedActivity?.asignado_a ?? '',
-            label: `${members.find(member => member.profile_id === selectedActivity?.asignado_a)?.full_name ?? (en ? 'Current assignment' : 'Asignación actual')} (${en ? 'inactive' : 'inactivo'})` }]}
+        recruitersOptions={selectedActivity?.asignado_a && !teamRecruiterOptions.some(option => option.value === selectedActivity.asignado_a)
+          ? [...teamRecruiterOptions, { value: selectedActivity.asignado_a,
+            label: `${members.find(member => member.profile_id === selectedActivity.asignado_a)?.full_name ?? (en ? 'Current assignment' : 'Asignación actual')} (${en ? 'inactive' : 'inactivo'})` }]
+          : teamRecruiterOptions}
         descripcion={editDescripcion}
         setDescripcion={setEditDescripcion}
         referenceImagePreview={editReferenceImagePreview}
