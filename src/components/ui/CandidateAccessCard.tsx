@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLanguage } from '@/contexts/LanguageContext';
+import { playSound } from '@/lib/sound';
 import { Check, Copy, LoaderCircle, Share2 } from "lucide-react";
 import { CANDIDATE_ACCESS_CARD_CONFIG } from "@/lib/constants";
 import { toast } from "@/lib/notify";
@@ -101,9 +102,11 @@ export function CandidateAccessCard({ data }: CandidateAccessCardProps) {
     if (!imageBlob) return;
     try {
       await copyImage(imageBlob);
+      playSound('success');
       setCopied(true);
       toast.success({ title: en ? 'Pass copied' : 'Pase copiado', description: en ? 'You can now paste the image into a chat.' : 'Ya puedes pegar la imagen en un chat.' });
     } catch {
+      playSound('error');
       toast.error({ title: en ? 'Could not copy' : 'No se pudo copiar', description: en ? 'Use Share to send it.' : 'Usa Compartir para enviarlo.' });
     }
   };
@@ -118,14 +121,17 @@ export function CandidateAccessCard({ data }: CandidateAccessCardProps) {
           files: [file],
           title: CANDIDATE_ACCESS_CARD_CONFIG.shareTitle,
         });
+        playSound('success');
         toast.success({ title: en ? 'Pass shared' : 'Pase compartido' });
         return;
       }
 
       downloadImage(imageBlob, filename);
+      playSound('success');
       toast.info({ title: en ? 'Pass downloaded' : 'Pase descargado', description: en ? 'You can send it from your files.' : 'Puedes enviarlo desde tus archivos.' });
     } catch (error: unknown) {
       if (!isAbortError(error)) {
+        playSound('error');
         toast.error({ title: en ? 'Could not share the pass' : 'No se pudo compartir el pase' });
       }
     }

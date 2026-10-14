@@ -53,6 +53,7 @@ export function SmartTextarea({
     <div className="smart-textarea-wrapper" data-focus-ring>
       <textarea
         ref={textareaRef}
+        data-cuelume-type=""
         id={id}
         value={value}
         onChange={(e) => onChange(e.target.value)}
@@ -65,6 +66,7 @@ export function SmartTextarea({
         <div className="smart-textarea-actions">
           <button
             type="button"
+            data-cuelume-tap=""
             className="smart-textarea-btn"
             onClick={() => insertAtCursor("• ")}
             title="Añadir viñeta"
@@ -74,6 +76,7 @@ export function SmartTextarea({
           </button>
           <button
             type="button"
+            data-cuelume-tap=""
             className="smart-textarea-btn"
             onClick={() => insertAtCursor("- [ ] ")}
             title="Añadir checklist"

@@ -3,6 +3,7 @@ import { Link, useMatch } from 'react-router-dom';
 import { Avatar } from '@/components/ui/Avatar';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { ACCOUNT_PATH } from './navigation';
+import { playSound } from '@/lib/sound';
 import './AccountLink.css';
 
 interface AccountLinkProps {
@@ -17,6 +18,7 @@ export function AccountLink({ displayName, avatarUrl }: AccountLinkProps) {
 
   return (
     <Link to={ACCOUNT_PATH} className="account-link"
+      onClick={() => playSound('navigate')}
       aria-current={isAccountPage ? 'page' : undefined}
       aria-label={english ? `Go to My account for ${displayName}` : `Ir a Mi cuenta de ${displayName}`}>
       <span className="account-link__surface">

@@ -161,6 +161,8 @@ export function AnalisisAsistenciaModal({
                         type="button"
                         className="top-emp-row"
                         aria-expanded={isOpenItem}
+                        data-cuelume-open={isOpenItem ? undefined : ''}
+                        data-cuelume-close={isOpenItem ? '' : undefined}
                         aria-controls={detailId}
                         onClick={() => {
                           setDrillDownMonth(null);
@@ -261,6 +263,7 @@ export function AnalisisAsistenciaModal({
                                       key={mes}
                                       type="button"
                                       className="top-emp-modal__month-row top-emp-modal__month-row--btn"
+                                      data-cuelume-select=""
                                       onClick={() =>
                                         setDrillDownMonth({
                                           empKey: emp.numero_empleado,

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { CircleCheckBig, Copy, Plus, Minus } from 'lucide-react';
 import { toast } from '@/lib/notify';
+import { playSound } from '@/lib/sound';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { ButtonUtility } from '@/components/ui/ButtonUtility';
@@ -35,6 +36,7 @@ export function WeeklyMetrics({ stats }: { stats: WeekStat[] }) {
         document.body.removeChild(ta);
       }
       setCopiedKey(key);
+      playSound('success');
       toast.success({
         title: en ? `Week ${weekNum} copied` : `Sem ${weekNum} copiada`,
         duration: 2000,
@@ -43,6 +45,7 @@ export function WeeklyMetrics({ stats }: { stats: WeekStat[] }) {
         setCopiedKey((curr) => (curr === key ? null : curr));
       }, 2000);
     } catch {
+      playSound('error');
       toast.error({ title: en ? 'Could not copy to clipboard' : 'No se pudo copiar al portapapeles' });
     }
   };
@@ -122,7 +125,10 @@ export function WeeklyMetrics({ stats }: { stats: WeekStat[] }) {
       {hasMore && (
         <div className="recruiter-metrics__table-actions">
           <ButtonUtility
-            onClick={() => setIsExpanded(!isExpanded)}
+            onClick={() => {
+              playSound(isExpanded ? 'close' : 'open');
+              setIsExpanded(!isExpanded);
+            }}
             aria-expanded={isExpanded}
             icon={isExpanded ? <Minus size="var(--icon-size-sm)" aria-hidden="true" /> : <Plus size="var(--icon-size-sm)" aria-hidden="true" />}
           >

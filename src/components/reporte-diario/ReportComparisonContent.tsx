@@ -135,6 +135,8 @@ export function ReportComparisonContent({ summaries }: { summaries: ReporteDiari
                     type="button"
                     className="reporte-incidents__card-summary"
                     aria-expanded={isOpenRow}
+                    data-cuelume-open={isOpenRow ? undefined : ''}
+                    data-cuelume-close={isOpenRow ? '' : undefined}
                     aria-controls={detailId}
                     onClick={() => toggle(s.mes)}
                     data-testid={`cmp-card-${s.mes}`}

@@ -1,4 +1,4 @@
-import { useId, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import { PageHeading } from '@/components/layout/PageHeading';
 import { AccountAdminSection } from '@/features/account/AccountAdminSection';
 import { AccountPasswordSection } from '@/features/account/AccountPasswordSection';
@@ -10,6 +10,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { toNaturalCase } from '@/lib/utils';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { accountCopy } from './account-translations';
+import { bindSoundInteractions } from '@/lib/sound';
 import './AccountPage.css';
 
 export function AccountPage() {
@@ -18,6 +19,11 @@ export function AccountPage() {
   const { profile, user, username, profileLoading, loading: authLoading } = useAuth();
   const { language } = useLanguage();
   const copy = accountCopy(language);
+  const profileId = profile?.id;
+
+  useEffect(() => {
+    if (profileId) return bindSoundInteractions(document);
+  }, [profileId]);
 
   if (!profile) return null;
 

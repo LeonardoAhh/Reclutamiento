@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { PageHeading } from "@/components/layout/PageHeading";
@@ -6,9 +6,11 @@ import { LoadingSkeleton } from "@/components/ui/LoadingSkeleton";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useActivityImage } from "@/hooks/useActivityImage";
 import { getActivityReturnPath, type ActivityImageTab } from "./activityImageNavigation";
+import { bindSoundInteractions } from "@/lib/sound";
 import "./ActivityImagePage.css";
 
 export function ActivityImagePage() {
+  useEffect(() => bindSoundInteractions(document), []);
   const { activityId } = useParams();
   const [search] = useSearchParams();
   const tab: ActivityImageTab = search.get("tab") === "responsibilities" ? "responsibilities" : "activities";
@@ -31,6 +33,7 @@ export function ActivityImagePage() {
     <main className="activity-image-page">
       <PageHeading className="app-page-title">
         <Link className="activity-image-page__title-link"
+          data-cuelume-navigate=""
           to={getActivityReturnPath(tab, search.get("status"))}
           aria-label={en ? "Image, back to activities" : "Imagen, volver a Actividades"}>
           <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
@@ -42,7 +45,7 @@ export function ActivityImagePage() {
       {(status === "error" || imageFailed) && (
         <div className="activity-image-page__error" role="alert">
           <p>{en ? "Could not load the image." : "No se pudo cargar la imagen."}</p>
-          <button type="button" className="btn-secondary" onClick={() => { setFailedSrc(null); retry(); }}>
+          <button type="button" className="btn-secondary" data-cuelume-tap="" onClick={() => { setFailedSrc(null); retry(); }}>
             {en ? "Retry" : "Reintentar"}
           </button>
         </div>

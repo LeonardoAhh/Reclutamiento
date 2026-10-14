@@ -8,6 +8,7 @@ import type { Candidate, Employee } from '@/lib/types';
 import { localTodayIso } from '@/lib/dates';
 import { CustomSelect } from './CustomSelect';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
+import { playSound } from '@/lib/sound';
 import './HireCandidateModal.css';
 
 interface HireCandidateModalProps {
@@ -36,6 +37,11 @@ export function HireCandidateModal({
   const { employees } = useSupabaseData();
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<string>('');
 
+  function closeWithSound() {
+    playSound('close');
+    onClose();
+  }
+
   useEffect(() => {
     if (!isOpen) return;
     setErrorMsg(null);
@@ -47,7 +53,7 @@ export function HireCandidateModal({
 
   const alreadyHired = !!candidate.employee_num;
   const footerActions = alreadyHired ? (
-    <button type="button" className="btn-secondary" onClick={onClose}>
+    <button type="button" className="btn-secondary" onClick={closeWithSound}>
       {en ? 'Close' : 'Cerrar'}
     </button>
   ) : (
@@ -55,7 +61,7 @@ export function HireCandidateModal({
       <button
         type="button"
         className="btn-secondary"
-        onClick={onClose}
+        onClick={closeWithSound}
         disabled={submitting}
       >
         {en ? 'Cancel' : 'Cancelar'}
@@ -81,16 +87,19 @@ export function HireCandidateModal({
     async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!candidate?.id) {
+      playSound('warning');
       setErrorMsg(en ? 'Save the candidate before linking them.' : 'El candidato debe estar guardado antes de vincularlo.');
       return;
     }
 
     if (!selectedEmployeeId) {
+      playSound('warning');
       setErrorMsg(en ? 'Select an existing employee.' : 'Debes seleccionar un empleado existente.');
       return;
     }
     const existing = employees.find((e) => e.num_empleado === selectedEmployeeId);
     if (!existing) {
+      playSound('error');
       setErrorMsg(en ? 'The selected employee was not found.' : 'No se encontró el empleado seleccionado.');
       return;
     }
@@ -119,7 +128,7 @@ export function HireCandidateModal({
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={closeWithSound}
       className="employee-modal hire-candidate-modal"
       icon={<UserRoundPlus size={20} className="color-primary" aria-hidden="true" />}
       title={`${en ? 'Hire' : 'Contratar a'} ${candidate.nombre}`}
@@ -151,7 +160,10 @@ export function HireCandidateModal({
               <CustomSelect
                 id="hire-associate-select"
                 value={selectedEmployeeId}
-                onChange={setSelectedEmployeeId}
+                onChange={(id) => {
+                  playSound('select');
+                  setSelectedEmployeeId(id);
+                }}
                 options={employees.map(e => ({ value: e.num_empleado, label: `${e.nombre} (#${e.num_empleado})` }))}
                 placeholder={en ? 'Search' : 'Buscar'}
               />

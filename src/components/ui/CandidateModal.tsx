@@ -16,6 +16,7 @@ import { FormWizard } from './FormWizard';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { Tooltip } from './Tooltip';
 import { toast } from '@/lib/notify';
+import { playSound } from '@/lib/sound';
 import './CandidateModal.css';
 import { CustomSelect } from './CustomSelect';
 import { CANDIDATE_SOURCES } from '@/lib/types';
@@ -280,6 +281,7 @@ export function CandidateModal({
 
       onClose();
     } catch {
+      playSound('error');
       const message = t('Ocurrió un error inesperado.');
       setErrorMsg(message);
       toast.error({ title: message });
@@ -287,11 +289,17 @@ export function CandidateModal({
     }
   }
 
+  function closeWithSound() {
+    playSound('close');
+    onClose();
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (submitting) return;
 
     if (!isFormValid && mode !== 'delete') {
+      playSound('warning');
       setTouched(Object.keys(emptyForm()).reduce((acc, k) => ({ ...acc, [k]: true }), {} as Record<keyof FormState, boolean>));
       setTimeout(() => {
         const firstInvalid = document.querySelector('.input-error, .form-error-text');
@@ -314,6 +322,7 @@ export function CandidateModal({
               c.email.trim().toLowerCase() === form.email.trim().toLowerCase()
             );
             if (isDupEmail) {
+              playSound('error');
               const message = t('Este correo electrónico ya está registrado en otro candidato.');
               setErrorMsg(message);
               toast.error({ title: message });
@@ -369,6 +378,7 @@ export function CandidateModal({
         onClose();
       }
     } catch (err) {
+      playSound('error');
       const message = t('Ocurrió un error inesperado.');
       setErrorMsg(message);
       toast.error({ title: message });
@@ -386,7 +396,7 @@ export function CandidateModal({
         isOpen={isOpen}
         title={en ? 'Delete candidate' : 'Eliminar candidato'}
         onConfirm={() => void handleDeleteConfirm()}
-        onCancel={onClose}
+        onCancel={closeWithSound}
         isLoading={submitting}
         errorMessage={errorMsg ?? undefined}
       />
@@ -420,6 +430,7 @@ export function CandidateModal({
           id="cand-nombre"
           type="text"
           value={form.nombre}
+          data-cuelume-type=""
           onChange={(e) => {
             setForm({ ...form, nombre: e.target.value.toUpperCase() });
             if (!touched.nombre) setTouched({ ...touched, nombre: true });
@@ -444,6 +455,7 @@ export function CandidateModal({
             type="tel"
             inputMode="tel"
             value={form.telefono}
+            data-cuelume-type=""
             onChange={(e) => {
               const onlyNums = e.target.value.replace(/\D/g, '');
               if (onlyNums.length > 10) return;
@@ -495,6 +507,7 @@ const fieldsPosicion = (
           id="cand-area"
           value={form.area}
           onChange={(val) => {
+            playSound('select');
             setForm({ ...form, area: val, seccion: '', puesto: '' });
             setTouched({ ...touched, area: true, seccion: false, puesto: false });
           }}
@@ -512,6 +525,7 @@ const fieldsPosicion = (
           id="cand-seccion"
           value={form.seccion}
           onChange={(val) => {
+            playSound('select');
             setForm({ ...form, seccion: val, puesto: '' });
             setTouched({ ...touched, seccion: true, puesto: false });
           }}
@@ -529,6 +543,7 @@ const fieldsPosicion = (
           id="cand-puesto"
           value={form.puesto}
           onChange={(val) => {
+            playSound('select');
             setForm({ ...form, puesto: val });
             setTouched({ ...touched, puesto: true });
           }}
@@ -549,7 +564,10 @@ const fieldsPosicion = (
         <CustomSelect
           id="cand-status"
           value={form.status}
-          onChange={(val) => setForm({ ...form, status: val as CandidateStatus })}
+          onChange={(val) => {
+            playSound('select');
+            setForm({ ...form, status: val as CandidateStatus });
+          }}
           options={CANDIDATE_STATUSES.map((s) => ({ value: s, label: candidateStatusLabel(s, language) }))}
         />
       </div>
@@ -560,6 +578,7 @@ const fieldsPosicion = (
           id="cand-reclutador"
           value={form.reclutador}
           onChange={(val) => {
+            playSound('select');
             setForm({ ...form, reclutador: val });
             setTouched({ ...touched, reclutador: true });
           }}
@@ -578,6 +597,7 @@ const fieldsPosicion = (
           id="cand-source"
           value={form.source}
           onChange={(val) => {
+            playSound('select');
             setForm({ ...form, source: val });
             setTouched({ ...touched, source: true });
           }}
@@ -594,7 +614,10 @@ const fieldsPosicion = (
         <CustomSelect
           id="cand-starlite"
           value={form.is_starlite ? 'true' : 'false'}
-          onChange={(val) => setForm({ ...form, is_starlite: val === 'true' })}
+          onChange={(val) => {
+            playSound('select');
+            setForm({ ...form, is_starlite: val === 'true' });
+          }}
           options={[
             { value: 'false', label: 'No' },
             { value: 'true', label: en ? 'Yes' : 'Sí' }
@@ -609,6 +632,7 @@ const fieldsPosicion = (
         <input
           id="cand-fecha-cita"
           type="date"
+          data-cuelume-select=""
           value={form.fecha_cita}
           onChange={(e) => {
             setForm({ ...form, fecha_cita: e.target.value });
@@ -634,7 +658,7 @@ const fieldsPosicion = (
       <button
         type="button"
         className="btn-secondary"
-        onClick={onClose}
+        onClick={closeWithSound}
         disabled={submitting}
       >
         {en ? 'Cancel' : 'Cancelar'}
@@ -651,7 +675,7 @@ const fieldsPosicion = (
   return (
     <Dialog
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={closeWithSound}
       className={accessCard ? 'candidate-access-card-modal' : `candidate-modal${useWizard ? ' modal-wizard-mobile' : ''}`}
       size={accessCard ? 'sm' : 'md'}
       icon={accessCard ? undefined : icon}
@@ -670,7 +694,11 @@ const fieldsPosicion = (
           noValidate
         >
           <FormWizard
-            onCancel={onClose}
+            onCancel={closeWithSound}
+            onBeforeStepChange={() => {
+              playSound('navigate');
+              return true;
+            }}
             submitting={submitting}
             submitDisabled={!isFormValid}
             submitLabel={en ? 'Save' : 'Guardar'}

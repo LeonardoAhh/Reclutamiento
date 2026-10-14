@@ -10,6 +10,7 @@ import { TaskForm } from './TaskForm';
 import { KanbanColumn } from './KanbanColumn';
 import { kanbanCollision, kanbanKeyboardCoordinates, resolveTaskDrop } from './drag';
 import type { KanbanCopy } from './copy';
+import { playSound } from '@/lib/sound';
 
 export interface KanbanEditor {
   id: string;
@@ -150,11 +151,12 @@ export function KanbanBoard({ desktopTabsTarget, tasks, copy: t, disabled, busy,
   return (
     <Tabs.Root className="kanban-board-navigation" value={selectedView}
       onValueChange={value => {
+        if (value !== selectedView) playSound('select');
         if (isDesktop && (value === 'board' || value === 'notes')) setDesktopView(value);
         else if (isTaskStatus(value)) setActiveStatus(value);
       }}>
     <DndContext id={id} sensors={sensors} collisionDetection={kanbanCollision}
-      onDragStart={() => setDragging(true)}
+      onDragStart={() => { playSound('select'); setDragging(true); }}
       onDragCancel={() => setDragging(false)} onDragEnd={endDrag}
       accessibility={{ screenReaderInstructions: { draggable: t.dragInstructions }, announcements: {
         onDragStart: ({ active }) => `${t.drag}: ${taskTitle(active.id)}. ${t.dragInstructions}`,

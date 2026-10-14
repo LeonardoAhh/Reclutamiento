@@ -6,6 +6,7 @@ import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import { useAuth } from "@/hooks/useAuth";
 import { emailToUsername, usernameToEmail } from "@/lib/auth";
 import { DESKTOP_MEDIA_QUERY } from "@/lib/layout";
+import { playSound } from "@/lib/sound";
 import { loginTranslations, type LoginLanguage, type LoginMessageKey } from "./login-translations";
 
 interface LoginFormProps {
@@ -93,15 +94,18 @@ export function LoginForm({
     const trimmedUsername = username.trim();
     if (!trimmedUsername) {
       setError({ field: "username", message: "usernameRequired" });
+      playSound("error", { emphasis: "subtle" });
       usernameRef.current?.focus();
       return;
     }
     if (!password) {
       setError({ field: "password", message: "passwordRequired" });
+      playSound("error", { emphasis: "subtle" });
       passwordRef.current?.focus();
       return;
     }
 
+    playSound("tap");
     setSubmitting(true);
     try {
       const result = await signIn(trimmedUsername, password);
@@ -114,13 +118,16 @@ export function LoginForm({
               ? "unconfirmedAccount"
               : "genericError",
         });
+        playSound("error");
         return;
       }
 
       persistSavedUsername(rememberMe ? trimmedUsername : null);
+      playSound("success");
       setIsSuccess(true);
     } catch {
       setError({ field: "form", message: "genericError" });
+      playSound("error");
     } finally {
       setSubmitting(false);
     }
@@ -147,6 +154,7 @@ export function LoginForm({
             ref={usernameRef}
             id={usernameId}
             name="username"
+            data-cuelume-type=""
             data-testid="login-email-input"
             className="login__input"
             type="text"
@@ -214,6 +222,7 @@ export function LoginForm({
               type="button"
               data-testid="login-toggle-password-button"
               className="login__visibility"
+              data-cuelume-toggle=""
               onClick={() => setShowPassword((visible) => !visible)}
               aria-label={showPassword ? copy.hidePassword : copy.showPassword}
               aria-pressed={showPassword}
@@ -243,6 +252,7 @@ export function LoginForm({
             <Checkbox
               id={rememberId}
               name="remember_username"
+              data-cuelume-toggle=""
               checked={rememberMe}
               onChange={(event) => setRememberMe(event.target.checked)}
               disabled={submitting || isSuccess}
@@ -260,6 +270,7 @@ export function LoginForm({
         <AnimatedSubmitButton
           isSubmitting={submitting}
           isSuccess={isSuccess}
+          feedbackSound={false}
           idleText={copy.submit}
           loadingText={copy.loading}
           successText={copy.success}

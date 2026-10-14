@@ -6,8 +6,10 @@ import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton';
 import { useReporteDiario, type ReporteDiarioSummary } from '@/hooks/useReporteDiario';
 import { useReportLocale } from '@/components/reporte-diario/useReportLocale';
 import { ReportComparisonContent } from '@/components/reporte-diario/ReportComparisonContent';
+import { bindSoundInteractions } from '@/lib/sound';
 
 export function ReportComparisonPage() {
+  useEffect(() => bindSoundInteractions(document), []);
   const { copy } = useReportLocale();
   const { fetchSummaries, loading, error } = useReporteDiario();
   const [summaries, setSummaries] = useState<ReporteDiarioSummary[] | null>(null);
@@ -25,7 +27,7 @@ export function ReportComparisonPage() {
   return (
     <main className="report-comparison-page container" aria-labelledby="report-comparison-title">
           <PageHeading ref={headingRef} tabIndex={-1} id="report-comparison-title" className="app-page-title">
-            <Link to="/reports" className="report-comparison-page__title-link" aria-label={copy('Comparativa mensual: volver a Reporte diario', 'Monthly comparison: back to Daily report')}>
+            <Link to="/reports" className="report-comparison-page__title-link" data-cuelume-navigate="" aria-label={copy('Comparativa mensual: volver a Reporte diario', 'Monthly comparison: back to Daily report')}>
               <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
               {copy('Comparativa mensual', 'Monthly comparison')}
             </Link>
@@ -49,7 +51,7 @@ export function ReportComparisonPage() {
       )
         : error ? <div>
           <p className="form-error-text" role="alert">{copy('No se pudieron cargar los reportes guardados.', 'Could not load saved reports.')}</p>
-          <button type="button" className="btn-secondary" onClick={() => setRevision(value => value + 1)}>{copy('Reintentar', 'Retry')}</button>
+          <button type="button" className="btn-secondary" data-cuelume-tap="" onClick={() => setRevision(value => value + 1)}>{copy('Reintentar', 'Retry')}</button>
         </div>
         : summaries.length < 2 ? <p role="status">{copy('Guarda al menos dos reportes mensuales para compararlos.', 'Save at least two monthly reports to compare them.')}</p>
         : <ReportComparisonContent summaries={summaries} />}

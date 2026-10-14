@@ -16,9 +16,9 @@ export function LoginPreferences({
 
   return (
     <div className="login__preferences">
-      <ThemeSelect language={language} />
+      <ThemeSelect language={language} sound />
       <span className="login__preferences-separator" aria-hidden="true">|</span>
-      <LanguageToggle className="login__language-toggle" />
+      <LanguageToggle className="login__language-toggle" sound />
       {storageError && (
         <p className="login__language-notice" role="status">
           {copy.languageStorageError}

@@ -17,6 +17,7 @@ export function ReferenceImageLink({ src, activityId, tab, status }: ReferenceIm
   return (
     <Link
       className="activity-reference-image"
+      data-cuelume-navigate=""
       to={getActivityImagePath(activityId, tab, undefined, status)}
       aria-label={en ? "View full image" : "Ver imagen completa"}
     >

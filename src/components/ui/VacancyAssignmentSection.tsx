@@ -9,6 +9,7 @@ import { AssignmentMeta } from "@/components/ui/AssignmentMeta";
 import { Badge } from "@/components/ui/Badge";
 import { CustomSelect, type Option } from "@/components/ui/CustomSelect";
 import "./VacancyAssignmentSection.css";
+import { playSound } from "@/lib/sound";
 
 interface VacancyAssignmentSectionProps {
   vacancies: Activity[];
@@ -56,6 +57,7 @@ export function VacancyAssignmentSection({
   const confirmDelete = async (vacancy: Activity) => {
     if (!vacancy.id || deletingId) return;
     if (confirmingDeleteId !== vacancy.id) {
+      playSound("warning");
       setConfirmingDeleteId(vacancy.id);
       return;
     }

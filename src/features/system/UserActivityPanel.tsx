@@ -9,6 +9,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { subscribeOnlineUserIds } from "@/lib/presence";
 import { supabase } from "@/lib/supabase";
 import { listProfiles } from "@/lib/users";
+import { playSound } from "@/lib/sound";
 import "./UserActivityPanel.css";
 
 function ActivityAvatar({ name, src, online }: { name: string; src?: string | null; online: boolean }) {
@@ -151,7 +152,10 @@ export function UserActivityPanel({ variant = "default" }: UserActivityPanelProp
     <header className="account-activity__header">
       <h2 className="account-activity__title">{english ? "User activity" : "Actividad de usuarios"}</h2>
       {sortedProfiles.length > 5 && <button type="button" className="account-activity__toggle"
-        aria-expanded={expanded} aria-controls={listId} onClick={() => setExpanded(current => !current)}>
+        aria-expanded={expanded} aria-controls={listId} onClick={() => {
+          playSound(expanded ? 'close' : 'open');
+          setExpanded(current => !current);
+        }}>
         {expanded ? english ? "Show less" : "Ver menos" : english ? "View all" : "Ver todos"}
       </button>}
     </header>
@@ -183,6 +187,7 @@ export function UserActivityPanel({ variant = "default" }: UserActivityPanelProp
             </p>
             <ButtonUtility
               type="button"
+              data-cuelume-tap={variant === 'avatars' ? '' : undefined}
               onClick={() => setReloadKey((current) => current + 1)}
             >
               {english ? "Retry" : "Reintentar"}

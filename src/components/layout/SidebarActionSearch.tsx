@@ -8,6 +8,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { PLANTILLA_PATH } from '@/lib/plantillaNavigation';
 import { LEAVE_REQUESTS_PATH } from '@/features/leave/requests';
 import { preloadRoute } from '@/lib/routePages';
+import { playSound } from '@/lib/sound';
 import { CANDIDATES_PATH, ORGANIZATION_CHART_PATH } from './navigation';
 import type { SidebarCreateAction } from '@/lib/sidebarActionNavigation';
 import './SidebarActionSearch.css';
@@ -73,21 +74,29 @@ export function SidebarActionSearch({ mobileMenuOpen, quickActions }: SidebarAct
       if (!event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.key.toLowerCase() !== 'k') return;
       event.preventDefault();
       triggerRef.current?.focus();
+      if (!open) playSound('open');
       setOpen(true);
     };
     window.addEventListener('keydown', openQuickAccess);
     return () => window.removeEventListener('keydown', openQuickAccess);
-  }, [mobileMenuOpen]);
+  }, [mobileMenuOpen, open]);
+
+  function handleOpenChange(nextOpen: boolean) {
+    if (nextOpen !== open) playSound(nextOpen ? 'open' : 'close');
+    setOpen(nextOpen);
+  }
 
   function runAction(action: (typeof actions)[number]) {
     if (action.id === 'requests' && quickActions && !quickActions.canReviewRequests) {
       const focusTarget = triggerRef.current;
       if (!focusTarget) return;
       openingLeavePolicyRef.current = true;
+      playSound('open');
       setOpen(false);
       quickActions.openLeavePolicy(focusTarget);
       return;
     }
+    playSound('navigate');
     setOpen(false);
     if (action.id === 'requests') {
       navigate(LEAVE_REQUESTS_PATH);
@@ -109,7 +118,7 @@ export function SidebarActionSearch({ mobileMenuOpen, quickActions }: SidebarAct
   }
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={handleOpenChange}>
       <PopoverTrigger asChild>
         <button
           type="button"
@@ -149,7 +158,7 @@ export function SidebarActionSearch({ mobileMenuOpen, quickActions }: SidebarAct
                 <li key={action.id}>
                   <Link to={action.path} className="sidebar-action-search__action"
                     ref={(node) => { actionRefs.current[index] = node; }}
-                    onClick={() => setOpen(false)}
+                    onClick={() => { playSound('navigate'); setOpen(false); }}
                     onKeyDown={(event) => handleActionKeyDown(event, index)}
                     onPointerEnter={() => preloadRoute(action.path)}
                     onFocus={() => preloadRoute(action.path)}>

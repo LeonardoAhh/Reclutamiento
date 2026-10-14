@@ -69,6 +69,7 @@ export function ReporteUploadPanel({
             onDragLeave={onDragLeave}
             onDrop={onDrop}
             onClick={onSelectFile}
+            data-cuelume-open=""
             aria-label={copy("Subir un archivo de reporte de asistencia", "Upload an attendance report file")}
             aria-busy={isProcessing}
             disabled={isProcessing}
@@ -143,6 +144,7 @@ export function ReporteUploadPanel({
               </label>
               <textarea
                 id="reporte-json-content"
+                data-cuelume-type=""
                 value={jsonContent}
                 onChange={(event) => setJsonContent(event.target.value)}
                 placeholder={copy("Pega aquí el contenido completo del reporte", "Paste the full report content here")}

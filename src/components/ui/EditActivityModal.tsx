@@ -158,6 +158,7 @@ export function EditActivityModal({
             id={titleId}
             required
             type="text"
+            data-cuelume-type=""
             value={titulo}
             onChange={(e) => setTitulo(e.target.value)}
           />

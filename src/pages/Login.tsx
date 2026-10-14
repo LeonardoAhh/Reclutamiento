@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BrandMark } from "@/components/ui/BrandMark";
+import { bindSoundInteractions } from "@/lib/sound";
 import { LoginForm } from "./LoginForm";
 import { LoginPreferences } from "./LoginPreferences";
 import { useLoginLanguage } from "./login-language";
@@ -10,14 +11,19 @@ import "./Login.css";
 export function Login() {
   const { language, storageError } = useLoginLanguage();
   const [rememberedUsername, setRememberedUsername] = useState<string | null>(null);
+  const mainRef = useRef<HTMLElement>(null);
   const copy = loginTranslations[language];
 
   useEffect(() => {
     document.title = copy.pageTitle;
   }, [copy.pageTitle, language]);
 
+  useEffect(() => {
+    if (mainRef.current) return bindSoundInteractions(mainRef.current);
+  }, []);
+
   return (
-    <main className="login">
+    <main ref={mainRef} className="login">
       <LoginPreferences
         language={language}
         storageError={storageError}

@@ -23,6 +23,7 @@ export interface AnimatedSubmitButtonProps extends Omit<HTMLMotionProps<'button'
   errorText?: string;
   isError?: boolean;
   errorMessageId?: string;
+  feedbackSound?: boolean;
   idleIcon?: IconInput;
   iconOnly?: boolean;
 }
@@ -38,6 +39,7 @@ export function AnimatedSubmitButton({
   successText: successTextProp,
   errorText: errorTextProp,
   errorMessageId,
+  feedbackSound = true,
   idleIcon = Save,
   iconOnly = false,
   className = '',
@@ -85,18 +87,18 @@ export function AnimatedSubmitButton({
 
     if (state === 'success') {
       try {
-        trigger('success');
+        trigger('success', { sound: feedbackSound });
       } catch (error) {
         console.warn('No se pudo reproducir el feedback de éxito:', error);
       }
     } else if (state === 'error') {
       try {
-        trigger('error');
+        trigger('error', { sound: feedbackSound });
       } catch (error) {
         console.warn('No se pudo reproducir el feedback de error:', error);
       }
     }
-  }, [state, trigger]);
+  }, [state, trigger, feedbackSound]);
 
   return (
     <>

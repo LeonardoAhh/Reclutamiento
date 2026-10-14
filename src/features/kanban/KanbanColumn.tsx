@@ -61,7 +61,7 @@ export function KanbanColumn({ status, tasks, copy: t, locked, dragging, pending
         </h3>
         <div className="kanban-column__header-actions">
           {paged && <nav className="kanban-column__pagination" aria-label={`${t.paginationFor} ${t.statuses[status]}`}>
-            <button type="button" className="step-nav-control" onClick={pagination.prevPage}
+            <button type="button" className="step-nav-control" data-cuelume-navigate="" onClick={pagination.prevPage}
               disabled={!pagination.canGoPrev} aria-label={t.previousPage}>
               <ChevronLeft aria-hidden="true" />
             </button>
@@ -69,7 +69,7 @@ export function KanbanColumn({ status, tasks, copy: t, locked, dragging, pending
               <span aria-hidden="true">{pagination.currentPage}/{pagination.totalPages}</span>
               <span className="sr-only">{t.page} {pagination.currentPage} {t.of} {pagination.totalPages}</span>
             </span>
-            <button type="button" className="step-nav-control" onClick={pagination.nextPage}
+            <button type="button" className="step-nav-control" data-cuelume-navigate="" onClick={pagination.nextPage}
               disabled={!pagination.canGoNext} aria-label={t.nextPage}>
               <ChevronRight aria-hidden="true" />
             </button>

@@ -49,7 +49,6 @@
 .kanban-status-tabs--joined {
   gap: var(--design-spacing-xxs);
   padding: var(--design-spacing-xxs);
-  border: var(--border-width) solid var(--color-control-border);
   border-radius: var(--rounded-md);
   background: var(--color-canvas-soft);
   overflow: visible;

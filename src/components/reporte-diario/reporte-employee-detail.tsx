@@ -382,6 +382,7 @@ export default function ReporteEmployeeDetail({
                         role="tab"
                         id="emp-tab-overview"
                         aria-selected={activeTab === 'overview'}
+                        data-cuelume-select=""
                         aria-controls="emp-detail-panel"
                         tabIndex={activeTab === 'overview' ? 0 : -1}
                         className={`reporte-employee-detail__tab ${activeTab === 'overview' ? 'is-active' : ''}`}
@@ -394,6 +395,7 @@ export default function ReporteEmployeeDetail({
                         role="tab"
                         id="emp-tab-incidencias"
                         aria-selected={activeTab === 'incidencias'}
+                        data-cuelume-select=""
                         aria-controls="emp-detail-panel"
                         tabIndex={activeTab === 'incidencias' ? 0 : -1}
                         className={`reporte-employee-detail__tab ${activeTab === 'incidencias' ? 'is-active' : ''}`}

@@ -5,6 +5,7 @@ import { Avatar } from '@/components/ui/Avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/DropdownMenu';
 import { useInlineConfirm } from '@/hooks/useInlineConfirm';
 import { useMotionTokens } from '@/hooks/useMotionTokens';
+import { playSound } from '@/lib/sound';
 import type { AccountCopy } from '@/pages/account-translations';
 import { useAvatarEditor } from './useAvatarEditor';
 
@@ -37,6 +38,7 @@ export function AccountProfile({ copy, displayName, email }: AccountProfileProps
 
   function openPicker() {
     if (!busy) {
+      playSound('select');
       inputRef.current?.click();
       setMenuOpen(false);
     }
@@ -46,10 +48,14 @@ export function AccountProfile({ copy, displayName, email }: AccountProfileProps
     const selected = event.target.files?.[0];
     event.target.value = '';
     confirmDelete.cancel();
-    if (editor.select(selected)) focusTarget.current = 'save';
+    if (editor.select(selected)) {
+      playSound('select');
+      focusTarget.current = 'save';
+    }
   }
 
   function cancelSelection() {
+    playSound('close');
     focusTarget.current = 'camera';
     editor.clear();
   }
@@ -61,6 +67,7 @@ export function AccountProfile({ copy, displayName, email }: AccountProfileProps
 
   async function handleDelete() {
     if (!confirmDelete.confirming) {
+      playSound('select');
       confirmDelete.request(true);
       return;
     }
@@ -85,6 +92,7 @@ export function AccountProfile({ copy, displayName, email }: AccountProfileProps
           <DropdownMenu open={menuOpen} onOpenChange={open => { setMenuOpen(open); if (!open) confirmDelete.cancel(); }}>
             <DropdownMenuTrigger asChild>
               <button ref={focusWhenMounted('camera')} type="button" className="account-profile__avatar-badge"
+                onClick={() => playSound(menuOpen ? 'close' : 'open')}
                 disabled={busy} aria-label={copy.changeAvatar(displayName)} aria-describedby={hintId}>
                 <span className="account-profile__camera-mark" aria-hidden="true">
                   <Camera size="var(--icon-size-sm)" />

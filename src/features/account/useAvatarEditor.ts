@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/hooks/useAuth';
 import { useFeedback } from '@/hooks/useFeedback';
+import { playSound } from '@/lib/sound';
 import { toast } from '@/lib/notify';
 import type { AccountCopy } from '@/pages/account-translations';
 
@@ -104,7 +105,8 @@ export function useAvatarEditor(copy: AccountCopy) {
       if (ownedPath) {
         const { error: storageError } = await supabase.storage.from(AVATAR_BUCKET).remove([ownedPath]);
         if (storageError) {
-          trigger('error');
+          trigger('error', { sound: false });
+          playSound('warning');
           toast.warning({ title: copy.photoFileKept });
           return true;
         }

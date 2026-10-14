@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { changePassword } from '@/lib/auth';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useInlineConfirm } from '@/hooks/useInlineConfirm';
+import { playSound } from '@/lib/sound';
 import './PasswordChangeForm.css';
 
 type Field = 'current' | 'new' | 'confirm' | 'form';
@@ -60,9 +61,11 @@ export function PasswordChangeForm({
   function handleClose() {
     if (submitting) return;
     if (dirty && !discard.confirming) {
+      playSound('attention');
       discard.request(true);
       return;
     }
+    playSound('close');
     discard.cancel();
     resetForm();
     onCancel();
@@ -70,6 +73,7 @@ export function PasswordChangeForm({
 
   function showError(field: Field, message: string) {
     setError({ field, message });
+    playSound('error', { emphasis: 'subtle' });
     requestAnimationFrame(() => {
       if (field === 'current') currentRef.current?.focus();
       if (field === 'new') newRef.current?.focus();
@@ -100,6 +104,7 @@ export function PasswordChangeForm({
       return;
     }
 
+    playSound('tap');
     setSubmitting(true);
     const result = await changePassword(currentPassword, newPassword);
 
@@ -122,6 +127,7 @@ export function PasswordChangeForm({
     setNewPassword('');
     setConfirmation('');
     setSuccess(true);
+    playSound('success');
     await onChanged?.();
     setSubmitting(false);
   }

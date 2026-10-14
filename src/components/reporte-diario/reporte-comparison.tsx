@@ -8,6 +8,7 @@ export default function ReporteComparison({ triggerVariant = 'icon' }: { trigger
   return (
     <Link
       to={REPORT_COMPARISON_PATH}
+      data-cuelume-navigate=""
       className={'reporte-saved__trigger reporte-saved__trigger--' + triggerVariant}
       aria-label={copy('Comparativa mensual', 'Monthly comparison')}
       title={copy('Comparativa mensual', 'Monthly comparison')}

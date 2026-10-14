@@ -1,4 +1,4 @@
-import { useCallback, useId, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { Archive, ArrowLeft, SquarePlus } from 'lucide-react';
 import { PageHeading } from '@/components/layout/PageHeading';
 import { useAuth } from '@/hooks/useAuth';
@@ -10,6 +10,7 @@ import { ArchivedTasks } from './ArchivedTasks';
 import type { KanbanTask, TaskDraft, TaskStatus } from './types';
 import { useKanban } from './useKanban';
 import { useKanbanClock } from './useKanbanClock';
+import { bindSoundInteractions, playSound } from '@/lib/sound';
 import './KanbanPage.css';
 
 export function KanbanPage() {
@@ -26,6 +27,7 @@ function KanbanWorkspace({ userId, archived, focusView, onChangeView }: {
   userId: string; archived: boolean; focusView: boolean; onChangeView: (value: boolean) => void;
 }) {
   const { language } = useLanguage();
+  useEffect(() => bindSoundInteractions(document), []);
   const t = kanbanCopy[language];
   const board = useKanban(userId, archived);
   const now = useKanbanClock();
@@ -46,6 +48,7 @@ function KanbanWorkspace({ userId, archived, focusView, onChangeView }: {
   const disabled = board.busy || board.loading || !board.ready;
   const actionError = board.actionError ? t.errors[board.actionError] : '';
   function openEditor(task: KanbanTask | null, status: TaskStatus = 'pending') {
+    playSound('open');
     board.clearActionError();
     setMessage('');
     setEditor({ id: task?.id ?? crypto.randomUUID(), task, status: task?.status ?? status });
@@ -53,24 +56,28 @@ function KanbanWorkspace({ userId, archived, focusView, onChangeView }: {
   async function save(draft: TaskDraft, coverFile: File | null, coverUploadId: string | null) {
     if (!editor) return false;
     const saved = await board.save(editor.id, draft, editor.task?.version ?? null, coverFile, coverUploadId);
+    playSound(saved ? 'success' : 'error');
     if (saved) { setEditor(null); setMessage(t.saved); }
     return saved;
   }
   async function move(task: KanbanTask, status: TaskStatus, beforeId: string | null) {
     setMessage('');
     const saved = await board.reorder(task, status, beforeId);
+    playSound(saved ? 'success' : 'error');
     if (saved) setMessage(`${t.reordered}: ${task.title}, ${t.statuses[status]}`);
     return saved;
   }
   async function remove(task: KanbanTask) {
     setMessage('');
     const removed = await board.remove(task);
+    playSound(removed ? 'success' : 'error');
     if (removed) { setEditor(null); setMessage(t.deleted); }
     return removed;
   }
   async function archive(task: KanbanTask) {
     setMessage('');
     const saved = await board.archive(task, !archived);
+    playSound(saved ? 'success' : 'error');
     if (saved) {
       setEditor(null); setMessage(archived ? t.restored : t.archived);
       if (archived) requestAnimationFrame(() => viewRef.current?.focus());
@@ -79,7 +86,10 @@ function KanbanWorkspace({ userId, archived, focusView, onChangeView }: {
   }
   const viewAction = (
     <button ref={attachViewButton} type="button" className={`${archived ? 'kanban-toolbar-button' : 'btn-secondary'} kanban-view-button`}
-      disabled={board.busy || editor !== null} aria-controls={id} onClick={() => onChangeView(!archived)}>
+      disabled={board.busy || editor !== null} aria-controls={id} onClick={() => {
+        playSound('navigate');
+        onChangeView(!archived);
+      }}>
       {archived ? <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" /> : <Archive size="var(--icon-size-md)" aria-hidden="true" />}
       {archived ? t.backToBoard : t.archiveView}
     </button>
@@ -104,17 +114,17 @@ function KanbanWorkspace({ userId, archived, focusView, onChangeView }: {
       {!(board.loading && !board.ready) && <p className="sr-only" role="status">{board.loading ? t.loading : message}</p>}
       {board.loadError && <div className="kanban-feedback">
         <p className="form-error-text" role="alert">{t.errors[board.loadError]}</p>
-        <button type="button" className="btn-secondary" disabled={board.loading || board.busy || editor !== null}
+        <button type="button" className="btn-secondary" data-cuelume-tap="" disabled={board.loading || board.busy || editor !== null}
           onClick={() => { void board.load(); }}>{t.retry}</button>
       </div>}
       {actionError && !editor && <div className="kanban-feedback">
         <p className="form-error-text" role="alert">{actionError}</p>
-        <button type="button" className="btn-secondary" disabled={disabled}
+        <button type="button" className="btn-secondary" data-cuelume-tap="" disabled={disabled}
           onClick={() => { board.clearActionError(); void board.load(); }}>{t.retry}</button>
       </div>}
       {board.cleanupPending && <div className="kanban-feedback">
         <p className="form-error-text" role="alert">{t.photoCleanupFailed}</p>
-        <button type="button" className="btn-secondary" disabled={disabled}
+        <button type="button" className="btn-secondary" data-cuelume-tap="" disabled={disabled}
           onClick={() => { void board.retryCleanup(); }}>{t.retry}</button>
       </div>}
       <section id={id} aria-busy={board.loading} aria-labelledby={`${id}-heading`} className="kanban-content">
@@ -133,10 +143,10 @@ function KanbanWorkspace({ userId, archived, focusView, onChangeView }: {
             editor={editor} error={actionError} onEdit={task => openEditor(task)}
             getAddButton={() => addButtonRef.current}
             onDelete={remove} onMove={move} onArchive={archive}
-            onSave={save} onCloseEditor={() => { setEditor(null); board.clearActionError(); }} />)}
+            onSave={save} onCloseEditor={() => { playSound('close'); setEditor(null); board.clearActionError(); }} />)}
       </section>
       {board.ready && board.tasks.length < board.total && <div className="kanban-more">
-        <button type="button" className="btn-secondary" disabled={disabled || editor !== null}
+        <button type="button" className="btn-secondary" data-cuelume-tap="" disabled={disabled || editor !== null}
           onClick={() => { void board.load(board.tasks.map(task => task.id)); }}>{t.more}</button>
       </div>}
     </main>

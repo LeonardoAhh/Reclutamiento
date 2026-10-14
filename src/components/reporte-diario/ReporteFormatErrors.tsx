@@ -110,6 +110,7 @@ export function ReporteFormatErrors({
           <button
             type="button"
             onClick={onDismiss}
+            data-cuelume-close=""
             className="reporte-iconbtn"
             aria-label={copy("Cerrar errores", "Dismiss errors")}
           >

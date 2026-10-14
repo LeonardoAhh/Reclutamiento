@@ -9,13 +9,17 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { candidateSourceLabel, candidateStatusLabel } from '@/lib/candidateTranslations';
 
 import { BadgeCheck, BarChart3, CalendarDays, ClipboardList, FileImage, LayoutGrid, PenLine, SlidersHorizontal, Trash2, UserRoundPlus, UserRound, UserX } from 'lucide-react';
+import { ClipboardCheck, ClipboardList as MorphClipboardList } from 'lucide';
 import { StarliteBadge, VinoplasticBadge, ReclutadorBadge } from '@/components/ui/Badge';
 import { CandidateModal } from '@/components/ui/CandidateModal';
+import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import { CandidateAccessCard } from '@/components/ui/CandidateAccessCard';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { notifyResult, toast } from '@/lib/notify';
 import { buildCandidateReport } from '@/lib/candidateReport';
 import { copyTextToClipboard } from '@/lib/whatsappReport';
+import { TOAST_CONFIG } from '@/lib/constants';
+import { bindSoundInteractions, playSound } from '@/lib/sound';
 import { CandidateStatusBadge } from '@/components/ui/CandidateStatusBadge';
 import { HireCandidateModal } from '@/components/ui/HireCandidateModal';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -88,6 +92,8 @@ export function Pipeline() {
 
   const [searchTerm, setSearchTerm] = useState('');
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const [reportCopied, setReportCopied] = useState(false);
+  const reportCopiedTimer = useRef<number | null>(null);
   const [macroStatus, setMacroStatus] = useState<CandidateGroup>(() => {
     try {
       const stored = localStorage.getItem('reclutamiento_macro_status');
@@ -108,6 +114,8 @@ export function Pipeline() {
   const [selectedMobileCandidate, setSelectedMobileCandidate] = useState<Candidate | null>(null);
   const isDesktop = useMediaQuery(DESKTOP_MEDIA_QUERY);
 
+  useEffect(() => bindSoundInteractions(document), []);
+
   useEffect(() => {
     if (getSidebarCreateAction(location.state) !== 'create-candidate') return;
     setSelected(null);
@@ -122,6 +130,10 @@ export function Pipeline() {
   useEffect(() => {
     if (isDesktop) setSelectedMobileCandidate(null);
   }, [isDesktop]);
+
+  useEffect(() => () => {
+    if (reportCopiedTimer.current !== null) window.clearTimeout(reportCopiedTimer.current);
+  }, []);
 
   // Guardar macroStatus en localStorage
   useEffect(() => {
@@ -159,6 +171,7 @@ export function Pipeline() {
 
 
   function resetFilters() {
+    playSound('select');
     setMacroStatus('todos');
     setSearchTerm('');
   }
@@ -228,16 +241,19 @@ export function Pipeline() {
 
 
   function openAdd() {
+    playSound('open');
     setSelected(null);
     setModalMode('add');
   }
 
   function openEdit(c: Candidate) {
+    playSound('open');
     setSelected(c);
     setModalMode('edit');
   }
 
   function openDelete(c: Candidate) {
+    playSound('open');
     setSelected(c);
     setModalMode('delete');
   }
@@ -251,25 +267,34 @@ export function Pipeline() {
     payload: Omit<Candidate, 'id' | 'created_at' | 'updated_at'>,
     id?: string
   ) {
-    return notifyResult(
+    const result = await notifyResult(
       id ? updateCandidate(id, payload) : addCandidate(payload),
       {
         success: id ? (en ? 'Candidate updated' : 'Candidato actualizado') : (en ? 'Candidate added' : 'Candidato agregado'),
         error: id ? (en ? 'Could not update candidate' : 'No se pudo actualizar el candidato') : (en ? 'Could not add candidate' : 'No se pudo agregar el candidato'),
       }
     );
+    playSound(result.ok ? 'success' : 'error');
+    return result;
   }
 
   async function handleStatusChange(c: Candidate, status: CandidateStatus) {
     if (!c.id || c.status === status) return;
-    await notifyResult(setCandidateStatus(c.id, status), {
+    const result = await notifyResult(setCandidateStatus(c.id, status), {
       success: en ? 'Status updated' : 'Estado actualizado',
       error: en ? 'Could not change status' : 'No se pudo cambiar el estado',
     });
+    playSound(result.ok ? 'success' : 'error');
   }
 
   function openHire(c: Candidate) {
+    playSound('open');
     setHireTarget(c);
+  }
+
+  function openAccessCard(c: Candidate) {
+    playSound('open');
+    setAccessCardTarget(c);
   }
 
   async function handleHire(input: {
@@ -280,6 +305,7 @@ export function Pipeline() {
     if (input.mode === 'create') {
       const empResult = await addSingleEmployee(input.employee);
       if (!empResult.ok) {
+        playSound('error');
         toast.error({ title: en ? 'Could not hire candidate' : 'No se pudo contratar' });
         return empResult;
       }
@@ -292,6 +318,7 @@ export function Pipeline() {
     );
 
     if (!candResult.ok) {
+      playSound('warning');
       const message =
         candResult.message ??
         (input.mode === 'create'
@@ -309,19 +336,27 @@ export function Pipeline() {
     toast.success({
       title: input.mode === 'create' ? (en ? 'Candidate hired' : 'Candidato contratado') : (en ? 'Candidate linked' : 'Candidato vinculado'),
     });
+    playSound('success');
     return { ok: true };
   }
 
   async function handleCopyReport() {
+    if (reportCopiedTimer.current !== null) window.clearTimeout(reportCopiedTimer.current);
+    setReportCopied(false);
     const report = buildCandidateReport(candidates, members);
     if (!report) {
+      playSound('warning');
       toast.info({ title: en ? 'No active candidates in process' : 'No hay candidatos activos en proceso' });
       return;
     }
     try {
       await copyTextToClipboard(report);
+      playSound('success');
+      setReportCopied(true);
+      reportCopiedTimer.current = window.setTimeout(() => setReportCopied(false), TOAST_CONFIG.defaultDurationMs);
       toast.success({ title: en ? 'Summary copied' : 'Resumen copiado', description: en ? 'You can now paste it into WhatsApp.' : 'Ya puedes pegarlo en WhatsApp.' });
     } catch {
+      playSound('error');
       toast.error({ title: en ? 'Could not copy summary' : 'No se pudo copiar el resumen' });
     }
   }
@@ -347,10 +382,14 @@ export function Pipeline() {
                   ref={searchInputRef}
                   className="pipeline__search-field"
                   label={en ? 'Search candidate' : 'Buscar candidato'}
+                  data-cuelume-type=""
                   placeholder={en ? 'Search' : 'Buscar'}
                   value={searchTerm}
                   onChange={(event) => setSearchTerm(event.target.value)}
-                  onClear={() => setSearchTerm('')}
+                  onClear={() => {
+                    playSound('tap');
+                    setSearchTerm('');
+                  }}
                   autoComplete="off"
                 />
 
@@ -368,6 +407,7 @@ export function Pipeline() {
                           type="button"
                           className="search-dropdown-item"
                           onClick={() => {
+                            playSound('open');
                             setSearchTerm('');
                             setQuickProfile(c);
                           }}
@@ -396,10 +436,14 @@ export function Pipeline() {
 
           </ToolbarGroup>
           <ToolbarGroup label={en ? 'Candidate actions' : 'Acciones de candidatos'} className="pipeline__hero-actions">
-            <CandidateFilters value={macroStatus} onChange={setMacroStatus} />
+            <CandidateFilters value={macroStatus} onChange={(value) => {
+              if (value !== macroStatus) playSound('select');
+              setMacroStatus(value);
+            }} />
             <Link
               className="btn-secondary pipeline__report-btn"
               to={CANDIDATE_METRICS_PATH}
+              data-cuelume-navigate=""
               aria-label={en ? 'Open metrics and KPIs' : 'Abrir métricas y KPIs'}
               title={en ? 'Metrics and KPIs' : 'Métricas y KPIs'}
             >
@@ -409,12 +453,16 @@ export function Pipeline() {
             <button
               type="button"
               className="btn-secondary pipeline__report-btn"
+              data-copied={reportCopied || undefined}
               onClick={handleCopyReport}
               aria-label={en ? 'Copy candidate summary' : 'Copiar resumen de candidatos'}
               title={en ? 'Copy candidate summary for WhatsApp' : 'Copiar resumen de candidatos para WhatsApp'}
             >
-              <ClipboardList size={16} aria-hidden="true" />
-              <span>{en ? 'Summary' : 'Resumen'}</span>
+              <MorphingIcon icon={reportCopied ? ClipboardCheck : MorphClipboardList} size="var(--icon-size-sm)" reducedMotion="user" aria-hidden="true" />
+              <span className="pipeline__report-label" aria-hidden="true">
+                <span className="pipeline__report-label-idle">{en ? 'Summary' : 'Resumen'}</span>
+                <span className="pipeline__report-label-copied">{en ? 'Copied' : 'Copiado'}</span>
+              </span>
             </button>
             <button
               type="button"
@@ -447,7 +495,7 @@ export function Pipeline() {
                 <p className="pipeline__error-message">
                   {error}
                 </p>
-                <button type="button" className="btn-secondary pipeline__empty-action" onClick={() => refetch()}>
+                <button type="button" className="btn-secondary pipeline__empty-action" data-cuelume-tap="" onClick={() => refetch()}>
                   {en ? 'Retry' : 'Reintentar'}
                 </button>
               </div>
@@ -542,10 +590,14 @@ export function Pipeline() {
                     role={isDesktop ? "row" : "button"}
                     tabIndex={isDesktop ? undefined : 0}
                     aria-label={isDesktop ? undefined : `${en ? 'View details for' : 'Ver detalles de'} ${c.nombre}`}
-                    onClick={isDesktop ? undefined : () => setSelectedMobileCandidate(c)}
+                    onClick={isDesktop ? undefined : () => {
+                      playSound('open');
+                      setSelectedMobileCandidate(c);
+                    }}
                     onKeyDown={isDesktop ? undefined : (event) => {
                       if (event.key === 'Enter' || event.key === ' ') {
                         event.preventDefault();
+                        playSound('open');
                         setSelectedMobileCandidate(c);
                       }
                     }}
@@ -657,7 +709,7 @@ export function Pipeline() {
                           onDelete={isAdmin ? openDelete : undefined}
                           onAccessCard={
                             c.reclutador && c.puesto
-                              ? () => setAccessCardTarget(c)
+                              ? openAccessCard
                               : undefined
                           }
                         />
@@ -671,7 +723,10 @@ export function Pipeline() {
             <Pagination
               currentPage={visiblePage}
               totalPages={totalPages}
-              onPageChange={setCurrentPage}
+              onPageChange={(page) => {
+                playSound('navigate');
+                setCurrentPage(page);
+              }}
               canGoPrev={visiblePage > 1}
               canGoNext={visiblePage < totalPages}
               ariaLabel={en ? 'Candidate pages' : 'Paginación de candidatos'}
@@ -687,17 +742,22 @@ export function Pipeline() {
             candidates={candidates}
             onClose={closeModal}
             onSave={handleSave}
-            onDelete={(id) =>
-              notifyResult(deleteCandidate(id), {
+            onDelete={async (id) => {
+              const result = await notifyResult(deleteCandidate(id), {
                 success: en ? 'Candidate deleted' : 'Candidato eliminado',
                 error: en ? 'Could not delete candidate' : 'No se pudo eliminar el candidato',
-              })
-            }
+              });
+              playSound(result.ok ? 'success' : 'error');
+              return result;
+            }}
           />
 
           <InterviewPassDialog
             isOpen={accessCardData !== null}
-            onClose={() => setAccessCardTarget(null)}
+            onClose={() => {
+              playSound('close');
+              setAccessCardTarget(null);
+            }}
             className="candidate-access-card-modal"
             size="sm"
             title={en ? 'Interview pass' : 'Pase de entrevista'}
@@ -728,7 +788,10 @@ export function Pipeline() {
           <BackButton
             className="config-mobile-back"
             label={selectedMobileCandidate.nombre}
-            onClick={() => setSelectedMobileCandidate(null)}
+            onClick={() => {
+              playSound('navigate');
+              setSelectedMobileCandidate(null);
+            }}
             aria-label={en
               ? `Back to candidates: ${selectedMobileCandidate.nombre}`
               : `Volver a candidatos: ${selectedMobileCandidate.nombre}`}
@@ -816,7 +879,7 @@ export function Pipeline() {
                         type="button"
                         className="btn-secondary pipeline-mobile-detail__action-btn"
                         title={en ? 'View pass' : 'Ver pase'}
-                        onClick={() => setAccessCardTarget(selectedMobileCandidate)}
+                        onClick={() => openAccessCard(selectedMobileCandidate)}
                       >
                         <FileImage size={16} aria-hidden="true" />
                         <span>{en ? 'View pass' : 'Ver pase'}</span>
@@ -866,7 +929,10 @@ export function Pipeline() {
       {/* ── Quick Profile ── */}
       <Modal
         isOpen={!!quickProfile}
-        onClose={() => setQuickProfile(null)}
+        onClose={() => {
+          playSound('close');
+          setQuickProfile(null);
+        }}
         title={en ? 'Preview' : 'Vista Previa'}
         size="md"
         presentation={isMobile ? 'modal' : 'sheet'}

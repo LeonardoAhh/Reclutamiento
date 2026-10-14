@@ -41,7 +41,7 @@ export function ReportDayPage(props: ReportDayPageProps) {
   return (
     <div className="report-day-page">
       <PageHeading ref={headingRef} tabIndex={-1} id="reporte-page-title" className="app-page-title report-day-page__heading" data-testid="selected-day-title">
-        <Link to="/reports" className="report-day-page__title-link" aria-label={title + ': ' + copy('volver a Reporte diario', 'back to Daily report')}>
+        <Link to="/reports" className="report-day-page__title-link" data-cuelume-navigate="" aria-label={title + ': ' + copy('volver a Reporte diario', 'back to Daily report')}>
           <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
           <span className="report-day-page__title-copy">
             <span>{compactDateTitle}</span>
@@ -57,19 +57,19 @@ export function ReportDayPage(props: ReportDayPageProps) {
         </div>
       </LoadingSkeleton> : props.hasError ? <div>
         <p className="form-error-text" role="alert">{copy('No se pudo cargar el reporte del día.', 'Could not load the day report.')}</p>
-        <button type="button" className="btn-secondary" onClick={props.onRetry}>{copy('Reintentar', 'Retry')}</button>
+        <button type="button" className="btn-secondary" data-cuelume-tap="" onClick={props.onRetry}>{copy('Reintentar', 'Retry')}</button>
       </div> : !props.hasData ? <p role="status">{copy('El reporte de este día no está disponible. Vuelve a Reporte diario para seleccionar un reporte.', 'This day report is unavailable. Return to Daily report to select a report.')}</p> : (
         <div className="report-day-page__content">
           <div className="report-day-page__section">
             <div className="report-day-page__section-header">
               <h2 id="ras-heading" className="report-day-page__section-title">{copy('Resumen por área', 'Summary by area')}</h2>
               <nav className="report-day-page__navigation" aria-label={copy('Navegación entre días', 'Day navigation')}>
-                {props.prevDay ? <Link replace to={getReportDayPath(props.month, props.prevDay)} className="btn-ghost" aria-label={copy('Día anterior', 'Previous day')} data-testid="prev-day-btn">
+                {props.prevDay ? <Link replace to={getReportDayPath(props.month, props.prevDay)} className="btn-ghost" data-cuelume-navigate="" aria-label={copy('Día anterior', 'Previous day')} data-testid="prev-day-btn">
                   <ChevronLeft size="var(--icon-size-sm)" aria-hidden="true" /><span className="report-day-page__navigation-label">{copy('Día anterior', 'Previous day')}</span>
                 </Link> : <button type="button" className="btn-ghost" disabled aria-label={copy('Día anterior', 'Previous day')} data-testid="prev-day-btn">
                   <ChevronLeft size="var(--icon-size-sm)" aria-hidden="true" /><span className="report-day-page__navigation-label">{copy('Día anterior', 'Previous day')}</span>
                 </button>}
-                {props.nextDay ? <Link replace to={getReportDayPath(props.month, props.nextDay)} className="btn-ghost" aria-label={copy('Día siguiente', 'Next day')} data-testid="next-day-btn">
+                {props.nextDay ? <Link replace to={getReportDayPath(props.month, props.nextDay)} className="btn-ghost" data-cuelume-navigate="" aria-label={copy('Día siguiente', 'Next day')} data-testid="next-day-btn">
                   <span className="report-day-page__navigation-label">{copy('Día siguiente', 'Next day')}</span><ChevronRight size="var(--icon-size-sm)" aria-hidden="true" />
                 </Link> : <button type="button" className="btn-ghost" disabled aria-label={copy('Día siguiente', 'Next day')} data-testid="next-day-btn">
                   <span className="report-day-page__navigation-label">{copy('Día siguiente', 'Next day')}</span><ChevronRight size="var(--icon-size-sm)" aria-hidden="true" />

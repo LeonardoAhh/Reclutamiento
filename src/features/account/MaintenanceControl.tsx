@@ -1,6 +1,7 @@
 import { useId, useState } from 'react';
 import { useMaintenanceMode } from '@/hooks/useMaintenanceMode';
 import { toast } from '@/lib/notify';
+import { playSound } from '@/lib/sound';
 import type { AccountCopy } from '@/pages/account-translations';
 
 const MAINTENANCE_ERRORS_EN: Readonly<Record<string, string>> = {
@@ -38,7 +39,12 @@ export function MaintenanceControl({ copy, english, sessionLoading }: Maintenanc
     setSaving(true);
     try {
       const result = await maintenance.update(target);
-      if (result.ok) toast.success({ title: target ? copy.maintenanceEnabled : copy.maintenanceDisabled });
+      if (result.ok) {
+        playSound('toggle');
+        toast.success({ title: target ? copy.maintenanceEnabled : copy.maintenanceDisabled });
+      } else {
+        playSound('error');
+      }
     } finally {
       setSaving(false);
     }
@@ -67,7 +73,7 @@ export function MaintenanceControl({ copy, english, sessionLoading }: Maintenanc
         </button>
         {maintenance.error && (
           <button type="button" className="account-maintenance__retry"
-            onClick={() => void maintenance.refresh()} disabled={maintenance.loading || saving}>
+            onClick={() => { playSound('tap'); void maintenance.refresh(); }} disabled={maintenance.loading || saving}>
             {copy.retry}
           </button>
         )}

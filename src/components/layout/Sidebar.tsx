@@ -6,6 +6,7 @@ import { MorphMenuIcon } from "@/components/ui/MorphMenuIcon";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LogOut } from "lucide-react";
 import { useSignOut } from "@/features/account/useSignOut";
+import { playSound } from "@/lib/sound";
 import "./Sidebar.css";
 
 import { getLocalizedNavigation } from "./navigation";
@@ -73,6 +74,7 @@ export function Sidebar({
   }, [logoutConfirmationOpen]);
 
   const cancelLogout = () => {
+    playSound('close');
     setLogoutConfirmationOpen(false);
     window.requestAnimationFrame(() => logoutTriggerRef.current?.focus());
   };
@@ -162,7 +164,10 @@ export function Sidebar({
           ref={logoutTriggerRef}
           type="button"
           className="sidebar__logout-trigger sidebar__logout-action"
-          onClick={() => setLogoutConfirmationOpen(true)}
+          onClick={() => {
+            playSound('attention');
+            setLogoutConfirmationOpen(true);
+          }}
           aria-expanded={logoutConfirmationOpen}
           aria-controls="sidebar-logout-confirmation"
           hidden={logoutConfirmationOpen}

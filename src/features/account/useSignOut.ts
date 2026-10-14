@@ -27,6 +27,7 @@ export function useSignOut() {
       await signOut();
       trigger("success");
     } catch {
+      trigger("error");
       toast.error({
         title: english
           ? "Could not sign out. Please try again."

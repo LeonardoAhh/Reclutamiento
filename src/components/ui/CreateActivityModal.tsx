@@ -117,6 +117,7 @@ export function CreateAssignmentModal({
             id={titleId}
             required
             type="text"
+            data-cuelume-type=""
             value={titulo}
             onChange={(e) => setTitulo(e.target.value)}
             placeholder={en ? "E.g. Review employee records" : "Ej. Revisión de expedientes"}

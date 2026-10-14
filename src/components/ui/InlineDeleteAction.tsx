@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { SquarePen, Trash2 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { playSound } from "@/lib/sound";
 
 interface InlineDeleteActionProps {
   onEdit?: () => void;
@@ -15,6 +16,7 @@ export function InlineDeleteAction({ onEdit, onDelete }: InlineDeleteActionProps
 
   const handleDelete = async () => {
     if (!confirming) {
+      playSound("warning");
       setConfirming(true);
       return;
     }
@@ -35,7 +37,7 @@ export function InlineDeleteAction({ onEdit, onDelete }: InlineDeleteActionProps
       )}
       {confirming && (
         <button type="button" className="responsibility-detail__edit"
-          disabled={deleting} onClick={() => setConfirming(false)}>
+          disabled={deleting} onClick={() => { playSound("close"); setConfirming(false); }}>
           {en ? "Cancel" : "Cancelar"}
         </button>
       )}

@@ -10,6 +10,7 @@ import { FormSheet } from "@/components/ui/FormSheet";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { DeleteConfirmModal } from "@/components/ui/DeleteConfirmModal";
 import { useReportLocale } from "./useReportLocale";
+import { playSound } from "@/lib/sound";
 
 interface SavedSummary {
   id: string;
@@ -65,7 +66,7 @@ export default function ReportesGuardadosDialog({
       {triggerVariant === "labeled" ? (
         <button
           type="button"
-          onClick={() => setIsOpen(true)}
+          onClick={() => { playSound('open'); setIsOpen(true); }}
           className="reporte-saved__trigger reporte-saved__trigger--labeled"
           aria-label={label}
           ref={triggerRef}
@@ -77,7 +78,7 @@ export default function ReportesGuardadosDialog({
       ) : (
         <button
           type="button"
-          onClick={() => setIsOpen(true)}
+          onClick={() => { playSound('open'); setIsOpen(true); }}
           className="reporte-saved__trigger reporte-saved__trigger--icon"
           aria-label={`${copy("Reportes guardados", "Saved reports")} (${count})`}
           title={copy("Reportes guardados", "Saved reports")}
@@ -95,7 +96,7 @@ export default function ReportesGuardadosDialog({
         className="report-dialog"
         isOpen={isOpen && (isMobile || pendingDelete === null)}
         {...(isMobile ? {} : { returnFocusRef: triggerRef })}
-        onClose={() => setIsOpen(false)}
+        onClose={() => { playSound('close'); setIsOpen(false); }}
         title={copy("Reportes guardados", "Saved reports")}
         size="sm"
       >
@@ -120,6 +121,7 @@ export default function ReportesGuardadosDialog({
                     type="button"
                     className="reporte-saved__load"
                     onClick={() => {
+                      playSound('open');
                       onLoad(s.mes);
                       setIsOpen(false);
                     }}
@@ -139,6 +141,7 @@ export default function ReportesGuardadosDialog({
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
+                      playSound('attention');
                       setPendingDelete(s);
                     }}
                     disabled={dbSaving}
@@ -161,7 +164,7 @@ export default function ReportesGuardadosDialog({
         title={copy("Eliminar reporte", "Delete report")}
         onConfirm={() => void confirmDeletion()}
         onCancel={() => {
-          if (!isDeleting) setPendingDelete(null);
+          if (!isDeleting) { playSound('close'); setPendingDelete(null); }
         }}
         isLoading={isDeleting || dbSaving}
       />

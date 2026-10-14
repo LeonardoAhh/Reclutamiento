@@ -7,6 +7,7 @@ import { KpiCard, type KpiTone } from "@/components/ui/KpiCard";
 import { Modal } from "@/components/ui/Modal";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { toNaturalCase } from "@/lib/utils";
+import { playSound } from "@/lib/sound";
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
@@ -160,7 +161,7 @@ export default function ReporteKpiDashboard({
             valueSize: "compact" as const,
             icon: <Building2 size={18} />,
             tone: getTone(kpis.worstAreaCount, { warning: 1, destructive: 11 }),
-            onClick: kpis.worstArea ? () => setIsWorstAreaModalOpen(true) : undefined,
+            onClick: kpis.worstArea ? () => { playSound('open'); setIsWorstAreaModalOpen(true); } : undefined,
         },
     ];
 
@@ -181,7 +182,7 @@ export default function ReporteKpiDashboard({
             <Modal
                 className="report-dialog"
                 isOpen={isWorstAreaModalOpen}
-                onClose={() => setIsWorstAreaModalOpen(false)}
+                onClose={() => { playSound('close'); setIsWorstAreaModalOpen(false); }}
                 title={`${copy("Incidencias", "Incidents")} · ${worstAreaLabel}`}
                 size="sm"
                 presentation={isMobile ? "modal" : "sheet"}

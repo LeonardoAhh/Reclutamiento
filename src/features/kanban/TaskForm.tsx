@@ -11,6 +11,7 @@ import { TaskPreview } from './TaskPreview';
 import { CoverError, prepareKanbanCover } from './cover';
 import { useKanbanCover } from './useKanbanCover';
 import type { KanbanCopy } from './copy';
+import { playSound } from '@/lib/sound';
 
 interface TaskFormProps {
   initial: KanbanTask | null;
@@ -71,13 +72,16 @@ export function TaskForm({ initial, initialStatus, copy: t, busy, error, onClose
       setCoverPreview(coverObjectUrl.current);
       setCoverFile(prepared);
       setCoverUploadId(crypto.randomUUID());
+      playSound('ready');
     } catch (cause) {
       if (coverSelection.current !== selection) return;
       const code = cause instanceof CoverError ? cause.code : 'processing';
       setCoverError(t.coverErrors[code]);
+      playSound('error');
     } finally { if (coverSelection.current === selection) setCoverProcessing(false); }
   }
   function removeCover() {
+    playSound('tap');
     coverSelection.current += 1;
     if (coverObjectUrl.current) URL.revokeObjectURL(coverObjectUrl.current);
     coverObjectUrl.current = null;
@@ -92,6 +96,7 @@ export function TaskForm({ initial, initialStatus, copy: t, busy, error, onClose
   function close() {
     if (busy) return;
     if (dirty) {
+      playSound('warning');
       if (!discard) closeFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
       setDiscard(true);
     }
@@ -100,9 +105,10 @@ export function TaskForm({ initial, initialStatus, copy: t, busy, error, onClose
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (busy || discard || coverProcessing || (wizard && wizardStep === 0)) return;
-    if (coverError) { coverInputRef.current?.focus(); return; }
+    if (coverError) { playSound('warning'); coverInputRef.current?.focus(); return; }
     const problem = validateTaskDraft(draft);
     if (problem) {
+      playSound('warning');
       setValidation(problem);
       const field = problem === 'required' ? titleRef.current
         : problem === 'descriptionLimit' ? event.currentTarget.querySelector<HTMLTextAreaElement>('textarea')
@@ -119,6 +125,7 @@ export function TaskForm({ initial, initialStatus, copy: t, busy, error, onClose
     <div className="form-group">
       <label htmlFor={`${id}-title`}>{t.titleLabel}</label>
       <input className="type-body-md" ref={titleRef} id={`${id}-title`} required maxLength={160}
+        data-cuelume-type=""
         value={draft.title} disabled={busy || discard} aria-invalid={validation === 'required'}
         aria-describedby={validation === 'required' ? `${id}-validation` : undefined}
         onChange={event => { setDraft({ ...draft, title: event.target.value }); setValidation(null); }} />
@@ -128,18 +135,19 @@ export function TaskForm({ initial, initialStatus, copy: t, busy, error, onClose
         <label htmlFor={`${id}-kind`}>{t.kind}</label>
         <CustomSelect id={`${id}-kind`} value={draft.kind} disabled={busy || discard} showPlaceholderOption={false}
           options={TASK_KINDS.map(value => ({ value, label: t.kinds[value] }))}
-          onChange={value => { if (isTaskKind(value)) setDraft({ ...draft, kind: value }); }} />
+          onChange={value => { if (isTaskKind(value)) { playSound('select'); setDraft({ ...draft, kind: value }); } }} />
       </div>
       <div className="form-group">
         <label htmlFor={`${id}-status`}>{t.status}</label>
         <CustomSelect id={`${id}-status`} value={draft.status} disabled={busy || discard} showPlaceholderOption={false}
           options={TASK_STATUSES.map(value => ({ value, label: t.statuses[value] }))}
-          onChange={value => { if (isTaskStatus(value)) setDraft({ ...draft, status: value }); }} />
+          onChange={value => { if (isTaskStatus(value)) { playSound('select'); setDraft({ ...draft, status: value }); } }} />
       </div>
     </div>
     <div className="form-group">
       <label htmlFor={`${id}-description`}>{t.description}</label>
       <textarea className="type-body-md" id={`${id}-description`} rows={4} maxLength={4000}
+        data-cuelume-type=""
         aria-invalid={validation === 'descriptionLimit'}
         aria-describedby={validation === 'descriptionLimit' ? `${id}-validation` : undefined}
         value={draft.description} disabled={busy || discard}
@@ -178,7 +186,7 @@ export function TaskForm({ initial, initialStatus, copy: t, busy, error, onClose
   const discardNotice = <div className="kanban-form__discard" role="group" aria-labelledby={`${id}-discard`}>
     <p id={`${id}-discard`} className="type-body-md">{t.discardText}</p>
     <div className="kanban-task__actions">
-      <button type="button" className="btn-secondary" autoFocus
+      <button type="button" className="btn-secondary" data-cuelume-close="" autoFocus
         onClick={() => {
           setDiscard(false);
           requestAnimationFrame(() => {
@@ -193,11 +201,11 @@ export function TaskForm({ initial, initialStatus, copy: t, busy, error, onClose
   const deleteAction = initial && onDelete ? <button type="button" className="btn-ghost kanban-form__delete" disabled={busy || discard}
     aria-label={`${confirmDelete ? t.confirm : t.remove}: ${initial.title}`}
     aria-describedby={confirmDelete ? `${id}-delete-notice` : undefined} onBlur={() => setConfirmDelete(false)}
-    onClick={() => { if (confirmDelete) void onDelete(); else setConfirmDelete(true); }}>
+    onClick={() => { if (confirmDelete) void onDelete(); else { playSound('warning'); setConfirmDelete(true); } }}>
     <Trash2 size="var(--icon-size-md)" aria-hidden="true" />{confirmDelete ? t.confirm : t.remove}
   </button> : undefined;
   const editAction = initial && !editing ? <button type="button" className="kanban-toolbar-button"
-    disabled={busy} onClick={() => setEditing(true)}>
+    disabled={busy} onClick={() => { playSound('open'); setEditing(true); }}>
     <Pencil size="var(--icon-size-md)" aria-hidden="true" />{t.edit}
   </button> : undefined;
   const form = <form ref={formRef} id={`${id}-form`} className={`kanban-dialog-form${wizard ? ' modal-wizard-form' : ''}`}
@@ -209,12 +217,12 @@ export function TaskForm({ initial, initialStatus, copy: t, busy, error, onClose
       submitLabel={t.save} submittingLabel={t.saving} notice={notice}
       onBeforeStepChange={(current, next) => {
         if (coverProcessing) return false;
-        if (coverError) { coverInputRef.current?.focus(); return false; }
-        if (next <= current) { setWizardStep(next); return true; }
+        if (coverError) { playSound('warning'); coverInputRef.current?.focus(); return false; }
+        if (next <= current) { playSound('navigate'); setWizardStep(next); return true; }
         const problem = validateTaskDraft({ ...draft, due_date: null, due_time: null, checklist: [] });
         setValidation(problem);
-        if (problem) titleRef.current?.focus();
-        if (!problem) setWizardStep(next);
+        if (problem) { playSound('warning'); titleRef.current?.focus(); }
+        if (!problem) { playSound('navigate'); setWizardStep(next); }
         return problem === null;
       }}
       steps={[

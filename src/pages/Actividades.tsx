@@ -33,6 +33,7 @@ import { TaskDetailsModal } from "@/components/ui/TaskDetailsModal";
 import { VacancyAssignmentSection } from "@/components/ui/VacancyAssignmentSection";
 import { toast } from "@/lib/notify";
 import { getActivityImagePath } from "./activityImageNavigation";
+import { bindSoundInteractions, playSound } from "@/lib/sound";
 import "./Actividades.css";
 
 function isImage(filename: string): boolean {
@@ -42,6 +43,7 @@ function isImage(filename: string): boolean {
 }
 
 export function Actividades() {
+  useEffect(() => bindSoundInteractions(document), []);
   const isMobile = useIsMobile();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -253,6 +255,7 @@ export function Actividades() {
     const updated = await updateActivity(activityId, {
       asignado_a: recruiterId || null,
     });
+    playSound(updated ? "success" : "error");
     setIsAssigningVacancy(false);
     return Boolean(updated);
   };
@@ -274,6 +277,7 @@ export function Actividades() {
     );
 
     setIsCreatingVacancy(false);
+    playSound(act ? "success" : "error");
     if (act) {
       setIsCreateVacanteModalOpen(false);
       setVacanteTitulo("");
@@ -306,6 +310,7 @@ export function Actividades() {
     }
 
     setIsCreating(false);
+    playSound(act ? "success" : "error");
     if (act) {
       setCreateModalType(null);
       setTitulo("");
@@ -317,6 +322,7 @@ export function Actividades() {
   };
 
   const openDetails = async (activity: Activity) => {
+    playSound("open");
     const requestId = ++proofsRequestRef.current;
     setSelectedActivity(activity);
     setProofs([]);
@@ -339,6 +345,7 @@ export function Actividades() {
     setIsUpdatingStatus(true);
 
     const updated = await updateActivityStatus(selectedActivity.id!, newStatus);
+    playSound(updated ? "success" : "error");
     setIsUpdatingStatus(false);
     if (updated) {
       setSelectedActivity(updated as Activity);
@@ -357,6 +364,7 @@ export function Actividades() {
     const file = e.target.files[0];
 
     if (file.size > MAX_FILE_SIZE) {
+      playSound("warning");
       toast.error({
         title: en ? "File too large" : "Archivo demasiado grande",
         description: en ? `The limit is 10 MB. Your file is ${(file.size / (1024 * 1024)).toFixed(1)} MB.` : `El límite es 10 MB. Tu archivo pesa ${(file.size / (1024 * 1024)).toFixed(1)} MB.`,
@@ -367,6 +375,7 @@ export function Actividades() {
 
     setIsUploadingProof(true);
     const proof = await uploadProof(selectedActivity.id!, file);
+    playSound(proof ? "success" : "error");
     if (proof) setProofs((prev) => [proof, ...prev]);
     setIsUploadingProof(false);
     e.target.value = "";
@@ -374,11 +383,13 @@ export function Actividades() {
 
   const handleDeleteProof = async (proofId: string, url: string) => {
     const ok = await deleteProof(proofId, url);
+    playSound(ok ? "success" : "error");
     if (ok) setProofs((prev) => prev.filter((proof) => proof.id !== proofId));
     return ok;
   };
 
   const openEdit = (activity: Activity, e?: React.MouseEvent) => {
+    playSound("open");
     e?.stopPropagation();
     setPreviewResponsibility(false);
     setSelectedActivity(activity);
@@ -410,6 +421,7 @@ export function Actividades() {
         editReferenceImageFile,
       );
       if (!url) {
+        playSound("error");
         setIsEditing(false);
         return;
       }
@@ -428,6 +440,7 @@ export function Actividades() {
       await removeReferenceImage(selectedActivity.id!, newImageUrl);
     }
     setIsEditing(false);
+    playSound(act ? "success" : "error");
     if (act) {
       setIsEditModalOpen(false);
       setPreviewResponsibility(false);
@@ -438,6 +451,7 @@ export function Actividades() {
   const handleDelete = async (activity: Activity) => {
     if (!activity.id) return false;
     const ok = await deleteActivity(activity.id);
+    playSound(ok ? "success" : "error");
     if (ok) {
       setIsEditModalOpen(false);
       setPreviewResponsibility(false);
@@ -521,19 +535,19 @@ export function Actividades() {
     "isOpen"
   > = {
     onClose: () => {
-      if (!isCreating) setCreateModalType(null);
+      if (!isCreating) { playSound("close"); setCreateModalType(null); }
     },
     isCreating,
     titulo,
     setTitulo,
     asignadoA,
-    setAsignadoA,
+    setAsignadoA: (value) => { playSound("select"); setAsignadoA(value); },
     recruitersOptions: teamRecruiterOptions,
     descripcion,
     setDescripcion,
     referenceImagePreview,
     referenceImageFile,
-    setReferenceImageFile,
+    setReferenceImageFile: (file) => { playSound("select"); setReferenceImageFile(file); },
     setReferenceImagePreview,
     onSubmit: handleCreate,
   };
@@ -548,7 +562,7 @@ export function Actividades() {
       <main className="actividades-page container">
         <PageHeading className="app-page-title">{en ? "Activities" : "Actividades"}</PageHeading>
 
-      <Tabs.Root className="actividades-tabs" defaultValue={
+      <Tabs.Root className="actividades-tabs" onValueChange={() => playSound("select")} defaultValue={
         searchParams.get("tab") === "responsibilities" ? "responsibilities"
           : searchParams.get("tab") === "activities" ? "activities" : "vacancies"
       }>
@@ -571,13 +585,18 @@ export function Actividades() {
             isAdmin={isAdmin}
             currentUserId={profile?.id}
             isNew={isNewActivity}
-            onCreate={() => setIsCreateVacanteModalOpen(true)}
+            onCreate={() => { playSound("open"); setIsCreateVacanteModalOpen(true); }}
             recruiterOptions={vacancyRecruiterOptions}
             isAssigning={isAssigningVacancy}
             onAssign={(vacancyId, assigneeId) => {
               void handleAssignVacancy(vacancyId, assigneeId);
             }}
-            onDelete={(vacancy) => vacancy.id ? deleteActivity(vacancy.id) : Promise.resolve(false)}
+            onDelete={async (vacancy) => {
+              if (!vacancy.id) return false;
+              const deleted = await deleteActivity(vacancy.id);
+              playSound(deleted ? "success" : "error");
+              return deleted;
+            }}
           />
         </Tabs.Content>
 
@@ -590,14 +609,14 @@ export function Actividades() {
             pagination={{
               currentPage: responsabilidadesPage,
               totalPages: responsabilidadesTotalPages,
-              onPageChange: goToresponsabilidadesPage,
-              onPrev: prevresponsabilidadesPage,
-              onNext: nextresponsabilidadesPage,
+              onPageChange: (page) => { playSound("navigate"); goToresponsabilidadesPage(page); },
+              onPrev: () => { playSound("navigate", { direction: "back" }); prevresponsabilidadesPage(); },
+              onNext: () => { playSound("navigate"); nextresponsabilidadesPage(); },
               canGoPrev: canGoPrevResponsabilidades,
               canGoNext: canGoNextResponsabilidades,
             }}
             isNew={isNewActivity}
-            onCreate={() => setCreateModalType("rutinaria")}
+            onCreate={() => { playSound("open"); setCreateModalType("rutinaria"); }}
             onOpen={openResponsibility}
           />
         </Tabs.Content>
@@ -614,16 +633,16 @@ export function Actividades() {
             pagination={{
               currentPage: actividadesPage,
               totalPages: actividadesTotalPages,
-              onPageChange: goToActividadesPage,
-              onPrev: prevActividadesPage,
-              onNext: nextActividadesPage,
+              onPageChange: (page) => { playSound("navigate"); goToActividadesPage(page); },
+              onPrev: () => { playSound("navigate", { direction: "back" }); prevActividadesPage(); },
+              onNext: () => { playSound("navigate"); nextActividadesPage(); },
               canGoPrev: canGoPrevActividades,
               canGoNext: canGoNextActividades,
             }}
             isNew={isNewActivity}
-            onStatusFilterChange={setStatusFilter}
-            onClearFilters={() => setStatusFilter("todas")}
-            onCreate={() => setCreateModalType("unica")}
+            onStatusFilterChange={(status) => { if (status !== statusFilter) playSound("select"); setStatusFilter(status); }}
+            onClearFilters={() => { playSound("select"); setStatusFilter("todas"); }}
+            onCreate={() => { playSound("open"); setCreateModalType("unica"); }}
             onOpen={openDetails}
           />
         </Tabs.Content>
@@ -633,11 +652,12 @@ export function Actividades() {
       <CreateVacancyModal
         isOpen={isCreateVacanteModalOpen}
         onClose={() => {
-          if (!isCreatingVacancy) setIsCreateVacanteModalOpen(false);
+          if (!isCreatingVacancy) { playSound("close"); setIsCreateVacanteModalOpen(false); }
         }}
         isCreating={isCreatingVacancy}
         area={vacanteArea}
         onAreaChange={(value) => {
+          playSound("select");
           setVacanteArea(value);
           setVacanteSeccion("");
           setVacanteTitulo("");
@@ -645,15 +665,16 @@ export function Actividades() {
         areasOptions={areasOptions}
         seccion={vacanteSeccion}
         onSeccionChange={(value) => {
+          playSound("select");
           setVacanteSeccion(value);
           setVacanteTitulo("");
         }}
         seccionesOptions={seccionesOptions}
         puesto={vacanteTitulo}
-        onPuestoChange={setVacanteTitulo}
+        onPuestoChange={(value) => { playSound("select"); setVacanteTitulo(value); }}
         puestosOptions={puestosOptions}
         asignadoA={vacanteAsignadoA}
-        onAsignadoAChange={setVacanteAsignadoA}
+        onAsignadoAChange={(value) => { playSound("select"); setVacanteAsignadoA(value); }}
         recruitersOptions={[
           { value: "", label: en ? "Unassigned" : "Sin asignar" },
           ...reclutadores.map((reclutador) => ({
@@ -678,7 +699,7 @@ export function Actividades() {
       <EditActivityModal
         isOpen={isEditModalOpen}
         onClose={() => {
-          if (!isEditing) { setIsEditModalOpen(false); setPreviewResponsibility(false); }
+          if (!isEditing) { playSound("close"); setIsEditModalOpen(false); setPreviewResponsibility(false); }
         }}
         isEditing={isEditing}
         activityType={
@@ -690,7 +711,7 @@ export function Actividades() {
         titulo={editTitulo}
         setTitulo={setEditTitulo}
         asignadoA={editAsignadoA}
-        setAsignadoA={setEditAsignadoA}
+        setAsignadoA={(value) => { playSound("select"); setEditAsignadoA(value); }}
         recruitersOptions={selectedActivity?.asignado_a && !teamRecruiterOptions.some(option => option.value === selectedActivity.asignado_a)
           ? [...teamRecruiterOptions, { value: selectedActivity.asignado_a,
             label: `${members.find(member => member.profile_id === selectedActivity.asignado_a)?.full_name ?? (en ? 'Current assignment' : 'Asignación actual')} (${en ? 'inactive' : 'inactivo'})` }]
@@ -700,7 +721,7 @@ export function Actividades() {
         referenceImagePreview={editReferenceImagePreview}
         referenceImageFile={editReferenceImageFile}
         existingReferenceImage={editExistingReferenceImage}
-        setReferenceImageFile={setEditReferenceImageFile}
+        setReferenceImageFile={(file) => { playSound("select"); setEditReferenceImageFile(file); }}
         setReferenceImagePreview={setEditReferenceImagePreview}
         setExistingReferenceImage={setEditExistingReferenceImage}
         onSubmit={handleEdit}
@@ -710,7 +731,7 @@ export function Actividades() {
           display_name: members.find(member => member.profile_id === selectedActivity.asignado_a)?.full_name,
         } : undefined}
         currentUserId={profile?.id}
-        onStartEditing={() => setPreviewResponsibility(false)}
+        onStartEditing={() => { playSound("select"); setPreviewResponsibility(false); }}
         onDelete={isAdmin && previewResponsibility && selectedActivity ? () => handleDelete(selectedActivity) : undefined}
       />
 
@@ -721,6 +742,7 @@ export function Actividades() {
       <TaskDetailsModal
         isOpen={isDetailModalOpen}
         onClose={() => {
+          playSound("close");
           proofsRequestRef.current += 1;
           setIsDetailModalOpen(false);
         }}
@@ -729,7 +751,7 @@ export function Actividades() {
         onStatusChange={handleStatusChange}
         isUpdatingStatus={isUpdatingStatus}
         onImageOpen={(proofId) => {
-          if (selectedActivity?.id) navigate(getActivityImagePath(selectedActivity.id, "activities", proofId, statusFilter));
+          if (selectedActivity?.id) { playSound("navigate"); navigate(getActivityImagePath(selectedActivity.id, "activities", proofId, statusFilter)); }
         }}
         proofsLoading={proofsLoading}
         proofs={proofs}

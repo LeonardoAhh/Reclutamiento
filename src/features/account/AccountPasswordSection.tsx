@@ -35,6 +35,7 @@ export function AccountPasswordSection({ copy, children, actionsTarget }: {
       ref={toggleRef}
       type="button"
       className="account-setting-row"
+      data-cuelume-open=""
       aria-expanded={open}
       aria-controls={panelId}
       onClick={() => { setFocusReady(false); setOpen(true); }}

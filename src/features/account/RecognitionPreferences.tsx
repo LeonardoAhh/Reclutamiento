@@ -11,6 +11,7 @@ import {
   type RecognitionFrequency,
 } from '@/lib/recruiterRecognition';
 import type { AccountCopy } from '@/pages/account-translations';
+import { playSound } from '@/lib/sound';
 import { AccountSection } from './AccountSection';
 
 /** Preferencias de reconocimientos del reclutador, editables en línea. */
@@ -24,13 +25,19 @@ export function RecognitionPreferences({ copy, profileId }: { copy: AccountCopy;
   function changeFrequency(next: RecognitionFrequency) {
     const saved = setRecognitionFrequency(profileId, next);
     setSaveError(!saved);
-    if (saved) setFrequency(next);
+    if (saved) {
+      setFrequency(next);
+      playSound('select');
+    } else playSound('error', { emphasis: 'subtle' });
   }
 
   function changeDismissed(dismissed: boolean) {
     const saved = setRecognitionMonthDismissed(profileId, dismissed);
     setSaveError(!saved);
-    if (saved) setDismissedThisMonth(dismissed);
+    if (saved) {
+      setDismissedThisMonth(dismissed);
+      playSound('toggle');
+    } else playSound('error', { emphasis: 'subtle' });
   }
 
   return (

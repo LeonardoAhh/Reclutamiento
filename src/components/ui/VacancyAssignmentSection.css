@@ -263,7 +263,7 @@
   min-block-size: var(--icon-size-lg);
   max-inline-size: 100%;
   align-items: center;
-  padding-inline: var(--design-spacing-xs);
+  padding-inline: var(--design-spacing-xxs);
   border: var(--border-width) solid var(--color-control-border);
   border-radius: var(--rounded-md);
   background: transparent;

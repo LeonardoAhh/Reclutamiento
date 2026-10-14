@@ -6,9 +6,10 @@ interface LanguageToggleProps {
   className?: string;
   iconOnly?: boolean;
   children?: ReactNode;
+  sound?: boolean;
 }
 
-export function LanguageToggle({ className, iconOnly = false, children }: LanguageToggleProps) {
+export function LanguageToggle({ className, iconOnly = false, children, sound = false }: LanguageToggleProps) {
   const { language, setLanguage } = useLanguage();
   const nextLanguage = language === "es" ? "en" : "es";
   const label = language === "es"
@@ -18,6 +19,7 @@ export function LanguageToggle({ className, iconOnly = false, children }: Langua
   return (
     <button
       type="button"
+      data-cuelume-toggle={sound ? '' : undefined}
       className={className}
       aria-label={label}
       title={label}

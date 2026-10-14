@@ -7,6 +7,7 @@ import { HOME_PATH, LOGOUT_PATH } from "@/components/layout/navigation";
 import { toNaturalCase } from "@/lib/utils";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useSignOut } from "./useSignOut";
+import { playSound } from "@/lib/sound";
 import "./LogoutPage.css";
 
 function getReturnPath(state: unknown): string {
@@ -71,7 +72,10 @@ export function LogoutPage() {
             <button
               type="button"
               className="btn-secondary"
-              onClick={() => navigate(getReturnPath(state), { replace: true })}
+              onClick={() => {
+                playSound('navigate');
+                navigate(getReturnPath(state), { replace: true });
+              }}
               disabled={isLoading}
             >
               {english ? "Cancel" : "Cancelar"}

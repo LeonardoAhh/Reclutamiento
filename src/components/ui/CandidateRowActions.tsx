@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/DropdownMenu';
 import type { Candidate } from '@/lib/types';
+import { playSound } from '@/lib/sound';
 import './CandidateRowActions.css';
 
 interface CandidateRowActionsProps {
@@ -37,7 +38,10 @@ export function CandidateRowActions({
 
   return (
     <div className="candidate-row-actions">
-      <DropdownMenu open={open} onOpenChange={setOpen}>
+      <DropdownMenu open={open} onOpenChange={(nextOpen) => {
+        if (nextOpen) playSound('open');
+        setOpen(nextOpen);
+      }}>
         <DropdownMenuTrigger asChild>
           <button
             type="button"

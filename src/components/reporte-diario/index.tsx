@@ -57,10 +57,12 @@ import type { ReporteDiarioSummary } from "@/hooks/useReporteDiario";
 import { useReportLocale } from "./useReportLocale";
 import { useReportDayDetails } from "./useReportDayDetails";
 import { useReportDayRouteLoading } from "./useReportDayRouteLoading";
+import { bindSoundInteractions, playSound } from "@/lib/sound";
 
 const SAVE_SUCCESS_DURATION_MS = 1500;
 
 export default function ReporteDiarioContent() {
+  useEffect(() => bindSoundInteractions(document), []);
   const { en, copy, month, incident } = useReportLocale();
   const [rows, setRows] = useState<ReporteRow[]>([]);
   const [selectedMes, setSelectedMes] = useState("");
@@ -271,6 +273,7 @@ export default function ReporteDiarioContent() {
   }, [rows, currentMonth, departamentoFilter, turnoFilter]);
 
   const openEmployeeModal = useCallback((employeeId: string) => {
+    playSound('open');
     setSelectedEmployee(employeeId);
     setEmpDetailOpen(true);
   }, []);
@@ -345,6 +348,7 @@ export default function ReporteDiarioContent() {
 
         const json: unknown = JSON.parse(text);
         if (!Array.isArray(json)) {
+          playSound('error');
           setErrors([
             en ? "The JSON content must contain a list of records." : "El contenido JSON debe contener una lista de registros.",
           ]);
@@ -353,6 +357,7 @@ export default function ReporteDiarioContent() {
         const { rows: parsed, errors: errs } = parseReporteJSON(json);
 
         if (errs.length > 0) {
+          playSound('error');
           setErrors(errs);
           return;
         }
@@ -360,6 +365,7 @@ export default function ReporteDiarioContent() {
         setRows(parsed);
         setSelectedMes(parsed[0]?.mes ?? "");
         setFileName(sourceName);
+        playSound('ready');
         try {
           sessionStorage.setItem("reporteDiarioCache", JSON.stringify(json));
         } catch (error) {
@@ -370,6 +376,7 @@ export default function ReporteDiarioContent() {
         }
         toast.success({ title: en ? "Report loaded" : "Reporte cargado" });
       } catch (err) {
+        playSound('error');
         const msg = `${en ? "Error checking the report" : "Error al revisar el reporte"}: ${err instanceof Error ? err.message : String(err)}`;
         setErrors([msg]);
         toast.error({ title: errorTitle });
@@ -386,6 +393,7 @@ export default function ReporteDiarioContent() {
         file.type !== "application/json" &&
         !file.name.toLowerCase().endsWith(".json")
       ) {
+        playSound('error');
         toast.error({ title: en ? "Invalid file format" : "Formato de archivo inválido" });
         return;
       }
@@ -457,6 +465,7 @@ export default function ReporteDiarioContent() {
   }, []);
 
   const handleClearFile = useCallback(() => {
+    playSound('close');
     setRows([]);
     setFileName("");
     setErrors([]);
@@ -574,11 +583,12 @@ export default function ReporteDiarioContent() {
   const handleLoadFromDb = useCallback(
     async (mes: string) => {
       const record = await fetchByMes(mes);
-      if (!record) return;
+      if (!record) { playSound('error'); return; }
       const { rows: parsed, errors: errs } = parseReporteJSON(
         record.data as unknown[],
       );
       if (errs.length > 0) {
+        playSound('error');
         setErrors(errs);
         return;
       }
@@ -586,6 +596,7 @@ export default function ReporteDiarioContent() {
       setSelectedMes(mes);
       setFileName(mes);
       setErrors([]);
+      playSound('ready');
       // panel is always visible; no collapse
     },
     [fetchByMes],
@@ -599,6 +610,7 @@ export default function ReporteDiarioContent() {
   const handleDeleteFromDb = useCallback(
     async (id: string) => {
       const result = await deleteReport(id);
+      playSound(result.success ? 'success' : 'error');
       if (result.success) {
         const updated = await fetchSummaries();
         setSavedSummaries(updated);
@@ -664,10 +676,16 @@ export default function ReporteDiarioContent() {
       nextDay={nextDay}
       areas={selectedDayAreaSummary}
       selectedArea={selectedArea}
-      onSelectArea={setSelectedArea}
+      onSelectArea={area => {
+        playSound(area ? 'select' : 'close');
+        setSelectedArea(area);
+      }}
       detailRows={selectedAreaDetailRows}
       selectedTab={selectedIncidentTab}
-      onSelectTab={setSelectedIncidentTab}
+      onSelectTab={tab => {
+        playSound(tab ? 'select' : 'close');
+        setSelectedIncidentTab(tab);
+      }}
       dayCounts={selectedDayCounts}
       incidentSummary={selectedDayIncidentSummary}
     />;
@@ -738,6 +756,7 @@ export default function ReporteDiarioContent() {
                       <button
                         type="button"
                         className="reporte-hero__recent-item"
+                        data-cuelume-open=""
                         onClick={() => void handleLoadFromDb(summary.mes)}
                         aria-label={`${copy("Abrir reporte de", "Open report for")} ${month(summary.mes)}`}
                       >
@@ -774,6 +793,7 @@ export default function ReporteDiarioContent() {
                 <Link
                   className="btn-secondary reporte-hero__motivos-link"
                   to="/departure-reasons"
+                  data-cuelume-navigate=""
                 >
                   <BarChart3 size="var(--icon-size-sm)" aria-hidden="true" />
                   {copy("Motivos de baja", "Reasons for leaving")}
@@ -904,7 +924,7 @@ export default function ReporteDiarioContent() {
             />
           )}
 
-          <Link className="btn-secondary" to="/departure-reasons">
+          <Link className="btn-secondary" to="/departure-reasons" data-cuelume-navigate="">
             <BarChart3 size="var(--icon-size-sm)" aria-hidden="true" />
             {copy("Motivos de baja", "Reasons for leaving")}
           </Link>
@@ -1032,6 +1052,7 @@ export default function ReporteDiarioContent() {
                             type="button"
                             className="reporte-top-emp-btn"
                             onClick={() => {
+                              playSound('open');
                               setTopEmpModalOpen(true);
                             }}
                             data-testid="top-incidence-btn"
@@ -1054,6 +1075,7 @@ export default function ReporteDiarioContent() {
                       selectedMonthHolidayLabels={selectedMonthHolidayLabels}
                       currentMonth={currentMonth}
                       onSelectDay={day => {
+                        playSound('navigate');
                         setCalendarDay(day);
                         navigate(getReportDayPath(currentMonth, day));
                       }}
@@ -1069,6 +1091,7 @@ export default function ReporteDiarioContent() {
         <ReporteEmployeeDetail
           open={empDetailOpen}
           onClose={() => {
+            playSound('close');
             setEmpDetailOpen(false);
             setSelectedEmployee("");
           }}
@@ -1084,7 +1107,7 @@ export default function ReporteDiarioContent() {
         {/* ── Modal: Top 10 empleados con más incidencias ──────── */}
         <AnalisisAsistenciaModal
           isOpen={topEmpModalOpen}
-          onClose={() => setTopEmpModalOpen(false)}
+          onClose={() => { playSound('close'); setTopEmpModalOpen(false); }}
           topIncidenceEmployees={topIncidenceEmployees}
           getDrillDownDays={getDrillDownDays}
           formatMes={month}

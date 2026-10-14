@@ -7,9 +7,10 @@ interface ThemeSelectProps {
   language?: 'es' | 'en';
   className?: string;
   children?: ReactNode;
+  sound?: boolean;
 }
 
-export function ThemeSelect({ language = 'es', className, children }: ThemeSelectProps) {
+export function ThemeSelect({ language = 'es', className, children, sound = false }: ThemeSelectProps) {
   const id = useId();
   const { resolvedTheme, storageError, setPreference } = useTheme();
   const nextTheme = resolvedTheme === 'dark' ? 'light' : 'dark';
@@ -24,6 +25,7 @@ export function ThemeSelect({ language = 'es', className, children }: ThemeSelec
     <div className={['theme-select', className].filter(Boolean).join(' ')}>
       <button
         type="button"
+        data-cuelume-toggle={sound ? '' : undefined}
         className="theme-select__trigger"
         data-mode={resolvedTheme}
         aria-label={actionLabel}
