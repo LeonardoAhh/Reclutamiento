@@ -1,4 +1,5 @@
 import { toNaturalCase } from '@/lib/utils';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { kanbanCopy } from '@/features/kanban/copy';
 import { KanbanStatusBadge } from '@/features/kanban/KanbanBadge';
 import { getEvaluationStatusLabel } from './copy';
@@ -9,6 +10,17 @@ import type { TaskStatus } from '@/features/kanban/types';
 interface EvaluationAreaCardProps {
   area: EvaluationArea;
   language: Language;
+  areasHeadingId: string;
+  areasHeading: string;
+  areaNavigation: {
+    label: string;
+    previousLabel: string;
+    nextLabel: string;
+    previousDisabled: boolean;
+    nextDisabled: boolean;
+    onPrevious: () => void;
+    onNext: () => void;
+  };
   copy: {
     responsible: string;
     status: string;
@@ -34,6 +46,9 @@ const STATUS_BADGE_STATE: Record<EvaluationArea['status'], TaskStatus> = {
 export function EvaluationAreaCard({
   area,
   language,
+  areasHeadingId,
+  areasHeading,
+  areaNavigation,
   copy,
 }: EvaluationAreaCardProps) {
   const completedPositions = area.positions.filter(
@@ -57,8 +72,35 @@ export function EvaluationAreaCard({
   return (
     <article
       className="evaluation-area-card"
-      aria-labelledby={`evaluation-area-${area.id}`}
+      aria-labelledby={`${areasHeadingId} evaluation-area-${area.id}`}
     >
+      <header className="performance-evaluations-page__areas-heading">
+        <h2 id={areasHeadingId}>{areasHeading}</h2>
+        <div
+          className="performance-evaluations-page__area-navigation"
+          role="group"
+          aria-label={areaNavigation.label}
+        >
+          <button
+            type="button"
+            className="btn-icon"
+            aria-label={areaNavigation.previousLabel}
+            disabled={areaNavigation.previousDisabled}
+            onClick={areaNavigation.onPrevious}
+          >
+            <ChevronLeft aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            className="btn-icon"
+            aria-label={areaNavigation.nextLabel}
+            disabled={areaNavigation.nextDisabled}
+            onClick={areaNavigation.onNext}
+          >
+            <ChevronRight aria-hidden="true" />
+          </button>
+        </div>
+      </header>
       <header className="evaluation-area-card__header">
         <h3 id={`evaluation-area-${area.id}`}>
           {toNaturalCase(area.name, { preserveAcronyms: false })}

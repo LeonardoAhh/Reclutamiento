@@ -127,24 +127,24 @@ export function EvaluationProgramSummary({
       className="evaluation-program-summary"
       aria-labelledby="evaluation-program-summary-title"
     >
-      <div className="evaluation-program-summary__heading">
-        <h2 id="evaluation-program-summary-title">{copy.chartTitle}</h2>
-        <button
-          type="button"
-          className="btn-icon evaluation-program-summary__copy-button"
-          onClick={() => void handleCopyEmail()}
-          aria-label={copied ? copy.emailCopied : copy.copyEmail}
-          title={copied ? copy.emailCopied : copy.copyEmail}
-        >
-          <MorphingIcon
-            icon={copied ? CheckIconData : CopyIconData}
-            size="var(--icon-size-sm)"
-            aria-hidden="true"
-          />
-          <span className="sr-only">{copied ? copy.emailCopied : copy.copyEmail}</span>
-        </button>
-      </div>
       <div className="evaluation-program-summary__card">
+        <div className="evaluation-program-summary__heading">
+          <h2 id="evaluation-program-summary-title">{copy.chartTitle}</h2>
+          <button
+            type="button"
+            className="btn-icon evaluation-program-summary__copy-button"
+            onClick={() => void handleCopyEmail()}
+            aria-label={copied ? copy.emailCopied : copy.copyEmail}
+            title={copied ? copy.emailCopied : copy.copyEmail}
+          >
+            <MorphingIcon
+              icon={copied ? CheckIconData : CopyIconData}
+              size="var(--icon-size-sm)"
+              aria-hidden="true"
+            />
+            <span className="sr-only">{copied ? copy.emailCopied : copy.copyEmail}</span>
+          </button>
+        </div>
         <div className="evaluation-program-summary__timeline">
           <div className="evaluation-program-summary__metric-heading">
             <span>{copy.elapsedTime}</span>

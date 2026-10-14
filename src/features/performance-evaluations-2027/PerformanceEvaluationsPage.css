@@ -33,6 +33,7 @@
 .evaluation-program-summary__heading {
   display: flex;
   flex-wrap: wrap;
+  grid-column: 1 / -1;
   align-items: center;
   justify-content: space-between;
   gap: var(--design-spacing-sm);
@@ -67,8 +68,9 @@
   display: grid;
   gap: var(--design-spacing-md);
   min-inline-size: 0;
+  margin: var(--design-spacing-xxs);
   padding: var(--design-spacing-md);
-  border: var(--border-width) solid var(--color-hairline);
+  border: var(--border-width) dashed var(--color-hairline);
   border-radius: var(--rounded-lg);
   background: var(--color-surface-card);
 }
@@ -79,6 +81,10 @@
   align-content: start;
   gap: var(--design-spacing-sm);
   min-inline-size: 0;
+  padding: var(--design-spacing-md);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  background: var(--color-canvas-soft);
 }
 
 .evaluation-program-summary__dates {
@@ -527,6 +533,7 @@
   }
 
   .evaluation-area-card__header,
+  .performance-evaluations-page__areas-heading,
   .evaluation-area-card__summary,
   .evaluation-area-card__positions {
     grid-column: 1 / -1;

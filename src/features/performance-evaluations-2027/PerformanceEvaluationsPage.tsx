@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { PageHeading } from '@/components/layout/PageHeading';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { EvaluationAreaCard } from './EvaluationAreaCard';
@@ -33,45 +32,30 @@ export function PerformanceEvaluationsPage() {
         className="performance-evaluations-page__areas"
         aria-labelledby="performance-evaluations-areas-title"
       >
-        <div className="performance-evaluations-page__areas-heading">
-          <h2 id="performance-evaluations-areas-title">{copy.areas}</h2>
-          <div
-            className="performance-evaluations-page__area-navigation"
-            role="group"
-            aria-label={copy.areaNavigation}
-          >
-            <button
-              type="button"
-              className="btn-icon"
-              aria-label={copy.previousArea}
-              disabled={selectedAreaIndex === 0}
-              onClick={() => {
-                setSelectedAreaIndex((index) => Math.max(0, index - 1));
-              }}
-            >
-              <ChevronLeft aria-hidden="true" />
-            </button>
-            <button
-              type="button"
-              className="btn-icon"
-              aria-label={copy.nextArea}
-              disabled={selectedAreaIndex >= evaluationProgram.areas.length - 1}
-              onClick={() => {
-                setSelectedAreaIndex((index) =>
-                  Math.min(evaluationProgram.areas.length - 1, index + 1),
-                );
-              }}
-            >
-              <ChevronRight aria-hidden="true" />
-            </button>
-          </div>
-        </div>
         <div className="performance-evaluations-page__area-list">
           {selectedArea && (
             <EvaluationAreaCard
               area={selectedArea}
               language={language}
               copy={copy}
+              areasHeadingId="performance-evaluations-areas-title"
+              areasHeading={copy.areas}
+              areaNavigation={{
+                label: copy.areaNavigation,
+                previousLabel: copy.previousArea,
+                nextLabel: copy.nextArea,
+                previousDisabled: selectedAreaIndex === 0,
+                nextDisabled:
+                  selectedAreaIndex >= evaluationProgram.areas.length - 1,
+                onPrevious: () => {
+                  setSelectedAreaIndex((index) => Math.max(0, index - 1));
+                },
+                onNext: () => {
+                  setSelectedAreaIndex((index) =>
+                    Math.min(evaluationProgram.areas.length - 1, index + 1),
+                  );
+                },
+              }}
             />
           )}
         </div>
