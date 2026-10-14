@@ -32,6 +32,7 @@ function KanbanWorkspace({ userId, archived, focusView, onChangeView }: {
   const id = useId();
   const viewRef = useRef<HTMLButtonElement>(null);
   const addButtonRef = useRef<HTMLButtonElement>(null);
+  const [desktopTabsTarget, setDesktopTabsTarget] = useState<HTMLDivElement | null>(null);
   const [editor, setEditor] = useState<KanbanEditor | null>(null);
   const [message, setMessage] = useState('');
   const viewFocusDone = useRef(false);
@@ -77,7 +78,7 @@ function KanbanWorkspace({ userId, archived, focusView, onChangeView }: {
     return saved;
   }
   const viewAction = (
-    <button ref={attachViewButton} type="button" className="kanban-toolbar-button kanban-view-button"
+    <button ref={attachViewButton} type="button" className={`${archived ? 'kanban-toolbar-button' : 'btn-secondary'} kanban-view-button`}
       disabled={board.busy || editor !== null} aria-controls={id} onClick={() => onChangeView(!archived)}>
       {archived ? <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" /> : <Archive size="var(--icon-size-md)" aria-hidden="true" />}
       {archived ? t.backToBoard : t.archiveView}
@@ -87,7 +88,7 @@ function KanbanWorkspace({ userId, archived, focusView, onChangeView }: {
     <button
       ref={addButtonRef}
       type="button"
-      className="kanban-toolbar-button kanban-content__add"
+      className="btn-primary kanban-content__add"
       disabled={disabled || editor !== null}
       aria-label={`${t.addCard}: ${t.statuses.pending}`}
       onClick={() => openEditor(null, 'pending')}
@@ -97,7 +98,7 @@ function KanbanWorkspace({ userId, archived, focusView, onChangeView }: {
     </button>
   );
   return (
-    <main className="kanban-page type-body-md" aria-labelledby={`${id}-title`}>
+    <main className="kanban-page container type-body-md" aria-labelledby={`${id}-title`}>
       <PageHeading id={`${id}-title`} className="app-page-title">{t.title}</PageHeading>
 
       {!(board.loading && !board.ready) && <p className="sr-only" role="status">{board.loading ? t.loading : message}</p>}
@@ -118,15 +119,17 @@ function KanbanWorkspace({ userId, archived, focusView, onChangeView }: {
       </div>}
       <section id={id} aria-busy={board.loading} aria-labelledby={`${id}-heading`} className="kanban-content">
         {!archived && <h2 id={`${id}-heading`} className="sr-only">{t.board}</h2>}
-        <div className="kanban-content__header">
+        <div className={`kanban-content__header${archived ? '' : ' kanban-content__header--board'}`}>
           {archived ? <h2 id={`${id}-heading`} className="type-body-strong">{t.archiveView}</h2>
             : addAction}
           {viewAction}
+          {!archived && <div ref={setDesktopTabsTarget} className="kanban-desktop-tabs" />}
         </div>
         {board.loading && !board.ready && <KanbanSkeleton label={t.loading} />}
         {board.ready && archived && board.tasks.length === 0 && <p className="type-body-md">{t.archiveEmpty}</p>}
         {board.ready && (archived ? <ArchivedTasks tasks={board.tasks} copy={t} disabled={disabled} onRestore={archive} />
           : <KanbanBoard tasks={board.tasks} copy={t} disabled={disabled} busy={board.busy} now={now}
+            desktopTabsTarget={desktopTabsTarget}
             editor={editor} error={actionError} onEdit={task => openEditor(task)}
             getAddButton={() => addButtonRef.current}
             onDelete={remove} onMove={move} onArchive={archive}

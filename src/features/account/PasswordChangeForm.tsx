@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState, type FormEvent } from 'react';
+import { createPortal } from 'react-dom';
 import { changePassword } from '@/lib/auth';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useInlineConfirm } from '@/hooks/useInlineConfirm';
@@ -8,6 +9,7 @@ type Field = 'current' | 'new' | 'confirm' | 'form';
 type FormError = { field: Field; message: string } | null;
 
 interface PasswordChangeFormProps {
+  actionsTarget: HTMLElement | null;
   onCancel: () => void;
   /** Enfoca la contraseña actual cuando el panel ya terminó de abrirse. */
   focusOnMount?: boolean;
@@ -17,10 +19,11 @@ interface PasswordChangeFormProps {
 }
 
 export function PasswordChangeForm({
-  onCancel, focusOnMount = false, onChanged, submitLabel = 'Cambiar contraseña', cancelLabel = 'Cancelar',
+  actionsTarget, onCancel, focusOnMount = false, onChanged, submitLabel = 'Cambiar contraseña', cancelLabel = 'Cancelar',
 }: PasswordChangeFormProps) {
   const { language } = useLanguage();
   const english = language === 'en';
+  const formId = useId();
   const currentId = useId();
   const newId = useId();
   const confirmId = useId();
@@ -124,7 +127,7 @@ export function PasswordChangeForm({
   }
 
   return (
-    <form className="password-change-form" onSubmit={handleSubmit} noValidate>
+    <form id={formId} className="password-change-form" onSubmit={handleSubmit} noValidate>
       <div className="form-group">
         <label htmlFor={currentId}>{english ? 'Current password' : 'Contraseña actual'}</label>
         <input
@@ -194,18 +197,19 @@ export function PasswordChangeForm({
       <p id={discardNoticeId} className="sr-only" role="status">
         {discard.confirming ? (english ? 'Press again to discard the entered passwords.' : 'Pulsa de nuevo para descartar las contraseñas ingresadas.') : ''}
       </p>
-      <div className="password-change-form__actions">
-        <button type="button" className="btn-secondary" onClick={handleClose} disabled={submitting}
+      {actionsTarget && createPortal(<div className="password-change-form__actions">
+        <button type="button" className="password-change-form__action" onClick={handleClose} disabled={submitting}
           data-confirming={discard.confirming || undefined}
           aria-describedby={discard.confirming ? discardNoticeId : undefined} {...discard.triggerProps}>
-          {discard.confirming
+          <span className="password-change-form__action-label">{discard.confirming
             ? (english ? 'Discard' : 'Descartar')
-            : english && cancelLabel === 'Cancelar' ? 'Cancel' : cancelLabel}
+            : english && cancelLabel === 'Cancelar' ? 'Cancel' : cancelLabel}</span>
         </button>
-        <button type="submit" className="btn-primary" disabled={submitting} aria-busy={submitting}>
-          {submitting ? (english ? 'Saving…' : 'Guardando…') : english && submitLabel === 'Cambiar contraseña' ? 'Change password' : submitLabel}
+        <button type="submit" form={formId} className="password-change-form__action password-change-form__action--primary" disabled={submitting} aria-busy={submitting}
+          aria-label={submitLabel}>
+          <span className="password-change-form__action-label">{submitting ? (english ? 'Saving…' : 'Guardando…') : (english ? 'Change' : 'Cambiar')}</span>
         </button>
-      </div>
+      </div>, actionsTarget)}
     </form>
   );
 }

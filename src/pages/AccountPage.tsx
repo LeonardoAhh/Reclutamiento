@@ -1,8 +1,5 @@
-import { useId } from 'react';
-import { Link } from 'react-router-dom';
-import { LogOut } from 'lucide-react';
+import { useId, useState } from 'react';
 import { PageHeading } from '@/components/layout/PageHeading';
-import { ACCOUNT_PATH, LOGOUT_PATH } from '@/components/layout/navigation';
 import { AccountAdminSection } from '@/features/account/AccountAdminSection';
 import { AccountPasswordSection } from '@/features/account/AccountPasswordSection';
 import { AccountProfile } from '@/features/account/AccountProfile';
@@ -17,6 +14,7 @@ import './AccountPage.css';
 
 export function AccountPage() {
   const settingsId = useId();
+  const [passwordActionsTarget, setPasswordActionsTarget] = useState<HTMLDivElement | null>(null);
   const { profile, user, username, profileLoading, loading: authLoading } = useAuth();
   const { language } = useLanguage();
   const copy = accountCopy(language);
@@ -31,9 +29,11 @@ export function AccountPage() {
       <div className="account-page__layout" data-admin={profile.role === 'admin' || undefined}>
         <div className="account-page__aside">
           <AccountProfile copy={copy} displayName={displayName} email={user?.email} />
-          <AccountSection id={settingsId} title={copy.settings} className="account-settings">
-            <AccountPasswordSection copy={copy} />
-            <AccountPreferencesSection copy={copy} />
+          <AccountSection id={settingsId} title={copy.settings} className="account-settings"
+            action={<div ref={setPasswordActionsTarget} className="account-password__header-actions" />}>
+            <AccountPasswordSection copy={copy} actionsTarget={passwordActionsTarget}>
+              <AccountPreferencesSection copy={copy} />
+            </AccountPasswordSection>
           </AccountSection>
           {profile.role === 'reclutador' && <RecognitionPreferences copy={copy} profileId={profile.id} />}
         </div>
@@ -43,9 +43,6 @@ export function AccountPage() {
           )}
         </div>
       </div>
-      <Link className="account-signout" to={LOGOUT_PATH} state={{ returnTo: ACCOUNT_PATH }}>
-        <LogOut size="var(--icon-size-sm)" aria-hidden="true" />{copy.signOut}
-      </Link>
     </main>
   );
 }

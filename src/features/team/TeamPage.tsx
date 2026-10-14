@@ -5,12 +5,11 @@ import { Link, Navigate } from 'react-router-dom';
 import { ACCOUNT_PATH, HOME_PATH } from '@/components/layout/navigation';
 import { Badge } from '@/components/ui/Badge';
 import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton';
-import { SearchField } from '@/components/ui/SearchField';
 import { useAuth, type Profile } from '@/hooks/useAuth';
 import { listProfiles } from '@/lib/users';
 import { useTeamDirectory } from './TeamProvider';
 import { archiveTeamMember, setTeamMemberStatus } from './api';
-import { normalizeRecruiterName, type TeamMember } from './types';
+import type { TeamMember } from './types';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { teamCopy, translateTeamMessage } from './translations';
 import { TeamMemberForm } from './TeamMemberForm';
@@ -22,9 +21,8 @@ export function TeamPage() {
   const { profile } = useAuth();
   const { members, refresh } = useTeamDirectory();
   const id = useId();
-  const searchRef = useRef<HTMLInputElement>(null);
+  const addButtonRef = useRef<HTMLButtonElement>(null);
   const [profiles, setProfiles] = useState<Profile[] | null>(null);
-  const [search, setSearch] = useState('');
   const [editing, setEditing] = useState<TeamMember | null | undefined>(undefined);
   const [confirm, setConfirm] = useState<TeamMember | null>(null);
   const [removing, setRemoving] = useState<TeamMember | null>(null);
@@ -59,17 +57,16 @@ export function TeamPage() {
       await refresh();
       setMessage(copy.removedFromTeam(member.short_name));
       setRemoving(null);
-      requestAnimationFrame(() => searchRef.current?.focus());
+      requestAnimationFrame(() => addButtonRef.current?.focus());
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'No se pudo eliminar al integrante. Vuelve a intentar.');
       await refresh().catch(() => { /* El proveedor presenta el fallo de lectura. */ });
     } finally { setBusy(false); }
   }
-  const query = normalizeRecruiterName(search);
-  const filtered = members.filter(member => !member.archived_at && normalizeRecruiterName([member.full_name, member.short_name, ...member.aliases].join(' ')).includes(query));
+  const visibleMembers = members.filter(member => !member.archived_at);
   if (profile?.role !== 'admin') return <Navigate to={HOME_PATH} replace />;
   return <>
-    <main className="team-page container container--compact" aria-labelledby={`${id}-title`}>
+    <main className="team-page container" aria-labelledby={`${id}-title`}>
           <PageHeading id={`${id}-title`} className="app-page-title">
             <Link to={ACCOUNT_PATH} className="team-page__title-link" aria-label={`${copy.title}, ${copy.backToAccount}`}>
               <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
@@ -78,25 +75,21 @@ export function TeamPage() {
           </PageHeading>
       <section
         className="team-management"
-        aria-label={copy.teamMembers}
+        aria-labelledby={`${id}-members-title`}
         aria-busy={!profiles && !error}
       >
-        <div className="team-management__tools">
-          <SearchField
-            id={`${id}-search`}
-            ref={searchRef}
-            label={copy.search}
-            placeholder={language === 'en' ? 'Search' : 'Buscar'}
-            value={search}
-            onChange={event => setSearch(event.target.value)}
-          />
-          <button type="button" className="btn-primary" disabled={!profiles} onClick={() => setEditing(null)}>{copy.add}</button>
-        </div>
+        <header className="team-management__header">
+          <h2 id={`${id}-members-title`} className="team-management__title">{copy.teamMembers}</h2>
+          <button ref={addButtonRef} type="button" className="team-management__add" disabled={!profiles} onClick={() => setEditing(null)}>
+            <span className="team-management__add-label">{copy.add}</span>
+          </button>
+        </header>
+        <div className="team-management__body">
         {!profiles && !error && (
           <LoadingSkeleton label={copy.loadingAccounts} className="team-management__skeleton">
             <ul className="team-management__list team-management__skeleton-list" aria-hidden="true">
               {['first', 'second', 'third'].map((member) => (
-                <li className="team-management__member" key={member}>
+                <li className="team-management__member team-management__member--loading" key={member}>
                   <div className="team-management__skeleton-identity">
                     <span className="loading-skeleton__bone team-management__skeleton-name" />
                     <span className="loading-skeleton__bone team-management__skeleton-detail" />
@@ -112,12 +105,10 @@ export function TeamPage() {
             </ul>
           </LoadingSkeleton>
         )}
-        {error && <p className="form-error-text" role="alert">{translateTeamMessage(error, language)}</p>}
-        {message && <p role="status">{message}</p>}
-        {(profiles || error) && filtered.length === 0 && <div><p>{search ? copy.noMatches : copy.empty}</p>
-          {search && <button type="button" className="btn-secondary" onClick={() => setSearch('')}>{copy.clearSearch}</button>}
-        </div>}
-        {(profiles || error) && <ul className="team-management__list">{filtered.map(member => {
+        {error && <p className="team-management__feedback form-error-text" role="alert">{translateTeamMessage(error, language)}</p>}
+        {message && <p className="team-management__feedback" role="status">{message}</p>}
+        {(profiles || error) && visibleMembers.length === 0 && <p className="team-management__feedback">{copy.empty}</p>}
+        {(profiles || error) && <ul className="team-management__list">{visibleMembers.map(member => {
           const linked = profiles?.find(row => row.id === member.profile_id);
           const canDeactivate = member.profile_id !== profile?.id && linked?.role !== 'admin';
           const confirmingStatus = confirm?.id === member.id && confirm.active === member.active;
@@ -170,6 +161,7 @@ export function TeamPage() {
             </p>}
           </li>;
         })}</ul>}
+        </div>
       </section>
     </main>
     {editing !== undefined && profiles && <TeamMemberForm member={editing} profiles={profiles.filter(row => row.id === editing?.profile_id || !members.some(member => member.profile_id === row.id))}

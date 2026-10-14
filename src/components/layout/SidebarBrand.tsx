@@ -1,25 +1,13 @@
 import { motion, useReducedMotion } from 'framer-motion';
 import { fadeUp } from '@/lib/motion';
 import { useAuth } from '@/hooks/useAuth';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useTeamDirectory } from '@/features/team/TeamProvider';
 import { BrandMarkPath } from '@/components/ui/BrandMark';
-import { toNaturalCase } from '@/lib/utils';
 
 export function SidebarBrand() {
   const reduceMotion = useReducedMotion();
-  const { username, profile } = useAuth();
-  const { language } = useLanguage();
-  const { members } = useTeamDirectory();
-  const linkedMember = members.find(member => member.profile_id === profile?.id);
-  const displayName = toNaturalCase(profile?.display_name || username || '', {
-    preserveAcronyms: false,
-  });
-  const jobTitle = linkedMember?.job_title.trim() || (
-    profile?.role === 'admin'
-      ? language === 'en' ? 'Administrator' : 'Administrador'
-      : language === 'en' ? 'Recruiter' : 'Reclutador'
-  );
+  const { profile } = useAuth();
+  const roleLabel = profile?.role === 'admin' ? 'Administrador'
+    : profile?.role === 'reclutador' ? 'Reclutador' : '';
 
   return (
     <div className="sidebar__brand">
@@ -40,8 +28,8 @@ export function SidebarBrand() {
         </svg>
       </motion.span>
       <span className="sidebar__brand-text">
-        <span className="sidebar__brand-title" title={displayName}>{displayName}</span>
-        <span className="sidebar__brand-subtitle" title={jobTitle}>{jobTitle}</span>
+        <span className="sidebar__brand-title">ViñoPlastic</span>
+        <span className="sidebar__brand-subtitle">{roleLabel}</span>
       </span>
     </div>
   );

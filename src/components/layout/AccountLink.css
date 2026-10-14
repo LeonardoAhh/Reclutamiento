@@ -59,6 +59,11 @@
   letter-spacing: var(--type-body-md-tracking);
 }
 
+.account-link[aria-current="page"] .account-link__name {
+  display: none;
+}
+
 @media (min-width: 768px) {
   .account-link__surface { padding-inline: var(--design-spacing-xs); }
+  .account-link[aria-current="page"] .account-link__name { display: inline; }
 }

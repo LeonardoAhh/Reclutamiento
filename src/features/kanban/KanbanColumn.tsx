@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { useDndContext, useDroppable } from '@dnd-kit/core';
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { SortableContext, rectSortingStrategy, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
@@ -30,6 +30,7 @@ function DropColumn({ status, disabled, empty, pending, headingId, children }: D
 }
 
 interface KanbanColumnProps {
+  layout?: 'list' | 'grid';
   status: TaskStatus;
   tasks: KanbanTask[];
   copy: KanbanCopy;
@@ -45,7 +46,7 @@ interface KanbanColumnProps {
 }
 
 export function KanbanColumn({ status, tasks, copy: t, locked, dragging, pending, now, headingId, pageSize,
-  headingRef, editButtonRef, onEdit }: KanbanColumnProps) {
+  headingRef, editButtonRef, onEdit, layout = 'list' }: KanbanColumnProps) {
   const pagination = usePagination(tasks, pageSize);
   const motionTokens = useMotionTokens('--transition-spring');
   const rows = pagination.pageItems;
@@ -76,8 +77,8 @@ export function KanbanColumn({ status, tasks, copy: t, locked, dragging, pending
           <Badge className="kanban-column__count"><span className="sr-only">{t.total}: </span>{tasks.length}</Badge>
         </div>
       </header>
-      <SortableContext items={rows.map(task => task.id)} strategy={verticalListSortingStrategy}>
-        <ul className="kanban-column__list">
+      <SortableContext items={rows.map(task => task.id)} strategy={layout === 'grid' ? rectSortingStrategy : verticalListSortingStrategy}>
+        <ul className={`kanban-column__list${layout === 'grid' ? ' kanban-column__list--grid' : ''}`}>
           {rows.length === 0 && dragging && <li className="kanban-column__empty type-body-md">{t.dropHere}</li>}
           <AnimatePresence initial={false}>
             {rows.map(task => (

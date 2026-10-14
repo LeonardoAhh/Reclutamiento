@@ -391,6 +391,15 @@
   /* Ciclo decorativo existente de los estados vacíos; no es feedback de acción. */
   --transition-decorative-float: 3000ms ease-in-out;
   --motion-float-distance: var(--design-spacing-xs);
+  /* Page side-by-side: shared list/detail navigation (transitions.dev). */
+  --page-slide-dur: 250ms;
+  --page-fade-dur: var(--page-slide-dur);
+  --page-slide-distance: var(--motion-float-distance);
+  --page-blur: 3px;
+  --page-stagger: var(--transition-instant);
+  --page-exit-enabled: 1;
+  --page-slide-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --page-fade-ease: var(--page-slide-ease);
   --scale-pressed: 0.98;
   --transition-progress: 1400ms ease-in-out;
   --duration-brand-reveal: 1500ms;
