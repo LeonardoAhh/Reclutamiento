@@ -23,10 +23,18 @@ export function KanbanKindBadge({ kind, copy }: { kind: TaskKind; copy: KanbanCo
     <span>{copy.kinds[kind]}</span>
   </Badge>;
 }
-export function KanbanStatusBadge({ status, copy }: { status: TaskStatus; copy: KanbanCopy }) {
+export function KanbanStatusBadge({
+  status,
+  copy,
+  label,
+}: {
+  status: TaskStatus;
+  copy: KanbanCopy;
+  label?: string;
+}) {
   const Icon = STATUS_ICONS[status];
   return <Badge className="badge--compact kanban-badge" data-state={status}>
     <Icon size="var(--icon-size-sm)" aria-hidden="true" />
-    <span>{copy.statuses[status]}</span>
+    <span>{label ?? copy.statuses[status]}</span>
   </Badge>;
 }

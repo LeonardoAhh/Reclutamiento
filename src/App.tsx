@@ -32,6 +32,7 @@ import { CAREER_JOURNEY_ENABLED, CAREER_PATH } from '@/features/career/types';
 import { LEAVE_REQUESTS_PATH } from '@/features/leave/requests';
 import { KANBAN_PATH } from '@/features/kanban/types';
 import { ACTIVITY_IMAGE_ROUTE } from '@/pages/activityImageNavigation';
+import { PERFORMANCE_EVALUATIONS_2027_PATH } from '@/features/performance-evaluations-2027/types';
 import { useLanguage } from '@/contexts/LanguageContext';
 import {
   AccountPage,
@@ -49,6 +50,7 @@ import {
   LeaveRequestsPage,
   MotivosBaja,
   OrganizationChartPage,
+  PerformanceEvaluationsPage,
   Pipeline,
   ReportComparisonPage,
   ReporteDiario,
@@ -158,6 +160,7 @@ function App() {
                 <Route path={HOME_PATH} element={<HomePage />} />
                 <Route path={ORGANIZATION_CHART_PATH} element={<OrganizationChartPage />} />
                 <Route path={LEAVE_REQUESTS_PATH} element={<LeaveRequestsPage />} />
+                <Route path={PERFORMANCE_EVALUATIONS_2027_PATH} element={<PerformanceEvaluationsPage />} />
                 <Route path={CAREER_PATH} element={CAREER_JOURNEY_ENABLED
                   ? <CareerPage /> : <Navigate to={HOME_PATH} replace />} />
                 <Route path="/overview" element={<WithSupabaseData resources={WORKFORCE_DATA}><KpisPage /></WithSupabaseData>} />

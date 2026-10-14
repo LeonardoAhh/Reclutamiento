@@ -1,0 +1,534 @@
+.performance-evaluations-page {
+  display: grid;
+  gap: var(--design-spacing-xl);
+  min-inline-size: 0;
+  padding-block-end: var(--design-spacing-xxl);
+  color: var(--color-body);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.performance-evaluations-page h2,
+.evaluation-area-card h3,
+.evaluation-area-card h4 {
+  margin: 0;
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+  overflow-wrap: anywhere;
+}
+
+.evaluation-program-summary {
+  display: grid;
+  gap: var(--design-spacing-md);
+  min-inline-size: 0;
+}
+
+.evaluation-program-summary__heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--design-spacing-sm);
+  min-inline-size: 0;
+}
+
+.evaluation-program-summary .evaluation-program-summary__copy-button {
+  flex: 0 0 auto;
+  margin-inline-start: auto;
+  padding: 0;
+  inline-size: var(--touch-target-min);
+  block-size: var(--touch-target-min);
+  border: 0;
+  border-radius: var(--rounded-md);
+  background: transparent;
+  color: var(--color-ink);
+}
+
+.evaluation-program-summary .evaluation-program-summary__copy-button:hover:not(:disabled) {
+  background: transparent;
+  color: var(--color-ink);
+}
+
+
+.evaluation-program-summary__copy-button svg {
+  inline-size: var(--icon-size-sm);
+  block-size: var(--icon-size-sm);
+  flex: 0 0 auto;
+}
+
+.evaluation-program-summary__card {
+  display: grid;
+  gap: var(--design-spacing-md);
+  min-inline-size: 0;
+  padding: var(--design-spacing-md);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  background: var(--color-surface-card);
+}
+
+.evaluation-program-summary__timeline,
+.evaluation-program-summary__compliance {
+  display: grid;
+  align-content: start;
+  gap: var(--design-spacing-sm);
+  min-inline-size: 0;
+}
+
+.evaluation-program-summary__dates {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--design-spacing-sm);
+  margin: 0;
+}
+
+.evaluation-program-summary__dates > div,
+.evaluation-area-card__responsible > div {
+  display: grid;
+  gap: var(--design-spacing-xxs);
+  min-inline-size: 0;
+}
+
+.evaluation-program-summary__dates dt,
+.evaluation-area-card__label,
+.evaluation-area-card__responsible dt {
+  display: flex;
+  align-items: center;
+  gap: var(--design-spacing-xxs);
+  color: var(--color-mute);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+}
+
+.evaluation-program-summary__dates dt svg {
+  inline-size: var(--icon-size-sm);
+  block-size: var(--icon-size-sm);
+  flex: 0 0 auto;
+}
+
+.evaluation-program-summary__dates dd,
+.evaluation-area-card__responsible dd {
+  margin: 0;
+  color: var(--color-ink);
+  overflow-wrap: anywhere;
+}
+
+.evaluation-program-summary__dates dd > span {
+  display: block;
+  color: var(--color-mute);
+}
+
+.evaluation-program-summary__metric-heading {
+  display: grid;
+  justify-items: start;
+  gap: var(--design-spacing-xxs);
+  color: var(--color-body);
+}
+
+.evaluation-program-summary__metric-heading strong {
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-display-xl-size);
+  font-weight: var(--type-display-xl-weight);
+  line-height: var(--type-display-xl-line);
+  letter-spacing: var(--type-display-xl-tracking);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.evaluation-program-summary__metric-value {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--design-spacing-sm);
+  min-inline-size: 0;
+}
+
+.evaluation-program-summary__metric-heading span {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.evaluation-program-summary__metric-value > span {
+  color: var(--color-body);
+  font-family: var(--font-body);
+  font-size: var(--type-body-lg-size);
+  font-weight: var(--type-body-lg-weight);
+  line-height: var(--type-body-lg-line);
+  letter-spacing: var(--type-body-lg-tracking);
+}
+
+.evaluation-program-summary__progress-bar {
+  display: block;
+  inline-size: 100%;
+  block-size: var(--design-spacing-xxs);
+  overflow: hidden;
+  appearance: none;
+  border: 0;
+  border-radius: var(--rounded-full);
+  background: var(--color-hairline-strong);
+}
+
+.evaluation-program-summary__progress-bar::-webkit-progress-bar {
+  border-radius: var(--rounded-full);
+  background: var(--color-hairline-strong);
+}
+
+.evaluation-program-summary__progress-bar::-webkit-progress-value {
+  border-radius: var(--rounded-full);
+  background: var(--color-primary);
+}
+
+.evaluation-program-summary__progress-bar::-moz-progress-bar {
+  border-radius: var(--rounded-full);
+  background: var(--color-primary);
+}
+
+.evaluation-program-summary__compliance p {
+  margin: 0;
+  color: var(--color-mute);
+}
+
+.evaluation-area-card {
+  min-inline-size: 0;
+  padding: var(--design-spacing-md);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  background: var(--color-surface-card);
+}
+
+.performance-evaluations-page__areas {
+  display: grid;
+  gap: var(--design-spacing-sm);
+  min-inline-size: 0;
+}
+
+.performance-evaluations-page__areas-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--design-spacing-sm);
+  min-inline-size: 0;
+}
+
+.performance-evaluations-page__area-navigation {
+  display: flex;
+  align-items: center;
+  gap: var(--design-spacing-xxs);
+}
+
+.performance-evaluations-page__area-navigation .btn-icon {
+  border: 0;
+  background: transparent;
+}
+
+.performance-evaluations-page__area-navigation .btn-icon:hover:not(:disabled) {
+  background: transparent;
+}
+
+.performance-evaluations-page__area-navigation .btn-icon svg {
+  inline-size: var(--icon-size-sm);
+  block-size: var(--icon-size-sm);
+}
+
+.performance-evaluations-page__area-list {
+  display: grid;
+  gap: var(--design-spacing-md);
+  min-inline-size: 0;
+}
+
+.evaluation-area-card {
+  display: grid;
+  gap: var(--design-spacing-md);
+}
+
+.evaluation-area-card__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--design-spacing-sm);
+  min-inline-size: 0;
+}
+
+.evaluation-area-card__header h3 {
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  line-height: var(--type-heading-md-line);
+  letter-spacing: var(--type-heading-md-tracking);
+}
+
+.evaluation-area-card__summary {
+  display: grid;
+  gap: var(--design-spacing-sm);
+  min-inline-size: 0;
+}
+
+.evaluation-area-card__responsible {
+  display: grid;
+  align-content: start;
+  min-inline-size: 0;
+  margin: 0;
+  padding: var(--design-spacing-md);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  background: var(--color-canvas-soft);
+}
+
+.evaluation-area-card__responsible dd {
+  display: grid;
+  gap: var(--design-spacing-xxs);
+}
+
+.evaluation-area-card__responsible dd strong {
+  font-family: var(--font-body);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+  letter-spacing: var(--type-heading-sm-tracking);
+}
+
+.evaluation-area-card__responsible dd span {
+  display: block;
+  color: var(--color-mute);
+  overflow-wrap: anywhere;
+}
+
+.evaluation-area-card__progress {
+  display: grid;
+  align-content: start;
+  gap: var(--design-spacing-sm);
+  min-inline-size: 0;
+  padding: var(--design-spacing-md);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  background: var(--color-canvas-soft);
+}
+
+.evaluation-area-card__progress-caption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--design-spacing-xs);
+  color: var(--color-body);
+}
+
+.evaluation-area-card__progress-caption > :first-child {
+  color: var(--color-mute);
+}
+
+.evaluation-area-card__progress-caption > :last-child {
+  text-align: end;
+}
+
+.evaluation-area-card__progress-value {
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-heading-lg-size);
+  font-weight: var(--type-heading-lg-weight);
+  line-height: var(--type-heading-lg-line);
+  letter-spacing: var(--type-heading-lg-tracking);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.evaluation-area-card__progress-bar {
+  display: block;
+  inline-size: 100%;
+  block-size: var(--design-spacing-xxs);
+  overflow: hidden;
+  appearance: none;
+  border: 0;
+  border-radius: var(--rounded-full);
+  background: var(--color-hairline-strong);
+}
+
+.evaluation-area-card__progress-bar::-webkit-progress-bar {
+  border-radius: var(--rounded-full);
+  background: var(--color-hairline-strong);
+}
+
+.evaluation-area-card__progress-bar::-webkit-progress-value {
+  border-radius: var(--rounded-full);
+  background: var(--color-primary);
+}
+
+.evaluation-area-card__progress-bar::-moz-progress-bar {
+  border-radius: var(--rounded-full);
+  background: var(--color-primary);
+}
+
+.evaluation-area-card__positions {
+  display: grid;
+  gap: var(--design-spacing-sm);
+  padding-block-start: var(--design-spacing-md);
+  border-block-start: var(--border-width) solid var(--color-hairline);
+}
+
+.evaluation-area-card__positions-table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  color: var(--color-body);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.evaluation-area-card__positions-table thead {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+.evaluation-area-card__positions-table tbody tr {
+  display: grid;
+  gap: var(--design-spacing-xs);
+  padding: var(--design-spacing-sm);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  background: var(--color-surface-card);
+}
+
+.evaluation-area-card__positions-table tbody tr + tr {
+  margin-block-start: var(--design-spacing-xs);
+}
+
+.evaluation-area-card__positions-table tbody td {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: var(--design-spacing-xs);
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.evaluation-area-card__positions-table tbody td[data-label]::before {
+  color: var(--color-mute);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+  content: attr(data-label);
+}
+
+.evaluation-area-card__positions-table tbody td:nth-child(2) {
+  text-align: center;
+}
+
+.evaluation-area-card__positions-table tbody td:nth-child(2)[data-label]::before {
+  text-align: start;
+}
+
+@media (min-width: 768px) {
+  .evaluation-program-summary__card {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .evaluation-area-card__summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .evaluation-area-card__positions-table {
+    border-collapse: collapse;
+    table-layout: fixed;
+    background: var(--color-surface-card);
+  }
+
+  .evaluation-area-card__position-column {
+    inline-size: 60%;
+  }
+
+  .evaluation-area-card__category-column {
+    inline-size: 14%;
+  }
+
+  .evaluation-area-card__status-column {
+    inline-size: 26%;
+  }
+
+  .evaluation-area-card__positions-table thead {
+    position: static;
+    inline-size: auto;
+    block-size: auto;
+    overflow: visible;
+    clip: auto;
+    clip-path: none;
+    background: var(--color-canvas-soft);
+    white-space: normal;
+  }
+
+  .evaluation-area-card__positions-table th,
+  .evaluation-area-card__positions-table td {
+    padding: var(--design-spacing-sm);
+    border-block-end: var(--border-width) solid var(--color-hairline-strong);
+    text-align: start;
+    vertical-align: middle;
+  }
+
+  .evaluation-area-card__positions-table th {
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: var(--type-caption-up-size);
+    font-weight: var(--type-caption-up-weight);
+    line-height: var(--type-caption-up-line);
+    letter-spacing: var(--type-caption-up-tracking);
+  }
+
+  .evaluation-area-card__positions-table th:nth-child(2) {
+    text-align: center;
+  }
+
+  .evaluation-area-card__positions-table tbody tr,
+  .evaluation-area-card__positions-table tbody tr + tr {
+    display: table-row;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .evaluation-area-card__positions-table tbody td {
+    display: table-cell;
+  }
+
+  .evaluation-area-card__positions-table tbody td[data-label]::before {
+    display: none;
+    content: none;
+  }
+
+  .evaluation-area-card__positions-table tbody tr:last-child td {
+    border-block-end: 0;
+  }
+}
+
+@media (min-width: 1080px) {
+  .evaluation-area-card {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .evaluation-area-card__header,
+  .evaluation-area-card__summary,
+  .evaluation-area-card__positions {
+    grid-column: 1 / -1;
+  }
+}

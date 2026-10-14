@@ -1,0 +1,593 @@
+{
+  "startDate": "2026-09-28",
+  "deadline": "2026-11-23",
+  "periods": {
+    "first": {
+      "es": "Diciembre 2026 a mayo 2027",
+      "en": "December 2026 to May 2027"
+    },
+    "second": {
+      "es": "Junio 2027 a noviembre 2027",
+      "en": "June 2027 to November 2027"
+    }
+  },
+  "areas": [
+    {
+      "id": "recursos-humanos",
+      "name": "RECURSOS HUMANOS",
+      "responsibleName": "LIC. NOEMI HERNANDEZ",
+      "responsibleTitle": "JEFE DE RECURSOS HUMANOS",
+      "status": "Pendiente",
+      "positions": [
+        {
+          "id": "asistente-recursos-humanos",
+          "title": "ASISTENTE DE RECURSOS HUMANOS",
+          "status": "Pendiente"
+        },
+        {
+          "id": "analista-capacitacion",
+          "title": "ANALISTA DE CAPACITACIÓN",
+          "status": "Pendiente"
+        },
+        {
+          "id": "coordinador-reclutamiento-seleccion",
+          "title": "COORDINADOR DE RECLUTAMIENTO Y SELECCIÓN",
+          "status": "Pendiente"
+        },
+        {
+          "id": "analista-reclutamiento-seleccion-a",
+          "title": "ANALISTA DE RECLUTAMIENTO Y SELECCIÓN",
+          "category": "A",
+          "status": "Pendiente"
+        },
+        {
+          "id": "analista-recursos-humanos",
+          "title": "ANALISTA DE RECURSOS HUMANOS",
+          "status": "Pendiente"
+        },
+        {
+          "id": "analista-seguridad-higiene",
+          "title": "ANALISTA DE SEGURIDAD E HIGIENE",
+          "status": "Pendiente"
+        },
+        {
+          "id": "analista-reclutamiento-seleccion-b",
+          "title": "ANALISTA DE RECLUTAMIENTO Y SELECCIÓN",
+          "category": "B",
+          "status": "Pendiente"
+        },
+        {
+          "id": "auxiliar-limpieza",
+          "title": "AUXILIAR DE LIMPIEZA",
+          "status": "Pendiente"
+            }
+          ]
+        },
+        {
+          "id": "plantas",
+          "name": "Dirección",
+          "responsibleName": "ING. MIGUEL HERNANDEZ",
+          "responsibleTitle": "DIRECTOR DE PLANTAS",
+          "status": "Entregado",
+          "positions": [
+            {
+              "id": "auxiliar-programador",
+              "title": "AUXILIAR PROGRAMADOR",
+              "status": "Entregado"
+            },
+            {
+              "id": "coordinador-rps",
+              "title": "COORDINADOR DE RPS",
+              "status": "Entregado"
+            },
+            {
+              "id": "gerente-calidad",
+              "title": "GERENTE DE CALIDAD",
+              "status": "Entregado"
+            },
+            {
+              "id": "gerente-planta",
+              "title": "GERENTE DE PLANTA",
+              "status": "Entregado"
+            },
+            {
+              "id": "gerente-produccion",
+              "title": "GERENTE DE PRODUCCION",
+              "status": "Entregado"
+            },
+            {
+              "id": "gerente-proyectos",
+              "title": "GERENTE DE PROYECTOS",
+              "status": "Entregado"
+            },
+            {
+              "id": "jefe-logistica",
+              "title": "Jefe DE LOGISTICA",
+              "status": "Entregado"
+            },
+            {
+              "id": "supervisor-logistica",
+              "title": "SUPERVISOR DE LOGISTICA",
+              "status": "Entregado"
+            }
+          ]
+        },
+        {
+          "id": "proyectos",
+          "name": "PROYECTOS",
+          "responsibleName": "ING. ANA SALINAS",
+          "responsibleTitle": "GERENTE DE PROYECTOS",
+          "status": "Pendiente",
+          "positions": [
+            {
+              "id": "lider-proyectos-c",
+              "title": "LIDER DE PROYECTOS C",
+              "status": "Pendiente"
+            },
+            {
+              "id": "ingeniero-proyectos-a",
+              "title": "INGENIERO DE PROYECTOS A",
+              "status": "Pendiente"
+            },
+            {
+              "id": "ingeniero-proyectos-d",
+              "title": "INGENIERO DE PROYECTOS D",
+              "status": "Pendiente"
+            },
+            {
+              "id": "ingeniero-proyectos-b",
+              "title": "INGENIERO DE PROYECTOS B",
+              "status": "Pendiente"
+            },
+            {
+              "id": "auxiliar-proyectos",
+              "title": "AUXILIAR DE PROYECTOS",
+              "status": "Pendiente"
+            },
+            {
+              "id": "lider-cotizaciones",
+              "title": "LIDER DE COTIZACIONES",
+              "status": "Pendiente"
+            }
+          ]
+        },
+        {
+          "id": "mantenimiento",
+          "name": "MANTENIMIENTO",
+          "responsibleName": "ING. FERNANDO BRAVO",
+          "responsibleTitle": "JEFE DE MANTENIMIENTO",
+          "status": "Pendiente",
+          "positions": [
+            {
+              "id": "auxiliar-administrativo-mantenimiento",
+              "title": "AUXILIAR ADMINISTRATIVO DE MANTENIMIENTO",
+              "status": "Pendiente"
+            },
+            {
+              "id": "auxiliar-mantenimiento-a",
+              "title": "AUXILIAR DE MANTENIMIENTO A",
+              "status": "Pendiente"
+            },
+            {
+              "id": "auxiliar-mantenimiento-c",
+              "title": "AUXILIAR DE MANTENIMIENTO C",
+              "status": "Pendiente"
+            },
+            {
+              "id": "tecnico-mantenimiento-b",
+              "title": "TÉCNICO DE MANTENIMIENTO B",
+              "status": "Pendiente"
+            },
+            {
+              "id": "tecnico-mantenimiento-c",
+              "title": "TÉCNICO DE MANTENIMIENTO C",
+              "status": "Pendiente"
+            },
+            {
+              "id": "tecnico-mantenimiento-d",
+              "title": "TÉCNICO DE MANTENIMIENTO D",
+              "status": "Pendiente"
+            },
+            {
+              "id": "tecnico-mantenimiento-edificios-a",
+              "title": "TECNICO DE MANTENIMIENTO DE EDIFICIOS A",
+              "status": "Pendiente"
+            },
+            {
+              "id": "tecnico-especialista-mantenimiento-a",
+              "title": "TÉCNICO ESPECIALISTA DE MANTENIMIENTO A",
+              "status": "Pendiente"
+            },
+            {
+              "id": "tecnico-especialista-mantenimiento-b",
+              "title": "TÉCNICO ESPECIALISTA DE MANTENIMIENTO B",
+              "status": "Pendiente"
+            }
+          ]
+        },
+        {
+          "id": "calidad",
+          "name": "CALIDAD",
+          "responsibleName": "ING. IVAN INFANTE",
+          "responsibleTitle": "GERENTE DE CALIDAD",
+          "status": "Pendiente",
+          "positions": [
+            {
+              "id": "auxiliar-calidad",
+              "title": "AUXILIAR DE CALIDAD",
+              "status": "Pendiente"
+            },
+            {
+              "id": "ingeniero-calidad-a",
+              "title": "INGENIERO DE CALIDAD A",
+              "status": "Pendiente"
+            },
+            {
+              "id": "ingeniero-calidad-b",
+              "title": "INGENIERO DE CALIDAD B",
+              "status": "Pendiente"
+            },
+            {
+              "id": "ingeniero-calidad-c",
+              "title": "INGENIERO DE CALIDAD C",
+              "status": "Pendiente"
+            },
+            {
+              "id": "ingeniero-calidad-procesos-a",
+              "title": "INGENIERO DE CALIDAD PROCESOS A",
+              "status": "Pendiente"
+            },
+            {
+              "id": "inspector-calidad-a",
+              "title": "INSPECTOR DE CALIDAD A",
+              "status": "Pendiente"
+            },
+            {
+              "id": "inspector-calidad-b",
+              "title": "INSPECTOR DE CALIDAD B",
+              "status": "Pendiente"
+            },
+            {
+              "id": "inspector-calidad-c",
+              "title": "INSPECTOR DE CALIDAD C",
+              "status": "Pendiente"
+            },
+            {
+              "id": "inspector-calidad-d",
+              "title": "INSPECTOR DE CALIDAD D",
+              "status": "Pendiente"
+            },
+            {
+              "id": "inspector-recibo",
+              "title": "INSPECTOR RECIBO",
+              "status": "Pendiente"
+            },
+            {
+              "id": "jefe-metrologia",
+              "title": "JEFE DE METROLOGÍA",
+              "status": "Pendiente"
+            },
+            {
+              "id": "operador-acabados-gp-12-a",
+              "title": "OPERADOR DE ACABADOS GP-12 A",
+              "status": "Pendiente"
+            },
+            {
+              "id": "operador-acabados-gp-12-b",
+              "title": "OPERADOR DE ACABADOS GP-12 B",
+              "status": "Pendiente"
+            },
+            {
+              "id": "operador-acabados-gp-12-c",
+              "title": "OPERADOR DE ACABADOS GP-12 C",
+              "status": "Pendiente"
+            },
+            {
+              "id": "operador-acabados-gp-12-d",
+              "title": "OPERADOR DE ACABADOS GP-12 D",
+              "status": "Pendiente"
+            },
+            {
+              "id": "residente-a",
+              "title": "RESIDENTE A",
+              "status": "Pendiente"
+            },
+            {
+              "id": "residente-c",
+              "title": "RESIDENTE C",
+              "status": "Pendiente"
+            },
+            {
+              "id": "supervisor-acabados-gp12-b",
+              "title": "SUPERVISOR DE ACABADOS - GP12 B",
+              "status": "Pendiente"
+            },
+            {
+              "id": "supervisor-acabados-gp12-c",
+              "title": "SUPERVISOR DE ACABADOS - GP12 C",
+              "status": "Pendiente"
+            }
+          ]
+        },
+        {
+          "id": "metrologia",
+          "name": "METROLOGÍA",
+          "responsibleName": "ING. ARIADNA ESQUIVEL",
+          "responsibleTitle": "JEFE DE METROLOGÍA",
+          "status": "Pendiente",
+          "positions": [
+            {
+              "id": "auxiliar-metrologia",
+              "title": "AUXILIAR DE METROLOGÍA",
+              "status": "Pendiente"
+            },
+            {
+              "id": "metrologo-a",
+              "title": "METRÓLOGO A",
+              "status": "Pendiente"
+            },
+            {
+              "id": "metrologo-b",
+              "title": "METRÓLOGO B",
+              "status": "Pendiente"
+            },
+            {
+              "id": "metrologo-c",
+              "title": "METRÓLOGO C",
+              "status": "Pendiente"
+            },
+            {
+              "id": "supervisor-metrologia",
+              "title": "SUPERVISOR DE METROLOGÍA",
+              "status": "Pendiente"
+            }
+          ]
+        },
+        {
+          "id": "taller-moldes",
+          "name": "TALLER DE MOLDES",
+          "responsibleName": "ING. CESAR GOMEZ",
+          "responsibleTitle": "JEFE DE TALLER DE MOLDES",
+          "status": "Pendiente",
+          "positions": [
+            {
+              "id": "tecnico-moldes-a",
+              "title": "TÉCNICO DE MOLDES A",
+              "status": "Pendiente"
+            },
+            {
+              "id": "tecnico-moldes-b",
+              "title": "TÉCNICO DE MOLDES B",
+              "status": "Pendiente"
+            },
+            {
+              "id": "tecnico-moldes-c",
+              "title": "TÉCNICO DE MOLDES C",
+              "status": "Pendiente"
+            },
+            {
+              "id": "tecnico-moldes-d",
+              "title": "TÉCNICO DE MOLDES D",
+              "status": "Pendiente"
+            },
+            {
+              "id": "auxiliar-administrativo-taller-moldes",
+              "title": "AUXILIAR ADMINISTRATIVO DE TALLER DE MOLDES",
+              "status": "Pendiente"
+            }
+          ]
+        },
+        {
+          "id": "sgi",
+          "name": "SGI",
+          "responsibleName": "ING. EDGAR PEREZ",
+          "responsibleTitle": "JEFE DEL SGI",
+          "status": "Pendiente",
+          "positions": [
+            {
+              "id": "auxiliar-sgi-c",
+              "title": "AUXILIAR DEL SGI C",
+              "status": "Pendiente"
+            },
+            {
+              "id": "auxiliar-sgi-a",
+              "title": "AUXILIAR DEL SGI A",
+              "status": "Pendiente"
+            },
+            {
+              "id": "auxiliar-sgi-b",
+              "title": "AUXILIAR DEL SGI B",
+              "status": "Pendiente"
+            },
+            {
+              "id": "coordinador-sgi",
+              "title": "COORDINADOR DE SGI",
+              "status": "Pendiente"
+            }
+          ]
+        },
+        {
+          "id": "planta",
+          "name": "PLANTA",
+          "responsibleName": "ING. JAIME TERRAZAS",
+          "responsibleTitle": "GERENTE DE PLANTA",
+          "status": "Pendiente",
+          "positions": [
+            {
+              "id": "jefe-almacen",
+              "title": "JEFE DE ALMACÉN",
+              "status": "Pendiente"
+            },
+            {
+              "id": "jefe-mantenimiento",
+              "title": "JEFE DE MANTENIMIENTO",
+              "status": "Pendiente"
+            },
+            {
+              "id": "jefe-taller-moldes",
+              "title": "JEFE DE TALLER DE MOLDES",
+              "status": "Pendiente"
+            }
+          ]
+        },
+        {
+          "id": "produccion",
+          "name": "PRODUCCIÓN",
+          "responsibleName": "ING. CARLOS GOMEZ",
+          "responsibleTitle": "GERENTE DE PRODUCCIÓN",
+          "status": "Pendiente",
+          "positions": [
+            {
+              "id": "planeador-produccion",
+              "title": "PLANEADOR DE PRODUCCIÓN",
+              "status": "Pendiente"
+            },
+            {
+              "id": "asistente-produccion",
+              "title": "ASISTENTE DE PRODUCCIÓN",
+              "status": "Pendiente"
+            },
+            {
+              "id": "auxiliar-bascula-a",
+              "title": "AUXILIAR DE BÁSCULA A",
+              "status": "Pendiente"
+            },
+            {
+              "id": "auxiliar-bascula-b",
+              "title": "AUXILIAR DE BÁSCULA B",
+              "status": "Pendiente"
+            },
+            {
+              "id": "auxiliar-supervisor-a",
+              "title": "AUXILIAR DE SUPERVISOR A",
+              "status": "Pendiente"
+            },
+            {
+              "id": "auxiliar-scrap-a",
+              "title": "AUXILIAR SCRAP A",
+              "status": "Pendiente"
+            },
+            {
+              "id": "capturista-rps-a",
+              "title": "CAPTURISTA RPS A",
+              "status": "Pendiente"
+            },
+            {
+              "id": "check-list-a",
+              "title": "CHECK LIST A",
+              "status": "Pendiente"
+            },
+            {
+              "id": "check-list-b",
+              "title": "CHECK LIST B",
+              "status": "Pendiente"
+            },
+            {
+              "id": "materialista-a",
+              "title": "MATERIALISTA A",
+              "status": "Pendiente"
+            },
+            {
+              "id": "materialista-b",
+              "title": "MATERIALISTA B",
+              "status": "Pendiente"
+            },
+            {
+              "id": "montador-moldes-a",
+              "title": "MONTADOR DE MOLDES A",
+              "status": "Pendiente"
+            },
+            {
+              "id": "montador-moldes-b",
+              "title": "MONTADOR DE MOLDES B",
+              "status": "Pendiente"
+            },
+            {
+              "id": "montador-moldes-c",
+              "title": "MONTADOR DE MOLDES C",
+              "status": "Pendiente"
+            },
+            {
+              "id": "operador-maquina-a",
+              "title": "OPERADOR DE MÁQUINA A",
+              "status": "Pendiente"
+            },
+            {
+              "id": "operador-maquina-b",
+              "title": "OPERADOR DE MÁQUINA B",
+              "status": "Pendiente"
+            },
+            {
+              "id": "operador-maquina-c",
+              "title": "OPERADOR DE MÁQUINA C",
+              "status": "Pendiente"
+            },
+            {
+              "id": "operador-maquina-d",
+              "title": "OPERADOR DE MÁQUINA D",
+              "status": "Pendiente"
+            },
+            {
+              "id": "preparador-a",
+              "title": "PREPARADOR A",
+              "status": "Pendiente"
+            },
+            {
+              "id": "preparador-b",
+              "title": "PREPARADOR B",
+              "status": "Pendiente"
+            },
+            {
+              "id": "ingeniero-proceso-c",
+              "title": "INGENIERO DE PROCESO C",
+              "status": "Pendiente"
+            },
+            {
+              "id": "gerente-produccion",
+              "title": "GERENTE DE PRODUCCION",
+              "status": "Pendiente"
+            },
+            {
+              "id": "ingeniero-proceso-d",
+              "title": "INGENIERO DE PROCESO D",
+              "status": "Pendiente"
+            },
+            {
+              "id": "jefe-proceso",
+              "title": "JEFE DE PROCESO",
+              "status": "Pendiente"
+            },
+            {
+              "id": "jefe-produccion",
+              "title": "JEFE DE PRODUCCIÓN",
+              "status": "Pendiente"
+            },
+            {
+              "id": "supervisor-montaje",
+              "title": "SUPERVISOR DE MONTAJE",
+              "status": "Pendiente"
+            },
+            {
+              "id": "supervisor-produccion-a",
+              "title": "SUPERVISOR DE PRODUCCIÓN A",
+              "status": "Pendiente"
+            },
+            {
+              "id": "supervisor-produccion-b",
+              "title": "SUPERVISOR DE PRODUCCIÓN B",
+              "status": "Pendiente"
+            },
+            {
+              "id": "supervisor-produccion-c",
+              "title": "SUPERVISOR DE PRODUCCIÓN C",
+              "status": "Pendiente"
+            },
+            {
+              "id": "supervisor-produccion-d",
+              "title": "SUPERVISOR DE PRODUCCIÓN D",
+              "status": "Pendiente"
+            }
+          ]
+        }
+      ]
+    }

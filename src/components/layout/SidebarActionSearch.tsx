@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
-import { CalendarDays, Columns3, ContactRound, LayoutGrid, Network, UserRoundPlus } from 'lucide-react';
+import { CalendarDays, ClipboardCheck, Columns3, ContactRound, LayoutGrid, Network, UserRoundPlus } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { KANBAN_PATH } from '@/features/kanban/types';
+import { PERFORMANCE_EVALUATIONS_2027_PATH } from '@/features/performance-evaluations-2027/types';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { PLANTILLA_PATH } from '@/lib/plantillaNavigation';
@@ -35,6 +36,14 @@ const ORGANIZATION_ACTION = {
   es: 'Organigrama', en: 'Org chart',
 } as const;
 
+const EVALUATION_ACTION = {
+  id: 'performance-evaluations-2027',
+  path: PERFORMANCE_EVALUATIONS_2027_PATH,
+  icon: ClipboardCheck,
+  es: 'Evaluaciones 2027',
+  en: '2027 evaluations',
+} as const;
+
 export function SidebarActionSearch({ mobileMenuOpen, quickActions }: SidebarActionSearchProps) {
   const { language } = useLanguage();
   const navigate = useNavigate();
@@ -49,6 +58,7 @@ export function SidebarActionSearch({ mobileMenuOpen, quickActions }: SidebarAct
       es: quickActions.canReviewRequests ? 'Gestionar' : 'Solicitar',
       en: quickActions.canReviewRequests ? 'Requests' : 'Leave',
     }] : []),
+    EVALUATION_ACTION,
     ORGANIZATION_ACTION,
     { id: 'kanban' as const, path: KANBAN_PATH, icon: Columns3, es: 'Kanban', en: 'Kanban' },
   ];
@@ -135,14 +145,14 @@ export function SidebarActionSearch({ mobileMenuOpen, quickActions }: SidebarAct
           <ul className="sidebar-action-search__list" aria-label={language === 'en' ? 'Available actions' : 'Acciones disponibles'}>
             {actions.map((action, index) => {
               const Icon = action.icon;
-              if (action.id === 'kanban') return (
+              if (action.id === 'kanban' || action.id === 'performance-evaluations-2027') return (
                 <li key={action.id}>
-                  <Link to={KANBAN_PATH} className="sidebar-action-search__action"
+                  <Link to={action.path} className="sidebar-action-search__action"
                     ref={(node) => { actionRefs.current[index] = node; }}
                     onClick={() => setOpen(false)}
                     onKeyDown={(event) => handleActionKeyDown(event, index)}
-                    onPointerEnter={() => preloadRoute(KANBAN_PATH)}
-                    onFocus={() => preloadRoute(KANBAN_PATH)}>
+                    onPointerEnter={() => preloadRoute(action.path)}
+                    onFocus={() => preloadRoute(action.path)}>
                     <Icon size="var(--icon-size-md)" aria-hidden="true" />
                     <span>{language === 'en' ? action.en : action.es}</span>
                   </Link>

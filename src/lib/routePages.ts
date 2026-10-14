@@ -17,6 +17,7 @@ import { CAREER_PATH } from '@/features/career/types';
 import { LEAVE_REQUESTS_PATH } from '@/features/leave/requests';
 import { KANBAN_PATH } from '@/features/kanban/types';
 import { ACTIVITY_IMAGE_ROUTE } from '@/pages/activityImageNavigation';
+import { PERFORMANCE_EVALUATIONS_2027_PATH } from '@/features/performance-evaluations-2027/types';
 
 /** Las páginas de ruta no reciben props: toman sus datos del router y contexto. */
 type AnyComponent = ComponentType;
@@ -66,6 +67,7 @@ export const TeamPage = lazyWithPreload(() => import('@/features/team/TeamPage')
 export const LeaveRequestsPage = lazyWithPreload(() => import('@/pages/LeaveRequestsPage').then(({ LeaveRequestsPage }) => ({ default: LeaveRequestsPage })));
 export const HomePage = lazyWithPreload(() => import('@/pages/HomePage').then(({ HomePage }) => ({ default: HomePage })));
 export const OrganizationChartPage = lazyWithPreload(() => import('@/pages/OrganizationChartPage').then(({ OrganizationChartPage }) => ({ default: OrganizationChartPage })));
+export const PerformanceEvaluationsPage = lazyWithPreload(() => import('@/features/performance-evaluations-2027/PerformanceEvaluationsPage').then(({ PerformanceEvaluationsPage }) => ({ default: PerformanceEvaluationsPage })));
 
 /**
  * Dónde se capturó el snapshot, para reproducir su geometría en el fallback:
@@ -106,6 +108,7 @@ const CONFIGURACION_BONES: Readonly<Record<string, RouteBones>> = {
 const ROUTE_PAGES: readonly RoutePage[] = [
   { matches: exact(HOME_PATH), page: HomePage },
   { matches: exact(KANBAN_PATH), page: KanbanPage },
+  { matches: exact(PERFORMANCE_EVALUATIONS_2027_PATH), page: PerformanceEvaluationsPage },
   { matches: exact(ORGANIZATION_CHART_PATH), page: OrganizationChartPage },
   { matches: exact(LEAVE_REQUESTS_PATH), page: LeaveRequestsPage, bones: pageBones('leave-requests-page') },
   { matches: exact(CAREER_PATH), page: CareerPage },

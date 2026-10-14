@@ -13,6 +13,7 @@ import { RouteLoadingFallback } from './RouteLoadingFallback';
 import { CAREER_PATH } from '@/features/career/types';
 import { REPORT_COMPARISON_PATH, REPORT_DAY_PATTERN } from '@/components/reporte-diario/navigation';
 import { CANDIDATE_METRICS_PATH } from '@/pages/candidate-metrics/navigation';
+import { PERFORMANCE_EVALUATIONS_2027_PATH } from '@/features/performance-evaluations-2027/types';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const PAGE_TITLES: Readonly<Record<string, string>> = {
@@ -42,6 +43,11 @@ export function AppShell({ children }: { children: ReactNode }) {
   const location = useLocation();
 
   const pageTitle = useMemo(() => {
+    if (location.pathname === PERFORMANCE_EVALUATIONS_2027_PATH) {
+      return language === 'en'
+        ? '2027 Performance Evaluation Tracking'
+        : 'Seguimiento de Evaluaciones 2027';
+    }
     if (matchPath(REPORT_DAY_PATTERN, location.pathname)) return language === 'en' ? 'Day details' : 'Detalle del día';
     if (location.pathname === REPORT_COMPARISON_PATH) return language === 'en' ? 'Monthly comparison' : 'Comparativa mensual';
     if (location.pathname === CANDIDATE_METRICS_PATH) return language === 'en' ? 'Metrics and KPIs' : 'Métricas y KPIs';
