@@ -34,7 +34,7 @@ export function RecognitionPreferences({ copy, profileId }: { copy: AccountCopy;
   }
 
   return (
-    <AccountSection id={id} title={copy.recognition} description={copy.recognitionDescription}>
+    <AccountSection id={id} title={copy.recognition} description={copy.recognitionDescription} className="account-recognition">
       <div className="account-preferences">
         <div className="form-group account-preferences__field">
           <label htmlFor={`${id}-frequency`}>{copy.frequency}</label>

@@ -1,7 +1,8 @@
-import { useId, useRef, type ChangeEvent } from 'react';
+import { useId, useRef, useState, type ChangeEvent } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Camera, Trash2 } from 'lucide-react';
 import { Avatar } from '@/components/ui/Avatar';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/DropdownMenu';
 import { useInlineConfirm } from '@/hooks/useInlineConfirm';
 import { useMotionTokens } from '@/hooks/useMotionTokens';
 import type { AccountCopy } from '@/pages/account-translations';
@@ -13,13 +14,14 @@ interface AccountProfileProps {
   email?: string | null;
 }
 
-type FocusTarget = 'save' | 'avatar' | null;
+type FocusTarget = 'save' | 'camera' | null;
 
 /** Identidad de la cuenta con edición de foto en línea (sin diálogos). */
 export function AccountProfile({ copy, displayName, email }: AccountProfileProps) {
   const id = useId();
   const editor = useAvatarEditor(copy);
   const confirmDelete = useInlineConfirm();
+  const [menuOpen, setMenuOpen] = useState(false);
   const motionTokens = useMotionTokens('--transition-fast');
   const inputRef = useRef<HTMLInputElement>(null);
   const focusTarget = useRef<FocusTarget>(null);
@@ -34,7 +36,10 @@ export function AccountProfile({ copy, displayName, email }: AccountProfileProps
   };
 
   function openPicker() {
-    if (!busy) inputRef.current?.click();
+    if (!busy) {
+      inputRef.current?.click();
+      setMenuOpen(false);
+    }
   }
 
   function handleFile(event: ChangeEvent<HTMLInputElement>) {
@@ -45,12 +50,12 @@ export function AccountProfile({ copy, displayName, email }: AccountProfileProps
   }
 
   function cancelSelection() {
-    focusTarget.current = 'avatar';
+    focusTarget.current = 'camera';
     editor.clear();
   }
 
   async function save() {
-    focusTarget.current = 'avatar';
+    focusTarget.current = 'camera';
     if (!(await editor.upload())) focusTarget.current = null;
   }
 
@@ -59,9 +64,10 @@ export function AccountProfile({ copy, displayName, email }: AccountProfileProps
       confirmDelete.request(true);
       return;
     }
-    focusTarget.current = 'avatar';
+    focusTarget.current = 'camera';
     const removed = await editor.remove();
     confirmDelete.cancel();
+    if (removed) setMenuOpen(false);
     if (!removed) focusTarget.current = null;
   }
 
@@ -72,15 +78,33 @@ export function AccountProfile({ copy, displayName, email }: AccountProfileProps
   };
 
   return (
-    <section className="account-card account-profile" aria-labelledby={`${id}-name`} aria-busy={busy}>
+    <section className="account-profile" aria-labelledby={`${id}-name`} aria-busy={busy}>
       <div className="account-profile__identity">
-        <button ref={focusWhenMounted('avatar')} type="button" className="account-profile__avatar" onClick={openPicker} disabled={busy}
-          aria-label={copy.changeAvatar(displayName)} aria-describedby={hintId}>
+        <span className="account-profile__avatar">
           <Avatar name={displayName} src={editor.preview} />
-          <span className="account-profile__avatar-badge" aria-hidden="true">
-            <Camera size="var(--icon-size-sm)" />
-          </span>
-        </button>
+          <DropdownMenu open={menuOpen} onOpenChange={open => { setMenuOpen(open); if (!open) confirmDelete.cancel(); }}>
+            <DropdownMenuTrigger asChild>
+              <button ref={focusWhenMounted('camera')} type="button" className="account-profile__avatar-badge"
+                disabled={busy} aria-label={copy.changeAvatar(displayName)} aria-describedby={hintId}>
+                <span className="account-profile__camera-mark" aria-hidden="true">
+                  <Camera size="var(--icon-size-sm)" />
+                </span>
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem asChild disabled={busy} onSelect={openPicker}><button type="button">{copy.changePhoto}</button></DropdownMenuItem>
+              {editor.hasSavedAvatar && <DropdownMenuItem asChild disabled={busy} variant="destructive" onSelect={event => {
+                event.preventDefault();
+                void handleDelete();
+              }}>
+                <button type="button" aria-describedby={confirmDelete.confirming ? `${id}-delete-notice` : undefined}>
+                  <Trash2 size="var(--icon-size-sm)" aria-hidden="true" />
+                  {editor.deleting ? copy.deleting : confirmDelete.confirming ? copy.confirmDeletePhoto : copy.deletePhoto}
+                </button>
+              </DropdownMenuItem>}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </span>
         <div className="account-profile__copy">
           <h2 id={`${id}-name`} className="account-profile__name">{displayName}</h2>
           {email && <p className="account-profile__email">{email}</p>}
@@ -105,18 +129,7 @@ export function AccountProfile({ copy, displayName, email }: AccountProfileProps
               {editor.uploading ? copy.saving : copy.save}
             </button>
           </motion.div>
-        ) : editor.hasSavedAvatar && (
-          <motion.div key="idle" className="account-profile__actions" {...actionMotion}>
-            <button type="button" className="btn-ghost account-profile__delete"
-              data-confirming={confirmDelete.confirming || undefined}
-              onClick={() => void handleDelete()} disabled={busy} aria-busy={editor.deleting}
-              aria-describedby={confirmDelete.confirming ? `${id}-delete-notice` : undefined}
-              {...(editor.deleting ? {} : confirmDelete.triggerProps)}>
-              <Trash2 size="var(--icon-size-sm)" aria-hidden="true" />
-              <span>{editor.deleting ? copy.deleting : confirmDelete.confirming ? copy.confirmDeletePhoto : copy.deletePhoto}</span>
-            </button>
-          </motion.div>
-        )}
+        ) : null}
       </AnimatePresence>
 
       <p id={`${id}-delete-notice`} className="sr-only" role="status">

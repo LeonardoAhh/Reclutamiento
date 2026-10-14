@@ -1,6 +1,4 @@
 import { useId, useState } from 'react';
-import { Badge } from '@/components/ui/Badge';
-import { useInlineConfirm } from '@/hooks/useInlineConfirm';
 import { useMaintenanceMode } from '@/hooks/useMaintenanceMode';
 import { toast } from '@/lib/notify';
 import type { AccountCopy } from '@/pages/account-translations';
@@ -20,35 +18,27 @@ interface MaintenanceControlProps {
   sessionLoading: boolean;
 }
 
-/** Estado y cambio del modo mantenimiento con confirmación en línea. */
+/** Estado y cambio del modo mantenimiento desde un switch. */
 export function MaintenanceControl({ copy, english, sessionLoading }: MaintenanceControlProps) {
   const id = useId();
   const maintenance = useMaintenanceMode();
-  const confirm = useInlineConfirm<boolean>();
   const [saving, setSaving] = useState(false);
   const unavailable = sessionLoading || maintenance.loading || Boolean(maintenance.error);
-  const statusLabel = maintenance.loading
-    ? copy.checking
-    : maintenance.error
-      ? copy.unavailable
-      : maintenance.enabled ? copy.active : copy.inactive;
+  const statusLabel = saving
+    ? copy.saving
+    : maintenance.loading
+      ? copy.checking
+      : maintenance.error
+        ? copy.unavailable
+        : maintenance.enabled ? copy.active : copy.inactive;
 
   async function handleAction() {
     if (unavailable || saving) return;
-    const target = confirm.pending;
-    if (target === null) {
-      confirm.request(!maintenance.enabled);
-      return;
-    }
-    if (target === maintenance.enabled) {
-      confirm.cancel();
-      return;
-    }
+    const target = !maintenance.enabled;
     setSaving(true);
     try {
       const result = await maintenance.update(target);
       if (result.ok) toast.success({ title: target ? copy.maintenanceEnabled : copy.maintenanceDisabled });
-      confirm.cancel();
     } finally {
       setSaving(false);
     }
@@ -61,32 +51,24 @@ export function MaintenanceControl({ copy, english, sessionLoading }: Maintenanc
         <p id={`${id}-description`} className="account-row__description">{copy.maintenanceDescription}</p>
       </div>
       <div className="account-maintenance__controls">
-        <Badge id={`${id}-status`} className="account-maintenance__status" data-enabled={maintenance.enabled || undefined}
-          aria-live="polite">
-          {statusLabel}
-        </Badge>
+        <span id={`${id}-status`} className="sr-only" aria-live="polite">{statusLabel}</span>
         <button
           type="button"
           className="account-maintenance__action"
-          data-confirming={confirm.confirming || undefined}
+          role="switch"
+          aria-checked={maintenance.enabled}
+          aria-label={maintenance.enabled ? copy.disableMaintenance : copy.enableMaintenance}
           onClick={() => void handleAction()}
-          {...(saving ? {} : confirm.triggerProps)}
           disabled={unavailable || saving}
           aria-busy={saving}
           aria-describedby={`${id}-description ${id}-status`}
         >
-          <span className="account-maintenance__action-surface">
-            {saving
-              ? copy.saving
-              : confirm.confirming
-                ? copy.confirmMaintenance
-                : maintenance.enabled ? copy.disableMaintenance : copy.enableMaintenance}
-          </span>
+          <span className="account-maintenance__action-surface" aria-hidden="true"><span className="account-maintenance__thumb" /></span>
         </button>
         {maintenance.error && (
-          <button type="button" className="account-maintenance__action"
+          <button type="button" className="account-maintenance__retry"
             onClick={() => void maintenance.refresh()} disabled={maintenance.loading || saving}>
-            <span className="account-maintenance__action-surface">{copy.retry}</span>
+            {copy.retry}
           </button>
         )}
       </div>

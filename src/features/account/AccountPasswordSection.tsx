@@ -1,9 +1,8 @@
 import { useId, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { KeyRound } from 'lucide-react';
+import { ChevronRight, KeyRound } from 'lucide-react';
 import { useMotionTokens } from '@/hooks/useMotionTokens';
 import type { AccountCopy } from '@/pages/account-translations';
-import { AccountSection } from './AccountSection';
 import { PasswordChangeForm } from './PasswordChangeForm';
 
 /** Cambio de contraseña en línea: la acción despliega el formulario dentro de la tarjeta. */
@@ -20,20 +19,21 @@ export function AccountPasswordSection({ copy }: { copy: AccountCopy }) {
     <button
       ref={toggleRef}
       type="button"
-      className="btn-secondary account-card__action"
+      className="account-setting-row account-password__trigger"
       aria-expanded={open}
       aria-controls={panelId}
-      aria-describedby={`${id}-description`}
       disabled={open}
       onClick={() => { setFocusReady(false); setOpen(true); }}
     >
       <KeyRound size="var(--icon-size-sm)" aria-hidden="true" />
-      <span>{copy.changePassword}</span>
+      <span className="account-setting-row__label">{copy.password}</span>
+      <ChevronRight size="var(--icon-size-sm)" aria-hidden="true" />
     </button>
   );
 
   return (
-    <AccountSection id={id} title={copy.password} description={copy.passwordDescription} action={toggle}>
+    <div className="account-password">
+      {toggle}
       <AnimatePresence initial={false} onExitComplete={() => {
         if (!open && restoreFocus.current) {
           restoreFocus.current = false;
@@ -64,6 +64,6 @@ export function AccountPasswordSection({ copy }: { copy: AccountCopy }) {
           </motion.div>
         )}
       </AnimatePresence>
-    </AccountSection>
+    </div>
   );
 }

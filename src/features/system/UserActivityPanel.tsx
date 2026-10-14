@@ -1,10 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import { Clock } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { enUS, es } from "date-fns/locale";
 import { ButtonUtility } from "@/components/ui/ButtonUtility";
 import { Avatar } from "@/components/ui/Avatar";
-import { Tooltip } from "@/components/ui/Tooltip";
 import type { Profile } from "@/hooks/useAuth";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { subscribeOnlineUserIds } from "@/lib/presence";
@@ -13,19 +12,11 @@ import { listProfiles } from "@/lib/users";
 import "./UserActivityPanel.css";
 
 function ActivityAvatar({ name, src, online }: { name: string; src?: string | null; online: boolean }) {
-  const [open, setOpen] = useState(false);
-
   return (
-    <Tooltip content={name} side="right" open={open} onOpenChange={setOpen}>
-      <button type="button" className="user-activity-panel__avatar" aria-label={name}
-        onClick={(event) => {
-          event.preventDefault();
-          setOpen(true);
-        }}>
-        <Avatar name={name} src={src} title="" />
-        {online && <span className="user-activity-panel__avatar-badge" aria-hidden="true" />}
-      </button>
-    </Tooltip>
+    <span className="user-activity-panel__avatar" aria-hidden="true">
+      <Avatar name={name} src={src} title="" />
+      {online && <span className="user-activity-panel__avatar-badge" />}
+    </span>
   );
 }
 
@@ -63,11 +54,18 @@ function formatCompactLastAccess(lastAccess: string, language: "es" | "en") {
     .replace(/ días?$/, " d");
 }
 
+function formatAccountLastAccess(lastAccess: string, language: "es" | "en") {
+  const compact = formatCompactLastAccess(lastAccess, language);
+  if (language === "en") return lastAccess.endsWith(" ago") ? `${compact} ago` : compact;
+  return lastAccess.startsWith("Hace ") ? `Hace ${compact}` : compact;
+}
+
 interface UserActivityPanelProps {
   variant?: "default" | "avatars";
 }
 
 export function UserActivityPanel({ variant = "default" }: UserActivityPanelProps) {
+  const listId = useId();
   const { language } = useLanguage();
   const english = language === "en";
   const [profiles, setProfiles] = useState<Profile[]>([]);
@@ -76,6 +74,7 @@ export function UserActivityPanel({ variant = "default" }: UserActivityPanelProp
   const [error, setError] = useState("");
   const [reloadKey, setReloadKey] = useState(0);
   const [now, setNow] = useState(() => Date.now());
+  const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
     const timer = window.setInterval(() => setNow(Date.now()), 60_000);
@@ -147,19 +146,34 @@ export function UserActivityPanel({ variant = "default" }: UserActivityPanelProp
     [language, profiles, onlineUsers],
   );
 
+  const visibleProfiles = variant === "avatars" && !expanded ? sortedProfiles.slice(0, 5) : sortedProfiles;
+  const accountHeader = variant === "avatars" && (
+    <header className="account-activity__header">
+      <h2 className="account-activity__title">{english ? "User activity" : "Actividad de usuarios"}</h2>
+      {sortedProfiles.length > 5 && <button type="button" className="account-activity__toggle"
+        aria-expanded={expanded} aria-controls={listId} onClick={() => setExpanded(current => !current)}>
+        {expanded ? english ? "Show less" : "Ver menos" : english ? "View all" : "Ver todos"}
+      </button>}
+    </header>
+  );
+
   if (loading) {
-    return (
+    const state = (
       <div className="user-activity-panel__state" aria-busy="true">
         <p className="type-body-md text-muted" role="status">
           {english ? "Loading activity…" : "Cargando actividad…"}
         </p>
       </div>
     );
+    return variant === "avatars"
+      ? <section className="user-activity-panel">{accountHeader}{state}</section>
+      : state;
   }
 
   return (
     <section className="user-activity-panel" aria-label={english ? "User activity" : "Actividad de usuarios"}>
-      <ul className="user-activity-panel__list">
+      {accountHeader}
+      <ul id={listId} className="user-activity-panel__list">
         {error && (
           <li className="user-activity-panel__state" role="alert">
             <p className="type-body-md text-muted">
@@ -182,7 +196,7 @@ export function UserActivityPanel({ variant = "default" }: UserActivityPanelProp
           </li>
         )}
 
-        {sortedProfiles.map((profile) => {
+        {visibleProfiles.map((profile) => {
           const isOnline = onlineUsers.has(profile.id);
           const lastAccess = formatLastAccess(profile.last_login_at, now, language);
           const displayName = profile.display_name || profile.username;
@@ -192,6 +206,7 @@ export function UserActivityPanel({ variant = "default" }: UserActivityPanelProp
               {variant === "avatars" && (
                 <ActivityAvatar name={displayName} src={profile.avatar_url} online={isOnline} />
               )}
+              {variant === "avatars" && <span className="account-activity__name type-body-strong">{displayName}</span>}
               {variant === "default" && <span className="user-activity-panel__name type-body-strong">
                 {displayName}
               </span>}
@@ -206,7 +221,7 @@ export function UserActivityPanel({ variant = "default" }: UserActivityPanelProp
                       className="user-activity-panel__online-dot"
                       aria-hidden="true"
                     />}
-                    {english ? "Online" : "En línea"}
+                    {variant === "avatars" ? english ? "Online now" : "Activo ahora" : english ? "Online" : "En línea"}
                   </>
                 ) : (
                   <>
@@ -214,7 +229,9 @@ export function UserActivityPanel({ variant = "default" }: UserActivityPanelProp
                       className="user-activity-panel__status-icon"
                       aria-hidden="true"
                     />
-                    <span aria-hidden="true">{formatCompactLastAccess(lastAccess, language)}</span>
+                    <span aria-hidden="true">{variant === "avatars"
+                      ? formatAccountLastAccess(lastAccess, language)
+                      : formatCompactLastAccess(lastAccess, language)}</span>
                     <span className="sr-only">{lastAccess}</span>
                   </>
                 )}

@@ -1,11 +1,10 @@
 import { useId } from 'react';
-import { Eclipse } from 'lucide-react';
+import { Eclipse, Languages } from 'lucide-react';
 import { LanguageToggle } from '@/components/ui/LanguageToggle';
 import { ThemeSelect } from '@/components/ui/ThemeSelect';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/hooks/useTheme';
 import type { AccountCopy } from '@/pages/account-translations';
-import { AccountSection } from './AccountSection';
 
 export function AccountPreferencesSection({ copy }: { copy: AccountCopy }) {
   const id = useId();
@@ -13,24 +12,18 @@ export function AccountPreferencesSection({ copy }: { copy: AccountCopy }) {
   const { resolvedTheme } = useTheme();
 
   return (
-    <AccountSection id={id} title={copy.appearanceAndLanguage}>
-      <div className="account-appearance">
-        <ThemeSelect language={language} className="account-appearance__theme">
-          <span className="account-row__copy">
-            <span className="account-row__title">{copy.theme}</span>
-            <span className="account-row__description">{resolvedTheme === 'dark' ? copy.darkTheme : copy.lightTheme}</span>
-          </span>
-          <Eclipse size="var(--icon-size-md)" aria-hidden="true" />
-        </ThemeSelect>
-        <LanguageToggle className="account-appearance__control">
-          <span className="account-row__copy">
-            <span className="account-row__title">{copy.language}</span>
-            <span className="account-row__description">{language === 'en' ? copy.english : copy.spanish}</span>
-          </span>
-          <span aria-hidden="true">{language.toUpperCase()}</span>
-        </LanguageToggle>
-      </div>
-      {storageError && <p className="account-card__note" role="status">{copy.preferenceStorageFailed}</p>}
-    </AccountSection>
+    <div className="account-appearance">
+      <ThemeSelect language={language} className="account-appearance__theme">
+        <Eclipse size="var(--icon-size-sm)" aria-hidden="true" />
+        <span className="account-setting-row__label">{copy.theme}</span>
+        <span className="account-setting-row__value" aria-hidden="true">{resolvedTheme === 'dark' ? copy.darkTheme : copy.lightTheme}</span>
+      </ThemeSelect>
+      <LanguageToggle className="account-appearance__control">
+        <Languages size="var(--icon-size-sm)" aria-hidden="true" />
+        <span className="account-setting-row__label">{copy.language}</span>
+        <span className="account-setting-row__value" aria-hidden="true">{language === 'en' ? copy.english : copy.spanish}</span>
+      </LanguageToggle>
+      {storageError && <p id={`${id}-storage`} className="account-card__note" role="status">{copy.preferenceStorageFailed}</p>}
+    </div>
   );
 }

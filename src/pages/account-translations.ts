@@ -3,6 +3,9 @@ import type { Language } from "@/contexts/LanguageContext";
 const translations = {
   es: {
     title: "Mi cuenta",
+    settings: "Ajustes",
+    signOut: "Cerrar sesión",
+    changePhoto: "Cambiar foto",
     changeAvatar: (name: string) => `Cambiar foto de perfil de ${name}`,
     photoHint: "Imagen cuadrada PNG, JPG o WebP, máximo 2 MB.",
     photoPreview: "Vista previa lista. Guarda para aplicarla.",
@@ -64,6 +67,9 @@ const translations = {
   },
   en: {
     title: "My account",
+    settings: "Settings",
+    signOut: "Sign out",
+    changePhoto: "Change picture",
     changeAvatar: (name: string) => `Change ${name}'s profile picture`,
     photoHint: "Square PNG, JPG or WebP image, up to 2 MB.",
     photoPreview: "Preview ready. Save to apply it.",

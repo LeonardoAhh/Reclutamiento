@@ -12,12 +12,12 @@ interface AccountSectionProps {
   children?: ReactNode;
 }
 
-/** Tarjeta de sección de /account: encabezado h2, descripción opcional y contenido. */
+/** Sección de /account con encabezado y contenido agrupado. */
 export function AccountSection({ id, title, description, action, className, children }: AccountSectionProps) {
   const motionTokens = useMotionTokens('--transition-slow');
   return (
     <motion.section
-      className={['account-card', className].filter(Boolean).join(' ')}
+      className={['account-section', className].filter(Boolean).join(' ')}
       aria-labelledby={`${id}-title`}
       initial={{ opacity: 0, y: motionTokens.distance }}
       animate={{ opacity: 1, y: 0 }}
@@ -30,7 +30,7 @@ export function AccountSection({ id, title, description, action, className, chil
         </div>
         {action}
       </header>
-      {children}
+      <div className="account-section__body">{children}</div>
     </motion.section>
   );
 }

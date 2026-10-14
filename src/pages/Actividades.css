@@ -355,7 +355,8 @@
   background: var(--color-canvas);
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-lg);
-  padding: var(--spacing-sm); /* A little well padding if desired, or no padding for full bleed */
+  padding: var(--spacing-sm);
+  /* A little well padding if desired, or no padding for full bleed */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -416,7 +417,8 @@
   letter-spacing: var(--type-body-strong-tracking);
 }
 
-.activities-create-action, .activities-form-dialog :is(.btn-primary, .btn-secondary) {
+.activities-create-action,
+.activities-form-dialog :is(.btn-primary, .btn-secondary) {
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
