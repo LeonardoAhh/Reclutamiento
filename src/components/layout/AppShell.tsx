@@ -10,6 +10,7 @@ import { DESKTOP_MEDIA_QUERY } from '@/lib/layout';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { SessionNotice } from './SessionNotice';
 import { RouteLoadingFallback } from './RouteLoadingFallback';
+import { RouteErrorBoundary } from '@/components/ui/RouteErrorBoundary';
 import { CAREER_PATH } from '@/features/career/types';
 import { REPORT_COMPARISON_PATH, REPORT_DAY_PATTERN } from '@/components/reporte-diario/navigation';
 import { CANDIDATE_METRICS_PATH } from '@/pages/candidate-metrics/navigation';
@@ -130,9 +131,11 @@ export function AppShell({ children }: { children: ReactNode }) {
         />
         <div className="app-shell__main">
           {/* La carga de código de una página no desmonta el shell ni muestra el splash. */}
-          <Suspense fallback={<RouteLoadingFallback />}>
-            {children}
-          </Suspense>
+          <RouteErrorBoundary key={location.pathname}>
+            <Suspense fallback={<RouteLoadingFallback />}>
+              {children}
+            </Suspense>
+          </RouteErrorBoundary>
         </div>
       </div>
     </div>

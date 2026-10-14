@@ -15,6 +15,7 @@ import {
 } from "@/lib/dates";
 import { WeeklyOnboardingDocuments } from "./components/WeeklyOnboardingDocuments";
 import { ButtonUtility } from "@/components/ui/ButtonUtility";
+import { ActionStateContent } from '@/components/ui/ActionStateContent';
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
@@ -296,14 +297,6 @@ export function FormatosView() {
                 <ButtonUtility
                   type="button"
                   className="config-filter-reset"
-                  icon={
-                    <MorphingIcon
-                      icon={isGeneratingImage ? LoaderCircleIconData : CopyIconData}
-                      size="var(--icon-size-sm)"
-                      className={isGeneratingImage ? "spin" : undefined}
-                      aria-hidden="true"
-                    />
-                  }
                   onClick={handleCopyImage}
                   disabled={filteredEmployees.length === 0 || isGeneratingImage}
                   aria-label={isGeneratingImage ? copy.copying : copy.copy}
@@ -314,7 +307,17 @@ export function FormatosView() {
                       : undefined
                   }
                 >
-                  {copy.copy}
+                  <ActionStateContent active={isGeneratingImage}>
+                    <span className="btn-utility__icon">
+                      <MorphingIcon
+                        icon={isGeneratingImage ? LoaderCircleIconData : CopyIconData}
+                        size="var(--icon-size-sm)"
+                        className={isGeneratingImage ? "spin" : undefined}
+                        aria-hidden="true"
+                      />
+                    </span>
+                    <span>{copy.copy}</span>
+                  </ActionStateContent>
                 </ButtonUtility>
               </div>
             </section>

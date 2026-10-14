@@ -48,11 +48,11 @@ export const LEAVE_POLICY_NOTICE = {
   buttonLabel: "Solicita aqui!",
   title: "Vacaciones y permisos",
   introduction: "Solicita autorización para vacaciones o permisos.",
-  points: [
-    "Vacaciones: 14 días naturales de anticipación; primer periodo mínimo de 6 días continuos.",
-    "Sin fechas pasadas ni canje de faltas por vacaciones.",
-    "Menor anticipación: autorización del jefe de área, buen desempeño y sin faltas injustificadas en los últimos 30 días.",
-  ],
+  firstPeriodDays: 6,
+  advanceNotice: "Solicita vacaciones con al menos 14 días naturales de anticipación.",
+  firstPeriod: "El primer periodo vacacional debe ser de al menos 6 días continuos.",
+  unavailableDates: "No se permiten fechas pasadas ni canjear faltas por vacaciones.",
+  shortNotice: "Una anticipación menor requiere autorización del jefe de área, buen desempeño y ninguna falta injustificada en los últimos 30 días.",
   handoverReminder: "Antes de ausentarte, deja tus pendientes y el estatus de procesos, vacantes y entrevistas para darles seguimiento.",
 } as const;
 

@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
+import { StatusPage } from '@/components/ui/StatusPage';
 import { useAuth } from '@/hooks/useAuth';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { toast } from '@/lib/notify';
 import { useLoader } from '@/hooks/useLoader';
 import { HOME_PATH } from '@/components/layout/navigation';
 import { CAREER_JOURNEY_ENABLED, CAREER_PATH } from '@/features/career/types';
@@ -9,9 +12,13 @@ import { hasCompletedCareerJourney } from '@/features/career/completion';
 
 /** Conserva el acceso protegido y la espera del perfil después de autenticar. */
 export function AuthGuard({ children }: { children: ReactNode }) {
-  const { session, loading, profileLoading } = useAuth();
+  const { language } = useLanguage();
+  const { session, sessionExpired, profile, loading, profileLoading, signOut } = useAuth();
   if (loading || (session && profileLoading)) return null;
-  if (!session) return <Navigate to="/login" replace />;
+  if (!session) return <Navigate to={sessionExpired ? '/session-expired' : '/login'} replace />;
+  if (!profile) return <StatusPage kind={navigator.onLine ? 'server' : 'offline'} standalone onRetry={() => window.location.reload()} onSignOut={() => {
+    void signOut().catch(() => toast.error({ title: language === 'en' ? 'Could not sign out. Try again.' : 'No se pudo cerrar sesión. Intenta de nuevo.' }));
+  }} />;
   return <>{children}</>;
 }
 

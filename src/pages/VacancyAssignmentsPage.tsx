@@ -4,6 +4,7 @@ import { ArrowLeft, Check, Copy } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
 import { Link } from "react-router-dom";
 import { CustomSelect } from "@/components/ui/CustomSelect";
+import { ActionStateContent } from '@/components/ui/ActionStateContent';
 import { formatReadableDate } from "@/lib/dates";
 import { useDismissedPositions } from "@/hooks/useDismissedPositions";
 import { toast } from "@/lib/notify";
@@ -515,15 +516,16 @@ export function VacancyAssignmentsPage() {
             onClick={() => void handleCopy()}
             disabled={empty}
           >
-            {copied ? (
-              <Check size={16} aria-hidden="true" />
-            ) : (
-              <Copy size={16} aria-hidden="true" />
-            )}
-            <span aria-live="polite" aria-atomic="true">
-              {copied ? t("Reporte copiado") : t("Copiar reporte")}
-            </span>
+            <ActionStateContent active={copied}>
+              {copied ? (
+                <Check size={16} aria-hidden="true" />
+              ) : (
+                <Copy size={16} aria-hidden="true" />
+              )}
+              <span>{t("Copiar reporte")}</span>
+            </ActionStateContent>
           </button>
+          <span className="sr-only" role="status">{copied ? t("Reporte copiado") : ""}</span>
         </div>
       </header>
 

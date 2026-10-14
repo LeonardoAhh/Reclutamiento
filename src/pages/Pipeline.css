@@ -45,45 +45,8 @@
   gap: var(--spacing-xs);
 }
 
-.pipeline__report-label {
-  display: grid;
-  overflow: hidden;
-}
-
-.pipeline__report-label > span {
-  grid-area: 1 / 1;
-  transition: opacity var(--transition-fast), transform var(--transition-fast);
-}
-
-.pipeline__report-label-idle {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.pipeline__report-label-copied {
-  opacity: 0;
-  transform: translateY(var(--motion-float-distance));
-}
-
-.pipeline__report-btn[data-copied] .pipeline__report-label-idle {
-  opacity: 0;
-  transform: translateY(calc(-1 * var(--motion-float-distance)));
-}
-
-.pipeline__report-btn[data-copied] .pipeline__report-label-copied {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .pipeline__report-label > span {
-    transition: none;
-    transform: none;
-  }
-}
-
 @media (max-width: 767px) {
-  .pipeline__report-btn span {
+  .pipeline__report-label {
     display: none;
   }
   .pipeline__hero-actions {

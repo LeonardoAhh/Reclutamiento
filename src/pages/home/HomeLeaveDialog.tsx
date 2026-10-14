@@ -8,7 +8,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useIsMobile } from "@/hooks/useIsMobile";
 
 type HomeLeaveDialogProps = Pick<ComponentProps<typeof Modal>,
-  "isOpen" | "onClose" | "onBack" | "title" | "children" | "footerActions" | "size" | "className"
+  "isOpen" | "onClose" | "onBack" | "title" | "children" | "footerActions" | "headerActions" | "size" | "className"
 > & {
   triggerRef: RefObject<HTMLElement | null>;
 };
@@ -43,6 +43,7 @@ export function HomeLeaveDialog({ triggerRef, ...props }: HomeLeaveDialogProps) 
               </button>
             )}
             <SheetTitle>{props.title}</SheetTitle>
+            {props.headerActions}
           </div>
         </SheetHeader>
         <div className="modal-scroll-region">{props.children}</div>

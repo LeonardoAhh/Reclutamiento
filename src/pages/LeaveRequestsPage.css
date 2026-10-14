@@ -172,6 +172,41 @@
   background: transparent;
 }
 
+.leave-requests-page__actions .leave-requests-page__action-confirm {
+  flex: 1 1 100%;
+  inline-size: 100%;
+  min-inline-size: 0;
+  border: var(--border-width) solid currentColor;
+  border-radius: var(--rounded-md);
+}
+
+.leave-requests-page__action-confirm {
+  min-block-size: var(--touch-target-min);
+  white-space: nowrap;
+}
+
+.leave-requests-page__actions .leave-requests-page__action-approve.leave-requests-page__action-confirm,
+.leave-requests-page__card-action.leave-requests-page__action-approve.leave-requests-page__action-confirm {
+  background: var(--color-success-subtle);
+  color: var(--color-success-text);
+}
+
+.leave-requests-page__actions .leave-requests-page__action-delete.leave-requests-page__action-confirm,
+.leave-requests-page__card-action.leave-requests-page__action-delete.leave-requests-page__action-confirm {
+  background: var(--color-error-subtle);
+  color: var(--color-error-text);
+}
+
+.leave-requests-page__action-spinner {
+  animation: spin var(--transition-spinner) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .leave-requests-page__action-spinner {
+    animation: none;
+  }
+}
+
 .leave-requests-page__action-approve {
   color: var(--color-success-text);
 }

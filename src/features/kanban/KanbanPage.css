@@ -272,6 +272,14 @@
 }
 .kanban-task__actions > button { flex: 1 1 auto; }
 .kanban-form__delete { flex-shrink: 0; color: var(--color-error-text); }
+.kanban-form__header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--design-spacing-xxs);
+  min-width: 0;
+}
 .kanban-form__classification {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   min-width: 0;
@@ -546,6 +554,9 @@
   }
   .kanban-board__work[hidden] {
     display: none;
+  }
+  .kanban-board[data-dragging][data-view="notes"] > .kanban-board__work {
+    order: 1;
   }
   .kanban-content__header--board {
     display: flex;

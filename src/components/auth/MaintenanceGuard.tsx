@@ -6,6 +6,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useMaintenanceMode } from '@/hooks/useMaintenanceMode';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from '@/lib/notify';
+import { StatusPage } from '@/components/ui/StatusPage';
 import './MaintenanceGuard.css';
 
 // ── SVG decorativo: engrane minimalista ───────────────────────────────────────
@@ -78,6 +79,7 @@ export function MaintenanceGuard({ children }: { children: ReactNode }) {
     enabled: isMaintenance,
     loading: maintenanceLoading,
     error: maintenanceError,
+    networkError,
     hasConfirmedState,
     refresh: refreshMaintenance,
   } = useMaintenanceMode();
@@ -116,6 +118,15 @@ export function MaintenanceGuard({ children }: { children: ReactNode }) {
 
   if ((hasConfirmedState && !isMaintenance) || isAdmin) {
     return <>{children}</>;
+  }
+
+  if (!hasConfirmedState && maintenanceError) {
+    return <StatusPage
+      kind={networkError ? 'offline' : 'server'}
+      standalone
+      onRetry={() => { void handleCheck(); }}
+      retrying={isChecking}
+    />;
   }
 
   const statusMessage = maintenanceError

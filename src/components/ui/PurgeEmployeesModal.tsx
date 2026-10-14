@@ -3,6 +3,7 @@ import { AlertOctagon, CircleCheckBig, Download } from 'lucide-react';
 import { AlertOctagon as AlertOctagonIcon, LoaderCircle } from 'lucide';
 import { Modal } from './Modal';
 import { MorphingIcon } from './MorphingIcon';
+import { ActionStateContent } from './ActionStateContent';
 import type { Employee } from '@/lib/types';
 import { formatMxStamp } from '@/lib/dates';
 import './PurgeEmployeesModal.css';
@@ -251,17 +252,15 @@ export function PurgeEmployeesModal({
                     disabled={!canConfirm}
                     aria-busy={isPurging}
                   >
-                    <MorphingIcon
-                      icon={isPurging ? LoaderCircle : AlertOctagonIcon}
-                      size={14}
-                      aria-hidden="true"
-                      className={
-                        isPurging
-                          ? 'purge-employees-modal__spinner'
-                          : undefined
-                      }
-                    />
-                    {isPurging ? 'Borrando…' : 'Borrar plantilla'}
+                    <ActionStateContent active={isPurging}>
+                      <MorphingIcon
+                        icon={isPurging ? LoaderCircle : AlertOctagonIcon}
+                        size={14}
+                        aria-hidden="true"
+                        className={isPurging ? 'purge-employees-modal__spinner' : undefined}
+                      />
+                      <span>{isPurging ? 'Borrando…' : 'Borrar plantilla'}</span>
+                    </ActionStateContent>
                   </button>
                 </div>
               </li>

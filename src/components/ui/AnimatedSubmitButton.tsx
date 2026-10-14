@@ -2,10 +2,10 @@ import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import {
   CircleAlert,
-  CircleCheckBig,
   LoaderCircle,
   Save,
 } from 'lucide';
+import { CircleCheckBig } from 'lucide-react';
 import type { IconInput } from 'morphicons/react';
 import type { HTMLMotionProps } from 'framer-motion';
 
@@ -61,7 +61,7 @@ export function AnimatedSubmitButton({
   const previousState = useRef<SubmitState>('idle');
   const state: SubmitState = isSubmitting ? 'loading' : isError ? 'error' : isSuccess ? 'success' : 'idle';
   const isDisabled = Boolean(disabled) || state === 'loading' || state === 'success';
-  const visibleText = state === 'loading' ? loadingText : state === 'success' ? successText : idleText;
+  const visibleText = state === 'loading' ? loadingText : idleText;
   const accessibleLabel = ariaLabel ?? (ariaLabelledBy ? undefined : visibleText);
   const describedBy = [ariaDescribedBy, state === 'error' ? errorMessageId : undefined]
     .filter(Boolean)
@@ -75,11 +75,9 @@ export function AnimatedSubmitButton({
         : '';
   const stateIcon = state === 'loading'
     ? LoaderCircle
-    : state === 'success'
-      ? CircleCheckBig
-      : state === 'error'
-        ? CircleAlert
-        : idleIcon;
+    : state === 'error'
+      ? CircleAlert
+      : idleIcon;
 
   useEffect(() => {
     if (state === previousState.current) return;
@@ -122,17 +120,20 @@ export function AnimatedSubmitButton({
               <span className="animated-submit-button__measure-text">
                 <span>{idleText}</span>
                 <span>{loadingText}</span>
-                <span>{successText}</span>
               </span>
             )}
           </span>
           <span className="animated-submit-button__visual">
-            <MorphingIcon
-              icon={stateIcon}
-              size="var(--icon-size-sm)"
-              reducedMotion="user"
-              className={state === 'loading' ? 'animated-submit-button__spinner' : undefined}
-            />
+            {state === 'success' ? (
+              <CircleCheckBig size="var(--icon-size-sm)" aria-hidden="true" />
+            ) : (
+              <MorphingIcon
+                icon={stateIcon}
+                size="var(--icon-size-sm)"
+                reducedMotion="user"
+                className={state === 'loading' ? 'animated-submit-button__spinner' : undefined}
+              />
+            )}
             {state !== 'loading' && !iconOnly && (
               <span className="animated-submit-button__text">{visibleText}</span>
             )}

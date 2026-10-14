@@ -1,0 +1,29 @@
+.action-state-content {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: inherit;
+  min-inline-size: 0;
+}
+
+.action-state-content[data-active] {
+  animation: action-state-enter var(--transition-fast) both;
+}
+
+@keyframes action-state-enter {
+  from {
+    opacity: 0;
+    transform: translateY(var(--motion-float-distance));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .action-state-content[data-active] {
+    animation: none;
+  }
+}

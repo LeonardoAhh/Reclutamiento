@@ -1,19 +1,20 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { PageHeading } from '@/components/layout/PageHeading';
-import { Link, Navigate } from 'react-router-dom';
-import { ArrowLeft, CalendarDays, Check, ChevronLeft, ChevronRight, Info, Trash2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ArrowLeft, CalendarDays, Check, ChevronLeft, ChevronRight, Info, LoaderCircle, Trash2 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage, type Language } from '@/contexts/LanguageContext';
 import { useTeamDirectory } from '@/features/team/TeamProvider';
 import { leaveErrorText } from '@/features/leave/translations';
 import { HOME_PATH } from '@/components/layout/navigation';
 import { Badge } from '@/components/ui/Badge';
+import { StatusPage } from '@/components/ui/StatusPage';
 import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
-import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { isBoneyardBuild } from '@/lib/boneyard';
 import { formatDateTimeMx, formatReadableDate } from '@/lib/dates';
 import { toast } from '@/lib/notify';
+import { playSound } from '@/lib/sound';
 import { toNaturalCase } from '@/lib/utils';
 import { LeaveRequestsSkeletonFixture } from './LeaveRequestsSkeletonFixture';
 import {
@@ -24,8 +25,8 @@ import {
 import './LeaveRequestsPage.css';
 
 const copy = {
-  es: { loading: 'Cargando solicitudes…', title: 'Vacaciones y permisos', team: 'Solicitudes del equipo', retry: 'Reintentar', emptyTitle: 'Aún no hay solicitudes', emptyText: 'Cuando el equipo envíe solicitudes, aparecerán aquí.', table: 'Tabla de solicitudes', caption: 'Solicitudes de vacaciones y permisos del equipo', requester: 'Solicitante', type: 'Tipo', dates: 'Fechas', requested: 'Solicitada el', status: 'Estado', actions: 'Acciones', start: 'Inicio', end: 'Fin', approve: 'Autorizar', delete: 'Eliminar', approveRequest: 'Autorizar solicitud', deleteRequest: 'Eliminar solicitud', denyRequest: 'Denegar solicitud', deny: 'Denegar', previous: 'Anterior', next: 'Siguiente', pages: 'Páginas de solicitudes', page: 'Página', of: 'de', approving: 'Autorizando…', denying: 'Denegando…', approved: 'Solicitud autorizada', deleted: 'Solicitud eliminada' },
-  en: { loading: 'Loading requests…', title: 'Vacation and leave requests', team: 'Team requests', retry: 'Retry', emptyTitle: 'No requests yet', emptyText: 'Requests will appear here when team members submit them.', table: 'Requests table', caption: 'Team vacation and leave requests', requester: 'Requested by', type: 'Type', dates: 'Dates', requested: 'Requested on', status: 'Status', actions: 'Actions', start: 'Start', end: 'End', approve: 'Approve', delete: 'Delete', approveRequest: 'Approve request', deleteRequest: 'Delete request', denyRequest: 'Deny request', deny: 'Deny', previous: 'Previous', next: 'Next', pages: 'Request pages', page: 'Page', of: 'of', approving: 'Approving…', denying: 'Denying…', approved: 'Request approved', deleted: 'Request deleted' },
+  es: { loading: 'Cargando solicitudes…', title: 'Vacaciones y permisos', team: 'Solicitudes del equipo', retry: 'Reintentar', emptyTitle: 'Aún no hay solicitudes', emptyText: 'Cuando el equipo envíe solicitudes, aparecerán aquí.', table: 'Tabla de solicitudes', caption: 'Solicitudes de vacaciones y permisos del equipo', requester: 'Solicitante', type: 'Tipo', dates: 'Fechas', requested: 'Solicitada el', status: 'Estado', actions: 'Acciones', start: 'Inicio', end: 'Fin', approve: 'Autorizar', delete: 'Eliminar', confirm: 'Confirmar', approveRequest: 'Autorizar solicitud', deleteRequest: 'Eliminar solicitud', previous: 'Anterior', next: 'Siguiente', pages: 'Páginas de solicitudes', page: 'Página', of: 'de', approving: 'Autorizando…', deleting: 'Eliminando…', approved: 'Solicitud autorizada', deleted: 'Solicitud eliminada' },
+  en: { loading: 'Loading requests…', title: 'Vacation and leave requests', team: 'Team requests', retry: 'Retry', emptyTitle: 'No requests yet', emptyText: 'Requests will appear here when team members submit them.', table: 'Requests table', caption: 'Team vacation and leave requests', requester: 'Requested by', type: 'Type', dates: 'Dates', requested: 'Requested on', status: 'Status', actions: 'Actions', start: 'Start', end: 'End', approve: 'Approve', delete: 'Delete', confirm: 'Confirm', approveRequest: 'Approve request', deleteRequest: 'Delete request', previous: 'Previous', next: 'Next', pages: 'Request pages', page: 'Page', of: 'of', approving: 'Approving…', deleting: 'Deleting…', approved: 'Request approved', deleted: 'Request deleted' },
 } as const;
 
 function typeLabel(request: LeaveRequest, language: Language) {
@@ -61,11 +62,21 @@ export function LeaveRequestsPage() {
   const [rows, setRows] = useState<LeaveRequest[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [loadedPage, setLoadedPage] = useState<number | null>(null);
   const [error, setError] = useState('');
   const [reviewAction, setReviewAction] = useState<{ kind: 'approve' | 'delete'; request: LeaveRequest } | null>(null);
-  const [actionError, setActionError] = useState('');
   const [actionBusy, setActionBusy] = useState(false);
   const actionBusyRef = useRef(false);
+
+  function openReview(kind: 'approve' | 'delete', request: LeaveRequest) {
+    playSound(kind === 'delete' ? 'warning' : 'open');
+    setReviewAction({ kind, request });
+  }
+
+  function cancelReview(kind: 'approve' | 'delete', requestId: string) {
+    if (actionBusyRef.current) return;
+    setReviewAction(current => current?.kind === kind && current.request.id === requestId ? null : current);
+  }
 
   useEffect(() => {
     if (!canReview) return;
@@ -80,6 +91,7 @@ export function LeaveRequestsPage() {
       }
       setRows(result.requests);
       setTotal(result.total);
+      setLoadedPage(page);
     }).catch(cause => {
       if (live) setError(cause instanceof Error ? cause.message : 'No se pudieron cargar las solicitudes.');
     }).finally(() => { if (live) setLoading(false); });
@@ -90,42 +102,88 @@ export function LeaveRequestsPage() {
     if (!reviewAction || actionBusyRef.current) return;
     actionBusyRef.current = true;
     setActionBusy(true);
-    setActionError('');
     try {
       if (reviewAction.kind === 'approve') await approveLeaveRequest(reviewAction.request.id);
       else await deleteLeaveRequest(reviewAction.request.id);
+      if (reviewAction.kind === 'approve') {
+        setRows(current => current.map(row => row.id === reviewAction.request.id ? { ...row, status: 'approved' } : row));
+      } else {
+        setRows(current => current.filter(row => row.id !== reviewAction.request.id));
+        setTotal(current => Math.max(0, current - 1));
+      }
+      playSound('success');
       toast.success({ title: reviewAction.kind === 'approve' ? t.approved : t.deleted });
       setReviewAction(null);
       setRevision(value => value + 1);
     } catch (cause) {
-      setActionError(cause instanceof Error ? cause.message : 'No se pudo actualizar la solicitud.');
+      playSound('error');
+      toast.error({ title: leaveErrorText(cause instanceof Error ? cause.message : 'No se pudo actualizar la solicitud.', language) });
     } finally {
       actionBusyRef.current = false;
       setActionBusy(false);
     }
   }
 
-  if (!canReview && !isBuild) return <Navigate to={HOME_PATH} replace />;
+  function requestActions(request: LeaveRequest, card: boolean) {
+    const requester = toNaturalCase(request.requesterName, { preserveAcronyms: false });
+    const confirmingApprove = reviewAction?.kind === 'approve' && reviewAction.request.id === request.id;
+    const confirmingDelete = reviewAction?.kind === 'delete' && reviewAction.request.id === request.id;
+    const period = `${date(request.startDate)} – ${date(request.endDate)}`;
+    return <>
+      {canApproveLeaveRequest(profile, request) && !confirmingDelete && <button type="button"
+        className={`${card ? 'btn-secondary leave-requests-page__card-action' : 'btn-icon'} leave-requests-page__action-approve${confirmingApprove ? ' leave-requests-page__action-confirm' : ''}`}
+        disabled={actionBusy || loading} aria-busy={actionBusy && confirmingApprove}
+        aria-label={`${actionBusy && confirmingApprove ? t.approving : confirmingApprove ? `${t.confirm} ${t.approve.toLowerCase()}` : t.approveRequest}: ${requester}, ${period}`}
+        title={confirmingApprove ? `${t.confirm} ${t.approve.toLowerCase()}` : t.approveRequest}
+        onClick={() => { if (confirmingApprove) { playSound('tap'); void completeReviewAction(); } else openReview('approve', request); }}
+        onBlur={() => cancelReview('approve', request.id)}
+        onKeyDown={event => { if (event.key === 'Escape') { event.preventDefault(); cancelReview('approve', request.id); } }}>
+        {actionBusy && confirmingApprove ? <LoaderCircle className="leave-requests-page__action-spinner" aria-hidden="true" />
+          : confirmingApprove ? <span>{t.confirm}</span> : <><Check aria-hidden="true" />{card && <span>{t.approve}</span>}</>}
+      </button>}
+      {canDeleteLeaveRequest(profile, request) && !confirmingApprove && <button type="button"
+        className={`${card ? 'btn-secondary leave-requests-page__card-action' : 'btn-icon btn-icon--danger'} leave-requests-page__action-delete${confirmingDelete ? ' leave-requests-page__action-confirm' : ''}`}
+        disabled={actionBusy || loading} aria-busy={actionBusy && confirmingDelete}
+        aria-label={`${actionBusy && confirmingDelete ? t.deleting : confirmingDelete ? `${t.confirm} ${t.delete.toLowerCase()}` : t.deleteRequest}: ${requester}, ${period}`}
+        title={confirmingDelete ? `${t.confirm} ${t.delete.toLowerCase()}` : t.deleteRequest}
+        onClick={() => { if (confirmingDelete) { playSound('tap'); void completeReviewAction(); } else openReview('delete', request); }}
+        onBlur={() => cancelReview('delete', request.id)}
+        onKeyDown={event => { if (event.key === 'Escape') { event.preventDefault(); cancelReview('delete', request.id); } }}>
+        {actionBusy && confirmingDelete ? <LoaderCircle className="leave-requests-page__action-spinner" aria-hidden="true" />
+          : confirmingDelete ? <span>{t.confirm}</span> : <><Trash2 aria-hidden="true" />{card && <span>{t.delete}</span>}</>}
+      </button>}
+    </>;
+  }
+
+  const showSkeleton = loading && loadedPage === null;
+  const changingPage = loadedPage !== null && loadedPage !== page;
+  const loadError = error ? <div className="leave-requests-page__error">
+    <p className="form-error-text" role="alert">{leaveErrorText(error, language)}</p>
+    <button type="button" className="btn-secondary" onClick={() => { playSound('tap'); setRevision(value => value + 1); }}>{t.retry}</button>
+  </div> : null;
+
+  if (!canReview && !isBuild) return <StatusPage kind="forbidden" />;
   return (
     <BoneyardSkeleton
       name="leave-requests-page"
-      loading={loading}
+      loading={showSkeleton}
       loadingLabel={t.loading}
       fixture={isBuild ? <LeaveRequestsSkeletonFixture /> : undefined}
     >
     <main className="leave-requests-page container" aria-labelledby={`${id}-title`}>
           <PageHeading id={`${id}-title`} className="app-page-title">
-            <Link to={HOME_PATH} className="leave-requests-page__title-link">
+            <Link to={HOME_PATH} className="leave-requests-page__title-link" onClick={() => playSound('navigate', { direction: 'back' })}>
               <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
               {t.title}
             </Link>
           </PageHeading>
       <section className="leave-requests-page__content" aria-label={t.team} aria-busy={loading}>
-        {loading ? <p role="status">{t.loading}</p>
-          : error ? <div className="leave-requests-page__error">
-            <p className="form-error-text" role="alert">{leaveErrorText(error, language)}</p>
-            <button type="button" className="btn-secondary" onClick={() => setRevision(value => value + 1)}>{t.retry}</button>
-          </div>
+        {showSkeleton ? null
+          : changingPage && error ? loadError
+          : changingPage || (!error && rows.length === 0 && total > 0) ? <p role="status">{t.loading}</p>
+          : <>
+          {loadError}
+          {error && rows.length === 0 ? null
           : rows.length === 0 ? <div className="animated-empty-state leave-requests-page__empty" role="status">
             <div className="animated-empty-state__icon"><CalendarDays aria-hidden="true" /></div>
             <h2 className="animated-empty-state__title">{t.emptyTitle}</h2>
@@ -149,28 +207,13 @@ export function LeaveRequestsPage() {
                   <Badge className="leave-requests-page__status-badge" variant={row.status === 'approved' ? 'success' : 'default'}>{statusLabel(row, language)}</Badge>
                   {row.requiresNoticeException && <Tooltip content={noticeLabel(row, language)}>
                     <button type="button" className="btn-icon leave-requests-page__notice"
-                      aria-label={noticeLabel(row, language)}>
+                      aria-label={noticeLabel(row, language)} onClick={() => playSound('tap')}>
                       <Info aria-hidden="true" />
                     </button>
                   </Tooltip>}
                 </div></td>
                 <td className="leave-requests-page__row-actions">
-                  <div className="leave-requests-page__actions">
-                    {canApproveLeaveRequest(profile, row) && <button type="button"
-                      className="btn-icon leave-requests-page__action-approve" disabled={actionBusy}
-                      aria-label={`${t.approveRequest}: ${toNaturalCase(row.requesterName, { preserveAcronyms: false })}, ${date(row.startDate)} – ${date(row.endDate)}`}
-                      title={t.approveRequest}
-                      onClick={() => { setActionError(''); setReviewAction({ kind: 'approve', request: row }); }}>
-                      <Check aria-hidden="true" />
-                    </button>}
-                    {canDeleteLeaveRequest(profile, row) && <button type="button"
-                      className="btn-icon btn-icon--danger leave-requests-page__action-delete" disabled={actionBusy}
-                      aria-label={`${t.deleteRequest}: ${toNaturalCase(row.requesterName, { preserveAcronyms: false })}, ${date(row.startDate)} – ${date(row.endDate)}`}
-                      title={t.deleteRequest}
-                      onClick={() => { setActionError(''); setReviewAction({ kind: 'delete', request: row }); }}>
-                      <Trash2 aria-hidden="true" />
-                    </button>}
-                  </div>
+                  <div className="leave-requests-page__actions">{requestActions(row, false)}</div>
                 </td>
               </tr>)}</tbody>
             </table>
@@ -185,7 +228,7 @@ export function LeaveRequestsPage() {
                       <h2 id={`${id}-request-${row.id}`}>{requester}</h2>
                       {row.requiresNoticeException && <Tooltip content={noticeLabel(row, language)}>
                         <button type="button" className="btn-icon leave-requests-page__notice"
-                          aria-label={noticeLabel(row, language)}>
+                          aria-label={noticeLabel(row, language)} onClick={() => playSound('tap')}>
                           <Info aria-hidden="true" />
                         </button>
                       </Tooltip>}
@@ -213,47 +256,22 @@ export function LeaveRequestsPage() {
                   </div>
                   {(canApproveLeaveRequest(profile, row) || canDeleteLeaveRequest(profile, row)) &&
                     <footer className="leave-requests-page__card-footer">
-                      {canApproveLeaveRequest(profile, row) && <button type="button"
-                        className="btn-secondary leave-requests-page__card-action leave-requests-page__action-approve" disabled={actionBusy}
-                        aria-label={`${t.approveRequest}: ${requester}, ${date(row.startDate)} – ${date(row.endDate)}`}
-                        title={t.approveRequest}
-                        onClick={() => { setActionError(''); setReviewAction({ kind: 'approve', request: row }); }}>
-                        <Check aria-hidden="true" /> {t.approve}
-                      </button>}
-                      {canDeleteLeaveRequest(profile, row) && <button type="button"
-                        className="btn-secondary leave-requests-page__card-action leave-requests-page__action-delete" disabled={actionBusy}
-                        aria-label={`${t.deleteRequest}: ${requester}, ${date(row.startDate)} – ${date(row.endDate)}`}
-                        title={t.deleteRequest}
-                        onClick={() => { setActionError(''); setReviewAction({ kind: 'delete', request: row }); }}>
-                        <Trash2 aria-hidden="true" /> {t.delete}
-                      </button>}
+                      {requestActions(row, true)}
                     </footer>}
                 </article>
               </li>;
             })}
           </ul></>}
+          </>}
       </section>
-      {!loading && !error && total > LEAVE_PAGE_SIZE && <nav className="leave-requests-page__pagination" aria-label={t.pages}>
-        <button type="button" className="btn-secondary" disabled={page === 0} onClick={() => setPage(value => value - 1)}>
+      {!showSkeleton && !changingPage && rows.length > 0 && total > LEAVE_PAGE_SIZE && <nav className="leave-requests-page__pagination" aria-label={t.pages}>
+        <button type="button" className="btn-secondary" disabled={loading || page === 0} onClick={() => { playSound('navigate', { direction: 'back' }); setReviewAction(null); setPage(value => value - 1); }}>
           <ChevronLeft aria-hidden="true" /> {t.previous}
         </button>
         <span className="type-body-md" role="status">{t.page} {page + 1} {t.of} {Math.ceil(total / LEAVE_PAGE_SIZE)}</span>
-        <button type="button" className="btn-secondary" disabled={(page + 1) * LEAVE_PAGE_SIZE >= total}
-          onClick={() => setPage(value => value + 1)}>{t.next} <ChevronRight aria-hidden="true" /></button>
+        <button type="button" className="btn-secondary" disabled={loading || (page + 1) * LEAVE_PAGE_SIZE >= total}
+          onClick={() => { playSound('navigate'); setReviewAction(null); setPage(value => value + 1); }}>{t.next} <ChevronRight aria-hidden="true" /></button>
       </nav>}
-      {reviewAction && <ConfirmModal
-        isOpen title={reviewAction.kind === 'approve' ? t.approveRequest : t.denyRequest}
-        confirmLabel={reviewAction.kind === 'approve' ? t.approve : t.deny}
-        isDestructive={reviewAction.kind === 'delete'}
-        description={<p className="type-body-md">
-          {toNaturalCase(reviewAction.request.requesterName, { preserveAcronyms: false })} · {typeLabel(reviewAction.request, language)}: {date(reviewAction.request.startDate)} – {date(reviewAction.request.endDate)}.
-          {' '}
-        </p>}
-        isLoading={actionBusy} loadingLabel={reviewAction.kind === 'approve' ? t.approving : t.denying}
-        errorMessage={leaveErrorText(actionError, language)}
-        onConfirm={() => void completeReviewAction()}
-        onCancel={() => { if (!actionBusyRef.current) { setReviewAction(null); setActionError(''); } }}
-      />}
     </main>
     </BoneyardSkeleton>
   );

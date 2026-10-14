@@ -32,7 +32,7 @@ export function AccountPage() {
   return (
     <main className="account-page container" aria-labelledby="account-page-title">
       <PageHeading id="account-page-title" className="app-page-title">{copy.title}</PageHeading>
-      <div className="account-page__layout" data-admin={profile.role === 'admin' || undefined}>
+      <div className="account-page__layout" data-admin={profile.role === 'admin' || undefined} data-recruiter={profile.role === 'reclutador' || undefined}>
         <div className="account-page__aside">
           <AccountProfile copy={copy} displayName={displayName} email={user?.email} />
           <AccountSection id={settingsId} title={copy.settings} className="account-settings"

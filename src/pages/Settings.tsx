@@ -21,6 +21,8 @@ import {
 import { formatShortDate } from '@/lib/dates';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
+import { ActionStateContent } from '@/components/ui/ActionStateContent';
+import { StatusPage } from '@/components/ui/StatusPage';
 import './Settings.css';
 
 interface FormState {
@@ -178,17 +180,7 @@ export function Settings() {
   if (loading) return null;
   if (!profile) return <Navigate to="/login" replace />;
   if (!isAdmin) {
-    return (
-      <main className="settings settings--denied" role="main">
-        <section className="settings__denied-card">
-          <PageHeading className="app-page-title">Acceso restringido</PageHeading>
-          <p className="settings__denied-text">
-            Solo los administradores pueden gestionar usuarios. Pide a un admin
-            que cambie tu rol si necesitas acceso.
-          </p>
-        </section>
-      </main>
-    );
+    return <StatusPage kind="forbidden" />;
   }
 
   return (
@@ -352,13 +344,15 @@ export function Settings() {
               whileTap={!submitting ? { scale: 0.97 } : undefined}
               transition={{ type: 'spring', stiffness: 380, damping: 24 }}
             >
-              <MorphingIcon
-                icon={submitting ? Loader2IconData : UserPlusIconData}
-                size={14}
-                className={submitting ? 'settings__spinner' : undefined}
-                aria-hidden="true"
-              />
-              {submitting ? 'Creando…' : 'Crear usuario'}
+              <ActionStateContent active={submitting}>
+                <MorphingIcon
+                  icon={submitting ? Loader2IconData : UserPlusIconData}
+                  size={14}
+                  className={submitting ? 'settings__spinner' : undefined}
+                  aria-hidden="true"
+                />
+                <span>{submitting ? 'Creando…' : 'Crear usuario'}</span>
+              </ActionStateContent>
             </motion.button>
           </form>
         </section>

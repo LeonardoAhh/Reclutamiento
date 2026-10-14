@@ -363,33 +363,6 @@
   font-size: var(--type-caption-md-size, 12px);
 }
 
-/* ── Acceso denegado ─────────────────────────────────────────────── */
-.settings--denied {
-  min-height: 60vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-lg);
-}
-
-.settings__denied-card {
-  max-width: 420px;
-  text-align: center;
-  padding: var(--spacing-xl);
-  background: var(--color-canvas);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-xl, 16px);
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-}
-
-.settings__denied-text {
-  margin: 0;
-  color: var(--color-muted);
-  font-size: var(--type-body-md-size, 14px);
-}
-
 /* ── Responsive ──────────────────────────────────────────────────── */
 @media (max-width: 600px) {
   .settings {

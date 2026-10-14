@@ -4,6 +4,7 @@ import { playSound } from '@/lib/sound';
 import { Check, Copy, LoaderCircle, Share2 } from "lucide-react";
 import { CANDIDATE_ACCESS_CARD_CONFIG } from "@/lib/constants";
 import { toast } from "@/lib/notify";
+import { ActionStateContent } from './ActionStateContent';
 import {
   createCandidateAccessCardBlob,
   getCandidateAccessCardFilename,
@@ -189,10 +190,12 @@ export function CandidateAccessCard({ data }: CandidateAccessCardProps) {
           onClick={handleCopy}
           disabled={!imageBlob}
         >
-          {copied
-            ? <Check size="var(--icon-size-sm)" aria-hidden="true" />
-            : <Copy size="var(--icon-size-sm)" aria-hidden="true" />}
-          {copied ? (en ? 'Copied' : 'Copiada') : (en ? 'Copy' : 'Copiar')}
+          <ActionStateContent active={copied}>
+            {copied
+              ? <Check size="var(--icon-size-sm)" aria-hidden="true" />
+              : <Copy size="var(--icon-size-sm)" aria-hidden="true" />}
+            <span>{en ? 'Copy' : 'Copiar'}</span>
+          </ActionStateContent>
         </button>
         <button
           type="button"

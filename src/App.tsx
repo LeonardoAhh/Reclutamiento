@@ -3,6 +3,8 @@ import { Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom';
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 
 import { AppShell } from '@/components/layout/AppShell';
+import { StatusPage } from '@/components/ui/StatusPage';
+import { useAuth } from '@/hooks/useAuth';
 import { PWAStatus } from '@/components/ui/PWAStatus';
 import { SystemUpdateNotification } from '@/components/ui/SystemUpdateNotification';
 
@@ -138,6 +140,14 @@ function AppLoadingFallback() {
   );
 }
 
+function SessionExpiredRoute() {
+  const { session, sessionExpired, loading } = useAuth();
+  if (loading) return null;
+  if (session) return <Navigate to={HOME_PATH} replace />;
+  if (!sessionExpired) return <Navigate to="/login" replace />;
+  return <StatusPage kind="expired" standalone />;
+}
+
 function App() {
   return (
     <TooltipPrimitive.Provider delayDuration={200}>
@@ -156,6 +166,7 @@ function App() {
                 }
               />
               <Route path={LOGOUT_PATH} element={<AuthGuard><LogoutPage /></AuthGuard>} />
+              <Route path="/session-expired" element={<SessionExpiredRoute />} />
               <Route element={<ProtectedShell />}>
                 <Route path={HOME_PATH} element={<HomePage />} />
                 <Route path={ORGANIZATION_CHART_PATH} element={<OrganizationChartPage />} />
@@ -184,13 +195,13 @@ function App() {
                 {CONFIGURACION_ROUTES.map((path) => (
                   <Route key={path} path={path} element={<Configuracion />} />
                 ))}
+                <Route path="*" element={<StatusPage kind="not-found" />} />
               </Route>
               <Route path="/features" element={<Navigate to="/analysis" replace />} />
               <Route path="/dashboard" element={<Navigate to={PLANTILLA_PATH} replace />} />
               <Route path="/pipeline" element={<Navigate to="/candidates" replace />} />
               <Route path="/kpis" element={<Navigate to="/overview" replace />} />
               <Route path="/" element={<Navigate to={HOME_PATH} replace />} />
-              <Route path="*" element={<Navigate to={HOME_PATH} replace />} />
             </Routes>
           </Suspense>
       </>

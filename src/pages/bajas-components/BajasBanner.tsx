@@ -1,6 +1,7 @@
 import { CloudOff } from 'lucide-react';
 import { RefreshCw as RefreshCwIconData, LoaderCircle as LoaderCircleIconData } from 'lucide';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
+import { ActionStateContent } from '@/components/ui/ActionStateContent';
 import type { DataSource, SaveStatus } from '@/hooks/useBajas';
 import './BajasBanner.css';
 
@@ -36,13 +37,15 @@ export function BajasBanner({
           aria-label="Reintentar sincronización"
           title="Reintentar sync"
         >
-          <MorphingIcon
-            icon={saveStatus === 'saving' ? LoaderCircleIconData : RefreshCwIconData}
-            size={14}
-            className={saveStatus === 'saving' ? 'bajas-banner__spin' : ''}
-            aria-hidden="true"
-          />
-          <span>Reintentar</span>
+          <ActionStateContent active={saveStatus === 'saving'}>
+            <MorphingIcon
+              icon={saveStatus === 'saving' ? LoaderCircleIconData : RefreshCwIconData}
+              size={14}
+              className={saveStatus === 'saving' ? 'bajas-banner__spin' : ''}
+              aria-hidden="true"
+            />
+            <span>Reintentar</span>
+          </ActionStateContent>
         </button>
       </div>
     );

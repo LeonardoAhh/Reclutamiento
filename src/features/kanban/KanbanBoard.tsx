@@ -166,7 +166,7 @@ export function KanbanBoard({ desktopTabsTarget, tasks, copy: t, disabled, busy,
       } }}>
       {!isTablet && statusTabs}
       {isDesktop && desktopTabsTarget && createPortal(desktopTabs, desktopTabsTarget)}
-      <div className="kanban-board" data-dragging={dragging || undefined}>
+      <div className="kanban-board" data-dragging={dragging || undefined} data-view={isDesktop ? desktopView : undefined}>
         <Tabs.Content value="board" forceMount id={`${id}-panel-board`} className="kanban-board__work"
           hidden={isDesktop && !dragging && desktopView !== 'board'}
           role={isDesktop && !dragging ? 'tabpanel' : 'group'}

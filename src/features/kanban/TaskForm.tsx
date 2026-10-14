@@ -43,6 +43,7 @@ export function TaskForm({ initial, initialStatus, copy: t, busy, error, onClose
   const [discard, setDiscard] = useState(false);
   const [wizardStep, setWizardStep] = useState(0);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [confirmArchive, setConfirmArchive] = useState(false);
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [coverUploadId, setCoverUploadId] = useState<string | null>(null);
   const [coverPreview, setCoverPreview] = useState<string | null>(null);
@@ -200,9 +201,16 @@ export function TaskForm({ initial, initialStatus, copy: t, busy, error, onClose
   </div>;
   const deleteAction = initial && onDelete ? <button type="button" className="btn-ghost kanban-form__delete" disabled={busy || discard}
     aria-label={`${confirmDelete ? t.confirm : t.remove}: ${initial.title}`}
-    aria-describedby={confirmDelete ? `${id}-delete-notice` : undefined} onBlur={() => setConfirmDelete(false)}
-    onClick={() => { if (confirmDelete) void onDelete(); else { playSound('warning'); setConfirmDelete(true); } }}>
+    aria-describedby={confirmDelete ? `${id}-action-notice` : undefined} onBlur={() => setConfirmDelete(false)}
+    onClick={() => { if (confirmDelete) void onDelete(); else { playSound('warning'); setConfirmArchive(false); setConfirmDelete(true); } }}>
     <Trash2 size="var(--icon-size-md)" aria-hidden="true" />{confirmDelete ? t.confirm : t.remove}
+  </button> : undefined;
+  const archiveAction = initial?.status === 'completed' && onArchive ? <button type="button" className="btn-ghost"
+    disabled={busy || discard || dirty} aria-label={`${confirmArchive ? t.confirm : t.archive}: ${initial.title}`}
+    aria-describedby={dirty ? `${id}-archive-help` : confirmArchive ? `${id}-action-notice` : undefined}
+    onBlur={() => setConfirmArchive(false)}
+    onClick={() => { if (confirmArchive) void onArchive(); else { playSound('warning'); setConfirmDelete(false); setConfirmArchive(true); } }}>
+    <Archive size="var(--icon-size-md)" aria-hidden="true" />{confirmArchive ? t.confirm : t.archive}
   </button> : undefined;
   const editAction = initial && !editing ? <button type="button" className="kanban-toolbar-button"
     disabled={busy} onClick={() => { playSound('open'); setEditing(true); }}>
@@ -211,7 +219,8 @@ export function TaskForm({ initial, initialStatus, copy: t, busy, error, onClose
   const form = <form ref={formRef} id={`${id}-form`} className={`kanban-dialog-form${wizard ? ' modal-wizard-form' : ''}`}
     aria-label={creating ? t.create : t.editTitle}
     onSubmit={submit} noValidate={wizard} aria-busy={busy || coverProcessing}>
-    {initial && <p id={`${id}-delete-notice`} className="sr-only" role="status">{confirmDelete ? t.removeText : ''}</p>}
+    {initial && <p id={`${id}-action-notice`} className="sr-only" role="status">{confirmDelete ? t.removeText : confirmArchive ? t.archiveConfirmText : ''}</p>}
+    {archiveAction && dirty && <p id={`${id}-archive-help`} className="type-body-sm kanban-form__help">{t.archiveHelp}</p>}
     {wizard ? discard ? discardNotice : <FormWizard
       initialStep={wizardStep} onCancel={close} submitting={busy} navigationPending={busy || coverProcessing} focusStepOnChange
       submitLabel={t.save} submittingLabel={t.saving} notice={notice}
@@ -230,19 +239,12 @@ export function TaskForm({ initial, initialStatus, copy: t, busy, error, onClose
         { id: 'planning', title: t.planningStep, content: planning },
       ]} /> : <>
       {notice}{details}{planning}
-      {initial?.status === 'completed' && onArchive && <div>
-        <button type="button" className="btn-ghost" disabled={busy || discard || dirty}
-          aria-describedby={dirty ? `${id}-archive-help` : undefined} onClick={() => { void onArchive(); }}>
-          <Archive size="var(--icon-size-md)" aria-hidden="true" />{t.archive}
-        </button>
-        {dirty && <p id={`${id}-archive-help`} className="type-body-sm kanban-form__help">{t.archiveHelp}</p>}
-      </div>}
     </>}
   </form>;
   const Dialog = mobile ? Modal : FormSheet;
   return <Dialog isOpen title={creating ? t.create : editing ? t.editTitle : initial.title} onClose={close} size="sm"
     className={`kanban-task-dialog type-body-md${wizard ? ' modal-wizard-mobile' : ''}`}
-    presentation="modal" headerActions={editing ? deleteAction : editAction}
+    presentation="modal" headerActions={editing ? <div className="kanban-form__header-actions">{archiveAction}{deleteAction}</div> : editAction}
     footerActions={!editing || wizard ? undefined : discard ? discardNotice : actions}>
     {editing ? form : initial && <TaskPreview task={initial} copy={t} cover={savedCover} />}
   </Dialog>;

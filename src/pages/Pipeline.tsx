@@ -13,6 +13,7 @@ import { ClipboardCheck, ClipboardList as MorphClipboardList } from 'lucide';
 import { StarliteBadge, VinoplasticBadge, ReclutadorBadge } from '@/components/ui/Badge';
 import { CandidateModal } from '@/components/ui/CandidateModal';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
+import { ActionStateContent } from '@/components/ui/ActionStateContent';
 import { CandidateAccessCard } from '@/components/ui/CandidateAccessCard';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { notifyResult, toast } from '@/lib/notify';
@@ -453,16 +454,14 @@ export function Pipeline() {
             <button
               type="button"
               className="btn-secondary pipeline__report-btn"
-              data-copied={reportCopied || undefined}
               onClick={handleCopyReport}
               aria-label={en ? 'Copy candidate summary' : 'Copiar resumen de candidatos'}
               title={en ? 'Copy candidate summary for WhatsApp' : 'Copiar resumen de candidatos para WhatsApp'}
             >
-              <MorphingIcon icon={reportCopied ? ClipboardCheck : MorphClipboardList} size="var(--icon-size-sm)" reducedMotion="user" aria-hidden="true" />
-              <span className="pipeline__report-label" aria-hidden="true">
-                <span className="pipeline__report-label-idle">{en ? 'Summary' : 'Resumen'}</span>
-                <span className="pipeline__report-label-copied">{en ? 'Copied' : 'Copiado'}</span>
-              </span>
+              <ActionStateContent active={reportCopied}>
+                <MorphingIcon icon={reportCopied ? ClipboardCheck : MorphClipboardList} size="var(--icon-size-sm)" reducedMotion="user" aria-hidden="true" />
+                <span className="pipeline__report-label" aria-hidden="true">{en ? 'Summary' : 'Resumen'}</span>
+              </ActionStateContent>
             </button>
             <button
               type="button"

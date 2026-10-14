@@ -398,6 +398,25 @@
   }
 }
 @media (min-width:1080px) {
+  .account-page__layout[data-recruiter="true"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .account-page__layout[data-recruiter="true"] > .account-page__aside {
+    display: contents;
+  }
+  .account-page__layout[data-recruiter="true"] .account-profile {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .account-page__layout[data-recruiter="true"] .account-settings {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: start;
+  }
+  .account-page__layout[data-recruiter="true"] .account-recognition {
+    grid-column: 1;
+    grid-row: 2;
+  }
   .account-page__layout[data-admin="true"] {
     grid-template-columns: minmax(0,1fr) minmax(0,1fr);
   }

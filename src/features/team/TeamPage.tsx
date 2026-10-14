@@ -1,9 +1,10 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { PageHeading } from '@/components/layout/PageHeading';
 import { ArrowLeft } from 'lucide-react';
-import { Link, Navigate } from 'react-router-dom';
-import { ACCOUNT_PATH, HOME_PATH } from '@/components/layout/navigation';
+import { Link } from 'react-router-dom';
+import { ACCOUNT_PATH } from '@/components/layout/navigation';
 import { Badge } from '@/components/ui/Badge';
+import { StatusPage } from '@/components/ui/StatusPage';
 import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton';
 import { useAuth, type Profile } from '@/hooks/useAuth';
 import { listProfiles } from '@/lib/users';
@@ -64,7 +65,7 @@ export function TeamPage() {
     } finally { setBusy(false); }
   }
   const visibleMembers = members.filter(member => !member.archived_at);
-  if (profile?.role !== 'admin') return <Navigate to={HOME_PATH} replace />;
+  if (profile?.role !== 'admin') return <StatusPage kind="forbidden" />;
   return <>
     <main className="team-page container" aria-labelledby={`${id}-title`}>
           <PageHeading id={`${id}-title`} className="app-page-title">

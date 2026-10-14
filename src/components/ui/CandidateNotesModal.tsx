@@ -3,6 +3,7 @@ import { StickyNote } from 'lucide-react';
 import { LoaderCircle, MessageSquarePlus } from 'lucide';
 import { Modal } from './Modal';
 import { MorphingIcon } from './MorphingIcon';
+import { ActionStateContent } from './ActionStateContent';
 import type { Candidate, CandidateNote } from '@/lib/types';
 import { TZ_MX } from '@/lib/dates';
 import './CommentModal.css';
@@ -146,15 +147,15 @@ export function CandidateNotesModal({
             disabled={!texto.trim() || submitting || !candidate.id}
             aria-busy={submitting}
           >
-            <MorphingIcon
-              icon={submitting ? LoaderCircle : MessageSquarePlus}
-              size={16}
-              aria-hidden="true"
-              className={
-                submitting ? 'spin' : undefined
-              }
-            />
-            {submitting ? 'Guardando…' : 'Agregar nota'}
+            <ActionStateContent active={submitting}>
+              <MorphingIcon
+                icon={submitting ? LoaderCircle : MessageSquarePlus}
+                size={16}
+                aria-hidden="true"
+                className={submitting ? 'spin' : undefined}
+              />
+              <span>{submitting ? 'Guardando…' : 'Agregar nota'}</span>
+            </ActionStateContent>
           </button>
         </div>
       </form>

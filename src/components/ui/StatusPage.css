@@ -1,0 +1,79 @@
+.status-page {
+  display: grid;
+  align-items: center;
+  min-block-size: calc(100dvh - var(--mobile-nav-height) - var(--design-spacing-md));
+  padding-block: var(--design-spacing-3xl);
+  color: var(--color-ink);
+}
+
+.status-page--standalone {
+  min-block-size: 100dvh;
+  padding-inline: max(var(--container-padding), var(--safe-area-left)) max(var(--container-padding), var(--safe-area-right));
+  padding-block: max(var(--design-spacing-3xl), var(--safe-area-top)) max(var(--design-spacing-3xl), var(--safe-area-bottom));
+  background: var(--color-canvas);
+}
+
+.status-page__content {
+  width: min(100%, var(--content-reading-max-inline-size));
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--design-spacing-md);
+}
+
+.status-page__code {
+  margin: 0;
+  font: var(--type-caption-up-weight) var(--type-caption-up-size)/var(--type-caption-up-line) var(--font-body);
+  letter-spacing: var(--type-caption-up-tracking);
+  color: var(--color-mute);
+}
+
+.status-page__number {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--type-display-xl-size);
+  font-weight: var(--type-display-xl-weight);
+  line-height: var(--type-display-xl-line);
+  letter-spacing: var(--type-display-xl-tracking);
+  color: var(--color-faint);
+}
+
+.status-page__heading {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--type-heading-lg-size);
+  font-weight: var(--type-heading-lg-weight);
+  line-height: var(--type-heading-lg-line);
+  letter-spacing: var(--type-heading-lg-tracking);
+}
+
+.status-page__description {
+  margin: 0;
+  color: var(--color-body);
+  font-family: var(--font-body);
+  font-size: var(--type-body-lg-size);
+  font-weight: var(--type-body-lg-weight);
+  line-height: var(--type-body-lg-line);
+  letter-spacing: var(--type-body-lg-tracking);
+}
+
+.status-page__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--design-spacing-xs);
+  align-items: stretch;
+  width: 100%;
+  margin-block-start: var(--design-spacing-lg);
+}
+
+.status-page__actions > :is(a, button) { justify-content: center; }
+
+@media (min-width: 768px) {
+  .status-page__actions { flex-direction: row; width: auto; }
+}
+
+@media (min-width: 1080px) {
+  .status-page:not(.status-page--standalone) { min-block-size: 100%; }
+  .status-page__content { justify-self: center; align-items: center; text-align: center; }
+}

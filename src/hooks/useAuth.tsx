@@ -35,6 +35,7 @@ export interface Profile {
 
 export interface AuthState {
   session: Session | null;
+  sessionExpired: boolean;
   user: User | null;
   profile: Profile | null;
   profileLoading: boolean;
@@ -58,12 +59,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const { language } = useLanguage();
   const english = language === 'en';
   const [session, setSession] = useState<Session | null>(null);
+  const [sessionExpired, setSessionExpired] = useState(false);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [profileLoading, setProfileLoading] = useState(true);
   const [loading, setLoading] = useState(true);
   // Ref con la session actual, accesible dentro de handlers sin re-suscribir.
   const sessionRef = useRef<Session | null>(null);
-  // Evita spamear el toast de "Sesión expirada" si múltiples requests fallan.
+  // Evita repetir el aviso de cuenta inactiva si fallan varias requests.
   const expiredNotifiedRef = useRef(false);
   // Impide que respuestas 401 concurrentes ejecuten varios cierres a la vez.
   const expiryHandlingRef = useRef(false);
@@ -76,19 +78,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     expiryHandlingRef.current = true;
 
-    // Cortamos la sesión en memoria primero para que AuthGuard redirija a
-    // /login inmediatamente, sin esperar a que Supabase termine signOut.
+    // Cortamos la sesión en memoria para que AuthGuard muestre el estado de
+    // expiración sin esperar a que Supabase termine signOut.
     sessionRef.current = null;
+    setSessionExpired(!inactive);
     setSession(null);
     setProfile(null);
     setProfileLoading(false);
 
-    if (!expiredNotifiedRef.current && window.location.pathname !== '/login') {
+    if (inactive && !expiredNotifiedRef.current && window.location.pathname !== '/login') {
       expiredNotifiedRef.current = true;
       toast.error({
-        title: inactive
-          ? english ? 'Your account is inactive. Contact an administrator.' : 'Tu cuenta está inactiva. Contacta al administrador.'
-          : english ? 'Your session expired. Please sign in again.' : 'Sesión expirada. Vuelve a iniciar sesión.',
+        title: english ? 'Your account is inactive. Contact an administrator.' : 'Tu cuenta está inactiva. Contacta al administrador.',
       });
     }
 
@@ -105,6 +106,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     sessionRef.current = session;
     if (session) expiredNotifiedRef.current = false;
+    if (session) setSessionExpired(false);
   }, [session]);
 
   // Carga inicial de la session + suscripción a cambios.
@@ -158,7 +160,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   /* ── Refresh proactivo del JWT ────────────────────────────────────────
      Programa un refresh 60s ANTES de que expire el token. Si el refresh
-     falla, cerramos sesión local con aviso → AuthGuard redirige.
+     falla, cerramos sesión local → AuthGuard muestra la vista de expiración.
      Esto evita el caso "usuario lleva 1h capturando un formulario en primer
      plano, el token expira, hace Guardar y falla en silencio". */
   useEffect(() => {
@@ -190,7 +192,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
      con sesión vieja, las queries fallan y no se muestra nada.
      Aquí, al recuperar foco/visibilidad/conexión: si el token ya venció
      intentamos refrescarlo; si no se puede, cerramos sesión localmente
-     (con aviso) → AuthGuard redirige a /login automáticamente. */
+     → AuthGuard muestra la vista de expiración automáticamente. */
   useEffect(() => {
     let running = false;
 
@@ -383,6 +385,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signOut = useCallback(async () => {
     await signOutLib();
+    setSessionExpired(false);
     setProfile(null);
   }, []);
 
@@ -395,6 +398,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       profile?.username ?? emailToUsername(session?.user?.email ?? '');
     return {
       session,
+      sessionExpired,
       user: session?.user ?? null,
       profile,
       profileLoading,
@@ -404,7 +408,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       signOut,
       updateAvatarUrl,
     };
-  }, [session, profile, profileLoading, loading, signIn, signOut, updateAvatarUrl]);
+  }, [session, sessionExpired, profile, profileLoading, loading, signIn, signOut, updateAvatarUrl]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

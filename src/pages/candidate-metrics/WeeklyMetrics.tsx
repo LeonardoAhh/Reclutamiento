@@ -6,6 +6,7 @@ import { playSound } from '@/lib/sound';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { ButtonUtility } from '@/components/ui/ButtonUtility';
+import { ActionStateContent } from '@/components/ui/ActionStateContent';
 import { isoWeekOf } from '@/lib/dates';
 import type { WeekStat } from './useCandidateMetrics';
 
@@ -187,9 +188,13 @@ export function WeeklyMetrics({ stats }: { stats: WeekStat[] }) {
                     <ButtonUtility
                       onClick={() => handleCopyRow(stat, tueWeek)}
                       className="recruiter-metrics__weekly-copy"
-                      icon={isCopied ? <CircleCheckBig size="var(--icon-size-sm)" aria-hidden="true" /> : <Copy size="var(--icon-size-sm)" aria-hidden="true" />}
                     >
-                      {isCopied ? (en ? 'Copied!' : '¡Copiado!') : (en ? 'Copy weekly metrics' : 'Copiar métricas de la semana')}
+                      <ActionStateContent active={isCopied}>
+                        <span className="btn-utility__icon">
+                          {isCopied ? <CircleCheckBig size="var(--icon-size-sm)" aria-hidden="true" /> : <Copy size="var(--icon-size-sm)" aria-hidden="true" />}
+                        </span>
+                        <span>{en ? 'Copy weekly metrics' : 'Copiar métricas de la semana'}</span>
+                      </ActionStateContent>
                     </ButtonUtility>
                   </div>
                 );

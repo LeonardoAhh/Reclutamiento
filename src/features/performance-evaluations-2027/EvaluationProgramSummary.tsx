@@ -134,15 +134,15 @@ export function EvaluationProgramSummary({
             type="button"
             className="btn-icon evaluation-program-summary__copy-button"
             onClick={() => void handleCopyEmail()}
-            aria-label={copied ? copy.emailCopied : copy.copyEmail}
-            title={copied ? copy.emailCopied : copy.copyEmail}
+            aria-label={copy.copyEmail}
+            title={copy.copyEmail}
           >
             <MorphingIcon
               icon={copied ? CheckIconData : CopyIconData}
               size="var(--icon-size-sm)"
               aria-hidden="true"
             />
-            <span className="sr-only">{copied ? copy.emailCopied : copy.copyEmail}</span>
+            <span className="sr-only">{copy.copyEmail}</span>
           </button>
         </div>
         <div className="evaluation-program-summary__timeline">

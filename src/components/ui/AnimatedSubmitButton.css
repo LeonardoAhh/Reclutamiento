@@ -57,6 +57,21 @@
   inline-size: 100%;
 }
 
+.animated-submit-button[data-state="success"] .animated-submit-button__visual {
+  animation: animated-submit-success var(--transition-base) both;
+}
+
+@keyframes animated-submit-success {
+  from {
+    opacity: 0;
+    transform: translateY(var(--motion-float-distance));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .animated-submit-button__measure-icon {
   inline-size: var(--icon-size-sm);
   block-size: var(--icon-size-sm);
@@ -106,6 +121,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .animated-submit-button[data-state="success"] .animated-submit-button__visual {
+    animation: none;
+  }
+
   .animated-submit-button__spinner {
     animation: none;
   }

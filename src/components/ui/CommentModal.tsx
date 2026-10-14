@@ -7,6 +7,7 @@ import { TZ_MX } from '@/lib/dates';
 import { Modal } from './Modal';
 import { CustomSelect } from './CustomSelect';
 import { MorphingIcon } from './MorphingIcon';
+import { ActionStateContent } from './ActionStateContent';
 import './CommentModal.css';
 
 interface CommentModalProps {
@@ -133,15 +134,15 @@ export function CommentModal({
             disabled={!comentario.trim() || submitting}
             aria-busy={submitting}
           >
-            <MorphingIcon
-              icon={submitting ? LoaderCircle : MessageSquarePlus}
-              size={16}
-              aria-hidden="true"
-              className={
-                submitting ? 'spin' : undefined
-              }
-            />
-            {submitting ? 'Guardando…' : 'Guardar'}
+            <ActionStateContent active={submitting}>
+              <MorphingIcon
+                icon={submitting ? LoaderCircle : MessageSquarePlus}
+                size={16}
+                aria-hidden="true"
+                className={submitting ? 'spin' : undefined}
+              />
+              <span>{submitting ? 'Guardando…' : 'Guardar'}</span>
+            </ActionStateContent>
           </button>
         </div>
       </form>

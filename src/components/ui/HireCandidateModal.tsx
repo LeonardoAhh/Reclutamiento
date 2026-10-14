@@ -4,6 +4,7 @@ import { CircleAlert, CircleCheckBig, UserRoundPlus } from 'lucide-react';
 import { LoaderCircle, UserRoundPlus as UserPlusIcon } from 'lucide';
 import { Modal } from './Modal';
 import { MorphingIcon } from './MorphingIcon';
+import { ActionStateContent } from './ActionStateContent';
 import type { Candidate, Employee } from '@/lib/types';
 import { localTodayIso } from '@/lib/dates';
 import { CustomSelect } from './CustomSelect';
@@ -73,13 +74,15 @@ export function HireCandidateModal({
         aria-busy={submitting}
         form={formId}
       >
-        <MorphingIcon
-          icon={submitting ? LoaderCircle : UserPlusIcon}
-          size="var(--icon-size-sm)"
-          aria-hidden="true"
-          className={submitting ? 'spin' : undefined}
-        />
-        {submitting ? (en ? 'Saving…' : 'Guardando…') : (en ? 'Link' : 'Vincular')}
+        <ActionStateContent active={submitting}>
+          <MorphingIcon
+            icon={submitting ? LoaderCircle : UserPlusIcon}
+            size="var(--icon-size-sm)"
+            aria-hidden="true"
+            className={submitting ? 'spin' : undefined}
+          />
+          <span>{submitting ? (en ? 'Saving…' : 'Guardando…') : (en ? 'Link' : 'Vincular')}</span>
+        </ActionStateContent>
       </button>
     </>
   );
