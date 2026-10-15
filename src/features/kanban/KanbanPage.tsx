@@ -11,6 +11,8 @@ import type { KanbanTask, TaskDraft, TaskStatus } from './types';
 import { useKanban } from './useKanban';
 import { useKanbanClock } from './useKanbanClock';
 import { bindSoundInteractions, playSound } from '@/lib/sound';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
+import { LAYOUT_BREAKPOINTS } from '@/lib/layout';
 import './KanbanPage.css';
 
 export function KanbanPage() {
@@ -20,15 +22,20 @@ export function KanbanPage() {
 function PersonalKanban({ userId }: { userId: string }) {
   const [archived, setArchived] = useState(false);
   const [focusView, setFocusView] = useState(false);
+  const [layoutMode, setLayoutMode] = useState<'grid' | 'list'>('grid');
   return <KanbanWorkspace key={String(archived)} userId={userId} archived={archived} focusView={focusView}
+    layoutMode={layoutMode} onChangeLayout={setLayoutMode}
     onChangeView={value => { setFocusView(true); setArchived(value); }} />;
 }
-function KanbanWorkspace({ userId, archived, focusView, onChangeView }: {
-  userId: string; archived: boolean; focusView: boolean; onChangeView: (value: boolean) => void;
+function KanbanWorkspace({ userId, archived, focusView, layoutMode, onChangeLayout, onChangeView }: {
+  userId: string; archived: boolean; focusView: boolean;
+  layoutMode: 'grid' | 'list'; onChangeLayout: (value: 'grid' | 'list') => void;
+  onChangeView: (value: boolean) => void;
 }) {
   const { language } = useLanguage();
   useEffect(() => bindSoundInteractions(document), []);
   const t = kanbanCopy[language];
+  const isTablet = useMediaQuery(`(min-width: ${LAYOUT_BREAKPOINTS.tablet}px)`);
   const board = useKanban(userId, archived);
   const now = useKanbanClock();
   const id = useId();
@@ -133,12 +140,21 @@ function KanbanWorkspace({ userId, archived, focusView, onChangeView }: {
           {archived ? <h2 id={`${id}-heading`} className="type-body-strong">{t.archiveView}</h2>
             : addAction}
           {viewAction}
+          {!archived && isTablet && <fieldset className="kanban-layout-switch" disabled={board.busy || editor !== null}>
+            <legend className="sr-only">{t.layout}</legend>
+            {(['grid', 'list'] as const).map(mode => <button key={mode} type="button"
+              className="kanban-layout-switch__button" aria-pressed={layoutMode === mode} aria-controls={id}
+              onClick={() => { playSound('select'); onChangeLayout(mode); }}>
+              {mode === 'grid' ? t.gridView : t.listView}
+            </button>)}
+          </fieldset>}
           {!archived && <div ref={setDesktopTabsTarget} className="kanban-desktop-tabs" />}
         </div>
         {board.loading && !board.ready && <KanbanSkeleton label={t.loading} />}
         {board.ready && archived && board.tasks.length === 0 && <p className="type-body-md">{t.archiveEmpty}</p>}
         {board.ready && (archived ? <ArchivedTasks tasks={board.tasks} copy={t} disabled={disabled} onRestore={archive} />
           : <KanbanBoard tasks={board.tasks} copy={t} disabled={disabled} busy={board.busy} now={now}
+            layoutMode={layoutMode}
             desktopTabsTarget={desktopTabsTarget}
             editor={editor} error={actionError} onEdit={task => openEditor(task)}
             getAddButton={() => addButtonRef.current}

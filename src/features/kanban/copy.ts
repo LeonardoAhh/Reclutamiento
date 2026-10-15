@@ -1,7 +1,7 @@
 export const kanbanCopy = {
   es: {
-    title: 'Kanban', board: 'Mis pendientes', boardView: 'Tablero', intro: 'Organiza tus actividades, procesos y entrevistas.',
-    private: 'Solo tú puedes ver y modificar este tablero.', create: 'Nuevo pendiente', addCard: 'Añadir', drag: 'Arrastrar tarjeta', moveTo: 'Mover a', dropHere: 'Suelta la tarjeta aquí', dragCancel: 'Arrastre cancelado', dragInstructions: 'Pulsa espacio para tomar la tarjeta, flechas arriba/abajo para ordenar, izquierda/derecha para cambiar de columna y espacio para soltar. Escape cancela.', view: 'Ver', edit: 'Editar',
+    title: 'Kanban', board: 'Mis pendientes', boardView: 'Tablero', layout: 'Vista de pendientes', gridView: 'Cuadrícula', listView: 'Lista', boardEmpty: 'Aún no hay pendientes. Añade el primero.', intro: 'Organiza tus actividades, procesos y entrevistas.',
+    private: 'Solo tú puedes ver y modificar este tablero.', create: 'Nuevo pendiente', addCard: 'Añadir', drag: 'Arrastrar tarjeta', moveTo: 'Mover a', dropHere: 'Suelta la tarjeta aquí', dragCancel: 'Arrastre cancelado', dragInstructions: 'Pulsa espacio para tomar la tarjeta, flechas arriba/abajo para ordenar, izquierda/derecha para cambiar de columna y espacio para soltar. Escape cancela.', listDragInstructions: 'Pulsa espacio para tomar la tarjeta, flechas arriba/abajo para moverla junto a otra tarjeta y espacio para soltar. Al moverla a otro estado, adopta ese estado. Escape cancela.', view: 'Ver', edit: 'Editar',
     editTitle: 'Editar pendiente', remove: 'Eliminar', confirm: 'Confirmar',
     removeText: 'Se eliminará definitivamente.',
     cancel: 'Cancelar', save: 'Guardar', saving: 'Guardando…', discard: 'Descartar',
@@ -56,8 +56,8 @@ export const kanbanCopy = {
     },
   },
   en: {
-    title: 'Kanban', board: 'My tasks', boardView: 'Board', intro: 'Organize your activities, processes and interviews.',
-    private: 'Only you can view and manage this board.', create: 'New task', addCard: 'Add', drag: 'Drag card', moveTo: 'Move to', dropHere: 'Drop card here', dragCancel: 'Drag cancelled', dragInstructions: 'Press space to pick up the card, up/down arrows to reorder, left/right arrows to change columns and space to drop. Escape cancels.', view: 'View', edit: 'Edit',
+    title: 'Kanban', board: 'My tasks', boardView: 'Board', layout: 'Task view', gridView: 'Grid', listView: 'List', boardEmpty: 'No tasks yet. Add your first one.', intro: 'Organize your activities, processes and interviews.',
+    private: 'Only you can view and manage this board.', create: 'New task', addCard: 'Add', drag: 'Drag card', moveTo: 'Move to', dropHere: 'Drop card here', dragCancel: 'Drag cancelled', dragInstructions: 'Press space to pick up the card, up/down arrows to reorder, left/right arrows to change columns and space to drop. Escape cancels.', listDragInstructions: 'Press space to pick up the card, use up/down arrows to move it next to another card, then press space to drop. Moving it beside a card in another status adopts that status. Escape cancels.', view: 'View', edit: 'Edit',
     editTitle: 'Edit task', remove: 'Delete', confirm: 'Confirm',
     removeText: 'This will be deleted permanently.',
     cancel: 'Cancel', save: 'Save', saving: 'Saving…', discard: 'Discard',

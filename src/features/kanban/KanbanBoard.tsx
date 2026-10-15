@@ -3,11 +3,15 @@ import { createPortal } from 'react-dom';
 import * as Tabs from '@radix-ui/react-tabs';
 import { DndContext, KeyboardSensor, MouseSensor, TouchSensor, useSensor, useSensors,
   type DragEndEvent } from '@dnd-kit/core';
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { Pagination } from '@/components/ui/Pagination';
+import { usePagination } from '@/hooks/usePagination';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { DESKTOP_MEDIA_QUERY, LAYOUT_BREAKPOINTS } from '@/lib/layout';
 import { isTaskStatus, TASK_STATUSES, type KanbanTask, type TaskDraft, type TaskStatus } from './types';
 import { TaskForm } from './TaskForm';
 import { KanbanColumn } from './KanbanColumn';
+import { KanbanTaskCard } from './KanbanTaskCard';
 import { kanbanCollision, kanbanKeyboardCoordinates, resolveTaskDrop } from './drag';
 import type { KanbanCopy } from './copy';
 import { playSound } from '@/lib/sound';
@@ -18,6 +22,7 @@ export interface KanbanEditor {
   status: TaskStatus;
 }
 interface KanbanBoardProps {
+  layoutMode: 'grid' | 'list';
   desktopTabsTarget: HTMLElement | null;
   tasks: readonly KanbanTask[];
   copy: KanbanCopy;
@@ -34,7 +39,33 @@ interface KanbanBoardProps {
   onSave: (draft: TaskDraft, coverFile: File | null, coverUploadId: string | null) => Promise<boolean>;
   onCloseEditor: () => void;
 }
-export function KanbanBoard({ desktopTabsTarget, tasks, copy: t, disabled, busy, error, editor,
+function KanbanList({ tasks, copy: t, locked, now, pageSize, onEdit, editButtonRef }: {
+  tasks: readonly KanbanTask[];
+  copy: KanbanCopy;
+  locked: boolean;
+  now: number;
+  pageSize: number;
+  onEdit: (task: KanbanTask) => void;
+  editButtonRef: (taskId: string, node: HTMLButtonElement | null) => void;
+}) {
+  const orderedTasks = TASK_STATUSES.flatMap(status => tasks.filter(task => task.status === status));
+  const pagination = usePagination(orderedTasks, pageSize);
+  return <section className="kanban-list-view" aria-label={t.listView}>
+    {tasks.length === 0 ? <p className="kanban-list-view__empty type-body-md">{t.boardEmpty}</p>
+      : <SortableContext items={pagination.pageItems.map(task => task.id)} strategy={verticalListSortingStrategy}>
+        <ul className="kanban-list-view__items">
+          {pagination.pageItems.map(task => <li key={task.id} className="kanban-list-view__item">
+            <KanbanTaskCard task={task} copy={t} disabled={locked} now={now} layout="list"
+              onEdit={() => onEdit(task)} editButtonRef={node => editButtonRef(task.id, node)} />
+          </li>)}
+        </ul>
+      </SortableContext>}
+    <Pagination currentPage={pagination.currentPage} totalPages={pagination.totalPages}
+      onPageChange={pagination.goToPage} canGoPrev={pagination.canGoPrev} canGoNext={pagination.canGoNext}
+      ariaLabel={`${t.paginationFor} ${t.listView}`} />
+  </section>;
+}
+export function KanbanBoard({ layoutMode, desktopTabsTarget, tasks, copy: t, disabled, busy, error, editor,
   getAddButton, onEdit, onDelete, onMove, onArchive, now, onSave, onCloseEditor }: KanbanBoardProps) {
   const id = useId();
   const [dragging, setDragging] = useState(false);
@@ -43,6 +74,7 @@ export function KanbanBoard({ desktopTabsTarget, tasks, copy: t, disabled, busy,
   const [desktopView, setDesktopView] = useState<'board' | 'notes'>('board');
   const isTablet = useMediaQuery(`(min-width: ${LAYOUT_BREAKPOINTS.tablet}px)`);
   const isDesktop = useMediaQuery(DESKTOP_MEDIA_QUERY);
+  const listView = isTablet && layoutMode === 'list';
   const selectedView = isDesktop ? desktopView : activeStatus;
   const pageSize = isDesktop ? 4 : 2;
   const headings = useRef<Partial<Record<TaskStatus, HTMLHeadingElement | null>>>({});
@@ -158,15 +190,18 @@ export function KanbanBoard({ desktopTabsTarget, tasks, copy: t, disabled, busy,
     <DndContext id={id} sensors={sensors} collisionDetection={kanbanCollision}
       onDragStart={() => { playSound('select'); setDragging(true); }}
       onDragCancel={() => setDragging(false)} onDragEnd={endDrag}
-      accessibility={{ screenReaderInstructions: { draggable: t.dragInstructions }, announcements: {
-        onDragStart: ({ active }) => `${t.drag}: ${taskTitle(active.id)}. ${t.dragInstructions}`,
+      accessibility={{ screenReaderInstructions: { draggable: listView ? t.listDragInstructions : t.dragInstructions }, announcements: {
+        onDragStart: ({ active }) => `${t.drag}: ${taskTitle(active.id)}. ${listView ? t.listDragInstructions : t.dragInstructions}`,
         onDragOver: ({ over }) => moveAnnouncement(over?.id),
         onDragEnd: ({ over }) => moveAnnouncement(over?.id),
         onDragCancel: () => t.dragCancel,
       } }}>
       {!isTablet && statusTabs}
-      {isDesktop && desktopTabsTarget && createPortal(desktopTabs, desktopTabsTarget)}
-      <div className="kanban-board" data-dragging={dragging || undefined} data-view={isDesktop ? desktopView : undefined}>
+      {isDesktop && !listView && desktopTabsTarget && createPortal(desktopTabs, desktopTabsTarget)}
+      {listView ? <KanbanList tasks={tasks} copy={t} locked={locked} now={now}
+        pageSize={pageSize * TASK_STATUSES.length} onEdit={onEdit}
+        editButtonRef={(taskId, node) => { editButtons.current[taskId] = node; }} />
+        : <div className="kanban-board" data-dragging={dragging || undefined} data-view={isDesktop ? desktopView : undefined}>
         <Tabs.Content value="board" forceMount id={`${id}-panel-board`} className="kanban-board__work"
           hidden={isDesktop && !dragging && desktopView !== 'board'}
           role={isDesktop && !dragging ? 'tabpanel' : 'group'}
@@ -176,7 +211,7 @@ export function KanbanBoard({ desktopTabsTarget, tasks, copy: t, disabled, busy,
           {TASK_STATUSES.filter(status => status !== 'notes').map(renderColumn)}
         </Tabs.Content>
         {renderColumn('notes')}
-      </div>
+      </div>}
       {form()}
     </DndContext>
     </Tabs.Root>

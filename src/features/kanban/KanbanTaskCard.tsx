@@ -4,7 +4,7 @@ import { CalendarClock } from 'lucide-react';
 import { CSS } from '@dnd-kit/utilities';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { formatDateTimeMx, formatMetadataDate, localDateToIso } from '@/lib/dates';
-import { KanbanKindBadge } from './KanbanBadge';
+import { KanbanKindBadge, KanbanStatusBadge } from './KanbanBadge';
 import { KanbanCover } from './KanbanCover';
 import { isTaskOverdue } from './presentation';
 import type { KanbanTask } from './types';
@@ -17,8 +17,9 @@ interface KanbanTaskCardProps {
   now: number;
   onEdit: () => void;
   editButtonRef: (node: HTMLButtonElement | null) => void;
+  layout?: 'card' | 'list';
 }
-export function KanbanTaskCard({ task, copy: t, disabled, now, onEdit, editButtonRef }: KanbanTaskCardProps) {
+export function KanbanTaskCard({ task, copy: t, disabled, now, onEdit, editButtonRef, layout = 'card' }: KanbanTaskCardProps) {
   const id = useId();
   const { language } = useLanguage();
   const locale = language === 'en' ? 'en-US' : 'es-MX';
@@ -29,7 +30,7 @@ export function KanbanTaskCard({ task, copy: t, disabled, now, onEdit, editButto
   const overdue = isTaskOverdue(task, now);
   const completed = task.checklist.filter(step => step.done).length;
   return (
-    <article ref={setNodeRef} className="kanban-task kanban-task--card" aria-labelledby={id}
+    <article ref={setNodeRef} className={`kanban-task kanban-task--card${layout === 'list' ? ' kanban-task--list' : ''}`} aria-labelledby={id}
       data-dragging={isDragging || undefined} data-drag-over={isOver && !isDragging || undefined}
       style={transform ? { transform: CSS.Transform.toString(transform) } : undefined}>
       <button ref={node => { setActivatorNodeRef(node); editButtonRef(node); }}
@@ -39,6 +40,7 @@ export function KanbanTaskCard({ task, copy: t, disabled, now, onEdit, editButto
       <div className="kanban-task__content">
       <header className="kanban-task__header">
         <KanbanKindBadge kind={task.kind} copy={t} />
+        {layout === 'list' && <KanbanStatusBadge status={task.status} copy={t} />}
         <time dateTime={task.created_at} className="kanban-task__created type-body-sm"
           aria-label={`${t.createdAt}: ${formatDateTimeMx(task.created_at, locale)}`}>
           {formatMetadataDate(task.created_at, locale)}
