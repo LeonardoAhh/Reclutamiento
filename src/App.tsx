@@ -56,7 +56,6 @@ import {
   Pipeline,
   ReportComparisonPage,
   ReporteDiario,
-  TeamPage,
   VacancyAssignmentsPage,
 } from '@/lib/routePages';
 
@@ -191,7 +190,7 @@ function App() {
                 <Route path={KANBAN_PATH} element={<KanbanPage />} />
                 <Route path={DATA_UPDATE_PATH} element={<DataUpdatePage />} />
                 <Route path={ACCOUNT_PATH} element={<AccountPage />} />
-                <Route path={TEAM_PATH} element={<TeamPage />} />
+                <Route path={TEAM_PATH} element={<Navigate to={ACCOUNT_PATH} replace />} />
                 {CONFIGURACION_ROUTES.map((path) => (
                   <Route key={path} path={path} element={<Configuracion />} />
                 ))}

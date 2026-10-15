@@ -1,40 +1,20 @@
 import { useSyncExternalStore } from 'react';
 import { SYSTEM_UPDATE_BANNER_CONFIG } from '@/lib/constants';
 
-/** Niveles de aviso soportados (mapeados a color en el CSS del banner). */
-export type SystemNotiLevel = 'info' | 'success' | 'mantenimiento';
-
 export interface SystemVersionInfo {
   version: string;
-  fecha?: string;
-  nivel: SystemNotiLevel;
-  titulo: string;
-  mensaje: string;
-  notificar: boolean;
 }
 
 const VERSION_URL = '/version.json';
 const SEEN_KEY = 'system_version_seen';
 const CURRENT_APP_VERSION = __APP_VERSION__;
 
-const LEVELS: ReadonlySet<SystemNotiLevel> = new Set([
-  'info',
-  'success',
-  'mantenimiento',
-]);
-
 function parse(raw: unknown): SystemVersionInfo | null {
   if (!raw || typeof raw !== 'object') return null;
   const r = raw as Record<string, unknown>;
   if (typeof r.version !== 'string' || !r.version.trim()) return null;
-  const nivel = (r.nivel as SystemNotiLevel) ?? 'info';
   return {
     version: r.version.trim(),
-    fecha: typeof r.fecha === 'string' ? r.fecha : undefined,
-    nivel: LEVELS.has(nivel) ? nivel : 'info',
-    titulo: typeof r.titulo === 'string' ? r.titulo : 'Sistema actualizado',
-    mensaje: typeof r.mensaje === 'string' ? r.mensaje : '',
-    notificar: r.notificar !== false,
   };
 }
 
@@ -72,7 +52,6 @@ function createSnapshot(): SystemVersionSnapshot {
     shouldNotify:
       info != null &&
       !hasRemoteUpdate &&
-      info.notificar &&
       info.version !== seenVersion,
   };
 }

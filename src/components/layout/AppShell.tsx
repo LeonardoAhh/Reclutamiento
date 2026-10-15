@@ -2,7 +2,7 @@ import { Suspense, useCallback, useEffect, useMemo, useRef, useState, type React
 import { matchPath, useLocation } from 'react-router-dom';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
-import { ACCOUNT_PATH, HOME_PATH, TEAM_PATH, VACANCY_ASSIGNMENTS_PATH, getLocalizedNavigation } from './navigation';
+import { ACCOUNT_PATH, HOME_PATH, VACANCY_ASSIGNMENTS_PATH, getLocalizedNavigation } from './navigation';
 import { isPlantillaPath, PLANTILLA_PATH } from '@/lib/plantillaNavigation';
 import { FEATURES, getConfiguracionHref } from '@/lib/configuracionNavigation';
 import { DATA_UPDATE_PATH } from '@/features/data-update/types';
@@ -25,7 +25,6 @@ const PAGE_TITLES: Readonly<Record<string, string>> = {
   '/departure-reasons': 'Motivos de baja',
   [DATA_UPDATE_PATH]: 'Actualización de datos',
   [ACCOUNT_PATH]: 'Cuenta',
-  [TEAM_PATH]: 'Equipo',
   [VACANCY_ASSIGNMENTS_PATH]: 'Asignación de vacantes',
 };
 
@@ -53,7 +52,6 @@ export function AppShell({ children }: { children: ReactNode }) {
     if (location.pathname === REPORT_COMPARISON_PATH) return language === 'en' ? 'Monthly comparison' : 'Comparativa mensual';
     if (location.pathname === CANDIDATE_METRICS_PATH) return language === 'en' ? 'Metrics and KPIs' : 'Métricas y KPIs';
     if (language === 'en' && location.pathname === ACCOUNT_PATH) return 'Account';
-    if (language === 'en' && location.pathname === TEAM_PATH) return 'Team';
     if (language === 'en' && location.pathname === VACANCY_ASSIGNMENTS_PATH) return 'Vacancy assignments';
     const currentNavItem = getLocalizedNavigation(language)
       .flatMap((section) => section.items)

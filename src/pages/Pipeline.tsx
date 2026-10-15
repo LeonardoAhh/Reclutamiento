@@ -112,7 +112,10 @@ export function Pipeline() {
   const [accessCardTarget, setAccessCardTarget] = useState<Candidate | null>(null);
   const [hireTarget, setHireTarget] = useState<Candidate | null>(null);
   const { members } = useTeamDirectory();
-  const [selectedMobileCandidate, setSelectedMobileCandidate] = useState<Candidate | null>(null);
+  const [mobileCandidateSelection, setSelectedMobileCandidate] = useState<Candidate | null>(null);
+  const selectedMobileCandidate = mobileCandidateSelection?.id
+    ? candidates.find((candidate) => candidate.id === mobileCandidateSelection.id) ?? null
+    : mobileCandidateSelection;
   const isDesktop = useMediaQuery(DESKTOP_MEDIA_QUERY);
 
   useEffect(() => bindSoundInteractions(document), []);
@@ -826,7 +829,7 @@ export function Pipeline() {
                 </div>
               </div>
 
-              <div className="pipeline-mobile-detail__info-item">
+              <div className="pipeline-mobile-detail__info-item pipeline-mobile-detail__info-item--wide">
                 <LayoutGrid size={16} aria-hidden="true" className="pipeline-mobile-detail__info-icon" />
                 <div className="pipeline-mobile-detail__info-content">
                   <span className="pipeline-mobile-detail__info-label">{en ? 'Project' : 'Proyecto'}</span>
@@ -836,7 +839,7 @@ export function Pipeline() {
                 </div>
               </div>
 
-              <div className="pipeline-mobile-detail__info-item">
+              <div className="pipeline-mobile-detail__info-item pipeline-mobile-detail__info-item--wide">
                 <ClipboardList size={16} aria-hidden="true" className="pipeline-mobile-detail__info-icon" />
                 <div className="pipeline-mobile-detail__info-content">
                   <span className="pipeline-mobile-detail__info-label">{en ? 'Process' : 'Proceso'}</span>
@@ -846,6 +849,7 @@ export function Pipeline() {
                         id={`mobile-status-${selectedMobileCandidate.id}`}
                         value={selectedMobileCandidate.status}
                         placeholder=""
+                        dropdownClassName="pipeline-mobile-detail__status-dropdown"
                         onChange={(val) => handleStatusChange(selectedMobileCandidate, val as CandidateStatus)}
                         options={CANDIDATE_STATUSES.map((s) => ({
                           value: s,
@@ -857,7 +861,6 @@ export function Pipeline() {
                             <CandidateStatusBadge
                               status={selectedMobileCandidate.status}
                               showCaret
-                              compact
                               className="pipeline-mobile-detail__status-badge"
                             />
                           </span>

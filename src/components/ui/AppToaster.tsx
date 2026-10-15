@@ -1,8 +1,9 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
-import { wave } from 'robot-toast/robots';
+import { MorphingIcon } from '@/components/ui/MorphingIcon';
+import { BrandMarkPath } from '@/components/ui/BrandMark';
 import {
   CircleAlert,
-  CircleCheck,
+  Check,
   Info,
   LoaderCircle,
   TriangleAlert,
@@ -19,7 +20,7 @@ import { useMediaQuery } from '@/hooks/useMediaQuery';
 import './AppToaster.css';
 
 const TOAST_ICONS: Record<ToastType, LucideIcon> = {
-  success: CircleCheck,
+  success: Check,
   error: CircleAlert,
   info: Info,
   warning: TriangleAlert,
@@ -28,6 +29,8 @@ const TOAST_ICONS: Record<ToastType, LucideIcon> = {
 
 function ToastItem({ toast }: { toast: ToastState }) {
   const Icon = TOAST_ICONS[toast.type];
+  const iconActions = toast.actions?.filter((action) => action.icon) ?? [];
+  const textActions = toast.actions?.filter((action) => !action.icon) ?? [];
   const compact = !toast.description && !toast.actions?.length;
   const reducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
   const [typing, setTyping] = useState({ title: toast.title, count: 0 });
@@ -54,20 +57,37 @@ function ToastItem({ toast }: { toast: ToastState }) {
   const visibleTitle = shouldType
     ? characters.slice(0, typing.title === toast.title ? typing.count : 0).join('')
     : toast.title;
+  const dismissButton = (
+    <button
+      type="button"
+      className="app-toaster__dismiss"
+      aria-label="Cerrar notificación"
+      onClick={() => toastStore.remove(toast.id)}
+    >
+      <X aria-hidden="true" />
+    </button>
+  );
 
   return (
     <li
-      className={`app-toaster__item app-toaster__item--${toast.type}${compact ? ' app-toaster__item--compact' : ''}`}
+      className={`app-toaster__item app-toaster__item--${toast.type}${compact ? ' app-toaster__item--compact' : ''}${toast.hideAvatar ? ' app-toaster__item--without-avatar' : ''}${toast.presentation === 'system-update' ? ' app-toaster__item--system-update' : ''}`}
       role={toast.type === 'error' ? 'alert' : 'status'}
       aria-atomic="true"
       aria-busy={toast.type === 'loading'}
     >
-      <div className="app-toaster__avatar" aria-hidden="true">
-        <img className="app-toaster__robot" src={wave} alt="" />
-        <span className={`app-toaster__icon ${toast.type === 'loading' ? 'app-toaster__icon--spin' : ''}`}>
-          <Icon />
+      {toast.presentation === 'system-update' ? (
+        <span className="app-toaster__brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 1800 1800" fill="none" focusable="false">
+            <BrandMarkPath />
+          </svg>
         </span>
-      </div>
+      ) : !toast.hideAvatar && (
+        <div className="app-toaster__avatar" aria-hidden="true">
+          <span className={`app-toaster__icon ${toast.type === 'loading' ? 'app-toaster__icon--spin' : ''}`}>
+            <Icon />
+          </span>
+        </div>
+      )}
       <div className="app-toaster__content">
         <span className="app-toaster__title">
           <span className="app-toaster__title-measure" aria-hidden="true">{toast.title}</span>
@@ -77,9 +97,9 @@ function ToastItem({ toast }: { toast: ToastState }) {
         {toast.description && (
           <span className="app-toaster__hint">{toast.description}</span>
         )}
-        {toast.actions && toast.actions.length > 0 && (
+        {textActions.length > 0 && (
           <div className="app-toaster__actions">
-            {toast.actions.map((action) => (
+            {textActions.map((action) => (
               <button
                 key={action.label}
                 type="button"
@@ -97,14 +117,34 @@ function ToastItem({ toast }: { toast: ToastState }) {
           </div>
         )}
       </div>
-      <button
-        type="button"
-        className="app-toaster__dismiss"
-        aria-label="Cerrar notificación"
-        onClick={() => toastStore.remove(toast.id)}
-      >
-        <X aria-hidden="true" />
-      </button>
+      {iconActions.length > 0 ? (
+        <div className="app-toaster__controls">
+          {toast.presentation !== 'system-update' && dismissButton}
+          {iconActions.map((action) => (
+            <button
+              key={action.label}
+              type="button"
+              className={`app-toaster__action app-toaster__action--${action.variant ?? 'secondary'} app-toaster__action--icon`}
+              aria-label={action.label}
+              title={action.label}
+              onClick={() => {
+                action.onClick();
+                if (action.closeOnAction !== false) {
+                  toastStore.remove(toast.id);
+                }
+              }}
+            >
+              {action.icon && (
+                <MorphingIcon
+                  icon={action.icon}
+                  size="var(--icon-size-sm)"
+                  aria-hidden="true"
+                />
+              )}
+            </button>
+          ))}
+        </div>
+      ) : dismissButton}
     </li>
   );
 }
@@ -118,14 +158,13 @@ export function AppToaster() {
     toastStore.getSnapshot,
     toastStore.getSnapshot,
   );
+  const visibleToast = toasts[toasts.length - 1];
   return (
     <ol
-      className="app-toaster"
+      className={`app-toaster${visibleToast?.presentation === 'system-update' ? ' app-toaster--system-update' : ''}`}
       aria-label="Notificaciones"
     >
-      {toasts.map((toast) => (
-        <ToastItem key={toast.id} toast={toast} />
-      ))}
+      {visibleToast && <ToastItem key={visibleToast.id} toast={visibleToast} />}
     </ol>
   );
 }

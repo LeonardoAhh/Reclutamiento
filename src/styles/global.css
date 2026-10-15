@@ -210,6 +210,12 @@
   --type-body-sm-line: 1.33;
   --type-body-sm-tracking: 0;
 
+  /* body-sm-semibold — compact emphasized body text */
+  --type-body-sm-semibold-size: 12px;
+  --type-body-sm-semibold-weight: 600;
+  --type-body-sm-semibold-line: 1.33;
+  --type-body-sm-semibold-tracking: 0;
+
   /* body-strong — feature titles and callouts */
   --type-body-strong-size: 14px;
   --type-body-strong-weight: 600;

@@ -10,18 +10,14 @@ import {
 } from "@/lib/constants";
 import { toast } from "@/lib/notify";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { RefreshCw as RefreshCwIconData } from "lucide";
 import {
   applyPWAUpdate,
   checkForPWAUpdate,
-  deferPWAUpdate,
 } from "@/pwa";
 
 const SYSTEM_UPDATE_NOTICE_ID = "system-update";
 const RELEASE_NOTICE_ID = "system-release";
-
-function getReleaseDescription(version: string, message?: string): string {
-  return message?.trim() ? `v${version} · ${message.trim()}` : `v${version}`;
-}
 
 export function SystemUpdateNotification() {
   const { language } = useLanguage();
@@ -43,16 +39,15 @@ export function SystemUpdateNotification() {
           description: copy.availableHint,
           duration: Infinity,
           pinned: true,
+          hideAvatar: true,
+          presentation: "system-update",
           actions: [
             {
               label: copy.actionLabel,
               variant: "primary",
               closeOnAction: false,
+              icon: RefreshCwIconData,
               onClick: () => void applyPWAUpdate(),
-            },
-            {
-              label: copy.deferLabel,
-              onClick: deferPWAUpdate,
             },
           ],
         });
@@ -71,11 +66,8 @@ export function SystemUpdateNotification() {
               label: copy.retryLabel,
               variant: "primary",
               closeOnAction: false,
+              icon: RefreshCwIconData,
               onClick: () => void applyPWAUpdate(),
-            },
-            {
-              label: copy.deferLabel,
-              onClick: deferPWAUpdate,
             },
           ],
         });
@@ -100,8 +92,10 @@ export function SystemUpdateNotification() {
     toast.success({
       id: RELEASE_NOTICE_ID,
       title: copy.appliedTitle,
-      description: getReleaseDescription(info.version, info.mensaje),
+      description: `v${info.version}`,
       duration: SYSTEM_UPDATE_BANNER_CONFIG.noticeDurationMs,
+      hideAvatar: true,
+      presentation: "system-update",
     });
 
     const timer = window.setTimeout(
@@ -125,5 +119,7 @@ function toastStoreUpdate(
     id: SYSTEM_UPDATE_NOTICE_ID,
     duration: type === "warning" ? undefined : Infinity,
     pinned: type !== "warning",
+    hideAvatar: true,
+    presentation: "system-update",
   });
 }

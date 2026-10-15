@@ -1,38 +1,44 @@
 .app-toaster {
   position: fixed;
   inset-block-start: calc(var(--design-spacing-md) + var(--safe-area-top));
-  inset-inline-start: calc(var(--container-padding) + var(--safe-area-left));
-  inset-inline-end: calc(var(--container-padding) + var(--safe-area-right));
+  inset-inline-start: 0;
+  inset-inline-end: 0;
   z-index: var(--layer-toast);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--design-spacing-xs);
+  inline-size: 100%;
+  max-inline-size: var(--container-max);
   max-block-size: calc(
     100dvh - var(--safe-area-top) - var(--safe-area-bottom) -
       (var(--design-spacing-md) * 2)
   );
   overflow-y: auto;
   overscroll-behavior: contain;
-  margin: 0;
-  padding: 0;
+  margin-inline: auto;
+  padding-inline-start: max(var(--container-padding), var(--safe-area-left));
+  padding-inline-end: max(var(--container-padding), var(--safe-area-right));
   list-style: none;
   pointer-events: none;
 }
 
-.app-toaster__item {
-  --color-focus: var(--color-focus-on-inverted);
+.app-toaster--system-update {
+  z-index: var(--layer-floating-action);
+}
 
+.app-toaster__item {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: var(--design-spacing-xs);
   inline-size: fit-content;
   max-inline-size: min(100%, var(--toast-max-inline-size));
-  padding: var(--design-spacing-xs) var(--design-spacing-sm);
+  min-block-size: var(--touch-target-min);
+  padding: var(--design-spacing-xs) var(--design-spacing-xxs) var(--design-spacing-xs) var(--design-spacing-sm);
   overflow-wrap: anywhere;
-  background-color: var(--color-surface-dark);
-  color: var(--color-on-dark);
-  border: var(--border-width) solid var(--color-surface-dark-elevated);
+  background-color: var(--color-canvas-elevated);
+  color: var(--color-ink);
+  border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-lg);
   box-shadow: var(--shadow-level-2);
   pointer-events: auto;
@@ -41,6 +47,57 @@
 
 .app-toaster__item--compact {
   align-items: center;
+  padding-block: 0;
+}
+
+.app-toaster__item--without-avatar {
+  align-items: center;
+}
+
+.app-toaster__item--system-update {
+  gap: var(--design-spacing-sm);
+  padding-block: var(--design-spacing-xs);
+}
+
+.app-toaster__brand-mark {
+  display: grid;
+  place-items: center;
+  flex: 0 0 calc(var(--touch-target-min) - var(--design-spacing-xs));
+  inline-size: calc(var(--touch-target-min) - var(--design-spacing-xs));
+  block-size: calc(var(--touch-target-min) - var(--design-spacing-xs));
+  border-radius: var(--rounded-md);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.app-toaster__brand-mark svg {
+  inline-size: 60%;
+  block-size: 60%;
+}
+
+.app-toaster__item--system-update .app-toaster__controls {
+  flex-direction: row;
+  gap: 0;
+}
+
+.app-toaster__controls {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--design-spacing-xxs);
+  margin-inline-start: auto;
+}
+
+.app-toaster__title {
+  position: relative;
+  display: block;
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+  color: var(--color-ink);
 }
 
 .app-toaster__content {
@@ -49,17 +106,6 @@
   flex-direction: column;
   gap: var(--design-spacing-xxs);
   min-inline-size: 0;
-}
-
-.app-toaster__title {
-  position: relative;
-  display: block;
-  font-family: var(--font-body);
-  font-size: var(--type-body-strong-size);
-  font-weight: var(--type-body-strong-weight);
-  line-height: var(--type-body-strong-line);
-  letter-spacing: var(--type-body-strong-tracking);
-  color: var(--color-on-dark);
 }
 
 .app-toaster__title-measure {
@@ -75,11 +121,11 @@
 
 .app-toaster__hint {
   font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-  color: var(--color-on-dark-soft);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
+  color: var(--color-body);
 }
 
 .app-toaster__avatar {
@@ -88,51 +134,43 @@
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  inline-size: var(--icon-size-xl);
-  block-size: var(--icon-size-xl);
-}
-
-.app-toaster__robot {
-  display: block;
-  inline-size: 100%;
-  block-size: 100%;
-  object-fit: contain;
+  inline-size: var(--icon-size-control);
+  block-size: var(--icon-size-control);
 }
 
 .app-toaster__icon {
-  position: absolute;
-  inset-inline-end: 0;
-  inset-block-end: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-surface-dark);
-  border-radius: var(--rounded-full);
 }
 
 .app-toaster__icon svg {
-  width: var(--icon-size-control);
-  height: var(--icon-size-control);
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
 }
 
 .app-toaster__item--success .app-toaster__icon {
-  color: var(--color-success);
+  inline-size: var(--icon-size-control);
+  block-size: var(--icon-size-control);
+  border-radius: var(--rounded-full);
+  background: var(--color-success-text);
+  color: var(--color-on-success);
 }
 
 .app-toaster__item--error .app-toaster__icon {
-  color: var(--color-error);
+  color: var(--color-error-text);
 }
 
 .app-toaster__item--warning .app-toaster__icon {
-  color: var(--color-warning);
+  color: var(--color-warning-text);
 }
 
 .app-toaster__item--info .app-toaster__icon {
-  color: var(--color-on-dark);
+  color: var(--color-body);
 }
 
 .app-toaster__item--loading .app-toaster__icon {
-  color: var(--color-on-dark-soft);
+  color: var(--color-mute);
 }
 
 .app-toaster__actions {
@@ -151,7 +189,7 @@
   font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
   letter-spacing: var(--type-body-md-tracking);
-  border: var(--border-width) solid var(--color-on-dark-soft);
+  border: var(--border-width) solid var(--color-control-border);
   border-radius: var(--rounded-md);
   overflow-wrap: anywhere;
   cursor: pointer;
@@ -162,24 +200,57 @@
 }
 
 .app-toaster__action--primary {
-  background: var(--color-on-dark);
-  color: var(--color-surface-dark);
-  border-color: var(--color-on-dark);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border-color: var(--color-primary);
 }
 
 .app-toaster__action--primary:hover {
-  background: var(--color-on-dark-hover);
-  border-color: var(--color-on-dark-hover);
+  background: var(--color-primary-active);
+  border-color: var(--color-primary-active);
 }
 
 .app-toaster__action--secondary {
   background: transparent;
-  color: var(--color-on-dark);
+  color: var(--color-ink);
 }
 
 .app-toaster__action--secondary:hover {
-  background: var(--color-surface-dark-elevated);
-  border-color: var(--color-on-dark);
+  background: var(--color-canvas-soft);
+  border-color: var(--color-control-border);
+}
+
+.app-toaster__action--icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--touch-target-min);
+  min-block-size: var(--touch-target-min);
+  padding: 0;
+}
+
+.app-toaster__action--icon svg {
+  inline-size: var(--icon-size-sm);
+  block-size: var(--icon-size-sm);
+}
+
+.app-toaster__item--without-avatar .app-toaster__dismiss,
+.app-toaster__item--without-avatar .app-toaster__action--icon {
+  border: 0;
+  background: transparent;
+}
+
+.app-toaster__item--without-avatar .app-toaster__dismiss {
+  color: var(--color-mute);
+}
+
+.app-toaster__item--without-avatar .app-toaster__dismiss:hover,
+.app-toaster__item--without-avatar .app-toaster__action--icon:hover {
+  background: transparent;
+}
+
+.app-toaster__item--without-avatar .app-toaster__action--icon {
+  color: var(--color-ink);
 }
 
 .app-toaster__dismiss {
@@ -193,7 +264,7 @@
   border: 0;
   border-radius: var(--rounded-full);
   background: transparent;
-  color: var(--color-on-dark-soft);
+  color: var(--color-mute);
   cursor: pointer;
   transition:
     background-color var(--transition-fast),
@@ -201,13 +272,13 @@
 }
 
 .app-toaster__dismiss:hover {
-  background: var(--color-surface-dark-elevated);
-  color: var(--color-on-dark);
+  background: var(--color-canvas-soft);
+  color: var(--color-ink);
 }
 
 .app-toaster__dismiss svg {
-  inline-size: var(--icon-size-control);
-  block-size: var(--icon-size-control);
+  inline-size: var(--icon-size-sm);
+  block-size: var(--icon-size-sm);
 }
 
 .app-toaster__icon--spin {

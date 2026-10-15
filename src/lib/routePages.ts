@@ -63,7 +63,6 @@ export const Actividades = lazyWithPreload(() => import('@/pages/Actividades').t
 export const ActivityImagePage = lazyWithPreload(() => import('@/pages/ActivityImagePage').then(({ ActivityImagePage }) => ({ default: ActivityImagePage })));
 export const DataUpdatePage = lazyWithPreload(() => import('@/features/data-update/DataUpdatePage').then(({ DataUpdatePage }) => ({ default: DataUpdatePage })));
 export const AccountPage = lazyWithPreload(() => import('@/pages/AccountPage').then(({ AccountPage }) => ({ default: AccountPage })));
-export const TeamPage = lazyWithPreload(() => import('@/features/team/TeamPage').then(({ TeamPage }) => ({ default: TeamPage })));
 export const LeaveRequestsPage = lazyWithPreload(() => import('@/pages/LeaveRequestsPage').then(({ LeaveRequestsPage }) => ({ default: LeaveRequestsPage })));
 export const HomePage = lazyWithPreload(() => import('@/pages/HomePage').then(({ HomePage }) => ({ default: HomePage })));
 export const OrganizationChartPage = lazyWithPreload(() => import('@/pages/OrganizationChartPage').then(({ OrganizationChartPage }) => ({ default: OrganizationChartPage })));
@@ -129,7 +128,7 @@ const ROUTE_PAGES: readonly RoutePage[] = [
   { matches: (pathname) => pathname.startsWith(`${ACTIVIDADES_PATH}/image/`), page: ActivityImagePage },
   { matches: exact(DATA_UPDATE_PATH), page: DataUpdatePage },
   { matches: exact(ACCOUNT_PATH), page: AccountPage },
-  { matches: exact(TEAM_PATH), page: TeamPage },
+  { matches: exact(TEAM_PATH), page: AccountPage },
   ...CONFIGURACION_ROUTES.map((path) => ({
     matches: exact(path),
     page: Configuracion,

@@ -20,7 +20,7 @@
 .account-page__stack:empty {
   display: none;
 }
-.account-section,.account-activity {
+.account-section {
   display: grid;
   align-content: start;
   min-width: 0;
@@ -28,7 +28,7 @@
   border-radius: var(--rounded-lg);
   background: var(--color-surface-card);
 }
-.account-card__header,.account-activity__header {
+.account-card__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -41,7 +41,7 @@
 .account-card__heading {
   min-width: 0;
 }
-.account-card__title,.account-activity__title {
+.account-card__title {
   color: var(--color-body);
   font-family: var(--font-body);
   font-size: var(--type-caption-up-size);
@@ -57,10 +57,10 @@
 .account-card__description {
   margin-block-start: var(--design-spacing-xxs);
 }
-.account-section__body,.account-activity .user-activity-panel__list {
+.account-section__body {
   min-width: 0;
 }
-.account-section__body>*+*,.account-appearance>*+*,.account-row+.account-row,.account-activity .user-activity-panel__card+.user-activity-panel__card {
+.account-section__body>*+*,.account-appearance>*+*,.account-row+.account-row {
   border-block-start: var(--border-width) solid var(--color-hairline);
 }
 .account-card__note {
@@ -156,7 +156,7 @@
 .account-profile__actions>button {
   min-width: 0;
 }
-.account-setting-row,.account-appearance .theme-select__trigger,.account-appearance__control,.account-row,.account-activity .user-activity-panel__card {
+.account-setting-row,.account-appearance .theme-select__trigger,.account-appearance__control,.account-row {
   min-block-size: calc(var(--touch-target-min) + var(--design-spacing-md));
   min-inline-size: 0;
   padding: var(--design-spacing-xs) var(--design-spacing-md);
@@ -276,13 +276,6 @@
   gap: var(--design-spacing-xxs);
   min-width: 0;
 }
-.account-row--link {
-  color: inherit;
-  text-decoration: none;
-}
-.account-row__chevron {
-  color: var(--color-body);
-}
 .account-maintenance__controls {
   display: flex;
   flex-wrap: wrap;
@@ -346,54 +339,8 @@
   grid-column: 1/-1;
   color: var(--color-error-text);
 }
-.account-activity__toggle {
-  min-block-size: var(--touch-target-min);
-  padding-inline: var(--design-spacing-xs);
-  border: 0;
-  border-radius: var(--rounded-md);
-  background: transparent;
-  color: var(--color-ink);
-  cursor: pointer;
-}
-.account-activity .user-activity-panel__list {
-  display: grid;
-  grid-template-columns: minmax(0,1fr);
-  gap: 0;
-}
-.account-activity .user-activity-panel__state {
-  background: transparent;
-}
-.account-activity .user-activity-panel__card {
-  display: grid;
-  grid-template-columns: auto minmax(0,1fr) auto;
-  align-items: center;
-  gap: var(--design-spacing-sm);
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-}
-.account-activity .user-activity-panel__avatar {
-  justify-self: start;
-}
-.account-activity__name {
-  min-width: 0;
-  justify-self: start;
-  overflow-wrap: anywhere;
-  text-align: start;
-}
-.account-activity .user-activity-panel__status {
-  justify-content: end;
-  color: var(--color-body);
-  text-align: end;
-}
-.account-activity .user-activity-panel__status--online {
-  color: var(--color-success-text);
-}
-.account-activity .user-activity-panel__state {
-  border-radius: var(--rounded-lg);
-}
 @media (hover:hover) {
-  .account-setting-row:hover:not(:disabled),.account-appearance .theme-select__trigger:hover,.account-appearance__control:hover,.account-row--link:hover,.account-activity__toggle:hover {
+  .account-setting-row:hover:not(:disabled),.account-appearance .theme-select__trigger:hover,.account-appearance__control:hover {
     background: var(--color-canvas-soft);
   }
 }
@@ -420,16 +367,23 @@
   .account-page__layout[data-admin="true"] {
     grid-template-columns: minmax(0,1fr) minmax(0,1fr);
   }
-  .account-page__layout[data-admin="true"] > :is(.account-page__aside,.account-page__stack) {
-    grid-row: span 2;
-    grid-template-rows: subgrid;
-    align-items: start;
+  .account-page__layout[data-admin="true"] > .account-page__aside {
+    grid-column: 1;
+    grid-row: 1;
   }
-  .account-page__layout[data-admin="true"] :is(.account-profile,.account-admin) {
-    align-self: stretch;
+  .account-page__layout[data-admin="true"] > .account-page__stack {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .account-page__layout[data-admin="true"] > .team-management {
+    grid-column: 1 / -1;
+    grid-row: 2;
   }
   .account-profile {
     padding: var(--design-spacing-lg);
+  }
+  .account-page__layout[data-admin="true"] .account-profile {
+    padding-block: var(--design-spacing-sm);
   }
   .account-profile__avatar {
     --feature-avatar-size: var(--design-spacing-4xl);
@@ -483,18 +437,6 @@
   min-block-size: var(--touch-target-min);
   color: var(--color-body);
   cursor: pointer;
-}
-.account-activity .user-activity-panel__card[data-presentation="avatars"] {
-  grid-template-columns: auto minmax(0,1fr) minmax(0,max-content);
-  justify-items: stretch;
-  row-gap: 0;
-}
-.account-activity .user-activity-panel__card[data-presentation="avatars"] .user-activity-panel__status {
-  justify-content: end;
-  text-align: end;
-}
-.account-activity .user-activity-panel__card[data-presentation="avatars"] .user-activity-panel__status--online {
-  color: var(--color-success-text);
 }
 @media (min-width:768px) {
   .account-preferences {

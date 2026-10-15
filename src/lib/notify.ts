@@ -1,4 +1,5 @@
 import { TOAST_CONFIG } from '@/lib/constants';
+import type { IconInput } from 'morphicons/react';
 
 export type ToastType = 'success' | 'error' | 'info' | 'warning' | 'loading';
 
@@ -7,15 +8,18 @@ export interface ToastAction {
   onClick: () => void;
   variant?: 'primary' | 'secondary';
   closeOnAction?: boolean;
+  icon?: IconInput;
 }
 
 export interface ToastOptions {
   title: string;
   description?: string;
+  presentation?: 'system-update';
   duration?: number;
   id?: string | number;
   actions?: readonly ToastAction[];
   pinned?: boolean;
+  hideAvatar?: boolean;
 }
 
 export interface ToastState extends ToastOptions {
@@ -53,24 +57,19 @@ class ToastStore {
         ? Infinity
         : TOAST_CONFIG.defaultDurationMs);
 
-    const existingIndex = this.toasts.findIndex((t) => t.id === id);
     const newToast: ToastState = { ...opts, id, type, duration };
 
-    this.clearTimer(id);
-
-    if (existingIndex > -1) {
-      const newToasts = [...this.toasts];
-      newToasts[existingIndex] = newToast;
-      this.toasts = newToasts;
-    } else {
-      const nextToasts = [...this.toasts, newToast];
-      if (nextToasts.length > TOAST_CONFIG.maxVisible) {
-        const removableIndex = nextToasts.findIndex((toast) => !toast.pinned);
-        const [removedToast] = nextToasts.splice(removableIndex === -1 ? 0 : removableIndex, 1);
-        if (removedToast) this.clearTimer(removedToast.id);
+    const nextToasts = [
+      ...this.toasts.filter((toast) => toast.pinned && toast.id !== id),
+      newToast,
+    ].slice(-TOAST_CONFIG.maxVisible);
+    for (const previous of this.toasts) {
+      if (!nextToasts.some((toast) => toast.id === previous.id)) {
+        this.clearTimer(previous.id);
       }
-      this.toasts = nextToasts;
     }
+    this.clearTimer(id);
+    this.toasts = nextToasts;
     
     this.notify();
 

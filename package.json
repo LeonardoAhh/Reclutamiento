@@ -50,7 +50,7 @@
     "jspdf-autotable": "^5.0.8",
     "jszip": "^3.10.2",
     "lucide": "^1.47.0",
-    "lucide-react": "^1.47.0",
+    "lucide-react": "^1.57.0",
     "morphicons": "^1.7.1",
     "pdfjs-dist": "^6.3.289",
     "react": "^19.3.0",
