@@ -860,16 +860,6 @@
     "colonia": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
   },
   {
-    "numero_empleado": "3118",
-    "nombre": "SUAREZ ALANIS SABINO CRUZ",
-    "sección": "PRODUCCIÓN 1ER. TURNO",
-    "puesto": "MATERIALISTA B",
-    "turno": "1",
-    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "parada": "SANTA CATARINA",
-    "colonia": "PARADA DE CAMIONES"
-  },
-  {
     "numero_empleado": "3144",
     "nombre": "GONZALEZ SANCHEZ NADIA YOSAHANDY",
     "sección": "A. CALIDAD 1ER TURNO",
@@ -1274,7 +1264,7 @@
     "nombre": "TELLES MORALES MAURICIO ADAN",
     "sección": "MANTENIMIENTO",
     "puesto": "AUXILIAR DE MANTENIMIENTO B",
-    "turno": "1",
+    "turno": "4",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
     "parada": "PIE DE LA CUESTA ",
     "colonia": "ESQ. BLVD. DE LA NACION, EN EL OXXO"
@@ -1370,16 +1360,6 @@
     "colonia": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
   },
   {
-    "numero_empleado": "3772",
-    "nombre": "MORENO ROMERO OSMAR",
-    "sección": "PRODUCCIÓN ADMTVO",
-    "puesto": "INGENIERO DE PROCESO D",
-    "turno": "4",
-    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "parada": "AV. DE LA LUZ",
-    "colonia": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
-  },
-  {
     "numero_empleado": "3773",
     "nombre": "PEREZ UGALDE KARLA MARIANA",
     "sección": "PRODUCCIÓN 1ER. TURNO",
@@ -1408,16 +1388,6 @@
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
     "parada": "PASEOS QUERETARO",
     "colonia": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
-  },
-  {
-    "numero_empleado": "3790",
-    "nombre": "GONZALEZ CARMONA GUADALUPE",
-    "sección": "PRODUCCIÓN 3ER. TURNO",
-    "puesto": "OPERADOR DE MÁQUINA B",
-    "turno": "3",
-    "nombre ruta": "R4-SANTA ROSA",
-    "parada": "SANTA ROSA",
-    "colonia": "EN EL PUENTE DE LAS ROSAS"
   },
   {
     "numero_empleado": "3796",
@@ -2174,7 +2144,7 @@
     "nombre": "BAYLON SANCHEZ MARIO ANGEL",
     "sección": "MANTENIMIENTO",
     "puesto": "TÉCNICO DE MANTENIMIENTO C",
-    "turno": "1",
+    "turno": "4",
     "nombre ruta": "R4-SANTA ROSA",
     "parada": "SANTA ROSA",
     "colonia": "EN EL PUENTE DE LA CRUZ "
@@ -2468,6 +2438,16 @@
     "nombre ruta": "R4-SANTA ROSA",
     "parada": "FRACC. MONTENEGRO",
     "colonia": "PARADA DE CAMIONES HUIZACHE"
+  },
+  {
+    "numero_empleado": "4291",
+    "nombre": "LINARES VELEZ FRANCISCO DAYANN",
+    "sección": "MOLDES",
+    "puesto": "TÉCNICO DE MOLDES B",
+    "turno": "2",
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "parada": "PIE DE LA CUESTA ",
+    "colonia": "FRENTE AL ELECTRA"
   },
   {
     "numero_empleado": "4292",
@@ -2820,16 +2800,6 @@
     "colonia": "PARADA DE CAMIONES ESQ. MAYAS"
   },
   {
-    "numero_empleado": "4382",
-    "nombre": "GARCIA FRIAS RICARDO",
-    "sección": "ALMACÉN 1ER TURNO ",
-    "puesto": "AUXILIAR DE ALMACÉN C",
-    "turno": "1",
-    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "parada": "BUENAVISTA ",
-    "colonia": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
-  },
-  {
     "numero_empleado": "4383",
     "nombre": "GARCIA CARRILLO PABLO",
     "sección": "ALMACÉN 2DO TURNO ",
@@ -2838,16 +2808,6 @@
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
     "parada": "PIE DE LA CUESTA",
     "colonia": "ESQ. CALLE AMARGURA EN LA PANADERIA LECAROZ"
-  },
-  {
-    "numero_empleado": "4386",
-    "nombre": "SALCEDO GUTIERREZ ELVIA LORENA",
-    "sección": "PRODUCCIÓN 1ER. TURNO",
-    "puesto": "OPERADOR DE MÁQUINA D",
-    "turno": "1",
-    "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "parada": "SAN JOSE ITURBIDE",
-    "colonia": "PRADOS DEL ROSARIO PARADA EN LA ESCUELA"
   },
   {
     "numero_empleado": "4388",
@@ -2860,21 +2820,11 @@
     "colonia": "PARADA EN LA PANADERIA LECAROZ"
   },
   {
-    "numero_empleado": "4389",
-    "nombre": "JAEN SANCHEZ SARAHI",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
-    "puesto": "OPERADOR DE MÁQUINA D",
-    "Turno": "1",
-    "nombre ruta": "R4-SANTA ROSA",
-    "parada": "SANTA ROSA",
-    "colonia": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
-  },
-  {
     "numero_empleado": "4390",
     "nombre": "CRUZ GARCIA ALEIDA LIZETH",
-    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "sección": "PRODUCCIÓN 2o. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
-    "Turno": "2",
+    "turno": "2",
     "nombre ruta": "R4-SANTA ROSA",
     "parada": "HDA SANTA ROSA ",
     "colonia": "FARMACIA GUADALAJARA"
@@ -2882,9 +2832,9 @@
   {
     "numero_empleado": "4393",
     "nombre": "TORRES SANCHEZ LUZ PAULINA",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
-    "Turno": "1",
+    "turno": "1",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
     "parada": "SAN JOSE ITURBIDE",
     "colonia": "CRUZ ROJA MEXICANA"
@@ -2892,11 +2842,31 @@
   {
     "numero_empleado": "4394",
     "nombre": "RIVERA CHAVEZ LUIS FERNANDO",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
-    "Turno": "1",
+    "turno": "1",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
     "parada": "SAN JOSE ITURBIDE",
     "colonia": "PARADA EN LA ESCUELA 5 DE MAYO"
+  },
+  {
+    "numero_empleado": "4396",
+    "nombre": "VILLALOBOS MONTES DANIEL",
+    "sección": "PRODUCCIÓN 3ER. TURNO",
+    "puesto": "OPERADOR DE MÁQUINA D",
+    "turno": "3",
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "parada": "5 E FEBRERO ",
+    "colonia": "PARADA EN EL PUENTE PEOATONAL DE TREMEC"
+  },
+  {
+    "numero_empleado": "4397",
+    "nombre": "ALANIS ZAMORA LUIS ANGEL",
+    "sección": "PRODUCCIÓN 1ER. TURNO",
+    "puesto": "OPERADOR DE MÁQUINA D",
+    "turno": "1",
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "parada": "PASEOS QUERETARO",
+    "colonia": "PARADA DE CAMIONES FRENTE AL INSPIRE GYM"
   }
 ]
