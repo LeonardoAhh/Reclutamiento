@@ -1,16 +1,14 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
-import { CalendarDays, ClipboardCheck, Columns3, ContactRound, LayoutGrid, Network, UserRoundPlus } from 'lucide-react';
+import { CalendarDays, ClipboardCheck, Columns3, LayoutGrid, Network } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { KANBAN_PATH } from '@/features/kanban/types';
 import { PERFORMANCE_EVALUATIONS_2027_PATH } from '@/features/performance-evaluations-2027/types';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { PLANTILLA_PATH } from '@/lib/plantillaNavigation';
 import { LEAVE_REQUESTS_PATH } from '@/features/leave/requests';
 import { preloadRoute } from '@/lib/routePages';
 import { playSound } from '@/lib/sound';
-import { CANDIDATES_PATH, ORGANIZATION_CHART_PATH } from './navigation';
-import type { SidebarCreateAction } from '@/lib/sidebarActionNavigation';
+import { ORGANIZATION_CHART_PATH } from './navigation';
 import './SidebarActionSearch.css';
 
 interface SidebarActionSearchProps {
@@ -20,17 +18,6 @@ interface SidebarActionSearchProps {
     openLeavePolicy: (focusTarget: HTMLElement) => void;
   };
 }
-
-const CREATE_ACTIONS = [
-  { id: 'create-candidate', path: CANDIDATES_PATH, icon: UserRoundPlus, es: 'Crear candidato', en: 'Create candidate' },
-  { id: 'create-employee', path: PLANTILLA_PATH, icon: ContactRound, es: 'Crear empleado', en: 'Create employee' },
-] as const satisfies ReadonlyArray<{
-  id: SidebarCreateAction;
-  path: string;
-  icon: typeof UserRoundPlus;
-  es: string;
-  en: string;
-}>;
 
 const ORGANIZATION_ACTION = {
   id: 'org-chart', path: ORGANIZATION_CHART_PATH, icon: Network,
@@ -53,7 +40,6 @@ export function SidebarActionSearch({ mobileMenuOpen, quickActions }: SidebarAct
   const openingLeavePolicyRef = useRef(false);
   const [open, setOpen] = useState(false);
   const actions = [
-    ...CREATE_ACTIONS,
     ...(quickActions ? [{
       id: 'requests' as const, icon: CalendarDays,
       es: quickActions.canReviewRequests ? 'Gestionar' : 'Solicitar',
@@ -105,7 +91,7 @@ export function SidebarActionSearch({ mobileMenuOpen, quickActions }: SidebarAct
     } else if (action.id === 'org-chart') {
       navigate(ORGANIZATION_CHART_PATH);
     } else {
-      navigate(action.path, { state: { sidebarCreateAction: action.id } });
+      navigate(action.path);
     }
   }
 
