@@ -97,6 +97,9 @@
   --color-error-deep: #b91c1c;
   --color-error-text: var(--color-error-deep);
   --color-error-subtle: #fef2f2;
+  --color-success-text-enhanced: #064e3b;
+  --color-warning-text-enhanced: #78350f;
+  --color-error-text-enhanced: #7f1d1d;
 
   /* Ilustración/gradiente solamente; nunca chrome funcional. */
   --color-violet: #7928ca;
@@ -702,6 +705,9 @@
   --color-error-deep: var(--color-error);
   --color-error-text: var(--color-error);
   --color-error-subtle: #35292a;
+  --color-success-text-enhanced: #a7f3d0;
+  --color-warning-text-enhanced: #fde68a;
+  --color-error-text-enhanced: #fecaca;
 
   /* Alias de indicadores y series existentes, sin añadir acentos a la navegación. */
   --color-violet: #c0a6e0;

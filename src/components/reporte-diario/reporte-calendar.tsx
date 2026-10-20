@@ -77,6 +77,7 @@ function DayCell({
     const dayNumber = parseInt(day, 10);
     const hasData = hasAus || count > 0;
     const heat = getHeatLevel(ausPct, threshold);
+    const severityLabel = heat === "crit" ? copy("Ausentismo crítico", "Critical absenteeism") : heat === "warn" ? copy("Alerta de ausentismo", "Absenteeism warning") : null;
 
     const ariaLabel = [
         `${copy("Día", "Day")} ${dayNumber}`,
@@ -84,6 +85,7 @@ function DayCell({
         count > 0 ? `${count} ${count === 1 ? copy("incidencia", "incident") : copy("incidencias", "incidents")}` : copy("Sin incidencias", "No incidents"),
         hasAus ? `${copy("Ausentismo", "Absenteeism")}: ${ausPct!.toFixed(1)}%` : null,
         !hasData ? copy("Sin información", "No information") : null,
+        severityLabel,
     ]
         .filter(Boolean)
         .join(", ");
@@ -124,7 +126,9 @@ function DayCell({
                 <div className="reporte-cal__kpi reporte-cal__kpi--right">
                     <span className="sr-only">{copy("Incidencias", "Incidents")}:</span>
                     {count > 0 ? (
-                        <span className="reporte-cal__count">{count}</span>
+                        <span className="reporte-cal__count" title={severityLabel ?? undefined}>
+                            {count}
+                        </span>
                     ) : (
                         <span aria-hidden="true" className="reporte-cal__empty-dash">—</span>
                     )}

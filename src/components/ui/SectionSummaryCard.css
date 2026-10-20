@@ -7,7 +7,7 @@
   padding: var(--spacing-md);
   border-radius: var(--rounded-lg);
   border: var(--border-width) solid var(--color-control-border);
-  background: var(--color-surface-card);
+  background: var(--_summary-background, var(--color-surface-card));
   min-width: 0;
   overflow: hidden;
   font-family: var(--font-body);
@@ -15,6 +15,8 @@
   font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
   letter-spacing: var(--type-body-md-tracking);
+  border-color: var(--_summary-foreground, var(--color-control-border));
+  color: var(--color-ink);
 }
 
 button.section-summary-card {
@@ -22,7 +24,7 @@ button.section-summary-card {
 }
 
 button.section-summary-card:hover {
-  border-color: var(--color-control-border);
+  border-color: var(--_summary-foreground, var(--color-control-border));
   box-shadow: var(--shadow-xs);
 }
 
@@ -34,11 +36,11 @@ button.section-summary-card:hover {
 }
 
 .section-summary-card--has-incidents:not(.section-summary-card--selected) {
-  border-color: var(--color-error-text);
+  border-color: var(--_summary-foreground, var(--color-control-border));
 }
 
 .section-summary-card--no-incidents:not(.section-summary-card--selected) {
-  border-color: var(--color-control-border);
+  border-color: var(--_summary-foreground, var(--color-control-border));
 }
 
 .section-summary-card__header {
@@ -87,20 +89,20 @@ button.section-summary-card:hover {
 }
 
 .section-summary-card__badge--muted {
-  color: var(--color-on-neutral);
-  background: var(--color-muted);
+  color: var(--color-success-text-enhanced);
+  background: var(--color-success-subtle);
 }
 .section-summary-card__badge--error {
-  color: var(--color-on-error);
-  background: var(--color-error-deep);
+  color: var(--color-error-text-enhanced);
+  background: var(--color-error-subtle);
 }
 .section-summary-card__badge--warning {
-  color: var(--color-on-warning);
-  background: var(--color-warning);
+  color: var(--color-warning-text-enhanced);
+  background: var(--color-warning-subtle);
 }
 .section-summary-card__badge--primary {
-  color: var(--color-on-primary);
-  background: var(--color-primary);
+  color: var(--color-success-text-enhanced);
+  background: var(--color-success-subtle);
 }
 
 .section-summary-card__descanso {
@@ -110,8 +112,8 @@ button.section-summary-card:hover {
   width: 26px;
   height: 26px;
   border-radius: var(--rounded-sm);
-  background: var(--color-primary);
-  color: var(--color-on-primary);
+  background: var(--color-surface-card);
+  color: var(--color-ink);
   flex-shrink: 0;
 }
 
@@ -144,7 +146,7 @@ button.section-summary-card:hover {
   font-weight: var(--type-caption-up-weight);
   line-height: var(--type-caption-up-line);
   letter-spacing: var(--type-caption-up-tracking);
-  color: var(--color-primary-text);
+  color: var(--color-ink);
   text-transform: uppercase;
   margin-bottom: var(--design-spacing-xxs);
   font-family: var(--font-body);
@@ -162,7 +164,7 @@ button.section-summary-card:hover {
   font-weight: var(--type-caption-up-weight);
   line-height: var(--type-caption-up-line);
   letter-spacing: var(--type-caption-up-tracking);
-  color: var(--color-muted);
+  color: var(--color-ink);
   text-transform: uppercase;
   font-family: var(--font-body);
 }
@@ -193,10 +195,26 @@ button.section-summary-card:hover {
 }
 
 .section-summary-card__trend--critical {
-  color: var(--color-on-error);
-  background: var(--color-error);
+  color: var(--color-error-text-enhanced);
+  background: var(--color-error-subtle);
 }
 .section-summary-card__trend--stable {
-  color: var(--color-on-neutral);
-  background: var(--color-muted);
+  color: var(--_summary-foreground, var(--color-ink));
+  background: var(--_summary-background, var(--color-surface-card));
+}
+
+.section-summary-card[data-status-tone="muted"],
+.section-summary-card[data-status-tone="primary"] {
+  --_summary-background: var(--color-success-subtle);
+  --_summary-foreground: var(--color-success-text-enhanced);
+}
+
+.section-summary-card[data-status-tone="warning"] {
+  --_summary-background: var(--color-warning-subtle);
+  --_summary-foreground: var(--color-warning-text-enhanced);
+}
+
+.section-summary-card[data-status-tone="error"] {
+  --_summary-background: var(--color-error-subtle);
+  --_summary-foreground: var(--color-error-text-enhanced);
 }

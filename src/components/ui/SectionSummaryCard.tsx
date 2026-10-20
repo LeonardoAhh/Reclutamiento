@@ -117,6 +117,7 @@ export function SectionSummaryCard({
         return (
             <div
                 className={className}
+                data-status-tone={isDescanso ? "rest" : statusTone}
                 data-testid={`area-card-${name.replace(/\s+/g, "-").toLowerCase()}`}
             >
                 {cardContent}
@@ -129,6 +130,7 @@ export function SectionSummaryCard({
             type="button"
             onClick={onClick}
             className={className}
+            data-status-tone={isDescanso ? "rest" : statusTone}
             aria-pressed={isSelected}
             aria-label={`${en ? 'Section' : 'Sección'} ${name}. ${en ? 'Authorized' : 'Autorizado'}: ${autorizado}`}
             data-testid={`area-card-${name.replace(/\s+/g, "-").toLowerCase()}`}
