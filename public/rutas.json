@@ -2190,16 +2190,6 @@
     "parada": "EN EL CIDESI "
   },
   {
-    "numero_empleado": "4227",
-    "nombre": "GONZALEZ CRUZ ADRIAN",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
-    "puesto": "OPERADOR DE MÁQUINA D",
-    "turno": "3",
-    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA EN LA PANADERIA LECAROZ"
-  },
-  {
     "numero_empleado": "4228",
     "nombre": "LEON GARCIA MARCOS",
     "seccion": "CALIDAD ADMTVO",
@@ -2918,5 +2908,25 @@
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
     "colonia": "SAN JOSE ITURBIDE",
     "parada": "PARADA DE LA ALAMEDA"
+  },
+  {
+    "numero_empleado": "4405",
+    "nombre": "CARRILLO VARELA ROSA MARIA",
+    "seccion": "A. CALIDAD 2DO. TURNO",
+    "puesto": "OPERADOR DE ACABADOS GP-12 D",
+    "turno": "2",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "colonia": "PUERTO CARROZA",
+    "parada": "PARADA DE AUTOBUSES SOBRE CARRETERA"
+  },
+  {
+    "numero_empleado": "4406",
+    "nombre": "ROJAS SANCHEZ ELIZABETH",
+    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "puesto": "OPERADOR DE MÁQUINA D",
+    "turno": "1",
+    "nombre ruta": "R4-SANTA ROSA",
+    "colonia": "FRACC. MONTENEGRO",
+    "parada": "PARADA DE CAMIONES HUIZACHE"
   }
 ]
