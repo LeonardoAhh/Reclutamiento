@@ -5,6 +5,7 @@ import { LoginForm } from "./LoginForm";
 import { LoginPreferences } from "./LoginPreferences";
 import { useLoginLanguage } from "./login-language";
 import { loginTranslations } from "./login-translations";
+import { LoginCredit } from "./login-components/LoginCredit";
 import { LoginStory } from "./login-components/LoginStory";
 import "./Login.css";
 
@@ -40,6 +41,7 @@ export function Login() {
           />
           <footer className="login__footer" aria-label={copy.legalNoticeLabel}>
             <p className="login__footer-text">{copy.legalNotice}</p>
+            <LoginCredit />
           </footer>
         </div>
       </div>

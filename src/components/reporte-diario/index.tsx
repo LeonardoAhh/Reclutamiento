@@ -924,9 +924,9 @@ export default function ReporteDiarioContent() {
             />
           )}
 
-          <Link className="btn-secondary" to="/departure-reasons" data-cuelume-navigate="">
+          <Link className="btn-secondary reporte-head__departure-action" to="/departure-reasons" data-cuelume-navigate="" aria-label={copy("Motivos de baja", "Reasons for leaving")} title={copy("Motivos de baja", "Reasons for leaving")}>
             <BarChart3 size="var(--icon-size-sm)" aria-hidden="true" />
-            {copy("Motivos de baja", "Reasons for leaving")}
+            <span className="reporte-head__departure-label">{copy("Motivos de baja", "Reasons for leaving")}</span>
           </Link>
 
           {hasData && (

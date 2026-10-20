@@ -517,7 +517,7 @@ export function Actividades() {
     prevPage: prevresponsabilidadesPage,
     canGoNext: canGoNextResponsabilidades,
     canGoPrev: canGoPrevResponsabilidades,
-  } = usePagination(responsabilidades, 16);
+  } = usePagination(responsabilidades, 9);
 
   const {
     pageItems: actividadesPaginadas,
@@ -528,7 +528,7 @@ export function Actividades() {
     prevPage: prevActividadesPage,
     canGoNext: canGoNextActividades,
     canGoPrev: canGoPrevActividades,
-  } = usePagination(unicas, 16);
+  } = usePagination(unicas, 9);
 
   const createAssignmentModalProps: Omit<
     CreateActivityModalProps,

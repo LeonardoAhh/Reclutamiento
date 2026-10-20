@@ -28,13 +28,6 @@
   outline-offset: var(--focus-ring-offset);
 }
 
-.responsibility-card__cover {
-  display: block;
-  inline-size: 100%;
-  aspect-ratio: 3 / 1;
-  object-fit: cover;
-}
-
 .responsibility-card__content {
   display: flex;
   min-inline-size: 0;

@@ -1,5 +1,3 @@
-import { ThemeSelect } from "@/components/ui/ThemeSelect";
-import { LanguageToggle } from "@/components/ui/LanguageToggle";
 import type { LoginLanguage } from "./login-translations";
 import { loginTranslations } from "./login-translations";
 
@@ -13,12 +11,10 @@ export function LoginPreferences({
   storageError,
 }: LoginPreferencesProps) {
   const copy = loginTranslations[language];
+  if (!storageError) return null;
 
   return (
     <div className="login__preferences">
-      <ThemeSelect language={language} sound />
-      <span className="login__preferences-separator" aria-hidden="true">|</span>
-      <LanguageToggle className="login__language-toggle" sound />
       {storageError && (
         <p className="login__language-notice" role="status">
           {copy.languageStorageError}

@@ -158,7 +158,6 @@ export function ResponsibilitiesSection({
                     description={content.description}
                     area={content.area}
                     assignee={assignee}
-                    referenceImage={activity.reference_image ?? undefined}
                     isNew={isNew(activity)}
                     currentUserId={currentUserId}
                     onOpen={() => onOpen(activity)}

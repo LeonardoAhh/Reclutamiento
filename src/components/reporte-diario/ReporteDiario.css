@@ -78,17 +78,6 @@
   width: 100%;
 }
 
-@media (max-width: 640px) {
-  .reporte-head__grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .reporte-head__grid > * {
-    width: 100%;
-    justify-content: center;
-  }
-}
 
 /* Ensure other controls keep their intrinsic size */
 .reporte-head__grid > * {
@@ -1011,18 +1000,42 @@ button.reporte-card:hover,
 
 /* ============================================================================
    KPI DASHBOARD — compact, mobile-first.
-   Móvil: 1 columna. Tablet: 2 columnas. PC: 4 columnas en una sola fila.
+   Móvil y tablet: 2 columnas. PC: 4 columnas en una sola fila.
    ============================================================================ */
 
 .reporte-kpi__grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--design-spacing-xs);
 }
 
 .reporte-kpi__grid > * {
   min-inline-size: 0;
   max-width: 100%;
+}
+
+@media (max-width: 767px) {
+  .reporte-kpi__grid .kpi-card {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: var(--spacing-xs);
+    row-gap: var(--design-spacing-xxs);
+    align-content: start;
+  }
+
+  .reporte-kpi__grid .kpi-card__content {
+    display: contents;
+  }
+
+  .reporte-kpi__grid .kpi-card__value-row {
+    grid-column: 1 / -1;
+    min-inline-size: 0;
+  }
+
+  .reporte-kpi__grid :is(.kpi-card__label, .kpi-card__value, .kpi-card__sub) {
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
 }
 
 @media (min-width: 768px) {
@@ -3325,4 +3338,37 @@ button.reporte-card:hover,
   font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
   letter-spacing: var(--type-body-md-tracking);
+}
+
+@media (max-width: 767px) {
+  .reporte-head__grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+
+  .reporte-head__grid > .reporte-status-banner--file {
+    flex: 1 0 100%;
+  }
+
+  .reporte-head__grid :is(.reporte-saved__trigger--labeled, .reporte-head__departure-action) {
+    min-inline-size: var(--touch-target-min);
+    min-block-size: var(--touch-target-min);
+    padding-inline: 0;
+    justify-content: center;
+  }
+
+  .reporte-head__grid :is(.reporte-saved__trigger-label, .reporte-head__departure-label) {
+    display: none;
+  }
+
+  .reporte-head__grid > .reporte-head__save-action {
+    flex: 1 1 0;
+    min-inline-size: 0;
+    grid-template-columns: minmax(0, 1fr);
+    justify-content: stretch;
+    align-self: flex-start;
+  }
 }

@@ -44,10 +44,10 @@
 }
 
 .activity-card__meta-row {
-  display: grid;
+  display: flex;
+  flex-wrap: wrap;
   inline-size: 100%;
   min-inline-size: 0;
-  grid-template-columns: auto minmax(0, 1fr);
   align-items: start;
   gap: var(--design-spacing-xs);
 }
@@ -55,7 +55,8 @@
 .activity-card__meta-row .assignment-meta {
   min-inline-size: 0;
   max-inline-size: 100%;
-  justify-self: end;
+  flex: 0 1 auto;
+  margin-inline-start: auto;
 }
 
 .activity-card__meta-row .assignment-meta__value {
@@ -92,6 +93,18 @@
 .activity-card:focus-within {
   outline: var(--focus-ring-width) solid var(--color-focus);
   outline-offset: var(--focus-ring-offset);
+}
+
+.activity-card__badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  min-inline-size: 0;
+  gap: var(--design-spacing-xxs);
+}
+
+.activity-card[data-has-image="false"] .activity-card__new {
+  position: static;
 }
 
 .activity-card__status {

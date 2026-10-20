@@ -135,7 +135,7 @@ export function IndicadoresView() {
             <ChartNoAxesColumnIncreasing aria-hidden="true" />
             <h2 id="indicadores-summary-title">{copy.summary}</h2>
           </div>
-          <div className="indicadores-kpi-grid">
+          <div className="indicadores-kpi-grid indicadores-kpi-grid--summary">
             <IndicatorCard
               icon={<UserRoundPlus />}
               label={copy.totalIncome}

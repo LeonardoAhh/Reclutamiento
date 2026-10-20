@@ -9,7 +9,6 @@ export interface ResponsabilidadCardProps {
   description?: string;
   area?: string;
   assignee?: { id: string; display_name?: string | null; username?: string | null };
-  referenceImage?: string;
   isNew?: boolean;
   currentUserId?: string;
   onOpen: () => void;
@@ -20,7 +19,6 @@ export function ResponsabilidadCard({
   description,
   area,
   assignee,
-  referenceImage,
   isNew = false,
   currentUserId,
   onOpen,
@@ -31,7 +29,6 @@ export function ResponsabilidadCard({
     <article className="card responsibility-card" role="listitem">
       <button type="button" className="responsibility-card__open" onClick={onOpen}
         aria-label={`${en ? "View" : "Ver"}: ${title}`} />
-      {referenceImage && <img className="responsibility-card__cover" src={referenceImage} alt="" loading="lazy" />}
       <div className="responsibility-card__content">
       {isNew && (
         <Badge className="badge--compact responsibility-card__status" data-state="new">{en ? "New" : "Nueva"}</Badge>
