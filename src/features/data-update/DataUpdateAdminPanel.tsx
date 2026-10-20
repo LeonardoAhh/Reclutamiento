@@ -225,7 +225,7 @@ export function DataUpdateAdminPanel({
           />
         )}
         <ToolbarGroup label={t("Acciones de administración")} className="data-update-admin__actions">
-          <button
+          <button data-cuelume-tap=""
             type="button"
             className="btn-secondary data-update-admin__shift-import"
             hidden
@@ -236,7 +236,7 @@ export function DataUpdateAdminPanel({
             <FileJson2 aria-hidden="true" />
             {t("Cargar turnos")}
           </button>
-          <button
+          <button data-cuelume-tap=""
             type="button"
             className="btn-secondary"
             onClick={() => void exportCampaign()}
@@ -275,7 +275,7 @@ export function DataUpdateAdminPanel({
                 ? `${t("No hay registros pendientes o en proceso para el turno")} ${selectedShift}.`
                 : `${t("No hay registros del turno")} ${selectedShift}.`
               : t("No hay registros pendientes o en proceso.")}</p>
-          <button
+          <button data-cuelume-tap=""
             type="button"
             className="btn-secondary"
             onClick={() => {
@@ -336,7 +336,7 @@ export function DataUpdateAdminPanel({
                     className="data-update-admin-card__popover"
                   >
                     {record.status === "completado" ? (
-                      <button
+                      <button data-cuelume-tap=""
                         type="button"
                         className="data-update-admin-card__action"
                         onClick={() => { void reopen(record.id); }}
@@ -345,7 +345,7 @@ export function DataUpdateAdminPanel({
                         <span>{t("Reabrir")}</span>
                       </button>
                     ) : (
-                      <button
+                      <button data-cuelume-tap=""
                         type="button"
                         className="data-update-admin-card__action"
                         onClick={() => onOpenRecord(record)}
@@ -355,7 +355,7 @@ export function DataUpdateAdminPanel({
                       </button>
                     )}
                     <hr className="data-update-admin-card__separator" />
-                    <button
+                    <button data-cuelume-tap=""
                       type="button"
                       className="data-update-admin-card__action data-update-admin-card__action--danger"
                       onClick={() => {

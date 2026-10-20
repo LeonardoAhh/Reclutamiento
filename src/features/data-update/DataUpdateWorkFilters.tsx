@@ -54,7 +54,7 @@ export function DataUpdateWorkFilters({ children, area, areaOptions, pending, on
       {mobile ? (
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
-            <button type="button" className="btn-secondary data-update-work-filters-trigger">
+            <button type="button" data-cuelume-open="" className="btn-secondary data-update-work-filters-trigger">
               <SlidersHorizontal size="var(--icon-size-sm)" aria-hidden="true" />
               <span>{t("Filtros", "Filters")}</span>
               {count > 0 && <span className="data-update-work-filters-count">{count}</span>}
@@ -64,8 +64,8 @@ export function DataUpdateWorkFilters({ children, area, areaOptions, pending, on
             <PopoverTitle>{t("Filtros", "Filters")}</PopoverTitle>
             {controls}
             <div className="data-update-work-filters-actions">
-              <button type="button" className="btn-secondary" disabled={count === 0} onClick={onClear}>{t("Limpiar filtros")}</button>
-              <button type="button" className="btn-primary" onClick={() => setOpen(false)}>{t("Listo", "Done")}</button>
+              <button data-cuelume-tap="" type="button" className="btn-secondary" disabled={count === 0} onClick={onClear}>{t("Limpiar filtros")}</button>
+              <button type="button" data-cuelume-close="" className="btn-primary" onClick={() => setOpen(false)}>{t("Listo", "Done")}</button>
             </div>
           </PopoverContent>
         </Popover>

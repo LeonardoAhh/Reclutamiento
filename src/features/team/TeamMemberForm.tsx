@@ -58,7 +58,7 @@ export function TeamMemberForm({ member, profiles, onClose, onSaved }: Props) {
   return <Dialog isOpen className="team-dialog" title={member ? copy.editMember : copy.addMember} size="md"
     closeLabel={language === 'en' ? 'Close' : 'Cerrar'}
     onClose={() => { if (!busy) onClose(); }} footerActions={<>
-      <button type="button" className="btn-secondary" disabled={busy} onClick={onClose}>{copy.cancel}</button>
+      <button data-cuelume-tap="" type="button" className="btn-secondary" disabled={busy} onClick={onClose}>{copy.cancel}</button>
       <button type="submit" form={id} className="btn-primary" disabled={busy} aria-busy={busy}>{busy ? copy.saving : copy.save}</button>
     </>}>
     <form id={id} className="modal-body form-grid team-form" onSubmit={submit} aria-describedby={error ? `${id}-error` : undefined}>

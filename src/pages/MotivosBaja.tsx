@@ -149,7 +149,7 @@ export function MotivosBaja() {
       {error && (
         <div className="motivos-baja__message form-warning-text" role="alert">
           <span>{copy.loadError} {error}</span>{' '}
-          <button type="button" className="btn-secondary" onClick={() => void reload()}>{copy.retry}</button>
+          <button data-cuelume-tap="" type="button" className="btn-secondary" onClick={() => void reload()}>{copy.retry}</button>
         </div>
       )}
 
@@ -160,7 +160,7 @@ export function MotivosBaja() {
             <h2 id="motivos-trend-title">{copy.monthlyDepartures}</h2>
           </div>
           <div className="motivos-baja__panel-actions">
-            <button
+            <button data-cuelume-tap=""
               type="button"
               className="btn-ghost motivos-baja__capture-trigger"
               onClick={() => setCaptureOpen(true)}

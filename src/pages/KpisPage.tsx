@@ -744,7 +744,7 @@ export function KpisPage() {
                       variant={card.variant}
                     />
                     {hasModal && revealed && (
-                      <button
+                      <button data-cuelume-tap=""
                         className="kpis-page__detail-btn"
                         onClick={(e) => {
                           e.stopPropagation();
@@ -775,7 +775,7 @@ export function KpisPage() {
         <>
           <WorkforceProjection projection={projectionTotals} />
 
-          <button
+          <button data-cuelume-tap=""
             type="button"
             className="kpis-page__missing-positions-link"
             onClick={() => setMissingPositionsPageOpen(true)}
@@ -793,7 +793,7 @@ export function KpisPage() {
               data-testid="kpis-mobile-tabs"
             >
               {visibleGroups.map((group) => (
-                <button
+                <button data-cuelume-tap=""
                   key={group.id}
                   type="button"
                   className={`kpis-page__tab${

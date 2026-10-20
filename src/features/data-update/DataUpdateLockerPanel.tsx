@@ -150,7 +150,7 @@ export function DataUpdateLockerPanel({ records, canEdit, onRecordUpdated }: Dat
       ) : visibleRecords.length === 0 ? (
         <div id="data-update-locker-list" className="data-update-search-empty" role="status">
           <p>{t(`No hay coincidencias para “${searchTerm.trim()}”.`)}</p>
-          <button type="button" className="btn-secondary" onClick={() => setSearchTerm("")}>{t("Limpiar búsqueda")}</button>
+          <button data-cuelume-tap="" type="button" className="btn-secondary" onClick={() => setSearchTerm("")}>{t("Limpiar búsqueda")}</button>
         </div>
       ) : (
         <div className="data-update-results-panel">
@@ -174,7 +174,7 @@ export function DataUpdateLockerPanel({ records, canEdit, onRecordUpdated }: Dat
                         </button>
                       </PopoverTrigger>
                       <PopoverContent align="end" className="data-update-admin-card__popover">
-                        <button
+                        <button data-cuelume-tap=""
                           type="button"
                           className="data-update-admin-card__action"
                           onClick={() => openEditor(record)}
@@ -226,7 +226,7 @@ export function DataUpdateLockerPanel({ records, canEdit, onRecordUpdated }: Dat
         onClose={closeEditor}
         footerActions={(
           <>
-            <button type="button" className="btn-secondary" onClick={closeEditor} disabled={saving}>{t("Cancelar")}</button>
+            <button data-cuelume-tap="" type="button" className="btn-secondary" onClick={closeEditor} disabled={saving}>{t("Cancelar")}</button>
             <button type="submit" form="data-update-locker-form" className="btn-primary" disabled={saving}>
               {saving ? t("Guardando…") : t("Guardar")}
             </button>

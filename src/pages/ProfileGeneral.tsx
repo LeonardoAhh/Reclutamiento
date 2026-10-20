@@ -76,7 +76,7 @@ export function ProfileGeneral() {
           <section className="card profile-general__notice" role="alert">
             <h2>No pudimos cargar la información</h2>
             <p>{error}</p>
-            <button type="button" className="btn-secondary" onClick={() => void loadData()}>Reintentar</button>
+            <button data-cuelume-tap="" type="button" className="btn-secondary" onClick={() => void loadData()}>Reintentar</button>
           </section>
         ) : !cycle ? (
           <section className="card profile-general__notice" role="alert">

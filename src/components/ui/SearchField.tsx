@@ -63,6 +63,7 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
           id={inputId}
           ref={ref}
           type="search"
+          data-cuelume-type=""
           inputMode={inputMode}
           value={value}
           className="search-field__input"
@@ -73,6 +74,7 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
             type="button"
             className="search-field__icon search-field__clear"
             onClick={handleClear}
+            data-cuelume-tap=""
             aria-label={clearLabel}
           >
             <MorphingIcon

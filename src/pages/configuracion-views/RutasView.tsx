@@ -1,3 +1,4 @@
+import { playSound } from "@/lib/sound";
 import { useState, useRef, useMemo, useEffect } from "react";
 import { PageHeading } from '@/components/layout/PageHeading';
 import { Link, useLocation } from "react-router-dom";
@@ -535,12 +536,14 @@ export function RutasView() {
   }, [searchNorm, filteredRutas, searchMatchesByRoute, location.search, selectedRuta]);
 
   function handleSelect(ruta: RutaAgrupada) {
+    playSound("navigate");
     setSelectedRuta(ruta);
     setAnimKey((k) => k + 1);
     setMobileView("detail"); // push to detail on mobile
   }
 
   function handleBack() {
+    playSound("navigate", { direction: "back" });
     setMobileView("list");
     window.requestAnimationFrame(() => {
       listRef.current

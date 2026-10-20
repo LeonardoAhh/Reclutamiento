@@ -388,6 +388,7 @@ export function Dashboard() {
                         <button
                           type="button"
                           className="btn-primary"
+                          data-cuelume-open=""
                           onClick={() => {
                             setSelectedEmployee(null);
                             setEmpModalMode("add");
@@ -402,6 +403,7 @@ export function Dashboard() {
                         <button
                           type="button"
                           className="btn-secondary dashboard__report-btn"
+                          data-cuelume-navigate=""
                           onClick={() => navigate(VACANCY_ASSIGNMENTS_PATH)}
                           aria-label={t("Asignación de vacantes")}
                         >
@@ -414,6 +416,7 @@ export function Dashboard() {
                           <button
                             type="button"
                             className="btn-secondary dashboard__report-btn"
+                            data-cuelume-open=""
                             onClick={() => setPositionSettingsOpen(true)}
                             title={t("Configurar plantilla, backup y Starlite")}
                             aria-label={t("Configurar plantilla, backup y Starlite")}

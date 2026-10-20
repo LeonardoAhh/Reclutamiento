@@ -345,6 +345,7 @@ export function AnalisisView() {
           <button
             type="button"
             className="analisis-hero__card"
+            data-cuelume-select=""
             onClick={() => setRiskFilter(r => r === 'nuevos_ingresos' ? 'all' : 'nuevos_ingresos')}
             aria-pressed={riskFilter === 'nuevos_ingresos'}
             aria-controls="config-search-results"
@@ -439,6 +440,7 @@ export function AnalisisView() {
                     className={`config-segmented-control__button${
                       statusFilter === value ? ' is-active' : ''
                     }`}
+                    data-cuelume-select=""
                     onClick={() => setStatusFilter(value)}
                     aria-pressed={statusFilter === value}
                   >
@@ -483,6 +485,7 @@ export function AnalisisView() {
                 type="button"
                 className="config-filter-reset"
                 icon={<RotateCcw aria-hidden="true" />}
+                data-cuelume-select=""
                 onClick={handleClearFilters}
               >
                 {copy.clear}
@@ -508,6 +511,7 @@ export function AnalisisView() {
                   }`}
                   aria-label={copy.detailed}
                   title={copy.detailed}
+                  data-cuelume-select=""
                   onClick={() => handleViewModeChange('detail')}
                   aria-pressed={viewMode === 'detail'}
                 >

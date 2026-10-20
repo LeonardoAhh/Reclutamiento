@@ -1,5 +1,6 @@
 import { useEffect, useId, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { playSound } from '@/lib/sound';
 import { useLanguage } from '@/contexts/LanguageContext';
 import "./Pagination.css";
 
@@ -48,7 +49,10 @@ export function Pagination({
       ? Math.min(safeTotalPages, Math.max(1, parsed))
       : safeCurrentPage;
     setDraftPage(String(target));
-    if (target !== safeCurrentPage) onPageChange(target);
+    if (target !== safeCurrentPage) {
+      playSound('navigate');
+      onPageChange(target);
+    }
   };
 
   if (hideOnSinglePage && safeTotalPages <= 1) return null;
@@ -64,6 +68,7 @@ export function Pagination({
       <button
         type="button"
         className="step-nav-control"
+        data-cuelume-navigate=""
         onClick={() => {
           if (!prevEnabled) return;
           if (onPrev) onPrev();
@@ -109,6 +114,7 @@ export function Pagination({
       <button
         type="button"
         className="step-nav-control"
+        data-cuelume-navigate=""
         onClick={() => {
           if (!nextEnabled) return;
           if (onNext) onNext();

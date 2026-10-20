@@ -56,6 +56,7 @@ export function HomeLessonCard({
           <button
             type="button"
             className="home-page__lesson-trigger"
+            data-cuelume-open=""
             aria-labelledby={titleId}
             aria-describedby={[
               description ? `${titleId}-description` : "",

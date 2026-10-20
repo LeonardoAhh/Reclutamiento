@@ -78,7 +78,7 @@ function PositionCard({ title, location, headingLevel = 4, onClick, buttonRef }:
         <Heading className="organization-chart-page__position-name">{positionLabel(title, language)}</Heading>
       </div>
       {onClick && (
-        <button
+        <button data-cuelume-tap=""
           ref={buttonRef}
           type="button"
           className="organization-chart-page__root-action"
@@ -131,7 +131,7 @@ export function OrganizationChartPage() {
   return (
     <main className="organization-chart-page container" aria-labelledby="organization-chart-title">
       <PageHeading id="organization-chart-title" className="app-page-title">
-        <Link to={HOME_PATH} className="organization-chart-page__title-link">
+        <Link data-cuelume-navigate="" to={HOME_PATH} className="organization-chart-page__title-link">
           <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
           {language === "en" ? "Organization chart" : "Organigrama"}
         </Link>
@@ -143,7 +143,7 @@ export function OrganizationChartPage() {
             <div className="organization-chart-page__details">
               <h2 id="organization-chart-manager-title" className="organization-chart-page__position-name">{positionLabel("Gerente de Recursos Humanos", language)}</h2>
             </div>
-            <button
+            <button data-cuelume-tap=""
               ref={managerButtonRef}
               type="button"
               className="organization-chart-page__root-action"

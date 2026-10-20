@@ -18,7 +18,7 @@ export function AnalysisFilterPanel({ children, count, label, doneLabel }: Analy
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <button type="button" className="btn-secondary analisis-filter-trigger">
+        <button type="button" data-cuelume-open="" className="btn-secondary analisis-filter-trigger">
           <SlidersHorizontal size="var(--icon-size-sm)" aria-hidden="true" />
           <span>{label}</span>
           {count > 0 && <span>{count}</span>}
@@ -27,7 +27,7 @@ export function AnalysisFilterPanel({ children, count, label, doneLabel }: Analy
       <PopoverContent align="start" className="analisis-filter-panel" aria-label={label}>
         <PopoverTitle>{label}</PopoverTitle>
         {children}
-        <button type="button" className="btn-primary" onClick={() => setOpen(false)}>{doneLabel}</button>
+        <button type="button" data-cuelume-close="" className="btn-primary" onClick={() => setOpen(false)}>{doneLabel}</button>
       </PopoverContent>
     </Popover>
   );

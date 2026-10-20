@@ -234,6 +234,7 @@ export function HomePage() {
                 <button
                   type="button"
                   className="home-page__pagination-button"
+                  data-cuelume-navigate=""
                   aria-label={en ? 'Previous topic' : 'Tema anterior'}
                   disabled={activeIndex === 0}
                   onClick={() => selectTopic(activeIndex - 1)}

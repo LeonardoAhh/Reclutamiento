@@ -198,7 +198,7 @@ export function IndicadoresView() {
               <button
                 type="button"
                 className="step-nav-control"
-                onClick={handlePrevMonth}
+                data-cuelume-navigate="" onClick={handlePrevMonth}
                 aria-label={copy.previousMonth}
               >
                 <ArrowLeft aria-hidden="true" />
@@ -214,7 +214,7 @@ export function IndicadoresView() {
               <button
                 type="button"
                 className="step-nav-control"
-                onClick={handleNextMonth}
+                data-cuelume-navigate="" onClick={handleNextMonth}
                 disabled={isCurrentMonth()}
                 aria-label={copy.nextMonth}
               >
@@ -393,7 +393,7 @@ export function IndicadoresView() {
               <BackButton
                 ref={mobileDetailBackRef}
                 className="config-mobile-back"
-                onClick={handleBackToRecruiters}
+                data-cuelume-navigate="" onClick={handleBackToRecruiters}
                 aria-label={copy.backToRecruiters}
               />
               
@@ -449,7 +449,7 @@ export function IndicadoresView() {
                     }}
                     type="button"
                     className="indicadores-mobile-list__btn"
-                    onClick={() => handleSelectMobileRecruiter(recruiter)}
+                    data-cuelume-open="" onClick={() => handleSelectMobileRecruiter(recruiter)}
                   >
                     <div className="indicadores-mobile-list__info">
                       <UserRound className="indicadores-recruiter-icon" aria-hidden="true" />

@@ -173,6 +173,7 @@ export function TabuladorView() {
                 id={`config-tab-${id}`}
                 className={`config-tab${isActive ? ' config-tab--active' : ''}`}
                 role="tab"
+                data-cuelume-select=""
                 aria-selected={isActive}
                 aria-controls="tabulador-panel"
                 tabIndex={isActive ? 0 : -1}

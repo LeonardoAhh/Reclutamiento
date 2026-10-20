@@ -432,7 +432,7 @@ export function VacancyAssignmentsPage() {
             key={key}
             className={`vacancy-report-modal__row ${isDismissed ? "vacancy-report-modal__row--dismissed" : ""}`}
           >
-            <button
+            <button data-cuelume-tap=""
               type="button"
               className="vacancy-report-modal__row-main"
               onClick={() => toggleDismiss(key)}
@@ -500,7 +500,7 @@ export function VacancyAssignmentsPage() {
     <main className="vacancy-assignments-page container" aria-labelledby="vacancy-assignments-title">
       <header className="page-header">
         <PageHeading id="vacancy-assignments-title" className="app-page-title">
-          <Link
+          <Link data-cuelume-navigate=""
             className="vacancy-assignments-page__title-link"
             to={PLANTILLA_PATH}
             aria-label={`${t("Volver a plantilla")}: ${t("Asignación de vacantes")}`}
@@ -510,7 +510,7 @@ export function VacancyAssignmentsPage() {
           </Link>
         </PageHeading>
         <div className="page-header__actions">
-          <button
+          <button data-cuelume-tap=""
             type="button"
             className="btn-primary vacancy-report-modal__action"
             onClick={() => void handleCopy()}

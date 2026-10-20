@@ -15,6 +15,7 @@ import { CAREER_PATH } from '@/features/career/types';
 import { REPORT_COMPARISON_PATH, REPORT_DAY_PATTERN } from '@/components/reporte-diario/navigation';
 import { CANDIDATE_METRICS_PATH } from '@/pages/candidate-metrics/navigation';
 import { PERFORMANCE_EVALUATIONS_2027_PATH } from '@/features/performance-evaluations-2027/types';
+import { bindSoundInteractions } from '@/lib/sound';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const PAGE_TITLES: Readonly<Record<string, string>> = {
@@ -67,6 +68,8 @@ export function AppShell({ children }: { children: ReactNode }) {
   useEffect(() => {
     document.title = pageTitle;
   }, [pageTitle]);
+
+  useEffect(() => bindSoundInteractions(document), []);
 
   const closeMobileMenu = useCallback(() => {
     if (!mobileMenuOpen) return;

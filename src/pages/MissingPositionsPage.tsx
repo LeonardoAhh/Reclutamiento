@@ -102,7 +102,7 @@ export function MissingPositionsPage({
   return (
     <main className="missing-positions-page container" aria-labelledby="missing-positions-title">
           <PageHeading id="missing-positions-title" className="app-page-title">
-            <button
+            <button data-cuelume-tap=""
               ref={titleRef}
               type="button"
               className="missing-positions-page__back-link"

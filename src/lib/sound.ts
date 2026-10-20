@@ -40,12 +40,36 @@ export function subscribeSound(listener: () => void): () => void {
   return () => listeners.delete(listener);
 }
 
+const interactionCues = new Set<SoundName>();
+
 export function playSound(name: SoundName, options?: PlayOptions): void {
+  // Shared controls and legacy callbacks can handle the same interaction.
+  if (interactionCues.has(name)) return;
+  interactionCues.add(name);
+  queueMicrotask(() => interactionCues.delete(name));
   play(name, options);
 }
 
+const interactionBindings = new WeakMap<ParentNode, { users: number; dispose: () => void }>();
+
 export function bindSoundInteractions(root: ParentNode): () => void {
-  return bind(root);
+  let binding = interactionBindings.get(root);
+  if (!binding) {
+    binding = { users: 0, dispose: bind(root) };
+    interactionBindings.set(root, binding);
+  }
+  const registration = binding;
+  registration.users += 1;
+  let released = false;
+  return () => {
+    if (released) return;
+    released = true;
+    registration.users -= 1;
+    if (registration.users === 0) {
+      registration.dispose();
+      interactionBindings.delete(root);
+    }
+  };
 }
 
 export function toggleSound(): void {

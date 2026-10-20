@@ -6,6 +6,7 @@ import {
   FLOATING_SURFACE_COLLISION_PADDING,
   FLOATING_SURFACE_SIDE_OFFSET,
 } from '@/lib/floatingSurface';
+import { playSound } from '@/lib/sound';
 import { cn } from '@/lib/utils-shadcn';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import './CustomSelect.css';
@@ -80,7 +81,10 @@ export function CustomSelect({
       (candidate) => getItemValue(candidate.value) === itemValue,
     );
 
-    if (option) onChange(option.value);
+    if (option) {
+      if (option.value !== value) playSound('select');
+      onChange(option.value);
+    }
   };
 
   return (

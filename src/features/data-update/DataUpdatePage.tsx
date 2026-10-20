@@ -376,7 +376,7 @@ export function DataUpdatePage() {
   };
 
   const newCampaignButton = (
-    <button type="button" className="btn-primary data-update-campaign-action--new" onClick={() => setImportOpen(true)} disabled={!online}>
+    <button type="button" className="btn-primary data-update-campaign-action--new" data-cuelume-open="" onClick={() => setImportOpen(true)} disabled={!online}>
       <FilePlus2 aria-hidden="true" />
     </button>
   );
@@ -464,7 +464,7 @@ export function DataUpdatePage() {
             {isAdmin && (
             <div className={`data-update-campaign-actions${isAdmin ? ' data-update-campaign-actions--admin' : ''}`}>
               {isAdmin && newCampaignButton}
-              <button type="button" className="btn-secondary" onClick={() => void loadDetail()} disabled={!online || loading || busy} aria-label={t("Actualizar", "Refresh")}>
+              <button type="button" className="btn-secondary" data-cuelume-tap="" onClick={() => void loadDetail()} disabled={!online || loading || busy} aria-label={t("Actualizar", "Refresh")}>
                 <RefreshCw aria-hidden="true" />
                 <span className="data-update-campaign-action__label">{t("Actualizar", "Refresh")}</span>
               </button>
@@ -490,7 +490,7 @@ export function DataUpdatePage() {
                 <button
                   type="button"
                   className="btn-secondary data-update-progress-trigger"
-                  onClick={() => setProgressOpen(true)}
+                  data-cuelume-open="" onClick={() => setProgressOpen(true)}
                   aria-label={t("Ver avance")}
                 >
                   <ChartNoAxesCombined aria-hidden="true" />
@@ -537,7 +537,7 @@ export function DataUpdatePage() {
               className={`data-update-tabs__list${isAdmin ? " data-update-tabs__list--admin" : ""}`}
               aria-label={t("Vistas de actualización de datos")}
             >
-              <Tabs.Trigger className="data-update-tabs__trigger" value="work">
+              <Tabs.Trigger className="data-update-tabs__trigger" data-cuelume-select="" value="work">
                 {t("Mi trabajo")}
               </Tabs.Trigger>
               <Tabs.Trigger className="data-update-tabs__trigger" value="locker">
@@ -644,7 +644,7 @@ export function DataUpdatePage() {
                             <button
                               type="button"
                               className={`data-update-work-card__action${record.status === "completado" ? " btn-secondary" : " btn-primary"}`}
-                              onClick={() => void openRecord(record)}
+                              data-cuelume-open="" onClick={() => void openRecord(record)}
                               disabled={!online || busy || record.status === "completado"}
                             >
                               {t(record.status === "pendiente" ? "Comenzar" : record.status === "en_proceso" ? "Continuar" : "Completado")}

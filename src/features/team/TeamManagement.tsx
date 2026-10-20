@@ -99,7 +99,7 @@ export function TeamManagement() {
         <h2 id={`${id}-title`} className="team-management__title">{copy.teamMembers}</h2>
         <span className="team-management__count type-body-sm">{visibleMembers.length} {language === 'en' ? visibleMembers.length === 1 ? 'person' : 'people' : visibleMembers.length === 1 ? 'persona' : 'personas'}</span>
       </div>
-      <button ref={addButtonRef} type="button" className="team-management__add" disabled={!profiles || busy} onClick={() => setAdding(true)}>{copy.add}</button>
+      <button data-cuelume-tap="" ref={addButtonRef} type="button" className="team-management__add" disabled={!profiles || busy} onClick={() => setAdding(true)}>{copy.add}</button>
     </header>
     {error && <p className="team-management__feedback form-error-text" role="alert">{error}</p>}
     {message && <p className="team-management__feedback type-body-md" role="status">{message}</p>}
@@ -139,14 +139,14 @@ export function TeamManagement() {
             <div className="team-management__actions">
               {canChange && <div className="team-management__action-group" onKeyDown={event => { if (event.key === 'Escape' && !busy) setPending(null); }} onBlur={event => { if (!busy && !event.currentTarget.contains(event.relatedTarget)) setPending(null); }}>
                 {isPending ? <>
-                  <button ref={confirmButtonRef} type="button" className={`team-management__confirm${pending.kind === 'remove' ? ' team-management__confirm--danger' : ''}`} disabled={busy} aria-busy={busy} aria-label={`${copy.confirm} ${pending.kind === 'remove' ? copy.delete.toLowerCase() : (member.active ? copy.giveAccess : copy.reactivate).toLowerCase()} ${member.full_name}`} title={pending.kind === 'remove' ? member.profile_id ? copy.deleteLinkedDescription : copy.deleteUnlinkedDescription : member.active ? copy.deactivateDescription : copy.reactivateDescription} onClick={() => void confirmAction()}>
+                  <button data-cuelume-tap="" ref={confirmButtonRef} type="button" className={`team-management__confirm${pending.kind === 'remove' ? ' team-management__confirm--danger' : ''}`} disabled={busy} aria-busy={busy} aria-label={`${copy.confirm} ${pending.kind === 'remove' ? copy.delete.toLowerCase() : (member.active ? copy.giveAccess : copy.reactivate).toLowerCase()} ${member.full_name}`} title={pending.kind === 'remove' ? member.profile_id ? copy.deleteLinkedDescription : copy.deleteUnlinkedDescription : member.active ? copy.deactivateDescription : copy.reactivateDescription} onClick={() => void confirmAction()}>
                     {pending.kind === 'remove' ? <Trash2 size="var(--icon-size-sm)" aria-hidden="true" /> : member.active ? <PowerOff size="var(--icon-size-sm)" aria-hidden="true" /> : <RotateCcw size="var(--icon-size-sm)" aria-hidden="true" />}
                     <span>{busy ? copy.saving : copy.confirm}</span>
                   </button>
-                  <button type="button" className="team-management__action-icon" disabled={busy} aria-label={`${copy.cancel}: ${member.full_name}`} onClick={() => setPending(null)}><X size="var(--icon-size-sm)" aria-hidden="true" /></button>
+                  <button data-cuelume-tap="" type="button" className="team-management__action-icon" disabled={busy} aria-label={`${copy.cancel}: ${member.full_name}`} onClick={() => setPending(null)}><X size="var(--icon-size-sm)" aria-hidden="true" /></button>
                 </> : <>
-                  <button type="button" className="team-management__action-icon" disabled={busy} aria-label={`${member.active ? copy.giveAccess : copy.reactivate}: ${member.full_name}`} onClick={() => setPending({ member, kind: 'status' })}>{member.active ? <PowerOff size="var(--icon-size-sm)" aria-hidden="true" /> : <RotateCcw size="var(--icon-size-sm)" aria-hidden="true" />}</button>
-                  {!member.active && <button type="button" className="team-management__action-icon team-management__action-icon--danger" disabled={busy} aria-label={`${copy.delete}: ${member.full_name}`} onClick={() => setPending({ member, kind: 'remove' })}><Trash2 size="var(--icon-size-sm)" aria-hidden="true" /></button>}
+                  <button data-cuelume-tap="" type="button" className="team-management__action-icon" disabled={busy} aria-label={`${member.active ? copy.giveAccess : copy.reactivate}: ${member.full_name}`} onClick={() => setPending({ member, kind: 'status' })}>{member.active ? <PowerOff size="var(--icon-size-sm)" aria-hidden="true" /> : <RotateCcw size="var(--icon-size-sm)" aria-hidden="true" />}</button>
+                  {!member.active && <button data-cuelume-tap="" type="button" className="team-management__action-icon team-management__action-icon--danger" disabled={busy} aria-label={`${copy.delete}: ${member.full_name}`} onClick={() => setPending({ member, kind: 'remove' })}><Trash2 size="var(--icon-size-sm)" aria-hidden="true" /></button>}
                 </>}
               </div>}
             </div>
