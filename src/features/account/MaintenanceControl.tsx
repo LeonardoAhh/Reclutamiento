@@ -1,4 +1,5 @@
 import { useId, useState } from 'react';
+import { CustomSelect } from '@/components/ui/CustomSelect';
 import { useMaintenanceMode } from '@/hooks/useMaintenanceMode';
 import { toast } from '@/lib/notify';
 import { playSound } from '@/lib/sound';
@@ -19,7 +20,7 @@ interface MaintenanceControlProps {
   sessionLoading: boolean;
 }
 
-/** Estado y cambio del modo mantenimiento desde un switch. */
+/** Estado y cambio del modo mantenimiento desde un select. */
 export function MaintenanceControl({ copy, english, sessionLoading }: MaintenanceControlProps) {
   const id = useId();
   const maintenance = useMaintenanceMode();
@@ -33,9 +34,8 @@ export function MaintenanceControl({ copy, english, sessionLoading }: Maintenanc
         ? copy.unavailable
         : maintenance.enabled ? copy.active : copy.inactive;
 
-  async function handleAction() {
-    if (unavailable || saving) return;
-    const target = !maintenance.enabled;
+  async function handleAction(target: boolean) {
+    if (unavailable || saving || target === maintenance.enabled) return;
     setSaving(true);
     try {
       const result = await maintenance.update(target);
@@ -58,19 +58,20 @@ export function MaintenanceControl({ copy, english, sessionLoading }: Maintenanc
       </div>
       <div className="account-maintenance__controls">
         <span id={`${id}-status`} className="sr-only" aria-live="polite">{statusLabel}</span>
-        <button
-          type="button"
-          className="account-maintenance__action"
-          role="switch"
-          aria-checked={maintenance.enabled}
-          aria-label={maintenance.enabled ? copy.disableMaintenance : copy.enableMaintenance}
-          onClick={() => void handleAction()}
-          disabled={unavailable || saving}
-          aria-busy={saving}
+        <CustomSelect
+          id={id}
+          className="account-maintenance__select"
+          aria-label={copy.maintenance}
           aria-describedby={`${id}-description ${id}-status`}
-        >
-          <span className="account-maintenance__action-surface" aria-hidden="true"><span className="account-maintenance__thumb" /></span>
-        </button>
+          value={maintenance.enabled ? "active" : "inactive"}
+          options={[
+            { value: "inactive", label: copy.inactive },
+            { value: "active", label: copy.active },
+          ]}
+          showPlaceholderOption={false}
+          disabled={unavailable || saving}
+          onChange={(value) => void handleAction(value === "active")}
+        />
         {maintenance.error && (
           <button type="button" className="account-maintenance__retry"
             onClick={() => { playSound('tap'); void maintenance.refresh(); }} disabled={maintenance.loading || saving}>

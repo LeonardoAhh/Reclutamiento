@@ -8,7 +8,7 @@
   gap: var(--spacing-md);
   padding: var(--spacing-sm);
   border: var(--border-width) solid var(--color-control-border);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-media);
   background: var(--color-surface);
   color: var(--color-ink);
   text-align: start;

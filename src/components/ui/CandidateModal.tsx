@@ -572,6 +572,7 @@ const fieldsPosicion = (
         />
       </div>
 
+      <div className="candidate-modal__field-row">
       <div className="form-group">
         <label htmlFor="cand-reclutador">{en ? 'Recruiter' : 'Reclutador'} <span className="text-error">*</span></label>
         <CustomSelect
@@ -608,7 +609,9 @@ const fieldsPosicion = (
         />
         {touched.source && errors.source && <span className="form-error-text">{errors.source}</span>}
       </div>
+      </div>
 
+      <div className="candidate-modal__field-row">
       <div className="form-group">
         <label htmlFor="cand-starlite">Starlite</label>
         <CustomSelect
@@ -642,6 +645,7 @@ const fieldsPosicion = (
           className={touched.fecha_cita && errors.fecha_cita ? 'input-error' : ''}
         />
         {touched.fecha_cita && errors.fecha_cita && <span className="form-error-text">{errors.fecha_cita}</span>}
+      </div>
       </div>
     </>
   );

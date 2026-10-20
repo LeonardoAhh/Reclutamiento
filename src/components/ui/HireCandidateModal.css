@@ -8,7 +8,7 @@
   background: var(--color-surface);
   border: var(--border-width) solid var(--color-control-border);
   padding: 4px;
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-control);
   gap: 4px;
   margin-bottom: var(--spacing-lg);
 }

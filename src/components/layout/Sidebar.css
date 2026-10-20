@@ -72,7 +72,7 @@
   flex: 0 0 calc(var(--touch-target-min) - var(--design-spacing-xs));
   inline-size: calc(var(--touch-target-min) - var(--design-spacing-xs));
   block-size: calc(var(--touch-target-min) - var(--design-spacing-xs));
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-brand);
   color: var(--color-on-primary);
   background: var(--color-primary);
 }
@@ -129,7 +129,7 @@ button.sidebar__close-btn {
   padding: var(--design-spacing-xxs);
   color: var(--color-ink);
   cursor: pointer;
-  border-radius: var(--rounded-md);
+  border-radius: var(--rounded-full);
   transition: background-color var(--transition-fast);
 }
 
@@ -170,7 +170,7 @@ button.sidebar__close-btn {
   justify-content: center;
   padding: 0;
   border: 0;
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-control);
   background: transparent;
   color: var(--color-ink);
   font-family: var(--font-body);
@@ -192,7 +192,7 @@ button.sidebar__close-btn {
   gap: var(--design-spacing-sm);
   padding-inline: var(--design-spacing-sm);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-control);
   background: var(--color-canvas-elevated);
   overflow-wrap: anywhere;
 }
@@ -256,7 +256,7 @@ button.sidebar__close-btn {
 
   min-height: var(--touch-target-min);
   padding: var(--design-spacing-xs) var(--design-spacing-sm);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-control);
 
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
@@ -293,7 +293,7 @@ button.sidebar__close-btn {
 
 .sidebar__item--active:active {
   color: var(--color-navigation-rail-on-active);
-  background: var(--color-primary-active);
+  background: var(--color-primary-pressed);
 }
 
 .sidebar__item--active .sidebar__item-icon {

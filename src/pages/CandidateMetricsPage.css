@@ -113,7 +113,7 @@
   gap: var(--design-spacing-xs);
   padding: var(--design-spacing-sm);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-card);
   overflow-wrap: anywhere;
   text-align: center;
 }
@@ -181,7 +181,7 @@
   min-block-size: var(--touch-target-min);
   padding: var(--design-spacing-xs);
   border: 0;
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-control);
   background: var(--color-surface-card);
   color: var(--color-ink);
   cursor: pointer;

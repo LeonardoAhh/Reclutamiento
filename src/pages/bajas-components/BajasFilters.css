@@ -35,7 +35,7 @@
   padding: 0 var(--spacing-md);
   background: transparent;
   border: var(--border-width) solid var(--color-control-border);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-control);
   color: var(--color-muted);
   font-size: var(--type-body-sm-size);
   cursor: pointer;

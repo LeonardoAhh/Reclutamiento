@@ -4,10 +4,14 @@
   min-inline-size: 0;
   min-block-size: var(--control-min-block-size);
   border: var(--border-width) solid var(--color-control-border);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-field);
   background: var(--color-surface);
   color: var(--color-muted);
   transition: border-color var(--transition-fast);
+}
+
+.search-field--intrinsic {
+  inline-size: fit-content;
 }
 
 .search-field:hover:not(:focus-within):not(:has(.search-field__input:disabled)) {

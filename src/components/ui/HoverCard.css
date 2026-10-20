@@ -6,7 +6,7 @@
   overflow: auto;
   overscroll-behavior: contain;
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-menu);
   background: var(--color-surface-card);
   color: var(--color-ink);
   box-shadow: var(--shadow-elevated);

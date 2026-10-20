@@ -5,7 +5,7 @@
   max-block-size: var(--radix-popover-content-available-height);
   overflow: auto;
   overscroll-behavior: contain;
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-menu);
   border: var(--border-width) solid var(--color-hairline);
   background-color: var(--color-surface);
   padding: var(--spacing-md);

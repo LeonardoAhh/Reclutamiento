@@ -248,17 +248,6 @@
   width: 100%;
 }
 
-.data-update-work-toolbar {
-  display: grid;
-  min-width: 0;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--design-spacing-sm);
-}
-
-.data-update-pending-filter {
-  justify-self: start;
-}
-
 .data-update-campaign-actions--admin > .data-update-progress-trigger {
   min-width: 0;
 }
@@ -394,17 +383,14 @@
 }
 
 .data-update-tabs__list {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  display: flex;
   gap: var(--design-spacing-xs);
   padding: var(--design-spacing-xs);
   background: var(--color-surface-soft);
   border: var(--border-width) solid var(--color-control-border);
-  border-radius: var(--rounded-md);
-}
-
-.data-update-tabs__list--admin {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-radius: var(--radius-control);
+  overflow-x: auto;
+  min-inline-size: 0;
 }
 
 .data-update-tabs__trigger {
@@ -415,7 +401,7 @@
   justify-content: center;
   padding-inline: var(--design-spacing-md);
   border: var(--border-width) solid transparent;
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-control);
   background: transparent;
   color: var(--color-muted);
   font-family: var(--font-body);
@@ -428,6 +414,8 @@
     background var(--transition-fast),
     border-color var(--transition-fast),
     color var(--transition-fast);
+  flex: 1 0 auto;
+  white-space: nowrap;
 }
 
 .data-update-tabs__trigger:hover {
@@ -438,7 +426,7 @@
 .data-update-tabs__trigger[data-state="active"] {
   color: var(--color-on-primary);
   background: var(--color-primary);
-  border-color: var(--color-primary);
+  border-color: var(--color-primary-border);
 }
 
 .data-update-tabs__content {
@@ -1412,14 +1400,6 @@
     padding: var(--design-spacing-md);
   }
 
-  .data-update-tabs__list {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .data-update-tabs__list--admin {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
   .data-update-page {
     gap: var(--design-spacing-xl);
     padding-block-end: var(--design-spacing-3xl);
@@ -1517,15 +1497,6 @@
     max-width: var(--content-reading-max-inline-size);
   }
 
-  .data-update-work-toolbar {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .data-update-work-toolbar .data-update-queue__search,
-  .data-update-work-toolbar .data-update-work-group-navigation {
-    max-width: none;
-  }
-
   .data-update-record-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1558,9 +1529,6 @@
 }
 
 @media (min-width: 1080px) {
-  .data-update-work-toolbar {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) max-content;
-  }
 
   .form-wizard .data-update-transport-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1610,7 +1578,7 @@
 
 @media (min-width: 1440px) {
   .data-update-admin__toolbar:not(.data-update-admin__toolbar--empty) {
-    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) max-content max-content;
+    grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr)) max-content;
   }
 
   .data-update-completed-card {
@@ -1677,4 +1645,45 @@
   font-weight: var(--type-body-strong-weight);
   line-height: var(--type-body-strong-line);
   letter-spacing: var(--type-body-strong-tracking);
+}
+
+.data-update-work-toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--design-spacing-sm);
+  min-inline-size: 0;
+}
+
+.data-update-work-toolbar > * {
+  min-inline-size: 0;
+  max-inline-size: none;
+}
+
+.data-update-work-filters-trigger {
+  white-space: nowrap;
+}
+
+.data-update-work-filters-count {
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--type-body-strong-weight);
+}
+
+.data-update-work-filters-panel {
+  display: grid;
+  gap: var(--design-spacing-sm);
+  inline-size: var(--search-field-min-inline-size);
+}
+
+.data-update-work-filters-actions {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--design-spacing-xs);
+}
+
+@media (min-width: 768px) {
+  .data-update-work-toolbar {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }

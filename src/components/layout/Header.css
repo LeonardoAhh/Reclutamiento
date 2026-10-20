@@ -90,7 +90,7 @@
   border: none;
   color: var(--color-ink);
   cursor: pointer;
-  border-radius: var(--rounded-md);
+  border-radius: var(--rounded-full);
   transition: background-color var(--transition-fast);
 }
 

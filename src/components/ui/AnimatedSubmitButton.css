@@ -21,7 +21,7 @@
 
 .btn-primary.animated-submit-button[data-state="loading"]:disabled {
   background: var(--color-primary);
-  border-color: var(--color-primary);
+  border-color: var(--color-primary-border);
   color: var(--color-on-primary);
 }
 

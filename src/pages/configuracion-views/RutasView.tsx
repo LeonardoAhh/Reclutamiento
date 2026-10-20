@@ -592,52 +592,54 @@ export function RutasView() {
             {copy.title}
           </PageHeading>
 
-      <section
-        className="rutas-toolbar"
-        aria-label={copy.tools}
-      >
-        <div className="rutas-toolbar-flex">
-          <div className="rutas-search-container">
-            <SearchField
-              id="rutas-search-input"
-              ref={searchInputRef}
-              label={copy.searchEmployee}
-              placeholder={copy.search}
-              value={searchTerm}
-              onChange={(event) => setSearchTerm(event.target.value)}
-              onClear={handleClearSearch}
-              aria-describedby={
-                searchNorm ? "rutas-search-status" : undefined
-              }
-              aria-controls={
-                searchNorm && totalSearchMatches > 0
-                  ? "rutas-search-results"
-                  : undefined
-              }
-              autoComplete="off"
-            />
-            {searchNorm && (
-              <p
-                id="rutas-search-status"
-                className="config-search__hint text-muted mt-xs"
-                role="status"
-                aria-live="polite"
-              >
-                {filteredRutas.length === 0
-                  ? copy.noResults
-                  : `${totalSearchMatches} ${totalSearchMatches === 1 ? copy.employee : copy.employeesPlural} ${copy.of} ${searchMatchesByRoute.size} ${english ? searchMatchesByRoute.size === 1 ? 'route' : 'routes' : `ruta${searchMatchesByRoute.size === 1 ? '' : 's'}`}`
-                }
-              </p>
-            )}
-          </div>
-        </div>
-      </section>
+
 
       <div
         className="rutas-layout"
         data-mobile-view={searchNorm ? "detail" : mobileView}
         data-search-active={Boolean(searchNorm)}
       >
+        <section
+          className="rutas-toolbar"
+          aria-label={copy.tools}
+        >
+          <div className="rutas-toolbar-flex">
+            <div className="rutas-search-container">
+              <SearchField
+                id="rutas-search-input"
+                className="search-field--intrinsic"
+                ref={searchInputRef}
+                label={copy.searchEmployee}
+                placeholder={copy.search}
+                value={searchTerm}
+                onChange={(event) => setSearchTerm(event.target.value)}
+                onClear={handleClearSearch}
+                aria-describedby={
+                  searchNorm ? "rutas-search-status" : undefined
+                }
+                aria-controls={
+                  searchNorm && totalSearchMatches > 0
+                    ? "rutas-search-results"
+                    : undefined
+                }
+                autoComplete="off"
+              />
+              {searchNorm && (
+                <p
+                  id="rutas-search-status"
+                  className="config-search__hint text-muted mt-xs"
+                  role="status"
+                  aria-live="polite"
+                >
+                  {filteredRutas.length === 0
+                    ? copy.noResults
+                    : `${totalSearchMatches} ${totalSearchMatches === 1 ? copy.employee : copy.employeesPlural} ${copy.of} ${searchMatchesByRoute.size} ${english ? searchMatchesByRoute.size === 1 ? 'route' : 'routes' : `ruta${searchMatchesByRoute.size === 1 ? '' : 's'}`}`
+                  }
+                </p>
+              )}
+            </div>
+          </div>
+        </section>
         <section
           className="rutas-list-panel"
           aria-label={copy.routeList}

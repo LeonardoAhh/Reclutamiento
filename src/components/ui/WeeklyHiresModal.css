@@ -212,7 +212,7 @@
   font-family: var(--font-body);
   font-size: var(--type-body-strong-size);
   font-weight: var(--type-body-strong-weight);
-  color: var(--color-primary);
+  color: var(--color-primary-text);
   min-width: 32px;
   text-align: right;
   line-height: var(--type-body-strong-line);

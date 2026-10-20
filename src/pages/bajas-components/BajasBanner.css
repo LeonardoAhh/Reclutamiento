@@ -44,7 +44,7 @@
   padding: 0 var(--control-padding-x);
   background: var(--color-canvas-elevated);
   border: var(--border-width) solid var(--color-control-border);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-control);
   font-family: var(--font-body);
   font-size: var(--type-button-md-size);
   font-weight: var(--type-button-md-weight);

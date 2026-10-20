@@ -23,7 +23,7 @@ body[data-scroll-locked]:has(.custom-select-dropdown) {
   overflow: hidden;
   padding: var(--control-padding-y) var(--control-padding-x);
   border: var(--border-width) solid var(--color-control-border);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-field);
   background: var(--color-surface);
   color: var(--color-ink);
   font-family: var(--font-body);
@@ -120,7 +120,7 @@ body[data-scroll-locked]:has(.custom-select-dropdown) {
   );
   overflow: hidden;
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-menu);
   background: var(--color-surface);
   box-shadow: var(--shadow-elevated);
   transform-origin: var(--radix-select-content-transform-origin);
@@ -160,7 +160,7 @@ body[data-scroll-locked]:has(.custom-select-dropdown) {
   letter-spacing: var(--type-body-md-tracking);
   cursor: pointer;
   user-select: none;
-  border-radius: var(--rounded-sm);
+  border-radius: var(--radius-control);
 }
 
 .custom-select-option:focus-visible {

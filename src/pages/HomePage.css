@@ -88,7 +88,7 @@
   align-items: center;
   justify-content: center;
   border: 0;
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-control);
   background: transparent;
   color: var(--color-body);
   cursor: pointer;

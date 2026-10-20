@@ -24,6 +24,7 @@ import {
 import { CampaignImportModal } from "./CampaignImportModal";
 import { compareDataUpdateRecords, DATA_UPDATE_PAGE_SIZE, DATA_UPDATE_PHONE_COUNTRY_CODE } from "./constants";
 import { DataUpdateAdminPanel } from "./DataUpdateAdminPanel";
+import { DataUpdateWorkFilters } from "./DataUpdateWorkFilters";
 import { DataUpdateStatus } from "./DataUpdateStatus";
 import { DataUpdateLockerPanel } from "./DataUpdateLockerPanel";
 import { DataUpdateProgressPage } from "./DataUpdateProgressPage";
@@ -289,10 +290,14 @@ export function DataUpdatePage() {
     [recordPagination.pageItems],
   );
   const workGroupOptions = useMemo(
-    () => visibleWorkGroups.map((group) => ({
-      value: group.key,
-      label: `${group.isCompleted ? t("COMPLETADOS · ") : ""}${group.area === "Sin área" ? t("Sin área") : group.area}`.toLocaleUpperCase("es-MX"),
-    })),
+    () => visibleWorkGroups.map((group) => {
+      const area = (group.area === "Sin área" ? t("Sin área") : group.area).toLocaleLowerCase("es-MX");
+      const label = area.charAt(0).toLocaleUpperCase("es-MX") + area.slice(1);
+      return {
+        value: group.key,
+        label: group.isCompleted ? `${t("Completados")} · ${label}` : label,
+      };
+    }),
     [visibleWorkGroups, t],
   );
   const myCompletedCount = myRecords.filter(
@@ -456,6 +461,7 @@ export function DataUpdatePage() {
                 disabled={loading || busy}
               />
             </div>
+            {isAdmin && (
             <div className={`data-update-campaign-actions${isAdmin ? ' data-update-campaign-actions--admin' : ''}`}>
               {isAdmin && newCampaignButton}
               <button type="button" className="btn-secondary" onClick={() => void loadDetail()} disabled={!online || loading || busy} aria-label={t("Actualizar", "Refresh")}>
@@ -492,6 +498,7 @@ export function DataUpdatePage() {
                 </button>
               )}
             </div>
+            )}
           </section>
 
           {!isAdmin && !loading && detail && (
@@ -548,14 +555,24 @@ export function DataUpdatePage() {
 
             <Tabs.Content className="data-update-tabs__content" value="work">
               <section className="data-update-queue" aria-labelledby="data-update-queue-title">
-                <div className="data-update-section-heading">
-                  <div>
-                    <h2 id="data-update-queue-title">{t("Mi trabajo")}</h2>
-                    <p className="text-muted">{t("Los registros en proceso continúan desde el último paso guardado.")}</p>
-                  </div>
-                </div>
+                <h2 id="data-update-queue-title" className="sr-only">{t("Mi trabajo")}</h2>
                 {myRecords.length > 0 && (
-                  <div className="data-update-work-toolbar">
+                  <DataUpdateWorkFilters
+                    area={selectedWorkGroup}
+                    areaOptions={workGroupOptions}
+                    pending={showOnlyPendingWork}
+                    onAreaChange={goToWorkGroup}
+                    onPendingChange={(pending) => {
+                      setShowOnlyPendingWork(pending);
+                      setSelectedWorkGroup("");
+                      recordPagination.goToPage(1);
+                    }}
+                    onClear={() => {
+                      setShowOnlyPendingWork(false);
+                      setSelectedWorkGroup("");
+                      recordPagination.goToPage(1);
+                    }}
+                  >
                     <SearchField
                       id="data-update-record-search"
                       className="data-update-queue__search"
@@ -579,36 +596,7 @@ export function DataUpdatePage() {
                       aria-controls="data-update-record-list"
                       autoComplete="off"
                     />
-                    {visibleMyRecords.length > 0 && (
-                      <div className="form-group data-update-work-group-navigation">
-                        <label className="sr-only" htmlFor="data-update-work-group-navigation">
-                          {t("Filtrar por área")}
-                        </label>
-                        <CustomSelect
-                          id="data-update-work-group-navigation"
-                          value={selectedWorkGroup}
-                          options={workGroupOptions}
-                          placeholder={t("TODAS LAS ÁREAS")}
-                          showPlaceholderOption
-                          onChange={goToWorkGroup}
-                        />
-                      </div>
-                    )}
-                    <label className="toggle-switch data-update-pending-filter">
-                      <input
-                        type="checkbox"
-                        role="switch"
-                        checked={showOnlyPendingWork}
-                        onChange={(event) => {
-                          setShowOnlyPendingWork(event.target.checked);
-                          setSelectedWorkGroup("");
-                          recordPagination.goToPage(1);
-                        }}
-                      />
-                      <span className="toggle-switch__slider" aria-hidden="true" />
-                      <span className="toggle-switch__label">{t("Pendientes")}</span>
-                    </label>
-                  </div>
+                  </DataUpdateWorkFilters>
                 )}
                 {myRecords.length === 0 ? (
                   <p className="data-update-message">{t("No tienes registros asignados en esta campaña.")}</p>
@@ -692,8 +680,7 @@ export function DataUpdatePage() {
 
             <Tabs.Content className="data-update-tabs__content" value="completed">
               <section className="data-update-queue" aria-labelledby="data-update-completed-title">
-                <div className="data-update-section-heading">
-                  <h2 id="data-update-completed-title">{t("Completados")}</h2>
+                <h2 id="data-update-completed-title" className="sr-only">{t("Completados")}</h2>
                   {completedRecords.length > 0 && (
                     <SearchField
                       id="data-update-completed-search"
@@ -710,7 +697,6 @@ export function DataUpdatePage() {
                       autoComplete="off"
                     />
                   )}
-                </div>
                 {completedRecords.length === 0 ? (
                   <p className="data-update-message">{t("Aún no hay registros completados en esta campaña.")}</p>
                 ) : (

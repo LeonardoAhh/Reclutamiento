@@ -120,7 +120,7 @@
 
 .requisicion-doc__code {
   font-family: var(--font-code);
-  color: var(--color-primary);
+  color: var(--color-primary-text);
   font-weight: 600;
 }
 

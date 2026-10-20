@@ -185,7 +185,7 @@
   min-block-size: var(--touch-target-min);
   padding: 0;
   border: 0;
-  border-radius: var(--rounded-md);
+  border-radius: var(--rounded-full);
   color: var(--color-body);
   background: transparent;
   cursor: pointer;
@@ -349,7 +349,7 @@
   color: var(--color-ink);
   background: var(--color-canvas-elevated);
   border: var(--border-width) solid var(--color-control-border);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-field);
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 

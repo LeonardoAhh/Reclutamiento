@@ -38,7 +38,7 @@
   inset-block-end: max(var(--design-spacing-sm), var(--safe-area-bottom));
   inset-inline-end: max(var(--design-spacing-sm), var(--safe-area-right));
   border: var(--border-width) solid var(--workspace-border-color);
-  border-radius: var(--workspace-radius);
+  border-radius: var(--radius-dialog);
   box-shadow: var(--workspace-shadow);
   overflow: hidden;
 }

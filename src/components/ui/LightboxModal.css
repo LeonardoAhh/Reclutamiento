@@ -36,7 +36,7 @@
   inline-size: 100%;
   block-size: auto;
   max-block-size: var(--feature-image-viewer-max-block-size);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-media);
   object-fit: contain;
 }
 

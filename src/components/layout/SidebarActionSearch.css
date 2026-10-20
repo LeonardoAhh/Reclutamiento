@@ -24,7 +24,7 @@
   inline-size: calc(var(--touch-target-min) - var(--design-spacing-sm));
   block-size: calc(var(--touch-target-min) - var(--design-spacing-sm));
   border: 0;
-  border-radius: var(--rounded-md);
+  border-radius: var(--rounded-full);
   background: transparent;
 }
 
@@ -58,7 +58,7 @@
   min-block-size: var(--touch-target-min);
   padding: var(--design-spacing-xs) var(--design-spacing-sm);
   border: 0;
-  border-radius: var(--rounded-sm);
+  border-radius: var(--radius-control);
   background: transparent;
   color: var(--color-body);
   font-family: var(--font-body);
@@ -90,6 +90,7 @@
   .sidebar-action-search__trigger-surface {
     inline-size: auto;
     padding-inline: var(--design-spacing-sm);
+    border-radius: var(--radius-control);
   }
 
   .sidebar-action-search__trigger-label {

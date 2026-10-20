@@ -64,7 +64,7 @@
 }
 
 .candidate-access-card__spinner {
-  color: var(--color-primary);
+  color: var(--color-primary-text);
   animation: candidate-access-card-spin var(--duration-spinner) linear infinite;
 }
 

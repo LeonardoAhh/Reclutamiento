@@ -127,11 +127,7 @@ export function DataUpdateLockerPanel({ records, canEdit, onRecordUpdated }: Dat
 
   return (
     <section className="data-update-lockers" aria-labelledby="data-update-lockers-title">
-      <div className="data-update-section-heading">
-        <div>
-          <h2 id="data-update-lockers-title">{t("Locker")}</h2>
-          <p className="text-muted">{t("Consulta los lockers por área de la campaña.")}</p>
-        </div>
+      <h2 id="data-update-lockers-title" className="sr-only">{t("Locker")}</h2>
         {records.length > 0 && (
           <SearchField
             id="data-update-locker-search"
@@ -148,7 +144,6 @@ export function DataUpdateLockerPanel({ records, canEdit, onRecordUpdated }: Dat
             autoComplete="off"
           />
         )}
-      </div>
 
       {records.length === 0 ? (
         <p className="data-update-message">{t("No hay registros disponibles en esta campaña.")}</p>

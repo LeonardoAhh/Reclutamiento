@@ -52,7 +52,7 @@
 
 .ui-checkbox__input:checked ~ .ui-checkbox__indicator {
   background: var(--color-primary);
-  border-color: var(--color-primary);
+  border-color: var(--color-primary-border);
   color: var(--color-on-primary);
 }
 

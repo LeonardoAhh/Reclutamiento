@@ -1,16 +1,20 @@
 /* ========================================
    DESIGN TOKENS — Graphite UI
-   Off-white canvas · graphite action ink · neutral focus and accessible links.
+   Off-white canvas · blue primary actions · neutral focus and accessible links.
    Fuente: desing.md. Alias legados preservan compatibilidad.
    ======================================== */
 
 :root {
   /* ── Brand & Accent ───────────────────────────────────────────── */
-  --color-primary: #343b43;
-  --color-primary-active: #262c33;
+  --color-primary: #12469c;
+  --color-primary-border: var(--color-primary-text);
+  --color-primary-text: #11428f;
+  --color-primary-text-on-dark: #d0e5ff;
+  --color-primary-active: #11428f;
+  --color-primary-pressed: #0d387c;
   --color-primary-disabled: var(--color-hairline);
-  --color-link: #0066cc;
-  --color-link-deep: #004f9f;
+  --color-link: var(--color-primary-text);
+  --color-link-deep: #0d387c;
   --color-link-soft: #e6f0ff;
 
   --color-secondary: var(--color-primary);
@@ -54,16 +58,16 @@
   /* ── Text ───────────────────────────────────────────────────── */
   --color-ink: #2b3037;
   --color-body-strong: var(--color-ink);
-  --color-body: #48515e;
+  --color-body: #2b3037;
   --color-charcoal: var(--color-body);
   --color-mute: #586371;
   --color-faint: #606a77;
   --color-muted: var(--color-mute);
   --color-muted-soft: var(--color-faint);
-  --color-on-primary: #f7f8fa;
-  --color-on-neutral: var(--color-on-primary);
-  --color-on-error: var(--color-on-primary);
-  --color-on-success: var(--color-on-primary);
+  --color-on-primary: #e6edf3;
+  --color-on-neutral: #f7f8fa;
+  --color-on-error: #f7f8fa;
+  --color-on-success: #f7f8fa;
   --color-on-warning: var(--color-ink);
   --color-on-dark-hover: var(--color-hairline);
   --color-shadow-rgb: 27 29 32;
@@ -71,9 +75,9 @@
   /* Iluminación neutral de la escena decorativa (leído por WebGL: debe ser color literal). */
   --color-shimmer-overlay: color-mix(in srgb, var(--color-scene-light) 30%, transparent);
   /* Brillo decorativo de progreso. */
-  --color-on-dark: #e2e5e9;
+  --color-on-dark: #e6edf3;
   --color-on-dark-soft: #a0a7b1;
-  --color-focus-on-inverted: var(--color-on-dark);
+  --color-focus-on-inverted: #f7f8fa;
   --color-navigation-rail: var(--color-canvas-soft);
   --color-navigation-rail-elevated: var(--color-hairline);
   --color-navigation-rail-text: var(--color-muted);
@@ -130,8 +134,8 @@
   --color-accent-amber-rgb: var(--color-warning-rgb);
 
   /* ── Channel values ─────────────────────────────────────────── */
-  --color-primary-rgb: 52 59 67;
-  --color-link-rgb: 0 102 204;
+  --color-primary-rgb: 18 70 156;
+  --color-link-rgb: 17 66 143;
   --color-success-rgb: 16 185 129;
   --color-warning-rgb: 245 158 11;
   --color-error-rgb: 239 68 68;
@@ -139,8 +143,7 @@
   --color-canvas-rgb: 241 242 244;
 
   /* ── Derived overlays ───────────────────────────────────────── */
-  /* desing.md: el azul queda reservado a enlaces; el foco y sus tintes son neutros.
-     Los derivados se recalculan solos en dark porque sus canales cambian en el mismo :root. */
+  /* Blue brand channels serve fills; accessible foregrounds and borders use dedicated tokens. */
   --color-focus-ring: rgb(var(--color-primary-rgb) / 0.2);
   --color-modal-scrim: rgb(var(--color-shadow-rgb) / 0.32);
   --color-vacancy-tint: rgb(var(--color-error-rgb) / 0.05);
@@ -365,16 +368,24 @@
   --design-spacing-4xl: 6rem;
   --design-spacing-section: 8rem;
 
-  /* ── Border radius — accents 4 · controls 8 · cards 12 · marquee 16 ── */
+  /* Border radius: compact controls, cards and overlays. */
   --rounded-none: 0;
   --rounded-xs: 4px;
-  --rounded-sm: 6px;
-  --rounded-md: 8px;
-  --rounded-lg: 12px;
-  --rounded-xl: 16px;
-  --rounded-pill-category: 64px;
-  --rounded-pill: 100px;
+  --rounded-sm: 10px;
+  --rounded-md: 12px;
+  --rounded-lg: 16px;
+  --rounded-xl: 20px;
+  --rounded-pill-category: var(--radius-control);
+  --rounded-pill: var(--radius-control);
   --rounded-full: 9999px;
+  --rounded-squircle: var(--radius-brand);
+  --radius-control: var(--rounded-sm);
+  --radius-field: var(--rounded-sm);
+  --radius-card: var(--rounded-lg);
+  --radius-media: var(--rounded-lg);
+  --radius-brand: var(--rounded-md);
+  --radius-dialog: var(--rounded-xl);
+  --radius-menu: var(--rounded-md);
 
   /* ── Shadows — hairline first, restrained elevation ───────────── */
   --shadow-focus: 0 0 0 var(--focus-ring-width) var(--color-focus);
@@ -579,7 +590,7 @@
   --color-primary-faint: var(--color-primary-tint);
   --color-error-soft: var(--color-error-tint);
   --color-border: var(--color-hairline);
-  --color-focus: color-mix(in srgb, var(--color-muted) 75%, transparent);
+  --color-focus: var(--color-ink);
   --color-surface-contrast: var(--color-ink);
   --color-surface-sunken: var(--color-surface-soft);
   --color-surface-cream-strong: var(--color-surface-soft);
@@ -629,16 +640,18 @@
 /* Grafito suave: variantes semánticas; los tokens de documento conservan su salida clara. */
 :root[data-color-scheme="dark"] {
   color-scheme: dark;
-  --color-primary: #cbd1d8;
-  --color-primary-active: #bbc3cc;
-  --color-primary-rgb: 203 209 216;
+  --color-primary: #12469c;
+  --color-primary-border: var(--color-primary-text);
+  --color-primary-text: var(--color-primary-text-on-dark);
+  --color-primary-active: #11428f;
+  --color-primary-rgb: 18 70 156;
   --color-secondary: var(--color-primary);
   --color-secondary-rgb: var(--color-primary-rgb);
-  --color-on-primary: #202328;
-  --color-link: var(--color-primary);
-  --color-link-deep: var(--color-primary-active);
+  --color-on-primary: #e6edf3;
+  --color-link: var(--color-primary-text);
+  --color-link-deep: #e6edf3;
   --color-link-soft: var(--color-surface-soft);
-  --color-link-rgb: var(--color-primary-rgb);
+  --color-link-rgb: 208 229 255;
 
   --color-canvas: #1b1d20;
   --color-canvas-rgb: 27 29 32;
@@ -651,22 +664,22 @@
   --color-surface-dark-elevated: #414851;
   --color-surface-contrast: var(--color-surface-dark);
 
-  --color-ink: #e2e5e9;
-  --color-ink-rgb: 226 229 233;
+  --color-ink: #e6edf3;
+  --color-ink-rgb: 230 237 243;
   --color-body-strong: var(--color-ink);
-  --color-body: #c7ccd3;
+  --color-body: #e6edf3;
   --color-charcoal: var(--color-body);
   --color-mute: #a0a7b1;
   --color-faint: #969eaa;
   --color-on-dark: var(--color-ink);
   --color-on-dark-soft: var(--color-mute);
-  --color-on-dark-hover: var(--color-primary-active);
-  --color-on-neutral: var(--color-on-primary);
-  --color-on-error: var(--color-on-primary);
-  --color-on-success: var(--color-on-primary);
-  --color-on-warning: var(--color-on-primary);
-  --color-focus: var(--color-primary);
-  --color-focus-on-inverted: var(--color-primary);
+  --color-on-dark-hover: var(--color-primary-text);
+  --color-on-neutral: #202328;
+  --color-on-error: #202328;
+  --color-on-success: #202328;
+  --color-on-warning: #202328;
+  --color-focus: var(--color-focus-on-inverted);
+  --color-focus-on-inverted: #f7f8fa;
 
   --color-hairline: #414851;
   --color-hairline-soft: #343b43;
@@ -1201,7 +1214,7 @@ code:not(pre code) {
 }
 
 .text-primary {
-  color: var(--color-primary);
+  color: var(--color-primary-text);
 }
 
 .text-success {
@@ -1260,7 +1273,7 @@ code:not(pre code) {
 .form-group textarea {
   width: 100%;
   border: var(--border-width) solid var(--color-control-border);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-field);
   font-family: var(--font-body);
   font-size: max(var(--type-body-md-size), var(--editable-text-min-size, var(--type-body-md-size)));
   color: var(--color-ink);
@@ -1386,7 +1399,7 @@ code:not(pre code) {
 
 /* ========================================
    BUTTONS — sistema de controles
-   Los botones de aplicación usan radio de 8px y altura táctil de 44px.
+   Los botones usan radio de 10px y altura táctil de 44px.
    Primaria grafito; secundaria plana con hairline.
    ======================================== */
 
@@ -1408,7 +1421,7 @@ code:not(pre code) {
   line-height: var(--type-button-line);
   letter-spacing: var(--type-button-tracking);
   border: var(--border-width) solid transparent;
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-control);
   cursor: pointer;
   white-space: normal;
   overflow-wrap: anywhere;
@@ -1434,16 +1447,16 @@ code:not(pre code) {
 .btn-primary {
   background: var(--color-primary);
   color: var(--color-on-primary);
-  border-color: var(--color-primary);
+  border-color: var(--color-primary-border);
 }
 
 .btn-primary:hover:not(:disabled) {
   background: var(--color-primary-active);
-  border-color: var(--color-primary-active);
+  border-color: var(--color-primary-border);
 }
 
 .btn-primary:active:not(:disabled) {
-  background: var(--color-primary-active);
+  background: var(--color-primary-pressed);
   transform: scale(var(--scale-pressed));
 }
 
@@ -1532,7 +1545,7 @@ code:not(pre code) {
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
   padding: var(--design-spacing-xxs);
-  border-radius: var(--rounded-sm);
+  border-radius: var(--radius-control);
   cursor: pointer;
   transition: color var(--transition-fast);
   text-decoration: underline;
@@ -1578,7 +1591,7 @@ code:not(pre code) {
   min-block-size: var(--touch-target-min);
   padding: 0;
   border: 0;
-  border-radius: var(--rounded-md);
+  border-radius: var(--rounded-full);
   background: transparent;
   color: var(--color-ink);
   cursor: pointer;
@@ -1632,7 +1645,7 @@ code:not(pre code) {
 .card {
   background: var(--color-surface-card);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
   padding: var(--design-spacing-lg);
 }
 
@@ -1647,6 +1660,10 @@ code:not(pre code) {
   border-color: transparent;
   color: var(--color-on-dark);
   --color-focus: var(--color-focus-on-inverted);
+  --color-primary-text: var(--color-primary-text-on-dark);
+  --color-primary-border: var(--color-primary-text-on-dark);
+  --color-link: var(--color-primary-text-on-dark);
+  --color-link-deep: var(--color-primary-text-on-dark);
 }
 
 .card--dark h1,
@@ -1685,7 +1702,7 @@ code:not(pre code) {
   line-height: var(--type-body-md-line);
   letter-spacing: var(--type-body-md-tracking);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg) var(--rounded-lg) 0 0;
+  border-radius: var(--radius-dialog) var(--radius-dialog) 0 0;
   width: 100%;
   min-width: 0;
   max-width: var(--modal-inline-size-md);
@@ -1749,7 +1766,7 @@ code:not(pre code) {
   .modal-content {
     --modal-content-padding: var(--design-spacing-lg);
     max-height: var(--modal-max-block-size);
-    border-radius: var(--rounded-lg);
+    border-radius: var(--radius-dialog);
     animation: slideUpModal var(--transition-slow) forwards;
   }
 
@@ -1781,7 +1798,7 @@ code:not(pre code) {
 
 .modal-overlay--bottom>.modal-content,
 .modal-overlay--center>.modal-content {
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-dialog);
   max-height: var(--modal-max-block-size);
 }
 
@@ -2116,7 +2133,7 @@ label>input.sr-only:focus-visible,
 }
 
 .color-primary {
-  color: var(--color-primary);
+  color: var(--color-primary-text);
 }
 
 /* --- TOGGLE SWITCH --- */

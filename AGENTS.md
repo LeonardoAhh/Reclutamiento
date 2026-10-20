@@ -253,7 +253,7 @@ Las excepciones no autorizan magic numbers repetidos.
 
 Los valores exactos de cada token (claro y oscuro) viven únicamente en `desing.md` y `src/styles/global.css`. Este apartado fija las reglas de uso.
 
-- `{colors.primary}` (grafito) es el único color estructural de acción: CTA principal, navegación seleccionada y logo.
+- `{colors.primary}` (azul #12469C) es el único color estructural de acción: CTA principal, navegación seleccionada y logo.
 - `{colors.link}` (azul accesible) se reserva exclusivamente para enlaces. No rellena filas de navegación ni botones.
 - El foco visible usa `{colors.focus}`: outline neutro de 2px, sin offset. Las superficies invertidas y `forced-colors` conservan sus colores de foco dedicados.
 - `{colors.canvas}` es el suelo continuo de página y workspace.
@@ -265,7 +265,7 @@ Los valores exactos de cada token (claro y oscuro) viven únicamente en `desing.
 - Estados semánticos: el color base (`success`, `warning`, `error`) es para indicadores e iconos; el texto usa `success-text`, `warning-text` y `error-text`/`error-deep`.
 - Los colores violeta, cian, rosa, magenta, gradientes y acentos de series son exclusivamente decorativos o de compatibilidad localizada.
 - Los colores decorativos no pueden estructurar navegación, formularios, tabs, filtros o botones.
-- No se debe introducir un segundo color estructural.
+- No se debe introducir un segundo color estructural. El azul de fondo usa `--color-primary`; el texto azul sobre superficies usa `--color-primary-text`; las etiquetas sobre el primario usan `--color-on-primary` (#E6EDF3). La pareja aprobada de fondo y texto supera 7:1; conservar este contraste al ajustar estados.
 - Los tokens de documento (`document-*`) son independientes del tema y solo aplican a salidas imprimibles o exportadas.
 - El color nunca debe ser la única forma de comunicar estado.
 - Los estados semánticos deben ser puntuales, comprensibles y accesibles.
@@ -300,14 +300,16 @@ Antes de utilizar texto muted o faint, se DEBE comprobar su contraste sobre la s
 - La escala `--spacing-*` es legado: conserva valores en px porque el generador del pase en canvas la lee como número; `--spacing-xxs` y `--spacing-2xl` son alias obsoletos.
 - Las distancias equivalentes deben utilizar el mismo token.
 - Los componentes hermanos deben compartir ritmo y dimensiones.
-- Radios según `desing.md`:
-  - Botones, inputs, tabs y controles utilitarios: `{rounded.md}` (8px).
-  - Cards de contenido, menús y diálogos: `{rounded.lg}` (12px).
-  - Contenedores marquee o de vista previa: `{rounded.xl}` (16px).
-  - Menu items y controles compactos en línea: `{rounded.sm}` (6px).
-  - Marcas de checkbox y acentos compactos: `{rounded.xs}` (4px).
-  - Avatares y botones solo-icono: `{rounded.full}`.
-- Las pills se reservan para badges o navegación agrupada. Los botones e inputs ordinarios nunca deben ser pill.
+- Radios según la geometría compacta aprobada en `desing.md`:
+  - Botones, tabs y navegación: 10px mediante `--radius-control`.
+  - Inputs, selects, textareas y buscadores: 10px mediante `--radius-field`.
+  - Cards y medios: 16px mediante `--radius-card` y `--radius-media`.
+  - Menús y popovers: 12px mediante `--radius-menu`.
+  - Modales y paneles flotantes: 20px mediante `--radius-dialog`.
+  - Marca de aplicación: 12px mediante `--radius-brand`, sin porcentajes.
+  - Indicadores de checkbox: 4px.
+  - Badges de estado, avatares y botones solo-icono: `{rounded.full}`.
+- Los controles ordinarios son rectangulares con esquinas suaves. Las píldoras se reservan para etiquetas de estado; los campos conservan su radio propio y no se convierten en píldoras.
 - Todo control interactivo tiene un mínimo explícito de 44px (`--touch-target-min`); la altura nunca se infiere solo del line-height.
 - Las cards deben utilizar hairline y la elevación definida: Level 0 plano, Level 1 `{shadows.xs}`, Level 2 `{shadows.sm}` solo para menús, modales y popovers.
 - Está prohibido introducir sombras pesadas, glows o gradientes en el chrome de la aplicación.

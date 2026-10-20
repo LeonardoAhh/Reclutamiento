@@ -5,7 +5,7 @@
   min-height: var(--icon-size-lg);
   padding-inline: var(--design-spacing-xs);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-sm);
+  border-radius: var(--rounded-full);
   background: var(--color-surface);
   color: var(--color-ink);
   white-space: nowrap;

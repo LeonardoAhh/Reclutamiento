@@ -250,7 +250,7 @@
 
 .kpi-hero-nav-btn:not(:disabled):hover {
   background: var(--color-surface-soft);
-  color: var(--color-primary);
+  color: var(--color-primary-text);
 }
 
 .kpi-hero-nav-btn:disabled {

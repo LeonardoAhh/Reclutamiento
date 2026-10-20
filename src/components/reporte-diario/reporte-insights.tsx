@@ -56,7 +56,7 @@ const STYLES = {
     },
     triggerIconNormal: {
         background: "var(--color-primary-tint)",
-        color: "var(--color-primary)",
+        color: "var(--color-primary-text)",
     },
     triggerText: {
         fontSize: "var(--type-body-sm-size)",
@@ -289,7 +289,7 @@ export default function ReporteInsights({
                 onClose={() => setIsOpen(false)}
                 title={
                     <div className="reporte-flex-center">
-                        <Sparkles size={20} style={{ color: "var(--color-primary)" }} />
+                        <Sparkles size={20} style={{ color: "var(--color-primary-text)" }} />
                         Asistente Operativo
                     </div>
                 }

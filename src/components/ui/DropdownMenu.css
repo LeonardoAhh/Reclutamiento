@@ -5,7 +5,7 @@
   align-items: center;
   justify-content: center;
   border: var(--border-width) solid transparent;
-  border-radius: var(--rounded-md);
+  border-radius: var(--rounded-full);
   background: transparent;
   color: var(--color-body);
   cursor: pointer;
@@ -45,7 +45,7 @@
   gap: var(--design-spacing-xxs);
   padding: var(--spacing-xs);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-menu);
   background: var(--color-surface);
   box-shadow: var(--shadow-elevated);
   transform-origin: var(--radix-dropdown-menu-content-transform-origin);
@@ -95,7 +95,7 @@
   justify-content: flex-start;
   gap: var(--spacing-sm);
   padding-inline: var(--spacing-sm);
-  border-radius: var(--rounded-sm);
+  border-radius: var(--radius-control);
   color: var(--color-body);
   text-align: start;
   cursor: pointer;

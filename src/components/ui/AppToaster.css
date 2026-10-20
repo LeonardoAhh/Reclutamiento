@@ -65,7 +65,7 @@
   flex: 0 0 calc(var(--touch-target-min) - var(--design-spacing-xs));
   inline-size: calc(var(--touch-target-min) - var(--design-spacing-xs));
   block-size: calc(var(--touch-target-min) - var(--design-spacing-xs));
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-brand);
   background: var(--color-primary);
   color: var(--color-on-primary);
 }
@@ -190,7 +190,7 @@
   line-height: var(--type-body-md-line);
   letter-spacing: var(--type-body-md-tracking);
   border: var(--border-width) solid var(--color-control-border);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-control);
   overflow-wrap: anywhere;
   cursor: pointer;
   transition:
@@ -202,12 +202,12 @@
 .app-toaster__action--primary {
   background: var(--color-primary);
   color: var(--color-on-primary);
-  border-color: var(--color-primary);
+  border-color: var(--color-primary-border);
 }
 
 .app-toaster__action--primary:hover {
   background: var(--color-primary-active);
-  border-color: var(--color-primary-active);
+  border-color: var(--color-primary-border);
 }
 
 .app-toaster__action--secondary {

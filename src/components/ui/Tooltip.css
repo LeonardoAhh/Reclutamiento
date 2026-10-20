@@ -9,7 +9,7 @@
   color: var(--color-on-dark);
   padding: var(--design-spacing-xs) var(--design-spacing-sm);
   border: var(--border-width) solid var(--color-surface-dark-elevated);
-  border-radius: var(--rounded-sm);
+  border-radius: var(--radius-menu);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   line-height: var(--type-body-md-line);

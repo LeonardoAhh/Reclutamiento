@@ -5,7 +5,7 @@
   align-items: center;
   gap: var(--design-spacing-xxs);
   padding: var(--design-spacing-xxs) var(--design-spacing-sm);
-  border-radius: var(--rounded-sm);
+  border-radius: var(--rounded-full);
   font-family: var(--font-body);
   font-size: var(--type-caption-up-size);
   font-weight: var(--type-caption-up-weight);
@@ -65,7 +65,7 @@
   min-height: var(--icon-size-lg);
   padding: var(--design-spacing-xxs) var(--design-spacing-xs);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-sm);
+  border-radius: var(--rounded-full);
   background: var(--color-canvas-elevated);
   color: var(--color-ink);
   font-family: var(--font-body);
@@ -90,7 +90,7 @@
   align-items: center;
   height: var(--icon-size-lg);
   padding-inline: var(--design-spacing-xs);
-  border-radius: var(--rounded-sm);
+  border-radius: var(--rounded-full);
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-label-sm-weight);
   line-height: var(--type-body-sm-line);
@@ -108,7 +108,7 @@
 }
 
 .project-badge--vinoplastic {
-  color: var(--color-primary);
+  color: var(--color-primary-text);
 }
 
 .project-badge__icon {
@@ -124,7 +124,7 @@
   min-height: var(--design-spacing-lg);
   padding-inline: var(--design-spacing-xs);
   background: var(--color-surface-soft);
-  border-radius: var(--rounded-sm);
+  border-radius: var(--rounded-full);
   font-size: var(--type-caption-sm-size);
   line-height: var(--type-caption-sm-line);
   color: var(--color-ink);
@@ -152,7 +152,7 @@
   min-height: var(--icon-size-lg);
   padding-inline: var(--design-spacing-xs);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-sm);
+  border-radius: var(--rounded-full);
   background: var(--color-surface);
   color: var(--color-ink);
   font-family: var(--font-body);
@@ -177,7 +177,7 @@
   width: var(--icon-size-lg);
   height: var(--icon-size-lg);
   justify-content: center;
-  border-radius: var(--rounded-sm);
+  border-radius: var(--rounded-full);
 }
 
 .reclutador-badge--icon-only.reclutador-badge--sm {
@@ -230,7 +230,7 @@
   align-items: center;
   gap: var(--design-spacing-xxs);
   padding: var(--design-spacing-xxs) var(--design-spacing-xs);
-  border-radius: var(--rounded-sm);
+  border-radius: var(--rounded-full);
   font-family: var(--font-body);
   font-size: var(--type-caption-up-size);
   font-weight: var(--font-semibold);
@@ -270,7 +270,7 @@
 }
 
 .status-badge--proximo-ingreso .status-badge__icon {
-  color: var(--color-primary);
+  color: var(--color-primary-text);
 }
 
 /* ── AreaStatusBadge dots ── */

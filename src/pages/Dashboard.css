@@ -335,7 +335,7 @@
   border: 0;
   border-radius: var(--rounded-full);
   background: var(--color-hairline);
-  color: var(--color-primary);
+  color: var(--color-primary-text);
 }
 
 .dept-card__coverage-bar::-webkit-progress-bar {
@@ -645,19 +645,15 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
   min-inline-size: 0;
   gap: var(--design-spacing-xs);
 }
 
 .dashboard-sidebar__starlite-filter {
-  display: inline-flex;
-  align-items: center;
-  align-self: flex-start;
-  min-block-size: var(--touch-target-min);
-  gap: var(--design-spacing-xs);
-  padding-inline: var(--design-spacing-xs);
-  border-radius: var(--rounded-md);
-  cursor: pointer;
+  inline-size: fit-content;
+  min-inline-size: 0;
+  flex: 0 1 auto;
 }
 
 .dashboard__hero-actions > * {

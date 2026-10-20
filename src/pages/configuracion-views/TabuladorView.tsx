@@ -145,6 +145,7 @@ export function TabuladorView() {
           <div className="tabulador-search-header">
             <SearchField
               id="tabulador-search-input"
+              className="search-field--intrinsic"
               ref={searchInputRef}
               label={copy.searchLabel}
               placeholder={copy.searchPlaceholder}

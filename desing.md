@@ -1,71 +1,73 @@
-# Design System — Crema editorial y carbón cálido
+# Design System - Grafito claro y oscuro / Azul de marca
 
 This visual system applies to product interfaces throughout the repository.
 
 ## Overview
 
-The light theme follows the supplied editorial reference: a warm cream canvas (`{colors.canvas}` — #faf9f5), warm ink (`{colors.ink}` — #141413), and layered cream surfaces. Primary actions use an AA-safe deep coral; links use a separate, darker coral token. Structure comes from whitespace, surface changes, and thin borders.
+The light theme uses the existing light graphite canvas and layered neutral surfaces. Primary fills are #12469C in both themes, with light labels and dedicated accessible foreground and border tokens. Structure comes from whitespace, surface changes and thin borders.
 
-Typography does the heavy lifting. **Inter** is the only interface family for headings, body, controls, technical labels and code in both themes. Existing type sizes, weights, line heights and tracking remain unchanged. App buttons and inputs use `{rounded.md}` (8px); cards use `{rounded.lg}` (12px); avatars and icon-only controls may use `{rounded.full}`.
+Typography does the heavy lifting. **Inter** is the only interface family for headings, body, controls, technical labels and code in both themes. Existing type sizes, weights, line heights and tracking remain unchanged. App buttons, tabs, inputs and navigation controls use 10px corners; cards use 16px; menus and popovers use 12px; modals and floating panels use 20px. Status badges remain pills; avatars and icon-only buttons remain circular. Application brand marks use a fixed 12px radius.
 
-The light and dark themes share the same hierarchy. The workspace and page floor use `{colors.canvas}`. `{colors.canvas-soft}` groups quiet regions; `{colors.surface-card}` (#efe9de in light mode) holds feature content; `{colors.canvas-elevated}` is used for inputs, menus, dialogs, and product-detail surfaces. Light mode uses cream; dark mode uses a warm charcoal hierarchy. Existing document and export colors remain independent.
+Both themes share the same hierarchy: canvas for the workspace floor, canvas-soft for quiet grouping, surface-card for content, and canvas-elevated for fields and overlays. The graphite surfaces, text roles and independent document/export palette are preserved.
 
 **Key Characteristics:**
-- Warm cream canvas with deep coral primary actions, accessible coral links, and a visible neutral focus ring.
-- Quiet cream grouping regions and deeper cream cards; controls and overlays use the canvas tone.
+- Graphite surfaces with a shared #12469C primary, accessible blue text variants and an opaque neutral focus ring.
+- Neutral grouping regions and layered cards; controls and overlays retain their existing surfaces.
 - Inter unifies display headings, UI and body in both themes.
-- Buttons and inputs use an 8px radius, content cards 12px, marquee panels 16px, avatars and icon buttons full circles.
+- Compact 10px controls, 16px cards, 12px menus and 20px dialogs. Pills are reserved for status badges; avatars and icon-only buttons remain circular.
 - Default depth is flat or a 1px hairline. Floating menus and dialogs use only a subtle shadow.
 - Controls keep the application's 44px minimum touch target.
 
-## Colors — Light Editorial Cream
-
-> The light palette adapts the supplied Claude.com reference through shared tokens. The reference coral #cc785c with white text does not meet AA for ordinary button text, so actions use its accessible deeper tone #a9583e. The existing type sizes, radii, shallow elevation and touch targets remain.
+## Colors - Graphite and Blue
 
 ### Brand & Accent
-- **Accessible coral** (`{colors.primary}` — #a9583e in light mode): primary CTA fill, logo and selected navigation, paired with `{colors.on-primary}` (#ffffff). Dark mode uses #cc785c with dark text to preserve contrast for both filled controls and coral-colored text.
-- **Coral links** (`{colors.link}` — #9e5038): functional links with AA contrast on cream surfaces. The pressed tone is `{colors.link-deep}` (#8c442e), with a cream wash `{colors.link-soft}` (#f5f0e8).
-- **Focus** (`{colors.focus}` / `{colors.mute}`): a 2px neutral outline with no offset. Inverted surfaces and forced-colors mode retain their dedicated focus colors.
-- Interaction backgrounds across navigation and floating menus use the existing soft-surface tokens in both themes; selected navigation retains primary/on-primary. CustomSelect highlights use the same soft-surface alias, and disabled or invalid triggers keep their own state colors during hover. Section-summary card hover uses the shared Level-1 shadow. Public-careers controls use the shared focus width, color and zero-offset tokens. Decorative motion and existing content-concealment effects are separate from hover colors and keyboard focus.
-- Existing violet, cyan, pink, and magenta tokens remain localized compatibility tokens.
+- Primary fill: `--color-primary` = #12469C in light and dark; channels = 18 70 156.
+- Hover fill: `--color-primary-active` = #11428F. Pressed fill: `--color-primary-pressed` = #0D387C.
+- Text on solid primary: `--color-on-primary` = #E6EDF3 in both themes. Its contrast is 7.46:1 normally, 8.08:1 on hover and 9.48:1 when pressed.
+- Standalone primary text and functional links: `--color-primary-text` / `--color-link` = #11428F in light and #D0E5FF in dark. Do not use the fill token as normal-size text on neutral surfaces.
+- Primary boundaries: `--color-primary-border` follows the accessible text variant. This keeps thin outlines distinguishable on stronger graphite surfaces where the fill alone falls below 3:1.
+- Link hover: #0D387C in light and #E6EDF3 in dark. Keep the existing underline/interaction treatment.
+- Focus: opaque neutral ink, 2px, zero offset; inverted surfaces and forced-colors retain their dedicated focus treatment. Translucent decorative rings do not replace this outline.
+- Semantic status fills/labels and document/export tokens remain independent from the primary foreground.
 
-### Surface
-- **Canvas** (`{colors.canvas}` — #faf9f5): continuous page and workspace floor.
-- **Canvas Soft** (`{colors.canvas-soft}` — #f5f0e8): quiet bands and subtle grouping.
-- **Card** (`{colors.surface-card}` — #efe9de): feature cards and secondary content panels, separated by a hairline.
-- **Elevated** (`{colors.canvas-elevated}` — canvas tone in light mode): inputs, menus, dialogs, and detail surfaces.
-- **Strong** (`{colors.surface-strong}` — derived from canvas and ink): disabled control fill and stronger neutral separation.
-- **Dark** (`{colors.surface-dark}` — #181715): scarce inverted surfaces such as tooltips and toasts.
-- Official document paper and ink retain their independent print/export tokens.
+### Neutral Surfaces and Text
 
-### Text
-- **Ink** (`{colors.ink}` — #141413): primary headings and high-emphasis text.
-- **Body** (`{colors.body}` — #3d3d3a): standard paragraph and navigation text.
-- **Mute** (`{colors.mute}` — #625f59): secondary copy, labels, and metadata.
-- **Faint** (`{colors.faint}` — #696760): lowest functional text tier, including placeholders, darkened from the reference's muted-soft to remain readable on cards. Disabled controls may use opacity only when their state is also programmatically exposed.
+| Role | Light | Dark |
+|---|---|---|
+| Canvas | #F1F2F4 | #1B1D20 |
+| Quiet region | #E9ECF0 | #202328 |
+| Content card | #F7F8FA | #23262A |
+| Elevated field/overlay | #FAFBFC | #2B2F34 |
+| Strong surface | #DDE1E6 | #343B43 |
+| Headings | #2B3037 | #E6EDF3 |
+| Body | #2B3037 | #E6EDF3 |
+| Secondary text | #586371 | #A0A7B1 |
+| Placeholder | #606A77 | #969EAA |
+| Required control border | #727C8A | #858E9B |
 
-### Borders
-- **Hairline** (`{colors.hairline}` — #e6dfd8): 1px border on cards and dividers.
-- **Hairline Soft** (`{colors.hairline-soft}` — #ebe6df): subtle division between light regions.
-- **Hairline Strong** (`{colors.hairline-strong}` — derived from canvas and ink): emphasized neutral separation.
-- **Control Border** (`{colors.control-border}` — derived from ink and canvas): inputs, selects, secondary buttons, checkboxes, and icon buttons.
+Hairlines are decorative separators; required boundaries use the control-border or primary-border tokens. Status meaning retains its labels/icons as well as color. Official paper, ink and document headers keep their existing independent tokens.
 
-### Semantic
-- **Error** uses `{colors.error}` (#ef4444) for indicators and `{colors.error-deep}` (#b91c1c) for text and pressed controls.
-- **Warning** uses `{colors.warning}` (#f59e0b) for indicators and `{colors.warning-text}` (#92400e) for text.
-- **Success** uses `{colors.success}` (#10b981) for indicators and `{colors.success-text}` (#047857) for text.
-- Status must never rely on color alone.
+### Verified Primary Contrast
 
-### Light Contrast
-The minimum calculated text contrast on the three cream surfaces is above 4.5:1 for ink, body, mute, faint and functional links. White text on the deep coral primary is 5.06:1. Decorative hairlines are separate from the stronger functional control-border token. These token pairs do not cover inherited text, opacity, images or every rendered state.
+| Pair | Ratio | Criterion |
+|---|---|---|
+| #E6EDF3 label on #12469C | 7.46:1 | Enhanced text contrast, both themes |
+| #E6EDF3 label on #11428F | 8.08:1 | Hover text |
+| #E6EDF3 label on #0D387C | 9.48:1 | Pressed text |
+| #2B3037 body on #F1F2F4 | 11.86:1 | Light body |
+| #E6EDF3 body on #1B1D20 | 14.30:1 | Dark body |
+| Light standalone primary text / strongest light surface | 7.27:1 | Enhanced text contrast |
+| Dark standalone primary text / raised surface #414851 | 7.19:1 | Enhanced text contrast |
+
+These opaque primary/body pairs exceed 7:1. This is not a blanket AAA certification for the site, legacy status colors, secondary text, charts or transparency. Disabled controls retain their existing programmatic state and opacity treatment. Neutral surfaces, spacing and reference radii stay unchanged.
 
 ### Decorative Compatibility
-Legacy gradient tokens remain available for existing illustrations. Light application UI uses cream neutrals, deep coral actions and links, and the semantic tokens above.
+Legacy gradient tokens remain available for existing illustrations. Application UI uses graphite neutrals, blue actions and accessible blue text variants.
 
 
-## Dark Theme — Warm Charcoal
+## Dark Theme - Graphite
 
-The optional dark theme extends the same semantic tokens; it uses Inter throughout and does not change layout, radii, data, actions or permissions. Light mode uses editorial cream; dark mode follows the reference's near-black and gray surface sequence, with warm off-white text and a brighter coral primary. Comfort depends on the display, ambient lighting and the reader; contrast compliance is not a guarantee against fatigue.
+The optional dark theme extends the same semantic tokens using the existing graphite surface hierarchy. It shares the exact #12469C primary fill and light on-primary label with light mode, while its standalone blue text uses the brighter accessible variant. Theme selection does not change layout, radii, data or permissions.
 
 ### Appearance Preference
 
@@ -79,27 +81,20 @@ The optional dark theme extends the same semantic tokens; it uses Inter througho
 
 | Role | CSS token | Dark value |
 |---|---|---|
-| Page floor | `--color-canvas` | #181715 |
-| Quiet/navigation region | `--color-canvas-soft` | #1f1e1b |
-| Content cards | `--color-surface-card` | #252320 |
-| Controls and floating surfaces | `--color-canvas-elevated` | Derived from card and ink |
-| Headings | `--color-ink` | #faf9f5 |
-| Reading text | `--color-body` | Derived from ink and canvas |
-| Secondary text | `--color-mute` | Derived from ink and canvas |
-| Placeholders | `--color-faint` | Derived from ink and canvas |
-| Primary action and selection | `--color-primary` | #cc785c |
-| Text on primary fill | `--color-on-primary` | #181715 |
-| Links / focus | `--color-link` / `--color-focus` | #cbd1d8 / derived from mute |
-| Functional control border | `--color-control-border` | Derived from card and ink |
-| Success indicator/text | `--color-success` | #83c9a3 |
-| Warning indicator/text | `--color-warning` | #e2b76f |
-| Error indicator/text | `--color-error` | #f28b82 |
+| Page floor | `--color-canvas` | #1B1D20 |
+| Quiet region | `--color-canvas-soft` | #202328 |
+| Cards | `--color-surface-card` | #23262A |
+| Controls/overlays | `--color-canvas-elevated` | #2B2F34 |
+| Primary fill | `--color-primary` | #12469C |
+| Label on primary | `--color-on-primary` | #E6EDF3 |
+| Standalone blue text | `--color-primary-text` | #D0E5FF |
+| Focus | `--color-focus` | #F7F8FA |
 
-Primary remains the sole structural action color in dark mode. The dark coral and dark on-primary text preserve readable filled controls and coral text on dark surfaces. Links retain their existing underline/interaction treatment. Semantic and existing chart/category colors remain localized and retain labels, icons or line patterns. Cards and dividers use subtle hairlines; required control boundaries use the stronger control-border token. Page layout containers and the mobile header use --workspace-surface, which aliases --color-canvas, so the workspace floor stays continuous across routes. Elevated tokens are reserved for cards, controls and floating surfaces.
+Primary remains the sole structural action color in dark mode. The shared blue fill uses light on-primary text; standalone blue text uses the brighter contrast-safe variant on graphite surfaces. Links retain their existing underline/interaction treatment. Semantic and existing chart/category colors remain localized and retain labels, icons or line patterns. Cards and dividers use subtle hairlines; required control boundaries use the stronger control-border token. Page layout containers and the mobile header use --workspace-surface, which aliases --color-canvas, so the workspace floor stays continuous across routes. Elevated tokens are reserved for cards, controls and floating surfaces.
 
 ### Contrast and Shared Tokens
 
-Across page, quiet, card and elevated backgrounds, minimum contrast is 12.51:1 for headings, 9.37:1 for reading text, 6.12:1 for secondary text, 5.23:1 for placeholders, 4.25:1 for control borders and 6.12:1 for focus against those backgrounds. Dark text on the coral primary has 5.47:1 contrast; coral text on the dark card has 4.78:1. These calculated pairs do not replace verification of inherited text, hover, selected states, transparency or real rendered components.
+Primary contrast pairs are verified above. Use dedicated foregrounds for neutral backgrounds and on-primary for filled controls; these values do not replace rendered-state verification.
 
 - `--color-on-neutral`, `--color-on-error`, `--color-on-success` and `--color-on-warning` describe text on solid status fills; `--color-on-dark` remains text on a dark surface.
 - `--color-on-dark-hover` describes the hover fill for a light action inside a dark surface.
@@ -201,20 +196,18 @@ Decorative color is optional and localized. Product UI, data, and semantic state
 
 | Token | Value | Use |
 |---|---|---|
-| `{rounded.none}` | 0px | Full-bleed bands, dividers |
-| `{rounded.xs}` | 4px | Checkbox marks and compact accents |
-| `{rounded.sm}` | 6px | Menu items and compact inline controls |
-| `{rounded.md}` | 8px | Buttons, inputs, tabs, and utility controls |
-| `{rounded.lg}` | 12px | Content cards, menus, and dialogs |
-| `{rounded.xl}` | 16px | Marquee or product-preview containers |
-| `{rounded.pill-category}` | 64px | Existing grouped-navigation pills |
-| `{rounded.pill}` | 100px | Existing promotional CTA pills |
-| `{rounded.full}` | 9999px | Circular icon buttons, avatars, nav ghost links |
+| `{rounded.none}` | 0px | Full-bleed regions and continuous calendar bands |
+| `{rounded.xs}` | 4px | Checkbox indicators |
+| `{rounded.sm}` | 10px | Buttons, tabs, navigation, inputs, selects and search fields |
+| `{rounded.md}` | 12px | Menus, popovers and application brand marks |
+| `{rounded.lg}` | 16px | Content cards and media |
+| `{rounded.xl}` | 20px | Modals and floating detail panels |
+| `{rounded.full}` | 9999px | Status badges, avatars and icon-only buttons |
 
-The application uses 8px functional controls, 12px content surfaces, and full circles for avatars and icon-only buttons. Badges use `{rounded.sm}`, opaque token backgrounds, and semantic foreground/background pairs that meet WCAG AA in both themes. Grouped navigation may use pills.
+Both themes use the same compact geometry. Semantic roles: `--radius-control` and `--radius-field` = 10px; `--radius-card` and `--radius-media` = 16px; `--radius-menu` and `--radius-brand` = 12px; `--radius-dialog` = 20px. Legacy pill-control aliases now resolve to the control radius. The legacy squircle alias resolves to the fixed brand radius, never a percentage. A select trigger remains a field even when implemented as a button.
 
 ### Geometry
-Cards are rectangles at 12–16px radius; normal controls are 8px; icon buttons and avatars are circular. New pills require an explicitly grouped-navigation role.
+Ordinary buttons are rectangles with soft 10px corners. Content cards use 16px, menus 12px and dialogs/floating panels 20px. Only status badges use pills. Avatars and icon-only buttons remain circular. Preserve continuous calendar-range bands, edge-attached sheets and document/export geometry. The approved blue palette and contrast, typography, spacing, touch targets, motion, data and permissions remain unchanged.
 
 ## Components
 
@@ -259,7 +252,7 @@ Cards are rectangles at 12–16px radius; normal controls are 8px; icon buttons 
 - Below the desktop breakpoint the sidebar becomes an overlay and the workspace returns to a continuous, unframed page surface. The mobile bar must not cover content or safe areas.
 - The sidebar keeps the workspace canvas color. A clean header inside the workspace holds a compact quick-access trigger and a direct account avatar link at the right, without a divider. The account link navigates to /account, shows the avatar with localized My account / Mi cuenta text at every breakpoint, and keeps its descriptive accessible name. It shows the existing UserRound icon in place of initials when the profile photo is absent or fails to load. The header retains the menu trigger at the left below the desktop breakpoint. From the desktop breakpoint (1080px), the quick-access trigger shows its localized text beside the icon; mobile and tablet keep the icon with an accessible name. Its popover lists the existing creation, request, organization-chart and Kanban actions without a search field. The `Alt+K` shortcut opens the list at every breakpoint. The actions retain keyboard access and their existing mobile Modal and desktop Sheet presentations. `Ctrl+K` remains assigned to the candidate-page search.
 - At every breakpoint, sign-out lives in the sidebar footer, including the mobile overlay. Its trigger and equal-width inline Cancel/Confirm actions retain the existing 44px touch targets, tokenized backgrounds and hairline borders, and visible focus. The trigger keeps its transparent surface, semantic error text and subtle error hover; Cancel uses the elevated neutral surface and the final confirmation uses the solid semantic danger treatment. Confirmation uses the existing sidebar flow and shared sign-out operation. The mobile navigation list keeps its existing scroll region so the footer stays accessible.
-- Free-text search fields across authenticated pages use the shared `SearchField` primitive and the concise localized placeholder `Buscar` / `Search`; contextual accessible labels continue to identify what each field searches, and existing keyboard shortcuts remain unchanged.
+- Free-text search fields across authenticated pages use the shared `SearchField` primitive and the concise localized placeholder `Buscar` / `Search`; contextual accessible labels continue to identify what each field searches, and existing keyboard shortcuts remain unchanged. Salary scale, Routes and Analysis use its `search-field--intrinsic` modifier: natural input width that can shrink to the available space, without a fixed width, maximum width or full-width stretching; height follows the shared control token. Routes fills the available search width below 768px, keeping its natural width on larger screens. From 1080px, the search sits above the route list in the left column and the detail pane aligns with its top; active search keeps results below the search in one column. On mobile below 640px, Analysis uses a full-width search row and a full-width group of wrapping quick filters; buttons grow to fill each row. Salary scale keeps search above the tabs on mobile (below 640px), with both rows filling the available width and equal-width tabs; from 640px, search and tabs share one horizontal row beneath the title.
 
 **`career-workspace`** — personal career journey
 - Temporarily unpublished: `CAREER_JOURNEY_ENABLED` in `src/features/career/types.ts` is `false`. Sign-in goes to `/home`, direct visits to `/career-path` redirect there, and the “Tu día, tu enfoque” dialog is not mounted, including when navigation retains `careerMotivation` state. The journey and dialog implementation remain available for later activation. Authentication, permissions and saved data are preserved. The behavior below describes the enabled experience.
@@ -281,13 +274,13 @@ Cards are rectangles at 12–16px radius; normal controls are 8px; icon buttons 
 ### Buttons
 
 **`button-primary`** — the theme's primary app action
-- Background `{colors.primary}`, text `{colors.on-primary}`, type `{typography.button-md}` at weight 600, `{rounded.md}` (8px), min-height `44px`, padding `{spacing.xs} {spacing.sm}`.
+- Background `{colors.primary}`, text `{colors.on-primary}`, type `{typography.button-md}` at weight 600, `{rounded.sm}` (10px), min-height `44px`, padding `{spacing.xs} {spacing.sm}`.
 
 **`button-secondary`** — the elevated secondary app action
 - Background `{colors.canvas-elevated}`, text `{colors.ink}`, border `{colors.control-border}`, type `{typography.button-md}` at weight 600, `{rounded.md}`, min-height `44px`, padding `{spacing.xs} {spacing.sm}`.
 
 **`button-primary-sm`** — the standard app CTA
-- Background `{colors.primary}`, text `{colors.on-primary}`, type `{typography.button-md}` at weight 600, `{rounded.md}` (8px), min-height `44px`, padding `0px 12px`.
+- Background `{colors.primary}`, text `{colors.on-primary}`, type `{typography.button-md}` at weight 600, `{rounded.sm}` (10px), min-height `44px`, padding `0px 12px`.
 
 **`button-ghost-sm`** — the neutral secondary app button
 - Background `{colors.canvas-elevated}`, text `{colors.ink}`, 1px `{colors.control-border}`, type `{typography.button-md}` at weight 600, `{rounded.md}`, min-height `44px`, padding `0px 12px`.
@@ -386,6 +379,7 @@ Cards are rectangles at 12–16px radius; normal controls are 8px; icon buttons 
 - /reports uses complete Inter roles: caption-up (12px/600) for short KPI labels, calendar weekdays, incident codes, count badges and preview property labels; body-md (14px/400) for dates, report metadata, descriptions, controls, links and reading/empty/error text; body-strong (14px/600) for internal headings, report/employee names and emphasized values. These roles cover upload/preview, saved reports, calendar, attendance analysis, KPI detail and employee details. Active employee identifiers and incident dates use Inter; their typography is scoped through classes instead of inline styles. Shared KpiCard typography is scoped to the report dashboard. The global header remains 20px/700. Saved reports and attendance analysis retain their existing mobile Modal and desktop Sheet presentations; employee and area KPI details retain Modal. Parsing, calculations, save/delete, filters, navigation, layouts and motion remain unchanged. Day and comparison routes require separate review.
 
 **`data-update-workspace`** - data update page typography
+- Recruiters do not see the campaign action toolbar (including Refresh). Data update tabs stay on one horizontal row, scrolling within their list if needed. My work, Locker and Completed keep screen-reader headings without repeated visible titles or introductory descriptions. On mobile below 768px, My work puts search beside a Filters button with an active-filter count; its shared popover contains Area, All/Pending, Clear filters and Done. From 768px the controls remain visible on one row. Campaign loading, filtering and refresh logic remain unchanged.
 - /data-update uses complete Inter roles: caption-up (12px/600) for field labels, legends, property labels and status badges; body-md (14px/400) for employee numbers, metadata, tabs, action text, progress descriptions, save states, help and empty/error messages; body-strong (14px/600) for names, internal headings and emphasized progress values. The wizard has seven steps and does not request a photo. The same roles cover administration, lockers, progress details and campaign/shift import dialogs. Campaign import retains its mobile Modal and desktop Sheet patterns; locker editing and shift import retain Modal. Shared selects retain body-md and the existing iOS editable text-size safeguard. The global header remains 20px/700. Assignment, import/export, autosave, validation, persistence, permissions, layouts and motion remain unchanged.
 
 **`overview-workspace`** - overview page typography
@@ -408,7 +402,7 @@ Cards are rectangles at 12–16px radius; normal controls are 8px; icon buttons 
 - /candidates uses Inter with complete token roles: short labels and column headers use caption-up (12px/600); reading text, links, dates, recruiter names and filters use body-md (14px/400); candidate names, positions and internal subtitles use body-strong (14px/600). Legal footnotes, when present, use body-sm (12px/400). The global header title retains its existing 20px size. These roles also apply to the page-owned mobile detail and profile preview; shared badges receive explicit page classes so other pages retain their typography.
 
 **`candidate-create`** — new candidate entry
-- New candidate entry retains the shared Modal and existing three-step wizard on mobile. From tablet upward it uses the compact floating Sheet with the existing form fields in a single column, a scrollable body and the same Cancel/Save footer actions. The header retains its title, icon and close control, and closing returns focus to the opener.
+- New candidate entry retains the shared Modal and existing three-step wizard on mobile. From tablet upward it uses the compact floating Sheet with the existing form fields in a single column, a scrollable body and the same Cancel/Save footer actions. The header retains its title, icon and close control, and closing returns focus to the opener. In the candidate form, Recruiter and Recruitment source share a two-column row, followed by another row for Starlite and Interview date on desktop (from 1080px); mobile and tablet keep these fields stacked.
 - Existing field validation, dependent position selectors, recruiter permissions, submission, errors and interview-pass confirmation stay unchanged. Candidate editing uses the same compact floating Sheet in one column from tablet upward and retains its existing Modal/wizard on mobile, with role-based field restrictions unchanged. Candidate deletion retains the separate DeleteConfirmModal.
 - The mobile candidate detail drill-down labels its neutral-colored back control with the selected candidate's name, preserves the back action, shows that name only once, and reduces the extra top spacing before the detail card. Project and Process use full-width rows so the selected process shows its complete label; the process menu grows to fit complete option labels within the available viewport, wrapping only when constrained by zoom or very narrow screens.
 - Selecting a candidate from search results opens the existing profile preview in the shared Modal on mobile and compact floating Sheet from tablet upward. Show available candidate details as a vertical, labeled list to use the Sheet body without blank stretches; omit missing optional values. Preserve the existing Hire/Edit actions.
@@ -493,7 +487,7 @@ Cards are rectangles at 12–16px radius; normal controls are 8px; icon buttons 
 - Reuse the existing area summaries, area drill-down and incident tabs without changing daily calculations, work/rest rules, filters, data contracts or permissions. Direct entry reuses the existing report-loading service and parser; loading uses LoadingSkeleton, errors allow retry, and unavailable days retain the title return link.
 
 
-`personal-kanban` reutiliza CustomSelect en formularios, Badge y PageHeading. El contenido empieza directamente en el tablero: no muestra encabezado secundario, descripciones, actualizar, búsqueda, filtro ni contador global. Conserva el título Kanban del shell y errores recuperables. La carga inicial usa LoadingSkeleton compartido con cuatro columnas esquemáticas, formas proporcionales y dimensiones de tokens, sin texto de carga visible ni datos simulados. Solo una región anuncia la carga; se respeta reduced motion y las cargas posteriores conservan las tarjetas existentes. Conserva Cargar más cuando aplica y anuncios de éxito accesibles sin bloque visible permanente. Cada columna tiene encabezado, contador y lista de tarjetas separados por hairline. Solo Pendiente incluye la acción Añadir y el pie de creación; el selector de estado del formulario permite crear en cualquier estado. En proceso, Completado y Notas no duplican esa acción ni reservan un pie vacío. Cuando el tablero está vacío, un único párrafo compacto comunica el estado y cómo comenzar, sin panel adicional ni mensajes repetidos por columna. Las listas vacías no reservan padding y conservan un solo divisor entre encabezado y pie; durante el arrastre muestran la indicación de destino y recuperan su área de contenido. Añadir permanece en Pendiente y abre FormSheet en tablet/PC o Modal con FormWizard en móvil (Detalles, Fecha y checklist); las tarjetas existentes abren primero una vista de lectura en el FormSheet de tablet/PC o Modal en móvil; Editar en la cabecera activa los campos sin cerrar el contenedor, con Tipo y Estado en dos columnas iguales mediante la primitiva form-grid y una variante localizada, conservando altura y alineación de labels y controles; el descarte mantiene sus acciones en el footer fijo del sheet. En edición, el encabezado incluye una acción compacta con icono: Eliminar cambia a Confirmar y un segundo clic ejecuta el borrado existente. Al perder el foco vuelve a Eliminar; durante la petición los controles quedan deshabilitados. Los errores conservan el editor y sus cambios. No hay popover de acciones ni modal de borrado. El tablero muestra una columna activa en móvil y dos columnas desde 768px; desde 1080px usa dos tabs: Tablero con las tres columnas de trabajo y Notas como vista independiente, con scroll vertical natural de página. Las columnas se alinean al inicio y conservan altura natural; abrir un editor no estira las columnas vecinas. Cards surface-card con borde hairline-strong y elevación Level 1 (shadows.xs) para separar las tarjetas interactivas de su columna; superficies de columna canvas-elevated; los encabezados heredan el fondo de su columna y se separan mediante hairline, con rounded.lg; tipografía y espaciado usan tokens compartidos. Kanban usa Inter como familia de producto mediante font-body. Títulos de tarjeta, encabezados del editor y encabezados de columna usan body-strong (14px/600); texto base, descripción, contadores, mensajes y texto de controles body-md (14px/400, con mínimo móvil existente para inputs); etiquetas y badges de tipo/estado caption-up (12px/600); metadatos de fecha body-sm (12px/400). Botones conservan el rol button existente. No existe nota legal en esta vista; si se incorpora por petición explícita, corresponde body-sm (12px/400). Los roles conservan familia, peso, line-height y tracking completos. Las tarjetas muestran tipo, fecha real de creación en la esquina superior derecha como metadato body-sm/mute (10 Oct 26), título editable y descripción, con separación interna de spacing.xxs. Título y descripción conservan separación compacta; una única área de edición y arrastre de al menos touch-target-min cubre la tarjeta sin añadir filas vacías. El arrastre utiliza @dnd-kit existente con puntero y teclado, área interactiva que cubre toda la tarjeta, sin icono de agarre y con mínimo de 44px, destinos con borde discontinuo, anuncios accesibles y cambio de estado persistido. El arrastre conserva soporte de teclado y el formulario conserva el selector de estado existente. El arrastre permite cambiar de estado y ordenar dentro de cada columna; el servidor guarda posición y versión de forma atómica. Conserva los cuatro estados y el acceso por propietario. Los badges reutilizan Badge con rounded.sm, hairline y el rol caption-up completo. Estados: Pendiente usa warning-text/subtle, En proceso primary/on-primary y Completado success-text/subtle y Notas canvas-soft/ink, con iconos distintos. Tipos: Actividad usa accent-purple, Proceso accent-orange, Entrevista accent-teal y Por hacer magenta; estos acentos solo decoran el borde y el icono de la etiqueta, mientras el texto usa ink sobre canvas-elevated para conservar contraste en claro y oscuro. No estructuran acciones, navegación ni formularios.
+`personal-kanban` reutiliza CustomSelect en formularios, Badge y PageHeading. El contenido empieza directamente en el tablero: no muestra encabezado secundario, descripciones, actualizar, búsqueda, filtro ni contador global. Conserva el título Kanban del shell y errores recuperables. La carga inicial usa LoadingSkeleton compartido con cuatro columnas esquemáticas, formas proporcionales y dimensiones de tokens, sin texto de carga visible ni datos simulados. Solo una región anuncia la carga; se respeta reduced motion y las cargas posteriores conservan las tarjetas existentes. Conserva Cargar más cuando aplica y anuncios de éxito accesibles sin bloque visible permanente. Cada columna tiene encabezado, contador y lista de tarjetas separados por hairline. Solo Pendiente incluye la acción Añadir y el pie de creación; el selector de estado del formulario permite crear en cualquier estado. En proceso, Completado y Notas no duplican esa acción ni reservan un pie vacío. Cuando el tablero está vacío, un único párrafo compacto comunica el estado y cómo comenzar, sin panel adicional ni mensajes repetidos por columna. Las listas vacías no reservan padding y conservan un solo divisor entre encabezado y pie; durante el arrastre muestran la indicación de destino y recuperan su área de contenido. Añadir permanece en Pendiente y abre FormSheet en tablet/PC o Modal con FormWizard en móvil (Detalles, Fecha y checklist); las tarjetas existentes abren primero una vista de lectura en el FormSheet de tablet/PC o Modal en móvil; Editar en la cabecera activa los campos sin cerrar el contenedor, con Tipo y Estado en dos columnas iguales mediante la primitiva form-grid y una variante localizada, conservando altura y alineación de labels y controles; el descarte mantiene sus acciones en el footer fijo del sheet. En edición, el encabezado incluye una acción compacta con icono: Eliminar cambia a Confirmar y un segundo clic ejecuta el borrado existente. Al perder el foco vuelve a Eliminar; durante la petición los controles quedan deshabilitados. Los errores conservan el editor y sus cambios. No hay popover de acciones ni modal de borrado. El tablero muestra una columna activa en móvil y dos columnas desde 768px; desde 1080px usa dos tabs: Tablero con las tres columnas de trabajo y Notas como vista independiente, con scroll vertical natural de página. Las columnas se alinean al inicio y conservan altura natural; abrir un editor no estira las columnas vecinas. Cards surface-card con borde hairline-strong y elevación Level 1 (shadows.xs) para separar las tarjetas interactivas de su columna; superficies de columna canvas-elevated; los encabezados heredan el fondo de su columna y se separan mediante hairline, con rounded.lg; tipografía y espaciado usan tokens compartidos. Kanban usa Inter como familia de producto mediante font-body. Títulos de tarjeta, encabezados del editor y encabezados de columna usan body-strong (14px/600); texto base, descripción, contadores, mensajes y texto de controles body-md (14px/400, con mínimo móvil existente para inputs); etiquetas y badges de tipo/estado caption-up (12px/600); metadatos de fecha body-sm (12px/400). Botones conservan el rol button existente. No existe nota legal en esta vista; si se incorpora por petición explícita, corresponde body-sm (12px/400). Los roles conservan familia, peso, line-height y tracking completos. Las tarjetas muestran tipo, fecha real de creación en la esquina superior derecha como metadato body-sm/mute (10 Oct 26), título editable y descripción, con separación interna de spacing.xxs. Título y descripción conservan separación compacta; una única área de edición y arrastre de al menos touch-target-min cubre la tarjeta sin añadir filas vacías. El arrastre utiliza @dnd-kit existente con puntero y teclado, área interactiva que cubre toda la tarjeta, sin icono de agarre y con mínimo de 44px, destinos con borde discontinuo, anuncios accesibles y cambio de estado persistido. El arrastre conserva soporte de teclado y el formulario conserva el selector de estado existente. El arrastre permite cambiar de estado y ordenar dentro de cada columna; el servidor guarda posición y versión de forma atómica. Conserva los cuatro estados y el acceso por propietario. Los badges reutilizan Badge con rounded.full, hairline y el rol caption-up completo. Estados: Pendiente usa warning-text/subtle, En proceso primary/on-primary y Completado success-text/subtle y Notas canvas-soft/ink, con iconos distintos. Tipos: Actividad usa accent-purple, Proceso accent-orange, Entrevista accent-teal y Por hacer magenta; estos acentos solo decoran el borde y el icono de la etiqueta, mientras el texto usa ink sobre canvas-elevated para conservar contraste en claro y oscuro. No estructuran acciones, navegación ni formularios.
 
 - En móvil (menos de 768px), Kanban muestra tabs de estado Pendiente, En proceso, Completado y Notas mediante Radix Tabs, en una sola fila con scroll horizontal limitado a la barra. Las etiquetas se mantienen completas y sin salto de línea; el padding del scroll reserva espacio para el foco visible. Solo se presenta el estado activo, inicialmente Pendiente; cada columna permanece montada y conserva su paginación. Las tabs usan body-md, rounded.md, controles de 44px y primary/on-primary para selección, con teclado y foco compartido. Durante el arrastre las columnas vuelven a estar disponibles como destinos; un movimiento guardado selecciona el destino. Guardar un editor también selecciona su estado antes de devolver el foco. Tablet conserva sus dos columnas; desktop y wide muestran dos tabs a la derecha de las acciones: Tablero (Board en inglés) contiene Pendiente, En proceso y Completado en tres columnas; Notas muestra exclusivamente la columna de notas. Ambas vistas permanecen montadas para conservar su paginación. Archivo conserva su vista existente. No cambia la persistencia ni las acciones.
 - En la vista Notas de PC, las tarjetas se distribuyen en tres columnas de igual ancho, sin expandir una nota aislada a todo el panel. El encabezado y la paginación de Notas siguen siendo únicos; el arrastre interno usa la estrategia de cuadrícula existente de dnd-kit. En móvil y tablet se conserva la presentación de lista.
@@ -507,3 +501,7 @@ Cards are rectangles at 12–16px radius; normal controls are 8px; icon buttons 
 - Kanban planning: el editor añade fecha objetivo y hora opcionales en dos columnas; las horas siguen America/Mexico_City y requieren fecha. La checklist utiliza Checkbox y controles del sistema, con pasos editables y una plantilla explícita por tipo al crear, disponible solo cuando no hay pasos para evitar sobrescribir contenido. La tarjeta principal muestra la fecha objetivo en metadatos body-sm/mute y, si hay pasos, una barra nativa de progreso con conteo body-sm/mute bajo el contenido; vencimiento se expresa con texto e indicador semántico, nunca solo color. Los completados se archivan desde el editor cuando no hay cambios sin guardar. Una única acción Archivo abre el histórico y permite restaurarlos. En el tablero vacío comparte fila con el mensaje inicial, en el extremo contrario; en el histórico, Volver comparte fila con el título Archivo, en el extremo contrario. La fila usa dos columnas fluidas para que ambas acciones queden dentro del ancho disponible en móvil o con zoom. Ambas acciones se presentan sin fondo ni borde, con Inter body-strong, foco visible y un touch target de 44px; archivado conserva los datos y no equivale a borrado. Carga reutiliza skeleton, errores conservan contenido y permiten reintentar. No hay vínculo con candidatos ni vacantes.
 
 - La creación conserva el borrador al cambiar de paso y valida detalles antes de continuar. Guardar aparece al final del wizard; Enter en el primer paso no guarda anticipadamente. Cerrar, Escape o pulsar el fondo pide confirmar si existen cambios sin guardar. Los pasos usan Checkbox y entradas elevadas con tipografía completa, controles alineados de 44px y una acción de quitar accesible; completar un paso añade tachado sin sustituir su texto.
+
+- Binary switch controls use shared `CustomSelect`: Workforce project filter (All projects / Starlite), data-update administration status (All / Pending), and account maintenance (Inactive / Active). Existing filter values, maintenance permissions, loading/saving guards and persistence remain unchanged.
+
+- On mobile below 768px, Analysis shows one compact controls row: Filters with an active-filter count, plus accessible Detailed/Compact icon buttons when available. The shared filter popover contains Status and a two-column Department/Shift row, preserves Clear and adds Done to dismiss. Desktop keeps visible filters and view labels. Filtering and result data remain unchanged.

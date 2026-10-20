@@ -37,7 +37,7 @@
   block-size: var(--touch-target-min);
   padding-inline: var(--design-spacing-xxs);
   border: var(--border-width) solid var(--color-control-border);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-field);
   background: var(--color-canvas-elevated);
   color: var(--color-ink);
   text-align: center;

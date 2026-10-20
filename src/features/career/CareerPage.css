@@ -137,7 +137,7 @@
   justify-self: center;
   width: var(--icon-size-md);
   height: var(--icon-size-md);
-  color: var(--color-primary);
+  color: var(--color-primary-text);
 }
 
 .career-page__roles[data-selected='true'] {

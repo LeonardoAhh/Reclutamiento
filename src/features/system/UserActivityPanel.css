@@ -19,7 +19,7 @@
   min-width: 0;
   padding: var(--spacing-lg);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-card);
   background: var(--color-surface);
 }
 

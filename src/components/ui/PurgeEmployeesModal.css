@@ -79,7 +79,7 @@
 }
 
 .purge-employees-modal__step.is-active {
-  border-color: var(--color-primary);
+  border-color: var(--color-primary-border);
 }
 
 .purge-employees-modal__step.is-done {

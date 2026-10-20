@@ -13,7 +13,7 @@
   block-size: var(--touch-target-min);
   padding: 0;
   border: 0;
-  border-radius: var(--rounded-md);
+  border-radius: var(--rounded-full);
   background: transparent;
   color: var(--color-body);
   cursor: pointer;

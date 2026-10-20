@@ -137,7 +137,7 @@
 
 .turnos-updater__turno-new {
   font-weight: 600;
-  color: var(--color-primary) !important;
+  color: var(--color-primary-text) !important;
 }
 
 /* ── Footer ──────────────────────────────────────────────────────────── */

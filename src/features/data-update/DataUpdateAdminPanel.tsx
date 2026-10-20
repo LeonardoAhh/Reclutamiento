@@ -211,16 +211,18 @@ export function DataUpdateAdminPanel({
           />
         </ToolbarGroup>
         {detail.records.length > 0 && (
-          <label className="toggle-switch data-update-pending-filter">
-            <input
-              type="checkbox"
-              role="switch"
-              checked={showOnlyPending}
-              onChange={(event) => setShowOnlyPending(event.target.checked)}
-            />
-            <span className="toggle-switch__slider" aria-hidden="true" />
-            <span className="toggle-switch__label">{t("Pendientes")}</span>
-          </label>
+          <CustomSelect
+            id="data-update-admin-status"
+            className="data-update-admin__status"
+            aria-label={t("Estado del registro", "Record status")}
+            value={showOnlyPending ? "pending" : "all"}
+            options={[
+              { value: "all", label: t("Todos") },
+              { value: "pending", label: t("Pendientes") },
+            ]}
+            showPlaceholderOption={false}
+            onChange={(value) => setShowOnlyPending(value === "pending")}
+          />
         )}
         <ToolbarGroup label={t("Acciones de administración")} className="data-update-admin__actions">
           <button

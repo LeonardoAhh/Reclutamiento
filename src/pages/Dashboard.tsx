@@ -11,7 +11,7 @@ import {
 import { Search as SearchData } from "lucide";
 import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import { SearchField } from "@/components/ui/SearchField";
-import { StarliteBadge } from "@/components/ui/Badge";
+import { CustomSelect } from "@/components/ui/CustomSelect";
 import { DepartmentSearchResults } from "@/components/plantilla/DepartmentSearchResults";
 import { DepartmentCard } from "@/components/plantilla/DepartmentCard";
 import { PositionSettingsWizard } from "@/components/ui/PositionSettingsWizard";
@@ -372,17 +372,18 @@ export function Dashboard() {
                       </div>
                     </div>
                     <div className="dashboard-sidebar__utilities">
-                      <label className="toggle-switch dashboard-sidebar__starlite-filter">
-                        <input
-                          type="checkbox"
-                          role="switch"
-                          checked={showOnlyStarlite}
-                          onChange={(event) => setShowOnlyStarlite(event.target.checked)}
-                          aria-label={t("Solo proyecto Starlite")}
-                        />
-                        <span className="toggle-switch__slider" aria-hidden="true" />
-                        <StarliteBadge />
-                      </label>
+                      <CustomSelect
+                        id="workforce-project-filter"
+                        className="dashboard-sidebar__starlite-filter"
+                        aria-label={t("Filtrar por proyecto")}
+                        value={showOnlyStarlite ? "starlite" : "all"}
+                        options={[
+                          { value: "all", label: t("Todos los proyectos") },
+                          { value: "starlite", label: "Starlite" },
+                        ]}
+                        showPlaceholderOption={false}
+                        onChange={(value) => setShowOnlyStarlite(value === "starlite")}
+                      />
                       <div className="dashboard__hero-actions">
                         <button
                           type="button"

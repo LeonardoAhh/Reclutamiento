@@ -76,7 +76,7 @@
 }
 
 .actividades-tabs__trigger[data-state="active"] {
-  border-block-end-color: var(--color-primary);
+  border-block-end-color: var(--color-primary-border);
   color: var(--color-ink);
 }
 
@@ -218,7 +218,7 @@
 
 .file-upload-wrapper:hover {
   background: var(--color-surface-soft);
-  border-color: var(--color-primary);
+  border-color: var(--color-primary-border);
 }
 
 
@@ -240,7 +240,7 @@
 }
 
 .file-upload-wrapper:hover .file-upload-icon {
-  color: var(--color-primary);
+  color: var(--color-primary-text);
 }
 
 .file-upload-inner .file-upload-text {
@@ -404,9 +404,9 @@
 }
 
 .reference-upload-label:hover {
-  border-color: var(--color-primary);
+  border-color: var(--color-primary-border);
   background: var(--color-surface-soft);
-  color: var(--color-primary);
+  color: var(--color-primary-text);
 }
 
 .activity-detail-heading {

@@ -84,7 +84,7 @@
   font-weight: var(--type-body-strong-weight);
   min-width: 28px;
   text-align: right;
-  color: var(--color-primary);
+  color: var(--color-primary-text);
   line-height: var(--type-body-strong-line);
   letter-spacing: var(--type-body-strong-tracking);
 }

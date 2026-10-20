@@ -72,7 +72,7 @@
 }
 
 .activity-tracking-section__status-filter[aria-pressed="true"] {
-  border-color: var(--color-primary);
+  border-color: var(--color-primary-border);
   background: var(--color-primary);
   color: var(--color-on-primary);
 }

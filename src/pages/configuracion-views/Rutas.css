@@ -20,7 +20,8 @@
 .rutas-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--spacing-xl);
+  column-gap: var(--spacing-xl);
+  row-gap: var(--spacing-lg);
   align-items: stretch;
   min-width: 0;
 }
@@ -30,7 +31,28 @@
     grid-template-columns:
       minmax(0, var(--feature-navigation-rail-inline-size))
       minmax(0, 1fr);
+    grid-template-rows: min-content 1fr;
+    grid-template-areas:
+      "search detail"
+      "list detail";
     align-items: start;
+  }
+
+  .rutas-layout > .rutas-toolbar {
+    grid-area: search;
+  }
+
+  .rutas-layout > .rutas-list-panel {
+    grid-area: list;
+  }
+
+  .rutas-layout > .rutas-detail-pane {
+    grid-area: detail;
+  }
+
+  .rutas-layout[data-search-active="true"] {
+    grid-template-areas: "search" "detail";
+    grid-template-rows: auto auto;
   }
 }
 
@@ -213,7 +235,7 @@
   min-height: var(--touch-target-min);
   box-sizing: border-box;
   padding: var(--spacing-md);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-card);
   border: var(--border-width) solid var(--color-hairline);
   background: var(--color-surface-card);
   cursor: pointer;
@@ -234,7 +256,7 @@
 
 .ruta-card--active {
   background: var(--color-surface-soft);
-  border-color: var(--color-primary);
+  border-color: var(--color-primary-border);
 }
 
 .ruta-card__icon {
@@ -250,7 +272,7 @@
 }
 
 .ruta-card--active .ruta-card__icon {
-  color: var(--color-primary);
+  color: var(--color-primary-text);
 }
 
 .ruta-card__copy {
@@ -746,7 +768,7 @@
   min-height: var(--touch-target-min);
   padding: var(--spacing-sm);
   border: var(--border-width) solid var(--color-hairline-soft);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-card);
   background: var(--color-surface);
   color: var(--color-ink);
   font-family: var(--font-body);
@@ -842,6 +864,12 @@
   flex: 1;
   min-width: 0;
   margin: 0;
+}
+
+@media (max-width: 767px) {
+  .rutas-search-container .search-field {
+    inline-size: auto;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

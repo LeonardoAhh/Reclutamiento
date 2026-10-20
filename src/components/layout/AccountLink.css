@@ -7,7 +7,7 @@
   max-inline-size: var(--feature-account-menu-inline-size);
   padding: 0;
   border: 0;
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-control);
   background: transparent;
   color: var(--color-ink);
   text-decoration: none;
@@ -29,7 +29,7 @@
   max-inline-size: 100%;
   padding-inline: var(--design-spacing-xxs);
   border: 0;
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-control);
   background: transparent;
 }
 
@@ -37,7 +37,7 @@
   inline-size: var(--icon-size-lg);
   block-size: var(--icon-size-lg);
   border: 0;
-  border-radius: var(--rounded-md);
+  border-radius: var(--rounded-full);
 }
 
 .account-link__avatar-icon {

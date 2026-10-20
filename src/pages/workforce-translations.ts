@@ -7,6 +7,8 @@ const englishCopy: Record<string, string> = {
   "Buscar en la plantilla": "Search workforce",
   "Buscar": "Search",
   "Solo proyecto Starlite": "Starlite project only",
+  "Filtrar por proyecto": "Filter by project",
+  "Todos los proyectos": "All projects",
   "Nuevo empleado": "New employee",
   "Nuevo": "New",
   "Reporte": "Report",

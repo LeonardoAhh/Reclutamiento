@@ -7,10 +7,10 @@
   --rdp-day-width: var(--control-height);
   --rdp-day_button-height: var(--control-height);
   --rdp-day_button-width: var(--control-height);
-  --rdp-accent-color: var(--color-primary);
+  --rdp-accent-color: var(--color-primary-text);
   --rdp-accent-background-color: var(--color-primary-tint);
   --rdp-day_button-border-radius: var(--rounded-md);
-  --rdp-selected-border: var(--focus-ring-width) solid var(--color-primary);
+  --rdp-selected-border: var(--focus-ring-width) solid var(--color-primary-border);
   margin: 0;
 }
 
@@ -115,13 +115,13 @@
 
 .calendar--range .rdp-selected:not(.rdp-range_middle) .rdp-day_button {
   border: var(--rdp-selected-border);
-  border-radius: var(--rounded-md);
+  border-radius: var(--rounded-full);
   background: var(--color-primary);
   color: var(--color-on-primary);
 }
 
 .calendar--range .rdp-selected:not(.rdp-range_middle) .rdp-day_button:not(:disabled):hover {
-  border-color: var(--color-primary-active);
+  border-color: var(--color-primary-border);
   background: var(--color-primary-active);
   color: var(--color-on-primary);
 }

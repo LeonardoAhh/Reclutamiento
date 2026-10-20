@@ -362,7 +362,7 @@
   min-block-size: var(--touch-target-min);
   padding: 0 var(--design-spacing-xs);
   border: 0;
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-control);
   background: transparent;
   color: var(--color-ink);
   font-family: var(--font-body);

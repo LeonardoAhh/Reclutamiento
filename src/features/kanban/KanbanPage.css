@@ -32,7 +32,7 @@
   min-block-size: var(--touch-target-min);
   padding: var(--design-spacing-xs);
   border: var(--border-width) solid var(--color-control-border);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-control);
   background: var(--color-canvas-elevated);
   color: var(--color-ink);
   font-family: var(--font-body);
@@ -45,7 +45,7 @@
 }
 .kanban-status-tabs:not(.kanban-status-tabs--joined) .kanban-status-tabs__trigger[data-state="active"] {
   background: var(--color-primary);
-  border-color: var(--color-primary);
+  border-color: var(--color-primary-border);
   color: var(--color-on-primary);
 }
 .kanban-status-tabs__trigger:disabled {
@@ -54,13 +54,13 @@
 .kanban-status-tabs--joined {
   gap: var(--design-spacing-xxs);
   padding: var(--design-spacing-xxs);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-control);
   background: var(--color-canvas-soft);
   overflow: visible;
 }
 .kanban-status-tabs--joined .kanban-status-tabs__trigger {
   border: 0;
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-control);
   background: transparent;
   color: var(--color-body);
 }
@@ -221,7 +221,7 @@
 }
 .kanban-task--card[data-dragging] {
   z-index: var(--layer-menu);
-  border-color: var(--color-primary);
+  border-color: var(--color-primary-border);
   background: var(--color-canvas-elevated);
   box-shadow: var(--shadow-sm);
   transition:
@@ -230,12 +230,12 @@
     box-shadow var(--transition-fast);
 }
 .kanban-task--card[data-drag-over]:not([data-dragging]) {
-  border-color: var(--color-primary);
+  border-color: var(--color-primary-border);
   box-shadow: var(--shadow-sm);
 }
 .kanban-column:is([data-drag-over], [data-drop-pending]) {
   border-style: dashed;
-  border-color: var(--color-primary);
+  border-color: var(--color-primary-border);
   background: var(--color-canvas-soft);
 }
 @media (prefers-reduced-motion: reduce) {
@@ -362,7 +362,7 @@
   margin: 0;
   padding: var(--design-spacing-xxs);
   border: 0;
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-control);
   background: var(--color-canvas-soft);
 }
 .kanban-layout-switch__button {
@@ -372,7 +372,7 @@
   min-block-size: var(--touch-target-min);
   padding-inline: var(--design-spacing-sm);
   border: 0;
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-control);
   background: transparent;
   color: var(--color-body);
   font-family: var(--font-body);
@@ -520,7 +520,7 @@
   aspect-ratio: 3 / 1;
   object-fit: cover;
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-media);
 }
 .kanban-cover-field input[type="file"] {
   inline-size: 100%;
@@ -538,7 +538,7 @@
   margin-inline-end: var(--design-spacing-xs);
   padding-inline: var(--design-spacing-sm);
   border: var(--border-width) solid var(--color-control-border);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-control);
   background: var(--color-canvas-elevated);
   color: var(--color-ink);
   font-family: var(--font-body);
@@ -577,7 +577,7 @@
   min-height: var(--touch-target-min);
   padding: var(--control-padding-y) var(--control-padding-x);
   border: var(--border-width) solid var(--color-control-border);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-field);
   background: var(--color-canvas-elevated);
   color: var(--color-ink);
   font-family: var(--font-body);

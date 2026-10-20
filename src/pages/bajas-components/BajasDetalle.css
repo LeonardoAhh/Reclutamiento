@@ -151,7 +151,7 @@
 }
 
 .bajas-detalle__card:hover .bajas-detalle__card-chevron {
-  color: var(--color-primary);
+  color: var(--color-primary-text);
   transform: translateX(2px);
 }
 

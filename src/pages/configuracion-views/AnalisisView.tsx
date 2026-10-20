@@ -29,6 +29,7 @@ import { ButtonUtility } from '@/components/ui/ButtonUtility';
 import { CustomSelect } from '@/components/ui/CustomSelect';
 import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
 import { Pagination } from '@/components/ui/Pagination';
+import { AnalysisFilterPanel } from './components/AnalysisFilterPanel';
 import { EmployeeResultCard } from './components/EmployeeResultCard';
 import { getConfiguracionCopy } from './configuracion-translations';
 import {
@@ -324,6 +325,7 @@ export function AnalisisView() {
           <div className="config-search-field">
             <SearchField
               id="config-search-input"
+              className="search-field--intrinsic"
               ref={searchInputRef}
               label={copy.searchLabel}
               value={searchTerm}
@@ -415,6 +417,11 @@ export function AnalisisView() {
           className="config-results-controls"
           aria-label={copy.filtersAndView}
         >
+          <AnalysisFilterPanel
+            count={Number(statusFilter !== 'all') + Number(departmentFilter !== ALL_FILTER_VALUE) + Number(shiftFilter !== ALL_FILTER_VALUE) + Number(riskFilter !== 'all')}
+            label={copy.filters}
+            doneLabel={copy.done}
+          >
           <div className="config-results-controls__filters">
             <fieldset className="config-filter-group">
               <legend className="config-filter-label type-caption-up text-muted">
@@ -447,6 +454,7 @@ export function AnalisisView() {
               </span>
               <CustomSelect
                 value={departmentFilter}
+                aria-label={copy.department}
                 onChange={setDepartmentFilter}
                 options={[
                   { value: ALL_FILTER_VALUE, label: copy.all },
@@ -461,6 +469,7 @@ export function AnalisisView() {
               </span>
               <CustomSelect
                 value={shiftFilter}
+                aria-label={copy.shift}
                 onChange={setShiftFilter}
                 options={[
                   { value: ALL_FILTER_VALUE, label: copy.all },
@@ -480,9 +489,10 @@ export function AnalisisView() {
               </ButtonUtility>
             )}
           </div>
+          </AnalysisFilterPanel>
 
           {canUseCompactView && (
-            <div className="config-filter-field">
+            <div className="config-filter-field analisis-view-control">
               <span className="config-filter-label type-caption-up text-muted">
                 {copy.view}
               </span>
@@ -496,22 +506,26 @@ export function AnalisisView() {
                   className={`config-view-switch__button${
                     viewMode === 'detail' ? ' is-active' : ''
                   }`}
+                  aria-label={copy.detailed}
+                  title={copy.detailed}
                   onClick={() => handleViewModeChange('detail')}
                   aria-pressed={viewMode === 'detail'}
                 >
                   <List aria-hidden="true" />
-                  {copy.detailed}
+                  <span className="analisis-view-control__text">{copy.detailed}</span>
                 </button>
                 <button
                   type="button"
                   className={`config-view-switch__button${
                     viewMode === 'compact' ? ' is-active' : ''
                   }`}
+                  aria-label={copy.compact}
+                  title={copy.compact}
                   onClick={() => handleViewModeChange('compact')}
                   aria-pressed={viewMode === 'compact'}
                 >
                   <LayoutGrid aria-hidden="true" />
-                  {copy.compact}
+                  <span className="analisis-view-control__text">{copy.compact}</span>
                 </button>
               </div>
             </div>

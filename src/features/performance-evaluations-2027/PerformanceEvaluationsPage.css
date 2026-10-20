@@ -47,7 +47,7 @@
   inline-size: var(--touch-target-min);
   block-size: var(--touch-target-min);
   border: 0;
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-control);
   background: transparent;
   color: var(--color-ink);
 }

@@ -34,7 +34,7 @@
 
 .attachment-card--interactive:hover {
   background: var(--color-surface-soft);
-  color: var(--color-primary);
+  color: var(--color-primary-text);
 }
 
 .attachment-card__preview {
@@ -47,7 +47,7 @@
   padding: 0;
   overflow: hidden;
   border: 0;
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-media);
   background: var(--color-surface-soft);
   color: var(--color-muted);
 }
@@ -57,7 +57,7 @@
 }
 
 .attachment-card__preview--interactive:hover {
-  color: var(--color-primary);
+  color: var(--color-primary-text);
 }
 
 .attachment-card__image {
@@ -110,7 +110,7 @@
   flex-shrink: 0;
   padding: 0;
   border: 0;
-  border-radius: var(--rounded-md);
+  border-radius: var(--rounded-full);
   background: transparent;
   color: var(--color-muted);
   cursor: pointer;

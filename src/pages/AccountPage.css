@@ -284,26 +284,11 @@
   gap: var(--design-spacing-xs);
   min-width: 0;
 }
-.account-maintenance__action {
-  display: grid;
-  place-items: center;
-  min-inline-size: var(--touch-target-min);
-  min-block-size: var(--touch-target-min);
-  padding: 0;
-  border: 0;
-  border-radius: var(--rounded-md);
-  background: transparent;
-  cursor: pointer;
-}
-.account-maintenance__action:disabled {
-  opacity: var(--opacity-disabled);
-  cursor: not-allowed;
-}
 .account-maintenance__retry {
   min-block-size: var(--touch-target-min);
   padding-inline: var(--design-spacing-xs);
   border: var(--border-width) solid var(--color-control-border);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-control);
   background: transparent;
   color: var(--color-ink);
   cursor: pointer;
@@ -311,29 +296,6 @@
 .account-maintenance__retry:disabled {
   opacity: var(--opacity-disabled);
   cursor: not-allowed;
-}
-.account-maintenance__action-surface {
-  display: flex;
-  align-items: center;
-  inline-size: calc(var(--icon-size-lg)*2 + var(--design-spacing-xs));
-  block-size: var(--icon-size-xl);
-  padding: var(--design-spacing-xxs);
-  border: var(--border-width) solid var(--color-control-border);
-  border-radius: var(--rounded-pill);
-  background: var(--color-canvas-soft);
-}
-.account-maintenance__thumb {
-  inline-size: var(--icon-size-lg);
-  block-size: var(--icon-size-lg);
-  border-radius: var(--rounded-full);
-  background: var(--color-body);
-}
-.account-maintenance__action[aria-checked="true"] .account-maintenance__action-surface {
-  background: var(--color-primary);
-}
-.account-maintenance__action[aria-checked="true"] .account-maintenance__thumb {
-  background: var(--color-on-primary);
-  transform: translateX(var(--icon-size-lg));
 }
 .account-maintenance__error {
   grid-column: 1/-1;
@@ -388,22 +350,6 @@
   .account-profile__avatar {
     --feature-avatar-size: var(--design-spacing-4xl);
     --feature-avatar-initials-size: var(--type-heading-md-size);
-  }
-}
-@media (forced-colors:active) {
-  .account-maintenance__action-surface {
-    forced-color-adjust: none;
-    border-color: ButtonText;
-    background: Canvas;
-  }
-  .account-maintenance__thumb {
-    background: ButtonText;
-  }
-  .account-maintenance__action[aria-checked="true"] .account-maintenance__action-surface {
-    background: Highlight;
-  }
-  .account-maintenance__action[aria-checked="true"] .account-maintenance__thumb {
-    background: HighlightText;
   }
 }
 .account-appearance .theme-select__trigger,.account-appearance__control {
