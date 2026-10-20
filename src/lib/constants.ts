@@ -120,6 +120,15 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
   },
   {
     area: "CALIDAD",
+    seccion: "A. CALIDAD 3ER. TURNO",
+    puesto: "OPERADOR DE ACABADOS GP-12",
+    plantilla_autorizada: 2,
+    bono: true,
+    bono_monto: 619,
+    backup: 0,
+  }
+  {
+    area: "CALIDAD",
     seccion: "CALIDAD ADMTVO",
     puesto: "GERENTE DE CALIDAD",
     plantilla_autorizada: 1,
