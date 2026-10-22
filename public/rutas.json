@@ -2860,16 +2860,6 @@
     "parada": "PASEO QUERETARO ESQ. PIRINEOS"
   },
   {
-    "numero_empleado": "4400",
-    "nombre": "MIRANDA LOPEZ YAHANA",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
-    "puesto": "OPERADOR DE MÁQUINA D",
-    "turno": "3",
-    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "AV. DE LA LUZ",
-    "parada": "ESQ. MATLAZINCAS EN LA FARMACIA GUADALAJARA"
-  },
-  {
     "numero_empleado": "4401",
     "nombre": "BECERRA CRUZ MARIANA",
     "seccion": "A. CALIDAD 1ER TURNO",
@@ -2928,5 +2918,46 @@
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "FRACC. MONTENEGRO",
     "parada": "PARADA DE CAMIONES HUIZACHE"
+  },
+  {
+    "numero_empleado": "4408",
+    "nombre": "MANCINES PEÑA SARAHI",
+    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "puesto": "OPERADOR DE MÁQUINA D",
+    "turno": "1",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "colonia": "SAN JOSE ITURBIDE",
+    "parada": "CRUZ ROJA MEXICANA"
+  },
+  {
+    "numero_empleado": "4409",
+    "nombre": "HERNANDEZ CHAVEZ MARIBEL",
+    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "puesto": "OPERADOR DE MÁQUINA D",
+    "turno": "1",
+    "nombre ruta": "R4-SANTA ROSA",
+    "colonia": "HDA SANTA ROSA ",
+    "parada": "FARMACIA GUADALAJARA"
+  },
+  {
+    "numero_empleado": "4410",
+    "nombre": "MENDOZA SANCHEZ MARIA BELEN",
+    "seccion": "PRODUCCIÓN 1ER. TURNO",
+    "puesto": "OPERADOR DE MÁQUINA D",
+    "turno": "1",
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
+    "colonia": "LA BARRETA",
+    "parada": "TIENDA EN LA ENTRADA"
+  },
+  {
+    "numero_empleado": "4411",
+    "nombre": "GAYTAN MEDINA CARMEN MAYREN",
+    "seccion": "ALMACÉN 2DO TURNO ",
+    "puesto": "AUXILIAR DE ALMACÉN C",
+    "turno": "31",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "colonia": "SAN JOSE ITURBIDE",
+    "parada": "PARADA EN LA ESCUELA 5 DE MAYO"
   }
 ]
+ 
