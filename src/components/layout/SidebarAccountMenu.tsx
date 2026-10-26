@@ -24,6 +24,7 @@ export function SidebarAccountMenu({ username, displayName, avatarUrl, role, col
   const [open, setOpen] = useState(false);
   const [confirming, setConfirming] = useState(false);
   const { handleSignOut, isLoading } = useSignOut();
+  const awaitingConfirmation = confirming && !isLoading;
   const name = toNaturalCase(displayName || username, { preserveAcronyms: false });
   const roleLabel = role === 'admin' ? (language === 'en' ? 'Administrator' : 'Administrador')
     : role === 'reclutador' ? (language === 'en' ? 'Recruiter' : 'Reclutador') : '';
@@ -58,8 +59,8 @@ export function SidebarAccountMenu({ username, displayName, avatarUrl, role, col
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <div className="sidebar__account-actions" data-confirming={confirming}>
-          {confirming && <DropdownMenuItem onSelect={(event) => { event.preventDefault(); setConfirming(false); }}>
+        <div className="sidebar__account-actions" data-confirming={awaitingConfirmation}>
+          {awaitingConfirmation && <DropdownMenuItem onSelect={(event) => { event.preventDefault(); setConfirming(false); }}>
             {language === 'en' ? 'Cancel' : 'Cancelar'}
           </DropdownMenuItem>}
           <DropdownMenuItem variant="destructive" disabled={isLoading} aria-busy={isLoading}
