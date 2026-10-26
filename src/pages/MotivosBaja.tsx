@@ -231,7 +231,7 @@ export function MotivosBaja() {
                 <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fill: 'var(--color-muted)' }} />
                 <YAxis allowDecimals={false} domain={[0, (dataMax: number) => Math.max(1, Math.ceil(dataMax * 1.15))]} tickLine={false} axisLine={false} tick={{ fill: 'var(--color-muted)' }} width="auto" />
                 <Tooltip />
-                {monthlyRows.length > 1 && <Legend formatter={() => copy.trend} />}
+                {monthlyRows.length > 1 && <Legend />}
                 {monthlyRows.length > 1 && (
                   <Line
                     type="linear"
