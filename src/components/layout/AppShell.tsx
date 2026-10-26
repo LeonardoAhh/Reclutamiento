@@ -114,6 +114,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         mobileMenuOpen={isMobileMenuOpen}
         onCloseMobileMenu={closeMobileMenu}
         collapsed={isDesktop && collapsed}
+        onToggleCollapsed={toggleCollapsed}
       />
       {isMobileMenuOpen && (
         <button
@@ -130,8 +131,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           pageTitle={pageTitle}
           isHome={location.pathname === HOME_PATH}
           isDesktop={isDesktop}
-          sidebarCollapsed={collapsed}
-          onSidebarToggle={isDesktop ? toggleCollapsed : toggleMobileMenu}
+          onMobileMenuToggle={toggleMobileMenu}
           mobileMenuOpen={isMobileMenuOpen}
           mobileMenuButtonRef={mobileMenuButtonRef}
           language={language}

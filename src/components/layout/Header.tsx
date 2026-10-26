@@ -1,5 +1,4 @@
 import type { Ref } from 'react';
-import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { MorphMenuIcon } from '@/components/ui/MorphMenuIcon';
 import type { Language } from '@/contexts/LanguageContext';
 import { useAuth } from '@/hooks/useAuth';
@@ -12,22 +11,18 @@ interface HeaderProps {
   pageTitle: string;
   isHome: boolean;
   isDesktop: boolean;
-  sidebarCollapsed: boolean;
-  onSidebarToggle: () => void;
+  onMobileMenuToggle: () => void;
   mobileMenuButtonRef?: Ref<HTMLButtonElement>;
   mobileMenuOpen?: boolean;
   language: Language;
 }
 
-export function Header({ pageTitle, isHome, isDesktop, sidebarCollapsed, onSidebarToggle,
+export function Header({ pageTitle, isHome, isDesktop, onMobileMenuToggle,
   mobileMenuOpen = false, mobileMenuButtonRef, language }: HeaderProps) {
   const { profile } = useAuth();
   const { members } = useTeamDirectory();
-  const toggleLabel = isDesktop
-    ? sidebarCollapsed ? (language === 'en' ? 'Expand sidebar' : 'Expandir barra lateral')
-      : (language === 'en' ? 'Collapse sidebar' : 'Contraer barra lateral')
-    : mobileMenuOpen ? (language === 'en' ? 'Hide menu' : 'Ocultar menú')
-      : (language === 'en' ? 'Show menu' : 'Mostrar menú');
+  const toggleLabel = mobileMenuOpen ? (language === 'en' ? 'Hide menu' : 'Ocultar menú')
+    : (language === 'en' ? 'Show menu' : 'Mostrar menú');
 
   return (
     <header className="app-header" id="main-header">
@@ -37,14 +32,12 @@ export function Header({ pageTitle, isHome, isDesktop, sidebarCollapsed, onSideb
             {isHome ? <span className="app-header__fallback-title">{pageTitle}</span>
               : <h1 className="app-header__fallback-title">{pageTitle}</h1>}
           </div>
-          <button ref={mobileMenuButtonRef} type="button" className="app-header__sidebar-toggle"
-            onClick={onSidebarToggle}
-            aria-expanded={isDesktop ? !sidebarCollapsed : mobileMenuOpen}
+          {!isDesktop && <button ref={mobileMenuButtonRef} type="button" className="app-header__sidebar-toggle"
+            onClick={onMobileMenuToggle}
+            aria-expanded={mobileMenuOpen}
             aria-controls="app-sidebar" aria-label={toggleLabel}>
-            {isDesktop
-              ? sidebarCollapsed ? <PanelLeftOpen aria-hidden="true" /> : <PanelLeftClose aria-hidden="true" />
-              : <MorphMenuIcon isOpen={mobileMenuOpen} size="var(--icon-size-md)" />}
-          </button>
+            <MorphMenuIcon isOpen={mobileMenuOpen} size="var(--icon-size-md)" />
+          </button>}
         </div>
         <div className="app-header__actions">
           <SidebarQuickActions profile={profile} members={members}>

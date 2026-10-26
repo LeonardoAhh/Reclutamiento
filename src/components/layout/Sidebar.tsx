@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { MorphMenuIcon } from '@/components/ui/MorphMenuIcon';
+import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { Tooltip } from '@/components/ui/Tooltip';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { getLocalizedNavigation } from './navigation';
@@ -13,9 +15,10 @@ type SidebarProps = {
   mobileMenuOpen?: boolean;
   onCloseMobileMenu?: () => void;
   collapsed?: boolean;
+  onToggleCollapsed: () => void;
 };
 
-export function Sidebar({ mobileMenuOpen = false, onCloseMobileMenu, collapsed = false }: SidebarProps) {
+export function Sidebar({ mobileMenuOpen = false, onCloseMobileMenu, collapsed = false, onToggleCollapsed }: SidebarProps) {
   const { username, profile } = useAuth();
   const { language } = useLanguage();
   const location = useLocation();
@@ -55,6 +58,15 @@ export function Sidebar({ mobileMenuOpen = false, onCloseMobileMenu, collapsed =
   }, [location.pathname, onCloseMobileMenu]);
 
   if (!username) return null;
+  const desktopToggle = (
+    <button type="button" className="sidebar__desktop-toggle" onClick={onToggleCollapsed}
+      aria-expanded={!collapsed} aria-controls="app-sidebar"
+      aria-label={collapsed
+        ? language === 'en' ? 'Show sidebar' : 'Mostrar barra lateral'
+        : language === 'en' ? 'Collapse sidebar' : 'Contraer barra lateral'}>
+      {collapsed ? <PanelLeftOpen aria-hidden="true" /> : <PanelLeftClose aria-hidden="true" />}
+    </button>
+  );
   return (
     <aside
       ref={sidebarRef}
@@ -68,6 +80,11 @@ export function Sidebar({ mobileMenuOpen = false, onCloseMobileMenu, collapsed =
     >
       <div className="sidebar__top">
         <SidebarBrand />
+        <Tooltip content={collapsed
+          ? language === 'en' ? 'Show sidebar' : 'Mostrar barra lateral'
+          : language === 'en' ? 'Collapse sidebar' : 'Contraer barra lateral'} side="right">
+          {desktopToggle}
+        </Tooltip>
         <button type="button" className="sidebar__close-btn" onClick={onCloseMobileMenu}
           aria-expanded={mobileMenuOpen} aria-controls="app-sidebar"
           data-testid="sidebar-close-toggle"

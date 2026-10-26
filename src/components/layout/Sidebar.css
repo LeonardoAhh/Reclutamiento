@@ -133,6 +133,30 @@ button.sidebar__close-btn {
   transition: background-color var(--transition-fast);
 }
 
+button.sidebar__desktop-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--touch-target-min);
+  block-size: var(--touch-target-min);
+  padding: 0;
+  border: 0;
+  border-radius: var(--rounded-full);
+  background: transparent;
+  color: var(--color-ink);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+button.sidebar__desktop-toggle:hover {
+  color: var(--color-primary-text);
+}
+
+.sidebar__desktop-toggle svg {
+  inline-size: var(--icon-size-md);
+  block-size: var(--icon-size-md);
+}
+
 @media (hover: hover) {
   button.sidebar__close-btn:hover {
     background-color: var(--color-surface-soft);
@@ -461,12 +485,27 @@ button.sidebar__close-btn {
     padding-block: var(--design-spacing-xxs);
   }
 
+  button.sidebar__desktop-toggle {
+    display: inline-flex;
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+  }
+
   .app-shell[data-sidebar-collapsed="true"] .sidebar__top {
     grid-template-columns: minmax(0, 1fr);
     padding-inline: 0;
   }
 
-  .app-shell[data-sidebar-collapsed="true"] .sidebar__brand,
+  .app-shell[data-sidebar-collapsed="true"] .sidebar__brand {
+    display: none;
+  }
+
+  .app-shell[data-sidebar-collapsed="true"] .sidebar__desktop-toggle {
+    grid-column: 1;
+    justify-self: center;
+  }
+
   .app-shell[data-sidebar-collapsed="true"] .sidebar__account-trigger,
   .app-shell[data-sidebar-collapsed="true"] .sidebar__item {
     justify-content: center;
@@ -521,7 +560,8 @@ button.sidebar__close-btn {
   .sidebar,
   .sidebar__item,
   .sidebar__item-icon,
-  .sidebar__account-chevron {
+  .sidebar__account-chevron,
+  .sidebar__desktop-toggle {
     transition: none;
   }
   .sidebar-mobile-overlay {
