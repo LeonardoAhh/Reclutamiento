@@ -278,7 +278,7 @@ Antes de utilizar texto muted o faint, se DEBE comprobar su contraste sobre la s
 
 ## 9. Tipografía
 
-- Usar únicamente las familias definidas en `desing.md`: **Inter** para cuerpo, controles y headings (sustituto autorizado de Cal Sans), y el stack monoespaciado solo para código y eyebrows técnicos.
+- Usar únicamente las familias definidas en `desing.md`: **Plus Jakarta Sans** autoalojada para cuerpo, controles y headings, y el stack monoespaciado solo para código y eyebrows técnicos.
 - No descargar ni simular Cal Sans u otra fuente sin permiso.
 - Usar los tokens tipográficos completos, no solo el tamaño: cada regla aplica familia, tamaño, peso, line-height y tracking del mismo rol (`--type-<rol>-*`).
 - El tracking forma parte del rol. Los alias `--tracking-*` están obsoletos.
