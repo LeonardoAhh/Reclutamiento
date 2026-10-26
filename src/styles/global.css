@@ -46,8 +46,9 @@
   --color-primary-border: var(--color-primary-text);
   --color-primary-text: #11428f;
   --color-primary-text-on-dark: #d0e5ff;
-  --color-primary-active: #11428f;
-  --color-primary-pressed: #0d387c;
+  /* Hover 8.86:1 y pressed 10.89:1 con on-primary; antes 1.08:1 y 1.27:1 contra el relleno. */
+  --color-primary-active: #0f3c85;
+  --color-primary-pressed: #0a2f6b;
   --color-primary-disabled: var(--color-hairline);
   --color-link: var(--color-primary-text);
   --color-link-deep: #0d387c;
@@ -191,6 +192,8 @@
   --color-error-tint: var(--color-error-subtle);
   --color-warning-tint: var(--color-warning-subtle);
   --color-primary-tint: var(--color-hairline-soft);
+  /* Hover de controles neutros: más marcado que surface-soft (= surface-card). */
+  --color-surface-hover: var(--color-hairline-soft);
   --color-header-glass: rgb(var(--color-canvas-rgb) / 0.92);
 
   /* La interfaz usa la familia variable local en ambos temas. */
@@ -631,7 +634,7 @@
   --color-border: var(--color-hairline);
   --color-focus: var(--color-ink);
   --color-surface-contrast: var(--color-ink);
-  --color-surface-sunken: var(--color-surface-soft);
+  --color-surface-sunken: var(--color-canvas-soft);
   --color-surface-cream-strong: var(--color-surface-soft);
   --color-text-primary: var(--color-ink);
   --color-text-tertiary: var(--color-muted);
@@ -682,7 +685,8 @@
   --color-primary: #12469c;
   --color-primary-border: var(--color-primary-text);
   --color-primary-text: var(--color-primary-text-on-dark);
-  --color-primary-active: #11428f;
+  --color-primary-active: #0f3c85;
+  --color-primary-pressed: #0a2f6b;
   --color-primary-rgb: 18 70 156;
   --color-secondary: var(--color-primary);
   --color-secondary-rgb: var(--color-primary-rgb);
@@ -778,6 +782,10 @@ html {
   -moz-osx-font-smoothing: grayscale;
   /* iOS: el safe-area toma su color del <html>, no del <body>. */
   background-color: var(--color-canvas);
+}
+
+/* scrollbar-width no se hereda: debe aplicarse a cada contenedor con scroll. */
+* {
   scrollbar-width: thin;
   scrollbar-color: var(--color-hairline-strong) transparent;
 }
@@ -937,7 +945,7 @@ pre {
 }
 
 code:not(pre code) {
-  background: var(--color-surface-soft);
+  background: var(--color-canvas-soft);
   color: var(--color-ink);
   padding: 0 var(--design-spacing-xxs);
   border-radius: var(--rounded-sm);
@@ -1308,6 +1316,9 @@ code:not(pre code) {
   font-weight: var(--type-caption-up-weight);
   line-height: var(--type-caption-up-line);
   letter-spacing: var(--type-caption-up-tracking);
+  /* caption-up es un rol en mayúsculas (design.md). Alternativa sin mayúsculas:
+     usar body-sm-semibold (12/600, tracking 0). */
+  text-transform: uppercase;
 }
 
 .form-group input:not(:where([type="checkbox"], [type="radio"], [type="file"], [type="hidden"])),
@@ -1519,7 +1530,7 @@ code:not(pre code) {
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: var(--color-surface-soft);
+  background: var(--color-surface-hover);
   border-color: var(--color-charcoal);
 }
 
@@ -1561,7 +1572,7 @@ code:not(pre code) {
 }
 
 .btn-ghost:hover:not(:disabled) {
-  background: var(--color-surface-soft);
+  background: var(--color-surface-hover);
   color: var(--color-ink);
 }
 
@@ -1617,7 +1628,7 @@ code:not(pre code) {
 
 .btn-icon:hover:not(:disabled) {
   color: var(--color-ink);
-  background: var(--color-surface-soft);
+  background: var(--color-surface-hover);
 }
 
 .btn-icon--danger:hover:not(:disabled) {
@@ -1646,7 +1657,7 @@ code:not(pre code) {
 }
 
 .step-nav-control:hover:not(:disabled) {
-  background: var(--color-surface-soft);
+  background: var(--color-surface-hover);
 }
 
 .step-nav-control:disabled {
@@ -1692,7 +1703,7 @@ code:not(pre code) {
 }
 
 .card--soft {
-  background: var(--color-surface-soft);
+  background: var(--color-canvas-soft);
   border-color: var(--color-hairline-soft);
 }
 
@@ -1914,7 +1925,7 @@ code:not(pre code) {
 
 .modal-close:is(:hover, :focus-visible),
 .modal-back-btn:is(:hover, :focus-visible) {
-  background: var(--color-surface-soft);
+  background: var(--color-surface-hover);
 }
 
 .modal-body {
@@ -2107,6 +2118,7 @@ code:not(pre code) {
    SCROLLBAR — visible y discreto
    ======================================== */
 
+/* Solo Safari antiguo: los navegadores con scrollbar-color ignoran estos estilos. */
 ::-webkit-scrollbar {
   width: var(--scrollbar-size);
   height: var(--scrollbar-size);
@@ -2141,10 +2153,15 @@ code:not(pre code) {
 /* Un único indicador. Los campos compuestos lo delegan al contenedor solo
    mientras su input tiene foco; sus botones mantienen un indicador propio. */
 :focus-visible:not(:where([data-focus-ring] > input, [data-focus-ring] > textarea, label > input.sr-only, .toggle-switch input, .ui-checkbox__input)),
-[data-focus-ring]:has(> :is(input, textarea):focus-visible),
-label:has(> input.sr-only:focus-visible),
 .toggle-switch input:focus-visible+.toggle-switch__slider,
 .ui-checkbox__input:focus-visible~.ui-checkbox__indicator {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* Separadas: un navegador sin :has() descartaría toda la lista y perdería el foco. */
+[data-focus-ring]:has(> :is(input, textarea):focus-visible),
+label:has(> input.sr-only:focus-visible) {
   outline: var(--focus-ring-width) solid var(--color-focus);
   outline-offset: var(--focus-ring-offset);
 }
@@ -2269,10 +2286,15 @@ label>input.sr-only:focus-visible,
 @media (forced-colors: active) {
 
   :focus-visible:not(:where([data-focus-ring] > input, [data-focus-ring] > textarea, label > input.sr-only, .toggle-switch input, .ui-checkbox__input)),
-  [data-focus-ring]:has(> :is(input, textarea):focus-visible),
-  label:has(> input.sr-only:focus-visible),
   .toggle-switch input:focus-visible+.toggle-switch__slider,
   .ui-checkbox__input:focus-visible~.ui-checkbox__indicator {
+    outline: var(--focus-ring-width) solid Highlight !important;
+    outline-offset: var(--focus-ring-offset) !important;
+    box-shadow: none !important;
+  }
+
+  [data-focus-ring]:has(> :is(input, textarea):focus-visible),
+  label:has(> input.sr-only:focus-visible) {
     outline: var(--focus-ring-width) solid Highlight !important;
     outline-offset: var(--focus-ring-offset) !important;
     box-shadow: none !important;
