@@ -4,6 +4,16 @@
   padding-block-end: var(--design-spacing-xxl);
 }
 
+.home-page__greeting {
+  margin: 0;
+  color: var(--color-muted);
+  font-family: var(--font-body);
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--font-bold);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
 .home-page__learning,
 .home-page__topic-content,
 .home-page__lessons,

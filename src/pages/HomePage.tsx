@@ -1,5 +1,4 @@
 import { useLayoutEffect, useRef, useState } from "react";
-import { PageHeading } from '@/components/layout/PageHeading';
 import { ArrowUpRight, Brain, ChevronLeft, ChevronRight, Scale, ShieldCheck, UsersRound } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Modal } from "@/components/ui/Modal";
@@ -217,9 +216,9 @@ export function HomePage() {
 
   return (
     <main className="home-page container" aria-labelledby="home-page-title">
-      <PageHeading id="home-page-title" className="app-page-title">
+      <h1 id="home-page-title" className="home-page__greeting">
         {en ? 'Hello' : 'Hola'}, {firstName}.
-      </PageHeading>
+      </h1>
 
       <div id="home-content" className="home-page__learning">
         <section id="home-topic-content" className="home-page__topic-content"

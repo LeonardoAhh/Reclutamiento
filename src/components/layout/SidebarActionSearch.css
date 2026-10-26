@@ -86,15 +86,4 @@
     inline-size: max-content;
     max-inline-size: min(var(--menu-inline-size-md), var(--radix-popover-content-available-width));
   }
-
-  .sidebar-action-search__trigger-surface {
-    inline-size: auto;
-    padding-inline: var(--design-spacing-sm);
-    border-radius: var(--radius-control);
-  }
-
-  .sidebar-action-search__trigger-label {
-    display: inline;
-    white-space: nowrap;
-  }
 }

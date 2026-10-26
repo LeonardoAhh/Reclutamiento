@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useMatch } from 'react-router-dom';
 import { LogOut, UserRound } from 'lucide-react';
 import { Avatar } from '@/components/ui/Avatar';
 import { Tooltip } from '@/components/ui/Tooltip';
@@ -20,6 +20,7 @@ type SidebarAccountMenuProps = {
 
 export function SidebarAccountMenu({ username, displayName, avatarUrl, role, collapsed }: SidebarAccountMenuProps) {
   const { language } = useLanguage();
+  const accountActive = Boolean(useMatch(ACCOUNT_PATH));
   const [open, setOpen] = useState(false);
   const [confirming, setConfirming] = useState(false);
   const { handleSignOut, isLoading } = useSignOut();
@@ -46,7 +47,7 @@ export function SidebarAccountMenu({ username, displayName, avatarUrl, role, col
       {collapsed ? <Tooltip content={language === 'en' ? 'Account' : 'Cuenta'} side="right">{trigger}</Tooltip> : trigger}
       <DropdownMenuContent side="top" align="start" className="sidebar__account-menu">
         <DropdownMenuItem asChild>
-          <Link to={ACCOUNT_PATH} onClick={() => playSound('navigate')}>
+          <Link to={ACCOUNT_PATH} aria-current={accountActive ? 'page' : undefined} onClick={() => playSound('navigate')}>
             <UserRound aria-hidden="true" />{language === 'en' ? 'My account' : 'Mi cuenta'}
           </Link>
         </DropdownMenuItem>
