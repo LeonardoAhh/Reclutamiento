@@ -1,68 +1,62 @@
-import type { Ref } from "react";
-import { MorphMenuIcon } from "@/components/ui/MorphMenuIcon";
-import type { Language } from "@/contexts/LanguageContext";
-import { useAuth } from "@/hooks/useAuth";
-import { toNaturalCase } from "@/lib/utils";
-import { SidebarActionSearch } from "./SidebarActionSearch";
-import { SidebarQuickActions } from "./SidebarQuickActions";
-import { useTeamDirectory } from "@/features/team/TeamProvider";
-import { AccountLink } from "./AccountLink";
-import "./Header.css";
+import type { Ref } from 'react';
+import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { MorphMenuIcon } from '@/components/ui/MorphMenuIcon';
+import type { Language } from '@/contexts/LanguageContext';
+import { useAuth } from '@/hooks/useAuth';
+import { useTeamDirectory } from '@/features/team/TeamProvider';
+import { SidebarActionSearch } from './SidebarActionSearch';
+import { SidebarQuickActions } from './SidebarQuickActions';
+import { Breadcrumbs } from './Breadcrumbs';
+import './Header.css';
 
 interface HeaderProps {
   pageTitle: string;
+  pathname: string;
+  isHome: boolean;
+  isDesktop: boolean;
+  sidebarCollapsed: boolean;
+  onSidebarToggle: () => void;
   mobileMenuButtonRef?: Ref<HTMLButtonElement>;
-  onMobileMenuToggle?: () => void;
   mobileMenuOpen?: boolean;
   language: Language;
 }
 
-export function Header({ pageTitle, onMobileMenuToggle, mobileMenuOpen = false, mobileMenuButtonRef, language }: HeaderProps) {
-  const { username, profile } = useAuth();
+export function Header({ pageTitle, pathname, isHome, isDesktop, sidebarCollapsed, onSidebarToggle,
+  mobileMenuOpen = false, mobileMenuButtonRef, language }: HeaderProps) {
+  const { profile } = useAuth();
   const { members } = useTeamDirectory();
+  const toggleLabel = isDesktop
+    ? sidebarCollapsed ? (language === 'en' ? 'Expand sidebar' : 'Expandir barra lateral')
+      : (language === 'en' ? 'Collapse sidebar' : 'Contraer barra lateral')
+    : mobileMenuOpen ? (language === 'en' ? 'Hide menu' : 'Ocultar menú')
+      : (language === 'en' ? 'Show menu' : 'Mostrar menú');
 
   return (
     <header className="app-header" id="main-header">
       <div className="app-header__inner">
         <div className="app-header__left">
-          {onMobileMenuToggle && (
-            <button
-              ref={mobileMenuButtonRef}
-              type="button"
-              className="app-header__mobile-menu-btn"
-              onClick={onMobileMenuToggle}
-              aria-expanded={mobileMenuOpen}
-              aria-controls="app-sidebar"
-              aria-label={language === "en"
-                ? mobileMenuOpen ? "Hide menu" : "Show menu"
-                : mobileMenuOpen ? "Ocultar menú" : "Mostrar menú"}
-            >
-              <MorphMenuIcon
-                isOpen={mobileMenuOpen}
-                size="var(--icon-size-md)"
-              />
-            </button>
-          )}
+          <button ref={mobileMenuButtonRef} type="button" className="btn-icon app-header__sidebar-toggle"
+            onClick={onSidebarToggle}
+            aria-expanded={isDesktop ? !sidebarCollapsed : mobileMenuOpen}
+            aria-controls="app-sidebar" aria-label={toggleLabel}>
+            {isDesktop
+              ? sidebarCollapsed ? <PanelLeftOpen aria-hidden="true" /> : <PanelLeftClose aria-hidden="true" />
+              : <MorphMenuIcon isOpen={mobileMenuOpen} size="var(--icon-size-md)" />}
+          </button>
+          <div className="app-header__heading">
+            <Breadcrumbs pathname={pathname} language={language} />
+            <div className="app-header__title" id="app-header-title">
+              {isHome ? <span className="app-header__fallback-title">{pageTitle}</span>
+                : <h1 className="app-header__fallback-title">{pageTitle}</h1>}
+            </div>
+          </div>
         </div>
-
-        <div className="app-header__title" id="app-header-title">
-          <h1 className="app-header__fallback-title">{pageTitle}</h1>
-        </div>
-
         <div className="app-header__actions">
           <SidebarQuickActions profile={profile} members={members}>
             {(quickActions) => (
               <SidebarActionSearch mobileMenuOpen={mobileMenuOpen} quickActions={profile ? quickActions : undefined} />
             )}
           </SidebarQuickActions>
-          {username && (
-            <AccountLink
-              displayName={toNaturalCase(profile?.display_name || username, {
-                preserveAcronyms: false,
-              })}
-              avatarUrl={profile?.avatar_url ?? undefined}
-            />
-          )}
         </div>
       </div>
     </header>

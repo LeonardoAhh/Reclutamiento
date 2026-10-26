@@ -17,6 +17,7 @@ import { CANDIDATE_METRICS_PATH } from '@/pages/candidate-metrics/navigation';
 import { PERFORMANCE_EVALUATIONS_2027_PATH } from '@/features/performance-evaluations-2027/types';
 import { bindSoundInteractions } from '@/lib/sound';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useSidebarCollapsed } from './useSidebarCollapsed';
 
 const PAGE_TITLES: Readonly<Record<string, string>> = {
   [HOME_PATH]: 'Inicio',
@@ -40,6 +41,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
   const restoreMenuFocusRef = useRef(false);
   const isDesktop = useMediaQuery(DESKTOP_MEDIA_QUERY);
+  const { collapsed, toggleCollapsed } = useSidebarCollapsed();
   const isMobileMenuOpen = mobileMenuOpen && !isDesktop;
   const location = useLocation();
 
@@ -106,11 +108,12 @@ export function AppShell({ children }: { children: ReactNode }) {
   }, [isMobileMenuOpen, closeMobileMenu]);
 
   return (
-    <div className="app-shell">
+    <div className="app-shell" data-sidebar-collapsed={collapsed}>
       <SessionNotice />
       <Sidebar
         mobileMenuOpen={isMobileMenuOpen}
         onCloseMobileMenu={closeMobileMenu}
+        collapsed={isDesktop && collapsed}
       />
       {isMobileMenuOpen && (
         <button
@@ -125,7 +128,11 @@ export function AppShell({ children }: { children: ReactNode }) {
       <div className="app-shell__workspace" inert={isMobileMenuOpen}>
         <Header
           pageTitle={pageTitle}
-          onMobileMenuToggle={toggleMobileMenu}
+          pathname={location.pathname}
+          isHome={location.pathname === HOME_PATH}
+          isDesktop={isDesktop}
+          sidebarCollapsed={collapsed}
+          onSidebarToggle={isDesktop ? toggleCollapsed : toggleMobileMenu}
           mobileMenuOpen={isMobileMenuOpen}
           mobileMenuButtonRef={mobileMenuButtonRef}
           language={language}
