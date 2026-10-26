@@ -68,11 +68,13 @@ export function SidebarAccountMenu({ username, displayName, avatarUrl, role, col
               ? language === 'en' ? 'Signing out' : 'Cerrando sesión'
               : confirming ? language === 'en' ? 'Confirm sign out' : 'Confirmar cierre de sesión' : undefined}
             onSelect={(event) => {
-            event.preventDefault();
             if (!confirming) {
+              event.preventDefault();
               playSound('attention');
               setConfirming(true);
             } else {
+              setOpen(false);
+              setConfirming(false);
               void handleSignOut();
             }
           }}>
