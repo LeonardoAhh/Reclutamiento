@@ -3,7 +3,7 @@ import { Link, useMatch } from 'react-router-dom';
 import { ChevronUp, LogOut, UserRound } from 'lucide-react';
 import { Avatar } from '@/components/ui/Avatar';
 import { Tooltip } from '@/components/ui/Tooltip';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/DropdownMenu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/DropdownMenu';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSignOut } from '@/features/account/useSignOut';
 import { playSound } from '@/lib/sound';
@@ -47,9 +47,14 @@ export function SidebarAccountMenu({ username, displayName, avatarUrl, role, col
     }}>
       {collapsed ? <Tooltip content={language === 'en' ? 'Account' : 'Cuenta'} side="right">{trigger}</Tooltip> : trigger}
       <DropdownMenuContent side="top" align="start" className="sidebar__account-menu">
+        <DropdownMenuLabel className="sidebar__account-menu-header">
+          <span className="sidebar__account-menu-name">{name}</span>
+          <span className="sidebar__account-menu-meta">{roleLabel ? `${roleLabel} · ViñoPlastic` : 'ViñoPlastic'}</span>
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link to={ACCOUNT_PATH} aria-current={accountActive ? 'page' : undefined} onClick={() => playSound('navigate')}>
-            <UserRound aria-hidden="true" />{language === 'en' ? 'My account' : 'Mi cuenta'}
+            <UserRound aria-hidden="true" />{language === 'en' ? 'My profile' : 'Mi perfil'}
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
