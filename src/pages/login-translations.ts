@@ -27,7 +27,6 @@ export const loginTranslations = {
     storyTitle: "Tu espacio de trabajo.",
     storyDescription: "Retoma los pendientes de reclutamiento y personal.",
     greeting: "Hola",
-    storyGreeting: "Hola, soy Wave.",
     storyWelcome: "Qué gusto verte de nuevo por aquí.",
   },
   en: {
@@ -54,7 +53,6 @@ export const loginTranslations = {
     storyTitle: "Your workspace.",
     storyDescription: "Pick up where you left off with recruiting and personnel tasks.",
     greeting: "Hello",
-    storyGreeting: "Hello, I'm Wave.",
     storyWelcome: "It's great to see you again.",
   },
 } as const;

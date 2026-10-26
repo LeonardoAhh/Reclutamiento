@@ -1,6 +1,6 @@
-import { success, think, wave } from "robot-toast/robots";
 import { useLoginStoryAnimation } from "./useLoginStoryAnimation";
 import { BrandMark } from "@/components/ui/BrandMark";
+import { LiveOrb } from "@/components/ui/LiveOrb";
 import { loginTranslations, type LoginLanguage } from "../login-translations";
 
 interface LoginStoryProps {
@@ -9,12 +9,12 @@ interface LoginStoryProps {
 }
 
 export function LoginStory({ username, language }: LoginStoryProps) {
-  const { scope, enabled } = useLoginStoryAnimation();
+  const { scope, isDesktop } = useLoginStoryAnimation();
   const copy = loginTranslations[language];
 
   const greeting = username
     ? `${copy.greeting}, ${username[0].toUpperCase() + username.slice(1)}.`
-    : copy.storyGreeting;
+    : `${copy.greeting}.`;
 
   return (
     <section className="login-story" aria-labelledby="login-story-title">
@@ -32,14 +32,10 @@ export function LoginStory({ username, language }: LoginStoryProps) {
             <p className="login-story__description">{copy.storyDescription}</p>
           </div>
         </div>
-        {enabled && (
-          <div className="login-story__scene login-story__robot">
+        {isDesktop && (
+          <div className="login-story__scene login-story__orb">
             <div className="login-story__visual">
-              <div className="login-story__robot-motion">
-                <img className="login-story__robot-image" data-expression="wave" src={wave} alt="" />
-                <img className="login-story__robot-image" data-expression="think" src={think} alt="" />
-                <img className="login-story__robot-image" data-expression="success" src={success} alt="" />
-              </div>
+              <LiveOrb size={160} />
             </div>
             <div className="login-story__copy">
               <p className="login-story__title">{greeting}</p>

@@ -1,0 +1,29 @@
+.live-orb {
+  position: relative;
+  flex: none;
+}
+
+.live-orb__fallback {
+  position: absolute;
+  inset: 2%;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.live-orb__eye {
+  position: absolute;
+  top: 34%;
+  width: 13%;
+  height: 28%;
+  border-radius: 9999px;
+}
+
+.live-orb__eye--left { left: 31%; }
+.live-orb__eye--right { left: 56%; }
+
+.live-orb__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
