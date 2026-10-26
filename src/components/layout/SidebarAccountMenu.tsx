@@ -61,7 +61,11 @@ export function SidebarAccountMenu({ username, displayName, avatarUrl, role, col
         {confirming && <DropdownMenuItem onSelect={(event) => { event.preventDefault(); setConfirming(false); }}>
           {language === 'en' ? 'Cancel' : 'Cancelar'}
         </DropdownMenuItem>}
-        <DropdownMenuItem variant="destructive" disabled={isLoading} onSelect={(event) => {
+        <DropdownMenuItem variant="destructive" disabled={isLoading} aria-busy={isLoading}
+          aria-label={isLoading
+            ? language === 'en' ? 'Signing out' : 'Cerrando sesión'
+            : confirming ? language === 'en' ? 'Confirm sign out' : 'Confirmar cierre de sesión' : undefined}
+          onSelect={(event) => {
           event.preventDefault();
           if (!confirming) {
             playSound('attention');
@@ -72,7 +76,7 @@ export function SidebarAccountMenu({ username, displayName, avatarUrl, role, col
         }}>
           <LogOut aria-hidden="true" />
           {isLoading ? (language === 'en' ? 'Signing out…' : 'Cerrando sesión…')
-            : confirming ? (language === 'en' ? 'Confirm sign out' : 'Confirmar cierre de sesión')
+            : confirming ? (language === 'en' ? 'Confirm' : 'Confirmar')
               : (language === 'en' ? 'Sign out' : 'Cerrar sesión')}
         </DropdownMenuItem>
       </DropdownMenuContent>
