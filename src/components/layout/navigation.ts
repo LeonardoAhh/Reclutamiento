@@ -16,6 +16,7 @@ import type { LucideIcon } from "lucide-react";
 import { PLANTILLA_PATH } from "@/lib/plantillaNavigation";
 import { ADMINISTRATION_PATH, getConfiguracionHref } from "@/lib/configuracionNavigation";
 import { KANBAN_PATH } from "@/features/kanban/types";
+import { REPORTS_PATH } from "@/components/reporte-diario/navigation";
 import type { Language } from "@/contexts/LanguageContext";
 
 export type NavigationRole = "admin" | "reclutador";
@@ -77,7 +78,7 @@ export const NAV_SECTIONS: ReadonlyArray<NavSection> = [
     label: "Seguimiento",
     items: [
       { to: getConfiguracionHref("analisis"), label: "Análisis", icon: ChartSpline },
-      { to: "/reports", label: "Reporte Diario", icon: NotebookText },
+      { to: REPORTS_PATH, label: "Reporte Diario", icon: NotebookText, roles: ["admin"] },
       { to: ADMINISTRATION_PATH, label: "Indicadores", icon: ChartNoAxesCombined, roles: ["admin"] },
       { to: getConfiguracionHref("rutas"), label: "Rutas", icon: Route },
     ],

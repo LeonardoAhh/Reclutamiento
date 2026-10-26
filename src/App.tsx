@@ -28,7 +28,7 @@ import { RutaDayEmployeesPage } from '@/components/ui/RutaDayEmployeesModal';
 import { DATA_UPDATE_PATH } from '@/features/data-update/types';
 import { ACCOUNT_PATH, ACTIVIDADES_PATH, HOME_PATH, LOGOUT_PATH, ORGANIZATION_CHART_PATH, TEAM_PATH, VACANCY_ASSIGNMENTS_PATH } from '@/components/layout/navigation';
 import { LogoutPage } from '@/features/account/LogoutPage';
-import { REPORT_COMPARISON_PATH, REPORT_DAY_ROUTE } from '@/components/reporte-diario/navigation';
+import { DEPARTURE_REASONS_PATH, REPORT_COMPARISON_PATH, REPORT_DAY_ROUTE, REPORTS_PATH, isDailyReportPath } from '@/components/reporte-diario/navigation';
 import { CANDIDATE_METRICS_PATH } from '@/pages/candidate-metrics/navigation';
 import { CAREER_JOURNEY_ENABLED, CAREER_PATH } from '@/features/career/types';
 import { LEAVE_REQUESTS_PATH } from '@/features/leave/requests';
@@ -67,7 +67,7 @@ function ProtectedContent() {
   const { pathname } = useLocation();
   const { profile } = useAuth();
   if (profile?.role === 'reclutador' &&
-    (pathname === ADMINISTRATION_PATH || pathname === PERFORMANCE_EVALUATIONS_2027_PATH)) {
+    (pathname === ADMINISTRATION_PATH || pathname === PERFORMANCE_EVALUATIONS_2027_PATH || isDailyReportPath(pathname))) {
     return <Navigate to={HOME_PATH} replace />;
   }
   return (
@@ -186,10 +186,10 @@ function App() {
                 <Route path="/employee-turnover" element={<WithSupabaseData resources={EMPLOYEE_DATA}><Bajas /></WithSupabaseData>} />
                 <Route path={ROUTE_DAY_EMPLOYEES_PATH} element={<RutaDayEmployeesPage />} />
                 <Route path={REPORT_COMPARISON_PATH} element={<ReportComparisonPage />} />
-                <Route path="/reports" element={<ReporteDiario />}>
+                <Route path={REPORTS_PATH} element={<ReporteDiario />}>
                   <Route path={REPORT_DAY_ROUTE} element={null} />
                 </Route>
-                <Route path="/departure-reasons" element={<MotivosBaja />} />
+                <Route path={DEPARTURE_REASONS_PATH} element={<MotivosBaja />} />
                 <Route path={ACTIVIDADES_PATH} element={<Actividades />} />
                 <Route path={ACTIVITY_IMAGE_ROUTE} element={<ActivityImagePage />} />
                 <Route path={KANBAN_PATH} element={<KanbanPage />} />
