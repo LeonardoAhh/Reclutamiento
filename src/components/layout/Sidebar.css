@@ -299,6 +299,18 @@ button.sidebar__desktop-toggle:hover {
   text-decoration: none;
 }
 
+.sidebar__account-actions[data-confirming="true"] {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--design-spacing-xxs);
+}
+
+.sidebar__account-actions[data-confirming="true"] .dropdown-menu-item {
+  min-inline-size: 0;
+  padding-inline: var(--design-spacing-xs);
+  white-space: nowrap;
+}
+
 .sidebar__account-menu .dropdown-menu-item[data-variant="destructive"] {
   color: var(--color-error-text);
 }
