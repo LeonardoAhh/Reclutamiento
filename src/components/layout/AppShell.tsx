@@ -128,7 +128,6 @@ export function AppShell({ children }: { children: ReactNode }) {
       <div className="app-shell__workspace" inert={isMobileMenuOpen}>
         <Header
           pageTitle={pageTitle}
-          pathname={location.pathname}
           isHome={location.pathname === HOME_PATH}
           isDesktop={isDesktop}
           sidebarCollapsed={collapsed}

@@ -6,12 +6,10 @@ import { useAuth } from '@/hooks/useAuth';
 import { useTeamDirectory } from '@/features/team/TeamProvider';
 import { SidebarActionSearch } from './SidebarActionSearch';
 import { SidebarQuickActions } from './SidebarQuickActions';
-import { Breadcrumbs } from './Breadcrumbs';
 import './Header.css';
 
 interface HeaderProps {
   pageTitle: string;
-  pathname: string;
   isHome: boolean;
   isDesktop: boolean;
   sidebarCollapsed: boolean;
@@ -21,7 +19,7 @@ interface HeaderProps {
   language: Language;
 }
 
-export function Header({ pageTitle, pathname, isHome, isDesktop, sidebarCollapsed, onSidebarToggle,
+export function Header({ pageTitle, isHome, isDesktop, sidebarCollapsed, onSidebarToggle,
   mobileMenuOpen = false, mobileMenuButtonRef, language }: HeaderProps) {
   const { profile } = useAuth();
   const { members } = useTeamDirectory();
@@ -35,7 +33,7 @@ export function Header({ pageTitle, pathname, isHome, isDesktop, sidebarCollapse
     <header className="app-header" id="main-header">
       <div className="app-header__inner">
         <div className="app-header__left">
-          <button ref={mobileMenuButtonRef} type="button" className="btn-icon app-header__sidebar-toggle"
+          <button ref={mobileMenuButtonRef} type="button" className="app-header__sidebar-toggle"
             onClick={onSidebarToggle}
             aria-expanded={isDesktop ? !sidebarCollapsed : mobileMenuOpen}
             aria-controls="app-sidebar" aria-label={toggleLabel}>
@@ -43,12 +41,9 @@ export function Header({ pageTitle, pathname, isHome, isDesktop, sidebarCollapse
               ? sidebarCollapsed ? <PanelLeftOpen aria-hidden="true" /> : <PanelLeftClose aria-hidden="true" />
               : <MorphMenuIcon isOpen={mobileMenuOpen} size="var(--icon-size-md)" />}
           </button>
-          <div className="app-header__heading">
-            <Breadcrumbs pathname={pathname} language={language} />
-            <div className="app-header__title" id="app-header-title">
-              {isHome ? <span className="app-header__fallback-title">{pageTitle}</span>
-                : <h1 className="app-header__fallback-title">{pageTitle}</h1>}
-            </div>
+          <div className="app-header__title" id="app-header-title">
+            {isHome ? <span className="app-header__fallback-title">{pageTitle}</span>
+              : <h1 className="app-header__fallback-title">{pageTitle}</h1>}
           </div>
         </div>
         <div className="app-header__actions">
