@@ -90,6 +90,10 @@
   color: var(--color-primary-text);
 }
 
+.app-header__sidebar-toggle[aria-expanded="true"] {
+  visibility: hidden;
+}
+
 .app-header__sidebar-toggle svg {
   inline-size: var(--icon-size-md);
   block-size: var(--icon-size-md);
