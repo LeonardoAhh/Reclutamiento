@@ -404,7 +404,7 @@
     "nombre": "LOYOLA CASTAÑON VICTOR",
     "seccion": "METROLOGÍA",
     "puesto": "METRÓLOGO A",
-    "turno": "2",
+    "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
@@ -524,7 +524,7 @@
     "nombre": "FLORES DOMINGUEZ CORAL ESTEFANIA",
     "seccion": "METROLOGÍA",
     "puesto": "METRÓLOGO B",
-    "turno": "4",
+    "turno": "3",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
     "colonia": "PIE DE LA CUESTA",
     "parada": "ESQ. CONCORDIA DONDE SALE LA RUTA L"
@@ -574,7 +574,7 @@
     "nombre": "LOPEZ CARRILLO JONATHAN EDUARDO",
     "seccion": "METROLOGÍA",
     "puesto": "METRÓLOGO A",
-    "turno": "4",
+    "turno": "3",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
     "colonia": "TLALOC ",
     "parada": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
@@ -1010,16 +1010,6 @@
     "parada": "FARMACIA GUADALAJARA"
   },
   {
-    "numero_empleado": "3324",
-    "nombre": "ANGEL BLANCO RAUL ENRIQUE",
-    "seccion": "PRODUCCIÓN MONTAJE",
-    "puesto": "MONTADOR DE MOLDES D",
-    "turno": "3",
-    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
-  },
-  {
     "numero_empleado": "3366",
     "nombre": "TREJO REYES FRANCISCA",
     "seccion": "PRODUCCIÓN 4o. TURNO",
@@ -1314,7 +1304,7 @@
     "nombre": "PEREZ BAHENA ALEJANDRA",
     "seccion": "METROLOGÍA",
     "puesto": "METRÓLOGO C",
-    "turno": "3",
+    "turno": "2",
     "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
     "colonia": "TLALOC ",
     "parada": "ESQ. SOMBRERETE, EN EL PUESTO DE PERIODICOS"
@@ -1324,7 +1314,7 @@
     "nombre": "VALLADARES MARTINEZ CRISTIAN",
     "seccion": "METROLOGÍA",
     "puesto": "METRÓLOGO C",
-    "turno": "2",
+    "turno": "1",
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
     "colonia": "PASEOS QUERETARO",
     "parada": "PARADA DE CAMIONES EN EL ASTURIANO AV SAN DANIEL"
@@ -1574,7 +1564,7 @@
     "nombre": "LOPEZ YAÑEZ DIEGO",
     "seccion": "METROLOGÍA",
     "puesto": "METRÓLOGO C",
-    "turno": "1",
+    "turno": "4",
     "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
     "colonia": "BUENAVISTA ",
     "parada": "PARADA DE AUTOBUSES DE LA SECUNDARIA"
@@ -1794,7 +1784,7 @@
     "nombre": "HERNANDEZ GARCIA DIEGO IVAN",
     "seccion": "RECURSOS HUMANOS",
     "puesto": "AUXILIAR DE LIMPIEZA B",
-    "turno": "2",
+    "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "MONTENEGRO",
     "parada": "LONCHERIA LILI"
@@ -1804,7 +1794,7 @@
     "nombre": "HERNANDEZ VITE CESAR ARMANDO",
     "seccion": "METROLOGÍA",
     "puesto": "METRÓLOGO C",
-    "turno": "3",
+    "turno": "2",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "colonia": "PROL. BERNARDO QUINTANA",
     "parada": "PARADA EN LA ESQUINA DEL CAMINO A SAN PEDRO MARTIN"
@@ -2302,9 +2292,9 @@
   {
     "numero_empleado": "4262",
     "nombre": "GAYOSSO CRUZ BRANDON JESUS",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "seccion": "PRODUCCIÓN 1ER. TURNO",
     "puesto": "OPERADOR DE MÁQUINA D",
-    "turno": "4",
+    "turno": "1",
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "HDA SANTA ROSA ",
     "parada": "FARMACIA GUADALAJARA"
@@ -2508,16 +2498,6 @@
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "colonia": "SAN ISIDRO",
     "parada": "PARADA DE CAMIONES"
-  },
-  {
-    "numero_empleado": "4312",
-    "nombre": "HERNANDEZ MAGDALENO ANDREA OLIVIA",
-    "seccion": "ALMACÉN 2DO TURNO ",
-    "puesto": "AUXILIAR DE ALMACÉN C",
-    "turno": "2",
-    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
-    "colonia": "PIE DE LA CUESTA",
-    "parada": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
   },
   {
     "numero_empleado": "4314",
@@ -2944,10 +2924,39 @@
     "nombre": "GAYTAN MEDINA CARMEN MAYREN",
     "seccion": "ALMACÉN 2DO TURNO ",
     "puesto": "AUXILIAR DE ALMACÉN C",
-    "turno": "31",
+    "turno": "2",
     "nombre ruta": "R2- SAN JOSE ITURBIDE",
     "colonia": "SAN JOSE ITURBIDE",
     "parada": "PARADA EN LA ESCUELA 5 DE MAYO"
+  },
+  {
+    "numero_empleado": "4412",
+    "nombre": "CRUZ MARTINEZ LESLIE",
+    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "puesto": "OPERADOR DE MÁQUINA D",
+    "turno": "2",
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "colonia": "PIE DE LA CUESTA",
+    "parada": "EN LA BODEGA AURRERA"
+  },
+  {
+    "numero_empleado": "4413",
+    "nombre": "NAVARRO RENDON CARLOS ALBERTO",
+    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "puesto": "OPERADOR DE MÁQUINA D",
+    "turno": "3",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "colonia": "SAN JOSE ITURBIDE",
+    "parada": "PARADA DE AUTOBUSES DE COPPEL"
+  },
+  {
+    "numero_empleado": "4414",
+    "nombre": "MORALES JIMENEZ LADY DANIELA",
+    "seccion": "ALMACÉN 1ER TURNO ",
+    "puesto": "AUXILIAR DE ALMACÉN C",
+    "turno": "1",
+    "nombre ruta": "R4-SANTA ROSA",
+    "colonia": "PUERTO AGUIRRE",
+    "parada": "PARADA EN LA TORTILLERIA"
   }
 ]
- 
