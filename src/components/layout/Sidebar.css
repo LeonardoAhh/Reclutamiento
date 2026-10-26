@@ -161,84 +161,65 @@ button.sidebar__close-btn {
   border-block-start: var(--border-width) solid var(--color-hairline);
 }
 
-.sidebar__logout-action {
-  display: inline-flex;
-  inline-size: 100%;
-  min-inline-size: 0;
-  min-block-size: var(--touch-target-min);
+.sidebar__account-trigger {
+  display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 0;
-  border: 0;
+  gap: var(--design-spacing-sm);
+  inline-size: 100%;
+  min-block-size: var(--touch-target-min);
+  min-inline-size: 0;
+  padding: var(--design-spacing-xs);
+  border: var(--border-width) solid transparent;
   border-radius: var(--radius-control);
   background: transparent;
   color: var(--color-ink);
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-  text-align: center;
+  text-align: start;
   cursor: pointer;
 }
 
-.sidebar__logout-surface {
-  display: inline-flex;
-  min-inline-size: 0;
-  inline-size: 100%;
-  min-block-size: var(--touch-target-min);
-  align-items: center;
-  justify-content: center;
-  gap: var(--design-spacing-sm);
-  padding-inline: var(--design-spacing-sm);
-  border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--radius-control);
-  background: var(--color-canvas-elevated);
-  overflow-wrap: anywhere;
-}
-
-.sidebar__logout-surface--trigger {
-  justify-content: flex-start;
-  background: transparent;
-  color: var(--color-error-text);
-}
-
-.sidebar__logout-surface--confirm {
-  border-color: var(--color-error-deep);
-  background: var(--color-error-deep);
-  color: var(--color-on-error);
-}
-
-.sidebar__logout-action:hover:not(:disabled) .sidebar__logout-surface:not(.sidebar__logout-surface--confirm) {
-  border-color: var(--color-control-border);
+.sidebar__account-trigger:hover,
+.sidebar__account-trigger[data-state="open"] {
   background: var(--color-surface-soft);
 }
 
-.sidebar__logout-action:hover:not(:disabled) .sidebar__logout-surface--trigger {
-  border-color: var(--color-control-border);
-  background: var(--color-error-subtle);
+.sidebar__account-trigger .ui-avatar {
+  flex: 0 0 var(--icon-size-lg);
+  inline-size: var(--icon-size-lg);
+  block-size: var(--icon-size-lg);
 }
 
-.sidebar__logout-action:disabled {
-  opacity: var(--opacity-disabled);
-  cursor: not-allowed;
+.sidebar__account-copy {
+  display: flex;
+  min-inline-size: 0;
+  flex-direction: column;
 }
 
-.sidebar__logout-trigger svg {
-  flex: 0 0 auto;
+.sidebar__account-name,
+.sidebar__account-role {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-body);
+}
+
+.sidebar__account-name {
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.sidebar__account-role {
+  color: var(--color-muted);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
+}
+
+.sidebar__account-menu svg {
   inline-size: var(--icon-size-sm);
   block-size: var(--icon-size-sm);
-}
-
-.sidebar__logout-confirmation {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--design-spacing-xxs);
-}
-
-.sidebar__logout-confirmation[hidden],
-.sidebar__logout-trigger[hidden] {
-  display: none;
 }
 
 .sidebar__list {
@@ -247,6 +228,22 @@ button.sidebar__close-btn {
   list-style: none;
   margin: 0;
   padding: 0;
+}
+
+.sidebar__group + .sidebar__group {
+  margin-block-start: var(--design-spacing-sm);
+}
+
+.sidebar__group-label {
+  margin: 0;
+  padding: var(--design-spacing-xs) var(--design-spacing-sm) var(--design-spacing-xxs);
+  color: var(--color-muted);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
 }
 
 .sidebar__item {
@@ -281,8 +278,9 @@ button.sidebar__close-btn {
 
 .sidebar__item--active,
 .sidebar__item--active:hover {
-  color: var(--color-navigation-rail-on-active);
-  background: var(--color-navigation-rail-active);
+  color: var(--color-primary-text);
+  background: var(--color-primary-tint);
+  font-weight: var(--type-body-strong-weight);
 }
 
 /* Pressed: retroalimentación sutil dentro de la escala de superficies neutras. */
@@ -292,12 +290,12 @@ button.sidebar__close-btn {
 }
 
 .sidebar__item--active:active {
-  color: var(--color-navigation-rail-on-active);
-  background: var(--color-primary-pressed);
+  color: var(--color-primary-text);
+  background: var(--color-primary-tint);
 }
 
 .sidebar__item--active .sidebar__item-icon {
-  color: var(--color-navigation-rail-on-active);
+  color: var(--color-primary-text);
 }
 
 .sidebar__item-icon {
@@ -313,7 +311,7 @@ button.sidebar__close-btn {
 }
 
 .sidebar__item--active:hover .sidebar__item-icon {
-  color: var(--color-navigation-rail-on-active);
+  color: var(--color-primary-text);
 }
 
 .sidebar__item-label {
@@ -351,6 +349,10 @@ button.sidebar__close-btn {
   );
   --_app-header-size: calc(var(--_app-header-row-size) + var(--safe-area-top));
   min-block-size: 100dvh;
+}
+
+.app-shell[data-sidebar-collapsed="true"] {
+  --_app-sidebar-w: calc(var(--touch-target-min) + var(--design-spacing-lg));
 }
 
 .app-shell__workspace,
@@ -400,6 +402,31 @@ button.sidebar__close-btn {
   .sidebar__brand {
     grid-column: 1;
     grid-row: 1;
+  }
+
+  .app-shell[data-sidebar-collapsed="true"] .sidebar__top {
+    grid-template-columns: minmax(0, 1fr);
+    padding-inline: 0;
+  }
+
+  .app-shell[data-sidebar-collapsed="true"] .sidebar__brand,
+  .app-shell[data-sidebar-collapsed="true"] .sidebar__account-trigger,
+  .app-shell[data-sidebar-collapsed="true"] .sidebar__item {
+    justify-content: center;
+    padding-inline: 0;
+  }
+
+  .app-shell[data-sidebar-collapsed="true"] .sidebar__brand-text,
+  .app-shell[data-sidebar-collapsed="true"] .sidebar__account-copy,
+  .app-shell[data-sidebar-collapsed="true"] .sidebar__item-label,
+  .app-shell[data-sidebar-collapsed="true"] .sidebar__item-badge,
+  .app-shell[data-sidebar-collapsed="true"] .sidebar__group-label {
+    display: none;
+  }
+
+  .app-shell[data-sidebar-collapsed="true"] .sidebar__group + .sidebar__group {
+    border-block-start: var(--border-width) solid var(--color-hairline);
+    padding-block-start: var(--design-spacing-sm);
   }
 
   button.sidebar__close-btn {

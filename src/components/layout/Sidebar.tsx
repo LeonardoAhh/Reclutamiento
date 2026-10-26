@@ -1,37 +1,26 @@
-import { Fragment, useEffect, useRef, useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
-import { preloadRoute } from "@/lib/routePages";
-import { useAuth } from "@/hooks/useAuth";
-import { MorphMenuIcon } from "@/components/ui/MorphMenuIcon";
-import { useLanguage } from "@/contexts/LanguageContext";
-import { LogOut } from "lucide-react";
-import { useSignOut } from "@/features/account/useSignOut";
-import { playSound } from "@/lib/sound";
-import "./Sidebar.css";
-
-import { getLocalizedNavigation } from "./navigation";
-import { SidebarBrand } from "./SidebarBrand";
-import clsx from "clsx";
+import { useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
+import { MorphMenuIcon } from '@/components/ui/MorphMenuIcon';
+import { useAuth } from '@/hooks/useAuth';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { getLocalizedNavigation } from './navigation';
+import { SidebarBrand } from './SidebarBrand';
+import { SidebarGroup } from './SidebarGroup';
+import { SidebarAccountMenu } from './SidebarAccountMenu';
+import './Sidebar.css';
 
 type SidebarProps = {
   mobileMenuOpen?: boolean;
   onCloseMobileMenu?: () => void;
+  collapsed?: boolean;
 };
 
-export function Sidebar({
-  mobileMenuOpen = false,
-  onCloseMobileMenu,
-}: SidebarProps) {
+export function Sidebar({ mobileMenuOpen = false, onCloseMobileMenu, collapsed = false }: SidebarProps) {
   const { username, profile } = useAuth();
   const { language } = useLanguage();
   const location = useLocation();
-  const navSections = getLocalizedNavigation(language);
-  const prevPathRef = useRef(location.pathname);
+  const previousPath = useRef(location.pathname);
   const sidebarRef = useRef<HTMLElement>(null);
-  const [logoutConfirmationOpen, setLogoutConfirmationOpen] = useState(false);
-  const logoutTriggerRef = useRef<HTMLButtonElement>(null);
-  const logoutCancelRef = useRef<HTMLButtonElement>(null);
-  const { handleSignOut, isLoading: signOutLoading } = useSignOut();
 
   useEffect(() => {
     if (mobileMenuOpen) sidebarRef.current?.querySelector<HTMLButtonElement>('.sidebar__close-btn')?.focus();
@@ -40,16 +29,13 @@ export function Sidebar({
   useEffect(() => {
     const sidebar = sidebarRef.current;
     if (!mobileMenuOpen || !sidebar) return;
-
     const handleTab = (event: KeyboardEvent) => {
-      if (event.key !== "Tab") return;
-      const focusable = Array.from(
-        sidebar.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), input:not([disabled])'),
-      ).filter((element) => element.getClientRects().length > 0);
+      if (event.key !== 'Tab') return;
+      const focusable = Array.from(sidebar.querySelectorAll<HTMLElement>('a[href], button:not([disabled])'))
+        .filter((element) => element.getClientRects().length > 0);
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
       if (!first || !last) return;
-
       if (event.shiftKey && document.activeElement === first) {
         event.preventDefault();
         last.focus();
@@ -58,160 +44,46 @@ export function Sidebar({
         first.focus();
       }
     };
-
-    sidebar.addEventListener("keydown", handleTab);
-    return () => sidebar.removeEventListener("keydown", handleTab);
+    sidebar.addEventListener('keydown', handleTab);
+    return () => sidebar.removeEventListener('keydown', handleTab);
   }, [mobileMenuOpen]);
 
   useEffect(() => {
-    if (prevPathRef.current === location.pathname) return;
-    prevPathRef.current = location.pathname;
+    if (previousPath.current === location.pathname) return;
+    previousPath.current = location.pathname;
     onCloseMobileMenu?.();
   }, [location.pathname, onCloseMobileMenu]);
 
-  useEffect(() => {
-    if (logoutConfirmationOpen) logoutCancelRef.current?.focus();
-  }, [logoutConfirmationOpen]);
-
-  const cancelLogout = () => {
-    playSound('close');
-    setLogoutConfirmationOpen(false);
-    window.requestAnimationFrame(() => logoutTriggerRef.current?.focus());
-  };
-
   if (!username) return null;
-
   return (
     <aside
       ref={sidebarRef}
       className="sidebar"
       data-mobile-open={mobileMenuOpen}
-      aria-label={language === "en" ? "Main navigation" : "Navegación principal"}
+      aria-label={language === 'en' ? 'Main navigation' : 'Navegación principal'}
       aria-modal={mobileMenuOpen || undefined}
-      role={mobileMenuOpen ? "dialog" : undefined}
+      role={mobileMenuOpen ? 'dialog' : undefined}
       id="app-sidebar"
       data-testid="app-sidebar"
     >
       <div className="sidebar__top">
         <SidebarBrand />
-        <button
-          type="button"
-          className="sidebar__close-btn"
-          onClick={onCloseMobileMenu}
-          aria-expanded={mobileMenuOpen}
-          aria-controls="app-sidebar"
+        <button type="button" className="sidebar__close-btn" onClick={onCloseMobileMenu}
+          aria-expanded={mobileMenuOpen} aria-controls="app-sidebar"
           data-testid="sidebar-close-toggle"
-          aria-label={language === "en" ? "Collapse" : "Colapsar"}
-        >
-          <MorphMenuIcon
-            isOpen
-            size="var(--icon-size-md)"
-          />
+          aria-label={language === 'en' ? 'Close menu' : 'Cerrar menú'}>
+          <MorphMenuIcon isOpen size="var(--icon-size-md)" />
         </button>
       </div>
-
-      <nav className="sidebar__nav" id="sidebar-sections" aria-label={language === "en" ? "Sections" : "Secciones"}>
-        {navSections.map((section) => {
-          const sectionTitleId = `sidebar-section-${section.label.toLowerCase()}`;
-          return (
-            <Fragment key={section.label}>
-              <h2 id={sectionTitleId} className="sr-only">
-                {section.label}
-              </h2>
-              <ul className="sidebar__list" role="list" aria-labelledby={sectionTitleId}>
-                {section.items.map((item) => {
-                  const { to, label, icon: Icon, badge, end } = item;
-                  if (item.roles && (!profile || !item.roles.some((role) => role === profile.role))) {
-                    return null;
-                  }
-                  const isActive = end
-                    ? location.pathname === to
-                    : location.pathname === to || location.pathname.startsWith(`${to}/`);
-
-                  return (
-                    <li key={to}>
-                      <NavLink
-                        to={to}
-                        end={end}
-                        className={clsx("sidebar__item", isActive && "sidebar__item--active")}
-                        aria-label={badge ? `${label}, ${badge}` : label}
-                        onClick={(event) => {
-                          if (!event.defaultPrevented && event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
-                            onCloseMobileMenu?.();
-                          }
-                        }}
-                        data-testid={`sidebar-nav-${to.replace("/", "") || "kpis"}`}
-                        onPointerEnter={() => preloadRoute(to)}
-                        onFocus={() => preloadRoute(to)}
-                      >
-                        <Icon
-                          aria-hidden="true"
-                          className="sidebar__item-icon"
-                        />
-                        <span className="sidebar__item-label">{label}</span>
-                        {badge && <span className="sidebar__item-badge">{badge}</span>}
-                      </NavLink>
-                    </li>
-                  );
-                })}
-              </ul>
-            </Fragment>
-          );
-        })}
+      <nav className="sidebar__nav" id="sidebar-sections" aria-label={language === 'en' ? 'Sections' : 'Secciones'}>
+        {getLocalizedNavigation(language).map((section) => (
+          <SidebarGroup key={section.id} section={section} role={profile?.role} collapsed={collapsed && !mobileMenuOpen}
+            onNavigate={onCloseMobileMenu} />
+        ))}
       </nav>
       <footer className="sidebar__footer">
-        <button
-          ref={logoutTriggerRef}
-          type="button"
-          className="sidebar__logout-trigger sidebar__logout-action"
-          onClick={() => {
-            playSound('attention');
-            setLogoutConfirmationOpen(true);
-          }}
-          aria-expanded={logoutConfirmationOpen}
-          aria-controls="sidebar-logout-confirmation"
-          hidden={logoutConfirmationOpen}
-        >
-          <span className="sidebar__logout-surface sidebar__logout-surface--trigger">
-            <LogOut aria-hidden="true" />
-            <span>{language === "en" ? "Sign out" : "Cerrar sesión"}</span>
-          </span>
-        </button>
-        <div
-          id="sidebar-logout-confirmation"
-          className="sidebar__logout-confirmation"
-          role="group"
-          aria-label={language === "en" ? "Confirm sign out" : "Confirmar cierre de sesión"}
-          onKeyDown={(event) => {
-            if (event.key === "Escape") cancelLogout();
-          }}
-          hidden={!logoutConfirmationOpen}
-        >
-          <button
-            ref={logoutCancelRef}
-            type="button"
-            className="sidebar__logout-action"
-            onClick={cancelLogout}
-            disabled={signOutLoading}
-          >
-            <span className="sidebar__logout-surface">
-              {language === "en" ? "Cancel" : "Cancelar"}
-            </span>
-          </button>
-          <button
-            type="button"
-            className="sidebar__logout-action"
-            onClick={() => void handleSignOut()}
-            disabled={signOutLoading}
-            aria-busy={signOutLoading}
-          >
-            <span className="sidebar__logout-surface sidebar__logout-surface--confirm">
-              {signOutLoading
-                ? language === "en" ? "Signing out…" : "Cerrando sesión…"
-                : language === "en" ? "Confirm" : "Confirmar"}
-            </span>
-          </button>
-        </div>
+        <SidebarAccountMenu username={username} displayName={profile?.display_name} avatarUrl={profile?.avatar_url}
+          role={profile?.role} collapsed={collapsed && !mobileMenuOpen} />
       </footer>
     </aside>
   );
