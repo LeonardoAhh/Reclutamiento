@@ -404,12 +404,6 @@ button.sidebar__close-btn {
    .sidebar por herencia de custom properties). */
 .app-shell {
   --_app-sidebar-w: var(--feature-navigation-rail-inline-size);
-  /* Una misma geometría alinea el header con el inicio del sidebar. */
-  --_app-header-row-size: max(
-    var(--mobile-nav-height),
-    calc(var(--type-button-size) * var(--type-button-line) + var(--spacing-sm) * 2)
-  );
-  --_app-header-size: calc(var(--_app-header-row-size) + var(--safe-area-top));
   min-block-size: 100dvh;
 }
 
@@ -457,13 +451,14 @@ button.sidebar__close-btn {
 
   .sidebar__top {
     grid-template-columns: minmax(var(--touch-target-min), 1fr) auto;
-    min-block-size: var(--_app-header-size);
-    margin-block-end: var(--design-spacing-sm);
+    min-block-size: calc(var(--header-height) - var(--design-spacing-sm) + var(--border-width));
+    margin-block-end: 0;
   }
 
   .sidebar__brand {
     grid-column: 1;
     grid-row: 1;
+    padding-block: var(--design-spacing-xxs);
   }
 
   .app-shell[data-sidebar-collapsed="true"] .sidebar__top {

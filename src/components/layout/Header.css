@@ -16,7 +16,7 @@
   align-items: center;
   inline-size: 100%;
   max-inline-size: var(--container-max);
-  min-block-size: var(--header-height);
+  min-block-size: calc(var(--header-height) - var(--border-width));
   margin-inline: auto;
   gap: var(--design-spacing-sm);
   padding-inline-start: max(var(--container-padding), var(--safe-area-left));
