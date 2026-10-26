@@ -276,7 +276,6 @@ button.sidebar__close-btn {
 }
 
 .sidebar__account-menu .dropdown-menu-item[data-variant="destructive"] {
-  background: var(--color-canvas-soft);
   color: var(--color-error-text);
 }
 
