@@ -66,7 +66,8 @@ const Login = lazy(() =>
 function ProtectedContent() {
   const { pathname } = useLocation();
   const { profile } = useAuth();
-  if (pathname === ADMINISTRATION_PATH && profile?.role === 'reclutador') {
+  if (profile?.role === 'reclutador' &&
+    (pathname === ADMINISTRATION_PATH || pathname === PERFORMANCE_EVALUATIONS_2027_PATH)) {
     return <Navigate to={HOME_PATH} replace />;
   }
   return (

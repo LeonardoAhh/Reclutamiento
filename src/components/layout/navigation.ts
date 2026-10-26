@@ -2,6 +2,7 @@ import {
   BadgeDollarSign,
   ChartNoAxesCombined,
   ChartSpline,
+  Columns3,
   Contact,
   Files,
   House,
@@ -14,6 +15,7 @@ import {
 import type { LucideIcon } from "lucide-react";
 import { PLANTILLA_PATH } from "@/lib/plantillaNavigation";
 import { ADMINISTRATION_PATH, getConfiguracionHref } from "@/lib/configuracionNavigation";
+import { KANBAN_PATH } from "@/features/kanban/types";
 import type { Language } from "@/contexts/LanguageContext";
 
 export type NavigationRole = "admin" | "reclutador";
@@ -56,6 +58,7 @@ export const NAV_SECTIONS: ReadonlyArray<NavSection> = [
     items: [
       { to: CANDIDATES_PATH, label: "Candidatos", icon: UserSearch, mobilePriority: true },
       { to: "/data-update", label: "Campaña", icon: UserRoundPen, roles: ["admin", "reclutador"] },
+      { to: KANBAN_PATH, label: "Kanban", icon: Columns3, roles: ["reclutador"] },
       { to: ACTIVIDADES_PATH, label: "Actividades", icon: ListTodo },
       { to: getConfiguracionHref("formatos"), label: "Formatos", icon: Files },
     ],

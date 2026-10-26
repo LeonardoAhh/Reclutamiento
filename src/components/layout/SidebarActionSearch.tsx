@@ -5,6 +5,7 @@ import { KANBAN_PATH } from '@/features/kanban/types';
 import { PERFORMANCE_EVALUATIONS_2027_PATH } from '@/features/performance-evaluations-2027/types';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
 import { useLanguage } from '@/contexts/LanguageContext';
+import type { Profile } from '@/hooks/useAuth';
 import { LEAVE_REQUESTS_PATH } from '@/features/leave/requests';
 import { preloadRoute } from '@/lib/routePages';
 import { playSound } from '@/lib/sound';
@@ -13,6 +14,7 @@ import './SidebarActionSearch.css';
 
 interface SidebarActionSearchProps {
   mobileMenuOpen: boolean;
+  role?: Profile['role'];
   quickActions?: {
     canReviewRequests: boolean;
     openLeavePolicy: (focusTarget: HTMLElement) => void;
@@ -32,7 +34,7 @@ const EVALUATION_ACTION = {
   en: '2027 evaluations',
 } as const;
 
-export function SidebarActionSearch({ mobileMenuOpen, quickActions }: SidebarActionSearchProps) {
+export function SidebarActionSearch({ mobileMenuOpen, role, quickActions }: SidebarActionSearchProps) {
   const { language } = useLanguage();
   const navigate = useNavigate();
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -45,9 +47,9 @@ export function SidebarActionSearch({ mobileMenuOpen, quickActions }: SidebarAct
       es: quickActions.canReviewRequests ? 'Gestionar' : 'Solicitar',
       en: quickActions.canReviewRequests ? 'Requests' : 'Leave',
     }] : []),
-    EVALUATION_ACTION,
+    ...(role === 'reclutador' ? [] : [EVALUATION_ACTION]),
     ORGANIZATION_ACTION,
-    { id: 'kanban' as const, path: KANBAN_PATH, icon: Columns3, es: 'Kanban', en: 'Kanban' },
+    ...(role === 'reclutador' ? [] : [{ id: 'kanban' as const, path: KANBAN_PATH, icon: Columns3, es: 'Kanban', en: 'Kanban' }]),
   ];
 
   useEffect(() => {

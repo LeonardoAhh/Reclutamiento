@@ -42,7 +42,7 @@ export function Header({ pageTitle, isHome, isDesktop, onMobileMenuToggle,
         <div className="app-header__actions">
           <SidebarQuickActions profile={profile} members={members}>
             {(quickActions) => (
-              <SidebarActionSearch mobileMenuOpen={mobileMenuOpen} quickActions={profile ? quickActions : undefined} />
+              <SidebarActionSearch mobileMenuOpen={mobileMenuOpen} role={profile?.role} quickActions={profile ? quickActions : undefined} />
             )}
           </SidebarQuickActions>
         </div>
