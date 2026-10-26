@@ -58,7 +58,7 @@ export function parseDate(dateStr: string) {
   return new Date(dateStr);
 }
 
-export function useIndicadoresStats(selectedMonth: Date) {
+export function useIndicadoresStats(selectedMonth: Date, selectedRecruiter: string | null = null) {
   const { resolve } = useTeamDirectory();
   const { language } = useLanguage();
   const [data, setData] = useState<IndicadorRecord[]>([]);
@@ -141,7 +141,7 @@ export function useIndicadoresStats(selectedMonth: Date) {
     }
 
     const groupedByDate: Record<string, Record<string, number>> = {};
-    const recruiterSet = new Set<string>();
+    const recruiterSet = new Set<string>(selectedRecruiter ? [selectedRecruiter] : []);
     
     let totalBajasMes = 0;
     let totalDiasPermanenciaMes = 0;
@@ -164,12 +164,7 @@ export function useIndicadoresStats(selectedMonth: Date) {
         return;
       }
 
-      if (isPrevMonth) {
-        prevMonthTotalIngresos += 1;
-        return;
-      }
-
-      let rawRecruiter = record["Reclutador"] ? record["Reclutador"].replace(/\s+/g, ' ').trim() : 'Sin Reclutador';
+      const rawRecruiter = record["Reclutador"] ? record["Reclutador"].replace(/\s+/g, ' ').trim() : 'Sin Reclutador';
       let recruiter = rawRecruiter === 'Sin Reclutador' ? rawRecruiter : rawRecruiter.split(' ')[0];
 
       if (recruiter !== 'Sin Reclutador') {
@@ -178,7 +173,14 @@ export function useIndicadoresStats(selectedMonth: Date) {
 
       const member = resolve(rawRecruiter);
       recruiter = member?.short_name ?? recruiter;
-      if (member?.include_in_metrics === false) {
+
+      if (isPrevMonth) {
+        if (!selectedRecruiter || (member?.include_in_metrics !== false && recruiter === selectedRecruiter)) {
+          prevMonthTotalIngresos += 1;
+        }
+        return;
+      }
+      if (member?.include_in_metrics === false || (selectedRecruiter && recruiter !== selectedRecruiter)) {
         return;
       }
 
@@ -283,79 +285,24 @@ export function useIndicadoresStats(selectedMonth: Date) {
         metaSemanal
       }
     };
-  }, [data, selectedMonth, resolve, language]);
+  }, [data, selectedMonth, selectedRecruiter, resolve, language]);
 
-  const historicalGoals = useMemo(() => {
-    const statsByMonthRecruiter: Record<string, Record<string, number>> = {};
-    const recruiterSet = new Set<string>();
-    
+  const recruiterFilters = useMemo(() => {
+    const names = new Set<string>();
     data.forEach(record => {
-      const dateStr = record["Fecha Ingreso"];
-      if (!dateStr) return;
-      const parsed = parseDate(dateStr);
-      if (isNaN(parsed.getTime())) return;
-      
-      const year = parsed.getFullYear();
-      const month = parsed.getMonth();
-      const monthKey = `${year}-${month}`;
-      
-      let rawRecruiter = record["Reclutador"] ? record["Reclutador"].replace(/\s+/g, ' ').trim() : 'Sin Reclutador';
-      let recruiter = rawRecruiter === 'Sin Reclutador' ? rawRecruiter : rawRecruiter.split(' ')[0];
-      
-      if (recruiter !== 'Sin Reclutador') {
-        recruiter = recruiter.charAt(0).toUpperCase() + recruiter.slice(1).toLowerCase();
-      }
-      
-      const member = resolve(rawRecruiter);
-      recruiter = member?.short_name ?? recruiter;
-      if (
-        recruiter === 'Sin Reclutador' ||
-        recruiter.toLocaleLowerCase('es-MX') === 'thalia' ||
-        member?.include_in_metrics === false
-      ) return;
-      
-      recruiterSet.add(recruiter);
-      
-      if (!statsByMonthRecruiter[monthKey]) statsByMonthRecruiter[monthKey] = {};
-      if (!statsByMonthRecruiter[monthKey][recruiter]) statsByMonthRecruiter[monthKey][recruiter] = 0;
-      
-      statsByMonthRecruiter[monthKey][recruiter] += 1;
-    });
-    
-    const recruiterMonthsCompleted: Record<string, { total: number, details: { monthName: string, meta: number, count: number }[] }> = {};
-    Array.from(recruiterSet).forEach(rec => recruiterMonthsCompleted[rec] = { total: 0, details: [] });
-    
-    const sortedMonths = Object.entries(statsByMonthRecruiter).sort((a, b) => {
-      const [yearA, monthA] = a[0].split('-').map(Number);
-      const [yearB, monthB] = b[0].split('-').map(Number);
-      return yearA !== yearB ? yearA - yearB : monthA - monthB;
-    });
+      const date = record["Fecha Ingreso"];
+      if (!date || Number.isNaN(parseDate(date).getTime())) return;
 
-    sortedMonths.forEach(([monthKey, recruiters]) => {
-      const [yearStr, monthStr] = monthKey.split('-');
-      const y = parseInt(yearStr, 10);
-      const m = parseInt(monthStr, 10);
-      
-      const isBeforeJune2026 = y < 2026 || (y === 2026 && m < 5);
-      const meta = isBeforeJune2026 ? 13 : 28;
-      const monthName = `${new Intl.DateTimeFormat(language === 'en' ? 'en-US' : 'es-MX', { month: 'short' }).format(new Date(y, m, 1))} ${y}`;
-      
-      Object.entries(recruiters).forEach(([rec, count]) => {
-         if (count >= meta) {
-             recruiterMonthsCompleted[rec].total += 1;
-             recruiterMonthsCompleted[rec].details.push({ monthName, meta, count });
-         }
-      });
+      const rawName = record["Reclutador"] ? record["Reclutador"].replace(/\s+/g, ' ').trim() : 'Sin Reclutador';
+      let name = rawName === 'Sin Reclutador' ? rawName : rawName.split(' ')[0];
+      if (name !== 'Sin Reclutador') name = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+      const member = resolve(rawName);
+      name = member?.short_name ?? name;
+      if (name === 'Sin Reclutador' || name.toLocaleLowerCase('es-MX') === 'thalia' || member?.include_in_metrics === false) return;
+      names.add(name);
     });
-    
-    const recruiterList = Array.from(recruiterSet).sort();
-    return recruiterList.map((name, index) => ({
-      name,
-      tone: getRecruiterTone(index),
-      monthsCompleted: recruiterMonthsCompleted[name].total,
-      details: recruiterMonthsCompleted[name].details
-    })).sort((a, b) => b.monthsCompleted - a.monthsCompleted);
+    return Array.from(names).sort((a, b) => a.localeCompare(b, language === 'en' ? 'en' : 'es'));
   }, [data, resolve, language]);
 
-  return { data, loading, error, chartData, recruiters, tableData, kpi, historicalGoals };
+  return { data, loading, error, chartData, recruiters, tableData, kpi, recruiterFilters };
 }

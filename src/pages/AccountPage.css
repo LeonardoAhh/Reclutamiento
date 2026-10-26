@@ -156,12 +156,12 @@
 .account-profile__actions>button {
   min-width: 0;
 }
-.account-setting-row,.account-appearance .theme-select__trigger,.account-appearance__control,.account-row {
+.account-setting-row,.account-appearance .custom-select-trigger,.account-appearance__control,.account-row {
   min-block-size: calc(var(--touch-target-min) + var(--design-spacing-md));
   min-inline-size: 0;
   padding: var(--design-spacing-xs) var(--design-spacing-md);
 }
-.account-setting-row,.account-appearance .theme-select__trigger,.account-appearance__control {
+.account-setting-row,.account-appearance .custom-select-trigger,.account-appearance__control {
   display: grid;
   grid-template-columns: auto minmax(0,1fr) auto;
   align-items: center;
@@ -191,9 +191,14 @@
 .account-appearance .theme-select {
   display: block;
 }
-.account-appearance .theme-select__trigger {
+.account-appearance .custom-select-trigger {
   block-size: auto;
+  grid-template-columns: minmax(0,1fr);
   justify-items: stretch;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
 .account-appearance > .account-appearance__control {
   border-block-start: var(--border-width) solid var(--color-hairline);
@@ -302,7 +307,7 @@
   color: var(--color-error-text);
 }
 @media (hover:hover) {
-  .account-setting-row:hover:not(:disabled),.account-appearance .theme-select__trigger:hover,.account-appearance__control:hover {
+  .account-setting-row:hover:not(:disabled),.account-appearance .custom-select-trigger:hover,.account-appearance__control:hover {
     background: var(--color-canvas-soft);
   }
 }
@@ -352,7 +357,7 @@
     --feature-avatar-initials-size: var(--type-heading-md-size);
   }
 }
-.account-appearance .theme-select__trigger,.account-appearance__control {
+.account-appearance .custom-select-trigger,.account-appearance__control {
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);

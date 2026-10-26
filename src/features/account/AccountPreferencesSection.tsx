@@ -3,7 +3,6 @@ import { Eclipse, Languages, Volume2, VolumeX } from 'lucide-react';
 import { LanguageToggle } from '@/components/ui/LanguageToggle';
 import { ThemeSelect } from '@/components/ui/ThemeSelect';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useTheme } from '@/hooks/useTheme';
 import { useFeedback } from '@/hooks/useFeedback';
 import { playSound } from '@/lib/sound';
 import type { AccountCopy } from '@/pages/account-translations';
@@ -11,15 +10,13 @@ import type { AccountCopy } from '@/pages/account-translations';
 export function AccountPreferencesSection({ copy }: { copy: AccountCopy }) {
   const id = useId();
   const { language, storageError } = useLanguage();
-  const { resolvedTheme } = useTheme();
   const { soundEnabled, soundStorageError, toggleSound } = useFeedback();
 
   return (
     <div className="account-appearance">
-      <ThemeSelect language={language} className="account-appearance__theme" sound>
+      <ThemeSelect language={language} labels={{ name: copy.theme, system: copy.systemTheme, light: copy.lightTheme, dark: copy.darkTheme }} className="account-appearance__theme">
         <Eclipse size="var(--icon-size-sm)" aria-hidden="true" />
         <span className="account-setting-row__label">{copy.theme}</span>
-        <span className="account-setting-row__value" aria-hidden="true">{resolvedTheme === 'dark' ? copy.darkTheme : copy.lightTheme}</span>
       </ThemeSelect>
       <LanguageToggle className="account-appearance__control" sound>
         <Languages size="var(--icon-size-sm)" aria-hidden="true" />

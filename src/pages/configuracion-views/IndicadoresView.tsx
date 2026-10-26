@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { PageHeading } from '@/components/layout/PageHeading';
 import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
-import { Tooltip } from '@/components/ui/Tooltip';
 import { BackButton } from '@/components/ui/BackButton';
 import {
   ArrowLeft,
@@ -54,6 +53,7 @@ export function IndicadoresView() {
   const { language } = useLanguage();
   const copy = getConfiguracionCopy(language).indicators;
   const english = language === 'en';
+  const [selectedRecruiter, setSelectedRecruiter] = useState<string | null>(null);
   const [selectedMobileRecruiter, setSelectedMobileRecruiter] = useState<string | null>(null);
   const mobileDetailBackRef = useRef<HTMLButtonElement>(null);
   const recruiterButtonRefs = useRef(new Map<string, HTMLButtonElement>());
@@ -63,7 +63,7 @@ export function IndicadoresView() {
     return new Date(now.getFullYear(), now.getMonth(), 1);
   });
 
-  const { recruiters, tableData, kpi, historicalGoals, loading, error } = useIndicadoresStats(selectedMonth);
+  const { recruiters, tableData, kpi, recruiterFilters, loading, error } = useIndicadoresStats(selectedMonth, selectedRecruiter);
   const displayRecruiter = (recruiter: string) =>
     recruiter === 'Sin Reclutador' ? copy.unassignedRecruiter : recruiter;
 
@@ -164,12 +164,12 @@ export function IndicadoresView() {
             />
             <IndicatorCard
               icon={<Trophy />}
-              label={copy.topRecruiter}
-              value={kpi.topRecruiters.length > 1
+              label={selectedRecruiter ? copy.recruiter : copy.topRecruiter}
+              value={selectedRecruiter ? displayRecruiter(selectedRecruiter) : kpi.topRecruiters.length > 1
                 ? kpi.topRecruiters.map((recruiter) => displayRecruiter(recruiter.name)).join(english ? ' and ' : ' y ')
                 : kpi.topRecruiters[0] ? displayRecruiter(kpi.topRecruiters[0].name) : copy.noData}
               valueClassName="indicadores-kpi-value--name"
-              description={kpi.topRecruiters.length > 1
+              description={selectedRecruiter ? `${kpi.recruiterTotals[0]?.total ?? 0} ${copy.incomeCount}` : kpi.topRecruiters.length > 1
                 ? `${copy.tie} ${kpi.topRecruiters[0]?.total} ${copy.incomeEach}`
                 : `${kpi.topRecruiters[0]?.total ?? 0} ${copy.incomeCount}`}
             />
@@ -223,44 +223,18 @@ export function IndicadoresView() {
             </div>
           </div>
         </div>
-        {historicalGoals && historicalGoals.length > 0 && (
-          <div className="indicadores-historical-list">
-            {historicalGoals.map(rec => (
-              <Tooltip
-                key={rec.name}
-                content={
-                  <div className="trend-tooltip indicadores-trend-tooltip">
-                    <div className="trend-tooltip__section">
-                      <strong className="trend-tooltip__title trend-tooltip__title--success">
-                        {copy.achievedMonths} ({rec.details.length}):
-                      </strong>
-                      <ul className="trend-tooltip__list">
-                        {rec.details.map(d => (
-                          <li key={d.monthName}>
-                            {d.monthName}: {d.count} / {d.meta}
-                          </li>
-                        ))}
-                      </ul>
-                      {rec.details.length === 0 && (
-                        <ul className="trend-tooltip__list">
-                          <li>{copy.notAchievedGoal}</li>
-                        </ul>
-                      )}
-                    </div>
-                  </div>
-                }
-              >
-                <button
-                  type="button"
-                  className="indicadores-historical-card"
-                  aria-label={`${rec.name}: ${rec.monthsCompleted} ${rec.monthsCompleted === 1 ? copy.hasAchievedGoal : copy.haveAchievedGoal}`}
-                >
-                  <Award aria-hidden="true" />
-                  <span className="indicadores-historical-card__name">{rec.name}</span>
-                  <span className="indicadores-historical-card__value">{rec.monthsCompleted} {rec.monthsCompleted === 1 ? copy.month : copy.months}</span>
-                </button>
-              </Tooltip>
-            ))}
+        {recruiterFilters.length > 0 && (
+          <div className="indicadores-historical-list" role="group" aria-label={copy.filterRecruiter}>
+            <button type="button" className="indicadores-historical-card" data-cuelume-select=""
+              aria-pressed={selectedRecruiter === null} onClick={() => { setSelectedRecruiter(null); setSelectedMobileRecruiter(null); }}>
+              {copy.allRecruiters}
+            </button>
+            {recruiterFilters.map(name => <button key={name} type="button" className="indicadores-historical-card"
+              data-cuelume-select="" aria-pressed={selectedRecruiter === name}
+              onClick={() => { setSelectedRecruiter(name); setSelectedMobileRecruiter(null); }}>
+              <Award aria-hidden="true" />
+              <span className="indicadores-historical-card__name">{name}</span>
+            </button>)}
           </div>
         )}
       </section>
@@ -342,7 +316,7 @@ export function IndicadoresView() {
                 </tr>
               ))}
             </tbody>
-            {tableData.length > 0 && (
+            {tableData.length > 0 && !selectedRecruiter && (
               <tfoot>
                 <tr>
                   <th scope="row">{copy.totalByWeek}</th>
