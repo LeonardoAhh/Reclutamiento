@@ -29,6 +29,7 @@ export type NavItem = {
 };
 
 export type NavSection = {
+  id: "home" | "recruitment" | "people" | "tracking";
   label: string;
   items: NavItem[];
 };
@@ -43,30 +44,39 @@ export const CANDIDATES_PATH = "/candidates";
 export const ORGANIZATION_CHART_PATH = "/organization-chart";
 export const NAV_SECTIONS: ReadonlyArray<NavSection> = [
   {
-    label: "Principal",
+    id: "home",
+    label: "",
     items: [
       { to: HOME_PATH, label: "Inicio", icon: House, end: true },
-      { to: getConfiguracionHref("analisis"), label: "Análisis", icon: ChartSpline },
+    ],
+  },
+  {
+    id: "recruitment",
+    label: "Reclutamiento",
+    items: [
       { to: CANDIDATES_PATH, label: "Candidatos", icon: UserSearch, mobilePriority: true },
-      { to: PLANTILLA_PATH, label: "Plantilla", icon: Contact },
-      { to: "/overview", label: "Resumen", icon: ChartNoAxesCombined, end: false, mobilePriority: true },
-    ],
-  },
-  {
-    label: "Herramientas",
-    items: [
       { to: "/data-update", label: "Campaña", icon: UserRoundPen, roles: ["admin", "reclutador"] },
-      { to: "/reports", label: "Reporte Diario", icon: NotebookText },
-    ],
-  },
-  {
-    label: "Administración",
-    items: [
       { to: ACTIVIDADES_PATH, label: "Actividades", icon: ListTodo },
       { to: getConfiguracionHref("formatos"), label: "Formatos", icon: Files },
+    ],
+  },
+  {
+    id: "people",
+    label: "Personal",
+    items: [
+      { to: PLANTILLA_PATH, label: "Plantilla", icon: Contact },
+      { to: "/overview", label: "Resumen", icon: ChartNoAxesCombined, end: false, mobilePriority: true },
+      { to: getConfiguracionHref("tabulador"), label: "Tabulador", icon: BadgeDollarSign },
+    ],
+  },
+  {
+    id: "tracking",
+    label: "Seguimiento",
+    items: [
+      { to: getConfiguracionHref("analisis"), label: "Análisis", icon: ChartSpline },
+      { to: "/reports", label: "Reporte Diario", icon: NotebookText },
       { to: ADMINISTRATION_PATH, label: "Indicadores", icon: ChartNoAxesCombined },
       { to: getConfiguracionHref("rutas"), label: "Rutas", icon: Route },
-      { to: getConfiguracionHref("tabulador"), label: "Tabulador", icon: BadgeDollarSign },
     ],
   },
 ];
@@ -74,9 +84,9 @@ export const NAV_SECTIONS: ReadonlyArray<NavSection> = [
 export const NAV_ITEMS: ReadonlyArray<NavItem> = NAV_SECTIONS.flatMap((section) => section.items);
 
 const ENGLISH_NAV_LABELS: Readonly<Record<string, string>> = {
-  Principal: "Main",
-  Herramientas: "Tools",
-  Administración: "Administration",
+  Reclutamiento: "Recruitment",
+  Personal: "People",
+  Seguimiento: "Tracking",
   Inicio: "Home",
   Análisis: "Analysis",
   Candidatos: "Candidates",
