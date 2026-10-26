@@ -32,7 +32,7 @@
 }
 
 .app-header__left {
-  gap: var(--design-spacing-sm);
+  gap: var(--_app-header-title-gap);
 }
 
 .app-header__title {

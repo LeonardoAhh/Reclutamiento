@@ -6,6 +6,7 @@
 
 .home-page__greeting {
   margin: 0;
+  padding-inline-start: var(--_app-header-title-inset);
   color: var(--color-muted);
   font-family: var(--font-body);
   font-size: var(--type-heading-md-size);

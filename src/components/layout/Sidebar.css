@@ -342,6 +342,8 @@ button.sidebar__close-btn {
    .sidebar por herencia de custom properties). */
 .app-shell {
   --_app-sidebar-w: var(--feature-navigation-rail-inline-size);
+  --_app-header-title-gap: var(--design-spacing-sm);
+  --_app-header-title-inset: calc(var(--touch-target-min) + var(--_app-header-title-gap));
   /* Una misma geometría alinea el header con el inicio del sidebar. */
   --_app-header-row-size: max(
     var(--mobile-nav-height),
