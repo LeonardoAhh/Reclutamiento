@@ -75,7 +75,7 @@ export const NAV_SECTIONS: ReadonlyArray<NavSection> = [
     items: [
       { to: getConfiguracionHref("analisis"), label: "Análisis", icon: ChartSpline },
       { to: "/reports", label: "Reporte Diario", icon: NotebookText },
-      { to: ADMINISTRATION_PATH, label: "Indicadores", icon: ChartNoAxesCombined },
+      { to: ADMINISTRATION_PATH, label: "Indicadores", icon: ChartNoAxesCombined, roles: ["admin"] },
       { to: getConfiguracionHref("rutas"), label: "Rutas", icon: Route },
     ],
   },

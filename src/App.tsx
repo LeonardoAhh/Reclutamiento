@@ -23,7 +23,7 @@ import { TopRecruiterModal } from '@/components/ui/TopRecruiterModal';
 import { TeamProvider } from '@/features/team/TeamProvider';
 import { isBoneyardBuild } from '@/lib/boneyard';
 import { PLANTILLA_PATH } from '@/lib/plantillaNavigation';
-import { CONFIGURACION_ROUTES, ROUTE_DAY_EMPLOYEES_PATH } from '@/lib/configuracionNavigation';
+import { ADMINISTRATION_PATH, CONFIGURACION_ROUTES, ROUTE_DAY_EMPLOYEES_PATH } from '@/lib/configuracionNavigation';
 import { RutaDayEmployeesPage } from '@/components/ui/RutaDayEmployeesModal';
 import { DATA_UPDATE_PATH } from '@/features/data-update/types';
 import { ACCOUNT_PATH, ACTIVIDADES_PATH, HOME_PATH, LOGOUT_PATH, ORGANIZATION_CHART_PATH, TEAM_PATH, VACANCY_ASSIGNMENTS_PATH } from '@/components/layout/navigation';
@@ -65,6 +65,10 @@ const Login = lazy(() =>
 
 function ProtectedContent() {
   const { pathname } = useLocation();
+  const { profile } = useAuth();
+  if (pathname === ADMINISTRATION_PATH && profile?.role === 'reclutador') {
+    return <Navigate to={HOME_PATH} replace />;
+  }
   return (
     <CandidatesProvider>
       <PositionsProvider>
