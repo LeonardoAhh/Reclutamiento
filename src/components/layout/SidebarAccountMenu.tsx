@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useMatch } from 'react-router-dom';
-import { LogOut, UserRound } from 'lucide-react';
+import { ChevronUp, LogOut, UserRound } from 'lucide-react';
 import { Avatar } from '@/components/ui/Avatar';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/DropdownMenu';
@@ -35,6 +35,7 @@ export function SidebarAccountMenu({ username, displayName, avatarUrl, role, col
           <span className="sidebar__account-name">{name}</span>
           {roleLabel && <span className="sidebar__account-role">{roleLabel}</span>}
         </span>
+        <ChevronUp className="sidebar__account-chevron" aria-hidden="true" />
       </button>
     </DropdownMenuTrigger>
   );

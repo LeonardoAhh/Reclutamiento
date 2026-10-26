@@ -157,13 +157,12 @@ button.sidebar__close-btn {
   display: block;
   flex: 0 0 auto;
   margin-block-start: var(--design-spacing-sm);
-  padding-block-start: var(--design-spacing-sm);
-  border-block-start: var(--border-width) solid var(--color-hairline);
 }
 
-.sidebar__account-trigger {
+.sidebar__footer .sidebar__account-trigger {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   gap: var(--design-spacing-sm);
   inline-size: 100%;
   min-block-size: var(--touch-target-min);
@@ -200,6 +199,19 @@ button.sidebar__close-btn {
   text-overflow: ellipsis;
   white-space: nowrap;
   font-family: var(--font-body);
+}
+
+.sidebar__account-trigger .sidebar__account-chevron {
+  flex: 0 0 auto;
+  margin-inline-start: auto;
+  inline-size: var(--icon-size-sm);
+  block-size: var(--icon-size-sm);
+  color: var(--color-muted);
+  transition: transform var(--transition-fast);
+}
+
+.sidebar__account-trigger[data-state="open"] .sidebar__account-chevron {
+  transform: rotate(180deg);
 }
 
 .sidebar__account-name {
@@ -420,6 +432,7 @@ button.sidebar__close-btn {
 
   .app-shell[data-sidebar-collapsed="true"] .sidebar__brand-text,
   .app-shell[data-sidebar-collapsed="true"] .sidebar__account-copy,
+  .app-shell[data-sidebar-collapsed="true"] .sidebar__account-chevron,
   .app-shell[data-sidebar-collapsed="true"] .sidebar__item-label,
   .app-shell[data-sidebar-collapsed="true"] .sidebar__item-badge,
   .app-shell[data-sidebar-collapsed="true"] .sidebar__group-label {
@@ -464,7 +477,8 @@ button.sidebar__close-btn {
 @media (prefers-reduced-motion: reduce) {
   .sidebar,
   .sidebar__item,
-  .sidebar__item-icon {
+  .sidebar__item-icon,
+  .sidebar__account-chevron {
     transition: none;
   }
   .sidebar-mobile-overlay {
