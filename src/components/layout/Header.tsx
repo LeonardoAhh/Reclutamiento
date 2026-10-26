@@ -33,6 +33,10 @@ export function Header({ pageTitle, isHome, isDesktop, sidebarCollapsed, onSideb
     <header className="app-header" id="main-header">
       <div className="app-header__inner">
         <div className="app-header__left">
+          <div className="app-header__title" id="app-header-title">
+            {isHome ? <span className="app-header__fallback-title">{pageTitle}</span>
+              : <h1 className="app-header__fallback-title">{pageTitle}</h1>}
+          </div>
           <button ref={mobileMenuButtonRef} type="button" className="app-header__sidebar-toggle"
             onClick={onSidebarToggle}
             aria-expanded={isDesktop ? !sidebarCollapsed : mobileMenuOpen}
@@ -41,10 +45,6 @@ export function Header({ pageTitle, isHome, isDesktop, sidebarCollapsed, onSideb
               ? sidebarCollapsed ? <PanelLeftOpen aria-hidden="true" /> : <PanelLeftClose aria-hidden="true" />
               : <MorphMenuIcon isOpen={mobileMenuOpen} size="var(--icon-size-md)" />}
           </button>
-          <div className="app-header__title" id="app-header-title">
-            {isHome ? <span className="app-header__fallback-title">{pageTitle}</span>
-              : <h1 className="app-header__fallback-title">{pageTitle}</h1>}
-          </div>
         </div>
         <div className="app-header__actions">
           <SidebarQuickActions profile={profile} members={members}>

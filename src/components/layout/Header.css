@@ -32,10 +32,12 @@
 }
 
 .app-header__left {
-  gap: var(--_app-header-title-gap);
+  justify-content: space-between;
+  gap: var(--design-spacing-sm);
 }
 
 .app-header__title {
+  flex: 1 1 auto;
   flex-wrap: wrap;
   gap: var(--design-spacing-sm);
 }
