@@ -178,8 +178,8 @@ Images and illustrations scale within their containers and preserve intrinsic pr
 | Level | Treatment | Use |
 |---|---|---|
 | 0 — Flat | 1px hairline (`{colors.hairline}`), no shadow | Default feature cards, inputs, dividers, the canvas |
-| 1 — Whisper | `{shadows.xs}` | Lightly raised cards and the desktop workspace |
-| 2 — Floating | `{shadows.sm}` | Menus, modals, and popovers |
+| 1 — Whisper | `{shadows.xs}` | Lightly raised cards |
+| 2 — Floating | `{shadows.sm}` | Menus, modals, popovers and the desktop workspace |
 
 Depth is deliberately minimal. The system prefers a crisp 1px hairline and small changes between neutral surfaces; floating surfaces use a low-alpha shadow rather than a heavy drop.
 
@@ -243,7 +243,7 @@ Ordinary buttons are rectangles with soft 10px corners. Content cards use 16px, 
 
 **`app-workspace`** — authenticated application shell
 - On desktop, the sidebar is inset from the shell edges by shared spacing and uses the same `--shell-floor` surface as the exterior floor (canvas-soft in both themes). It has no border or shadow in either theme. The workspace panel keeps its separate frame and uses `--shell-workspace-surface`: canvas-elevated in light mode for a near-white panel, canvas in dark mode. Mobile and tablet keep the continuous canvas layout.
-- The desktop workspace uses `{rounded.lg}` corners and a 1px `{colors.hairline}` border, with no shadow so the sidebar remains the more prominent frame. A `{spacing.sm}` inset separates it from the shared page floor. It owns vertical scrolling so the sidebar remains stationary. Card, field, overlay and document colors remain unchanged.
+- The desktop workspace uses `{rounded.lg}` corners, a 1px `{colors.hairline}` border and the two-layer `--workspace-shadow` for depth against the flat sidebar and exterior floor. Its light shadow reuses Level 2; dark mode keeps the same geometry with stronger shadow opacity so the depth remains visible on graphite. A `{spacing.sm}` inset separates it from the shared page floor. It owns vertical scrolling so the sidebar remains stationary. Card, field, overlay and document colors remain unchanged.
 - The shell owns the page's top gutter: `{spacing.md}` on mobile and `{spacing.lg}` from tablet upward. Authenticated pages use `PageHeading` for the global header title and do not add page-level top padding or margin; retain page-specific widths and internal section spacing.
 - Back navigation embedded directly in app-page-title inherits the heading color in default, hover, focus, active and visited states and never gains an underline. Existing Link/button semantics, destinations, keyboard navigation and visible focus outlines remain unchanged.
 - Sidebar navigation reads grouped items, labels, icons, routes and role restrictions from `navigation.ts`. Inicio remains ungrouped; the visible group labels are Reclutamiento, Personal and Seguimiento using `{typography.caption-up}` and muted text. Regular items and section views use `--color-primary-tint` behind `--color-primary-text` with the body-strong weight when active. Solid primary remains reserved for primary actions. The desktop sidebar contains its own collapse control beside the brand. In the collapsed icon rail, the brand mark is hidden and the same control becomes the show-sidebar icon; labels and badges are hidden visually, tooltips identify links and hairline separators replace group headings. The collapsed preference uses local storage and synchronizes across tabs; mobile and tablet retain the existing full-width overlay.

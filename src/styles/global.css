@@ -660,7 +660,7 @@
   --shell-workspace-surface: var(--color-canvas-elevated);
   --workspace-border-color: var(--color-hairline);
   --workspace-radius: var(--rounded-lg);
-  --workspace-shadow: var(--shadow-xs);
+  --workspace-shadow: var(--shadow-sm);
   --type-caption-size: var(--type-caption-sm-size);
   --type-heading-xs-size: var(--type-caption-sm-size);
   --z-index-tooltip: var(--layer-tooltip);
@@ -732,6 +732,9 @@
   --color-hairline-strong: #596370;
   --color-control-border: #858e9b;
   --color-shadow-rgb: 0 0 0;
+  --workspace-shadow:
+    0 1px 2px rgb(var(--color-shadow-rgb) / 0.2),
+    0 4px 12px rgb(var(--color-shadow-rgb) / 0.28);
   --color-modal-scrim: rgb(var(--color-shadow-rgb) / 0.6);
   --color-shimmer-overlay: rgb(var(--color-ink-rgb) / 0.08);
 

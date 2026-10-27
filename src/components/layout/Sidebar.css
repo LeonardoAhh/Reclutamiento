@@ -558,6 +558,7 @@ button.sidebar__desktop-toggle:hover {
     background: var(--workspace-surface);
     border: var(--border-width) solid var(--workspace-border-color);
     border-radius: var(--workspace-radius);
+    box-shadow: var(--workspace-shadow);
   }
 
   .app-shell__main {
