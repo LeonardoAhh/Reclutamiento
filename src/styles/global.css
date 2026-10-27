@@ -657,7 +657,6 @@
   --workspace-canvas: var(--color-canvas);
   --workspace-surface: var(--color-canvas);
   --shell-floor: var(--color-canvas-soft);
-  --shell-workspace-surface: var(--color-canvas);
   --workspace-border-color: var(--color-hairline);
   --workspace-radius: var(--rounded-lg);
   --workspace-shadow: var(--shadow-xs);
@@ -701,8 +700,6 @@
   --color-canvas: #1b1d20;
   --color-canvas-rgb: 27 29 32;
   --color-canvas-soft: #202328;
-  --shell-floor: var(--color-canvas);
-  --shell-workspace-surface: var(--color-canvas-soft);
   --color-canvas-elevated: #2b2f34;
   --color-surface-card: #23262a;
   --color-surface-soft: var(--color-surface-card);
