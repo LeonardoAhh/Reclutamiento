@@ -2978,5 +2978,35 @@
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "colonia": "SAN ISIDRO",
     "parada": "PARADA DE CAMIONES"
+  },
+  {
+    "numero_empleado": "4418",
+    "nombre": "JUAREZ RIVERA ANGEL",
+    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "puesto": "OPERADOR DE MÁQUINA D",
+    "turno": "2",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "colonia": "SAN JOSE ITURBIDE",
+    "parada": "PARADA DE AUTOBUSES DE COPPEL"
+  },
+  {
+    "numero_empleado": "4419",
+    "nombre": "BALDERAS ZUÑIGA MARTHA ESMERALDA",
+    "seccion": "A. CALIDAD 2DO. TURNO",
+    "puesto": "OPERADOR DE ACABADOS GP-12 D",
+    "turno": "2",
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "colonia": "COREA",
+    "parada": "PARADA DE CAMIONES"
+  },
+  {
+    "numero_empleado": "4420",
+    "nombre": "ROMERO OROPEZA ANTONIA",
+    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "puesto": "OPERADOR DE MÁQUINA D",
+    "turno": "3",
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "colonia": "COREA",
+    "parada": "PARADA DE CAMIONES"
   }
 ]
