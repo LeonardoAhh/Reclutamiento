@@ -18,7 +18,7 @@ export function CandidateMetricsPage() {
   const selectedView = params.get('view');
   const recruiterId = params.get('recruiter') ?? '';
   const metrics = useCandidateMetrics(recruiterId);
-  const recruiters = metrics.members.filter(member => member.include_in_metrics);
+  const recruiters = metrics.members.filter(member => member.include_in_metrics || member.selectable);
   const recruiter = recruiters.find(member => member.id === recruiterId);
   const view = selectedView === 'global' || selectedView === 'pauta' || (selectedView === 'recruiter' && recruiter)
     ? selectedView : null;

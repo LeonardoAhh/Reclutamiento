@@ -472,6 +472,7 @@ Ordinary buttons are rectangles with soft 10px corners. Content cards use 16px, 
 **`candidate-metrics-page`** — recruitment metrics
 - Candidate metrics follows the candidate typography standard: Plus Jakarta Sans; caption-up (12px/600) for labels and table headers, body-md (14px/400) for reading text, dates and links, and body-strong (14px/600) for internal headings and emphasized values. The workspace header retains its existing 20px title.
 - `/candidates/metrics` replaces the metrics menu and its nested dialogs with a protected page using the standard shared container and page header. The Candidates toolbar links to this page; summary, campaign and catalogue recruiter links select page views through query parameters, with a return link and browser history.
+- The recruiter links on `/candidates/metrics` include catalogue members marked for individual metrics or still selectable for candidate assignment. This keeps coordinators such as Leonardo visible here without changing the `include_in_metrics` rule used by `/metrics`.
 - Preserve the candidate source, catalogue inclusion rules, inactive accounts, Wednesday–Tuesday grouping, weekly targets, percentages and TSV copy actions. Mobile retains the existing compact summaries; tablet and desktop use tokenized cards and the weekly table. Loading, recoverable errors, empty candidates and missing catalogue entries have visible states.
 
 **`departure-capture-and-saved-reports`** — responsive dialogs
