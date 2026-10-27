@@ -1343,9 +1343,6 @@
   padding: var(--spacing-xs) var(--spacing-md);
   border-bottom: var(--border-width) solid var(--color-hairline-soft);
   vertical-align: middle;
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
   position: sticky;
   left: 0;
   background-color: var(--color-surface-card);
@@ -1354,6 +1351,16 @@
   font-size: var(--type-body-strong-size);
   line-height: var(--type-body-strong-line);
   letter-spacing: var(--type-body-strong-tracking);
+}
+
+.indicadores-table-row-header .indicadores-recruiter-icon {
+  display: inline-block;
+  vertical-align: middle;
+  margin-inline-end: var(--spacing-sm);
+}
+
+.indicadores-table tbody tr:last-child > :is(th, td) {
+  border-bottom: 0;
 }
 
 .indicadores-recruiter-icon {
@@ -1454,6 +1461,10 @@
   border-bottom: var(--border-width) solid var(--color-hairline-soft);
 }
 
+.indicadores-mobile-list > li:last-child > :is(.indicadores-mobile-list__btn, .indicadores-mobile-list__row) {
+  border-bottom: 0;
+}
+
 .indicadores-mobile-list__btn {
   cursor: pointer;
   transition: background var(--transition-fast);
@@ -1511,6 +1522,10 @@
   gap: var(--spacing-md);
   padding: var(--spacing-md);
   border-bottom: var(--border-width) solid var(--color-hairline-soft);
+}
+
+.indicadores-mobile-detail__item:last-child {
+  border-bottom: 0;
 }
 
 .indicadores-mobile-detail__total {
@@ -2109,6 +2124,10 @@
 .indicadores-bajas-item {
   border-bottom: var(--border-width) solid var(--color-hairline);
   padding: var(--spacing-md);
+}
+
+.indicadores-bajas-item:last-child {
+  border-bottom: 0;
 }
 
 .indicadores-bajas-item-header {
