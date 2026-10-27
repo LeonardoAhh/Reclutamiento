@@ -189,6 +189,7 @@ const copy = {
     },
     routes: {
       title: "Rutas",
+      scanner: "Escáner",
       overCapacity: "Sobrecupo",
       match: "coincidencia",
       matches: "coincidencias",
@@ -478,6 +479,7 @@ const copy = {
     },
     routes: {
       title: "Routes",
+      scanner: "Scanner",
       overCapacity: "Over capacity",
       match: "match",
       matches: "matches",

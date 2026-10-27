@@ -866,9 +866,34 @@
   margin: 0;
 }
 
+.rutas-scanner-action {
+  display: none;
+}
+
 @media (max-width: 767px) {
   .rutas-search-container .search-field {
     inline-size: auto;
+  }
+
+  .rutas-scanner-action {
+    display: flex;
+    margin-top: var(--spacing-sm);
+  }
+
+  .rutas-scanner-action > .btn-secondary {
+    inline-size: 100%;
+  }
+
+  .rutas-page[data-mobile-view="detail"] .rutas-toolbar {
+    display: block;
+  }
+
+  .rutas-page[data-mobile-view="detail"]:not([data-search-active="true"]) .rutas-search-container {
+    display: none;
+  }
+
+  .rutas-page[data-mobile-view="detail"]:not([data-search-active="true"]) .rutas-scanner-action {
+    margin-top: 0;
   }
 }
 

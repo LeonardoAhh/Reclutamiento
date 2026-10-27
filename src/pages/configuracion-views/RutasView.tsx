@@ -20,7 +20,7 @@ import {
   RutaAgrupada,
   type EmpleadoRuta,
 } from "@/hooks/useRutas";
-import { ROUTE_DAY_EMPLOYEES_PATH } from "@/lib/configuracionNavigation";
+import { ROUTE_DAY_EMPLOYEES_PATH, ROUTE_SCANNER_PATH } from "@/lib/configuracionNavigation";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { BackButton } from "@/components/ui/BackButton";
 import { SearchField } from "@/components/ui/SearchField";
@@ -640,6 +640,14 @@ export function RutasView() {
                   }
                 </p>
               )}
+            </div>
+            <div className="rutas-scanner-action">
+              <Link
+                className="btn-secondary"
+                to={ROUTE_SCANNER_PATH}
+              >
+                {copy.scanner}
+              </Link>
             </div>
           </div>
         </section>

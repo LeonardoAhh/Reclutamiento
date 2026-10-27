@@ -23,8 +23,9 @@ import { TopRecruiterModal } from '@/components/ui/TopRecruiterModal';
 import { TeamProvider } from '@/features/team/TeamProvider';
 import { isBoneyardBuild } from '@/lib/boneyard';
 import { PLANTILLA_PATH } from '@/lib/plantillaNavigation';
-import { ADMINISTRATION_PATH, CONFIGURACION_ROUTES, ROUTE_DAY_EMPLOYEES_PATH } from '@/lib/configuracionNavigation';
+import { ADMINISTRATION_PATH, CONFIGURACION_ROUTES, ROUTE_DAY_EMPLOYEES_PATH, ROUTE_SCANNER_PATH } from '@/lib/configuracionNavigation';
 import { RutaDayEmployeesPage } from '@/components/ui/RutaDayEmployeesModal';
+import { RouteScannerPage } from '@/pages/configuracion-views/RouteScannerPage';
 import { DATA_UPDATE_PATH } from '@/features/data-update/types';
 import { ACCOUNT_PATH, ACTIVIDADES_PATH, HOME_PATH, LOGOUT_PATH, ORGANIZATION_CHART_PATH, TEAM_PATH, VACANCY_ASSIGNMENTS_PATH } from '@/components/layout/navigation';
 import { LogoutPage } from '@/features/account/LogoutPage';
@@ -186,6 +187,7 @@ function App() {
                 <Route path="/candidates" element={<WithSupabaseData resources={CANDIDATE_FORM_DATA}><Pipeline /></WithSupabaseData>} />
                 <Route path="/employee-turnover" element={<WithSupabaseData resources={EMPLOYEE_DATA}><Bajas /></WithSupabaseData>} />
                 <Route path={ROUTE_DAY_EMPLOYEES_PATH} element={<RutaDayEmployeesPage />} />
+                <Route path={ROUTE_SCANNER_PATH} element={<RouteScannerPage />} />
                 <Route path={REPORT_COMPARISON_PATH} element={<ReportComparisonPage />} />
                 <Route path={REPORTS_PATH} element={<ReporteDiario />}>
                   <Route path={REPORT_DAY_ROUTE} element={null} />

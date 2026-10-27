@@ -170,7 +170,7 @@ function groupByRuta(empleados: EmpleadoRuta[], empleadosPrev: EmpleadoRuta[] = 
   );
 }
 
-export function useRutas() {
+export function useRutas({ currentOnly = false }: { currentOnly?: boolean } = {}) {
   const [rawData, setRawData] = useState<EmpleadoRuta[]>([]);
   const [rawPrevData, setRawPrevData] = useState<EmpleadoRuta[]>([]);
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
@@ -194,8 +194,8 @@ export function useRutas() {
 
         const [res, resPrev, resInfo] = await Promise.all([
           fetch(urlRutas, { signal: controller.signal }),
-          fetch(urlAnterior, { signal: controller.signal }).catch(() => null),
-          fetch(urlInfo, { signal: controller.signal }).catch(() => null)
+          currentOnly ? Promise.resolve(null) : fetch(urlAnterior, { signal: controller.signal }).catch(() => null),
+          currentOnly ? Promise.resolve(null) : fetch(urlInfo, { signal: controller.signal }).catch(() => null)
         ]);
 
         if (res && res.ok) {
@@ -238,7 +238,7 @@ export function useRutas() {
 
     load();
     return () => controller.abort();
-  }, []);
+  }, [currentOnly]);
 
   const rutas = useMemo(() => groupByRuta(rawData, rawPrevData), [rawData, rawPrevData]);
 
