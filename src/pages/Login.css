@@ -59,45 +59,16 @@
   min-inline-size: 0;
 }
 
-.login-story__animation {
-  display: grid;
-  place-items: center;
-  inline-size: 100%;
-  max-inline-size: var(--content-reading-max-inline-size);
-  margin-inline: auto;
-}
-
-.login-story__scene {
-  display: grid;
-  grid-area: 1 / 1;
-  align-self: start;
-  justify-items: center;
-  gap: var(--design-spacing-lg);
-  inline-size: 100%;
-  min-inline-size: 0;
-}
-
-.login-story__visual {
-  display: grid;
-  place-items: center;
-  inline-size: min(100%, calc(var(--design-spacing-section) + var(--design-spacing-section)));
-  aspect-ratio: 1;
-}
-
-.login-story__brand-image {
+.login-story__greeting {
+  margin: 0;
   color: var(--color-ink);
-  display: block;
-  inline-size: 100%;
-  block-size: auto;
-}
-
-.login-story__orb {
-  opacity: 0;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .login-story__mark { opacity: 0; }
-  .login-story__orb { opacity: 1; }
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+  text-align: center;
+  text-wrap: balance;
 }
 
 .login-story__copy {
@@ -107,18 +78,7 @@
   overflow-wrap: anywhere;
 }
 
-.login-story__title {
-  margin: 0;
-  color: var(--color-ink);
-  font-family: var(--font-body);
-  font-size: var(--type-body-strong-size);
-  font-weight: var(--type-body-strong-weight);
-  line-height: var(--type-body-strong-line);
-  letter-spacing: var(--type-body-strong-tracking);
-  text-wrap: balance;
-}
-
-.login-story__description {
+.login-story__welcome {
   margin: 0;
   color: var(--color-body);
   font-family: var(--font-body);
@@ -134,7 +94,8 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: var(--design-spacing-xxl);
+    align-items: center;
+    gap: var(--design-spacing-lg);
     padding: var(--design-spacing-3xl);
     border: var(--border-width) solid var(--workspace-border-color);
     border-radius: var(--workspace-radius);

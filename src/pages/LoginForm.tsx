@@ -122,7 +122,9 @@ export function LoginForm({
         return;
       }
 
-      persistSavedUsername(rememberMe ? trimmedUsername : null);
+      const savedUsername = rememberMe ? trimmedUsername : null;
+      persistSavedUsername(savedUsername);
+      onRememberedUsernameChange(savedUsername);
       playSound("success");
       setIsSuccess(true);
     } catch {
