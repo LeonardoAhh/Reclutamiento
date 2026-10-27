@@ -320,16 +320,6 @@
     "parada": "PARADA DE CAMIONES EN EL OXXO DE LA CALLE COAHUILA"
   },
   {
-    "numero_empleado": "2227",
-    "nombre": "LEON TAPIA MARIO",
-    "seccion": "PRODUCCIÓN MONTAJE",
-    "puesto": "MONTADOR DE MOLDES B",
-    "turno": "2",
-    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "OBRERA",
-    "parada": "PARADA DE CAMIONES EN EL OXXO DE LA CALLE COAHUILA"
-  },
-  {
     "numero_empleado": "2247",
     "nombre": "BIBIANO GARCIA FLOR",
     "seccion": "PRODUCCIÓN ADMTVO",
@@ -2500,6 +2490,16 @@
     "parada": "PARADA DE CAMIONES"
   },
   {
+    "numero_empleado": "4312",
+    "nombre": "HERNANDEZ MAGDALENO ANDREA OLIVIA",
+    "seccion": "ALMACÉN 2DO TURNO ",
+    "puesto": "AUXILIAR DE ALMACÉN C",
+    "turno": "2",
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "colonia": "PIE DE LA CUESTA",
+    "parada": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
+  },
+  {
     "numero_empleado": "4314",
     "nombre": "ACUÑA TELLEZ CRESCENCIO",
     "seccion": "PRODUCCIÓN MONTAJE",
@@ -2958,5 +2958,25 @@
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "PUERTO AGUIRRE",
     "parada": "PARADA EN LA TORTILLERIA"
+  },
+  {
+    "numero_empleado": "4415",
+    "nombre": "REYES VASQUEZ YESSICA HERMENEGILDA",
+    "seccion": "PRODUCCIÓN 3ER. TURNO",
+    "puesto": "OPERADOR DE MÁQUINA D",
+    "turno": "3",
+    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
+    "colonia": "PASEOS QUERETARO",
+    "parada": "PARADA EN LA PANADERIA LECAROZ"
+  },
+  {
+    "numero_empleado": "4417",
+    "nombre": "SANCHEZ PICHARDO ROSA MARIA",
+    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "puesto": "OPERADOR DE MÁQUINA D",
+    "turno": "4",
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "colonia": "SAN ISIDRO",
+    "parada": "PARADA DE CAMIONES"
   }
 ]
