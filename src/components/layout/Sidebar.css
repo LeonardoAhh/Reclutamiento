@@ -468,7 +468,7 @@ button.sidebar__desktop-toggle:hover {
     padding-block: var(--design-spacing-sm);
     padding-inline-end: max(var(--design-spacing-sm), var(--safe-area-right));
     overflow: hidden;
-    background: var(--workspace-canvas);
+    background: var(--shell-floor);
     --_app-sidebar-inset-inline-start: max(var(--design-spacing-sm), var(--safe-area-left));
   }
 
@@ -482,8 +482,14 @@ button.sidebar__desktop-toggle:hover {
     padding: var(--design-spacing-sm);
     padding-block-start: var(--border-width);
     border-radius: var(--workspace-radius);
-    background: var(--workspace-surface);
+    background: var(--shell-floor);
     box-shadow: var(--workspace-shadow);
+  }
+
+  :root[data-color-scheme="dark"] .sidebar {
+    box-shadow:
+      var(--workspace-shadow),
+      inset 0 0 0 var(--border-width) var(--workspace-border-color);
   }
 
   .sidebar__top {
@@ -544,6 +550,7 @@ button.sidebar__desktop-toggle:hover {
   }
 
   .app-shell__workspace {
+    --workspace-surface: var(--shell-workspace-surface);
     display: flex;
     block-size: 100%;
     min-block-size: 0;

@@ -15,8 +15,8 @@
 }
 
 .sidebar .sidebar-section__trigger.sidebar__item--active {
-  color: var(--color-navigation-rail-on-active);
-  background: var(--color-navigation-rail-active);
+  color: var(--color-primary-text);
+  background: var(--color-primary-tint);
 }
 
 .sidebar-section__icon {
@@ -110,12 +110,9 @@
 }
 
 .sidebar-section__view[aria-current='page'] {
-  background: var(--color-navigation-rail-active);
-  color: var(--color-navigation-rail-on-active);
-  font-size: var(--type-label-sm-size);
-  font-weight: var(--type-label-sm-weight);
-  line-height: var(--type-label-sm-line);
-  letter-spacing: var(--type-label-sm-tracking);
+  background: var(--color-primary-tint);
+  color: var(--color-primary-text);
+  font-weight: var(--type-body-strong-weight);
 }
 
 .sidebar-section__view span {
