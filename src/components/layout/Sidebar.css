@@ -550,6 +550,7 @@ button.sidebar__desktop-toggle:hover {
   }
 
   .app-shell__workspace {
+    --workspace-surface: var(--shell-workspace-surface);
     display: flex;
     block-size: 100%;
     min-block-size: 0;
