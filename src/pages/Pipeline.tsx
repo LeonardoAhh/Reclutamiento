@@ -345,6 +345,7 @@ export function Pipeline() {
   }
 
   async function handleCopyReport() {
+    if (!isAdmin) return;
     if (reportCopiedTimer.current !== null) window.clearTimeout(reportCopiedTimer.current);
     setReportCopied(false);
     const report = buildCandidateReport(candidates, members);
@@ -444,7 +445,7 @@ export function Pipeline() {
               if (value !== macroStatus) playSound('select');
               setMacroStatus(value);
             }} />
-            <Link
+            {isAdmin && <Link
               className="btn-secondary pipeline__report-btn"
               to={CANDIDATE_METRICS_PATH}
               data-cuelume-navigate=""
@@ -453,8 +454,8 @@ export function Pipeline() {
             >
               <BarChart3 size={16} aria-hidden="true" />
               <span>{en ? 'Metrics' : 'Métricas'}</span>
-            </Link>
-            <button
+            </Link>}
+            {isAdmin && <button
               type="button"
               className="btn-secondary pipeline__report-btn"
               onClick={handleCopyReport}
@@ -465,7 +466,7 @@ export function Pipeline() {
                 <MorphingIcon icon={reportCopied ? ClipboardCheck : MorphClipboardList} size="var(--icon-size-sm)" reducedMotion="user" aria-hidden="true" />
                 <span className="pipeline__report-label" aria-hidden="true">{en ? 'Summary' : 'Resumen'}</span>
               </ActionStateContent>
-            </button>
+            </button>}
             <button
               type="button"
               className="btn-primary"
