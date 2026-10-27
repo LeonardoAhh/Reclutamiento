@@ -483,13 +483,7 @@ button.sidebar__desktop-toggle:hover {
     padding-block-start: var(--border-width);
     border-radius: var(--workspace-radius);
     background: var(--shell-floor);
-    box-shadow: var(--workspace-shadow);
-  }
-
-  :root[data-color-scheme="dark"] .sidebar {
-    box-shadow:
-      var(--workspace-shadow),
-      inset 0 0 0 var(--border-width) var(--workspace-border-color);
+    box-shadow: none;
   }
 
   .sidebar__top {
