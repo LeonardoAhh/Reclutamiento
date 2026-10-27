@@ -10,7 +10,12 @@
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-sm);
+  padding: 0;
+  border: 0;
+  background: transparent;
   color: inherit;
+  font: inherit;
+  cursor: pointer;
   text-decoration: none;
 }
 
@@ -41,6 +46,23 @@
   display: grid;
   gap: var(--spacing-xs);
   min-width: 0;
+}
+
+.route-scanner-page__loading {
+  display: grid;
+  gap: var(--spacing-xs);
+}
+
+.route-scanner-page__skeleton-label {
+  inline-size: calc(var(--touch-target-min) * 2);
+  block-size: var(--type-caption-up-size);
+  border-radius: var(--rounded-sm);
+}
+
+.route-scanner-page__skeleton-select {
+  inline-size: 100%;
+  block-size: var(--control-height);
+  border-radius: var(--radius-field);
 }
 
 .route-scanner-page__card :is(h2, h3, p) {

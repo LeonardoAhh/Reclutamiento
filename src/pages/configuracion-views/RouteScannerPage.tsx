@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { ArrowLeft, Camera, CircleAlert, CircleCheckBig, X } from 'lucide-react';
 import type { Worker } from 'tesseract.js';
 import { PageHeading } from '@/components/layout/PageHeading';
 import { CustomSelect } from '@/components/ui/CustomSelect';
 import { Badge } from '@/components/ui/Badge';
+import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useRutas } from '@/hooks/useRutas';
 import { readPrintedEmployeeNumber } from './route-scanner-ocr';
@@ -14,7 +14,7 @@ type ScanState = 'idle' | 'starting' | 'camera' | 'reading';
 
 const copy = {
   es: {
-    title: 'Escáner', back: 'Volver a Rutas', route: 'Ruta seleccionada',
+    title: 'Escáner', back: 'Volver a seleccionar ruta', route: 'Ruta seleccionada',
     intro: 'Enfoca el número impreso debajo de las barras.',
     openCamera: 'Abrir cámara', retakePhoto: 'Tomar otra foto', takePhoto: 'Tomar foto', closeCamera: 'Cerrar cámara',
     number: 'Número de empleado', verify: 'Verificar',
@@ -33,7 +33,7 @@ const copy = {
     assignedRoute: 'Ruta registrada', photoAlt: 'Foto de la credencial seleccionada',
   },
   en: {
-    title: 'Scanner', back: 'Back to Routes', route: 'Selected route',
+    title: 'Scanner', back: 'Back to route selection', route: 'Selected route',
     intro: 'Focus on the number printed below the bars.',
     openCamera: 'Open camera', retakePhoto: 'Take another photo', takePhoto: 'Take photo', closeCamera: 'Close camera',
     number: 'Employee number', verify: 'Verify',
@@ -66,6 +66,7 @@ export function RouteScannerPage() {
   const streamRef = useRef<MediaStream | null>(null);
   const workerRef = useRef<Worker | null>(null);
   const photoUrlRef = useRef<string | null>(null);
+  const stepRef = useRef(0);
   const mountedRef = useRef(true);
   const [scanState, setScanState] = useState<ScanState>('idle');
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
@@ -122,7 +123,21 @@ export function RouteScannerPage() {
     setScanState('idle');
   }
 
+  function returnToRouteSelection() {
+    stepRef.current += 1;
+    stopCamera();
+    if (photoUrlRef.current) URL.revokeObjectURL(photoUrlRef.current);
+    photoUrlRef.current = null;
+    setPhotoUrl(null);
+    setNumber('');
+    setVerifiedNumber(null);
+    setNumberRead(false);
+    setNotice(null);
+    setRouteName('');
+  }
+
   async function openCamera() {
+    const step = stepRef.current;
     setNotice(null);
     if (!navigator.mediaDevices?.getUserMedia) {
       setNotice(t.cameraError);
@@ -131,7 +146,7 @@ export function RouteScannerPage() {
     setScanState('starting');
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false });
-      if (!mountedRef.current) {
+      if (!mountedRef.current || step !== stepRef.current) {
         stream.getTracks().forEach(track => track.stop());
         return;
       }
@@ -148,14 +163,16 @@ export function RouteScannerPage() {
         videoRef.current.srcObject = stream;
         await videoRef.current.play();
       }
-      setScanState('camera');
+      if (step === stepRef.current) setScanState('camera');
     } catch {
+      if (step !== stepRef.current) return;
       stopCamera();
       setNotice(t.cameraError);
     }
   }
 
   async function readPhoto(photo: Blob) {
+    const step = stepRef.current;
     setNotice(null);
     setVerifiedNumber(null);
     setNumberRead(false);
@@ -180,8 +197,9 @@ export function RouteScannerPage() {
         }
         workerRef.current = worker;
       }
+      if (step !== stepRef.current) return;
       const extracted = await readPrintedEmployeeNumber(photo, workerRef.current);
-      if (!mountedRef.current) return;
+      if (!mountedRef.current || step !== stepRef.current) return;
       if (extracted) {
         setNumber(extracted);
         setNumberRead(true);
@@ -189,13 +207,14 @@ export function RouteScannerPage() {
         setNotice(t.noNumber);
       }
     } catch {
-      if (mountedRef.current) setNotice(t.photoError);
+      if (mountedRef.current && step === stepRef.current) setNotice(t.photoError);
     } finally {
-      if (mountedRef.current) setScanState('idle');
+      if (mountedRef.current && step === stepRef.current) setScanState('idle');
     }
   }
 
   async function takePhoto() {
+    const step = stepRef.current;
     const video = videoRef.current;
     if (!video?.videoWidth || !video.videoHeight) return;
     const canvas = document.createElement('canvas');
@@ -203,6 +222,7 @@ export function RouteScannerPage() {
     canvas.height = video.videoHeight;
     canvas.getContext('2d')?.drawImage(video, 0, 0);
     const photo = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/jpeg'));
+    if (step !== stepRef.current) return;
     stopCamera();
     if (photo) void readPhoto(photo);
     else setNotice(t.photoError);
@@ -224,10 +244,12 @@ export function RouteScannerPage() {
   return (
     <main className="route-scanner-page container" aria-labelledby="route-scanner-title">
       <PageHeading id="route-scanner-title" className="app-page-title">
-        <Link className="route-scanner-page__title-link" to="/routes" aria-label={`${t.title}. ${t.back}`}>
-          <ArrowLeft aria-hidden="true" />
-          <span>{t.title}</span>
-        </Link>
+        {route ? (
+          <button type="button" className="route-scanner-page__title-link" onClick={returnToRouteSelection} aria-label={`${t.title}. ${t.back}`}>
+            <ArrowLeft aria-hidden="true" />
+            <span>{t.title}</span>
+          </button>
+        ) : t.title}
       </PageHeading>
       <section className="route-scanner-page__card" aria-label={t.title}>
         {route ? <>
@@ -282,7 +304,12 @@ export function RouteScannerPage() {
         {scanState === 'starting' && <p role="status">{t.openCamera}…</p>}
         {scanState === 'reading' && <p role="status">{t.reading}</p>}
         {notice && <p role="alert" className="route-scanner-page__notice">{notice}</p>}
-        </> : <>
+        </> : loading ? (
+          <LoadingSkeleton label={t.loading} className="route-scanner-page__loading">
+            <span className="loading-skeleton__bone route-scanner-page__skeleton-label" aria-hidden="true" />
+            <span className="loading-skeleton__bone route-scanner-page__skeleton-select" aria-hidden="true" />
+          </LoadingSkeleton>
+        ) : <>
           <div className="route-scanner-page__route">
             <p className="route-scanner-page__eyebrow">{t.route}</p>
             <CustomSelect
@@ -291,11 +318,10 @@ export function RouteScannerPage() {
               placeholder={t.noRoute}
               showPlaceholderOption={false}
               options={routeOptions}
-              disabled={loading || Boolean(errorMsg)}
+              disabled={Boolean(errorMsg)}
               onChange={setRouteName}
             />
           </div>
-          {loading && <p role="status">{t.loading}</p>}
           {errorMsg && <p role="alert">{t.loadError}</p>}
         </>}
       </section>
