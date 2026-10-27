@@ -20,6 +20,7 @@ interface TaskDetailsModalProps {
   proofs: ActivityProof[];
   isImage: (filename: string) => boolean;
   isAdmin: boolean;
+  canSubmitProgress: boolean;
   onEdit?: () => void;
   onDelete?: () => Promise<boolean>;
   onDeleteProof: (id: string, url: string) => Promise<boolean>;
@@ -39,6 +40,7 @@ export function TaskDetailsModal({
   proofs,
   isImage,
   isAdmin,
+  canSubmitProgress,
   onEdit,
   onDelete,
   onDeleteProof,
@@ -68,7 +70,7 @@ export function TaskDetailsModal({
                 id="detail-estado"
                 value={activity.estado}
                 onChange={(val) => onStatusChange(val as ActivityStatus)}
-                disabled={isUpdatingStatus}
+                disabled={isUpdatingStatus || !canSubmitProgress}
                 options={[
                   { value: "pendiente", label: en ? "Pending" : "Pendiente" },
                   { value: "en_proceso", label: en ? "In progress" : "En Proceso" },
@@ -138,7 +140,7 @@ export function TaskDetailsModal({
                 />
               ))}
 
-              <label className="file-upload-wrapper">
+              {canSubmitProgress && <label className="file-upload-wrapper">
                 <input
                   type="file"
                   className="sr-only"
@@ -156,7 +158,7 @@ export function TaskDetailsModal({
                     {isUploadingProof ? (en ? "Uploading..." : "Subiendo...") : (en ? "Add" : "Añadir")}
                   </span>
                 </div>
-              </label>
+              </label>}
             </div>
           </div>
         </div>

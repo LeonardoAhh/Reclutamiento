@@ -100,6 +100,7 @@ export function Actividades() {
   const [selectedActivity, setSelectedActivity] = useState<Activity | null>(
     null,
   );
+  const canSubmitProgress = profile?.role === "admin" || Boolean(profile?.id && selectedActivity?.asignado_a === profile.id);
   const [proofs, setProofs] = useState<ActivityProof[]>([]);
 
   /* ── Create activity form state ─────────────────────────────────────── */
@@ -337,7 +338,7 @@ export function Actividades() {
   };
 
   const handleStatusChange = async (newStatusString: string) => {
-    if (!selectedActivity || isUpdatingStatus) return;
+    if (!selectedActivity || !canSubmitProgress || isUpdatingStatus) return;
 
     const previousStatus = selectedActivity.estado;
     const newStatus = newStatusString as ActivityStatus;
@@ -359,7 +360,7 @@ export function Actividades() {
   const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!selectedActivity || !e.target.files || e.target.files.length === 0)
+    if (!selectedActivity || !canSubmitProgress || !e.target.files || e.target.files.length === 0)
       return;
     const file = e.target.files[0];
 
@@ -382,6 +383,7 @@ export function Actividades() {
   };
 
   const handleDeleteProof = async (proofId: string, url: string) => {
+    if (profile?.role !== "admin") return false;
     const ok = await deleteProof(proofId, url);
     playSound(ok ? "success" : "error");
     if (ok) setProofs((prev) => prev.filter((proof) => proof.id !== proofId));
@@ -409,6 +411,7 @@ export function Actividades() {
 
   const handleEdit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (profile?.role !== "admin") return;
     const normalizedTitle = editTitulo.trim();
     if (!selectedActivity || !normalizedTitle) return;
     setIsEditing(true);
@@ -731,7 +734,7 @@ export function Actividades() {
           display_name: members.find(member => member.profile_id === selectedActivity.asignado_a)?.full_name,
         } : undefined}
         currentUserId={profile?.id}
-        onStartEditing={() => { playSound("select"); setPreviewResponsibility(false); }}
+        onStartEditing={isAdmin ? () => { playSound("select"); setPreviewResponsibility(false); } : undefined}
         onDelete={isAdmin && previewResponsibility && selectedActivity ? () => handleDelete(selectedActivity) : undefined}
       />
 
@@ -757,6 +760,7 @@ export function Actividades() {
         proofs={proofs}
         isImage={isImage}
         isAdmin={isAdmin}
+        canSubmitProgress={canSubmitProgress}
         onEdit={isAdmin && selectedActivity ? () => {
           proofsRequestRef.current += 1;
           setIsDetailModalOpen(false);
