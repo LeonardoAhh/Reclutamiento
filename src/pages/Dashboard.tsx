@@ -400,7 +400,7 @@ export function Dashboard() {
                             {t("Nuevo")}
                           </span>
                         </button>
-                        <button
+                        {isAdmin && <button
                           type="button"
                           className="btn-secondary dashboard__report-btn"
                           data-cuelume-navigate=""
@@ -411,7 +411,7 @@ export function Dashboard() {
                           <span className="dashboard__report-btn-label">
                             {t("Reporte")}
                           </span>
-                        </button>
+                        </button>}
                         {isAdmin && (
                           <button
                             type="button"

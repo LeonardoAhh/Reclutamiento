@@ -66,9 +66,9 @@ const Login = lazy(() =>
 function ProtectedContent() {
   const { pathname } = useLocation();
   const { profile } = useAuth();
-  const isCandidateMetricsPath = pathname.replace(/\/+$/, '') === CANDIDATE_METRICS_PATH;
+  const normalizedPath = pathname.replace(/\/+$/, '');
   if (profile?.role === 'reclutador' &&
-    (pathname === ADMINISTRATION_PATH || pathname === PERFORMANCE_EVALUATIONS_2027_PATH || isCandidateMetricsPath || isDailyReportPath(pathname))) {
+    (pathname === ADMINISTRATION_PATH || pathname === PERFORMANCE_EVALUATIONS_2027_PATH || normalizedPath === CANDIDATE_METRICS_PATH || normalizedPath === VACANCY_ASSIGNMENTS_PATH || isDailyReportPath(pathname))) {
     return <Navigate to={HOME_PATH} replace />;
   }
   return (
