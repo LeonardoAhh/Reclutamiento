@@ -11,6 +11,7 @@ import { loginTranslations, type LoginLanguage, type LoginMessageKey } from "./l
 
 interface LoginFormProps {
   language: LoginLanguage;
+  onRememberedUsernameChange: (username: string | null) => void;
 }
 
 type LoginError =
@@ -40,7 +41,10 @@ function persistSavedUsername(username: string | null) {
   }
 }
 
-export function LoginForm({ language }: LoginFormProps) {
+export function LoginForm({
+  language,
+  onRememberedUsernameChange,
+}: LoginFormProps) {
   const { signIn } = useAuth();
   const copy = loginTranslations[language];
   const [username, setUsername] = useState("");
@@ -67,6 +71,7 @@ export function LoginForm({ language }: LoginFormProps) {
     if (saved) {
       const savedUsername = emailToUsername(usernameToEmail(saved));
       setUsername(savedUsername);
+      onRememberedUsernameChange(savedUsername);
       setRememberMe(true);
     }
 
@@ -75,7 +80,7 @@ export function LoginForm({ language }: LoginFormProps) {
       (saved ? passwordRef : usernameRef).current?.focus();
     });
     return () => cancelAnimationFrame(frame);
-  }, []);
+  }, [onRememberedUsernameChange]);
 
   const handlePasswordKeyEvent = (event: KeyboardEvent<HTMLInputElement>) => {
     setCapsLock(event.getModifierState("CapsLock"));
@@ -119,6 +124,7 @@ export function LoginForm({ language }: LoginFormProps) {
 
       const savedUsername = rememberMe ? trimmedUsername : null;
       persistSavedUsername(savedUsername);
+      onRememberedUsernameChange(savedUsername);
       playSound("success");
       setIsSuccess(true);
     } catch {

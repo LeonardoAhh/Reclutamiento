@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BrandMark } from "@/components/ui/BrandMark";
 import { bindSoundInteractions } from "@/lib/sound";
 import { LoginForm } from "./LoginForm";
@@ -11,6 +11,7 @@ import "./Login.css";
 
 export function Login() {
   const { language, storageError } = useLoginLanguage();
+  const [rememberedUsername, setRememberedUsername] = useState<string | null>(null);
   const mainRef = useRef<HTMLElement>(null);
   const copy = loginTranslations[language];
 
@@ -34,14 +35,17 @@ export function Login() {
             <BrandMark className="login__brand-icon" />
             <span className="login__brand-name">ViñoPlastic</span>
           </div>
-          <LoginForm language={language} />
+          <LoginForm
+            language={language}
+            onRememberedUsernameChange={setRememberedUsername}
+          />
           <footer className="login__footer" aria-label={copy.legalNoticeLabel}>
             <p className="login__footer-text">{copy.legalNotice}</p>
             <LoginCredit />
           </footer>
         </div>
       </div>
-      <LoginStory />
+      <LoginStory username={rememberedUsername} language={language} />
     </main>
   );
 }

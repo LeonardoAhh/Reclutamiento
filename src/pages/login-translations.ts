@@ -24,6 +24,8 @@ export const loginTranslations = {
     legalNotice: "© 2026. Todos los derechos reservados.",
     legalNoticeLabel: "Aviso legal",
     languageStorageError: "El idioma se aplica aquí, pero este navegador no permite guardarlo.",
+    greeting: "Hola",
+    storyWelcome: "Qué gusto verte de nuevo por aquí.",
   },
   en: {
     pageTitle: "Sign in",
@@ -46,6 +48,8 @@ export const loginTranslations = {
     legalNotice: "© 2026. All rights reserved.",
     legalNoticeLabel: "Legal notice",
     languageStorageError: "The language applies here, but this browser does not allow saving it.",
+    greeting: "Hello",
+    storyWelcome: "It's great to see you again.",
   },
 } as const;
 

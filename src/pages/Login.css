@@ -42,6 +42,7 @@
     grid-column: 2;
     grid-row: 1;
     background: var(--shell-workspace-surface);
+    border-radius: var(--workspace-radius);
   }
 
   .login__card {
@@ -60,12 +61,43 @@
   min-inline-size: 0;
 }
 
+.login-story__greeting {
+  margin: 0;
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+  text-align: center;
+  text-wrap: balance;
+}
+
+.login-story__copy {
+  display: grid;
+  gap: var(--design-spacing-md);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.login-story__welcome {
+  margin: 0;
+  color: var(--color-body);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+  text-wrap: pretty;
+}
+
 @media (min-width: 1080px) {
   .login-story {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: var(--design-spacing-lg);
     padding: var(--design-spacing-3xl);
     border: var(--border-width) solid var(--workspace-border-color);
     border-radius: var(--workspace-radius);
@@ -171,7 +203,7 @@
   inline-size: 100%;
   min-inline-size: 0;
   background: var(--color-surface);
-  border: var(--border-width) solid var(--color-hairline);
+  border: none;
   border-radius: var(--rounded-lg);
   padding: var(--design-spacing-lg);
   display: flex;
