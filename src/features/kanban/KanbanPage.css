@@ -43,7 +43,7 @@
   white-space: nowrap;
   cursor: pointer;
 }
-.kanban-status-tabs:not(.kanban-status-tabs--joined) .kanban-status-tabs__trigger[data-state="active"] {
+.kanban-status-tabs__trigger[data-state="active"] {
   background: var(--color-primary);
   border-color: var(--color-primary-border);
   color: var(--color-on-primary);
@@ -51,29 +51,8 @@
 .kanban-status-tabs__trigger:disabled {
   cursor: not-allowed;
 }
-.kanban-status-tabs--joined {
-  gap: var(--design-spacing-xxs);
-  padding: var(--design-spacing-xxs);
-  border-radius: var(--radius-control);
-  background: var(--color-canvas-soft);
-  overflow: visible;
-}
-.kanban-status-tabs--joined .kanban-status-tabs__trigger {
-  border: 0;
-  border-radius: var(--radius-control);
-  background: transparent;
-  color: var(--color-body);
-}
-.kanban-status-tabs--joined .kanban-status-tabs__trigger[data-state="active"] {
-  background: var(--color-canvas-elevated);
-  color: var(--color-ink);
-  box-shadow: var(--shadow-xs);
-}
 .kanban-board__panel {
   min-width: 0;
-}
-.kanban-board__work {
-  display: contents;
 }
 .kanban-board {
   display: grid;
@@ -140,11 +119,6 @@
   list-style: none;
 }
 .kanban-column__item { min-width: 0; }
-.kanban-column__list--grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  align-items: start;
-}
 .kanban-column[data-empty] .kanban-column__list { padding: 0; }
 .kanban-column[data-empty] .kanban-column__header {
   border-bottom: 0;
@@ -388,9 +362,6 @@
   box-shadow: var(--shadow-xs);
 }
 .kanban-layout-switch:disabled { opacity: var(--opacity-disabled); }
-.kanban-desktop-tabs {
-  display: none;
-}
 .kanban-toolbar-button {
   display: inline-flex;
   align-items: center;
@@ -611,25 +582,7 @@
 }
 @media (min-width: 1080px) {
   .kanban-board {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .kanban-board__work {
-    display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    align-items: start;
-    gap: var(--design-spacing-md);
-    min-width: 0;
-  }
-  .kanban-board__work[hidden] {
-    display: none;
-  }
-  .kanban-board[data-dragging][data-view="notes"] > .kanban-board__work {
-    order: 1;
-  }
-  .kanban-desktop-tabs {
-    display: block;
-    min-width: 0;
-    max-width: 100%;
   }
   .kanban-archive { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }

@@ -41,7 +41,6 @@ function KanbanWorkspace({ userId, archived, focusView, layoutMode, onChangeLayo
   const id = useId();
   const viewRef = useRef<HTMLButtonElement>(null);
   const addButtonRef = useRef<HTMLButtonElement>(null);
-  const [desktopTabsTarget, setDesktopTabsTarget] = useState<HTMLDivElement | null>(null);
   const [editor, setEditor] = useState<KanbanEditor | null>(null);
   const [message, setMessage] = useState('');
   const viewFocusDone = useRef(false);
@@ -148,14 +147,12 @@ function KanbanWorkspace({ userId, archived, focusView, layoutMode, onChangeLayo
               {mode === 'grid' ? t.gridView : t.listView}
             </button>)}
           </fieldset>}
-          {!archived && <div ref={setDesktopTabsTarget} className="kanban-desktop-tabs" />}
         </div>
         {board.loading && !board.ready && <KanbanSkeleton label={t.loading} />}
         {board.ready && archived && board.tasks.length === 0 && <p className="type-body-md">{t.archiveEmpty}</p>}
         {board.ready && (archived ? <ArchivedTasks tasks={board.tasks} copy={t} disabled={disabled} onRestore={archive} />
           : <KanbanBoard tasks={board.tasks} copy={t} disabled={disabled} busy={board.busy} now={now}
             layoutMode={layoutMode}
-            desktopTabsTarget={desktopTabsTarget}
             editor={editor} error={actionError} onEdit={task => openEditor(task)}
             getAddButton={() => addButtonRef.current}
             onDelete={remove} onMove={move} onArchive={archive}

@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase';
-import { isKanbanTask, validateTaskDraft, type KanbanTask, type TaskDraft, type TaskStatus } from './types';
+import { isKanbanTask, TASK_STATUSES, validateTaskDraft, type KanbanTask, type TaskDraft, type TaskStatus } from './types';
 
 export type KanbanErrorCode = 'load' | 'save' | 'delete' | 'conflict' | 'permission' | 'setup' | 'invalid' | 'photo';
 export class KanbanError extends Error {
@@ -28,7 +28,7 @@ export async function listKanbanTasks(userId: string, archived: boolean, exclude
   // Excluye lo ya cargado sin URLs crecientes ni saltos tras reordenar.
   let query = supabase.rpc('list_kanban_tasks', {
     p_archived: archived, p_excluded_ids: [...excludedIds],
-  }, { count: 'exact' }).select(TASK_SELECT).eq('owner_id', userId);
+  }, { count: 'exact' }).select(TASK_SELECT).eq('owner_id', userId).in('status', TASK_STATUSES);
   query = archived ? query.order('archived_at', { ascending: false })
     : query.order('position', { ascending: true });
   const { data, count, error } = await query.order('created_at', { ascending: false })

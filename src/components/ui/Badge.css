@@ -81,7 +81,6 @@
 .badge--compact[data-state="in_progress"],
 .badge--compact[data-state="new"] { background: var(--color-primary); color: var(--color-on-primary); }
 .badge--compact[data-state="completed"] { background: var(--color-success-subtle); color: var(--color-success-text); }
-.badge--compact[data-state="notes"] { background: var(--color-canvas-soft); color: var(--color-ink); }
 
 /* ── Project Badges ── */
 

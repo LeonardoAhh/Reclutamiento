@@ -1,5 +1,4 @@
 import { useId, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
 import * as Tabs from '@radix-ui/react-tabs';
 import { DndContext, KeyboardSensor, MouseSensor, TouchSensor, useSensor, useSensors,
   type DragEndEvent } from '@dnd-kit/core';
@@ -23,7 +22,6 @@ export interface KanbanEditor {
 }
 interface KanbanBoardProps {
   layoutMode: 'grid' | 'list';
-  desktopTabsTarget: HTMLElement | null;
   tasks: readonly KanbanTask[];
   copy: KanbanCopy;
   disabled: boolean;
@@ -65,17 +63,15 @@ function KanbanList({ tasks, copy: t, locked, now, pageSize, onEdit, editButtonR
       ariaLabel={`${t.paginationFor} ${t.listView}`} />
   </section>;
 }
-export function KanbanBoard({ layoutMode, desktopTabsTarget, tasks, copy: t, disabled, busy, error, editor,
+export function KanbanBoard({ layoutMode, tasks, copy: t, disabled, busy, error, editor,
   getAddButton, onEdit, onDelete, onMove, onArchive, now, onSave, onCloseEditor }: KanbanBoardProps) {
   const id = useId();
   const [dragging, setDragging] = useState(false);
   const [pendingDropStatus, setPendingDropStatus] = useState<TaskStatus | null>(null);
   const [activeStatus, setActiveStatus] = useState<TaskStatus>('pending');
-  const [desktopView, setDesktopView] = useState<'board' | 'notes'>('board');
   const isTablet = useMediaQuery(`(min-width: ${LAYOUT_BREAKPOINTS.tablet}px)`);
   const isDesktop = useMediaQuery(DESKTOP_MEDIA_QUERY);
   const listView = isTablet && layoutMode === 'list';
-  const selectedView = isDesktop ? desktopView : activeStatus;
   const pageSize = isDesktop ? 4 : 2;
   const headings = useRef<Partial<Record<TaskStatus, HTMLHeadingElement | null>>>({});
   const editButtons = useRef<Record<string, HTMLButtonElement | null>>({});
@@ -86,8 +82,7 @@ export function KanbanBoard({ layoutMode, desktopTabsTarget, tasks, copy: t, dis
   );
   const locked = disabled || editor !== null;
   function selectTaskView(status: TaskStatus) {
-    if (isDesktop) setDesktopView(status === 'notes' ? 'notes' : 'board');
-    else if (!isTablet) setActiveStatus(status);
+    if (!isTablet) setActiveStatus(status);
   }
   function restoreEditorFocus(status: TaskStatus, taskId?: string) {
     selectTaskView(status);
@@ -146,14 +141,6 @@ export function KanbanBoard({ layoutMode, desktopTabsTarget, tasks, copy: t, dis
     return status ? `${t.moveTo} ${t.statuses[status]}` : t.dragCancel;
   };
   const taskTitle = (taskId: string | number) => tasks.find(task => task.id === taskId)?.title ?? '';
-  const desktopTabs = <Tabs.List className="kanban-status-tabs kanban-status-tabs--joined" aria-label={t.title}>
-    {(['board', 'notes'] as const).map(view => <Tabs.Trigger key={view} value={view}
-      id={`${id}-tab-${view}`} aria-controls={`${id}-panel-${view}`}
-      className="kanban-status-tabs__trigger" disabled={dragging || locked}>
-      {view === 'board' ? t.boardView : t.statuses.notes}
-      {view === 'notes' && <> · {tasks.filter(task => task.status === 'notes').length}</>}
-    </Tabs.Trigger>)}
-  </Tabs.List>;
   const statusTabs = <Tabs.List className="kanban-status-tabs" aria-label={t.status}>
     {TASK_STATUSES.map(status => <Tabs.Trigger key={status} value={status}
       id={`${id}-tab-${status}`} aria-controls={`${id}-panel-${status}`}
@@ -163,17 +150,14 @@ export function KanbanBoard({ layoutMode, desktopTabsTarget, tasks, copy: t, dis
   </Tabs.List>;
   function renderColumn(status: TaskStatus) {
     const headingId = `${id}-${status}`;
-    const tabPanel = !dragging && (!isTablet || (isDesktop && status === 'notes'));
-    const hidden = !dragging && (isDesktop
-      ? status === 'notes' && desktopView !== 'notes'
-      : !isTablet && activeStatus !== status);
+    const tabPanel = !dragging && !isTablet;
+    const hidden = !dragging && !isTablet && activeStatus !== status;
     return <Tabs.Content key={status} value={status} forceMount
       id={`${id}-panel-${status}`} className="kanban-board__panel"
       hidden={hidden} role={tabPanel ? 'tabpanel' : 'group'}
       aria-labelledby={tabPanel ? `${id}-tab-${status}` : headingId}
       tabIndex={tabPanel ? 0 : undefined}>
       <KanbanColumn status={status} tasks={tasks.filter(task => task.status === status)} copy={t}
-        layout={isDesktop && status === 'notes' ? 'grid' : 'list'}
         locked={locked} dragging={dragging} pending={pendingDropStatus === status} now={now}
         headingId={headingId} headingRef={node => { headings.current[status] = node; }}
         editButtonRef={(taskId, node) => { editButtons.current[taskId] = node; }}
@@ -181,11 +165,10 @@ export function KanbanBoard({ layoutMode, desktopTabsTarget, tasks, copy: t, dis
     </Tabs.Content>;
   }
   return (
-    <Tabs.Root className="kanban-board-navigation" value={selectedView}
+    <Tabs.Root className="kanban-board-navigation" value={activeStatus}
       onValueChange={value => {
-        if (value !== selectedView) playSound('select');
-        if (isDesktop && (value === 'board' || value === 'notes')) setDesktopView(value);
-        else if (isTaskStatus(value)) setActiveStatus(value);
+        if (value !== activeStatus) playSound('select');
+        if (isTaskStatus(value)) setActiveStatus(value);
       }}>
     <DndContext id={id} sensors={sensors} collisionDetection={kanbanCollision}
       onDragStart={() => { playSound('select'); setDragging(true); }}
@@ -197,21 +180,12 @@ export function KanbanBoard({ layoutMode, desktopTabsTarget, tasks, copy: t, dis
         onDragCancel: () => t.dragCancel,
       } }}>
       {!isTablet && statusTabs}
-      {isDesktop && !listView && desktopTabsTarget && createPortal(desktopTabs, desktopTabsTarget)}
       {listView ? <KanbanList tasks={tasks} copy={t} locked={locked} now={now}
         pageSize={pageSize * TASK_STATUSES.length} onEdit={onEdit}
         editButtonRef={(taskId, node) => { editButtons.current[taskId] = node; }} />
-        : <div className="kanban-board" data-dragging={dragging || undefined} data-view={isDesktop ? desktopView : undefined}>
-        <Tabs.Content value="board" forceMount id={`${id}-panel-board`} className="kanban-board__work"
-          hidden={isDesktop && !dragging && desktopView !== 'board'}
-          role={isDesktop && !dragging ? 'tabpanel' : 'group'}
-          aria-labelledby={isDesktop && !dragging ? `${id}-tab-board` : undefined}
-          aria-label={!isDesktop || dragging ? t.boardView : undefined}
-          tabIndex={isDesktop && !dragging ? 0 : undefined}>
-          {TASK_STATUSES.filter(status => status !== 'notes').map(renderColumn)}
-        </Tabs.Content>
-        {renderColumn('notes')}
-      </div>}
+        : <div className="kanban-board">
+          {TASK_STATUSES.map(renderColumn)}
+        </div>}
       {form()}
     </DndContext>
     </Tabs.Root>

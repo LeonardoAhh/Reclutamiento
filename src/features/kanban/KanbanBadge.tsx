@@ -1,4 +1,4 @@
-﻿import { BadgeCheck, CircleGauge, ClipboardPenLine, Clock3, ListChecks, MessageSquareText, StickyNote, Waypoints, type LucideIcon } from 'lucide-react';
+﻿import { BadgeCheck, CircleGauge, ClipboardPenLine, Clock3, ListChecks, MessageSquareText, Waypoints, type LucideIcon } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import type { TaskKind, TaskStatus } from './types';
 import type { KanbanCopy } from './copy';
@@ -14,7 +14,6 @@ const STATUS_ICONS: Record<TaskStatus, LucideIcon> = {
   pending: Clock3,
   in_progress: CircleGauge,
   completed: BadgeCheck,
-  notes: StickyNote,
 };
 export function KanbanKindBadge({ kind, copy }: { kind: TaskKind; copy: KanbanCopy }) {
   const Icon = KIND_ICONS[kind];

@@ -1,7 +1,7 @@
 import { addDaysToIso } from '@/lib/dates';
 
 export const KANBAN_PATH = '/kanban';
-export const TASK_STATUSES = ['pending', 'in_progress', 'completed', 'notes'] as const;
+export const TASK_STATUSES = ['pending', 'in_progress', 'completed'] as const;
 export const TASK_KINDS = ['activity', 'process', 'interview', 'todo'] as const;
 export const CHECKLIST_MAX_ITEMS = 50;
 export const CHECKLIST_TEXT_LIMIT = 240;
