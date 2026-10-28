@@ -1,0 +1,22 @@
+// Cifras proporcionadas por RH para la vista de referencia; no son una consulta en vivo.
+export const BIRTHPLACE_COUNTS = [
+  { name: 'Querétaro', count: 89, coordinates: [-100.389, 20.588] },
+  { name: 'Veracruz', count: 31, coordinates: [-96.134, 19.173] },
+  { name: 'México', count: 24, coordinates: [-99.655, 19.285] },
+  { name: 'Guerrero', count: 20, coordinates: [-99.504, 17.55] },
+  { name: 'Ciudad de México', count: 19, coordinates: [-99.132, 19.432] },
+  { name: 'Guanajuato', count: 16, coordinates: [-101.257, 21.019] },
+  { name: 'Puebla', count: 13, coordinates: [-98.198, 19.043] },
+  { name: 'Hidalgo', count: 12, coordinates: [-98.759, 20.101] },
+  { name: 'Morelos', count: 9, coordinates: [-99.234, 18.924] },
+  { name: 'Chiapas', count: 7, coordinates: [-93.115, 16.754] },
+  { name: 'Tabasco', count: 6, coordinates: [-92.947, 17.989] },
+  { name: 'Oaxaca', count: 6, coordinates: [-96.726, 17.073] },
+  { name: 'Michoacán', count: 4, coordinates: [-101.194, 19.705] },
+  { name: 'Nuevo León', count: 3, coordinates: [-100.316, 25.671] },
+  { name: 'Tlaxcala', count: 2, coordinates: [-98.237, 19.318] },
+  { name: 'Baja California', count: 2, coordinates: [-115.452, 32.624] },
+  { name: 'Tamaulipas', count: 1, coordinates: [-98.52, 24.081] },
+  { name: 'Nayarit', count: 1, coordinates: [-104.894, 21.504] },
+  { name: 'Campeche', count: 1, coordinates: [-90.534, 19.83] },
+] as const;

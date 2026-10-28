@@ -78,12 +78,9 @@ export function summarizeWorkforceCoverage(
   };
 }
 
-export function calculateWorkforceProjection(
+function prepareWorkforceProjection(
   employees: readonly Employee[],
   positions: AuthorizedPosition[],
-  todayIso: string,
-  dismissedKeys: ReadonlySet<string>,
-  area?: string,
 ) {
   const projectionPositions = consolidateStarlitePositions(positions);
   // Conserva la política de calculatePositionCoverage: una fila por número, última gana.
@@ -107,7 +104,18 @@ export function calculateWorkforceProjection(
       position: matches.length === 1 ? matches[0] : undefined,
       ambiguous: matches.length > 1,
     };
-  }).filter((entry) => area === undefined || entry.position?.area === area ||
+  });
+  return { projectionPositions, datedEmployees };
+}
+
+function projectPreparedWorkforce(
+  prepared: ReturnType<typeof prepareWorkforceProjection>,
+  todayIso: string,
+  dismissedKeys: ReadonlySet<string>,
+  area?: string,
+) {
+  const { projectionPositions } = prepared;
+  const datedEmployees = prepared.datedEmployees.filter((entry) => area === undefined || entry.position?.area === area ||
     (!entry.position && normalizeString(entry.employee.area) === normalizeString(area)));
   // El ámbito se aplica después del emparejamiento global: filtrar antes podría
   // convertir una coincidencia ambigua entre áreas en una asignación válida.
@@ -148,6 +156,37 @@ export function calculateWorkforceProjection(
       entry.date.slice(0, 10) <= (nextHireDate ?? todayIso),
     ).length,
   };
+}
+
+export function calculateWorkforceProjection(
+  employees: readonly Employee[],
+  positions: AuthorizedPosition[],
+  todayIso: string,
+  dismissedKeys: ReadonlySet<string>,
+  area?: string,
+) {
+  return projectPreparedWorkforce(
+    prepareWorkforceProjection(employees, positions),
+    todayIso,
+    dismissedKeys,
+    area,
+  );
+}
+
+/** Empareja cada empleado una sola vez antes de calcular varias áreas. */
+export function calculateWorkforceProjectionsByArea(
+  employees: readonly Employee[],
+  positions: AuthorizedPosition[],
+  todayIso: string,
+  dismissedKeys: ReadonlySet<string>,
+  areas: readonly string[],
+) {
+  if (areas.length === 0) return new Map<string, WorkforceProjection>();
+  const prepared = prepareWorkforceProjection(employees, positions);
+  return new Map(areas.map((area) => [
+    area,
+    projectPreparedWorkforce(prepared, todayIso, dismissedKeys, area),
+  ]));
 }
 
 export type WorkforceProjection = ReturnType<typeof calculateWorkforceProjection>;

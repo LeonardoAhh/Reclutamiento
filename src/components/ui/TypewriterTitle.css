@@ -1,0 +1,35 @@
+.typewriter-title {
+  display: inline-grid;
+  align-items: center;
+}
+
+.typewriter-title__reserve,
+.typewriter-title__written {
+  grid-area: 1 / 1;
+}
+
+.typewriter-title__reserve {
+  visibility: hidden;
+}
+
+.typewriter-title__written {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--design-spacing-xxs);
+}
+
+.typewriter-title__cursor {
+  display: inline-block;
+  inline-size: calc(var(--border-width) * 2);
+  block-size: 1em;
+  background: currentColor;
+  animation: typewriter-caret var(--transition-spinner) infinite;
+}
+
+@keyframes typewriter-caret {
+  50% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .typewriter-title__cursor { animation: none; }
+}

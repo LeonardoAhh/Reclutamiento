@@ -28,7 +28,7 @@ import {
   normalizeString,
 } from "@/lib/utils";
 import { localTodayIso } from "@/lib/dates";
-import { calculateWorkforceProjection } from "@/lib/workforceProjection";
+import { calculateWorkforceProjectionsByArea } from "@/lib/workforceProjection";
 import { useDismissedPositions } from "@/hooks/useDismissedPositions";
 import {
   computeAutoVacancies,
@@ -76,21 +76,6 @@ export function Dashboard() {
   // detalle de área en lugar de "Sin proceso" cuando hay procesos reales.
   const { candidates } = useCandidates();
 
-  // Vacantes abiertas detectadas automáticamente, excluyendo las que ya están
-  // reservadas por un empleado con fecha de ingreso futura (próximo ingreso),
-  // para no ofrecer en el alta un puesto ya comprometido.
-  const openVacancies = useMemo(
-    () =>
-      filterUnreservedVacancies(
-        computeAutoVacancies(bajas, employees, positions).filter(
-          (v) => v.status === "abierta",
-        ),
-        employees,
-        positions,
-      ),
-    [bajas, employees, positions],
-  );
-
   const [searchTerm, setSearchTerm] = useState("");
   const [showOnlyStarlite, setShowOnlyStarlite] = useState(false);
   const [filterArea, setFilterArea] = useState("");
@@ -106,6 +91,17 @@ export function Dashboard() {
   const [empModalMode, setEmpModalMode] = useState<"add" | "delete" | null>(
     null,
   );
+  // Vacantes abiertas no reservadas: se necesitan solo al dar de alta.
+  const openVacancies = useMemo(() => {
+    if (empModalMode !== "add") return [];
+    return filterUnreservedVacancies(
+      computeAutoVacancies(bajas, employees, positions).filter(
+        (v) => v.status === "abierta",
+      ),
+      employees,
+      positions,
+    );
+  }, [empModalMode, bajas, employees, positions]);
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(
     null,
   );
@@ -126,9 +122,13 @@ export function Dashboard() {
     );
   }, [location.pathname, location.search, location.hash, location.state, navigate]);
 
+  const isInitialWorkforceLoad =
+    loading && employees.length === 0 && activeTab === "general";
   const positionCoverage = useMemo(
-    () => calculatePositionCoverage(employees, comments, positions),
-    [employees, comments, positions],
+    () => isInitialWorkforceLoad
+      ? []
+      : calculatePositionCoverage(employees, comments, positions),
+    [employees, comments, positions, isInitialWorkforceLoad],
   );
 
   const departmentCoverage = useMemo(
@@ -139,10 +139,13 @@ export function Dashboard() {
   const { dismissedKeys } = useDismissedPositions();
   const todayIso = localTodayIso();
   const departmentProjections = useMemo(
-    () => new Map(departmentCoverage.map(({ area }) => [
-      area,
-      calculateWorkforceProjection(employees, positions, todayIso, dismissedKeys, area),
-    ])),
+    () => calculateWorkforceProjectionsByArea(
+      employees,
+      positions,
+      todayIso,
+      dismissedKeys,
+      departmentCoverage.map(({ area }) => area),
+    ),
     [departmentCoverage, employees, positions, todayIso, dismissedKeys],
   );
 

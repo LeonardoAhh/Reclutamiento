@@ -1,5 +1,7 @@
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
+import { motionTransition } from '@/lib/motionTokens';
+import './TypewriterTitle.css';
 
 type TypewriterSequence = {
   text: string;
@@ -17,6 +19,8 @@ type TypewriterTitleProps = {
   pauseBeforeDelete?: number;
   naturalVariance?: boolean;
   className?: string;
+  reserveSpace?: boolean;
+  showCursor?: boolean;
 };
 
 const DEFAULT_SEQUENCES: TypewriterSequence[] = [
@@ -33,7 +37,10 @@ export function TypewriterTitle({
   pauseBeforeDelete = 1000,
   naturalVariance = true,
   className = '',
+  reserveSpace = false,
+  showCursor = true,
 }: TypewriterTitleProps) {
+  const reduceMotion = useReducedMotion() ?? false;
   const [displayText, setDisplayText] = useState('');
   const sequenceIndexRef = useRef(0);
   const charIndexRef = useRef(0);
@@ -46,6 +53,7 @@ export function TypewriterTitle({
   }, [sequences]);
 
   useEffect(() => {
+    if (reduceMotion) return;
     const getTypingDelay = () => {
       if (!naturalVariance) {
         return typingSpeed;
@@ -135,32 +143,25 @@ export function TypewriterTitle({
     loopDelay,
     startDelay,
     naturalVariance,
+    reduceMotion,
   ]);
+
+  const fullText = sequences[0]?.text ?? '';
+  const visibleText = reduceMotion ? fullText : displayText;
 
   return (
     <motion.span
-      className={className}
-      style={{ display: 'inline-flex', alignItems: 'center', gap: '2px' }}
-      initial={{ opacity: 0 }}
+      className={`typewriter-title ${className}`.trim()}
+      initial={reduceMotion ? false : { opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
+      transition={motionTransition('--transition-base')}
     >
-      <span>{displayText}</span>
-      <motion.span
-        animate={{ opacity: [1, 1, 0, 0] }}
-        style={{
-          display: 'inline-block',
-          height: '1em',
-          width: '2px',
-          backgroundColor: 'currentColor'
-        }}
-        transition={{
-          duration: 1,
-          repeat: Number.POSITIVE_INFINITY,
-          repeatType: 'loop',
-          ease: 'linear',
-        }}
-      />
+      <span className="sr-only">{fullText}</span>
+      {reserveSpace && <span className="typewriter-title__reserve" aria-hidden="true">{fullText}</span>}
+      <span className="typewriter-title__written" aria-hidden="true">
+        <span>{visibleText}</span>
+        {showCursor && !reduceMotion && <span className="typewriter-title__cursor" />}
+      </span>
     </motion.span>
   );
 }

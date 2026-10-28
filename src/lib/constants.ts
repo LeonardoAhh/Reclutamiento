@@ -782,10 +782,12 @@ export const SYSTEM_UPDATE_BANNER_ENGLISH = {
   offlineReadyHint: "Data and changes still require an internet connection.",
 } as const;
 
+export const TYPEWRITER_INTERVAL_MS = 30;
+
 export const TOAST_CONFIG = {
   maxVisible: 3,
   defaultDurationMs: 4000,
-  typewriterIntervalMs: 30,
+  typewriterIntervalMs: TYPEWRITER_INTERVAL_MS,
 } as const;
 
 export const TRANSPORT_INCIDENTS_CONFIG = {

@@ -1,13 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { PageHeading } from '@/components/layout/PageHeading';
-import { motion } from "framer-motion";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { workforceText } from "@/pages/workforce-translations";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { ChevronRight, ArrowUpRight } from "lucide-react";
 import { StatCard } from "@/components/ui/StatCard";
-import { staggerContainer, staggerItem } from "@/lib/motion";
 import { KpiReveal, useKpiReveal } from "@/components/ui/KpiReveal";
 import { KpiHeroChart, DailyKpiData } from "@/components/ui/KpiHeroChart";
 import { useDismissedPositions } from "@/hooks/useDismissedPositions";
@@ -15,36 +13,18 @@ import { WeeklyHiresModal } from "@/components/ui/WeeklyHiresModal";
 import { FutureHiresModal } from "@/components/ui/FutureHiresModal";
 import { CandidatesInProcessModal } from "@/components/ui/CandidatesInProcessModal";
 import { CandidatesCitedTodayModal } from "@/components/ui/CandidatesCitedTodayModal";
-import { TtfHistoryModal } from "@/components/ui/TtfHistoryModal";
 import { MissingPositionsPage } from "@/pages/MissingPositionsPage";
 import { useSupabaseData } from "@/hooks/useSupabaseData";
 import { useCandidates } from "@/hooks/useCandidates";
 import { useBajas } from "@/hooks/useBajas";
-import {
-  computeAutoVacancies,
-  autoVacancyToRequest,
-} from "@/lib/autoVacancies";
 import { usePositions } from "@/lib/positions";
 import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
+import { calculatePositionCoverage } from "@/lib/utils";
+import type { Baja, Candidate } from "@/lib/types";
 import {
-  calculatePositionCoverage,
-  calculateDepartmentCoverage,
-  getCoverageColor,
-} from "@/lib/utils";
-import { computeMonthlyComparison } from "@/lib/bajas";
-import { DEFAULT_VACANCY_SLA_DAYS } from "@/lib/types";
-import type {
-  Baja,
-  Candidate,
-  VacancyRequest,
-  VacancyStatus,
-} from "@/lib/types";
-import {
-  businessDaysBetween,
   formatIsoWeekRange,
   isInIsoWeek,
   isoWeekOf,
-  currentYearMx,
   localTodayIso,
   addDaysToIso,
   formatProjectionDate,
@@ -59,12 +39,6 @@ import "./KpisPage.css";
 
 /* Mismas constantes que las páginas de origen para que los KPIs cuadren. */
 
-const OPEN_VACANCY_STATUSES: ReadonlyArray<VacancyStatus> = [
-  "abierta",
-  "en_proceso",
-  "pausa",
-];
-
 /** IDs de cards que siempre se muestran sin blur. */
 const ALWAYS_VISIBLE_IDS: ReadonlySet<string> = new Set([
   "kpi-ingresos-semana",
@@ -73,87 +47,12 @@ const ALWAYS_VISIBLE_IDS: ReadonlySet<string> = new Set([
   "stat-pipeline-activo",
 ]);
 
-/** KPIs conservados en el modelo, pero fuera de la presentación actual. */
-const HIDDEN_KPI_IDS: ReadonlySet<string> = new Set([
-  "stat-vac-abiertas",
-  "stat-vac-sla",
-  "stat-vac-vencidas",
-  "stat-vac-ttf",
-  "stat-vac-excluidas",
-  "stat-pipeline-total",
-  "stat-pipeline-contratado",
-  "stat-pipeline-rechazado",
-  "stat-autorizada",
-  "stat-real",
-  "stat-vacantes",
-  "stat-cobertura",
-  "kpi-cobertura",
-  "kpi-bajas",
-  "kpi-ingresos",
-  "kpi-solo-induccion",
-]);
-
-/* ── Agrupación para la vista móvil (tabs) ──────────────────────────
-    En móvil los 19 KPIs se navegan por grupo para no saturar la vista.
-    Solo afecta presentación: los cálculos no cambian. */
-
-const KPI_GROUPS = [
-  { id: "semana", label: "Semana" },
-  { id: "vacantes", label: "Vacantes" },
-  { id: "candidatos", label: "Candidatos" },
-  { id: "plantilla", label: "Plantilla" },
-  { id: "bajas", label: "Bajas" },
-] as const;
-
-type KpiGroupId = (typeof KPI_GROUPS)[number]["id"];
-
-const CARD_GROUP_BY_ID: Record<string, KpiGroupId> = {
-  "kpi-ingresos-semana": "semana",
-  "kpi-proximos-ingresos": "semana",
-  "stat-pipeline-citados-hoy": "semana",
-  "stat-pipeline-activo": "semana",
-  "stat-vac-abiertas": "vacantes",
-  "stat-vac-sla": "vacantes",
-  "stat-vac-vencidas": "vacantes",
-  "stat-vac-ttf": "vacantes",
-  "stat-vac-excluidas": "vacantes",
-  "stat-pipeline-total": "candidatos",
-  "stat-pipeline-contratado": "candidatos",
-  "stat-pipeline-rechazado": "candidatos",
-  "stat-autorizada": "plantilla",
-  "stat-real": "plantilla",
-  "stat-vacantes": "plantilla",
-  "stat-cobertura": "plantilla",
-  "kpi-cobertura": "bajas",
-  "kpi-bajas": "bajas",
-  "kpi-ingresos": "bajas",
-  "kpi-solo-induccion": "bajas",
-};
-
 const MODAL_CARD_IDS: ReadonlySet<string> = new Set([
   "kpi-ingresos-semana",
   "kpi-proximos-ingresos",
   "stat-pipeline-activo",
   "stat-pipeline-citados-hoy",
-  "stat-vac-ttf",
 ]);
-
-interface VacancyMetrics {
-  vencida: boolean;
-}
-
-function computeVacancyMetrics(v: VacancyRequest): VacancyMetrics {
-  const sla =
-    typeof v.dias_sla === "number" ? v.dias_sla : DEFAULT_VACANCY_SLA_DAYS;
-  const end =
-    v.status === "cubierta" && v.fecha_cubierta ? v.fecha_cubierta : new Date();
-  const diasAbierta = v.fecha_apertura
-    ? businessDaysBetween(v.fecha_apertura, end)
-    : 0;
-  const vencida =
-    v.status !== "cubierta" && v.status !== "cancelada" && diasAbierta > sla;
-  return { vencida };
-}
 
 interface KpiDescriptor {
   id: string;
@@ -183,23 +82,12 @@ export function KpisPage() {
     (bajasLoading && bajas.length === 0) ||
     (positionsLoading && positions.length === 0);
 
-  // Vacantes derivadas automáticamente de bajas + empleados (mismo modelo
-  // que la página de Vacantes), adaptadas a VacancyRequest para los KPIs.
-  const vacancies = useMemo(
-    () => computeAutoVacancies(bajas, employees).map(autoVacancyToRequest),
-    [bajas, employees],
-  );
-
   const reveal = useKpiReveal();
   const isDesktop = useMediaQuery("(min-width: 768px)");
-  const [activeGroup, setActiveGroup] = useState<KpiGroupId>("semana");
-  // Las cards visibles al llegar no se animan; solo el cambio de grupo lo hace.
-  const [hasSwitchedGroup, setHasSwitchedGroup] = useState(false);
   const [weeklyModalOpen, setWeeklyModalOpen] = useState(false);
   const [futureHiresModalOpen, setFutureHiresModalOpen] = useState(false);
   const [candidatesModalOpen, setCandidatesModalOpen] = useState(false);
   const [citedTodayModalOpen, setCitedTodayModalOpen] = useState(false);
-  const [ttfHistoryModalOpen, setTtfHistoryModalOpen] = useState(false);
   const [missingPositionsPageOpen, setMissingPositionsPageOpen] = useState(false);
   const overviewTitleRef = useRef<HTMLHeadingElement>(null);
   const wasMissingPositionsPageOpenRef = useRef(false);
@@ -286,46 +174,7 @@ export function KpisPage() {
     if (weeklyFutureHires.length === 0) return null;
     return `${t("Semana")} ${currentWeek.week}`;
   }, [weeklyFutureHires, currentWeek.week, language]);
-  const weeklyHiresSubtitle = useMemo(() => {
-    const diff = weeklyHires.length - previousWeekHires.length;
-    const sign = diff > 0 ? "+" : "";
-    return `${t("Sem.")} ${previousWeek.week}: ${previousWeekHires.length} (${sign}${diff})`;
-  }, [weeklyHires.length, previousWeekHires.length, previousWeek.week, language]);
-
-  /* ── Vacantes (5) ──────────────────────────────────────────── */
-  const vacancyTotals = useMemo(() => {
-    let abiertas = 0;
-    let enSla = 0;
-    let vencidas = 0;
-    let cubiertas = 0;
-    let ttfSum = 0;
-    let ttfCount = 0;
-    let excluidas = 0;
-
-    for (const v of vacancies) {
-      if (v.excluida_indicador) {
-        excluidas += 1;
-        continue;
-      }
-      const m = computeVacancyMetrics(v);
-      if (OPEN_VACANCY_STATUSES.includes(v.status)) {
-        abiertas += 1;
-        if (m.vencida) vencidas += 1;
-        else enSla += 1;
-      } else if (v.status === "cubierta") {
-        cubiertas += 1;
-        if (v.fecha_apertura && v.fecha_cubierta) {
-          ttfSum += businessDaysBetween(v.fecha_apertura, v.fecha_cubierta);
-          ttfCount += 1;
-        }
-      }
-    }
-
-    const ttfPromedio = ttfCount > 0 ? Math.round(ttfSum / ttfCount) : 0;
-    return { abiertas, enSla, vencidas, ttfPromedio, excluidas, cubiertas };
-  }, [vacancies]);
-
-  /* ── Candidatos (5) ────────────────────────────────────────── */
+  /* ── Candidatos visibles ───────────────────────────────────── */
   const candidatesInProcess: Candidate[] = useMemo(
     () =>
       candidates.filter(
@@ -343,52 +192,20 @@ export function KpisPage() {
     );
   }, [candidates]);
   const candidateTotals = useMemo(() => {
-    const total = candidates.length;
     const enProceso = candidatesInProcess.length;
     const citadosHoy = candidatesCitadosHoy.length;
-    const contratados = candidates.filter(
-      (c) => c.status === "contratado",
-    ).length;
-    const rechazados = candidates.filter(
-      (c) => c.status === "rechazado",
-    ).length;
-    return { total, enProceso, citadosHoy, contratados, rechazados };
-  }, [candidates, candidatesInProcess, candidatesCitadosHoy]);
+    return { enProceso, citadosHoy };
+  }, [candidatesInProcess, candidatesCitadosHoy]);
 
-  /* ── Dashboard (4) ─────────────────────────────────────────── */
+  /* ── Cobertura para el detalle de puestos pendientes ──────── */
   const currentPositionCoverage = useMemo(() => {
     return calculatePositionCoverage(employees, comments, positions);
   }, [employees, comments, positions]);
 
-  const dashboardTotals = useMemo(() => {
-    const departmentCoverage = calculateDepartmentCoverage(
-      currentPositionCoverage,
-    );
-    const autorizada = departmentCoverage.reduce(
-      (s, d) => s + d.plantilla_autorizada,
-      0,
-    );
-    const objetivo = departmentCoverage.reduce(
-      (s, d) => s + d.plantilla_objetivo,
-      0,
-    );
-    const real = departmentCoverage.reduce((s, d) => s + d.plantilla_real, 0);
-    const vacantes = departmentCoverage.reduce((s, d) => s + d.vacantes, 0);
-    const cobertura = objetivo > 0 ? Math.round((real / objetivo) * 100) : 0;
-    return { autorizada, real, vacantes, cobertura };
-  }, [currentPositionCoverage]);
-
-  /* ── Bajas (4) ─────────────────────────────────────────────── */
-  const bajasTotals = useMemo(() => {
-    const year = currentYearMx();
-    const { totals } = computeMonthlyComparison(bajas, employees, year);
-    return totals;
-  }, [bajas, employees]);
-
   /* ── Proyección Estratégica ─────────────────────────────────────────────── */
   const todayIso = useMemo(() => localTodayIso(), []);
 
-  const { dismissedKeys, toggleDismiss } = useDismissedPositions();
+  const { dismissedKeys } = useDismissedPositions();
 
   const projectionTotals = useMemo(
     () => calculateWorkforceProjection(employees, positions, todayIso, dismissedKeys),
@@ -397,6 +214,8 @@ export function KpisPage() {
 
   /* ── Gráfica Hero (Semana en Curso) ────────────────────────── */
   const heroChartData = useMemo<DailyKpiData[]>(() => {
+    if (!isDesktop || loading || missingPositionsPageOpen) return [];
+
     const days: DailyKpiData[] = [];
     const fmtDay = new Intl.DateTimeFormat(en ? "en-US" : "es-MX", {
       weekday: "short",
@@ -461,7 +280,7 @@ export function KpisPage() {
     }
 
     return days;
-  }, [currentWeek.start, employees, bajas, positions, dismissedKeys, en]);
+  }, [currentWeek.start, employees, bajas, positions, dismissedKeys, en, isDesktop, loading, missingPositionsPageOpen]);
 
   /* ── KPI list — el orden lo dicta el usuario ───────────────── */
   const cards: KpiDescriptor[] = useMemo(
@@ -519,160 +338,22 @@ export function KpisPage() {
         accentColor: "var(--color-primary)",
         origin: "Candidatos",
       },
-      {
-        id: "stat-vac-abiertas",
-        label: t("Abiertas"),
-        value: vacancyTotals.abiertas,
-        accentColor: "var(--color-primary)",
-        origin: "Vacantes",
-      },
-      {
-        id: "stat-vac-sla",
-        label: t("En tiempo"),
-        value: vacancyTotals.enSla,
-        accentColor: "var(--color-accent-teal)",
-        origin: "Vacantes",
-      },
-      {
-        id: "stat-vac-vencidas",
-        label: t("Vencidas"),
-        value: vacancyTotals.vencidas,
-        accentColor: "var(--color-error)",
-        origin: "Vacantes",
-      },
-      {
-        id: "stat-vac-ttf",
-        label: t("TTF prom. (días)"),
-        value: vacancyTotals.ttfPromedio,
-        accentColor: "var(--color-ink)",
-        origin: "Vacantes",
-      },
-      {
-        id: "stat-vac-excluidas",
-        label: t("Cubiertas"),
-        value: vacancyTotals.cubiertas,
-        accentColor: "var(--color-success)",
-        origin: "Vacantes",
-      },
-      {
-        id: "stat-pipeline-total",
-        label: t("Total histórico"),
-        value: candidateTotals.total,
-        accentColor: "var(--color-ink)",
-        origin: "Candidatos",
-      },
-      {
-        id: "stat-pipeline-contratado",
-        label: t("Contratados"),
-        value: candidateTotals.contratados,
-        accentColor: "var(--color-accent-teal)",
-        origin: "Candidatos",
-      },
-      {
-        id: "stat-pipeline-rechazado",
-        label: t("Rechazados"),
-        value: candidateTotals.rechazados,
-        accentColor: "var(--color-error)",
-        origin: "Candidatos",
-      },
-      {
-        id: "stat-autorizada",
-        label: t("Plantilla Autorizada"),
-        value: dashboardTotals.autorizada,
-        accentColor: "var(--color-ink)",
-        origin: "Dashboard",
-      },
-      {
-        id: "stat-real",
-        label: t("Plantilla Real"),
-        value: dashboardTotals.real,
-        accentColor: "var(--color-accent-teal)",
-        origin: "Dashboard",
-      },
-      {
-        id: "stat-vacantes",
-        label: t("Vacantes"),
-        value: dashboardTotals.vacantes,
-        accentColor: "var(--color-error)",
-        origin: "Dashboard",
-      },
-      {
-        id: "stat-cobertura",
-        label: t("% Cobertura Global"),
-        value: `${dashboardTotals.cobertura}%`,
-        accentColor: getCoverageColor(dashboardTotals.cobertura),
-        origin: "Dashboard",
-      },
-      {
-        id: "kpi-cobertura",
-        label: t("Cobertura"),
-        value: `${bajasTotals.coverturaPct}%`,
-        accentColor: "var(--color-accent-teal)",
-        origin: "Bajas",
-      },
-      {
-        id: "kpi-bajas",
-        label: t("Bajas"),
-        value: bajasTotals.bajas,
-        accentColor: "var(--color-error)",
-        origin: "Bajas",
-      },
-      {
-        id: "kpi-ingresos",
-        label: t("Ingresos"),
-        value: bajasTotals.ingresos,
-        accentColor: "var(--color-success)",
-        origin: "Bajas",
-      },
-      {
-        id: "kpi-solo-induccion",
-        label: t("Solo Inducción"),
-        value: bajasTotals.soloInduccion,
-        accentColor: "var(--color-muted)",
-        origin: "Bajas",
-      },
     ],
     [
-      vacancyTotals,
       candidateTotals,
-      dashboardTotals,
-      bajasTotals,
       weeklyHires,
-      weeklyHiresSubtitle,
       currentWeek,
       currentWeekLabel,
       language,
     ],
   );
 
-  const visibleCards = useMemo(
-    () => cards.filter((card) => !HIDDEN_KPI_IDS.has(card.id)),
-    [cards],
-  );
-
-  const visibleGroups = useMemo(
-    () =>
-      KPI_GROUPS.filter((group) =>
-        visibleCards.some((card) => CARD_GROUP_BY_ID[card.id] === group.id),
-      ),
-    [visibleCards],
-  );
-
   /* ── Vista móvil: cards del grupo activo ───────────────────── */
-  const mobileCards = useMemo(
-    () =>
-      visibleCards.filter(
-        (card) => CARD_GROUP_BY_ID[card.id] === activeGroup,
-      ),
-    [visibleCards, activeGroup],
-  );
-
   function openCardModal(id: string) {
     if (id === "kpi-ingresos-semana") setWeeklyModalOpen(true);
     else if (id === "kpi-proximos-ingresos") setFutureHiresModalOpen(true);
     else if (id === "stat-pipeline-activo") setCandidatesModalOpen(true);
     else if (id === "stat-pipeline-citados-hoy") setCitedTodayModalOpen(true);
-    else if (id === "stat-vac-ttf") setTtfHistoryModalOpen(true);
   }
 
   if (missingPositionsPageOpen) {
@@ -716,12 +397,11 @@ export function KpisPage() {
           <WorkforceProjection projection={projectionTotals} />
 
           <section className="kpis-page__grid" aria-label={t("KPIs consolidados")}>
-            {visibleCards.map((card, index) => {
+            {cards.map((card, index) => {
               const isAlwaysVisible = ALWAYS_VISIBLE_IDS.has(card.id);
               const revealed = isAlwaysVisible || reveal.isRevealed(card.id);
               const isWeeklyCard = card.id === "kpi-ingresos-semana";
               const isCitedTodayCard = card.id === "stat-pipeline-citados-hoy";
-              const isTtfCard = card.id === "stat-vac-ttf";
               const hasModal = MODAL_CARD_IDS.has(card.id);
               return (
                 <KpiReveal
@@ -756,9 +436,7 @@ export function KpisPage() {
                             ? t("Ver puestos contratados esta semana")
                             : isCitedTodayCard
                               ? t("Ver candidatos citados hoy")
-                              : isTtfCard
-                                ? t("Ver histórico mensual de TTF")
-                                : t("Ver puestos en proceso del pipeline")
+                              : t("Ver puestos en proceso del pipeline")
                         }
                         title={t("Ver detalle")}
                       >
@@ -786,51 +464,16 @@ export function KpisPage() {
             <ChevronRight size={20} aria-hidden="true" />
           </button>
 
-          {visibleGroups.length > 1 && (
-            <nav
-              className="kpis-page__tabs"
-              aria-label={t("Grupos de KPIs")}
-              data-testid="kpis-mobile-tabs"
-            >
-              {visibleGroups.map((group) => (
-                <button data-cuelume-tap=""
-                  key={group.id}
-                  type="button"
-                  className={`kpis-page__tab${
-                    activeGroup === group.id ? " kpis-page__tab--active" : ""
-                  }`}
-                  aria-pressed={activeGroup === group.id}
-                  onClick={() => {
-                    if (group.id === activeGroup) return;
-                    setHasSwitchedGroup(true);
-                    setActiveGroup(group.id);
-                  }}
-                  data-testid={`kpis-tab-${group.id}`}
-                >
-                  {t(group.label)}
-                </button>
-              ))}
-            </nav>
-          )}
-
-          <motion.section
-            key={activeGroup}
-            className={`kpis-page__m-grid${hasSwitchedGroup ? " kpis-page__m-grid--switched" : ""}`}
-            variants={staggerContainer}
-            initial={hasSwitchedGroup ? "hidden" : false}
-            animate="show"
-            aria-label={`${t("KPIs de")} ${
-              t(visibleGroups.find((group) => group.id === activeGroup)?.label ??
-              activeGroup)
-            }`}
+          <section
+            className="kpis-page__m-grid"
+            aria-label={`${t("KPIs de")} ${t("Semana")}`}
             data-testid="kpis-mobile-grid"
           >
-            {mobileCards.map((card) => {
+            {cards.map((card) => {
               const hasModal = MODAL_CARD_IDS.has(card.id);
               return (
-                <motion.div
+                <div
                   key={card.id}
-                  variants={staggerItem}
                   className={`kpis-page__m-card ${hasModal ? "kpis-page__m-card--interactive" : ""}`}
                   onClick={hasModal ? () => openCardModal(card.id) : undefined}
                   role={hasModal ? "button" : undefined}
@@ -863,10 +506,10 @@ export function KpisPage() {
                       <ChevronRight size={20} />
                     </div>
                   )}
-                </motion.div>
+                </div>
               );
             })}
-          </motion.section>
+          </section>
         </>
       )}
 
@@ -880,12 +523,6 @@ export function KpisPage() {
         isOpen={citedTodayModalOpen}
         onClose={() => setCitedTodayModalOpen(false)}
         candidates={candidatesCitadosHoy}
-      />
-
-      <TtfHistoryModal
-        isOpen={ttfHistoryModalOpen}
-        onClose={() => setTtfHistoryModalOpen(false)}
-        vacancies={vacancies}
       />
 
       <WeeklyHiresModal

@@ -1,0 +1,49 @@
+.home-birthplace {
+  min-width: 0;
+}
+
+.home-birthplace__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--design-spacing-sm);
+}
+
+.home-birthplace__header h2 {
+  margin: 0;
+}
+
+.home-birthplace__header h2 {
+  color: var(--color-ink);
+  font: var(--type-heading-md-weight) var(--type-heading-md-size)/var(--type-heading-md-line) var(--font-body);
+}
+
+.home-birthplace__chart {
+  position: relative;
+  inline-size: 100%;
+  block-size: min(70dvh, calc(var(--design-spacing-xxl) * 14));
+  min-block-size: calc(var(--design-spacing-xxl) * 9);
+}
+
+.home-birthplace__canvas {
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.home-birthplace__canvas canvas {
+  filter: drop-shadow(var(--shadow-xs));
+}
+
+.home-birthplace--loading {
+  min-block-size: calc(var(--design-spacing-xxl) * 10);
+}
+
+.home-birthplace__fallback {
+  display: grid;
+  min-block-size: calc(var(--design-spacing-xxl) * 9);
+  place-items: center;
+  margin: 0;
+  color: var(--color-muted);
+  text-align: center;
+}
+

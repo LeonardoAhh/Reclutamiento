@@ -1,0 +1,34 @@
+.birthplace-tooltip__anchor {
+  position: absolute;
+  inline-size: var(--border-width);
+  block-size: var(--border-width);
+  pointer-events: none;
+}
+
+.birthplace-tooltip {
+  display: grid;
+  gap: var(--design-spacing-xs);
+}
+
+.birthplace-tooltip__title {
+  font: var(--type-body-strong-weight) var(--type-body-strong-size)/var(--type-body-strong-line) var(--font-body);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.birthplace-tooltip__metric {
+  display: flex;
+  align-items: baseline;
+  gap: var(--design-spacing-xs);
+}
+
+.birthplace-tooltip__count {
+  font: var(--type-heading-md-weight) var(--type-heading-md-size)/var(--type-heading-md-line) var(--font-body);
+  letter-spacing: var(--type-heading-md-tracking);
+  font-variant-numeric: tabular-nums;
+}
+
+.birthplace-tooltip__label {
+  color: var(--color-on-dark-soft);
+  font: var(--type-body-sm-weight) var(--type-body-sm-size)/var(--type-body-sm-line) var(--font-body);
+  letter-spacing: var(--type-body-sm-tracking);
+}

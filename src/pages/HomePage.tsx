@@ -1,5 +1,5 @@
-import { useLayoutEffect, useRef, useState } from "react";
-import { ArrowUpRight, Brain, ChevronLeft, ChevronRight, Scale, ShieldCheck, UsersRound } from "lucide-react";
+import { lazy, Suspense, useCallback, useLayoutEffect, useRef, useState } from "react";
+import { ArrowUpRight, Brain, Scale, ShieldCheck, UsersRound } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Modal } from "@/components/ui/Modal";
 import { useAuth } from "@/hooks/useAuth";
@@ -10,6 +10,7 @@ import { useTeamDirectory } from '@/features/team/TeamProvider';
 import { CAREER_JOURNEY_ENABLED } from '@/features/career/types';
 import { toNaturalCase } from "@/lib/utils";
 import { HomeLessonCard } from "./home/HomeLessonCard";
+import { HomePager } from "./home/HomePager";
 import {
   LEADERSHIP_CUE_BY_TITLE,
   DEFAULT_LEADERSHIP_CUE, EMPLOYEE_LIFECYCLE, LABOR_GUIDANCE,
@@ -18,6 +19,8 @@ import {
   type DevelopmentSection,
 } from "./homeContent";
 import "./HomePage.css";
+
+const BirthplaceMap = lazy(() => import("./home/BirthplaceMap"));
 
 function HomeContext({ section }: { section: DevelopmentSection }) {
   return (
@@ -182,18 +185,29 @@ export function HomePage() {
   const { profile, username } = useAuth();
   const [activeIndex, setActiveIndex] = useState(0);
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const mapTitleRef = useRef<HTMLHeadingElement>(null);
   const moveFocus = useRef(false);
-  const activeTopic = HOME_TOPICS[activeIndex];
+  const activeTopic = HOME_TOPICS[activeIndex - 1];
+  const setMapTitleRef = useCallback((node: HTMLHeadingElement | null) => {
+    mapTitleRef.current = node;
+    if (node && moveFocus.current) {
+      node.focus();
+      moveFocus.current = false;
+    }
+  }, []);
 
   useLayoutEffect(() => {
     if (moveFocus.current) {
-      titleRef.current?.focus();
-      moveFocus.current = false;
+      const heading = (activeIndex === 0 ? mapTitleRef : titleRef).current;
+      if (heading) {
+        heading.focus();
+        moveFocus.current = false;
+      }
     }
   }, [activeIndex]);
 
   function selectTopic(index: number) {
-    if (index === activeIndex || index < 0 || index >= HOME_TOPICS.length) return;
+    if (index === activeIndex || index < 0 || index > HOME_TOPICS.length) return;
     moveFocus.current = true;
     setActiveIndex(index);
   }
@@ -220,7 +234,12 @@ export function HomePage() {
         {en ? 'Hello' : 'Hola'}, {firstName}.
       </h1>
 
-      <div id="home-content" className="home-page__learning">
+      {activeIndex === 0 ? (
+        <Suspense fallback={<div className="home-birthplace home-birthplace--loading" aria-hidden="true" />}>
+          <BirthplaceMap titleRef={setMapTitleRef} onNext={() => selectTopic(1)} />
+        </Suspense>
+      ) : (
+        <div id="home-content" className="home-page__learning">
         <section id="home-topic-content" className="home-page__topic-content"
           aria-labelledby="home-topic-title">
           <header className="home-page__section-header">
@@ -229,27 +248,12 @@ export function HomePage() {
                 className="home-page__section-title">
                 {homeText(activeTopic.title, language)}
               </h2>
-              <nav className="home-page__pagination" aria-label={en ? 'Browse topics' : 'Recorrer temas'}>
-                <button
-                  type="button"
-                  className="home-page__pagination-button"
-                  data-cuelume-navigate=""
-                  aria-label={en ? 'Previous topic' : 'Tema anterior'}
-                  disabled={activeIndex === 0}
-                  onClick={() => selectTopic(activeIndex - 1)}
-                >
-                  <ChevronLeft aria-hidden="true" />
-                </button>
-                <button
-                  type="button"
-                  className="home-page__pagination-button"
-                  aria-label={en ? 'Next topic' : 'Tema siguiente'}
-                  disabled={activeIndex === HOME_TOPICS.length - 1}
-                  onClick={() => selectTopic(activeIndex + 1)}
-                >
-                  <ChevronRight aria-hidden="true" />
-                </button>
-              </nav>
+              <HomePager
+                previousDisabled={false}
+                nextDisabled={activeIndex === HOME_TOPICS.length}
+                onPrevious={() => selectTopic(activeIndex - 1)}
+                onNext={() => selectTopic(activeIndex + 1)}
+              />
             </div>
             <p className="home-page__section-intro">{homeText(activeTopic.introduction, language)}</p>
           </header>
@@ -257,7 +261,8 @@ export function HomePage() {
             <TopicLessons topicId={activeTopic.id} leadershipCue={leadershipCue} language={language} />
           </div>
         </section>
-      </div>
+        </div>
+      )}
       {CAREER_JOURNEY_ENABLED && <Modal isOpen={showCareerMotivation} title={en ? 'Your day, your focus' : 'Tu día, tu enfoque'}
       onClose={closeCareerMotivation} size="sm"
       footerActions={<button type="button" className="btn-primary" onClick={closeCareerMotivation}>{en ? 'Make it count' : 'Hacer que cuente'}</button>}>
