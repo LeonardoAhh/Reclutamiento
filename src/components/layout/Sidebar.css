@@ -20,14 +20,23 @@
 
   color: var(--color-navigation-rail-text);
   background: var(--workspace-canvas);
-  transition: transform var(--transition-base);
+  /* visibility se retrasa solo al cerrar: la hoja termina de deslizarse
+     antes de salir del árbol de accesibilidad. */
+  transition:
+    transform var(--transition-base),
+    visibility 0s linear var(--transition-base);
   visibility: hidden;
+  pointer-events: none;
   box-shadow: var(--shadow-elevated);
 }
 
 .sidebar[data-mobile-open="true"] {
   transform: translateX(0);
   visibility: visible;
+  pointer-events: auto;
+  transition:
+    transform var(--transition-base),
+    visibility 0s linear 0s;
 }
 
 .sidebar-mobile-overlay {
@@ -64,6 +73,7 @@
   padding: var(--design-spacing-xs) var(--design-spacing-xxs);
   border: 0;
   background: transparent;
+  transition: opacity var(--transition-fast);
 }
 
 .sidebar__brand-mark {
@@ -198,6 +208,10 @@ button.sidebar__desktop-toggle:hover {
   color: var(--color-ink);
   text-align: start;
   cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    gap var(--transition-slow),
+    padding-inline var(--transition-slow);
 }
 
 .sidebar__account-trigger:hover,
@@ -365,7 +379,9 @@ button.sidebar__desktop-toggle:hover {
   cursor: pointer;
   transition:
     color var(--transition-fast),
-    background var(--transition-fast);
+    background var(--transition-fast),
+    gap var(--transition-slow),
+    padding-inline var(--transition-slow);
   min-width: 0;
 }
 
@@ -413,9 +429,14 @@ button.sidebar__desktop-toggle:hover {
 }
 
 .sidebar__item-label {
-  white-space: normal;
+  flex: 1 1 auto;
   min-width: 0;
-  overflow-wrap: anywhere;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition:
+    opacity var(--transition-fast),
+    transform var(--transition-slow);
 }
 
 .sidebar__item-badge {
@@ -478,12 +499,15 @@ button.sidebar__desktop-toggle:hover {
     inset-inline-start: var(--_app-sidebar-inset-inline-start);
     transform: none;
     visibility: visible;
+    pointer-events: auto;
     width: var(--_app-sidebar-w);
     padding: var(--design-spacing-sm);
     padding-block-start: var(--border-width);
     border-radius: var(--workspace-radius);
     background: var(--shell-floor);
     box-shadow: none;
+    /* El ancho cambia con la preferencia; el workspace acompaña el pliegue. */
+    transition: width var(--transition-slow);
   }
 
   .sidebar__top {
@@ -506,32 +530,45 @@ button.sidebar__desktop-toggle:hover {
   }
 
   .app-shell[data-sidebar-collapsed="true"] .sidebar__top {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 0;
     padding-inline: 0;
   }
 
   .app-shell[data-sidebar-collapsed="true"] .sidebar__brand {
-    display: none;
-  }
-
-  .app-shell[data-sidebar-collapsed="true"] .sidebar__desktop-toggle {
-    grid-column: 1;
-    justify-self: center;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+      opacity var(--transition-fast),
+      visibility 0s linear var(--transition-slow);
   }
 
   .app-shell[data-sidebar-collapsed="true"] .sidebar__account-trigger,
   .app-shell[data-sidebar-collapsed="true"] .sidebar__item {
     justify-content: center;
+    gap: 0;
     padding-inline: 0;
   }
 
   .app-shell[data-sidebar-collapsed="true"] .sidebar__brand-text,
   .app-shell[data-sidebar-collapsed="true"] .sidebar__account-copy,
   .app-shell[data-sidebar-collapsed="true"] .sidebar__account-chevron,
-  .app-shell[data-sidebar-collapsed="true"] .sidebar__item-label,
   .app-shell[data-sidebar-collapsed="true"] .sidebar__item-badge,
   .app-shell[data-sidebar-collapsed="true"] .sidebar__group-label {
     display: none;
+  }
+
+  /* La etiqueta se desvanece y retrocede mientras la barra se pliega; la
+     visibilidad se retrasa para retirarla del árbol de accesibilidad al final. */
+  .app-shell[data-sidebar-collapsed="true"] .sidebar__item-label {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(calc(-1 * var(--design-spacing-xxs)));
+    transition:
+      opacity var(--transition-fast),
+      transform var(--transition-slow),
+      visibility 0s linear var(--transition-slow);
   }
 
   .app-shell[data-sidebar-collapsed="true"] .sidebar__group + .sidebar__group {
@@ -559,6 +596,8 @@ button.sidebar__desktop-toggle:hover {
     border: var(--border-width) solid var(--workspace-border-color);
     border-radius: var(--workspace-radius);
     box-shadow: var(--workspace-shadow);
+    /* Acompaña el mismo pliegue que la barra lateral. */
+    transition: margin-inline-start var(--transition-slow);
   }
 
   .app-shell__main {
@@ -573,12 +612,22 @@ button.sidebar__desktop-toggle:hover {
 
 @media (prefers-reduced-motion: reduce) {
   .sidebar,
+  .sidebar__brand,
   .sidebar__item,
+  .sidebar__item-label,
   .sidebar__item-icon,
+  .sidebar__account-trigger,
   .sidebar__account-chevron,
-  .sidebar__desktop-toggle {
+  .sidebar__desktop-toggle,
+  .app-shell__workspace {
     transition: none;
   }
+
+  .app-shell[data-sidebar-collapsed="true"] .sidebar__item-label,
+  .app-shell[data-sidebar-collapsed="true"] .sidebar__brand {
+    transition: none;
+  }
+
   .sidebar-mobile-overlay {
     animation: none;
   }
