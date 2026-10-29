@@ -64,6 +64,13 @@
   overflow-wrap: anywhere;
 }
 
+.metrics-summary .indicadores-kpi-value--name {
+  font-size: var(--type-heading-md-size);
+  line-height: var(--type-heading-md-line);
+  letter-spacing: var(--type-heading-md-tracking);
+  overflow-wrap: break-word;
+}
+
 .metrics-recruiter-progress {
   inline-size: 100%;
   block-size: var(--design-spacing-xxs);
