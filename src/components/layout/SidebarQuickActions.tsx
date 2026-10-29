@@ -207,7 +207,7 @@ export function SidebarQuickActions({ profile, members, children }: SidebarQuick
               <span>{en ? "Clear dates" : "Limpiar fechas"}</span>
             </button> : undefined}
           className={`home-page__leave-modal${leaveStep === "form" ? " home-page__leave-modal--form" : ""}`}
-          size={leaveStep === "form" ? "md" : "sm"}
+          size="sm"
           footerActions={leaveStep === "policy" ?
             <button type="button" className="btn-primary" onClick={() => { playSound('navigate'); setLeaveStep("form"); }}>{en ? "Continue" : "Solicita"}</button>
           : leaveStep === "form" ?

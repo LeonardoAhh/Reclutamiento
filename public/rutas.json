@@ -2900,16 +2900,6 @@
     "parada": "CRUZ ROJA MEXICANA"
   },
   {
-    "numero_empleado": "4410",
-    "nombre": "MENDOZA SANCHEZ MARIA BELEN",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
-    "puesto": "OPERADOR DE MÁQUINA D",
-    "turno": "1",
-    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "LA BARRETA",
-    "parada": "TIENDA EN LA ENTRADA"
-  },
-  {
     "numero_empleado": "4411",
     "nombre": "GAYTAN MEDINA CARMEN MAYREN",
     "seccion": "ALMACÉN 2DO TURNO ",
@@ -2971,20 +2961,30 @@
   },
   {
     "numero_empleado": "4419",
-    "nombre": "BALDERAS ZUÑIGA MARTHA ESMERALDA",
-    "seccion": "A. CALIDAD 2DO. TURNO",
-    "puesto": "OPERADOR DE ACABADOS GP-12 D",
+    "nombre": "OCAMPO MALDONADO NELIDA",
+    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "puesto": "OPERADOR DE MÁQUINA D",
     "turno": "2",
+    "nombre ruta": "R4-SANTA ROSA",
+    "colonia": "SANTA ROSA",
+    "parada": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
+  },
+  {
+    "numero_empleado": "4421",
+    "nombre": "FIGUEROA AGUILAR LEZLY ALEJANDRA",
+    "seccion": "A. CALIDAD 3ER TURNO",
+    "puesto": "OPERADOR DE ACABADOS GP-12 D",
+    "turno": "3",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "colonia": "COREA",
     "parada": "PARADA DE CAMIONES"
   },
   {
-    "numero_empleado": "4420",
-    "nombre": "ROMERO OROPEZA ANTONIA",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
-    "puesto": "OPERADOR DE MÁQUINA D",
-    "turno": "3",
+    "numero_empleado": "4422",
+    "nombre": "BALDERAS ZUÑIGA MARTHA ESMERALDA",
+    "seccion": "A. CALIDAD 2DO. TURNO",
+    "puesto": "OPERADOR DE ACABADOS GP-12 D",
+    "turno": "2",
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "colonia": "COREA",
     "parada": "PARADA DE CAMIONES"

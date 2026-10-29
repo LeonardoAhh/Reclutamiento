@@ -23,11 +23,15 @@ export function HomeLeaveDialog({ triggerRef, ...props }: HomeLeaveDialogProps) 
     <Sheet open={props.isOpen} onOpenChange={open => { if (!open) props.onClose(); }}>
       <SheetContent
         variant="floating"
+        size={props.size}
         className={props.className}
         aria-describedby={undefined}
         onCloseAutoFocus={event => {
-          event.preventDefault();
-          triggerRef.current?.focus();
+          const trigger = triggerRef.current;
+          if (trigger?.isConnected) {
+            event.preventDefault();
+            trigger.focus();
+          }
         }}
       >
         <SheetHeader>

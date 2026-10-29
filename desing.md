@@ -311,6 +311,17 @@ Ordinary buttons are rectangles with soft 10px corners. Content cards use 16px, 
 - On mobile the outer workspace frame is removed so the flow remains continuous and can scroll with the software keyboard or increased text zoom.
 - Fields and CTA share the 44px minimum control height; the page must not autofocus a field on mobile.
 
+### Sheets & FormSheets
+
+- `Sheet` and `FormSheet` use Radix Dialog for the portal, modal semantics, focus containment, Escape and outside interaction. Existing flows keep their Modal presentation below the 768px tablet breakpoint; only consumers already selecting a Sheet use `FormSheet` from tablet upward.
+- `SheetContent` supports `xs`, `sm`, `md`, `lg` and `xl`, mapped to `--modal-inline-size-*`. The default remains `sm`; width is capped by the available viewport. `Modal` keeps its existing `md` default when rendered as a Modal.
+- `edge` attaches to the logical inline end and uses safe-area padding inside the panel. `floating` keeps an exterior gutter of at least `--design-spacing-sm`, bounded by safe areas; its interior uses `--design-spacing-md` without applying those insets twice. Both use `--color-canvas-elevated`, body typography roles, a hairline boundary and `--radius-dialog`; edge uses `--shadow-sm`, floating uses `--workspace-shadow`.
+- The header contains the title, optional real description, back/icon and header actions, with a localized close control. `SheetDescription` is used only when descriptive text exists. `SheetBody` is the scroll region; `SheetFooter` stays outside it, wraps actions and remains visible. In `FormSheet`, the body retains the legacy `modal-scroll-region` class for consumer selectors and resets its own padding/gap to preserve existing child spacing.
+- Consumer-owned scroll layouts may keep a single inner scroll region only when the outer wrapper is explicitly non-scrolling. `HomeLeaveDialog` is still a direct Sheet consumer using the legacy wrapper; it has not yet migrated to `SheetBody`.
+- The overlay fades and the panel slides from the logical edge using `--transition-base` on entry and `--transition-fast` on exit. Radix Presence keeps the exiting panel mounted through the animation. `prefers-reduced-motion` disables both animations; RTL reverses the panel direction.
+- Radix owns modal focus containment and dismissal. A connected explicit return-focus target overrides the captured opener; if that override is disconnected, the opener is used. If both disappear, no product fallback is defined. Busy/dirty close guards remain the responsibility of each consumer.
+- Validation status: the production build passes, but viewport/device checks for safe areas, virtual keyboard, landscape and 200%/400% zoom have not been performed. Do not treat this implementation as visually or WCAG-verified until those checks are completed.
+
 ### Cards & Containers
 
 **`delete-confirmation`** — compact destructive dialog

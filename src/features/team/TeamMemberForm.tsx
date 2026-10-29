@@ -55,7 +55,7 @@ export function TeamMemberForm({ member, profiles, onClose, onSaved }: Props) {
     ['job_title', copy.jobTitle, 200],
   ] as const;
   const Dialog = isMobile ? Modal : FormSheet;
-  return <Dialog isOpen className="team-dialog" title={member ? copy.editMember : copy.addMember} size="md"
+  return <Dialog isOpen className="team-dialog" title={member ? copy.editMember : copy.addMember} size="sm"
     closeLabel={language === 'en' ? 'Close' : 'Cerrar'}
     onClose={() => { if (!busy) onClose(); }} footerActions={<>
       <button data-cuelume-tap="" type="button" className="btn-secondary" disabled={busy} onClick={onClose}>{copy.cancel}</button>

@@ -18,6 +18,7 @@ export interface ModalProps {
   /** Botones de acción que se mostrarán en el footer */
   footerActions?: React.ReactNode;
   headerActions?: React.ReactNode;
+  /** En presentación sheet, si se omite se conserva el ancho compacto (`sm`). */
   size?: "xs" | "sm" | "md" | "lg" | "xl";
   placement?: "center" | "bottom";
   presentation?: "modal" | "sheet";
@@ -70,7 +71,7 @@ export function Modal({
   labelledById,
   footerActions,
   headerActions,
-  size = "md",
+  size,
   placement,
   presentation: presentationOverride,
   hideCloseButton = false,
@@ -192,9 +193,10 @@ export function Modal({
 
   if (!isOpen) return null;
 
+  const modalSize = size ?? "md";
   const contentClasses = [
     "modal-content",
-    `modal-content--${size}`,
+    `modal-content--${modalSize}`,
     className,
   ]
     .filter(Boolean)

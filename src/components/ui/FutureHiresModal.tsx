@@ -194,7 +194,7 @@ export function FutureHiresModal({
       onClose={onClose}
       title={t("Próximos ingresos")}
       icon={<UsersRound size={20} />}
-      size="md"
+      size="sm"
       footerActions={
         <button
           type="button"

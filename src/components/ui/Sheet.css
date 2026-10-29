@@ -7,6 +7,12 @@
 
 /* El ancho fluido ocupa el espacio disponible en móvil y se limita en pantallas mayores. */
 .sheet-content {
+  --sheet-inline-size: var(--modal-inline-size-sm);
+  --sheet-padding-safe-area-top: var(--safe-area-top);
+  --sheet-padding-safe-area-right: var(--safe-area-right);
+  --sheet-padding-safe-area-bottom: var(--safe-area-bottom);
+  --sheet-padding-safe-area-left: var(--safe-area-left);
+  --sheet-slide-distance: 100%;
   position: fixed;
   inset-block: 0;
   inset-inline-end: 0;
@@ -14,7 +20,7 @@
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  inline-size: min(var(--sheet-available-inline-size, 100%), var(--modal-inline-size-sm));
+  inline-size: min(var(--sheet-available-inline-size, 100%), var(--sheet-inline-size));
   min-inline-size: 0;
   background: var(--color-canvas-elevated);
   color: var(--color-body);
@@ -28,12 +34,37 @@
   overflow-wrap: anywhere;
 }
 
+/* El tamaño explícito reutiliza los anchos semánticos del diálogo compartido. */
+.sheet-content--xs {
+  --sheet-inline-size: var(--modal-inline-size-xs);
+}
+
+.sheet-content--sm {
+  --sheet-inline-size: var(--modal-inline-size-sm);
+}
+
+.sheet-content--md {
+  --sheet-inline-size: var(--modal-inline-size-md);
+}
+
+.sheet-content--lg {
+  --sheet-inline-size: var(--modal-inline-size-lg);
+}
+
+.sheet-content--xl {
+  --sheet-inline-size: var(--modal-inline-size-xl);
+}
+
 /* Variante flotante: marco y elevación del workspace con separación de las safe areas. */
 .sheet-content--floating {
   --sheet-available-inline-size: calc(
     100% - max(var(--design-spacing-sm), var(--safe-area-left)) -
       max(var(--design-spacing-sm), var(--safe-area-right))
   );
+  --sheet-padding-safe-area-top: 0px;
+  --sheet-padding-safe-area-right: 0px;
+  --sheet-padding-safe-area-bottom: 0px;
+  --sheet-padding-safe-area-left: 0px;
   inset-block-start: max(var(--design-spacing-sm), var(--safe-area-top));
   inset-block-end: max(var(--design-spacing-sm), var(--safe-area-bottom));
   inset-inline-end: max(var(--design-spacing-sm), var(--safe-area-right));
@@ -43,6 +74,10 @@
   overflow: hidden;
 }
 
+.sheet-content:dir(rtl) {
+  --sheet-slide-distance: -100%;
+}
+
 .sheet-header {
   display: flex;
   align-items: center;
@@ -50,10 +85,10 @@
   gap: var(--design-spacing-sm);
   flex: 0 0 auto;
   min-inline-size: 0;
-  padding-block-start: max(var(--design-spacing-md), var(--safe-area-top));
+  padding-block-start: max(var(--design-spacing-md), var(--sheet-padding-safe-area-top));
   padding-block-end: var(--design-spacing-md);
-  padding-inline-start: max(var(--design-spacing-md), var(--safe-area-left));
-  padding-inline-end: max(var(--design-spacing-md), var(--safe-area-right));
+  padding-inline-start: max(var(--design-spacing-md), var(--sheet-padding-safe-area-left));
+  padding-inline-end: max(var(--design-spacing-md), var(--sheet-padding-safe-area-right));
   border-block-end: var(--border-width) solid var(--color-hairline);
 }
 
@@ -123,9 +158,9 @@
   min-block-size: 0;
   min-inline-size: 0;
   padding-block-start: var(--design-spacing-md);
-  padding-block-end: max(var(--design-spacing-md), var(--safe-area-bottom));
-  padding-inline-start: max(var(--design-spacing-md), var(--safe-area-left));
-  padding-inline-end: max(var(--design-spacing-md), var(--safe-area-right));
+  padding-block-end: max(var(--design-spacing-md), var(--sheet-padding-safe-area-bottom));
+  padding-inline-start: max(var(--design-spacing-md), var(--sheet-padding-safe-area-left));
+  padding-inline-end: max(var(--design-spacing-md), var(--sheet-padding-safe-area-right));
   overflow-y: auto;
   overscroll-behavior: contain;
 }
@@ -139,8 +174,51 @@
   flex: 0 0 auto;
   min-inline-size: 0;
   padding-block-start: var(--design-spacing-md);
-  padding-block-end: max(var(--design-spacing-md), var(--safe-area-bottom));
-  padding-inline-start: max(var(--design-spacing-md), var(--safe-area-left));
-  padding-inline-end: max(var(--design-spacing-md), var(--safe-area-right));
+  padding-block-end: max(var(--design-spacing-md), var(--sheet-padding-safe-area-bottom));
+  padding-inline-start: max(var(--design-spacing-md), var(--sheet-padding-safe-area-left));
+  padding-inline-end: max(var(--design-spacing-md), var(--sheet-padding-safe-area-right));
   border-block-start: var(--border-width) solid var(--color-hairline);
+}
+
+.sheet-overlay[data-state="open"] {
+  animation: sheet-overlay-enter var(--transition-base) both;
+}
+
+.sheet-overlay[data-state="closed"] {
+  animation: sheet-overlay-exit var(--transition-fast) both;
+}
+
+.sheet-content[data-state="open"] {
+  animation: sheet-content-enter var(--transition-base) both;
+}
+
+.sheet-content[data-state="closed"] {
+  animation: sheet-content-exit var(--transition-fast) both;
+}
+
+@keyframes sheet-overlay-enter {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes sheet-overlay-exit {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes sheet-content-enter {
+  from { transform: translateX(var(--sheet-slide-distance)); }
+  to { transform: translateX(0); }
+}
+
+@keyframes sheet-content-exit {
+  from { transform: translateX(0); }
+  to { transform: translateX(var(--sheet-slide-distance)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet-overlay[data-state],
+  .sheet-content[data-state] {
+    animation: none;
+  }
 }

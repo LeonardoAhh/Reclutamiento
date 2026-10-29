@@ -95,7 +95,7 @@ export function CapturarMotivoBajaModal({ isOpen, onClose, existingEmployees, on
       className="motivos-baja__capture-dialog"
       isOpen={isOpen}
       title={copy.captureTitle}
-      size="md"
+      size="sm"
       onClose={() => { if (!saving) onClose(); }}
       footerActions={
         <>

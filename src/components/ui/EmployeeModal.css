@@ -13,7 +13,7 @@
 .modal-wizard-mobile .form-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--spacing-md);
+  gap: var(--design-spacing-sm);
   /* CRÍTICO: el grid NO debe estirarse para llenar el body */
   align-content: start;
 }
@@ -21,20 +21,20 @@
 .employee-modal__identity-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--spacing-md);
+  gap: var(--design-spacing-sm);
   min-width: 0;
 }
 
 /* Desktop: 2 columnas */
-@media (min-width: 640px) {
+@media (min-width: 768px) {
   .employee-modal:not(.form-sheet) .form-grid {
     grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-lg);
+    gap: var(--design-spacing-md);
   }
 
   .employee-modal:not(.form-sheet) .employee-modal__identity-grid {
     grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
-    gap: var(--spacing-lg);
+    gap: var(--design-spacing-md);
   }
 }
 
@@ -108,23 +108,23 @@
 .employee-modal__delete {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: var(--design-spacing-md);
 }
 
 /* ── Delete warning ── */
 .delete-warning {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
-  padding: var(--spacing-md);
+  gap: var(--design-spacing-sm);
+  padding: var(--design-spacing-sm);
   background: var(--color-error-tint);
-  border: 1px solid var(--color-hairline);
+  border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-lg);
 }
 
-@media (min-width: 640px) {
+@media (min-width: 768px) {
   .delete-warning {
-    padding: var(--spacing-lg);
+    padding: var(--design-spacing-md);
   }
 }
 
@@ -201,8 +201,8 @@
 
 /* ── Form hint ── */
 .form-hint {
-  margin-top: var(--spacing-md);
-  padding: var(--spacing-md);
+  margin-top: var(--design-spacing-sm);
+  padding: var(--design-spacing-sm);
   background: var(--color-surface);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-md);
@@ -214,6 +214,24 @@
 .form-hint strong {
   font-weight: var(--type-body-strong-weight);
   color: var(--color-ink);
+}
+
+.employee-future-date-tooltip {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--design-spacing-xxs);
+  text-align: left;
+}
+
+.employee-future-date-tooltip svg {
+  flex: 0 0 auto;
+  margin-block-start: calc(
+    (var(--type-body-sm-size) * var(--type-body-sm-line) - var(--icon-size-sm)) / 2
+  );
+}
+
+.employee-tooltip-trigger {
+  display: inline-block;
 }
 
 .employee-modal {

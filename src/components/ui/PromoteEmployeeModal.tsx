@@ -277,6 +277,7 @@ export function PromoteEmployeeModal({
         />
       }
       title={t("Promover empleado")}
+      size="sm"
       footerActions={footerActions}
     >
       <form

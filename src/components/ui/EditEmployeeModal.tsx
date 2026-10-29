@@ -154,7 +154,7 @@ export function EditEmployeeModal({
       icon={icon}
       title={title}
       className="edit-employee-modal"
-      size="lg"
+      size="sm"
       footerActions={
         <>
           <button
@@ -169,13 +169,13 @@ export function EditEmployeeModal({
             <Tooltip
               side="top"
               content={
-                <span style={{ display: 'flex', gap: 'var(--spacing-xs)', alignItems: 'flex-start', textAlign: 'left' }}>
-                  <CircleAlert size={14} className="color-warning" style={{ flexShrink: 0, marginTop: '2px' }} />
+                <span className="employee-future-date-tooltip">
+                  <CircleAlert size="var(--icon-size-sm)" className="color-warning" />
                   <span></span>
                 </span>
               }
             >
-              <span style={{ display: 'inline-block' }}>
+              <span className="employee-tooltip-trigger">
                 <button
                   type="submit"
                   form="edit-employee-form"

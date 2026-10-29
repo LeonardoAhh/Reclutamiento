@@ -51,7 +51,7 @@ export function CreateVacancyModal({
       onClose={onClose}
       title={en ? "Assign vacancy" : "Asignar Vacante"}
       icon={<BriefcaseBusiness size="var(--icon-size-md)" aria-hidden="true" />}
-      size="md"
+      size="sm"
       footerActions={
         <>
           <button

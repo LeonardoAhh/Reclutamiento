@@ -14,13 +14,19 @@ const SheetContent = forwardRef<
   ComponentRef<typeof SheetPrimitive.Content>,
   ComponentPropsWithoutRef<typeof SheetPrimitive.Content> & {
     variant?: "edge" | "floating";
+    size?: "xs" | "sm" | "md" | "lg" | "xl";
   }
->(({ className, children, variant = "edge", ...props }, ref) => (
+>(({ className, children, variant = "edge", size = "sm", ...props }, ref) => (
   <SheetPrimitive.Portal>
     <SheetPrimitive.Overlay className="sheet-overlay" />
     <SheetPrimitive.Content
       ref={ref}
-      className={cn("sheet-content", `sheet-content--${variant}`, className)}
+      className={cn(
+        "sheet-content",
+        `sheet-content--${variant}`,
+        `sheet-content--${size}`,
+        className,
+      )}
       {...props}
     >
       {children}

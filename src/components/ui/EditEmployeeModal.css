@@ -4,7 +4,7 @@
    ======================================== */
 
 .edit-employee-modal .modal-body {
-  padding: var(--spacing-xl);
+  padding: var(--design-spacing-lg);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
@@ -12,19 +12,19 @@
   letter-spacing: var(--type-body-md-tracking);
 }
 
-@media (max-width: 640px) {
+@media (max-width: 767px) {
   .edit-employee-modal .modal-body {
-    padding: var(--spacing-lg);
+    padding: var(--design-spacing-md);
   }
 }
 /* Responsive grid override si es necesario */
-@media (max-width: 640px) {
+@media (max-width: 767px) {
   .edit-employee-modal .form-grid {
     grid-template-columns: 1fr;
   }
 }
 
-@media (min-width: 640px) {
+@media (min-width: 768px) {
   .edit-employee-modal:not(.form-sheet) .form-grid.form-grid--3-cols {
     grid-template-columns: 1fr 1fr 1fr;
   }

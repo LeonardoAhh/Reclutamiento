@@ -684,24 +684,16 @@ export function EmployeeModal({
           <Tooltip
             side="top"
             content={
-              <span
-                style={{
-                  display: "flex",
-                  gap: "var(--spacing-xs)",
-                  alignItems: "flex-start",
-                  textAlign: "left",
-                }}
-              >
+              <span className="employee-future-date-tooltip">
                 <CircleAlert
-                  size={14}
+                  size="var(--icon-size-sm)"
                   className="color-warning"
-                  style={{ flexShrink: 0, marginTop: "2px" }}
                 />
                 <span>{t('No contará en KPIs ni Dashboard.')}</span>
               </span>
             }
           >
-            <span style={{ display: "inline-block" }}>
+            <span className="employee-tooltip-trigger">
               <button type="submit" className="btn-primary" disabled={submitting || !isAddValid} form={formId}>
                 <Save size="var(--icon-size-sm)" aria-hidden="true" />
                 {t("Guardar")}
@@ -783,7 +775,7 @@ export function EmployeeModal({
       className="employee-modal"
       icon={icon}
       title={title}
-      size="md"
+      size="sm"
       footerActions={actionButtons}
     >
       <form id={formId} onSubmit={handleSubmit} className="modal-body" noValidate>

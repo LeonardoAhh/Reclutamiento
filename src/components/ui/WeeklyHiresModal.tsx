@@ -225,7 +225,7 @@ export function WeeklyHiresModal({
       className="weekly-hires-modal"
       icon={<UsersRound size={20} aria-hidden="true" />}
       title={`${t('Ingresos')} · ${t('Semanas')} ${previousRange.week} ${en ? 'and' : 'y'} ${range.week}`}
-      size="md"
+      size="sm"
     >
       <div className="modal-body weekly-hires-modal__body">
         {/* Estadísticas principales */}

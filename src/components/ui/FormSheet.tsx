@@ -2,7 +2,7 @@ import { useRef, type RefObject } from "react";
 import { ArrowLeft } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import type { ModalProps } from "./Modal";
-import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle } from "./Sheet";
+import { Sheet, SheetBody, SheetContent, SheetFooter, SheetHeader, SheetTitle } from "./Sheet";
 import { cn } from "@/lib/utils-shadcn";
 import "./FormSheet.css";
 
@@ -12,7 +12,7 @@ type FormSheetProps = ModalProps & {
 
 export function FormSheet({
   isOpen, onClose, onBack, className, icon, title, footerActions, headerActions, children,
-  hideCloseButton = false, closeLabel, labelledById, returnFocusRef,
+  hideCloseButton = false, closeLabel, labelledById, returnFocusRef, size = "sm",
 }: FormSheetProps) {
   const triggerRef = useRef<HTMLElement | null>(null);
   const { language } = useLanguage();
@@ -21,6 +21,7 @@ export function FormSheet({
     <Sheet open={isOpen} onOpenChange={open => { if (!open) onClose(); }}>
       <SheetContent
         variant="floating"
+        size={size}
         className={cn("form-sheet", className)}
         aria-describedby={undefined}
         {...(labelledById ? { "aria-labelledby": labelledById } : {})}
@@ -29,7 +30,9 @@ export function FormSheet({
             ? document.activeElement : null;
         }}
         onCloseAutoFocus={event => {
-          const focusTarget = returnFocusRef?.current ?? triggerRef.current;
+          const returnFocusTarget = returnFocusRef?.current;
+          const focusTarget = returnFocusTarget?.isConnected
+            ? returnFocusTarget : triggerRef.current;
           if (focusTarget?.isConnected) {
             event.preventDefault();
             focusTarget.focus();
@@ -48,7 +51,7 @@ export function FormSheet({
           </div>
           {headerActions}
         </SheetHeader>
-        <div className="modal-scroll-region">{children}</div>
+        <SheetBody className="modal-scroll-region">{children}</SheetBody>
         {footerActions && <SheetFooter>{footerActions}</SheetFooter>}
       </SheetContent>
     </Sheet>

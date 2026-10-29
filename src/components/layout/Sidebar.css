@@ -380,8 +380,7 @@ button.sidebar__desktop-toggle:hover {
   transition:
     color var(--transition-fast),
     background var(--transition-fast),
-    gap var(--transition-slow),
-    padding-inline var(--transition-slow);
+    gap var(--transition-slow);
   min-width: 0;
 }
 
@@ -506,8 +505,11 @@ button.sidebar__desktop-toggle:hover {
     border-radius: var(--workspace-radius);
     background: var(--shell-floor);
     box-shadow: none;
-    /* El ancho cambia con la preferencia; el workspace acompaña el pliegue. */
-    transition: width var(--transition-slow);
+    /* El ancho y el padding cambian con la preferencia; el workspace acompaña
+       el pliegue y el rail conserva su columna interna de 44px. */
+    transition:
+      width var(--transition-slow),
+      padding-inline var(--transition-slow);
   }
 
   .sidebar__top {
@@ -529,10 +531,23 @@ button.sidebar__desktop-toggle:hover {
     justify-self: end;
   }
 
+  .app-shell[data-sidebar-collapsed="true"] .sidebar {
+    padding-inline: var(--design-spacing-xs);
+  }
+
   .app-shell[data-sidebar-collapsed="true"] .sidebar__top {
     grid-template-columns: minmax(0, 1fr) auto;
     column-gap: 0;
-    padding-inline: 0;
+  }
+
+  /* El riel no muestra barra de scroll: su ancho reduciría la columna interna
+     de forma asimétrica y desplazaría los iconos respecto del toggle y el avatar. */
+  .app-shell[data-sidebar-collapsed="true"] .sidebar__nav {
+    scrollbar-width: none;
+  }
+
+  .app-shell[data-sidebar-collapsed="true"] .sidebar__nav::-webkit-scrollbar {
+    display: none;
   }
 
   .app-shell[data-sidebar-collapsed="true"] .sidebar__brand {
@@ -548,7 +563,13 @@ button.sidebar__desktop-toggle:hover {
   .app-shell[data-sidebar-collapsed="true"] .sidebar__item {
     justify-content: center;
     gap: 0;
-    padding-inline: 0;
+  }
+
+  /* El avatar comparte con items y toggle la misma columna de 44px para que
+     fondo, foco e iconos queden centrados en el rail. */
+  .app-shell[data-sidebar-collapsed="true"] .sidebar__account-trigger {
+    inline-size: var(--touch-target-min);
+    margin-inline: auto;
   }
 
   .app-shell[data-sidebar-collapsed="true"] .sidebar__brand-text,

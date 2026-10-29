@@ -1,5 +1,5 @@
 .promote-modal .modal-body {
-  gap: var(--spacing-lg);
+  gap: var(--design-spacing-md);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
@@ -12,7 +12,7 @@
   min-inline-size: 0;
   flex-direction: column;
   gap: var(--design-spacing-xxs);
-  padding: var(--spacing-md);
+  padding: var(--design-spacing-sm);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-md);
   background: var(--color-surface);
@@ -68,8 +68,8 @@
   min-block-size: var(--touch-target-min);
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-xs);
-  padding-inline: var(--spacing-sm);
+  gap: var(--design-spacing-xxs);
+  padding-inline: var(--design-spacing-xs);
   border: 0;
   border-radius: var(--rounded-sm);
   background: transparent;
