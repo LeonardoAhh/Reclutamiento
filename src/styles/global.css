@@ -683,15 +683,9 @@
 /* Grafito suave: variantes semánticas; los tokens de documento conservan su salida clara. */
 :root[data-color-scheme="dark"] {
   color-scheme: dark;
-  --color-primary: #12469c;
+  /* Estos alias se redeclaran: los valores derivados se resuelven antes de heredarse. */
   --color-primary-border: var(--color-primary-text);
   --color-primary-text: var(--color-primary-text-on-dark);
-  --color-primary-active: #0f3c85;
-  --color-primary-pressed: #0a2f6b;
-  --color-primary-rgb: 18 70 156;
-  --color-secondary: var(--color-primary);
-  --color-secondary-rgb: var(--color-primary-rgb);
-  --color-on-primary: #e6edf3;
   --color-link: var(--color-primary-text);
   --color-link-deep: #e6edf3;
   --color-link-soft: var(--color-surface-soft);
@@ -724,7 +718,6 @@
   --color-on-success: #202328;
   --color-on-warning: #202328;
   --color-focus: var(--color-focus-on-inverted);
-  --color-focus-on-inverted: #f7f8fa;
 
   --color-hairline: #414851;
   --color-hairline-soft: #343b43;
@@ -876,14 +869,14 @@ h4 {
   letter-spacing: var(--type-heading-sm-tracking);
 }
 
-a {
+:where(a) {
   color: var(--color-link);
   text-decoration: underline;
   font: inherit;
   transition: color var(--transition-fast);
 }
 
-a:hover {
+:where(a:hover) {
   color: var(--color-link-deep);
 }
 
@@ -1366,9 +1359,7 @@ code:not(pre code) {
   color: var(--color-faint);
 }
 
-.form-group input:hover:not(:focus-visible):not(:disabled),
-.form-group select:hover:not(:focus-visible):not(:disabled),
-.form-group textarea:hover:not(:focus-visible):not(:disabled) {
+.form-group :is(input, select, textarea):hover:not(:focus-visible, :disabled, [aria-invalid="true"], .input-error, .input-success) {
   border-color: var(--color-charcoal);
 }
 
@@ -1458,7 +1449,7 @@ code:not(pre code) {
 /* ========================================
    BUTTONS — sistema de controles
    Los botones usan radio de 10px y altura táctil de 44px.
-   Primaria grafito; secundaria plana con hairline.
+   Primaria azul; secundaria plana con hairline.
    ======================================== */
 
 .btn-primary,
@@ -2034,7 +2025,7 @@ code:not(pre code) {
 
 .modal-footer {
   display: flex;
-  justify-content: stretch;
+  justify-content: flex-start;
   align-items: center;
   gap: var(--design-spacing-xs);
   padding: var(--modal-content-padding);
