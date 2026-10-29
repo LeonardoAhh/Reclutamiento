@@ -3,7 +3,9 @@
   padding-bottom: 0;
 }
 
-.candidate-preview-overlay.modal-overlay--bottom > .candidate-preview {
+.candidate-preview-overlay.modal-overlay--bottom ~ .candidate-preview {
+  inset-block-end: 0;
+  inline-size: 100%;
   max-inline-size: none;
   border-inline: 0;
   border-block-end: 0;
@@ -140,4 +142,3 @@
 .candidate-preview__delete {
   color: var(--color-error-text-enhanced);
 }
-

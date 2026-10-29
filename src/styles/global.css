@@ -1748,10 +1748,15 @@ code:not(pre code) {
   align-items: flex-end;
   justify-content: center;
   padding: 0;
-  animation: fadeIn var(--transition-base) forwards;
 }
 
+/* Radix portals the panel beside the overlay, so anchor it to the viewport. */
 .modal-content {
+  position: fixed;
+  inset-inline-start: 50%;
+  inset-block-end: 0;
+  z-index: var(--layer-modal);
+  box-sizing: border-box;
   background: var(--color-surface);
   color: var(--color-body);
   font-family: var(--font-body);
@@ -1766,11 +1771,42 @@ code:not(pre code) {
   max-width: var(--modal-inline-size-md);
   max-height: var(--modal-mobile-max-block-size);
   overflow: hidden;
-  animation: slideUpMobile var(--transition-slow) forwards;
-  position: relative;
+  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   box-shadow: var(--shadow-level-2);
+}
+
+.modal-overlay[data-state="open"] {
+  animation: fadeIn var(--transition-base) both;
+}
+
+.modal-overlay[data-state="closed"] {
+  animation: fadeOut var(--transition-fast) both;
+}
+
+.modal-content[data-state="open"] {
+  animation: slideUpMobile var(--transition-base) both;
+}
+
+.modal-content[data-state="closed"] {
+  animation: slideDownMobile var(--transition-fast) both;
+}
+
+.modal-content--placement-bottom[data-state="open"] {
+  animation: slideUpMobile var(--transition-base) both;
+}
+
+.modal-content--placement-bottom[data-state="closed"] {
+  animation: slideDownMobile var(--transition-fast) both;
+}
+
+.modal-content--placement-center[data-state="open"] {
+  animation: slideUpModal var(--transition-base) both;
+}
+
+.modal-content--placement-center[data-state="closed"] {
+  animation: slideDownModal var(--transition-fast) both;
 }
 
 .modal-content--xs {
@@ -1791,6 +1827,16 @@ code:not(pre code) {
 
 .modal-content--xl {
   max-width: var(--modal-inline-size-xl);
+}
+
+@media (max-width: 767px) {
+  .modal-content:not(.modal-content--placement-bottom):not(.modal-content--placement-center) {
+    max-width: none;
+  }
+
+  .modal-content:not(.modal-content--placement-bottom):not(.modal-content--placement-center).modal-alert {
+    max-width: var(--modal-inline-size-xs);
+  }
 }
 
 /* Base móvil: se conserva el sheet existente y se respetan las safe areas. */
@@ -1823,9 +1869,29 @@ code:not(pre code) {
 
   .modal-content {
     --modal-content-padding: var(--design-spacing-lg);
+    inset-block-start: 50%;
+    inset-block-end: auto;
     max-height: var(--modal-max-block-size);
     border-radius: var(--radius-dialog);
-    animation: slideUpModal var(--transition-slow) forwards;
+    transform: translate(-50%, -50%);
+  }
+
+  .modal-content--placement-bottom {
+    inset-block-start: auto;
+    inset-block-end: max(var(--design-spacing-md), var(--safe-area-bottom));
+    transform: translateX(-50%);
+  }
+
+  .modal-content--placement-center {
+    transform: translate(-50%, -50%);
+  }
+
+  .modal-content[data-state="open"] {
+    animation: slideUpModal var(--transition-base) both;
+  }
+
+  .modal-content[data-state="closed"] {
+    animation: slideDownModal var(--transition-fast) both;
   }
 
   .modal-content .modal-body>* {
@@ -1854,8 +1920,20 @@ code:not(pre code) {
   align-items: center;
 }
 
-.modal-overlay--bottom>.modal-content,
-.modal-overlay--center>.modal-content {
+.modal-content--placement-bottom {
+  inset-block-end: max(var(--design-spacing-md), var(--safe-area-bottom));
+  inline-size: calc(100% - max(var(--design-spacing-md), var(--safe-area-left)) - max(var(--design-spacing-md), var(--safe-area-right)));
+}
+
+.modal-content--placement-center {
+  inset-block-start: 50%;
+  inset-block-end: auto;
+  transform: translate(-50%, -50%);
+  inline-size: calc(100% - max(var(--design-spacing-md), var(--safe-area-left)) - max(var(--design-spacing-md), var(--safe-area-right)));
+}
+
+.modal-content--placement-bottom,
+.modal-content--placement-center {
   border-radius: var(--radius-dialog);
   max-height: var(--modal-max-block-size);
 }
@@ -1995,34 +2073,68 @@ code:not(pre code) {
   }
 }
 
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
 @keyframes slideUpModal {
   from {
     opacity: 0;
-    transform: translateY(var(--design-spacing-md));
+    transform: translate(-50%, calc(-50% + var(--design-spacing-md)));
   }
 
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate(-50%, -50%);
+  }
+}
+
+@keyframes slideDownModal {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+
+  to {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + var(--design-spacing-md)));
   }
 }
 
 @keyframes slideUpMobile {
   from {
     opacity: 0;
-    transform: translateY(var(--design-spacing-xl));
+    transform: translate(-50%, var(--design-spacing-xl));
   }
 
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate(-50%, 0);
+  }
+}
+
+@keyframes slideDownMobile {
+  from {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translate(-50%, var(--design-spacing-xl));
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
 
-  .modal-content,
-  .modal-overlay {
+  .modal-content[data-state],
+  .modal-overlay[data-state] {
     animation: none;
   }
 

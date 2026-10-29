@@ -131,60 +131,32 @@ export function FutureHiresModal({
     }
   };
 
-  const renderHiresTable = (hiresToRender: Employee[]) => (
+  const renderHiresList = (hiresToRender: Employee[]) => (
     <div className="future-hires-modal__section">
-      {isMobile ? (
-        <div className="future-hires-modal__mobile-list">
-          {hiresToRender.map((e, idx) => (
-              <div key={e.num_empleado ?? idx} className="future-hires-modal__mobile-card">
-                <div className="future-hires-modal__mobile-card-header">
-                  <span className="future-hires-modal__mobile-name">
-                    <span className="future-hires-modal__mobile-apellidos">{e.puesto}</span>
-                    {e.is_starlite && <StarliteBadge compact />}
-                  </span>
-                  <span className="future-hires-modal__mobile-date">{formatShortDate(e.fecha_ingreso, locale)}</span>
-                </div>
-                <div className="future-hires-modal__mobile-card-body">
-                  <div className="future-hires-modal__mobile-turno">
-                    {e.turno || '-'}
-                  </div>
-                </div>
+      <div className="future-hires-modal__list" role="list">
+        {hiresToRender.map((employee) => (
+          <article
+            key={employee.num_empleado}
+            className="future-hires-modal__card"
+            role="listitem"
+          >
+            <h3 className="future-hires-modal__position">
+              <span>{employee.puesto}</span>
+              {employee.is_starlite && <StarliteBadge compact />}
+            </h3>
+            <dl className="future-hires-modal__details">
+              <div className="future-hires-modal__detail">
+                <dt>{t('Turno')}</dt>
+                <dd>{employee.turno || '-'}</dd>
               </div>
-            ))}
-        </div>
-      ) : (
-        <div className="future-hires-modal__table-wrap">
-          <table className="future-hires-modal__table data-table">
-            <thead>
-              <tr>
-                <th>{t('Puesto')}</th>
-                <th>{t('Turno')}</th>
-                <th>{t('Fecha')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {hiresToRender.map((e) => (
-                <tr key={e.num_empleado}>
-                  <td>
-                    <div className="future-hires-modal__cell-name">
-                      <span className="future-hires-modal__name-text">{e.puesto}</span>
-                      {e.is_starlite && <StarliteBadge compact />}
-                    </div>
-                  </td>
-                  <td>
-                    <div className="future-hires-modal__cell-turno">
-                      {e.turno || '-'}
-                    </div>
-                  </td>
-                  <td className="future-hires-modal__cell-mono">
-                    {formatShortDate(e.fecha_ingreso, locale)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+              <div className="future-hires-modal__detail">
+                <dt>{t('Fecha')}</dt>
+                <dd>{formatShortDate(employee.fecha_ingreso, locale)}</dd>
+              </div>
+            </dl>
+          </article>
+        ))}
+      </div>
     </div>
   );
 
@@ -210,11 +182,7 @@ export function FutureHiresModal({
       }
     >
       <div className="modal-body future-hires-modal">
-        {futureHires.length > 0 ? (
-          <>
-            {renderHiresTable(sortedFutureHires)}
-          </>
-        ) : (
+        {futureHires.length > 0 ? renderHiresList(sortedFutureHires) : (
           <div className="future-hires-modal__empty">
             {t('No hay ingresos programados.')}
           </div>
