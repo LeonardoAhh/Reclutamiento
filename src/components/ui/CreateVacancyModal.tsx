@@ -1,5 +1,6 @@
 import { BriefcaseBusiness } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { toNaturalCase } from "@/lib/utils";
 import { Modal } from "./Modal";
 import { CustomSelect } from "./CustomSelect";
 
@@ -86,7 +87,7 @@ export function CreateVacancyModal({
                 { value: "", label: en ? "All areas" : "Todas las áreas" },
                 ...areasOptions.map((option) => ({
                   value: option,
-                  label: option,
+                  label: toNaturalCase(option),
                 })),
               ]}
             />
@@ -103,7 +104,7 @@ export function CreateVacancyModal({
                 { value: "", label: en ? "All sections" : "Todas las secciones" },
                 ...seccionesOptions.map((option) => ({
                   value: option,
-                  label: option,
+                  label: toNaturalCase(option),
                 })),
               ]}
             />
@@ -120,7 +121,7 @@ export function CreateVacancyModal({
                 { value: "", label: en ? "Select a position" : "Seleccione un puesto" },
                 ...puestosOptions.map((option) => ({
                   value: option,
-                  label: option,
+                  label: toNaturalCase(option),
                 })),
               ]}
             />

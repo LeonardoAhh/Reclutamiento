@@ -48,12 +48,16 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
   // Opciones derivadas del catálogo efectivo.
   const areaOptions = useMemo<Option[]>(() => {
     const set = new Set(positions.map((p) => p.area));
-    return Array.from(set).map((a) => ({ value: a, label: a })).sort(byLabel);
+    return Array.from(set)
+      .sort((a, b) => a.localeCompare(b, 'es'))
+      .map((a) => ({ value: a, label: toNaturalCase(a) }));
   }, [positions]);
 
   const seccionOptions = useMemo<Option[]>(() => {
     const set = new Set(positions.filter((p) => p.area === area).map((p) => p.seccion));
-    return Array.from(set).map((s) => ({ value: s, label: s })).sort(byLabel);
+    return Array.from(set)
+      .sort((a, b) => a.localeCompare(b, 'es'))
+      .map((s) => ({ value: s, label: toNaturalCase(s) }));
   }, [positions, area]);
 
   const puestoOptions = useMemo<Option[]>(() => {

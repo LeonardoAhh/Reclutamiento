@@ -4,6 +4,7 @@ import { CustomSelect } from '@/components/ui/CustomSelect';
 import { toast } from '@/lib/notify';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { usePositions } from '@/lib/positions';
+import { toNaturalCase } from '@/lib/utils';
 import { saveProfileTemplate } from './api';
 import { ProfileImportModal } from './ProfileImportModal';
 import { ProfileTemplatePrint } from './ProfileTemplatePrint';
@@ -116,7 +117,7 @@ export function ProfileTemplateManager({ templates, onSaved }: ProfileTemplateMa
                   setArea(value);
                   setPosition('');
                 }}
-                options={areas.map((value) => ({ value, label: value }))}
+                options={areas.map((value) => ({ value, label: toNaturalCase(value) }))}
                 placeholder={positionsLoading ? 'Cargando áreas…' : 'Selecciona un área'}
                 disabled={positionsLoading}
               />
@@ -127,7 +128,7 @@ export function ProfileTemplateManager({ templates, onSaved }: ProfileTemplateMa
                 id="profile-template-position"
                 value={position}
                 onChange={setPosition}
-                options={positionOptions.map((value) => ({ value, label: value }))}
+                options={positionOptions.map((value) => ({ value, label: toNaturalCase(value) }))}
                 placeholder="Selecciona un puesto"
                 disabled={!area}
               />

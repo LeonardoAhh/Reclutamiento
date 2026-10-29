@@ -264,7 +264,7 @@ export function VacancySheet({
           id="vac-area"
           value={form.area}
           onChange={(val) => setForm({ ...form, area: val, seccion: '', puesto: '' })}
-          options={areas.map((a) => ({ value: a, label: a }))}
+          options={areas.map((a) => ({ value: a, label: toNaturalCase(a) }))}
           placeholder="Seleccione área…"
           aria-describedby={errorMsg ? errorId : undefined}
         />
@@ -275,7 +275,7 @@ export function VacancySheet({
           id="vac-seccion"
           value={form.seccion}
           onChange={(val) => setForm({ ...form, seccion: val, puesto: '' })}
-          options={sectionsForArea.map((s) => ({ value: s, label: s }))}
+          options={sectionsForArea.map((s) => ({ value: s, label: toNaturalCase(s) }))}
           placeholder="Seleccione sección…"
           disabled={!form.area}
         />

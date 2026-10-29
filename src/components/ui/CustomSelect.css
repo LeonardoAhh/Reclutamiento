@@ -173,6 +173,11 @@ body[data-scroll-locked]:has(.custom-select-dropdown) {
   background: var(--color-surface-soft);
 }
 
+.custom-select-option[data-disabled] {
+  color: var(--color-muted);
+  cursor: not-allowed;
+}
+
 .custom-select-option[data-state='checked'] {
   color: var(--color-ink);
   font-weight: var(--type-body-strong-weight);

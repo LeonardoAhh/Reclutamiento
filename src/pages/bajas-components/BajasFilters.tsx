@@ -59,7 +59,7 @@ export function BajasFilters({
             onAreaChange(val);
             onPuestoChange('');
           }}
-          options={areas.map((a) => ({ value: a, label: a }))}
+          options={areas.map((a) => ({ value: a, label: toNaturalCase(a) }))}
           placeholder="Todas las áreas"
         />
       </div>

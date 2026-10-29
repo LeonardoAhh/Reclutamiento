@@ -393,7 +393,7 @@ function ExistingFields({
           id="promote-existing-area"
           value={existing.area}
           onChange={onArea}
-          options={areas.map((a) => ({ value: a, label: a }))}
+          options={areas.map((a) => ({ value: a, label: toNaturalCase(a) }))}
           placeholder={t("Seleccione área…")}
           aria-describedby={
             existing.area === '' ? 'promote-existing-area-hint' : undefined
@@ -413,7 +413,7 @@ function ExistingFields({
           id="promote-existing-seccion"
           value={existing.seccion}
           onChange={onSeccion}
-          options={sections.map((s) => ({ value: s, label: s }))}
+          options={sections.map((s) => ({ value: s, label: toNaturalCase(s) }))}
           placeholder={t("Seleccione sección…")}
           disabled={!existing.area}
           aria-describedby={

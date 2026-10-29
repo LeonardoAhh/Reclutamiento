@@ -511,7 +511,7 @@ const fieldsPosicion = (
             setForm({ ...form, area: val, seccion: '', puesto: '' });
             setTouched({ ...touched, area: true, seccion: false, puesto: false });
           }}
-          options={areas.map((a) => ({ value: a, label: a }))}
+          options={areas.map((a) => ({ value: a, label: toNaturalCase(a) }))}
           placeholder={en ? 'Select…' : 'Seleccionar…'}
           disabled={(isEdit && !isAdmin) || noOpenPositions}
           aria-invalid={touched.area && !!errors.area}
@@ -529,7 +529,7 @@ const fieldsPosicion = (
             setForm({ ...form, seccion: val, puesto: '' });
             setTouched({ ...touched, seccion: true, puesto: false });
           }}
-          options={sectionsForArea.map((s) => ({ value: s, label: s }))}
+          options={sectionsForArea.map((s) => ({ value: s, label: toNaturalCase(s) }))}
           placeholder={en ? 'Select…' : 'Seleccionar…'}
           disabled={!form.area || (isEdit && !isAdmin)}
           aria-invalid={touched.seccion && !!errors.seccion}

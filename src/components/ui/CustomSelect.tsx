@@ -2,6 +2,7 @@ import { useMemo, useState, type AriaAttributes, type ReactNode } from 'react';
 import * as SelectPrimitive from '@radix-ui/react-select';
 import { ChevronDown, ChevronUp } from 'lucide';
 import { CircleCheckBig } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 import {
   FLOATING_SURFACE_COLLISION_PADDING,
   FLOATING_SURFACE_SIDE_OFFSET,
@@ -52,7 +53,7 @@ export function CustomSelect({
   value,
   onChange,
   options,
-  placeholder = 'Seleccionar...',
+  placeholder,
   showPlaceholderOption = true,
   className,
   dropdownClassName,
@@ -61,20 +62,24 @@ export function CustomSelect({
   triggerAppearance = 'plain',
   ...ariaProps
 }: CustomSelectProps) {
+  const { language } = useLanguage();
+  const resolvedPlaceholder = placeholder ?? (language === 'en' ? 'Select...' : 'Seleccionar...');
   const [isOpen, setIsOpen] = useState(false);
   const selectedOption = options.find((option) => option.value === value);
   const visibleOptions = useMemo(
     () =>
-      showPlaceholderOption && placeholder && !options.some((option) => option.value === '')
-        ? [{ value: '', label: placeholder }, ...options]
+      showPlaceholderOption && resolvedPlaceholder && !options.some((option) => option.value === '')
+        ? [{ value: '', label: resolvedPlaceholder }, ...options]
         : options,
-    [options, placeholder, showPlaceholderOption],
+    [options, resolvedPlaceholder, showPlaceholderOption],
   );
-  const selectedItemValue = visibleOptions.some((option) => option.value === value)
-    ? getItemValue(value)
-    : undefined;
   const isRequired =
     ariaProps['aria-required'] === true || ariaProps['aria-required'] === 'true';
+  const isRequiredPlaceholder = isRequired && value === '';
+  const selectedItemValue =
+    !isRequiredPlaceholder && visibleOptions.some((option) => option.value === value)
+      ? getItemValue(value)
+      : undefined;
 
   const handleValueChange = (itemValue: string) => {
     const option = visibleOptions.find(
@@ -112,7 +117,7 @@ export function CustomSelect({
           ) : (
             <SelectPrimitive.Value
               className="custom-select-value"
-              placeholder={placeholder}
+              placeholder={resolvedPlaceholder}
             />
           )}
 
@@ -141,6 +146,7 @@ export function CustomSelect({
                   <SelectPrimitive.Item
                     key={option.value}
                     value={getItemValue(option.value)}
+                    disabled={isRequired && option.value === ''}
                     className="custom-select-option"
                   >
                     <SelectPrimitive.ItemText className="custom-select-option-label">
@@ -157,7 +163,9 @@ export function CustomSelect({
                   value={EMPTY_STATE_ITEM_VALUE}
                   disabled
                 >
-                  <SelectPrimitive.ItemText>Sin opciones</SelectPrimitive.ItemText>
+                  <SelectPrimitive.ItemText>
+                    {language === 'en' ? 'No options' : 'Sin opciones'}
+                  </SelectPrimitive.ItemText>
                 </SelectPrimitive.Item>
               )}
             </SelectPrimitive.Viewport>
