@@ -15,11 +15,9 @@ export function LoginPreferences({
 
   return (
     <div className="login__preferences">
-      {storageError && (
-        <p className="login__language-notice" role="status">
-          {copy.languageStorageError}
-        </p>
-      )}
+      <p className="login__language-notice" role="status">
+        {copy.languageStorageError}
+      </p>
     </div>
   );
 }

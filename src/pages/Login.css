@@ -1,4 +1,5 @@
-/* El formulario ocupa una columna en móvil; la historia visual aparece en escritorio. */
+/* El formulario ocupa una columna en móvil; la historia visual aparece en escritorio.
+   Los cortes de 768px y 1080px reflejan LAYOUT_BREAKPOINTS en src/lib/layout.ts. */
 
 .login {
   position: relative;
@@ -181,22 +182,7 @@
 
 .login__heading {
   min-inline-size: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--design-spacing-xxs);
   text-align: center;
-}
-
-.login__subtitle {
-  overflow-wrap: anywhere;
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-  color: var(--color-muted);
-  margin: 0;
 }
 
 .login__card {

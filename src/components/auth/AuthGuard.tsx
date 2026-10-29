@@ -24,30 +24,31 @@ export function AuthGuard({ children }: { children: ReactNode }) {
 
 /** Un ingreso con credenciales abre el recorrido pendiente cuando está habilitado. */
 export function RedirectIfAuthed({ children }: { children: ReactNode }) {
-  const { session, loading } = useAuth();
+  const { session, loading, loginTransition } = useAuth();
   const { flash } = useLoader();
   const sawSignedOut = useRef(false);
+  const transitionStarted = useRef(false);
   const [destination, setDestination] = useState<string | null>(null);
 
   useEffect(() => {
     if (loading) return;
-    if (!session) { sawSignedOut.current = true; return; }
+    if (!session) {
+      sawSignedOut.current = true;
+      transitionStarted.current = false;
+      setDestination(null);
+      return;
+    }
     if (!sawSignedOut.current) { setDestination(HOME_PATH); return; }
 
-    let redirectTimer: ReturnType<typeof setTimeout> | undefined;
-    // Conserva la espera existente del botón de éxito y de la transición del workspace.
-    const successTimer = setTimeout(() => {
-      flash({ variant: 'workspace-entry' });
-      redirectTimer = setTimeout(() => setDestination(
-        CAREER_JOURNEY_ENABLED && !hasCompletedCareerJourney(session.user.user_metadata) ? CAREER_PATH : HOME_PATH,
-      ), 300);
-    }, 800);
-    return () => {
-      clearTimeout(successTimer);
-      if (redirectTimer !== undefined) clearTimeout(redirectTimer);
-    };
-  }, [session, loading, flash]);
+    if (loginTransition.phase === 'verifying' || loginTransition.phase === 'verified' || loginTransition.phase === 'failed') return;
+    if (transitionStarted.current) return;
+    transitionStarted.current = true;
+    if (loginTransition.phase === 'ready') flash({ variant: 'workspace-entry' });
+    setDestination(
+      CAREER_JOURNEY_ENABLED && !hasCompletedCareerJourney(session.user.user_metadata) ? CAREER_PATH : HOME_PATH,
+    );
+  }, [session, loading, flash, loginTransition.phase]);
 
-  if (destination) return <Navigate to={destination} replace />;
+  if (destination && session) return <Navigate to={destination} replace />;
   return <>{children}</>;
 }

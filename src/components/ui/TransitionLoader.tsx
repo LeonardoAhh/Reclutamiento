@@ -1,6 +1,7 @@
 import { motion, useReducedMotion } from 'framer-motion';
-import { BrandMarkPath } from '@/components/ui/BrandMark';
+import { LiveOrb } from '@/components/ui/LiveOrb';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { motionTransition } from '@/lib/motionTokens';
 import './TransitionLoader.css';
 
 interface TransitionLoaderProps {
@@ -18,13 +19,14 @@ export function TransitionLoader({
   const { language } = useLanguage();
   const english = language === 'en';
   const message = title ?? (variant === 'workspace-entry'
-    ? english ? 'Preparing your session…' : 'Preparando tu sesión…'
+    ? english ? 'Opening your workspace…' : 'Abriendo tu espacio…'
     : variant === 'workspace-exit'
       ? english ? 'Signing out…' : 'Cerrando sesión…'
-      : english ? 'Syncing…' : 'Sincronizando…');
+      : english ? 'Loading…' : 'Cargando…');
   const accessibleMessage = variant === 'workspace-entry' && !title
     ? `${english ? 'Access confirmed.' : 'Acceso confirmado.'} ${message}`
     : message;
+  const orbSize = 'min(var(--design-spacing-section), calc(100vi - max(var(--design-spacing-lg), var(--safe-area-left)) - max(var(--design-spacing-lg), var(--safe-area-right))))';
 
   return (
     <div className="transition-loader" role="status" aria-atomic="true">
@@ -34,25 +36,13 @@ export function TransitionLoader({
         aria-hidden="true"
         initial={reduceMotion ? false : { opacity: 0, y: 'var(--design-spacing-md)' }}
         animate={{ opacity: 1, y: 0 }}
+        transition={reduceMotion ? { duration: 0 } : motionTransition('--transition-base')}
       >
-        <motion.svg
-          className="transition-loader__mark"
-          viewBox="0 0 1800 1800"
-          fill="none"
-          initial={reduceMotion ? false : { scale: 0 }}
-          animate={{ scale: 1 }}
-        >
-          <BrandMarkPath />
-        </motion.svg>
+        <LiveOrb size={orbSize} />
         <span className="transition-loader__brand">ViñoPlastic</span>
         <span className="transition-loader__message">{message}</span>
         <span className="transition-loader__track">
-          <motion.span
-            className="transition-loader__indicator"
-            initial={reduceMotion ? false : { scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={reduceMotion ? undefined : { type: 'spring', repeat: Infinity, repeatType: 'reverse' }}
-          />
+          <span className="transition-loader__indicator" />
         </span>
       </motion.div>
     </div>

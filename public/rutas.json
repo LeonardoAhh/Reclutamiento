@@ -2900,16 +2900,6 @@
     "parada": "CRUZ ROJA MEXICANA"
   },
   {
-    "numero_empleado": "4409",
-    "nombre": "HERNANDEZ CHAVEZ MARIBEL",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
-    "puesto": "OPERADOR DE MÁQUINA D",
-    "turno": "1",
-    "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA ",
-    "parada": "FARMACIA GUADALAJARA"
-  },
-  {
     "numero_empleado": "4410",
     "nombre": "MENDOZA SANCHEZ MARIA BELEN",
     "seccion": "PRODUCCIÓN 1ER. TURNO",
@@ -2958,16 +2948,6 @@
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "PUERTO AGUIRRE",
     "parada": "PARADA EN LA TORTILLERIA"
-  },
-  {
-    "numero_empleado": "4415",
-    "nombre": "REYES VASQUEZ YESSICA HERMENEGILDA",
-    "seccion": "PRODUCCIÓN 3ER. TURNO",
-    "puesto": "OPERADOR DE MÁQUINA D",
-    "turno": "3",
-    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "PASEOS QUERETARO",
-    "parada": "PARADA EN LA PANADERIA LECAROZ"
   },
   {
     "numero_empleado": "4417",

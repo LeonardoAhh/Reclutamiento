@@ -6,12 +6,15 @@
   max-inline-size: 100%;
   overflow: hidden;
   vertical-align: middle;
+  transition:
+    transform var(--transition-spring),
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
 .animated-submit-button[data-state="success"]:disabled {
-  background: var(--color-success-subtle);
-  border-color: var(--color-success-text);
-  color: var(--color-success-text);
   opacity: 1;
 }
 
@@ -19,7 +22,7 @@
   opacity: 1;
 }
 
-.btn-primary.animated-submit-button[data-state="loading"]:disabled {
+.btn-primary.animated-submit-button:is([data-state="loading"], [data-state="success"]):disabled {
   background: var(--color-primary);
   border-color: var(--color-primary-border);
   color: var(--color-on-primary);
@@ -57,21 +60,6 @@
   inline-size: 100%;
 }
 
-.animated-submit-button[data-state="success"] .animated-submit-button__visual {
-  animation: animated-submit-success var(--transition-base) both;
-}
-
-@keyframes animated-submit-success {
-  from {
-    opacity: 0;
-    transform: translateY(var(--motion-float-distance));
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .animated-submit-button__measure-icon {
   inline-size: var(--icon-size-sm);
   block-size: var(--icon-size-sm);
@@ -92,10 +80,6 @@
 
 .animated-submit-button__visual svg {
   flex-shrink: 0;
-}
-
-.animated-submit-button[data-state="loading"] .animated-submit-button__visual {
-  gap: 0;
 }
 
 .animated-submit-button[data-icon-only] {
@@ -121,10 +105,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .animated-submit-button[data-state="success"] .animated-submit-button__visual {
-    animation: none;
-  }
-
   .animated-submit-button__spinner {
     animation: none;
   }

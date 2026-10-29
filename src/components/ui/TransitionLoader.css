@@ -13,19 +13,13 @@
 
 .transition-loader__content {
   display: flex;
+  inline-size: 100%;
   min-inline-size: 0;
   max-inline-size: var(--content-reading-max-inline-size);
   flex-direction: column;
   align-items: center;
   gap: var(--design-spacing-sm);
   text-align: center;
-}
-
-.transition-loader__mark {
-  color: var(--color-ink);
-  display: block;
-  inline-size: var(--design-spacing-section);
-  block-size: var(--design-spacing-section);
 }
 
 .transition-loader__brand {
@@ -48,9 +42,11 @@
 }
 
 .transition-loader__track {
+  position: relative;
   display: block;
   overflow: hidden;
   inline-size: var(--design-spacing-4xl);
+  max-inline-size: 100%;
   block-size: var(--design-spacing-xxs);
   margin-block-start: var(--design-spacing-md);
   border-radius: var(--rounded-full);
@@ -58,12 +54,27 @@
 }
 
 .transition-loader__indicator {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
   display: block;
-  inline-size: 100%;
+  inline-size: min(var(--design-spacing-xl), 50%);
   block-size: 100%;
-  transform-origin: left center;
   border-radius: inherit;
   background: var(--color-ink);
+  animation: transition-loader-scan var(--transition-progress) infinite alternate;
+}
+
+@keyframes transition-loader-scan {
+  to {
+    inset-inline-start: max(0%, calc(100% - var(--design-spacing-xl)));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .transition-loader__indicator {
+    animation: none;
+  }
 }
 
 @media (forced-colors: active) {

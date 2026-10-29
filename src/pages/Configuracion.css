@@ -2048,34 +2048,6 @@
   }
 }
 
-/* ============================================================================
-   BAJAS GRID (Retención y Efectividad)
-   ============================================================================ */
-
-.indicadores-bajas-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 0;
-}
-
-@media (min-width: 768px) {
-  .indicadores-bajas-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  
-  .indicadores-bajas-col:nth-child(odd):not(:last-child) {
-    border-right: var(--border-width) solid var(--color-hairline);
-  }
-}
-
-.indicadores-bajas-header {
-  padding: var(--spacing-sm) var(--spacing-md);
-  margin: 0;
-  background: var(--color-surface-soft);
-  border-bottom: var(--border-width) solid var(--color-hairline);
-  color: var(--color-muted);
-}
-
 .indicadores-kpi-trend {
   display: inline-flex;
   align-items: center;
@@ -2115,35 +2087,6 @@
   gap: var(--spacing-xs);
 }
 
-.indicadores-bajas-list {
-  padding: 0;
-  margin: 0;
-  list-style: none;
-}
-
-.indicadores-bajas-item {
-  border-bottom: var(--border-width) solid var(--color-hairline);
-  padding: var(--spacing-md);
-}
-
-.indicadores-bajas-item:last-child {
-  border-bottom: 0;
-}
-
-.indicadores-bajas-item-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--spacing-md);
-}
-
-.indicadores-bajas-item-details {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-md);
-  margin-top: var(--spacing-xs);
-}
-
 .analisis-view__empty .animated-empty-state__title {
   font-family: var(--font-body);
   font-size: var(--type-body-strong-size);
@@ -2175,14 +2118,6 @@
   font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
   letter-spacing: var(--type-body-md-tracking);
-}
-
-.indicadores-bajas-item-details strong {
-  font-family: var(--font-body);
-  font-size: var(--type-body-strong-size);
-  font-weight: var(--type-body-strong-weight);
-  line-height: var(--type-body-strong-line);
-  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .tabulador-view .config-tab,

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import {
   CircleAlert,
   LoaderCircle,
@@ -12,6 +12,7 @@ import type { HTMLMotionProps } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useFeedback } from '@/hooks/useFeedback';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
+import { motionDistance, motionTransition } from '@/lib/motionTokens';
 import './AnimatedSubmitButton.css';
 
 export interface AnimatedSubmitButtonProps extends Omit<HTMLMotionProps<'button'>, 'children'> {
@@ -26,6 +27,7 @@ export interface AnimatedSubmitButtonProps extends Omit<HTMLMotionProps<'button'
   feedbackSound?: boolean;
   idleIcon?: IconInput;
   iconOnly?: boolean;
+  onSuccessAnimationComplete?: () => void;
 }
 
 type SubmitState = 'idle' | 'loading' | 'success' | 'error';
@@ -42,6 +44,7 @@ export function AnimatedSubmitButton({
   feedbackSound = true,
   idleIcon = Save,
   iconOnly = false,
+  onSuccessAnimationComplete,
   className = '',
   disabled = false,
   type = 'submit',
@@ -58,10 +61,14 @@ export function AnimatedSubmitButton({
   const successText = successTextProp ?? (english ? 'Saved!' : '¡Guardado!');
   const errorText = errorTextProp ?? 'Error';
   const { trigger } = useFeedback();
+  const reducedMotion = useReducedMotion();
+  const travel = motionDistance('--motion-float-distance');
+  const stateTransition = reducedMotion ? { duration: 0 } : motionTransition('--transition-spring');
   const previousState = useRef<SubmitState>('idle');
+  const successNotified = useRef(false);
   const state: SubmitState = isSubmitting ? 'loading' : isError ? 'error' : isSuccess ? 'success' : 'idle';
   const isDisabled = Boolean(disabled) || state === 'loading' || state === 'success';
-  const visibleText = state === 'loading' ? loadingText : idleText;
+  const visibleText = state === 'loading' ? loadingText : state === 'success' ? successText : state === 'error' && !errorMessageId ? errorText : idleText;
   const accessibleLabel = ariaLabel ?? (ariaLabelledBy ? undefined : visibleText);
   const describedBy = [ariaDescribedBy, state === 'error' ? errorMessageId : undefined]
     .filter(Boolean)
@@ -98,6 +105,20 @@ export function AnimatedSubmitButton({
     }
   }, [state, trigger, feedbackSound]);
 
+  useEffect(() => {
+    if (state !== 'success') {
+      successNotified.current = false;
+      return;
+    }
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const frame = window.requestAnimationFrame(() => {
+      if (successNotified.current) return;
+      successNotified.current = true;
+      onSuccessAnimationComplete?.();
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [state, onSuccessAnimationComplete]);
+
   return (
     <>
       <motion.button
@@ -120,24 +141,40 @@ export function AnimatedSubmitButton({
               <span className="animated-submit-button__measure-text">
                 <span>{idleText}</span>
                 <span>{loadingText}</span>
+                <span>{successText}</span>
+                {!errorMessageId && <span>{errorText}</span>}
               </span>
             )}
           </span>
-          <span className="animated-submit-button__visual">
-            {state === 'success' ? (
-              <CircleCheckBig size="var(--icon-size-sm)" aria-hidden="true" />
-            ) : (
-              <MorphingIcon
-                icon={stateIcon}
-                size="var(--icon-size-sm)"
-                reducedMotion="user"
-                className={state === 'loading' ? 'animated-submit-button__spinner' : undefined}
-              />
-            )}
-            {state !== 'loading' && !iconOnly && (
-              <span className="animated-submit-button__text">{visibleText}</span>
-            )}
-          </span>
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.span
+              key={state}
+              className="animated-submit-button__visual"
+              initial={{ opacity: 0, y: reducedMotion ? 0 : travel }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: reducedMotion ? 0 : -travel }}
+              transition={stateTransition}
+              onAnimationComplete={() => {
+                if (state !== 'success' || successNotified.current) return;
+                successNotified.current = true;
+                onSuccessAnimationComplete?.();
+              }}
+            >
+              {state === 'success' ? (
+                <CircleCheckBig size="var(--icon-size-sm)" aria-hidden="true" />
+              ) : (
+                <MorphingIcon
+                  icon={stateIcon}
+                  size="var(--icon-size-sm)"
+                  reducedMotion="user"
+                  className={state === 'loading' ? 'animated-submit-button__spinner' : undefined}
+                />
+              )}
+              {!iconOnly && (
+                <span className="animated-submit-button__text">{visibleText}</span>
+              )}
+            </motion.span>
+          </AnimatePresence>
         </span>
       </motion.button>
       <span className="sr-only" role="status" aria-live="polite" aria-atomic="true">

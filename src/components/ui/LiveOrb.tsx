@@ -11,7 +11,7 @@ import {
 import './LiveOrb.css';
 
 interface LiveOrbProps {
-  size?: number;
+  size?: number | string;
 }
 
 export function LiveOrb({ size = 280 }: LiveOrbProps) {

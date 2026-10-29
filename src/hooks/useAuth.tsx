@@ -13,6 +13,7 @@ import { supabase, AUTH_JWT_EXPIRED_EVENT, AUTH_ACCOUNT_INACTIVE_EVENT } from '@
 import { extractOnlineUserIds, publishOnlineUserIds } from '@/lib/presence';
 import { toast } from '@/lib/notify';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useLoginTransition, type LoginTransitionState } from '@/hooks/useLoginTransition';
 import {
   signInWithUsername as signInLib,
   signOut as signOutLib,
@@ -42,7 +43,9 @@ export interface AuthState {
   /** Username derivado del profile o, como fallback, del email sintético. */
   username: string;
   loading: boolean;
-  signIn: (username: string, password: string) => Promise<SignInResult>;
+  signIn: (username: string, password: string) => Promise<SignInResult & { loginAttemptId: number }>;
+  loginTransition: LoginTransitionState;
+  completeLoginTransition: (attemptId: number) => void;
   signOut: () => Promise<void>;
   updateAvatarUrl: (url: string | null) => void;
 }
@@ -63,6 +66,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [profileLoading, setProfileLoading] = useState(true);
   const [loading, setLoading] = useState(true);
+  const loginTransition = useLoginTransition();
   // Ref con la session actual, accesible dentro de handlers sin re-suscribir.
   const sessionRef = useRef<Session | null>(null);
   // Evita repetir el aviso de cuenta inactiva si fallan varias requests.
@@ -124,6 +128,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       sessionRef.current = sess;
       setSession(sess);
       if (!sess) {
+        loginTransition.clearOnSignedOut();
         setProfile(null);
         setProfileLoading(false);
       }
@@ -133,7 +138,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       mounted = false;
       sub.subscription.unsubscribe();
     };
-  }, []);
+  }, [loginTransition.clearOnSignedOut]);
 
   /* ── Sesión expirada detectada por fetch interceptor ─────────────────
      Cualquier respuesta 401/403 de Supabase con cuerpo tipo "JWT expired"
@@ -368,9 +373,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signIn = useCallback(
     async (username: string, password: string) => {
+      const loginAttemptId = loginTransition.begin();
       loggingInRef.current = true;
       try {
-        return await signInLib(username, password);
+        const result = await signInLib(username, password);
+        if (result.ok) loginTransition.confirm(loginAttemptId);
+        else loginTransition.fail(loginAttemptId);
+        return { ...result, loginAttemptId };
+      } catch (error) {
+        loginTransition.fail(loginAttemptId);
+        throw error;
       } finally {
         // Damos gracia de unos segundos para que React Router haga la redirección
         // y los efectos dependientes de la nueva sesión se estabilicen antes de
@@ -380,7 +392,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }, 3000);
       }
     },
-    []
+    [loginTransition.begin, loginTransition.confirm, loginTransition.fail]
   );
 
   const signOut = useCallback(async () => {
@@ -405,10 +417,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       username,
       loading,
       signIn,
+      loginTransition: loginTransition.state,
+      completeLoginTransition: loginTransition.complete,
       signOut,
       updateAvatarUrl,
     };
-  }, [session, sessionExpired, profile, profileLoading, loading, signIn, signOut, updateAvatarUrl]);
+  }, [session, sessionExpired, profile, profileLoading, loading, signIn, signOut, updateAvatarUrl, loginTransition.state, loginTransition.complete]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

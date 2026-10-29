@@ -1,0 +1,317 @@
+.indicadores-view.config-page {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  gap: var(--design-spacing-md);
+}
+
+.indicadores-view > .metrics-toolbar {
+  order: -1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--design-spacing-sm);
+  padding-block: var(--design-spacing-sm);
+  border-block: var(--border-width) solid var(--color-hairline-soft);
+}
+
+.metrics-toolbar .indicadores-section__heading-label {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.metrics-toolbar .indicadores-section__heading--period,
+.metrics-toolbar .indicadores-period {
+  justify-content: flex-start;
+}
+
+.metrics-toolbar .indicadores-month-nav__full-label {
+  display: inline;
+}
+
+.metrics-toolbar .indicadores-historical-list {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding-block-end: var(--design-spacing-xxs);
+}
+
+.metrics-toolbar .indicadores-historical-card {
+  flex: 0 0 auto;
+  border-radius: var(--radius-control);
+}
+
+.metrics-summary .indicadores-kpi-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.metrics-summary .indicadores-kpi-card {
+  min-inline-size: 0;
+  background: var(--color-surface-card);
+}
+
+.metrics-summary .indicadores-kpi-card__icon {
+  display: none;
+}
+
+.metrics-summary .indicadores-kpi-value {
+  font-size: var(--type-heading-lg-size);
+  font-weight: var(--type-heading-lg-weight);
+  line-height: var(--type-heading-lg-line);
+  letter-spacing: var(--type-heading-lg-tracking);
+  overflow-wrap: anywhere;
+}
+
+.metrics-recruiter-progress {
+  inline-size: 100%;
+  block-size: var(--design-spacing-xxs);
+  border: 0;
+  border-radius: var(--rounded-pill);
+  overflow: hidden;
+  accent-color: var(--color-primary);
+}
+
+.metrics-recruiter-progress::-webkit-progress-bar { background: var(--color-hairline); }
+.metrics-recruiter-progress::-webkit-progress-value { background: var(--color-primary); }
+.metrics-recruiter-progress::-moz-progress-bar { background: var(--color-primary); }
+
+.metrics-weekly,
+.metrics-performance,
+.metrics-departures {
+  min-inline-size: 0;
+}
+
+.metrics-weekly .indicadores-mobile-list__btn {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--design-spacing-xxs) var(--design-spacing-sm);
+  text-align: start;
+}
+
+.metrics-weekly .indicadores-mobile-detail__header {
+  justify-content: space-between;
+  padding: var(--spacing-md);
+}
+
+.indicadores-mobile-detail__recruiter {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-inline-size: 0;
+}
+
+.indicadores-mobile-detail__recruiter h3 {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.metrics-weekly .indicadores-mobile-detail__header .config-mobile-back {
+  flex: 0 0 auto;
+  align-self: center;
+  margin: 0 0 0 auto;
+}
+
+.metrics-recruiter-progress {
+  grid-column: 1 / -1;
+}
+
+.indicadores-section.metrics-retention {
+  display: contents;
+}
+
+.metrics-retention-overview {
+  display: grid;
+  gap: var(--design-spacing-md);
+  min-inline-size: 0;
+}
+
+.metrics-retention-overview > .indicadores-section__heading {
+  display: none;
+}
+
+.metrics-retention-overview .indicadores-kpi-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.metrics-retention-overview .indicadores-kpi-card {
+  min-inline-size: 0;
+  background: var(--color-surface-card);
+}
+
+.metrics-retention-overview .indicadores-kpi-card__icon {
+  display: none;
+}
+
+.metrics-retention-overview .indicadores-kpi-value {
+  font-size: var(--type-heading-lg-size);
+  font-weight: var(--type-heading-lg-weight);
+  line-height: var(--type-heading-lg-line);
+}
+
+.metrics-retention-overview__global {
+  display: none;
+}
+
+.metrics-performance .indicadores-mobile-list__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--design-spacing-xs) var(--design-spacing-sm);
+}
+
+.metrics-performance__identity {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-inline-size: 0;
+}
+
+.metrics-performance__identity > span {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.metrics-performance__facts {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--design-spacing-xxs) var(--design-spacing-md);
+}
+
+.metrics-performance__facts > span {
+  white-space: nowrap;
+}
+
+.metrics-performance__facts strong {
+  color: var(--color-ink);
+  font-weight: var(--type-body-strong-weight);
+}
+
+.metrics-performance__facts strong.text-error {
+  color: var(--color-error-text);
+}
+
+@media (min-width: 768px) {
+  .indicadores-view > .metrics-toolbar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .metrics-summary .indicadores-kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .metrics-retention-overview {
+    padding: var(--design-spacing-md);
+    border: var(--border-width) solid var(--color-hairline);
+    border-radius: var(--radius-card);
+    background: var(--color-surface-card);
+    align-content: start;
+  }
+
+  .metrics-retention-overview > .indicadores-section__heading,
+  .metrics-retention-overview__global {
+    display: flex;
+  }
+
+  .metrics-retention-overview .indicadores-kpi-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .metrics-retention-overview .indicadores-kpi-card {
+    padding: var(--design-spacing-sm) 0;
+    border: 0;
+    border-bottom: var(--border-width) solid var(--color-hairline-soft);
+    border-radius: 0;
+  }
+
+  .metrics-retention-overview .indicadores-kpi-value {
+    font-size: var(--type-heading-md-size);
+  }
+
+  .metrics-retention-overview__global {
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--design-spacing-sm);
+    padding-block: var(--design-spacing-sm);
+  }
+
+  .metrics-retention-overview__global > span {
+    display: grid;
+    gap: var(--design-spacing-xxs);
+  }
+
+  .metrics-retention-overview__global small { color: var(--color-muted); }
+}
+
+@media (min-width: 1080px) {
+  .indicadores-view {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  }
+
+  .indicadores-view > .metrics-toolbar,
+  .metrics-summary,
+  .metrics-performance,
+  .metrics-departures {
+    grid-column: 1 / -1;
+  }
+
+  .metrics-summary .indicadores-kpi-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .metrics-retention-overview {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+  }
+
+  .metrics-retention-overview > .indicadores-section__heading {
+    grid-column: 1 / -1;
+    margin-block-end: var(--design-spacing-sm);
+  }
+
+  .metrics-retention-overview .indicadores-kpi-grid {
+    display: contents;
+  }
+
+  .metrics-retention-overview .indicadores-kpi-card,
+  .metrics-retention-overview__global {
+    min-inline-size: 0;
+    padding: var(--design-spacing-sm);
+    border: 0;
+    border-radius: 0;
+  }
+
+  .metrics-retention-overview .indicadores-kpi-card + .indicadores-kpi-card,
+  .metrics-retention-overview__global {
+    border-inline-start: var(--border-width) solid var(--color-hairline-soft);
+  }
+
+  .metrics-retention-overview__global {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: var(--design-spacing-xxs);
+  }
+
+  .metrics-retention-overview__global > span {
+    display: contents;
+  }
+
+  .metrics-retention-overview__global > span strong {
+    order: 0;
+  }
+
+  .metrics-retention-overview__global > strong {
+    order: 1;
+    font-size: var(--type-heading-md-size);
+  }
+
+  .metrics-retention-overview__global small {
+    order: 2;
+  }
+}

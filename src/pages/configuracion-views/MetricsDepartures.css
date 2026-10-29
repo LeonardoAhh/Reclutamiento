@@ -1,0 +1,119 @@
+.metrics-departures {
+  min-inline-size: 0;
+}
+
+.metrics-departures .indicadores-table-header h2 {
+  margin: 0;
+  color: var(--color-ink);
+  font: var(--type-body-strong-weight) var(--type-body-strong-size) / var(--type-body-strong-line) var(--font-body);
+}
+
+.metrics-departures .indicadores-table-header {
+  padding: var(--spacing-md);
+}
+
+.metrics-departures__expand {
+  flex: 0 0 auto;
+}
+
+.metrics-departures__table-wrap {
+  display: none;
+}
+
+.metrics-departures__cards {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--design-spacing-sm);
+  margin: 0;
+  padding: var(--design-spacing-md);
+  list-style: none;
+}
+
+.metrics-departures__card {
+  min-inline-size: 0;
+  padding: var(--design-spacing-sm);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-card);
+  box-shadow: var(--shadow-xs);
+}
+
+.metrics-departures__card-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--design-spacing-sm);
+  min-inline-size: 0;
+  color: var(--color-ink);
+}
+
+.metrics-departures__card-heading strong {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+  font: var(--type-body-strong-weight) var(--type-body-strong-size) / var(--type-body-strong-line) var(--font-body);
+}
+
+.metrics-departures__card-heading span,
+.metrics-departures__card p {
+  color: var(--color-muted);
+  font: var(--type-body-md-weight) var(--type-body-md-size) / var(--type-body-md-line) var(--font-body);
+}
+
+.metrics-departures__card p {
+  margin-block: var(--design-spacing-xxs) var(--design-spacing-sm);
+  overflow-wrap: anywhere;
+}
+
+.metrics-departures__cards.metrics-departures__collapsed > li:nth-child(n+4) {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .metrics-departures__expand[data-short-list="true"] {
+    display: none;
+  }
+
+  .metrics-departures__cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .metrics-departures__cards.metrics-departures__collapsed > li:nth-child(n+4) {
+    display: block;
+  }
+
+  .metrics-departures__cards.metrics-departures__collapsed > li:nth-child(n+7) {
+    display: none;
+  }
+}
+
+@media (min-width: 1080px) {
+  .metrics-departures__cards {
+    display: none;
+  }
+
+  .metrics-departures__table-wrap {
+    display: block;
+    overflow-x: auto;
+  }
+
+  .metrics-departures__table tbody.metrics-departures__collapsed > tr:nth-child(n+7) {
+    display: none;
+  }
+
+  .metrics-departures__table :is(thead th, tbody th, tbody td) {
+    padding-inline: var(--spacing-md);
+    text-align: left;
+  }
+
+  .metrics-departures__table :is(thead th, tbody td):last-child {
+    text-align: right;
+  }
+
+  .metrics-departures__table tbody th {
+    white-space: normal;
+    padding-block: var(--spacing-xs);
+    border-bottom: var(--border-width) solid var(--color-hairline-soft);
+    background: transparent;
+    vertical-align: middle;
+  }
+}

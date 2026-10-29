@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { PageHeading } from '@/components/layout/PageHeading';
 import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
 import { BackButton } from '@/components/ui/BackButton';
+import { Badge } from '@/components/ui/Badge';
 import {
   ArrowLeft,
   ArrowRight,
@@ -19,6 +20,8 @@ import {
 import { useIndicadoresStats } from '@/hooks/useIndicadoresStats';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { getConfiguracionCopy } from './configuracion-translations';
+import { MetricsDepartures } from './MetricsDepartures';
+import './IndicadoresView.css';
 
 interface IndicatorCardProps {
   icon: ReactNode;
@@ -130,8 +133,8 @@ export function IndicadoresView() {
 
       {/* ── KPI Cards ───────────────────────────────────────────── */}
       {kpi && (
-        <section className="indicadores-section" aria-labelledby="indicadores-summary-title">
-          <div className="indicadores-section__heading">
+        <section className="indicadores-section metrics-summary" aria-labelledby="indicadores-summary-title">
+          <div className="indicadores-section__heading sr-only">
             <ChartNoAxesColumnIncreasing aria-hidden="true" />
             <h2 id="indicadores-summary-title">{copy.summary}</h2>
           </div>
@@ -160,7 +163,7 @@ export function IndicadoresView() {
               icon={<ChartNoAxesColumnIncreasing />}
               label={copy.weeklyAverage}
               value={kpi.promedio}
-              description={copy.incomePerWeek}
+              description={`${tableData.length} ${tableData.length === 1 ? copy.weekRecorded : copy.weeksRecorded}`}
             />
             <IndicatorCard
               icon={<Trophy />}
@@ -187,7 +190,7 @@ export function IndicadoresView() {
       )}
 
       {/* ── Historial de Metas ──────────────────────────────────── */}
-      <section className="indicadores-section indicadores-historical-grid" aria-labelledby="indicadores-goals-title">
+      <section className="indicadores-section indicadores-historical-grid metrics-toolbar" aria-labelledby="indicadores-goals-title">
         <div className="indicadores-section__heading indicadores-section__heading--period">
           <div className="indicadores-section__heading-label">
             <Award aria-hidden="true" />
@@ -232,7 +235,6 @@ export function IndicadoresView() {
             {recruiterFilters.map(name => <button key={name} type="button" className="indicadores-historical-card"
               data-cuelume-select="" aria-pressed={selectedRecruiter === name}
               onClick={() => { setSelectedRecruiter(name); setSelectedMobileRecruiter(null); }}>
-              <Award aria-hidden="true" />
               <span className="indicadores-historical-card__name">{name}</span>
             </button>)}
           </div>
@@ -250,11 +252,11 @@ export function IndicadoresView() {
 
 
       {/* ── Tabla transpuesta: Reclutadores × Semanas ────────────── */}
-      {kpi && <section className="indicadores-card indicadores-table-card" aria-labelledby="indicadores-breakdown-title">
+      {kpi && <section className="indicadores-card indicadores-table-card metrics-weekly" aria-labelledby="indicadores-breakdown-title">
         <div className="indicadores-table-header">
           <div className="indicadores-section__heading">
             <ChartNoAxesColumnIncreasing aria-hidden="true" />
-            <h2 id="indicadores-breakdown-title">{copy.incomeByRecruiter}</h2>
+            <h2 id="indicadores-breakdown-title">{copy.incomeByWeek}</h2>
           </div>
         </div>
         <div className="table-responsive indicadores-desktop-only">
@@ -364,16 +366,18 @@ export function IndicadoresView() {
         <div className="indicadores-mobile-only">
           {selectedMobileRecruiter ? (
             <div className="indicadores-mobile-detail" aria-live="polite">
-              <BackButton
-                ref={mobileDetailBackRef}
-                className="config-mobile-back"
-                data-cuelume-navigate="" onClick={handleBackToRecruiters}
-                aria-label={copy.backToRecruiters}
-              />
-              
               <div className="indicadores-mobile-detail__header">
-                <UserRound className="indicadores-recruiter-icon" aria-hidden="true" />
-                <h3 className="type-body-strong m-0">{displayRecruiter(selectedMobileRecruiter)}</h3>
+                <div className="indicadores-mobile-detail__recruiter">
+                  <UserRound className="indicadores-recruiter-icon" aria-hidden="true" />
+                  <h3 className="type-body-strong m-0">{displayRecruiter(selectedMobileRecruiter)}</h3>
+                </div>
+                <BackButton
+                  ref={mobileDetailBackRef}
+                  className="config-mobile-back"
+                  label={copy.back}
+                  data-cuelume-navigate="" onClick={handleBackToRecruiters}
+                  aria-label={copy.backToRecruiters}
+                />
               </div>
               
               <ul className="indicadores-mobile-detail__list">
@@ -435,6 +439,8 @@ export function IndicadoresView() {
                       </span>
                       <ArrowRight className="text-muted-soft" aria-hidden="true" />
                     </div>
+                    <progress className="metrics-recruiter-progress" max={Math.max(1, ...kpi.recruiterTotals.map((item) => item.total))}
+                      value={kpi.recruiterTotals[index]?.total ?? 0} aria-label={`${displayRecruiter(recruiter)}: ${kpi.recruiterTotals[index]?.total ?? 0} ${copy.incomeCount}`} />
                   </button>
                 </li>
               ))}
@@ -446,12 +452,13 @@ export function IndicadoresView() {
       {/* ── Sección de Retención y Efectividad ──────────────────── */}
 
       {kpi && (
-        <section className="indicadores-section" aria-labelledby="indicadores-retention-title">
-          <div className="indicadores-section__heading">
-            <UserRoundMinus aria-hidden="true" />
-            <h2 id="indicadores-retention-title">{copy.retention}</h2>
-          </div>
-          <div className="indicadores-kpi-grid indicadores-kpi-grid--compact">
+        <section className="indicadores-section metrics-retention" aria-labelledby="indicadores-retention-title">
+          <div className="metrics-retention-overview">
+            <div className="indicadores-section__heading">
+              <UserRoundMinus aria-hidden="true" />
+              <h2 id="indicadores-retention-title">{copy.retention}</h2>
+            </div>
+            <div className="indicadores-kpi-grid indicadores-kpi-grid--compact">
             <IndicatorCard
               icon={<UserRoundMinus />}
               label={copy.totalLeavers}
@@ -465,9 +472,14 @@ export function IndicadoresView() {
               value={kpi.promedioPermanenciaGlobal}
               description={copy.daysBeforeLeaving}
             />
+            </div>
+            <div className="metrics-retention-overview__global">
+              <span><strong>{copy.globalRetention}</strong><small>{copy.weightedByHires}</small></span>
+              <strong>{kpi.totalIngresos > 0 ? Math.round((kpi.totalIngresos - kpi.totalBajasMes) / kpi.totalIngresos * 100) : 100}%</strong>
+            </div>
           </div>
 
-          <div className="indicadores-card indicadores-table-card">
+          <div className="indicadores-card indicadores-table-card metrics-performance">
             <div className="indicadores-table-header">
               <div className="indicadores-section__heading">
                 <Target aria-hidden="true" />
@@ -506,9 +518,9 @@ export function IndicadoresView() {
                         <td className="type-body-md text-right">{stats.totalIngresos}</td>
                         <td className="type-body-strong text-right text-error">{stats.totalBajas > 0 ? stats.totalBajas : '-'}</td>
                         <td className="text-right">
-                          <span className={`indicador-value ${retention >= 70 ? 'text-success' : 'text-warning'}`}>
-                            {retention}%
-                          </span>
+                          <Badge variant={retention >= 70 ? 'success' : 'amber'}>
+                            {retention}% · {retention >= 70 ? copy.favorable : copy.attention}
+                          </Badge>
                         </td>
                         <td className="text-right text-muted">{avgDays}</td>
                       </tr>
@@ -533,21 +545,18 @@ export function IndicadoresView() {
 
                   return (
                     <li key={`retention-mob-${recruiter}`}>
-                      <div className="indicadores-mobile-list__row">
-                        <div className="indicadores-mobile-list__info">
+                      <div className="indicadores-mobile-list__row metrics-performance__row">
+                        <div className="metrics-performance__identity">
                           <UserRound className="indicadores-recruiter-icon" aria-hidden="true" />
-                          <div className="indicadores-mobile-list__text">
-                            <span className="type-body-strong text-ink">{displayRecruiter(recruiter)}</span>
-                            <span className="type-body-md text-muted">{copy.hires}: {stats.totalIngresos} &nbsp;|&nbsp; {copy.leavers}: <span className="type-body-md text-error">{stats.totalBajas}</span></span>
-                          </div>
+                          <span className="type-body-strong text-ink">{displayRecruiter(recruiter)}</span>
                         </div>
-                        <div className="indicadores-mobile-list__right">
-                          <span className={`type-body-strong ${retention >= 70 ? 'text-success' : 'text-warning'}`}>
-                            {retention}%
-                          </span>
-                          <span className="type-body-md text-muted">
-                            {copy.averageShort} {avgDays}{copy.daysShort}
-                          </span>
+                        <Badge variant={retention >= 70 ? 'success' : 'amber'}>
+                          {retention}% · {retention >= 70 ? copy.favorable : copy.attention}
+                        </Badge>
+                        <div className="metrics-performance__facts type-body-md text-muted">
+                          <span>{copy.hires}: <strong>{stats.totalIngresos}</strong></span>
+                          <span>{copy.leavers}: <strong className="text-error">{stats.totalBajas}</strong></span>
+                          <span>{copy.averageShort} <strong>{avgDays}{copy.daysShort}</strong></span>
                         </div>
                       </div>
                     </li>
@@ -557,67 +566,7 @@ export function IndicadoresView() {
             </div>
           </div>
 
-          {kpi.bajasList.length > 0 && (
-            <div className="indicadores-card indicadores-table-card indicadores-bajas-section">
-              <div className="indicadores-table-header">
-                <div className="indicadores-section__heading">
-                  <UserRoundMinus aria-hidden="true" />
-                  <h3>{copy.inactiveStaffDetails}</h3>
-                </div>
-              </div>
-              <div className="indicadores-bajas-grid">
-                {recruiters.map(recruiter => {
-                  const bajasOfRecruiter = kpi.bajasList.filter(b => b.reclutador === recruiter);
-                  if (bajasOfRecruiter.length === 0) return null;
-                  
-                  return (
-                    <div key={`bajas-col-${recruiter}`} className="indicadores-bajas-col">
-                      <h4 className="indicadores-bajas-header type-body-strong uppercase">{displayRecruiter(recruiter)}</h4>
-                      <ul className="indicadores-bajas-list">
-                        {bajasOfRecruiter.map((baja, i) => {
-                          const TARGET_RETENTION_DAYS = 90;
-                          const efficiencyRaw = (baja.dias / TARGET_RETENTION_DAYS) * 100;
-                          const efficiency = Math.min(Math.round(efficiencyRaw), 100);
-
-                          let efficiencyClass = "text-error";
-                          if (efficiency >= 80) {
-                            efficiencyClass = "text-success";
-                          } else if (efficiency >= 30) {
-                            efficiencyClass = "text-warning";
-                          }
-
-                          return (
-                            <li key={`baja-detail-${i}`} className="indicadores-bajas-item">
-                              <div className="indicadores-bajas-item-header">
-                                  <span className="type-body-strong text-ink">{baja.nombre}</span>
-                                  {baja.numEmpleado && (
-                                    <span className="type-body-md text-muted">#{baja.numEmpleado}</span>
-                                  )}
-                              </div>
-                              <div className="indicadores-bajas-item-details">
-                                  <span className="type-body-md text-muted">
-                                    <strong>{copy.hireDate}</strong> {baja.fechaIngreso}
-                                  </span>
-                                  <span className="type-body-md text-muted">
-                                    <strong>{copy.leavingDate}</strong> {baja.fechaBaja} ({baja.dias} {english ? 'days' : 'días'})
-                                  </span>
-                                  <span 
-                                    className={`type-body-strong ${efficiencyClass}`}
-                                    aria-label={`${copy.hiringEfficiency}: ${efficiency} percent`}
-                                  >
-                                    <strong>{copy.efficiency}</strong> {efficiency}%
-                                  </span>
-                              </div>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
+          <MetricsDepartures items={kpi.bajasList} copy={copy} english={english} />
         </section>
       )}
       </section>
