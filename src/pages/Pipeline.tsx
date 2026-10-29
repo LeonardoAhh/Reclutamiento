@@ -3,15 +3,13 @@ import { PageHeading } from '@/components/layout/PageHeading';
 import { isBoneyardBuild } from '@/lib/boneyard';
 import { BONEYARD_SAMPLE_CANDIDATES } from '@/lib/boneyardFixtures';
 import { MotionConfig } from 'framer-motion';
-import { isToday, isTomorrow, isYesterday, formatDistanceToNowStrict } from 'date-fns';
-import { enUS, es } from 'date-fns/locale';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { candidateSourceLabel, candidateStatusLabel } from '@/lib/candidateTranslations';
 
-import { BadgeCheck, BarChart3, CalendarDays, ClipboardList, FileImage, LayoutGrid, PenLine, SlidersHorizontal, Trash2, UserRoundPlus, UserRound, UserX } from 'lucide-react';
+import { BarChart3, ClipboardList, EllipsisVertical, SlidersHorizontal, UserRoundPlus, UserX } from 'lucide-react';
 import { ClipboardCheck, ClipboardList as MorphClipboardList } from 'lucide';
-import { StarliteBadge, VinoplasticBadge, ReclutadorBadge } from '@/components/ui/Badge';
 import { CandidateModal } from '@/components/ui/CandidateModal';
+import { CandidatePreview } from '@/components/ui/CandidatePreview';
+import { CandidateStatusBadge } from '@/components/ui/CandidateStatusBadge';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import { ActionStateContent } from '@/components/ui/ActionStateContent';
 import { CandidateAccessCard } from '@/components/ui/CandidateAccessCard';
@@ -21,43 +19,45 @@ import { buildCandidateReport } from '@/lib/candidateReport';
 import { copyTextToClipboard } from '@/lib/whatsappReport';
 import { TOAST_CONFIG } from '@/lib/constants';
 import { bindSoundInteractions, playSound } from '@/lib/sound';
-import { CandidateStatusBadge } from '@/components/ui/CandidateStatusBadge';
 import { HireCandidateModal } from '@/components/ui/HireCandidateModal';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { CANDIDATE_METRICS_PATH } from './candidate-metrics/navigation';
-import { CandidateRowActions } from '@/components/ui/CandidateRowActions';
 import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
 import { Modal } from '@/components/ui/Modal';
 import { FormSheet } from '@/components/ui/FormSheet';
 import { useIsMobile } from '@/hooks/useIsMobile';
-import { CustomSelect } from '@/components/ui/CustomSelect';
 import { SearchField } from '@/components/ui/SearchField';
 import { Toolbar, ToolbarGroup } from '@/components/ui/Toolbar';
-import { BackButton } from '@/components/ui/BackButton';
 import { Pagination } from '@/components/ui/Pagination';
 import {
-  CandidateFilters,
-  type CandidateGroup,
-} from '@/components/pipeline/CandidateFilters';
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/DropdownMenu';
+import type { CandidateGroup } from '@/components/pipeline/CandidateFilters';
+import { CandidateGroupTabs } from '@/components/pipeline/CandidateGroupTabs';
+import { PipelineTable } from '@/components/pipeline/PipelineTable';
 import { useAuth } from '@/hooks/useAuth';
 import { useCandidates } from '@/hooks/useCandidates';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useVacancyRequests } from '@/hooks/useVacancyRequests';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
-import { CANDIDATE_STATUSES } from '@/lib/types';
 import type { Candidate, CandidateStatus, Employee } from '@/lib/types';
-import { formatReadableDate, formatShortDate } from '@/lib/dates';
-import { toNaturalCase } from '@/lib/utils';
+import { formatReadableDate } from '@/lib/dates';
 import { useTeamDirectory } from '@/features/team/TeamProvider';
 import { accessCardRecruiterName } from '@/features/team/types';
-import { splitCandidateName } from '@/lib/names';
 import { DESKTOP_MEDIA_QUERY } from '@/lib/layout';
 import { getSidebarCreateAction } from '@/lib/sidebarActionNavigation';
 import './Pipeline.css';
 
 type ModalMode = 'add' | 'edit' | 'delete' | null;
 
-const formatDate = formatShortDate;
+function matchesCandidateGroup(candidate: Candidate, group: CandidateGroup) {
+  if (group === 'activos') return !['contratado', 'baja', 'rechazado', 'no_asistio'].includes(candidate.status);
+  if (group === 'contratados') return candidate.status === 'contratado';
+  return true;
+}
 
 export function Pipeline() {
   const location = useLocation();
@@ -98,24 +98,23 @@ export function Pipeline() {
   const [macroStatus, setMacroStatus] = useState<CandidateGroup>(() => {
     try {
       const stored = localStorage.getItem('reclutamiento_macro_status');
-      if (stored === 'todos' || stored === 'activos' || stored === 'contratados' || stored === 'bajas') {
+      if (stored === 'todos' || stored === 'activos' || stored === 'contratados') {
         return stored;
       }
     } catch {}
     return 'activos';
   });
   const [currentPage, setCurrentPage] = useState(1);
-  const ITEMS_PER_PAGE = 8;
+  const ITEMS_PER_PAGE = 15;
   const [modalMode, setModalMode] = useState<ModalMode>(null);
   const [selected, setSelected] = useState<Candidate | null>(null);
   const [quickProfile, setQuickProfile] = useState<Candidate | null>(null);
   const [accessCardTarget, setAccessCardTarget] = useState<Candidate | null>(null);
   const [hireTarget, setHireTarget] = useState<Candidate | null>(null);
   const { members } = useTeamDirectory();
-  const [mobileCandidateSelection, setSelectedMobileCandidate] = useState<Candidate | null>(null);
-  const selectedMobileCandidate = mobileCandidateSelection?.id
-    ? candidates.find((candidate) => candidate.id === mobileCandidateSelection.id) ?? null
-    : mobileCandidateSelection;
+  const previewCandidate = quickProfile?.id
+    ? candidates.find((candidate) => candidate.id === quickProfile.id) ?? quickProfile
+    : quickProfile;
   const isDesktop = useMediaQuery(DESKTOP_MEDIA_QUERY);
 
   useEffect(() => bindSoundInteractions(document), []);
@@ -130,10 +129,6 @@ export function Pipeline() {
     );
   }, [location.pathname, location.search, location.hash, location.state, navigate]);
 
-
-  useEffect(() => {
-    if (isDesktop) setSelectedMobileCandidate(null);
-  }, [isDesktop]);
 
   useEffect(() => () => {
     if (reportCopiedTimer.current !== null) window.clearTimeout(reportCopiedTimer.current);
@@ -181,13 +176,12 @@ export function Pipeline() {
   }
 
 
-  const filtered = useMemo(() => {
-    return candidates.filter((c) => {
-      if (macroStatus === 'activos' && ['contratado', 'baja', 'rechazado', 'no_asistio'].includes(c.status)) return false;
-      if (macroStatus === 'contratados' && c.status !== 'contratado') return false;
-      return true;
-    });
-  }, [candidates, macroStatus]);
+  const filtered = useMemo(() => candidates.filter((c) => matchesCandidateGroup(c, macroStatus)), [candidates, macroStatus]);
+  const groupCounts = useMemo(() => ({
+    todos: candidates.length,
+    activos: candidates.filter((c) => matchesCandidateGroup(c, 'activos')).length,
+    contratados: candidates.filter((c) => matchesCandidateGroup(c, 'contratados')).length,
+  }), [candidates]);
 
   // Resultados exclusivos para el Dropdown de Búsqueda
   const searchResults = useMemo(() => {
@@ -242,6 +236,17 @@ export function Pipeline() {
     (visiblePage - 1) * ITEMS_PER_PAGE,
     visiblePage * ITEMS_PER_PAGE
   );
+  const pageGroups = new Map<CandidateStatus, Candidate[]>();
+  for (const candidate of paginatedCandidates) {
+    const group = pageGroups.get(candidate.status) ?? [];
+    group.push(candidate);
+    pageGroups.set(candidate.status, group);
+  }
+  const groupedPageCandidates = isDesktop
+    ? Array.from(pageGroups.values(), (group) =>
+        group.map((candidate, index) => ({ candidate, startsGroup: index === 0, groupCount: group.length })),
+      ).flat()
+    : paginatedCandidates.map((candidate) => ({ candidate, startsGroup: false, groupCount: 0 }));
 
 
   function openAdd() {
@@ -299,6 +304,11 @@ export function Pipeline() {
   function openAccessCard(c: Candidate) {
     playSound('open');
     setAccessCardTarget(c);
+  }
+
+  function openPreview(c: Candidate) {
+    playSound('open');
+    setQuickProfile(c);
   }
 
   async function handleHire(input: {
@@ -374,11 +384,14 @@ export function Pipeline() {
     >
       <MotionConfig reducedMotion="user">
         <main className="pipeline container">
-      <div className={`pipeline-main-container ${selectedMobileCandidate ? 'mobile-hidden' : ''}`}>
         {/* ── Hero ── */}
       <PageHeading className="app-page-title">{en ? 'Candidates' : 'Candidatos'}</PageHeading>
 
       <Toolbar label={en ? 'Candidate tools' : 'Herramientas de candidatos'} className="pipeline__toolbar">
+          <CandidateGroupTabs value={macroStatus} language={language} counts={groupCounts} onChange={(value) => {
+            if (value !== macroStatus) playSound('select');
+            setMacroStatus(value);
+          }} />
           <ToolbarGroup label={en ? 'Search candidates' : 'Buscar candidatos'} className="pipeline__controls">
             <div className="pipeline__search-container">
               <div className="pipeline__search">
@@ -417,14 +430,12 @@ export function Pipeline() {
                             setQuickProfile(c);
                           }}
                         >
-                          <div className="search-dropdown-item__avatar">
+                          <div className="search-dropdown-item__avatar" aria-hidden="true">
                             {(c.nombre ?? '?').charAt(0)}
                           </div>
                           <div className="search-dropdown-item__text">
                             <strong>{c.nombre}</strong>
-                            <span className="search-dropdown-item__info">
-                              {c.telefono} • {c.reclutador} • {candidateStatusLabel(c.status, language)}
-                            </span>
+                            <CandidateStatusBadge status={c.status} icon compact />
                           </div>
                         </button>
                       ))
@@ -441,12 +452,8 @@ export function Pipeline() {
 
           </ToolbarGroup>
           <ToolbarGroup label={en ? 'Candidate actions' : 'Acciones de candidatos'} className="pipeline__hero-actions">
-            <CandidateFilters value={macroStatus} onChange={(value) => {
-              if (value !== macroStatus) playSound('select');
-              setMacroStatus(value);
-            }} />
             {isAdmin && <Link
-              className="btn-secondary pipeline__report-btn"
+              className="btn-secondary pipeline__report-btn pipeline__action--desktop"
               to={CANDIDATE_METRICS_PATH}
               data-cuelume-navigate=""
               aria-label={en ? 'Open metrics and KPIs' : 'Abrir métricas y KPIs'}
@@ -457,7 +464,7 @@ export function Pipeline() {
             </Link>}
             {isAdmin && <button
               type="button"
-              className="btn-secondary pipeline__report-btn"
+              className="btn-secondary pipeline__report-btn pipeline__action--desktop"
               onClick={handleCopyReport}
               aria-label={en ? 'Copy candidate summary' : 'Copiar resumen de candidatos'}
               title={en ? 'Copy candidate summary for WhatsApp' : 'Copiar resumen de candidatos para WhatsApp'}
@@ -469,7 +476,7 @@ export function Pipeline() {
             </button>}
             <button
               type="button"
-              className="btn-primary"
+              className="btn-primary pipeline__new-btn"
               onClick={openAdd}
               aria-label={en ? 'New candidate' : 'Nuevo candidato'}
               title={en ? 'New candidate' : 'Nuevo candidato'}
@@ -477,6 +484,40 @@ export function Pipeline() {
               <UserRoundPlus size={16} aria-hidden="true" />
               <span>{en ? 'New' : 'Nuevo'}</span>
             </button>
+            {isAdmin && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    type="button"
+                    className="pipeline__overflow-btn"
+                    aria-label={en ? 'More candidate actions' : 'Más acciones de candidatos'}
+                    title={en ? 'More actions' : 'Más acciones'}
+                  >
+                    <EllipsisVertical size={16} aria-hidden="true" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem asChild>
+                    <Link
+                      to={CANDIDATE_METRICS_PATH}
+                      data-cuelume-navigate=""
+                    >
+                      <BarChart3 size={16} aria-hidden="true" />
+                      <span>{en ? 'Metrics and KPIs' : 'Métricas y KPIs'}</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    data-cuelume-select=""
+                    onSelect={() => {
+                      void handleCopyReport();
+                    }}
+                  >
+                    <ClipboardList size={16} aria-hidden="true" />
+                    <span>{en ? 'Copy summary' : 'Copiar resumen'}</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </ToolbarGroup>
       </Toolbar>
 
@@ -539,201 +580,23 @@ export function Pipeline() {
             </section>
           ) : (
             <div className="pipeline__results">
-            <section
-              className="pipeline__card-list"
-              aria-label={en ? 'Candidate list' : 'Lista de candidatos'}
-              role={isDesktop ? "table" : undefined}
-            >
-              <div className="pipeline__card-list-header" role="row">
-                <span role="columnheader">{en ? 'Candidate' : 'Candidato'}</span>
-                <span role="columnheader">{en ? 'Position' : 'Puesto'}</span>
-                <span role="columnheader">{en ? 'Process' : 'Proceso'}</span>
-                <span role="columnheader">{en ? 'Recruiter' : 'Reclutador'}</span>
-                <span role="columnheader">{en ? 'Interview' : 'Entrevista'}</span>
-                <span role="columnheader" className="text-center">{en ? 'Actions' : 'Acciones'}</span>
-              </div>
-              {paginatedCandidates.map((c) => {
-                const fechaCitaFmt = c.fecha_cita ? formatDate(c.fecha_cita) : null;
-                const getRelativeDateInfo = (isoString: string | null) => {
-                  if (!isoString) return null;
-                  // Para fechas puras YYYY-MM-DD, parseISO las trata como UTC midnight
-                  // lo que en UTC-6 las retrocede al día anterior a partir de las 18:00.
-                  // Se ancla al mediodía MX (mismo patrón que dates.ts) para que
-                  // isToday/isTomorrow/isYesterday comparen el día calendario correcto.
-                  const dateOnly = /^\d{4}-\d{2}-\d{2}$/.test(isoString)
-                    ? isoString
-                    : isoString.slice(0, 10);
-                  const date = new Date(`${dateOnly}T12:00:00-06:00`);
-                  if (isNaN(date.getTime())) return null;
-
-                  let relative = '';
-                  if (isToday(date)) relative = en ? 'Today' : 'Hoy';
-                  else if (isTomorrow(date)) relative = en ? 'Tomorrow' : 'Mañana';
-                  else if (isYesterday(date)) relative = en ? 'Yesterday' : 'Ayer';
-                  else {
-                    relative = formatDistanceToNowStrict(date, { addSuffix: true, locale: en ? enUS : es });
-                    relative = relative.charAt(0).toUpperCase() + relative.slice(1);
-                  }
-                  return relative;
-                };
-
-                const nameParts = c.nombre.trim().split(/\s+/);
-                const { apellidos, nombres } = splitCandidateName(c.nombre);
-                const initials = (nameParts[0]?.[0] || '') + (nameParts[1]?.[0] || '');
-                const primerNombre = (nombres.split(' ')[0] || apellidos.split(' ')[0] || '').toUpperCase();
-
-                const rawPuesto = c.puesto || '';
-                const puestoLower = rawPuesto.toLowerCase();
-                const puestoMsg = puestoLower ? puestoLower.charAt(0).toUpperCase() + puestoLower.slice(1) : '';
-
-                return (
-                  <article
-                    key={c.id ?? c.nombre + c.fecha_aplicacion}
-                    className={`pipeline__ccard pipeline__ccard--${c.status}`}
-                    role={isDesktop ? "row" : "button"}
-                    tabIndex={isDesktop ? undefined : 0}
-                    aria-label={isDesktop ? undefined : `${en ? 'View details for' : 'Ver detalles de'} ${c.nombre}`}
-                    onClick={isDesktop ? undefined : () => {
-                      playSound('open');
-                      setSelectedMobileCandidate(c);
-                    }}
-                    onKeyDown={isDesktop ? undefined : (event) => {
-                      if (event.key === 'Enter' || event.key === ' ') {
-                        event.preventDefault();
-                        playSound('open');
-                        setSelectedMobileCandidate(c);
-                      }
-                    }}
-                  >
-                    <div className="pipeline__ccard-name-col" role={isDesktop ? "cell" : undefined}>
-                      <div className="pipeline__name-details">
-                        <span className="pipeline__name-text">
-                          <span className="pipeline__name-first">{apellidos.toUpperCase()}</span>
-                          {nombres && <span className="pipeline__name-rest">{nombres.toUpperCase()}</span>}
-                        </span>
-
-                      </div>
-
-                      {/* Bloque visible bajo desktop que resume
-                          puesto + reclutador + entrevista de forma compacta. */}
-                      <div
-                        className={`pipeline__ccard-mobile-info${c.reclutador || fechaCitaFmt ? ' pipeline__ccard-mobile-info--has-meta' : ''}`}
-                        aria-hidden="true"
-                      >
-                        <div className="pipeline__ccard-mobile-info__puesto">
-                          <div className="pipeline__puesto-name" title={c.puesto}>{c.puesto}</div>
-                          {c.seccion?.trim() && (
-                            <div className="pipeline__seccion">{c.seccion.trim()}</div>
-                          )}
-                        </div>
-                        <div className="pipeline__ccard-mobile-info__meta">
-                          {c.reclutador && (
-                            <ReclutadorBadge nombre={c.reclutador} size="sm" className="pipeline__recruiter-badge" />
-                          )}
-                          {fechaCitaFmt && (
-                            <span className="pipeline__ccard-mobile-info__chip">
-                              <CalendarDays size={11} aria-hidden="true" />
-                              {fechaCitaFmt}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="pipeline__ccard-puesto-col" role={isDesktop ? "cell" : undefined}>
-                      <div className="pipeline__puesto">
-                        <div className="pipeline__puesto-name" title={c.puesto}>{c.puesto}</div>
-                        {c.seccion?.trim() && (
-                          <div className="pipeline__seccion">{c.seccion.trim()}</div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div
-                      className="pipeline__cell-status pipeline__ccard-status-col"
-                      data-status={c.status}
-                      role={isDesktop ? "cell" : undefined}
-                    >
-                      <CustomSelect
-                        id={`status-${c.id}`}
-                        value={c.status}
-                        placeholder=""
-                        onChange={(val) =>
-                          handleStatusChange(c, val as CandidateStatus)
-                        }
-                        options={CANDIDATE_STATUSES.map((s) => ({
-                          value: s,
-                          label: candidateStatusLabel(s, language),
-                        }))}
-                        aria-label={`${en ? 'Change status for' : 'Cambiar estado de'} ${c.nombre}`}
-                        customTrigger={
-                          <span className="pipeline__status-trigger">
-                            <CandidateStatusBadge status={c.status} showCaret />
-                          </span>
-                        }
-                      />
-                    </div>
-                    <div
-                      className="pipeline__ccard-recruiter-col pipeline__cell-recruiter"
-                      role={isDesktop ? "cell" : undefined}
-                    >
-                      {c.reclutador ? (
-                        <ReclutadorBadge nombre={c.reclutador} size="sm" className="pipeline__recruiter-badge" />
-                      ) : (
-                        <span className="pipeline__muted">—</span>
-                      )}
-                    </div>
-                    <div
-                      className="pipeline__ccard-dates-col pipeline__cell-dates"
-                      role={isDesktop ? "cell" : undefined}
-                    >
-                      {c.fecha_cita ? (
-                        <div className="pipeline__date-smart">
-                          <div className="pipeline__date-relative">
-                            <CalendarDays size={13} aria-hidden="true" />
-                            <span>{getRelativeDateInfo(c.fecha_cita)}</span>
-                          </div>
-                          <div className="pipeline__date-exact">
-                            {fechaCitaFmt}
-                          </div>
-                        </div>
-                      ) : (
-                        <span className="pipeline__muted">—</span>
-                      )}
-                    </div>
-                    {isDesktop && (
-                      <div
-                        className="pipeline__cell-actions pipeline__ccard-actions-col"
-                        role="cell"
-                      >
-                        <CandidateRowActions
-                          candidate={c}
-                          onEdit={openEdit}
-                          onDelete={isAdmin ? openDelete : undefined}
-                          onAccessCard={
-                            c.reclutador && c.puesto
-                              ? openAccessCard
-                              : undefined
-                          }
-                        />
-                      </div>
-                    )}
-                  </article>
-                );
-              })}
-            </section>
-
-            <Pagination
-              currentPage={visiblePage}
-              totalPages={totalPages}
-              onPageChange={(page) => {
-                playSound('navigate');
-                setCurrentPage(page);
-              }}
-              canGoPrev={visiblePage > 1}
-              canGoNext={visiblePage < totalPages}
-              ariaLabel={en ? 'Candidate pages' : 'Paginación de candidatos'}
-            />
+              <PipelineTable
+                rows={groupedPageCandidates}
+                isDesktop={isDesktop}
+                language={language}
+                onOpenCandidate={openPreview}
+              />
+              <Pagination
+                currentPage={visiblePage}
+                totalPages={totalPages}
+                onPageChange={(page) => {
+                  playSound('navigate');
+                  setCurrentPage(page);
+                }}
+                canGoPrev={visiblePage > 1}
+                canGoNext={visiblePage < totalPages}
+                ariaLabel={en ? 'Candidate pages' : 'Paginación de candidatos'}
+              />
             </div>
           )}
 
@@ -783,272 +646,36 @@ export function Pipeline() {
 
         </div>
       </div>
-      </div>
 
-      {/* ── Drill-down Detail View (Mobile) ── */}
-      {selectedMobileCandidate && (
-        <div className="pipeline-mobile-detail-container">
-          <BackButton
-            className="config-mobile-back"
-            label={selectedMobileCandidate.nombre}
-            onClick={() => {
-              playSound('navigate');
-              setSelectedMobileCandidate(null);
-            }}
-            aria-label={en
-              ? `Back to candidates: ${selectedMobileCandidate.nombre}`
-              : `Volver a candidatos: ${selectedMobileCandidate.nombre}`}
-          />
 
-          <article className="pipeline-mobile-detail__card">
-            <div className="pipeline-mobile-detail__header">
-              <div className="pipeline-mobile-detail__title">
-                <div className="pipeline-mobile-detail__puesto">
-                  <div className="pipeline-mobile-detail__puesto-name">{selectedMobileCandidate.puesto}</div>
-                  {selectedMobileCandidate.seccion?.trim() &&
-                    <div className="pipeline-mobile-detail__puesto-section">{selectedMobileCandidate.seccion.trim()}</div>}
-                </div>
-              </div>
-            </div>
-
-            <div className="pipeline-mobile-detail__info-grid">
-              <div className="pipeline-mobile-detail__info-item">
-                <UserRound size={16} aria-hidden="true" className="pipeline-mobile-detail__info-icon" />
-                <div className="pipeline-mobile-detail__info-content">
-                  <span className="pipeline-mobile-detail__info-label">{en ? 'Recruiter' : 'Reclutador'}</span>
-                  <span className="pipeline-mobile-detail__info-value">{selectedMobileCandidate.reclutador || '—'}</span>
-                </div>
-              </div>
-
-              <div className="pipeline-mobile-detail__info-item">
-                <CalendarDays size={16} aria-hidden="true" className="pipeline-mobile-detail__info-icon" />
-                <div className="pipeline-mobile-detail__info-content">
-                  <span className="pipeline-mobile-detail__info-label">{en ? 'Interview' : 'Entrevista'}</span>
-                  <span className="pipeline-mobile-detail__info-value">
-                    {selectedMobileCandidate.fecha_cita ? formatDate(selectedMobileCandidate.fecha_cita) : '—'}
-                  </span>
-                </div>
-              </div>
-
-              <div className="pipeline-mobile-detail__info-item pipeline-mobile-detail__info-item--wide">
-                <LayoutGrid size={16} aria-hidden="true" className="pipeline-mobile-detail__info-icon" />
-                <div className="pipeline-mobile-detail__info-content">
-                  <span className="pipeline-mobile-detail__info-label">{en ? 'Project' : 'Proyecto'}</span>
-                  <span className="pipeline-mobile-detail__info-value pipeline-mobile-detail__info-value--inline">
-                    {selectedMobileCandidate.is_starlite ? <StarliteBadge /> : <VinoplasticBadge />}
-                  </span>
-                </div>
-              </div>
-
-              <div className="pipeline-mobile-detail__info-item pipeline-mobile-detail__info-item--wide">
-                <ClipboardList size={16} aria-hidden="true" className="pipeline-mobile-detail__info-icon" />
-                <div className="pipeline-mobile-detail__info-content">
-                  <span className="pipeline-mobile-detail__info-label">{en ? 'Process' : 'Proceso'}</span>
-                  <div className="pipeline-mobile-detail__status-select">
-                    <div className="pipeline__cell-status pipeline-mobile-detail__status-cell" data-status={selectedMobileCandidate.status}>
-                      <CustomSelect
-                        id={`mobile-status-${selectedMobileCandidate.id}`}
-                        value={selectedMobileCandidate.status}
-                        placeholder=""
-                        dropdownClassName="pipeline-mobile-detail__status-dropdown"
-                        onChange={(val) => handleStatusChange(selectedMobileCandidate, val as CandidateStatus)}
-                        options={CANDIDATE_STATUSES.map((s) => ({
-                          value: s,
-                          label: candidateStatusLabel(s, language),
-                        }))}
-                        aria-label={`${en ? 'Change status for' : 'Cambiar estado de'} ${selectedMobileCandidate.nombre}`}
-                        customTrigger={
-                          <span className="pipeline__status-trigger pipeline__status-trigger--full">
-                            <CandidateStatusBadge
-                              status={selectedMobileCandidate.status}
-                              showCaret
-                              className="pipeline-mobile-detail__status-badge"
-                            />
-                          </span>
-                        }
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="pipeline-mobile-detail__actions">
-              <div className="pipeline-mobile-detail__row-actions">
-                <span className="pipeline-mobile-detail__info-label pipeline-mobile-detail__actions-label">{en ? 'Actions' : 'Acciones'}</span>
-                <div className="pipeline-mobile-detail__action-buttons">
-                    {selectedMobileCandidate.reclutador && selectedMobileCandidate.puesto && (
-                      <button
-                        type="button"
-                        className="btn-secondary pipeline-mobile-detail__action-btn"
-                        title={en ? 'View pass' : 'Ver pase'}
-                        onClick={() => openAccessCard(selectedMobileCandidate)}
-                      >
-                        <FileImage size={16} aria-hidden="true" />
-                        <span>{en ? 'View pass' : 'Ver pase'}</span>
-                      </button>
-                    )}
-                    <button
-                      type="button"
-                      className="btn-secondary pipeline-mobile-detail__action-btn"
-                      title={en ? 'Edit candidate' : 'Editar candidato'}
-                      onClick={() => openEdit(selectedMobileCandidate)}
-                    >
-                      <PenLine size={16} aria-hidden="true" />
-                      <span>{en ? 'Edit' : 'Editar'}</span>
-                    </button>
-                    {selectedMobileCandidate.status === 'contratado' && !selectedMobileCandidate.employee_num && (
-                      <button
-                        type="button"
-                        className="btn-primary pipeline-mobile-detail__action-btn"
-                        title={en ? 'Hire' : 'Contratar'}
-                        onClick={() => openHire(selectedMobileCandidate)}
-                      >
-                        <BadgeCheck size={16} aria-hidden="true" />
-                        <span>{en ? 'Hire' : 'Contratar'}</span>
-                      </button>
-                    )}
-                    {isAdmin && (
-                      <button
-                        type="button"
-                        className="btn-secondary pipeline-mobile-detail__action-btn pipeline-mobile-detail__action-btn--danger"
-                        title={en ? 'Delete candidate' : 'Eliminar candidato'}
-                        onClick={() => {
-                          openDelete(selectedMobileCandidate);
-                          setSelectedMobileCandidate(null);
-                        }}
-                      >
-                        <Trash2 size={16} aria-hidden="true" />
-                        <span>{en ? 'Delete' : 'Eliminar'}</span>
-                      </button>
-                    )}
-                </div>
-              </div>
-            </div>
-          </article>
-        </div>
-      )}
-
-      {/* ── Quick Profile ── */}
-      <Modal
-        isOpen={!!quickProfile}
+      <CandidatePreview
+        candidate={previewCandidate}
+        isMobile={isMobile}
+        canDelete={isAdmin}
         onClose={() => {
           playSound('close');
           setQuickProfile(null);
         }}
-        title={en ? 'Preview' : 'Vista Previa'}
-        size="md"
-        presentation={isMobile ? 'modal' : 'sheet'}
-        footerActions={
-          <>
-            {quickProfile?.status === 'contratado' && !quickProfile?.employee_num && (
-              <button
-                type="button"
-                className="btn btn-primary quick-profile__footer-action"
-                onClick={() => {
-                  if (!quickProfile) return;
-                  const target = quickProfile;
-                  setQuickProfile(null);
-                  openHire(target);
-                }}
-              >
-                <BadgeCheck size={16} aria-hidden="true" />
-                <span>{en ? 'Hire' : 'Contratar'}</span>
-              </button>
-            )}
-            <button
-              type="button"
-              className="btn btn-secondary quick-profile__footer-action"
-              onClick={() => {
-                if (!quickProfile) return;
-                const target = quickProfile;
-                setQuickProfile(null);
-                openEdit(target);
-              }}
-            >
-              {en ? 'Edit full profile' : 'Editar Perfil Completo'}
-            </button>
-          </>
-        }
-      >
-        {quickProfile && (
-          <div className="modal-body">
-            <div className="quick-profile-header">
-              <div className="quick-profile__avatar">
-                {(quickProfile.nombre ?? '?').charAt(0)}
-              </div>
-              <div className="quick-profile__info">
-                <h3>{toNaturalCase(quickProfile.nombre, { preserveAcronyms: false })}</h3>
-                <div className="quick-profile__status-wrap">
-                  <CandidateStatusBadge status={quickProfile.status} />
-                </div>
-              </div>
-            </div>
-            <dl className="quick-profile__details">
-              {quickProfile.telefono && (
-                <div>
-                  <dt>{en ? 'Phone' : 'Teléfono'}</dt>
-                  <dd>{quickProfile.telefono}</dd>
-                </div>
-              )}
-              {quickProfile.email && (
-                <div>
-                  <dt>{en ? 'Email' : 'Correo electrónico'}</dt>
-                  <dd>{quickProfile.email}</dd>
-                </div>
-              )}
-              <div>
-                <dt>{en ? 'Position' : 'Puesto'}</dt>
-                <dd>{toNaturalCase(quickProfile.puesto)}</dd>
-              </div>
-              <div>
-                <dt>{en ? 'Area' : 'Área'}</dt>
-                <dd>{toNaturalCase(quickProfile.area)}</dd>
-              </div>
-              {quickProfile.seccion && (
-                <div>
-                  <dt>{en ? 'Section' : 'Sección'}</dt>
-                  <dd>{toNaturalCase(quickProfile.seccion)}</dd>
-                </div>
-              )}
-              {quickProfile.reclutador && (
-                <div>
-                  <dt>{en ? 'Recruiter' : 'Reclutador'}</dt>
-                  <dd>{toNaturalCase(quickProfile.reclutador, { preserveAcronyms: false })}</dd>
-                </div>
-              )}
-              {quickProfile.source && (
-                <div>
-                  <dt>{en ? 'Recruitment source' : 'Medio de reclutamiento'}</dt>
-                  <dd>{toNaturalCase(candidateSourceLabel(quickProfile.source, language))}</dd>
-                </div>
-              )}
-              {quickProfile.fecha_cita && (
-                <div>
-                  <dt>{en ? 'Interview Date' : 'Fecha de Entrevista'}</dt>
-                  <dd>{toNaturalCase(formatReadableDate(quickProfile.fecha_cita, en ? 'en-US' : 'es-MX'))}</dd>
-                </div>
-              )}
-              {quickProfile.employee_num && (
-                <div>
-                  <dt>{en ? 'Employee number' : 'Número de empleado'}</dt>
-                  <dd>{quickProfile.employee_num}</dd>
-                </div>
-              )}
-              <div>
-                <dt>{en ? 'Company' : 'Empresa'}</dt>
-                <dd>{quickProfile.is_starlite ? <StarliteBadge /> : <VinoplasticBadge />}</dd>
-              </div>
-              {quickProfile.notas && (
-                <div>
-                  <dt>{en ? 'Notes' : 'Notas'}</dt>
-                  <dd>{toNaturalCase(quickProfile.notas, { preserveAcronyms: false })}</dd>
-                </div>
-              )}
-            </dl>
-          </div>
-        )}
-      </Modal>
+        onEdit={(candidate) => {
+          setQuickProfile(null);
+          openEdit(candidate);
+        }}
+        onDelete={(candidate) => {
+          setQuickProfile(null);
+          openDelete(candidate);
+        }}
+        onViewPass={(candidate) => {
+          setQuickProfile(null);
+          openAccessCard(candidate);
+        }}
+        onHire={(candidate) => {
+          setQuickProfile(null);
+          openHire(candidate);
+        }}
+        onStatusChange={(candidate, status) => {
+          void handleStatusChange(candidate, status);
+        }}
+      />
 
         </main>
       </MotionConfig>

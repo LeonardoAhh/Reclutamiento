@@ -13,6 +13,7 @@ export interface ModalProps {
   onBack?: () => void;
   children: React.ReactNode;
   className?: string;
+  overlayClassName?: string;
   labelledById?: string;
   /** Botones de acción que se mostrarán en el footer */
   footerActions?: React.ReactNode;
@@ -65,6 +66,7 @@ export function Modal({
   onBack,
   children,
   className = "",
+  overlayClassName,
   labelledById,
   footerActions,
   headerActions,
@@ -200,7 +202,7 @@ export function Modal({
 
   return createPortal(
     <div
-      className={["modal-overlay", placement && `modal-overlay--${placement}`].filter(Boolean).join(" ")}
+      className={["modal-overlay", placement && `modal-overlay--${placement}`, overlayClassName].filter(Boolean).join(" ")}
       role="presentation"
       onPointerDown={(e) => {
         if (e.target === e.currentTarget) onClose();

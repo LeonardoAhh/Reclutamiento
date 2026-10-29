@@ -1,11 +1,9 @@
 /* ─────────────────────────────────────────────────────────────────────────
    KpisPage — resumen de los KPIs visibles.
 
-   Mobile-first (< 768px):
-     - Las cuatro tarjetas visibles se muestran directamente.
-     - Valores visibles directos (sin blur Incognito).
-   768px+  → versión PC: gráfica hero + grid 3 columnas + Incognito/blur.
-   1200px+ → grid 4 columnas.
+   La misma composición sirve en móvil y escritorio:
+     selector de semana, cuatro tarjetas KPI, cobertura y gráfica.
+   Las tarjetas pasan de 2 columnas a 4 desde 1024px.
    Todos los colores/tipografías provienen de tokens de global.css.
    ───────────────────────────────────────────────────────────────────────── */
 
@@ -18,230 +16,22 @@
   letter-spacing: var(--type-body-md-tracking);
 }
 
-.kpis-page__missing-positions-link {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  inline-size: 100%;
-  min-block-size: var(--touch-target-min);
-  margin-block-end: var(--spacing-md);
-  padding: var(--spacing-sm) var(--spacing-md);
-  border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
-  background: var(--color-surface-card);
-  color: var(--color-ink);
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-  text-align: start;
-  cursor: pointer;
-  transition: background-color var(--transition-fast);
-}
-
-.kpis-page__missing-positions-link:hover {
-  background: var(--color-surface-soft);
-}
-
-.kpis-page__missing-positions-link:focus-visible {
-  outline: var(--focus-ring-width) solid var(--color-focus);
-  outline-offset: var(--focus-ring-offset);
-}
-
-/* Grid móvil de indicadores visibles */
-.kpis-page__m-grid {
+.kpis-page__overview {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-lg);
+  gap: var(--design-spacing-md);
+  min-inline-size: 0;
 }
 
-.kpis-page__m-card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-}
-
-.kpis-page__m-card > .stat-card {
-  flex: 1;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-}
-
-/* ── Estilos interactivos de tarjeta móvil (chevron) ──────────────── */
-.kpis-page__m-card--interactive {
-  cursor: pointer;
-  border-radius: var(--rounded-lg);
-}
-
-.kpis-page__m-card--interactive > .stat-card {
-  transition: transform var(--transition-fast), background-color var(--transition-fast);
-  padding-right: var(--spacing-xxl); /* Dar espacio al chevron */
-}
-
-.kpis-page__m-card--interactive:hover > .stat-card {
-  background-color: var(--color-surface-soft);
-}
-
-.kpis-page__m-card--interactive:active > .stat-card {
-  transform: scale(0.98);
-}
-
-.kpis-page__m-chevron {
-  position: absolute;
-  top: 50%;
-  right: var(--spacing-sm);
-  transform: translateY(-50%);
-  color: var(--color-muted);
-  pointer-events: none;
-}
-
-/* ── Gráfica semanal colapsable (móvil) ─────────────────────────────── */
-.kpis-page__chart-collapse {
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
-  background: var(--color-surface-card);
-  overflow: hidden;
-}
-
-.kpis-page__chart-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  min-height: var(--touch-target-min);
-  padding: var(--spacing-sm) var(--spacing-md);
-  border: none;
-  background: transparent;
-  color: var(--color-ink);
-  font-family: var(--font-body);
-  font-size: var(--type-body-strong-size);
-  font-weight: var(--type-body-strong-weight);
-  cursor: pointer;
-  transition: background var(--transition-fast);
-}
-
-.kpis-page__chart-chevron {
-  color: var(--color-muted);
-  transition: transform var(--transition-base);
-}
-
-.kpis-page__chart-chevron--open {
-  transform: rotate(180deg);
-}
-
-.kpis-page__chart-body {
-  padding: 0 var(--spacing-sm) var(--spacing-sm);
-  animation: kpis-panel-in var(--transition-base) both;
-}
-
-/* ── Card wrapper (PC) ──────────────────────────────────────────────── */
-.kpis-page__card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-
-.kpis-page__label-with-badge {
-  display: inline-flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--design-spacing-xxs);
-}
-
-.kpis-page__date-badge {
-  font-family: var(--font-body);
-  font-size: var(--type-caption-up-size);
-  color: var(--color-muted);
-  background: var(--color-canvas-soft);
-  padding: var(--design-spacing-xxs) var(--design-spacing-xs);
-  border-radius: var(--rounded-sm);
-  white-space: nowrap;
-  font-weight: var(--type-caption-up-weight);
-  line-height: var(--type-caption-up-line);
-  letter-spacing: var(--type-caption-up-tracking);
-  display: inline-flex;
-  align-items: center;
-  border: var(--border-width) solid var(--color-hairline);
-}
-
-/* Botón de detalle ghost (PC, visible cuando la card está revelada). */
-.kpis-page__detail-btn {
-  position: absolute;
-  right: var(--spacing-sm);
-  bottom: var(--spacing-sm);
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-control);
-  border: none;
-  background: transparent;
-  color: var(--color-muted);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.kpis-page__detail-btn:hover {
-  color: var(--color-ink);
-  background: var(--color-surface-soft);
-}
-
-/* ── Grid de KPIs (PC) ──────────────────────────────────────────────── */
-.kpis-page__grid {
+.kpis-page__kpis {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--spacing-md);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--design-spacing-md);
+  min-inline-size: 0;
 }
 
-/* ── Tablet portrait (≥ 768px) — versión PC ─────────────────────────── */
-/* ── Desktop (≥ 1200px) ─────────────────────────────────────────────── */
-@media (min-width: 1200px) {
-  .kpis-page__grid {
+@media (min-width: 1024px) {
+  .kpis-page__kpis {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
-}
-
-/* ── Reduced motion ─────────────────────────────────────────────────── */
-@media (prefers-reduced-motion: reduce) {
-  .kpis-page__chart-body {
-    animation: none;
-  }
-
-  .kpis-page__chart-chevron {
-    transition: none;
-  }
-}
-
-.kpis-page .stat-card__label {
-  font-family: var(--font-body);
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  line-height: var(--type-caption-up-line);
-  letter-spacing: var(--type-caption-up-tracking);
-  display: flex;
-  align-items: center;
-  min-inline-size: 0;
-  min-block-size: calc(var(--type-caption-up-size) * var(--type-caption-up-line) + var(--design-spacing-xxs) * 2 + var(--border-width) * 2);
-}
-
-.kpis-page .stat-card__value {
-  font-family: var(--font-body);
-  font-size: var(--type-body-strong-size);
-  font-weight: var(--type-body-strong-weight);
-  line-height: var(--type-body-strong-line);
-  letter-spacing: var(--type-body-strong-tracking);
-}
-
-.kpis-page .stat-card__subtitle {
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
 }

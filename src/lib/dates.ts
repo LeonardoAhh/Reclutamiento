@@ -205,6 +205,17 @@ export function formatShortDate(iso: string | null | undefined, locale = 'es-MX'
 }
 
 /**
+ * Día y mes sin año (`29/10`), en TZ MX y en el orden del locale.
+ *
+ * Reutiliza `formatShortDate` para conservar exactamente el mismo anclaje a
+ * mediodía MX y solo descarta el segmento del año.
+ */
+export function formatDayMonth(iso: string | null | undefined, locale = 'es-MX'): string {
+  const short = formatShortDate(iso, locale);
+  return short === '—' ? short : short.split('/').slice(0, 2).join('/');
+}
+
+/**
  * Formato más legible para el usuario (`18 feb 2026`), en TZ MX.
  */
 export function formatReadableDate(iso: string | null | undefined, locale = 'es-MX'): string {
@@ -757,6 +768,32 @@ export function formatDateTimeMx(iso: string | null | undefined, locale = 'es-MX
 }
 
 /**
+ * Fecha corta de metadatos con día de la semana (`mié 28 de oct`), en TZ MX.
+ *
+ * Conserva los conectores del locale en minúscula y omite el año para los
+ * metadatos del resumen; `formatProjectionDate` mantiene su formato histórico.
+ */
+export function formatShortWeekdayDate(
+  iso: string | null | undefined,
+  locale = 'es-MX',
+): string {
+  if (!iso?.trim()) return '—';
+  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso).trim().slice(0, 10));
+  if (!match) return '—';
+  const date = new Date(`${match[0]}T12:00:00${MX_UTC_OFFSET}`);
+  if (Number.isNaN(date.getTime())) return '—';
+  return date
+    .toLocaleDateString(locale, {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'short',
+      timeZone: TZ_MX,
+    })
+    .replace(/\./g, '')
+    .replace(/,/g, '');
+}
+
+/**
  * Formatea una fecha ISO para las tarjetas de proyección (ej. "Mié 16 Jun").
  */
 export function formatProjectionDate(dateIso: string): string {
@@ -765,4 +802,71 @@ export function formatProjectionDate(dateIso: string): string {
   const d = new Date(`${match[0]}T12:00:00${MX_UTC_OFFSET}`);
   let label = d.toLocaleDateString('es-MX', { weekday: 'short', day: 'numeric', month: 'short', timeZone: TZ_MX }).replace(/\./g, '');
   return label.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+}
+
+/**
+ * Fecha compacta con día de la semana (`Jue 29 Oct 26`), en TZ MX.
+ *
+ * Se compone por partes para no heredar los literales variables del locale
+ * ("29 de oct"), y cada palabra se capitaliza igual que en el resto de la app.
+ * Las fechas date-only se anclan a mediodía MX por la misma razón que
+ * `formatShortDate`: evitar el off-by-one de UTC−6.
+ */
+export function formatWeekdayDate(iso: string | null | undefined, locale = 'es-MX'): string {
+  if (!iso?.trim()) return '—';
+  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso).trim().slice(0, 10));
+  if (!match) return '—';
+  const date = new Date(`${match[0]}T12:00:00${MX_UTC_OFFSET}`);
+  if (Number.isNaN(date.getTime())) return '—';
+
+  const parts = new Intl.DateTimeFormat(locale, {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+    year: '2-digit',
+    timeZone: TZ_MX,
+  }).formatToParts(date);
+  const readPart = (type: Intl.DateTimeFormatPartTypes) =>
+    (parts.find((part) => part.type === type)?.value ?? '').replace(/\./g, '');
+
+  return [readPart('weekday'), readPart('day'), readPart('month'), readPart('year')]
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toLocaleUpperCase(locale) + word.slice(1))
+    .join(' ');
+}
+
+const RELATIVE_DAY_LABELS = {
+  es: { today: 'Hoy', tomorrow: 'Mañana', yesterday: 'Ayer' },
+  en: { today: 'Today', tomorrow: 'Tomorrow', yesterday: 'Yesterday' },
+} as const;
+
+/**
+ * Etiqueta compacta de entrevista para las tarjetas móviles.
+ *
+ * Solo agrega el día relativo cuando la cita es hoy, mañana o ayer
+ * (`Mañana · 29/10`); cualquier otra fecha muestra únicamente día y mes
+ * (`12/11`) para no alargar la tarjeta. La comparación se hace sobre la
+ * fecha calendárica en TZ MX, no sobre horas ni sobre el TZ del visor.
+ */
+export function formatInterviewDate(
+  iso: string | null | undefined,
+  language: 'es' | 'en' = 'es',
+): string {
+  const locale = language === 'en' ? 'en-US' : 'es-MX';
+  const dayMonth = formatDayMonth(iso, locale);
+  if (dayMonth === '—') return dayMonth;
+
+  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso).trim().slice(0, 10));
+  if (!match) return dayMonth;
+
+  const target = Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+  const [todayYear, todayMonth, todayDay] = localTodayIso().split('-').map(Number);
+  const today = Date.UTC(todayYear, todayMonth - 1, todayDay);
+  const dayDelta = Math.round((target - today) / 86_400_000);
+
+  const labels = RELATIVE_DAY_LABELS[language];
+  if (dayDelta === 0) return `${labels.today} · ${dayMonth}`;
+  if (dayDelta === 1) return `${labels.tomorrow} · ${dayMonth}`;
+  if (dayDelta === -1) return `${labels.yesterday} · ${dayMonth}`;
+  return dayMonth;
 }

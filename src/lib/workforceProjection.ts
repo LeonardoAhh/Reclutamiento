@@ -18,6 +18,36 @@ export interface WorkforceSnapshot {
   real: number;
 }
 
+export const COVERAGE_KEYS = ['plantilla', 'backup', 'starlite'] as const;
+
+export type CoverageKey = (typeof COVERAGE_KEYS)[number];
+
+/** Corte de la vista de resumen: por debajo de 90% la cobertura requiere atención. */
+export const COVERAGE_GOAL_THRESHOLD = 90;
+
+export type CoverageStatus = 'goal' | 'attention';
+
+export function coverageStatus(percentage: number | null): CoverageStatus {
+  return percentage !== null && percentage >= COVERAGE_GOAL_THRESHOLD ? 'goal' : 'attention';
+}
+
+/**
+ * Categoría resaltada por defecto: la de menor cobertura.
+ * En empate se elige la que tenga más vacantes, para no ocultar la más urgente.
+ */
+export function pickEmphasizedCoverage(snapshot: WorkforceSnapshot): CoverageKey {
+  const withTarget = COVERAGE_KEYS.filter((key) => snapshot[key].percentage !== null);
+  if (withTarget.length === 0) return 'plantilla';
+  return withTarget.reduce<CoverageKey>((lowest, key) => {
+    const lowestPercentage = snapshot[lowest].percentage;
+    const currentPercentage = snapshot[key].percentage;
+    if (currentPercentage !== lowestPercentage) {
+      return (currentPercentage ?? -1) < (lowestPercentage ?? -1) ? key : lowest;
+    }
+    return snapshot[key].vacancies > snapshot[lowest].vacancies ? key : lowest;
+  }, withTarget[0]);
+}
+
 function category(target: number, covered: number): CoverageCategory {
   return {
     target,

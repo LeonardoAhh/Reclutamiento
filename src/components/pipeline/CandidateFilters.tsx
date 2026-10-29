@@ -1,16 +1,22 @@
 import { ChevronDown, SlidersHorizontal } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage, type Language } from '@/contexts/LanguageContext';
 import { CustomSelect } from '@/components/ui/CustomSelect';
 import './CandidateFilters.css';
 
-export type CandidateGroup = 'todos' | 'activos' | 'contratados' | 'bajas';
+export type CandidateGroup = 'todos' | 'activos' | 'contratados';
 
 const GROUP_OPTIONS = [
   { value: 'todos', label: 'Todos' },
   { value: 'activos', label: 'Activos' },
   { value: 'contratados', label: 'Contratados' },
-  { value: 'bajas', label: 'Bajas' },
 ] as const;
+
+export function getCandidateGroupOptions(language: Language): ReadonlyArray<{ value: CandidateGroup; label: string }> {
+  return language === 'en' ? [
+    { value: 'todos', label: 'All' }, { value: 'activos', label: 'Active' },
+    { value: 'contratados', label: 'Hired' },
+  ] : GROUP_OPTIONS;
+}
 
 interface CandidateFiltersProps {
   value: CandidateGroup;
@@ -19,10 +25,7 @@ interface CandidateFiltersProps {
 
 export function CandidateFilters({ value, onChange }: CandidateFiltersProps) {
   const { language } = useLanguage();
-  const options: ReadonlyArray<{ value: CandidateGroup; label: string }> = language === 'en' ? [
-    { value: 'todos', label: 'All' }, { value: 'activos', label: 'Active' },
-    { value: 'contratados', label: 'Hired' }, { value: 'bajas', label: 'Departures' },
-  ] : GROUP_OPTIONS;
+  const options = getCandidateGroupOptions(language);
   const selectedLabel = options.find((option) => option.value === value)?.label;
 
   return (

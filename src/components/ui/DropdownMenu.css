@@ -98,6 +98,7 @@
   border-radius: var(--radius-control);
   color: var(--color-body);
   text-align: start;
+  text-decoration: none;
   cursor: pointer;
   user-select: none;
   font-family: var(--font-body);
@@ -105,6 +106,12 @@
   font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
   letter-spacing: var(--type-body-md-tracking);
+}
+
+/* Un enlace dentro del ítem hereda el color y nunca se subraya. */
+.dropdown-menu-item a {
+  color: inherit;
+  text-decoration: none;
 }
 
 .dropdown-menu-item[data-highlighted] {

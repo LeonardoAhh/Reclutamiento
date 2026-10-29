@@ -1,0 +1,79 @@
+.overview-kpi {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--design-spacing-sm);
+  inline-size: 100%;
+  min-inline-size: 0;
+  padding: var(--design-spacing-md);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-card);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  text-align: start;
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+@media (min-width: 640px) {
+  .overview-kpi {
+    padding: var(--design-spacing-lg);
+  }
+}
+
+.overview-kpi:hover {
+  border-color: var(--color-hairline-strong);
+  background: var(--color-surface-soft);
+}
+
+.overview-kpi__label {
+  color: var(--color-muted);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.overview-kpi__value {
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-display-lg-size);
+  font-weight: var(--type-display-lg-weight);
+  line-height: var(--type-display-lg-line);
+  letter-spacing: var(--type-display-lg-tracking);
+  font-variant-numeric: tabular-nums;
+}
+
+.overview-kpi__footer {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--design-spacing-xxs);
+  margin-block-start: auto;
+  padding-block-start: var(--design-spacing-xs);
+  color: var(--color-muted);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+  text-align: start;
+  overflow-wrap: anywhere;
+}
+
+.overview-kpi__footer-icon {
+  flex-shrink: 0;
+  inline-size: var(--icon-size-sm);
+  block-size: var(--icon-size-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overview-kpi {
+    transition: none;
+  }
+}
