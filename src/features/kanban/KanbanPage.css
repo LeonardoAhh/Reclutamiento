@@ -16,40 +16,8 @@
 .kanban-list-view__item { min-width: 0; }
 .kanban-list-view__empty { padding: var(--design-spacing-sm); color: var(--color-body); }
 .kanban-list-view > .pagination { justify-self: center; }
-.kanban-status-tabs {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: var(--design-spacing-xs);
-  min-width: 0;
-  max-width: 100%;
-  overflow-x: auto;
-  padding: var(--focus-ring-width);
-  scroll-padding-inline: var(--focus-ring-width);
-}
 .kanban-status-tabs__trigger {
-  flex: none;
-  min-inline-size: 0;
-  min-block-size: var(--touch-target-min);
   padding: var(--design-spacing-xs);
-  border: var(--border-width) solid var(--color-control-border);
-  border-radius: var(--radius-control);
-  background: var(--color-canvas-elevated);
-  color: var(--color-ink);
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-  white-space: nowrap;
-  cursor: pointer;
-}
-.kanban-status-tabs__trigger[data-state="active"] {
-  background: var(--color-primary);
-  border-color: var(--color-primary-border);
-  color: var(--color-on-primary);
-}
-.kanban-status-tabs__trigger:disabled {
-  cursor: not-allowed;
 }
 .kanban-board__panel {
   min-width: 0;
@@ -334,18 +302,19 @@
   gap: var(--design-spacing-xxs);
   min-width: 0;
   margin: 0;
-  padding: var(--design-spacing-xxs);
+  padding: 0;
   border: 0;
   border-radius: var(--radius-control);
-  background: var(--color-canvas-soft);
+  background: transparent;
 }
 .kanban-layout-switch__button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: var(--design-spacing-xs);
   min-block-size: var(--touch-target-min);
   padding-inline: var(--design-spacing-sm);
-  border: 0;
+  border: var(--border-width) solid transparent;
   border-radius: var(--radius-control);
   background: transparent;
   color: var(--color-body);
@@ -357,9 +326,9 @@
   cursor: pointer;
 }
 .kanban-layout-switch__button[aria-pressed="true"] {
-  background: var(--color-canvas-elevated);
+  border-color: var(--color-control-border);
+  background: var(--color-canvas-soft);
   color: var(--color-ink);
-  box-shadow: var(--shadow-xs);
 }
 .kanban-layout-switch:disabled { opacity: var(--opacity-disabled); }
 .kanban-toolbar-button {

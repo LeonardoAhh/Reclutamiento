@@ -2,7 +2,8 @@ import { useState, useEffect, useMemo, useRef } from "react";
 import { PageHeading } from '@/components/layout/PageHeading';
 import { isBoneyardBuild } from "@/lib/boneyard";
 import { BONEYARD_SAMPLE_ACTIVITIES } from "@/lib/boneyardFixtures";
-import * as Tabs from "@radix-ui/react-tabs";
+import { TabsContent, TabsList, TabsRoot, TabsTrigger } from "@/components/ui/Tabs";
+import { BriefcaseBusiness, ClipboardPenLine, ListChecks } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useActivities } from "@/hooks/useActivities";
 import { useIsMobile } from "@/hooks/useIsMobile";
@@ -565,23 +566,26 @@ export function Actividades() {
       <main className="actividades-page container">
         <PageHeading className="app-page-title">{en ? "Activities" : "Actividades"}</PageHeading>
 
-      <Tabs.Root className="actividades-tabs" onValueChange={() => playSound("select")} defaultValue={
+      <TabsRoot onValueChange={() => playSound("select")} defaultValue={
         searchParams.get("tab") === "responsibilities" ? "responsibilities"
           : searchParams.get("tab") === "activities" ? "activities" : "vacancies"
       }>
-        <Tabs.List className="actividades-tabs__list" aria-label={en ? "Activity sections" : "Secciones de actividades"}>
-          <Tabs.Trigger className="actividades-tabs__trigger" value="vacancies">
+        <TabsList className="actividades-tabs__list" variant="underline" aria-label={en ? "Activity sections" : "Secciones de actividades"}>
+          <TabsTrigger value="vacancies">
+            <BriefcaseBusiness size="var(--icon-size-sm)" aria-hidden="true" />
             {en ? "Vacancies" : "Vacantes"}
-          </Tabs.Trigger>
-          <Tabs.Trigger className="actividades-tabs__trigger" value="responsibilities">
+          </TabsTrigger>
+          <TabsTrigger value="responsibilities">
+            <ListChecks size="var(--icon-size-sm)" aria-hidden="true" />
             {en ? "Responsibilities" : "Responsabilidades"}
-          </Tabs.Trigger>
-          <Tabs.Trigger className="actividades-tabs__trigger" value="activities">
+          </TabsTrigger>
+          <TabsTrigger value="activities">
+            <ClipboardPenLine size="var(--icon-size-sm)" aria-hidden="true" />
             {en ? "Activities" : "Actividades"}
-          </Tabs.Trigger>
-        </Tabs.List>
+          </TabsTrigger>
+        </TabsList>
 
-        <Tabs.Content className="actividades-tabs__content" value="vacancies">
+        <TabsContent value="vacancies">
           <VacancyAssignmentSection
             vacancies={vacantesManuales}
             positions={positions}
@@ -601,9 +605,9 @@ export function Actividades() {
               return deleted;
             }}
           />
-        </Tabs.Content>
+        </TabsContent>
 
-        <Tabs.Content className="actividades-tabs__content" value="responsibilities">
+        <TabsContent value="responsibilities">
           <ResponsibilitiesSection
             responsibilities={responsabilidades}
             pageItems={responsabilidadesPaginadas}
@@ -622,9 +626,9 @@ export function Actividades() {
             onCreate={() => { playSound("open"); setCreateModalType("rutinaria"); }}
             onOpen={openResponsibility}
           />
-        </Tabs.Content>
+        </TabsContent>
 
-        <Tabs.Content className="actividades-tabs__content" value="activities">
+        <TabsContent value="activities">
           <ActivitiesSection
             activities={allUnicas}
             filteredActivities={unicas}
@@ -648,8 +652,8 @@ export function Actividades() {
             onCreate={() => { playSound("open"); setCreateModalType("unica"); }}
             onOpen={openDetails}
           />
-        </Tabs.Content>
-      </Tabs.Root>
+        </TabsContent>
+      </TabsRoot>
 
       <ModalPresentationProvider value={isMobile ? "modal" : "sheet"}>
       <CreateVacancyModal

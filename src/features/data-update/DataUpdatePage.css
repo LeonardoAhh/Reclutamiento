@@ -382,51 +382,8 @@
   gap: var(--design-spacing-md);
 }
 
-.data-update-tabs__list {
-  display: flex;
-  gap: var(--design-spacing-xs);
-  padding: var(--design-spacing-xs);
-  background: var(--color-surface-soft);
-  border: var(--border-width) solid var(--color-control-border);
-  border-radius: var(--radius-control);
-  overflow-x: auto;
-  min-inline-size: 0;
-}
-
 .data-update-tabs__trigger {
-  display: inline-flex;
-  min-width: 0;
-  min-height: var(--touch-target-min);
-  align-items: center;
-  justify-content: center;
-  padding-inline: var(--design-spacing-md);
-  border: var(--border-width) solid transparent;
-  border-radius: var(--radius-control);
-  background: transparent;
-  color: var(--color-muted);
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-  cursor: pointer;
-  transition:
-    background var(--transition-fast),
-    border-color var(--transition-fast),
-    color var(--transition-fast);
   flex: 1 0 auto;
-  white-space: nowrap;
-}
-
-.data-update-tabs__trigger:hover {
-  background: var(--color-surface);
-  color: var(--color-ink);
-}
-
-.data-update-tabs__trigger[data-state="active"] {
-  color: var(--color-on-primary);
-  background: var(--color-primary);
-  border-color: var(--color-primary-border);
 }
 
 .data-update-tabs__content {

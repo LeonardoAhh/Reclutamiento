@@ -17,10 +17,16 @@ import {
 } from '@/hooks/useReporteDiario';
 import { useBajas } from '@/hooks/useBajas';
 import {
+  Building2,
+  ChevronDown,
   CircleCheckBig,
+  Clock3,
   LayoutGrid,
   List,
   RotateCcw,
+  UserRoundCheck,
+  UserRoundMinus,
+  UsersRound,
 } from 'lucide-react';
 import { Search as SearchData } from 'lucide';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
@@ -121,6 +127,12 @@ export function AnalisisView() {
     () => uniqueFilterValues(textMatches, 'turno'),
     [textMatches],
   );
+  const selectedDepartmentLabel = departmentFilter === ALL_FILTER_VALUE
+    ? copy.all
+    : departmentOptions.find((option) => option.value === departmentFilter)?.label ?? departmentFilter;
+  const selectedShiftLabel = shiftFilter === ALL_FILTER_VALUE
+    ? copy.all
+    : shiftOptions.find((option) => option.value === shiftFilter)?.label ?? shiftFilter;
 
   // 3. Aplicar filtros secundarios
   const filteredEmployees = useMemo(() => {
@@ -430,10 +442,10 @@ export function AnalisisView() {
               </legend>
               <div className="config-segmented-control">
                 {([
-                  ['all', copy.all],
-                  ['active', copy.active],
-                  ['inactive', copy.leavers],
-                ] as const).map(([value, label]) => (
+                  ['all', copy.all, UsersRound],
+                  ['active', copy.active, UserRoundCheck],
+                  ['inactive', copy.leavers, UserRoundMinus],
+                ] as const).map(([value, label, Icon]) => (
                   <button
                     key={value}
                     type="button"
@@ -444,96 +456,114 @@ export function AnalisisView() {
                     onClick={() => setStatusFilter(value)}
                     aria-pressed={statusFilter === value}
                   >
+                    <Icon size="var(--icon-size-sm)" aria-hidden="true" />
                     {label}
                   </button>
                 ))}
               </div>
             </fieldset>
 
-            <label className="config-filter-field">
-              <span className="config-filter-label type-caption-up text-muted">
-                {copy.department}
-              </span>
+            {canUseCompactView && (
+              <div className="config-filter-field analisis-view-control">
+                <span className="config-filter-label type-caption-up text-muted">
+                  {copy.view}
+                </span>
+                <div
+                  className="config-view-switch"
+                  role="group"
+                  aria-label={copy.resultView}
+                >
+                  <button
+                    type="button"
+                    className={`config-view-switch__button${
+                      viewMode === 'detail' ? ' is-active' : ''
+                    }`}
+                    aria-label={copy.detailed}
+                    title={copy.detailed}
+                    data-cuelume-select=""
+                    onClick={() => handleViewModeChange('detail')}
+                    aria-pressed={viewMode === 'detail'}
+                  >
+                    <List aria-hidden="true" />
+                    <span className="analisis-view-control__text">{copy.detailed}</span>
+                  </button>
+                  <button
+                    type="button"
+                    className={`config-view-switch__button${
+                      viewMode === 'compact' ? ' is-active' : ''
+                    }`}
+                    aria-label={copy.compact}
+                    title={copy.compact}
+                    onClick={() => handleViewModeChange('compact')}
+                    aria-pressed={viewMode === 'compact'}
+                  >
+                    <LayoutGrid aria-hidden="true" />
+                    <span className="analisis-view-control__text">{copy.compact}</span>
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <div className="config-filter-field analisis-select-filter analisis-select-filter--department">
               <CustomSelect
                 value={departmentFilter}
-                aria-label={copy.department}
+                aria-label={`${copy.department}: ${selectedDepartmentLabel}`}
                 onChange={setDepartmentFilter}
                 options={[
                   { value: ALL_FILTER_VALUE, label: copy.all },
                   ...departmentOptions,
                 ]}
+                showPlaceholderOption={false}
+                triggerAppearance="control"
+                customTrigger={
+                  <span className="analisis-select-filter__trigger">
+                    <Building2 size="var(--icon-size-sm)" aria-hidden="true" />
+                    <span className="analisis-select-filter__name">{copy.department}</span>
+                    <span className="analisis-select-filter__value">
+                      {selectedDepartmentLabel}
+                    </span>
+                    <ChevronDown size="var(--icon-size-sm)" aria-hidden="true" />
+                  </span>
+                }
               />
-            </label>
+            </div>
 
-            <label className="config-filter-field">
-              <span className="config-filter-label type-caption-up text-muted">
-                {copy.shift}
-              </span>
+            <div className="config-filter-field analisis-select-filter analisis-select-filter--shift">
               <CustomSelect
                 value={shiftFilter}
-                aria-label={copy.shift}
+                aria-label={`${copy.shift}: ${selectedShiftLabel}`}
                 onChange={setShiftFilter}
                 options={[
                   { value: ALL_FILTER_VALUE, label: copy.all },
                   ...shiftOptions,
                 ]}
+                showPlaceholderOption={false}
+                triggerAppearance="control"
+                customTrigger={
+                  <span className="analisis-select-filter__trigger">
+                    <Clock3 size="var(--icon-size-sm)" aria-hidden="true" />
+                    <span className="analisis-select-filter__name">{copy.shift}</span>
+                    <span className="analisis-select-filter__value">
+                      {selectedShiftLabel}
+                    </span>
+                    <ChevronDown size="var(--icon-size-sm)" aria-hidden="true" />
+                  </span>
+                }
               />
-            </label>
+            </div>
 
             {hasActiveFilters && (
-              <ButtonUtility
+              <button
                 type="button"
-                className="config-filter-reset"
-                icon={<RotateCcw aria-hidden="true" />}
+                className="btn-ghost config-filter-reset"
                 data-cuelume-select=""
                 onClick={handleClearFilters}
               >
                 {copy.clear}
-              </ButtonUtility>
+              </button>
             )}
           </div>
           </AnalysisFilterPanel>
-
-          {canUseCompactView && (
-            <div className="config-filter-field analisis-view-control">
-              <span className="config-filter-label type-caption-up text-muted">
-                {copy.view}
-              </span>
-              <div
-                className="config-view-switch"
-                role="group"
-                aria-label={copy.resultView}
-              >
-                <button
-                  type="button"
-                  className={`config-view-switch__button${
-                    viewMode === 'detail' ? ' is-active' : ''
-                  }`}
-                  aria-label={copy.detailed}
-                  title={copy.detailed}
-                  data-cuelume-select=""
-                  onClick={() => handleViewModeChange('detail')}
-                  aria-pressed={viewMode === 'detail'}
-                >
-                  <List aria-hidden="true" />
-                  <span className="analisis-view-control__text">{copy.detailed}</span>
-                </button>
-                <button
-                  type="button"
-                  className={`config-view-switch__button${
-                    viewMode === 'compact' ? ' is-active' : ''
-                  }`}
-                  aria-label={copy.compact}
-                  title={copy.compact}
-                  onClick={() => handleViewModeChange('compact')}
-                  aria-pressed={viewMode === 'compact'}
-                >
-                  <LayoutGrid aria-hidden="true" />
-                  <span className="analisis-view-control__text">{copy.compact}</span>
-                </button>
-              </div>
-            </div>
-          )}
         </section>
 
         {searchQuery.length === 0 && !hasActiveFilters ? (

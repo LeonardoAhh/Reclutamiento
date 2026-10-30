@@ -8,6 +8,7 @@ import {
   type WhatsAppReportSection,
 } from "@/lib/whatsappReport";
 import type { Candidate, CandidateStatus } from "@/lib/types";
+import type { Language } from "@/contexts/LanguageContext";
 
 const ACTIVE_STATUSES: ReadonlySet<CandidateStatus> = new Set<CandidateStatus>([
   "entrevista",
@@ -47,6 +48,52 @@ interface RecruiterRow {
   total: number;
   starlite: number;
 }
+
+interface CandidateReportCopy {
+  title: string;
+  cutoff: string;
+  candidate: string;
+  candidates: string;
+  general: string;
+  starliteOperator: string;
+  interview: string;
+  documentsDelivered: string;
+  documentsMissing: string;
+  feedbackPending: string;
+  recruiterBreakdown: string;
+  emptyMessage: string;
+}
+
+const REPORT_COPY: Record<Language, CandidateReportCopy> = {
+  es: {
+    title: "Candidatos activos",
+    cutoff: "Corte",
+    candidate: "candidato",
+    candidates: "candidatos",
+    general: "General",
+    starliteOperator: "Operador de Starlite",
+    interview: "Entrevista",
+    documentsDelivered: "Documentos entregados",
+    documentsMissing: "Faltan documentos",
+    feedbackPending: "Feedback pendiente",
+    recruiterBreakdown: "Distribución por reclutador",
+    emptyMessage: "Sin candidatos activos.",
+  },
+  en: {
+    title: "Active candidates",
+    cutoff: "Cutoff",
+    candidate: "candidate",
+    candidates: "candidates",
+    general: "General",
+    starliteOperator: "Starlite machine operator",
+    interview: "Interviews",
+    documentsDelivered: "Documents delivered",
+    documentsMissing: "Missing documents",
+    feedbackPending: "Pending feedback",
+    recruiterBreakdown: "By recruiter",
+    emptyMessage: "No active candidates.",
+  },
+};
 
 function extractTurno(seccion: string): string {
   const match = seccion.match(
@@ -142,26 +189,33 @@ function buildRecruiterRows(active: Candidate[], members: TeamMember[]): Recruit
 
 function buildCandidateSections(
   candidates: Candidate[],
+  copy: CandidateReportCopy,
+  language: Language,
   project?: string,
 ): WhatsAppReportSection[] {
   const groups = buildPuestoGroups(candidates);
   return groups.map((group) => ({
     title: project
       ? `${project} · ${toNaturalCase(group.area)}`
-      : toNaturalCase(group.area),
+      : `${copy.general} · ${toNaturalCase(group.area)}`,
     items: group.rows.map((row) => {
-      const cleanSection = formatWhatsAppSection(row.seccion, group.area);
+      const cleanSection = formatWhatsAppSection(
+        row.seccion,
+        group.area,
+        language,
+      );
 
-      const sectionLabel = cleanSection || formatWhatsAppLabel(row.turno);
+      const sectionLabel =
+        cleanSection || formatWhatsAppLabel(row.turno, language);
       const details: string[] = [];
-      if (row.e1 > 0) details.push(`Entrevista: ${row.e1}`);
-      if (row.e2 > 0) details.push(`Documentos: ${row.e2}`);
-      if (row.fd > 0) details.push(`Faltan documentos: ${row.fd}`);
-      if (row.fp > 0) details.push(`Feedback: ${row.fp}`);
+      if (row.e1 > 0) details.push(`${copy.interview}: ${row.e1}`);
+      if (row.e2 > 0) details.push(`${copy.documentsDelivered}: ${row.e2}`);
+      if (row.fd > 0) details.push(`${copy.documentsMissing}: ${row.fd}`);
+      if (row.fp > 0) details.push(`${copy.feedbackPending}: ${row.fp}`);
 
-      let position = formatWhatsAppLabel(row.puesto);
+      let position = formatWhatsAppLabel(row.puesto, language);
       if (project && position.toLocaleLowerCase("es-MX").includes("operador de máquina")) {
-        position = "Operador de Starlite";
+        position = copy.starliteOperator;
       }
 
       return {
@@ -175,30 +229,50 @@ function buildCandidateSections(
   }));
 }
 
-function buildWhatsAppMessage(active: Candidate[], members: TeamMember[]): string {
+function buildWhatsAppMessage(
+  active: Candidate[],
+  members: TeamMember[],
+  language: Language,
+): string {
+  const copy = REPORT_COPY[language];
   const generales = active.filter((c) => !c.is_starlite);
   const starlite = active.filter((c) => c.is_starlite);
   const recruiters = buildRecruiterRows(active, members).filter((row) => row.total > 0);
   const sections = [
-    ...buildCandidateSections(generales),
-    ...buildCandidateSections(starlite, "Starlite"),
+    ...buildCandidateSections(generales, copy, language),
+    ...buildCandidateSections(starlite, copy, language, "Starlite"),
   ];
 
   const recruiterSummary = recruiters
-    .map((row) => `${toNaturalCase(row.name)} ${row.total}`)
+    .map(
+      (row) =>
+        `${toNaturalCase(row.name)}: ${row.total} ${
+          row.total === 1 ? copy.candidate : copy.candidates
+        }`,
+    )
     .join(" · ");
 
   return buildWhatsAppReport({
-    title: "Candidatos activos",
-    date: formatReadableDate(new Date().toISOString()),
+    title: copy.title,
+    date: `${copy.cutoff}: ${formatReadableDate(
+      new Date().toISOString(),
+      language === "en" ? "en-US" : "es-MX",
+    )}`,
     total: active.length,
+    totalLabel: active.length === 1 ? copy.candidate : copy.candidates,
     sections,
-    emptyMessage: "Sin candidatos activos.",
-    footer: recruiterSummary ? `Reclutadores: ${recruiterSummary}` : undefined,
+    emptyMessage: copy.emptyMessage,
+    footer: recruiterSummary
+      ? `${copy.recruiterBreakdown}: ${recruiterSummary}`
+      : undefined,
   });
 }
 
-export function buildCandidateReport(candidates: Candidate[], members: TeamMember[]): string | null {
+export function buildCandidateReport(
+  candidates: Candidate[],
+  members: TeamMember[],
+  language: Language,
+): string | null {
   const active = candidates.filter((candidate) => ACTIVE_STATUSES.has(candidate.status));
-  return active.length > 0 ? buildWhatsAppMessage(active, members) : null;
+  return active.length > 0 ? buildWhatsAppMessage(active, members, language) : null;
 }

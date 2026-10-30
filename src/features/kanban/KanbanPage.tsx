@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
-import { Archive, ArrowLeft, SquarePlus } from 'lucide-react';
+import { Archive, ArrowLeft, LayoutGrid, List, SquarePlus } from 'lucide-react';
 import { PageHeading } from '@/components/layout/PageHeading';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -144,7 +144,9 @@ function KanbanWorkspace({ userId, archived, focusView, layoutMode, onChangeLayo
             {(['grid', 'list'] as const).map(mode => <button key={mode} type="button"
               className="kanban-layout-switch__button" aria-pressed={layoutMode === mode} aria-controls={id}
               onClick={() => { playSound('select'); onChangeLayout(mode); }}>
-              {mode === 'grid' ? t.gridView : t.listView}
+              {mode === 'grid'
+                ? <><LayoutGrid size="var(--icon-size-sm)" aria-hidden="true" />{t.gridView}</>
+                : <><List size="var(--icon-size-sm)" aria-hidden="true" />{t.listView}</>}
             </button>)}
           </fieldset>}
         </div>

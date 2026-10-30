@@ -10,7 +10,7 @@ const KIND_ICONS: Record<TaskKind, LucideIcon> = {
   interview: MessageSquareText,
   todo: ListChecks,
 };
-const STATUS_ICONS: Record<TaskStatus, LucideIcon> = {
+export const STATUS_ICONS: Record<TaskStatus, LucideIcon> = {
   pending: Clock3,
   in_progress: CircleGauge,
   completed: BadgeCheck,

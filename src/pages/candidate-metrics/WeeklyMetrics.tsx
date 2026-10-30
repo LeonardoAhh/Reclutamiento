@@ -8,6 +8,7 @@ import { useIsMobile } from '@/hooks/useIsMobile';
 import { ButtonUtility } from '@/components/ui/ButtonUtility';
 import { ActionStateContent } from '@/components/ui/ActionStateContent';
 import { isoWeekOf } from '@/lib/dates';
+import { copyTextToClipboard } from '@/lib/whatsappReport';
 import type { WeekStat } from './useCandidateMetrics';
 
 export function WeeklyMetrics({ stats }: { stats: WeekStat[] }) {
@@ -18,28 +19,19 @@ export function WeeklyMetrics({ stats }: { stats: WeekStat[] }) {
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
   const handleCopyRow = async (stat: WeekStat, weekNum: number) => {
-    // Formato TSV (tab-separado) listo para pegar en Excel: CITADOS \t CONTRATADOS \t EFECTIVIDAD
-    const effectiveness = stat.total === 0 ? 0 : Math.round((stat.contratados / stat.total) * 100);
+    // TSV: candidatos citados, contratados y cumplimiento del objetivo de contratación.
+    const effectiveness = stat.efectividadContratacion;
     const text = `${stat.total}\t${stat.contratados}\t${effectiveness}%`;
     const { year, week } = isoWeekOf(stat.endTue);
     const key = year + '-W' + week;
     try {
-      if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(text);
-      } else {
-        const ta = document.createElement('textarea');
-        ta.value = text;
-        ta.style.position = 'fixed';
-        ta.style.opacity = '0';
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
-        document.body.removeChild(ta);
-      }
+      await copyTextToClipboard(text);
       setCopiedKey(key);
       playSound('success');
       toast.success({
-        title: en ? `Week ${weekNum} copied` : `Sem ${weekNum} copiada`,
+        title: en
+          ? `Week ${weekNum} metrics copied for Excel`
+          : `Métricas de semana ${weekNum} copiadas para Excel`,
         duration: 2000,
       });
       window.setTimeout(() => {
@@ -64,7 +56,7 @@ export function WeeklyMetrics({ stats }: { stats: WeekStat[] }) {
                 <th scope="col">{en ? 'Week' : 'Semana'}</th>
                 <th scope="col" className="recruiter-metrics__table-number">{en ? 'Candidates' : 'Candidatos'}</th>
                 <th scope="col" className="recruiter-metrics__table-number">{en ? 'Hired' : 'Contratados'}</th>
-                <th scope="col" className="recruiter-metrics__table-number">{en ? 'Effectiveness' : 'Efectividad'}</th>
+                <th scope="col" className="recruiter-metrics__table-number">{en ? 'Target attainment' : 'Cumplimiento del objetivo'}</th>
                 <th scope="col" className="recruiter-metrics__table-copy-col">
                   <span className="sr-only">{en ? 'Copy' : 'Copiar'}</span>
                 </th>
@@ -80,11 +72,7 @@ export function WeeklyMetrics({ stats }: { stats: WeekStat[] }) {
             });
             const wedStr = fmt.format(stat.startWed);
             const tueStr = fmt.format(stat.endTue);
-            const effectiveness =
-              stat.efectividadContratacion ??
-              (stat.total === 0
-                ? 0
-                : Math.round((stat.contratados / stat.total) * 100));
+            const effectiveness = stat.efectividadContratacion;
             const { year, week } = isoWeekOf(stat.endTue);
     const key = year + '-W' + week;
             const isCopied = copiedKey === key;
@@ -103,12 +91,12 @@ export function WeeklyMetrics({ stats }: { stats: WeekStat[] }) {
                   {effectiveness}%
                 </td>
                 <td className="recruiter-metrics__table-copy-col">
-                  <Tooltip content={en ? 'Copy week' : 'Copiar semana'}>
+                  <Tooltip content={en ? 'Copy weekly metrics for Excel' : 'Copiar métricas semanales para Excel'}>
                     <button
                       type="button"
                       onClick={() => handleCopyRow(stat, tueWeek)}
                       className={`recruiter-metrics__copy-btn${isCopied ? ' is-copied' : ''}`}
-                      aria-label={`${en ? 'Copy Week' : 'Copiar Semana'} ${tueWeek}`}
+                      aria-label={`${en ? 'Copy weekly metrics for Excel, week' : 'Copiar métricas semanales para Excel, semana'} ${tueWeek}`}
                     >
                       {isCopied ? (
                         <CircleCheckBig size="var(--icon-size-sm)" aria-hidden="true" />
@@ -154,10 +142,7 @@ export function WeeklyMetrics({ stats }: { stats: WeekStat[] }) {
                 });
                 const wedStr = fmt.format(stat.startWed);
                 const tueStr = fmt.format(stat.endTue);
-                const effectiveness =
-                  stat.total === 0
-                    ? 0
-                    : Math.round((stat.contratados / stat.total) * 100);
+                const effectiveness = stat.efectividadContratacion;
                 
                 const { year, week } = isoWeekOf(stat.endTue);
                 const key = year + '-W' + week;
@@ -182,7 +167,7 @@ export function WeeklyMetrics({ stats }: { stats: WeekStat[] }) {
                       </div>
                       <div className="recruiter-metrics__stat">
                         <span className="recruiter-metrics__stat-value">{effectiveness}%</span>
-                        <span className="recruiter-metrics__stat-label">{en ? 'Effectiveness' : 'Efectividad'}</span>
+                        <span className="recruiter-metrics__stat-label">{en ? 'Target attainment' : 'Cumplimiento del objetivo'}</span>
                       </div>
                     </div>
                     <ButtonUtility
@@ -193,7 +178,7 @@ export function WeeklyMetrics({ stats }: { stats: WeekStat[] }) {
                         <span className="btn-utility__icon">
                           {isCopied ? <CircleCheckBig size="var(--icon-size-sm)" aria-hidden="true" /> : <Copy size="var(--icon-size-sm)" aria-hidden="true" />}
                         </span>
-                        <span>{en ? 'Copy weekly metrics' : 'Copiar métricas de la semana'}</span>
+                        <span>{en ? 'Copy weekly metrics for Excel' : 'Copiar métricas semanales para Excel'}</span>
                       </ActionStateContent>
                     </ButtonUtility>
                   </div>

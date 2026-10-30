@@ -81,7 +81,7 @@ export function FormatosView() {
 
   // Crear un mapa de búsqueda rápida para las rutas desde el JSON
   const rutaLookup = useMemo(() => {
-    const lookup = new Map<string, { nombreRuta: string; colonia: string }>();
+    const lookup = new Map<string, { nombreRuta: string; parada: string }>();
     if (!rutas) return lookup;
 
     rutas.forEach((grupoRuta) => {
@@ -90,7 +90,7 @@ export function FormatosView() {
         const numKey = String(empRuta.numeroEmpleado).trim().replace(/^0+/, "");
         lookup.set(numKey, {
           nombreRuta: empRuta.nombreRuta,
-          colonia: empRuta.colonia,
+          parada: empRuta.parada,
         });
       });
     });
@@ -143,7 +143,7 @@ export function FormatosView() {
         return {
           ...employee,
           ruta_final: employee.ruta || routeData?.nombreRuta || "",
-          colonia_final: routeData?.colonia?.trim() || "",
+          parada_final: routeData?.parada?.trim() || "",
         };
       });
   }, [employees, rutaLookup, selectedRouteDate]);
@@ -420,8 +420,8 @@ export function FormatosView() {
                               data-label={copy.stop}
                               className="type-body-sm text-charcoal recordatorios-table__cell--left"
                             >
-                              {emp.colonia_final ? (
-                                emp.colonia_final
+                              {emp.parada_final ? (
+                                emp.parada_final
                               ) : (
                                 <span className="text-error recordatorios-missing-data">
                                   <CircleAlert size={14} aria-hidden="true" />{" "}

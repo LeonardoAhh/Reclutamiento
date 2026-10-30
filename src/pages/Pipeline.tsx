@@ -358,7 +358,7 @@ export function Pipeline() {
     if (!isAdmin) return;
     if (reportCopiedTimer.current !== null) window.clearTimeout(reportCopiedTimer.current);
     setReportCopied(false);
-    const report = buildCandidateReport(candidates, members);
+    const report = buildCandidateReport(candidates, members, language);
     if (!report) {
       playSound('warning');
       toast.info({ title: en ? 'No active candidates in process' : 'No hay candidatos activos en proceso' });
@@ -466,7 +466,7 @@ export function Pipeline() {
               type="button"
               className="btn-secondary pipeline__report-btn pipeline__action--desktop"
               onClick={handleCopyReport}
-              aria-label={en ? 'Copy candidate summary' : 'Copiar resumen de candidatos'}
+              aria-label={en ? 'Copy candidate summary for WhatsApp' : 'Copiar resumen de candidatos para WhatsApp'}
               title={en ? 'Copy candidate summary for WhatsApp' : 'Copiar resumen de candidatos para WhatsApp'}
             >
               <ActionStateContent active={reportCopied}>
@@ -513,7 +513,7 @@ export function Pipeline() {
                     }}
                   >
                     <ClipboardList size={16} aria-hidden="true" />
-                    <span>{en ? 'Copy summary' : 'Copiar resumen'}</span>
+                    <span>{en ? 'Copy summary for WhatsApp' : 'Copiar resumen para WhatsApp'}</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

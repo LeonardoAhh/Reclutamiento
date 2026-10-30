@@ -26,7 +26,7 @@ export interface WeekStat {
   endTue: Date;
   total: number;
   contratados: number;
-  efectividadContratacion?: number;
+  efectividadContratacion: number;
 }
 
 export function useCandidateMetrics(metricRecruiterId: string) {
@@ -81,7 +81,9 @@ export function useCandidateMetrics(metricRecruiterId: string) {
       return Array.from(groups.values()).map(stat => {
         // Cálculo de efectividad oculto (solo lógico)
         const efectividadVolumen = stat.targetTotal ? Math.round((stat.total / stat.targetTotal) * 100) : undefined;
-        const efectividadContratacion = stat.targetContratados ? Math.round((stat.contratados / stat.targetContratados) * 100) : undefined;
+        const efectividadContratacion = stat.targetContratados
+          ? Math.round((stat.contratados / stat.targetContratados) * 100)
+          : 0;
         return { ...stat, efectividadVolumen, efectividadContratacion };
       }).sort((a, b) => b.startWed.getTime() - a.startWed.getTime());
     };

@@ -57,6 +57,11 @@ function extractTurno(seccion: string): string {
   return match ? match[0].toUpperCase().replace(/\s+/g, " ").trim() : "";
 }
 
+function formatVacancyCount(count: number, language: Language): string {
+  const unit = workforceText(language, count === 1 ? "vacante" : "vacantes");
+  return `${count} ${unit}`;
+}
+
 function buildGroups(positions: PositionCoverage[]): AreaGroup[] {
   const pendientes = positions
     .filter((p) => p.vacantes > 0 || p.proximos_ingresos > 0 || p.urgentes > 0)
@@ -114,6 +119,7 @@ function buildWhatsAppMessageBlock(
   project: "Starlite" | undefined,
   groups: AreaGroup[],
   type: "general" | "starlite",
+  language: Language,
 ): string {
   const filteredGroups = groups
     .map((g) => ({
@@ -144,22 +150,24 @@ function buildWhatsAppMessageBlock(
 
     for (const [puesto, filas] of puestosMap.entries()) {
       for (const r of filas) {
-        let puestoName = formatWhatsAppLabel(puesto);
+        let puestoName = formatWhatsAppLabel(puesto, language);
         if (
           type !== "general" &&
           puestoName.toLowerCase().includes("operador de máquina")
         ) {
-          puestoName = "Operador de Starlite";
+          puestoName = language === "en"
+            ? "Starlite machine operator"
+            : "Operador de Starlite";
         }
 
-        let turnoLabel = r.turno ? formatWhatsAppLabel(r.turno) : "";
+        let turnoLabel = r.turno ? formatWhatsAppLabel(r.turno, language) : "";
 
         // Filter out non-shift labels like "Admtvo", "Metrología"
         const lowerTurno = turnoLabel.toLowerCase();
         if (
           lowerTurno &&
-          !lowerTurno.includes("turno") &&
-          !lowerTurno.includes("mixto") &&
+          !lowerTurno.includes(language === "en" ? "shift" : "turno") &&
+          !lowerTurno.includes(language === "en" ? "mixed" : "mixto") &&
           !lowerTurno.includes("central")
         ) {
           turnoLabel = "";
@@ -183,13 +191,16 @@ function buildWhatsAppMessageBlock(
           );
         }
 
-        if (pending > 0) groupLines.push(`• ${namePart}: ${pending}`);
+        if (pending > 0) {
+          groupLines.push(`• ${namePart}: ${formatVacancyCount(pending, language)}`);
+        }
       }
     }
 
     if (groupLines.length > 0) {
+      const projectTitle = project ?? workforceText(language, "General");
       lines.push(
-        `*${project ? `${project} · ${areaTitle}` : areaTitle}*`,
+        `*${projectTitle} · ${areaTitle}*`,
         ...groupLines,
         "",
       );
@@ -212,8 +223,13 @@ function buildAssignedWhatsAppMessage(
 ): string {
   const blocks: string[] = [];
   let totalPending = 0;
-  const assignedName = (value: string) => findTeamMember(members, value)?.short_name ?? (value || 'Pendiente');
-  const recruiters = [...new Set([...Object.values(assignments).map(assignedName), 'Pendiente'])];
+  const unassignedLabel = "Sin asignar";
+  const assignedName = (value: string) =>
+    findTeamMember(members, value)?.short_name ??
+    (value && value !== "Pendiente" ? value : unassignedLabel);
+  const recruiters = [
+    ...new Set([...Object.values(assignments).map(assignedName), unassignedLabel]),
+  ];
   const rows = groups
     .flatMap((g) => g.rows)
     .filter((r) => !dismissedKeys.has(`${r.area}|${r.seccion}|${r.puesto}`));
@@ -240,12 +256,12 @@ function buildAssignedWhatsAppMessage(
       recLines.push(`_${toNaturalCase(area)}_`);
 
       for (const r of areaRows) {
-        let turnoLabel = r.turno ? formatWhatsAppLabel(r.turno) : "";
+        let turnoLabel = r.turno ? formatWhatsAppLabel(r.turno, language) : "";
         const lowerTurno = turnoLabel.toLowerCase();
         if (
           lowerTurno &&
-          !lowerTurno.includes("turno") &&
-          !lowerTurno.includes("mixto") &&
+          !lowerTurno.includes(language === "en" ? "shift" : "turno") &&
+          !lowerTurno.includes(language === "en" ? "mixed" : "mixto") &&
           !lowerTurno.includes("central")
         ) {
           turnoLabel = "";
@@ -261,8 +277,10 @@ function buildAssignedWhatsAppMessage(
         const generalFaltan = Math.max(0, generalReq - generalIngresos);
 
         if (generalReq > 0 && generalFaltan > 0) {
-          const puestoName = formatWhatsAppLabel(r.puesto);
-          recLines.push(`• ${puestoName}${suffix}: ${generalFaltan}`);
+          const puestoName = formatWhatsAppLabel(r.puesto, language);
+          recLines.push(
+            `• ${workforceText(language, "General")} · ${puestoName}${suffix}: ${formatVacancyCount(generalFaltan, language)}`,
+          );
           totalVacantesAsignadas += generalFaltan;
         }
 
@@ -273,11 +291,15 @@ function buildAssignedWhatsAppMessage(
         const starliteFaltan = Math.max(0, starliteReq - starliteIngresos);
 
         if (starliteFaltan > 0) {
-          let puestoName = formatWhatsAppLabel(r.puesto);
+          let puestoName = formatWhatsAppLabel(r.puesto, language);
           if (puestoName.toLowerCase().includes("operador de máquina")) {
-            puestoName = "Operador de Starlite";
+            puestoName = language === "en"
+              ? "Starlite machine operator"
+              : "Operador de Starlite";
           }
-          recLines.push(`• ${puestoName}${suffix}: ${starliteFaltan}`);
+          recLines.push(
+            `• Starlite · ${puestoName}${suffix}: ${formatVacancyCount(starliteFaltan, language)}`,
+          );
           totalVacantesAsignadas += starliteFaltan;
         }
       }
@@ -286,8 +308,12 @@ function buildAssignedWhatsAppMessage(
 
     if (totalVacantesAsignadas > 0) {
       while (recLines[recLines.length - 1] === "") recLines.pop();
+      const recruiterTitle =
+        rec === unassignedLabel
+          ? workforceText(language, unassignedLabel)
+          : toNaturalCase(rec);
       blocks.push(
-        `*${rec === 'Pendiente' ? workforceText(language, 'Pendiente') : toNaturalCase(rec)}*\n${recLines.join("\n")}\n_${workforceText(language, 'Subtotal')}: ${totalVacantesAsignadas}_`,
+        `*${recruiterTitle}*\n${recLines.join("\n")}\n_${workforceText(language, 'Subtotal')}: ${formatVacancyCount(totalVacantesAsignadas, language)}_`,
       );
       totalPending += totalVacantesAsignadas;
     }
@@ -295,8 +321,9 @@ function buildAssignedWhatsAppMessage(
 
   return buildWhatsAppReportFromBlocks({
     title: workforceText(language, "Vacantes pendientes"),
-    date: formatReadableDate(new Date().toISOString(), language === 'en' ? 'en-US' : 'es-MX'),
+    date: `${workforceText(language, "Corte")}: ${formatReadableDate(new Date().toISOString(), language === 'en' ? 'en-US' : 'es-MX')}`,
     total: totalPending,
+    totalLabel: workforceText(language, totalPending === 1 ? "vacante" : "vacantes"),
     blocks,
     emptyMessage: workforceText(language, "Sin vacantes pendientes."),
   });
@@ -332,6 +359,7 @@ function buildWhatsAppMessage(
     undefined,
     groups,
     "general",
+    language,
   );
   if (generales) blocks.push(generales);
 
@@ -339,6 +367,7 @@ function buildWhatsAppMessage(
     "Starlite",
     groups,
     "starlite",
+    language,
   );
   if (starlite) blocks.push(starlite);
 
@@ -360,8 +389,9 @@ function buildWhatsAppMessage(
 
   return buildWhatsAppReportFromBlocks({
     title: workforceText(language, "Vacantes pendientes"),
-    date,
+    date: `${workforceText(language, "Corte")}: ${date}`,
     total: totalPending,
+    totalLabel: workforceText(language, totalPending === 1 ? "vacante" : "vacantes"),
     blocks,
     emptyMessage: workforceText(language, "Sin vacantes pendientes."),
   });
@@ -522,10 +552,10 @@ export function VacancyAssignmentsPage() {
               ) : (
                 <Copy size={16} aria-hidden="true" />
               )}
-              <span>{t("Copiar reporte")}</span>
+              <span>{t("Copiar reporte para WhatsApp")}</span>
             </ActionStateContent>
           </button>
-          <span className="sr-only" role="status">{copied ? t("Reporte copiado") : ""}</span>
+          <span className="sr-only" role="status">{copied ? t("Reporte para WhatsApp copiado") : ""}</span>
         </div>
       </header>
 

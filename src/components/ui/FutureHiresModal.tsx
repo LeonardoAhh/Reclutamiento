@@ -52,16 +52,25 @@ function buildFutureHiresMessage(futureHires: Employee[], language: 'es' | 'en')
       : toNaturalCase(employee.area || t('Sin área'));
     const date = formatReadableDate(employee.fecha_ingreso, locale);
     const sectionTitle = hasMultipleDates
-      ? `${date} · ${baseSectionTitle}`
+      ? `${t('Fecha de ingreso programado')}: ${date} · ${baseSectionTitle}`
       : baseSectionTitle;
-    let position = formatWhatsAppLabel(employee.puesto || t('Sin puesto'));
+    let position = formatWhatsAppLabel(
+      employee.puesto || t('Sin puesto'),
+      language,
+    );
     if (
       employee.is_starlite &&
       position.toLocaleLowerCase('es-MX').includes('operador de máquina')
     ) {
-      position = 'Operador de Starlite';
+      position = language === 'en'
+        ? 'Starlite machine operator'
+        : 'Operador de Starlite';
     }
-    const department = formatWhatsAppSection(employee.seccion, employee.area);
+    const department = formatWhatsAppSection(
+      employee.seccion,
+      employee.area,
+      language,
+    );
     const label = [position, department].filter(Boolean).join(' · ');
     const key = label;
     const items = sectionMap.get(sectionTitle) ?? new Map();
@@ -85,14 +94,17 @@ function buildFutureHiresMessage(futureHires: Employee[], language: 'es' | 'en')
         .sort((left, right) => left.label.localeCompare(right.label, 'es'))
         .map((item) => ({
           label: item.label,
-          value: String(item.count),
+          value: `${item.count} ${t(item.count === 1 ? 'persona' : 'personas')}`,
         })),
     }));
 
   return buildWhatsAppReport({
     title: t('Próximos ingresos'),
-    date: scheduledDates.length === 1 ? scheduledDates[0] : t('Fechas programadas'),
+    date: scheduledDates.length === 1
+      ? `${t('Fecha de ingreso programado')}: ${scheduledDates[0]}`
+      : t('Fechas programadas de ingreso'),
     total: futureHires.length,
+    totalLabel: t(futureHires.length === 1 ? 'persona' : 'personas'),
     sections,
     emptyMessage: t('Sin ingresos programados.'),
   });
@@ -125,7 +137,7 @@ export function FutureHiresModal({
   const handleCopy = async () => {
     try {
       await copyTextToClipboard(message);
-      toast.success({ title: t('Reporte copiado') });
+      toast.success({ title: t('Reporte para WhatsApp copiado') });
     } catch {
       toast.error({ title: t('No se pudo copiar el reporte') });
     }
@@ -176,7 +188,7 @@ export function FutureHiresModal({
         >
           <span className="future-hires-modal__action-inner">
             <Copy size="var(--icon-size-sm)" aria-hidden="true" />
-            {t('Copiar reporte')}
+            {t('Copiar reporte para WhatsApp')}
           </span>
         </button>
       }

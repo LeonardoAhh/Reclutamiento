@@ -1,5 +1,5 @@
 import { useId, useRef, useState } from 'react';
-import * as Tabs from '@radix-ui/react-tabs';
+import { TabsContent, TabsList, TabsRoot, TabsTrigger } from '@/components/ui/Tabs';
 import { DndContext, KeyboardSensor, MouseSensor, TouchSensor, useSensor, useSensors,
   type DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
@@ -11,6 +11,7 @@ import { isTaskStatus, TASK_STATUSES, type KanbanTask, type TaskDraft, type Task
 import { TaskForm } from './TaskForm';
 import { KanbanColumn } from './KanbanColumn';
 import { KanbanTaskCard } from './KanbanTaskCard';
+import { STATUS_ICONS } from './KanbanBadge';
 import { kanbanCollision, kanbanKeyboardCoordinates, resolveTaskDrop } from './drag';
 import type { KanbanCopy } from './copy';
 import { playSound } from '@/lib/sound';
@@ -141,18 +142,22 @@ export function KanbanBoard({ layoutMode, tasks, copy: t, disabled, busy, error,
     return status ? `${t.moveTo} ${t.statuses[status]}` : t.dragCancel;
   };
   const taskTitle = (taskId: string | number) => tasks.find(task => task.id === taskId)?.title ?? '';
-  const statusTabs = <Tabs.List className="kanban-status-tabs" aria-label={t.status}>
-    {TASK_STATUSES.map(status => <Tabs.Trigger key={status} value={status}
-      id={`${id}-tab-${status}`} aria-controls={`${id}-panel-${status}`}
-      className="kanban-status-tabs__trigger" disabled={dragging || locked}>
-      {t.statuses[status]}
-    </Tabs.Trigger>)}
-  </Tabs.List>;
+  const statusTabs = <TabsList variant="outlined" aria-label={t.status}>
+    {TASK_STATUSES.map(status => {
+      const Icon = STATUS_ICONS[status];
+      return <TabsTrigger key={status} value={status}
+        id={`${id}-tab-${status}`} aria-controls={`${id}-panel-${status}`}
+        className="kanban-status-tabs__trigger" disabled={dragging || locked}>
+        <Icon size="var(--icon-size-sm)" aria-hidden="true" />
+        <span>{t.statuses[status]}</span>
+      </TabsTrigger>;
+    })}
+  </TabsList>;
   function renderColumn(status: TaskStatus) {
     const headingId = `${id}-${status}`;
     const tabPanel = !dragging && !isTablet;
     const hidden = !dragging && !isTablet && activeStatus !== status;
-    return <Tabs.Content key={status} value={status} forceMount
+    return <TabsContent key={status} value={status} forceMount
       id={`${id}-panel-${status}`} className="kanban-board__panel"
       hidden={hidden} role={tabPanel ? 'tabpanel' : 'group'}
       aria-labelledby={tabPanel ? `${id}-tab-${status}` : headingId}
@@ -162,10 +167,10 @@ export function KanbanBoard({ layoutMode, tasks, copy: t, disabled, busy, error,
         headingId={headingId} headingRef={node => { headings.current[status] = node; }}
         editButtonRef={(taskId, node) => { editButtons.current[taskId] = node; }}
         onEdit={onEdit} pageSize={pageSize} />
-    </Tabs.Content>;
+    </TabsContent>;
   }
   return (
-    <Tabs.Root className="kanban-board-navigation" value={activeStatus}
+    <TabsRoot className="kanban-board-navigation" value={activeStatus}
       onValueChange={value => {
         if (value !== activeStatus) playSound('select');
         if (isTaskStatus(value)) setActiveStatus(value);
@@ -188,6 +193,6 @@ export function KanbanBoard({ layoutMode, tasks, copy: t, disabled, busy, error,
         </div>}
       {form()}
     </DndContext>
-    </Tabs.Root>
+    </TabsRoot>
   );
 }

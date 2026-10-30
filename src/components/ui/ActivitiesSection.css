@@ -32,30 +32,33 @@
 }
 
 .activity-tracking-section__status-filters {
-  display: grid;
-  grid-template-columns: repeat(
-    auto-fit,
-    minmax(
-      min(100%, var(--feature-activity-filter-min-inline-size)),
-      1fr
-    )
-  );
-  gap: var(--spacing-xs);
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: var(--design-spacing-xs);
+  max-inline-size: 100%;
+  margin-inline: calc(-1 * var(--focus-ring-width));
+  padding: var(--focus-ring-width);
+  border-block-end: var(--border-width) solid var(--color-hairline-strong);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-padding-inline: var(--focus-ring-width);
 }
 
 .activity-tracking-section__status-filter {
   display: inline-flex;
+  flex: 0 0 auto;
   min-block-size: var(--touch-target-min);
   align-items: center;
   justify-content: center;
-  padding: 0 var(--spacing-md);
-  border: var(--border-width) solid var(--color-control-border);
-  border-radius: var(--rounded-md);
+  padding-inline: var(--design-spacing-md);
+  border: 0;
+  border-block-end: var(--border-width) solid transparent;
+  border-radius: var(--radius-control) var(--radius-control) 0 0;
   background: transparent;
-  color: var(--color-muted);
+  color: var(--color-body);
   cursor: pointer;
   transition:
-    background var(--transition-fast),
     border-color var(--transition-fast),
     color var(--transition-fast);
   font-family: var(--font-body);
@@ -63,18 +66,28 @@
   font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
   letter-spacing: var(--type-body-md-tracking);
+  white-space: nowrap;
 }
 
 .activity-tracking-section__status-filter:hover {
-  border-color: var(--color-control-border);
-  background: var(--color-surface-soft);
   color: var(--color-ink);
 }
 
 .activity-tracking-section__status-filter[aria-pressed="true"] {
-  border-color: var(--color-primary-border);
-  background: var(--color-primary);
-  color: var(--color-on-primary);
+  border-block-end-color: var(--color-primary-border);
+  color: var(--color-primary-text);
+}
+
+.activity-tracking-section__status-filter:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: 0;
+}
+
+@media (forced-colors: active) {
+  .activity-tracking-section__status-filter[aria-pressed="true"] {
+    border-block-end-color: Highlight;
+    color: Highlight;
+  }
 }
 
 .activity-tracking-section__filter-content {

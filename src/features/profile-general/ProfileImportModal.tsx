@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import * as Tabs from '@radix-ui/react-tabs';
+import { TabsRoot, TabsList, TabsTrigger, TabsContent } from '@/components/ui/Tabs';
 import { FileUp } from 'lucide-react';
 import { Modal } from '@/components/ui/Modal';
 import {
@@ -102,17 +102,17 @@ export function ProfileImportModal({ onClose, onImported }: ProfileImportModalPr
             <p>No uses celdas fusionadas ni columnas como “CRITERIO 1”. Puedes guardar como CSV o copiar el rango completo y pegarlo directamente.</p>
           </section>
 
-          <Tabs.Root value={activeTab} onValueChange={(value) => {
+          <TabsRoot value={activeTab} onValueChange={(value) => {
             if (value !== 'file' && value !== 'text') return;
             setActiveTab(value);
             setError('');
           }}>
-            <Tabs.List className="profile-general__tab-list" aria-label="Método de importación">
-              <Tabs.Trigger className="profile-general__tab" value="file">Seleccionar archivo</Tabs.Trigger>
-              <Tabs.Trigger className="profile-general__tab" value="text">Pegar información</Tabs.Trigger>
-            </Tabs.List>
+            <TabsList variant="segmented" className="profile-general__tab-list" aria-label="Método de importación">
+              <TabsTrigger className="profile-general__tab" value="file">Seleccionar archivo</TabsTrigger>
+              <TabsTrigger className="profile-general__tab" value="text">Pegar información</TabsTrigger>
+            </TabsList>
 
-            <Tabs.Content className="profile-general__import-content" value="file">
+            <TabsContent className="profile-general__import-content" value="file">
               <div className="profile-general__import-file">
                 <div>
                   <h3>Archivo JSON o CSV</h3>
@@ -132,9 +132,9 @@ export function ProfileImportModal({ onClose, onImported }: ProfileImportModalPr
                   </p>
                 )}
               </div>
-            </Tabs.Content>
+            </TabsContent>
 
-            <Tabs.Content className="profile-general__import-content" value="text">
+            <TabsContent className="profile-general__import-content" value="text">
               <div className="form-group">
                 <label htmlFor="profile-template-import-text">Información JSON, CSV o copiada desde Excel</label>
                 <textarea
@@ -154,8 +154,8 @@ export function ProfileImportModal({ onClose, onImported }: ProfileImportModalPr
                   Se detectará automáticamente el formato pegado, incluida la separación por tabulaciones de Excel.
                 </p>
               </div>
-            </Tabs.Content>
-          </Tabs.Root>
+            </TabsContent>
+          </TabsRoot>
 
           {error && (
             <p id="profile-template-import-error" className="form-error-text" role="alert">

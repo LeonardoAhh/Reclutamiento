@@ -7,7 +7,7 @@ import { HOME_PATH, LOGOUT_PATH } from "@/components/layout/navigation";
 import { toNaturalCase } from "@/lib/utils";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useSignOut } from "./useSignOut";
-import { playSound } from "@/lib/sound";
+import { bindSoundInteractions } from "@/lib/sound";
 import "./LogoutPage.css";
 
 function getReturnPath(state: unknown): string {
@@ -35,6 +35,8 @@ export function LogoutPage() {
     document.title = english ? "Sign out" : "Cerrar sesión";
   }, [english]);
 
+  useEffect(() => bindSoundInteractions(document), []);
+
   return (
     <div className="logout-page">
       <header className="logout-page__header container">
@@ -57,6 +59,7 @@ export function LogoutPage() {
             <button
               type="button"
               className="btn-primary"
+              data-cuelume-tap=""
               onClick={() => void handleSignOut()}
               disabled={isLoading}
               aria-busy={isLoading}
@@ -72,8 +75,8 @@ export function LogoutPage() {
             <button
               type="button"
               className="btn-secondary"
+              data-cuelume-navigate=""
               onClick={() => {
-                playSound('navigate');
                 navigate(getReturnPath(state), { replace: true });
               }}
               disabled={isLoading}

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   ArrowLeft,
   BriefcaseBusiness,
@@ -9,6 +9,7 @@ import {
 import { Badge, StarliteBadge, AreaStatusBadge } from './Badge';
 import { CoverageBar } from './CoverageBar';
 import { Tooltip } from './Tooltip';
+import { TabsContent, TabsList, TabsRoot, TabsTrigger } from './Tabs';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { COMMENT_TYPE_LABELS } from '@/lib/constants';
 import { normalizePuesto } from '@/lib/bajas';
@@ -67,7 +68,6 @@ export function AreaDetailView({
 }: AreaDetailViewProps) {
   const { language } = useLanguage();
   const t = (text: string) => workforceText(language, text);
-  const tablistRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
 
   const secciones = useMemo(() => {
@@ -146,22 +146,6 @@ export function AreaDetailView({
     return map;
   }, [dept, candidates]);
 
-  function onTabKeyDown(e: React.KeyboardEvent<HTMLButtonElement>, idx: number) {
-    const tabs: HTMLButtonElement[] = Array.from(
-      tablistRef.current?.querySelectorAll<HTMLButtonElement>('[role="tab"]') ?? []
-    );
-    if (tabs.length === 0) return;
-    let next = idx;
-    if (e.key === 'ArrowRight') next = (idx + 1) % tabs.length;
-    else if (e.key === 'ArrowLeft') next = (idx - 1 + tabs.length) % tabs.length;
-    else if (e.key === 'Home') next = 0;
-    else if (e.key === 'End') next = tabs.length - 1;
-    else return;
-    e.preventDefault();
-    tabs[next]?.focus();
-    tabs[next]?.click();
-  }
-
   if (!dept) return null;
 
   const formatSeccionTabLabel = (label: string) => {
@@ -196,12 +180,6 @@ export function AreaDetailView({
 
   // Vínculo accesible tab <-> panel por índice; evita usar como id el texto
   // dinámico de la sección, que puede contener espacios o acentos.
-  const activeTabIndex = tabs.findIndex((t) => t.id === activeTab);
-  const activeTabDomId =
-    tabs.length > 1 && activeTabIndex >= 0
-      ? `area-tab-${activeTabIndex}`
-      : undefined;
-
   type Puesto = DepartmentCoverage['puestos'][number];
 
   const commentsFor = (pos: Puesto) =>
@@ -274,6 +252,7 @@ export function AreaDetailView({
       : formatPercentage(coveragePercentage);
 
   return (
+    <TabsRoot asChild value={activeTab} onValueChange={setActiveTab}>
     <section className="area-detail-view">
       <header className="area-detail__header">
         <h2 className="area-detail__title">
@@ -363,26 +342,17 @@ export function AreaDetailView({
       </section>
 
       {tabs.length > 1 && (
-        <div
-          ref={tablistRef}
-          role="tablist"
+        <TabsList
+          variant="underline"
           aria-label={t("Secciones del área")}
           className="area-detail-modal__tabs"
         >
-          {tabs.map((tab, idx) => {
-            const isActive = activeTab === tab.id;
+          {tabs.map((tab) => {
             return (
-              <button
+              <TabsTrigger
                 key={tab.id}
-                id={`area-tab-${idx}`}
-                role="tab"
-                type="button"
-                aria-selected={isActive}
-                aria-controls="area-detail-tabpanel"
-                tabIndex={isActive ? 0 : -1}
-                className={`area-detail-modal__tab${isActive ? ' is-active' : ''}`}
-                onClick={() => setActiveTab(tab.id)}
-                onKeyDown={(e) => onTabKeyDown(e, idx)}
+                value={tab.id}
+                className="area-detail-modal__tab"
               >
                 <span className="area-detail-modal__tab-label">{tab.displayLabel}</span>
                 <span className="area-detail-modal__tab-count" aria-hidden="true">
@@ -399,17 +369,16 @@ export function AreaDetailView({
                     {tab.incapacidad}
                   </span>
                 )}
-              </button>
+              </TabsTrigger>
             );
           })}
-        </div>
+        </TabsList>
       )}
 
-      <section
-        id="area-detail-tabpanel"
-        role="tabpanel"
-        aria-labelledby={activeTabDomId}
-        aria-label={activeTabDomId ? undefined : t('Puestos')}
+      <TabsContent
+        key={activeTab}
+        value={activeTab}
+        aria-label={tabs.length > 1 ? undefined : t('Puestos')}
         className="area-detail-modal__panel"
       >
         {visiblePuestos.length === 0 ? (
@@ -615,7 +584,8 @@ export function AreaDetailView({
             </table>
           </div>
         )}
-      </section>
+      </TabsContent>
     </section>
+    </TabsRoot>
   );
 }

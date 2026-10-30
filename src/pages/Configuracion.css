@@ -130,7 +130,6 @@
 
 .config-results-controls__heading-content svg,
 .config-view-switch svg,
-.config-filter-reset svg,
 .config-filter-empty svg {
   width: var(--spacing-lg);
   height: var(--spacing-lg);
@@ -164,6 +163,33 @@
   gap: var(--spacing-xs);
 }
 
+.analisis-select-filter__trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--design-spacing-xs);
+  min-inline-size: 0;
+  inline-size: 100%;
+}
+
+.analisis-select-filter__trigger svg {
+  flex: 0 0 auto;
+}
+
+.analisis-select-filter__name {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.analisis-select-filter__value {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  overflow: hidden;
+  color: var(--color-muted);
+  text-align: end;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .config-filter-label {
   display: flex;
   align-items: center;
@@ -174,11 +200,13 @@
 .config-segmented-control,
 .config-view-switch {
   display: grid;
-  height: var(--control-height);
-  padding: var(--design-spacing-xxs);
-  background: var(--color-surface-soft);
-  border: var(--border-width) solid var(--color-control-border);
-  border-radius: var(--rounded-xs);
+  min-block-size: var(--touch-target-min);
+  align-items: stretch;
+  gap: var(--design-spacing-xs);
+  padding: var(--focus-ring-width);
+  background: transparent;
+  border: 0;
+  border-block-end: var(--border-width) solid var(--color-hairline-strong);
 }
 
 .config-segmented-control {
@@ -192,15 +220,17 @@
 .config-segmented-control__button,
 .config-view-switch__button {
   min-width: 0;
-  min-height: 0;
-  height: 100%;
+  min-block-size: var(--touch-target-min);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xs);
   padding-inline: var(--spacing-sm);
-  color: var(--color-muted);
-  border-radius: calc(var(--rounded-xs) - 1px);
+  border: 0;
+  border-block-end: var(--border-width) solid transparent;
+  border-radius: var(--radius-control) var(--radius-control) 0 0;
+  background: transparent;
+  color: var(--color-body);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
@@ -208,11 +238,42 @@
   letter-spacing: var(--type-body-md-tracking);
 }
 
+.config-segmented-control__button {
+  white-space: nowrap;
+}
+
+.config-segmented-control__button svg {
+  flex-shrink: 0;
+}
+
 .config-segmented-control__button.is-active,
 .config-view-switch__button.is-active {
-  color: var(--color-on-primary);
-  background: var(--color-primary);
-  box-shadow: none;
+  color: var(--color-primary-text);
+  border-block-end-color: var(--color-primary-border);
+}
+
+.config-segmented-control__button:hover,
+.config-view-switch__button:hover {
+  color: var(--color-ink);
+}
+
+.config-segmented-control__button.is-active:hover,
+.config-view-switch__button.is-active:hover {
+  color: var(--color-primary-text);
+}
+
+.config-segmented-control__button:focus-visible,
+.config-view-switch__button:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: 0;
+}
+
+@media (forced-colors: active) {
+  .config-segmented-control__button.is-active,
+  .config-view-switch__button.is-active {
+    color: Highlight;
+    border-block-end-color: Highlight;
+  }
 }
 
 .config-filter-select {
@@ -254,7 +315,7 @@
 
   .config-results-controls__filters {
     display: grid;
-    grid-template-columns: minmax(0, 1.35fr) repeat(2, minmax(0, 1fr)) auto;
+    grid-template-columns: minmax(0, 1.35fr) max-content max-content auto;
     gap: var(--spacing-md);
     align-items: flex-end;
   }
@@ -266,6 +327,12 @@
 
   .config-view-switch {
     width: max-content;
+    align-self: flex-end;
+  }
+
+  .analisis-view .config-segmented-control {
+    width: max-content;
+    grid-template-columns: repeat(3, max-content);
     align-self: flex-end;
   }
 }
@@ -1678,6 +1745,44 @@
 
 .analisis-view .config-results-controls {
   width: 100%;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.analisis-view .config-results-controls__filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--spacing-xs);
+}
+
+.analisis-view .config-filter-group,
+.analisis-view .analisis-view-control {
+  flex: 0 1 auto;
+}
+
+.analisis-view .analisis-select-filter {
+  flex: 0 1 max-content;
+  width: max-content;
+  max-width: 100%;
+  min-inline-size: min-content;
+}
+
+.analisis-view .analisis-select-filter--department {
+  margin-inline-start: auto;
+}
+
+.analisis-view .config-filter-reset,
+.analisis-filter-panel .config-filter-reset {
+  flex: 0 0 auto;
+  width: auto;
+  min-height: var(--touch-target-min);
+  align-self: flex-end;
+  color: var(--color-muted);
+}
+
+.analisis-view .config-filter-reset:hover,
+.analisis-filter-panel .config-filter-reset:hover {
+  color: var(--color-ink);
 }
 
 .analisis-view > .config-page__header-container {
@@ -1830,33 +1935,6 @@
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: 1fr;
-  gap: var(--spacing-xs);
-  padding: var(--design-spacing-xxs);
-  border: 1px solid var(--color-control-border);
-  border-radius: var(--rounded-lg);
-  background: var(--color-surface-soft);
-}
-
-.config-tab {
-  min-height: var(--touch-target-min);
-  padding-inline: var(--spacing-md);
-  border-radius: var(--radius-control);
-  color: var(--color-muted);
-  transition:
-    background-color var(--transition-fast),
-    color var(--transition-fast),
-    box-shadow var(--transition-fast);
-}
-
-.config-tab:hover {
-  color: var(--color-ink);
-}
-
-.config-tab--active,
-.config-tab--active:hover {
-  color: var(--color-on-primary);
-  background: var(--color-primary);
-  box-shadow: none;
 }
 
 .tabulador-results {
@@ -2042,7 +2120,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .config-tab,
   .indicadores-mobile-list__btn {
     transition: none;
   }
@@ -2120,7 +2197,6 @@
   letter-spacing: var(--type-body-md-tracking);
 }
 
-.tabulador-view .config-tab,
 .tabulador-view .btn-utility {
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
@@ -2136,12 +2212,24 @@
 }
 
 .analisis-filter-panel .config-results-controls__filters {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 }
 
 .analisis-filter-panel .config-filter-group,
+.analisis-filter-panel .analisis-view-control,
+.analisis-filter-panel .analisis-select-filter {
+  flex: 0 0 auto;
+  width: 100%;
+}
+
+.analisis-filter-panel .analisis-select-filter--department {
+  margin-inline-start: 0;
+}
+
 .analisis-filter-panel .config-filter-reset {
-  grid-column: 1 / -1;
+  align-self: flex-start;
 }
 
 .analisis-filter-panel .config-segmented-control {
@@ -2154,9 +2242,7 @@
 
 @media (max-width: 767px) {
   .analisis-view .config-results-controls {
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-    gap: var(--spacing-sm);
+    display: block;
   }
 
   .analisis-filter-trigger {
@@ -2164,17 +2250,7 @@
     white-space: nowrap;
   }
 
-  .analisis-view-control > .config-filter-label,
-  .analisis-view-control__text {
-    display: none;
-  }
-
-  .analisis-view-control .config-view-switch {
-    height: auto;
-  }
-
-  .analisis-view-control .config-view-switch__button {
-    min-inline-size: var(--touch-target-min);
-    min-block-size: var(--touch-target-min);
+  .analisis-filter-panel .config-view-switch {
+    width: 100%;
   }
 }

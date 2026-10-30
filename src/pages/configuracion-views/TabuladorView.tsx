@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { PageHeading } from '@/components/layout/PageHeading';
 import { Search } from 'lucide-react';
 import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
 import { ButtonUtility } from '@/components/ui/ButtonUtility';
 import { normalizeSearchText } from './analisis-helpers';
 import { SearchField } from '@/components/ui/SearchField';
+import { TabsContent, TabsList, TabsRoot, TabsTrigger } from '@/components/ui/Tabs';
 import { TabuladorAreaSection, type PuestoTabulador } from './components/TabuladorAreaSection';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { getConfiguracionCopy, localizeTabulatorFallback } from './configuracion-translations';
@@ -116,26 +117,15 @@ export function TabuladorView() {
     searchInputRef.current?.focus();
   };
 
-  const handleTabKeyDown = (event: KeyboardEvent<HTMLButtonElement>, currentId: TabuladorType) => {
-    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
-    event.preventDefault();
-    const currentIndex = tabOptions.findIndex(({ id }) => id === currentId);
-    const nextIndex = event.key === 'Home'
-      ? 0
-      : event.key === 'End'
-        ? tabOptions.length - 1
-        : (currentIndex + (event.key === 'ArrowRight' ? 1 : -1) + tabOptions.length) % tabOptions.length;
-    const nextId = tabOptions[nextIndex].id;
-    setTabuladorType(nextId);
-    requestAnimationFrame(() => document.getElementById(`config-tab-${nextId}`)?.focus());
-  };
-
   return (
     <BoneyardSkeleton
       name="configuracion-tabulador"
       loading={loading}
       loadingLabel={copy.loading}
     >
+      <TabsRoot asChild value={tabuladorType} onValueChange={(value) => {
+        if (value === 'sindicalizado' || value === 'nosindicalizado') setTabuladorType(value);
+      }}>
       <section className="tabulador-view config-page" aria-labelledby="tabulador-title">
       <header className="config-page__header tabulador-header">
         <PageHeading id="tabulador-title" className="config-page__title app-page-title">
@@ -163,28 +153,20 @@ export function TabuladorView() {
             />
           </div>
         )}
-        <div className="config-tabs" role="tablist" aria-label={copy.tabList}>
+        <TabsList variant="underline" className="config-tabs" aria-label={copy.tabList}>
           {tabOptions.map(({ id, label }) => {
-            const isActive = tabuladorType === id;
             return (
-              <button
+              <TabsTrigger
                 key={id}
-                type="button"
-                id={`config-tab-${id}`}
-                className={`config-tab${isActive ? ' config-tab--active' : ''}`}
-                role="tab"
+                value={id}
+                className="config-tab"
                 data-cuelume-select=""
-                aria-selected={isActive}
-                aria-controls="tabulador-panel"
-                tabIndex={isActive ? 0 : -1}
-                onClick={() => setTabuladorType(id)}
-                onKeyDown={(event) => handleTabKeyDown(event, id)}
               >
                 {label}
-              </button>
+              </TabsTrigger>
             );
           })}
-        </div>
+        </TabsList>
       </header>
 
       {loadError ? (
@@ -204,11 +186,10 @@ export function TabuladorView() {
             {isFiltering ? ` para “${searchTerm.trim()}”` : ''}.
           </p>
 
-          <section
-            id="tabulador-panel"
+          <TabsContent
+            key={tabuladorType}
+            value={tabuladorType}
             className="tabulador-results"
-            role="tabpanel"
-            aria-labelledby={`config-tab-${tabuladorType}`}
             tabIndex={0}
           >
             {resultCount === 0 ? (
@@ -239,10 +220,11 @@ export function TabuladorView() {
                 />
               ))
             )}
-          </section>
+          </TabsContent>
         </>
       )}
       </section>
+      </TabsRoot>
     </BoneyardSkeleton>
   );
 }

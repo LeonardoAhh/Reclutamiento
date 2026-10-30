@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PageHeading } from '@/components/layout/PageHeading';
-import * as Tabs from "@radix-ui/react-tabs";
+import { TabsRoot, TabsList, TabsTrigger, TabsContent } from '@/components/ui/Tabs';
 import { ChartNoAxesCombined, Download, FilePlus2, MessageCircle, RefreshCw, Trash2, UserRoundCheck } from "lucide-react";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { CustomSelect } from "@/components/ui/CustomSelect";
@@ -532,28 +532,27 @@ export function DataUpdatePage() {
         </section>
       ) : detail ? (
         <>
-          <Tabs.Root className="data-update-tabs" value={activeView} onValueChange={setActiveView}>
-            <Tabs.List
-              className={`data-update-tabs__list${isAdmin ? " data-update-tabs__list--admin" : ""}`}
+          <TabsRoot className="data-update-tabs" value={activeView} onValueChange={setActiveView}>
+            <TabsList variant="underline"
               aria-label={t("Vistas de actualización de datos")}
             >
-              <Tabs.Trigger className="data-update-tabs__trigger" data-cuelume-select="" value="work">
+              <TabsTrigger className="data-update-tabs__trigger" data-cuelume-select="" value="work">
                 {t("Mi trabajo")}
-              </Tabs.Trigger>
-              <Tabs.Trigger className="data-update-tabs__trigger" value="locker">
+              </TabsTrigger>
+              <TabsTrigger className="data-update-tabs__trigger" value="locker">
                 {t("Locker")}
-              </Tabs.Trigger>
-              <Tabs.Trigger className="data-update-tabs__trigger" value="completed">
+              </TabsTrigger>
+              <TabsTrigger className="data-update-tabs__trigger" value="completed">
                 {t("Completados")}
-              </Tabs.Trigger>
+              </TabsTrigger>
               {isAdmin && (
-                <Tabs.Trigger className="data-update-tabs__trigger" value="admin">
+                <TabsTrigger className="data-update-tabs__trigger" value="admin">
                   {t("Administración")}
-                </Tabs.Trigger>
+                </TabsTrigger>
               )}
-            </Tabs.List>
+            </TabsList>
 
-            <Tabs.Content className="data-update-tabs__content" value="work">
+            <TabsContent className="data-update-tabs__content" value="work">
               <section className="data-update-queue" aria-labelledby="data-update-queue-title">
                 <h2 id="data-update-queue-title" className="sr-only">{t("Mi trabajo")}</h2>
                 {myRecords.length > 0 && (
@@ -668,17 +667,17 @@ export function DataUpdatePage() {
                   </div>
                 )}
               </section>
-            </Tabs.Content>
+            </TabsContent>
 
-            <Tabs.Content className="data-update-tabs__content" value="locker">
+            <TabsContent className="data-update-tabs__content" value="locker">
               <DataUpdateLockerPanel
                 records={detail.records}
                 canEdit={canAccess}
                 onRecordUpdated={updateDetailRecord}
               />
-            </Tabs.Content>
+            </TabsContent>
 
-            <Tabs.Content className="data-update-tabs__content" value="completed">
+            <TabsContent className="data-update-tabs__content" value="completed">
               <section className="data-update-queue" aria-labelledby="data-update-completed-title">
                 <h2 id="data-update-completed-title" className="sr-only">{t("Completados")}</h2>
                   {completedRecords.length > 0 && (
@@ -772,10 +771,10 @@ export function DataUpdatePage() {
                   </>
                 )}
               </section>
-            </Tabs.Content>
+            </TabsContent>
 
             {isAdmin && (
-              <Tabs.Content className="data-update-tabs__content" value="admin">
+              <TabsContent className="data-update-tabs__content" value="admin">
                 <DataUpdateAdminPanel
                   detail={detail}
                   profiles={profiles}
@@ -787,9 +786,9 @@ export function DataUpdatePage() {
                   onRecordUpdated={updateDetailRecord}
                   onRecordDeleted={removeDetailRecord}
                 />
-              </Tabs.Content>
+              </TabsContent>
             )}
-          </Tabs.Root>
+          </TabsRoot>
         </>
       ) : null}
 

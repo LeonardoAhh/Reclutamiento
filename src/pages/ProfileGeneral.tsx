@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { PageHeading } from '@/components/layout/PageHeading';
-import * as Tabs from '@radix-ui/react-tabs';
+import { TabsRoot, TabsList, TabsTrigger, TabsContent } from '@/components/ui/Tabs';
 import { ClipboardCheck, LayoutDashboard, Settings2 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useBajas } from '@/hooks/useBajas';
@@ -84,13 +84,13 @@ export function ProfileGeneral() {
             <p>Aplica la migración 029 para habilitar junio–noviembre de 2026.</p>
           </section>
         ) : (
-          <Tabs.Root className="profile-general__tabs" defaultValue="capture">
-            <Tabs.List className="profile-general__tab-list" aria-label="Vistas de Perfil General">
-              <Tabs.Trigger className="profile-general__tab" value="capture"><ClipboardCheck size={16} aria-hidden="true" /> Captura</Tabs.Trigger>
-              <Tabs.Trigger className="profile-general__tab" value="summary"><LayoutDashboard size={16} aria-hidden="true" /> Resumen</Tabs.Trigger>
-              {isAdmin && <Tabs.Trigger className="profile-general__tab" value="templates"><Settings2 size={16} aria-hidden="true" /> Plantillas</Tabs.Trigger>}
-            </Tabs.List>
-            <Tabs.Content className="profile-general__tab-content" value="capture">
+          <TabsRoot className="profile-general__tabs" defaultValue="capture">
+            <TabsList variant="segmented" className="profile-general__tab-list" aria-label="Vistas de Perfil General">
+              <TabsTrigger className="profile-general__tab" value="capture"><ClipboardCheck size={16} aria-hidden="true" /> Captura</TabsTrigger>
+              <TabsTrigger className="profile-general__tab" value="summary"><LayoutDashboard size={16} aria-hidden="true" /> Resumen</TabsTrigger>
+              {isAdmin && <TabsTrigger className="profile-general__tab" value="templates"><Settings2 size={16} aria-hidden="true" /> Plantillas</TabsTrigger>}
+            </TabsList>
+            <TabsContent className="profile-general__tab-content" value="capture">
               <ProfileEvaluationPanel
                 cycle={cycle}
                 employees={eligibleEmployees}
@@ -99,16 +99,16 @@ export function ProfileGeneral() {
                 isAdmin={isAdmin}
                 onSaved={loadData}
               />
-            </Tabs.Content>
-            <Tabs.Content className="profile-general__tab-content" value="summary">
+            </TabsContent>
+            <TabsContent className="profile-general__tab-content" value="summary">
               <ProfileSummary cycle={cycle} employees={eligibleEmployees} evaluations={data.evaluations} />
-            </Tabs.Content>
+            </TabsContent>
             {isAdmin && (
-              <Tabs.Content className="profile-general__tab-content" value="templates">
+              <TabsContent className="profile-general__tab-content" value="templates">
                 <ProfileTemplateManager templates={data.templates} onSaved={loadData} />
-              </Tabs.Content>
+              </TabsContent>
             )}
-          </Tabs.Root>
+          </TabsRoot>
         )}
       </main>
     </BoneyardSkeleton>

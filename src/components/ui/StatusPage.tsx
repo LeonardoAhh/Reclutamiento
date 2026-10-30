@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { PageHeading } from '@/components/layout/PageHeading';
 import { HOME_PATH } from '@/components/layout/navigation';
+import { bindSoundInteractions } from '@/lib/sound';
 import './StatusPage.css';
 
 export type StatusKind = 'expired' | 'forbidden' | 'not-found' | 'server' | 'offline';
@@ -40,6 +41,7 @@ export function StatusPage({ kind, standalone = false, onRetry, retrying = false
   const t = content[language];
   const state = t[kind];
   const title = kind === 'not-found' ? (language === 'en' ? 'Not found' : 'No encontrada') : state.heading;
+  useEffect(() => bindSoundInteractions(document), []);
   useEffect(() => {
     if (standalone) document.title = state.heading;
   }, [standalone, state.heading]);
@@ -49,15 +51,15 @@ export function StatusPage({ kind, standalone = false, onRetry, retrying = false
     {standalone ? <h1 className="status-page__heading">{state.heading}</h1> : <h2 className="status-page__heading">{state.heading}</h2>}
     <p className="status-page__description">{state.description}</p>
     <div className="status-page__actions">
-      {kind === 'expired' ? <Link className="btn-primary" to="/login">{t.signIn}</Link>
+      {kind === 'expired' ? <Link className="btn-primary" data-cuelume-navigate="" to="/login">{t.signIn}</Link>
         : kind === 'offline' || kind === 'server' ? <>
-              {onRetry && <button className="btn-primary" type="button" onClick={onRetry} disabled={retrying} aria-busy={retrying}>{t.retry}</button>}
-              {standalone ? onSignOut && <button className="btn-secondary" type="button" onClick={onSignOut}>{t.signOut}</button>
-                : <Link className="btn-secondary" to={HOME_PATH}>{t.home}</Link>}
+              {onRetry && <button className="btn-primary" data-cuelume-tap="" type="button" onClick={onRetry} disabled={retrying} aria-busy={retrying}>{t.retry}</button>}
+              {standalone ? onSignOut && <button className="btn-secondary" data-cuelume-tap="" type="button" onClick={onSignOut}>{t.signOut}</button>
+                : <Link className="btn-secondary" data-cuelume-navigate="" to={HOME_PATH}>{t.home}</Link>}
             </>
             : <>
-                <Link className="btn-primary" to={HOME_PATH}>{t.home}</Link>
-                {kind === 'not-found' && <button className="btn-secondary" type="button" onClick={() => navigate(-1)}>{t.back}</button>}
+                <Link className="btn-primary" data-cuelume-navigate="" to={HOME_PATH}>{t.home}</Link>
+                {kind === 'not-found' && <button className="btn-secondary" data-cuelume-navigate="" type="button" onClick={() => navigate(-1)}>{t.back}</button>}
               </>}
     </div>
   </>;

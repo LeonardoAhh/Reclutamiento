@@ -1,4 +1,5 @@
 import { toNaturalCase } from "./utils";
+import type { Language } from "@/contexts/LanguageContext";
 
 export interface WhatsAppReportItem {
   label: string;
@@ -15,6 +16,7 @@ interface WhatsAppReportOptions {
   title: string;
   date: string;
   total: number;
+  totalLabel: string;
   sections: WhatsAppReportSection[];
   emptyMessage: string;
   footer?: string;
@@ -26,36 +28,55 @@ interface WhatsAppReportBlocksOptions
 }
 
 function buildWhatsAppReportHeader(
-  options: Pick<WhatsAppReportOptions, "title" | "date" | "total">,
+  options: Pick<WhatsAppReportOptions, "title" | "date" | "total" | "totalLabel">,
 ): string[] {
-  return [`*${options.title} · ${options.total}*`, `_${options.date}_`];
+  return [
+    `*${options.title} · ${options.total} ${options.totalLabel}*`,
+    `_${options.date}_`,
+  ];
 }
 
-export function formatWhatsAppLabel(value: string): string {
+export function formatWhatsAppLabel(
+  value: string,
+  language: Language = "es",
+): string {
+  const shiftLabel = language === "en" ? "Shift" : "Turno";
+  const administrativeLabel =
+    language === "en" ? "Administrative" : "Administrativo";
+
   return toNaturalCase(value)
-    .replace(/\b([1-4])(?:ER|RA|RO|DO|DA|TO|TA|O)?\.?\s+Turno\b/gi, "Turno $1")
-    .replace(/\bAdmtv[oa]\b/gi, "Administrativo");
+    .replace(
+      /\b([1-4])(?:ER|RA|RO|DO|DA|TO|TA|O)?\.?\s+Turno\b/gi,
+      `${shiftLabel} $1`,
+    )
+    .replace(/\bAdmtv[oa]\b/gi, administrativeLabel)
+    .replace(/\bMixto\b/gi, language === "en" ? "Mixed" : "Mixto");
 }
 
-export function formatWhatsAppSection(value: string, area: string): string {
+export function formatWhatsAppSection(
+  value: string,
+  area: string,
+  language: Language = "es",
+): string {
   const escapedArea = area.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const withoutRepeatedArea = value.replace(
     new RegExp(`^(?:A\\.?\\s+)?${escapedArea}(?:\\s*[-—])?\\s*`, "i"),
     "",
   );
-  return formatWhatsAppLabel(withoutRepeatedArea);
+  return formatWhatsAppLabel(withoutRepeatedArea, language);
 }
 
 export function buildWhatsAppReport({
   title,
   date,
   total,
+  totalLabel,
   sections,
   emptyMessage,
   footer,
 }: WhatsAppReportOptions): string {
   const populatedSections = sections.filter((section) => section.items.length > 0);
-  const lines = buildWhatsAppReportHeader({ title, date, total });
+  const lines = buildWhatsAppReportHeader({ title, date, total, totalLabel });
 
   if (populatedSections.length === 0) {
     return [...lines, "", emptyMessage].join("\n");
@@ -78,11 +99,12 @@ export function buildWhatsAppReportFromBlocks({
   title,
   date,
   total,
+  totalLabel,
   blocks,
   emptyMessage,
 }: WhatsAppReportBlocksOptions): string {
   const populatedBlocks = blocks.filter(Boolean);
-  const lines = buildWhatsAppReportHeader({ title, date, total });
+  const lines = buildWhatsAppReportHeader({ title, date, total, totalLabel });
   return populatedBlocks.length > 0
     ? [...lines, "", populatedBlocks.join("\n\n")].join("\n")
     : [...lines, "", emptyMessage].join("\n");

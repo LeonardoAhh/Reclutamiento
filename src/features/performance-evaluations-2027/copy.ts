@@ -5,10 +5,10 @@ const COPY = {
   es: {
     title: 'Seguimiento de Evaluaciones 2027',
     chartTitle: 'Avance del seguimiento',
-    copyEmail: 'Copiar',
+    copyEmail: 'Copiar mensaje para correo',
     emailCopied: 'Mensaje para correo copiado',
     emailCopyError: 'No se pudo copiar el mensaje',
-    emailGreeting: 'Buen día, lideres de área:',
+    emailGreeting: 'Buen día, líderes de área:',
     emailIntroduction: 'Comparto el avance del seguimiento de las Evaluaciones de Desempeño 2027.',
     elapsedTime: 'Tiempo transcurrido',
     generalCompliance: 'Cumplimiento general',
@@ -41,7 +41,7 @@ const COPY = {
   en: {
     title: '2027 Performance Evaluation Tracking',
     chartTitle: 'Tracking progress',
-    copyEmail: 'Copy',
+    copyEmail: 'Copy email message',
     emailCopied: 'Email message copied',
     emailCopyError: 'Could not copy the message',
     emailGreeting: 'Hello, area leaders:',
