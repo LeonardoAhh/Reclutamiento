@@ -306,6 +306,47 @@
   }
 }
 
+@media (min-width: 768px) and (max-width: 1023px) {
+  .analisis-view .config-results-controls__filters {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-padding-inline: var(--focus-ring-width);
+  }
+
+  .analisis-view .config-filter-group,
+  .analisis-view .analisis-view-control,
+  .analisis-view .analisis-select-filter,
+  .analisis-view .config-filter-reset {
+    flex: 0 0 auto;
+  }
+
+  .analisis-view .config-filter-group,
+  .analisis-view .config-segmented-control {
+    width: max-content;
+  }
+
+  .analisis-view .config-segmented-control {
+    grid-template-columns: repeat(3, max-content);
+  }
+
+  .analisis-view .analisis-select-filter--department {
+    margin-inline-start: 0;
+  }
+
+  .analisis-view .analisis-select-filter__trigger {
+    justify-content: center;
+  }
+
+  .analisis-view .analisis-select-filter__name,
+  .analisis-view .analisis-select-filter__value {
+    display: none;
+  }
+
+  .analisis-view .analisis-select-filter .custom-select-trigger {
+    padding-inline: var(--design-spacing-xs);
+  }
+}
+
 @media (min-width: 1024px) {
   .config-results-controls {
     grid-template-columns: minmax(0, 1fr) max-content;
@@ -2242,12 +2283,7 @@
 
 @media (max-width: 767px) {
   .analisis-view .config-results-controls {
-    display: block;
-  }
-
-  .analisis-filter-trigger {
-    justify-self: start;
-    white-space: nowrap;
+    display: none;
   }
 
   .analisis-filter-panel .config-view-switch {

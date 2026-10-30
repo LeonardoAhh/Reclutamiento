@@ -508,6 +508,7 @@ export function AnalisisView() {
               <CustomSelect
                 value={departmentFilter}
                 aria-label={`${copy.department}: ${selectedDepartmentLabel}`}
+                title={`${copy.department}: ${selectedDepartmentLabel}`}
                 onChange={setDepartmentFilter}
                 options={[
                   { value: ALL_FILTER_VALUE, label: copy.all },
@@ -532,6 +533,7 @@ export function AnalisisView() {
               <CustomSelect
                 value={shiftFilter}
                 aria-label={`${copy.shift}: ${selectedShiftLabel}`}
+                title={`${copy.shift}: ${selectedShiftLabel}`}
                 onChange={setShiftFilter}
                 options={[
                   { value: ALL_FILTER_VALUE, label: copy.all },

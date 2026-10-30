@@ -23,7 +23,7 @@ import { TopRecruiterModal } from '@/components/ui/TopRecruiterModal';
 import { TeamProvider } from '@/features/team/TeamProvider';
 import { isBoneyardBuild } from '@/lib/boneyard';
 import { PLANTILLA_PATH } from '@/lib/plantillaNavigation';
-import { ADMINISTRATION_PATH, CONFIGURACION_ROUTES, ROUTE_DAY_EMPLOYEES_PATH, ROUTE_SCANNER_PATH } from '@/lib/configuracionNavigation';
+import { ADMINISTRATION_PATH, CONFIGURACION_ROUTES, getConfiguracionHref, ROUTE_DAY_EMPLOYEES_PATH, ROUTE_SCANNER_PATH } from '@/lib/configuracionNavigation';
 import { RutaDayEmployeesPage } from '@/components/ui/RutaDayEmployeesModal';
 import { RouteScannerPage } from '@/pages/configuracion-views/RouteScannerPage';
 import { DATA_UPDATE_PATH } from '@/features/data-update/types';
@@ -31,9 +31,7 @@ import { ACCOUNT_PATH, ACTIVIDADES_PATH, HOME_PATH, LOGOUT_PATH, ORGANIZATION_CH
 import { LogoutPage } from '@/features/account/LogoutPage';
 import { DEPARTURE_REASONS_PATH, REPORT_COMPARISON_PATH, REPORT_DAY_ROUTE, REPORTS_PATH, isDailyReportPath } from '@/components/reporte-diario/navigation';
 import { CANDIDATE_METRICS_PATH } from '@/pages/candidate-metrics/navigation';
-import { CAREER_JOURNEY_ENABLED, CAREER_PATH } from '@/features/career/types';
 import { LEAVE_REQUESTS_PATH } from '@/features/leave/requests';
-import { KANBAN_PATH } from '@/features/kanban/types';
 import { ACTIVITY_IMAGE_ROUTE } from '@/pages/activityImageNavigation';
 import { PERFORMANCE_EVALUATIONS_2027_PATH } from '@/features/performance-evaluations-2027/types';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -43,13 +41,11 @@ import {
   ActivityImagePage,
   Bajas,
   CandidateMetricsPage,
-  CareerPage,
   Configuracion,
   Dashboard,
   DataUpdatePage,
   HomePage,
   KpisPage,
-  KanbanPage,
   LeaveRequestsPage,
   MotivosBaja,
   OrganizationChartPage,
@@ -68,17 +64,20 @@ function ProtectedContent() {
   const { pathname } = useLocation();
   const { profile } = useAuth();
   const normalizedPath = pathname.replace(/\/+$/, '');
-  if (profile?.role === 'reclutador' &&
-    (pathname === ADMINISTRATION_PATH || pathname === PERFORMANCE_EVALUATIONS_2027_PATH || normalizedPath === CANDIDATE_METRICS_PATH || normalizedPath === VACANCY_ASSIGNMENTS_PATH || isDailyReportPath(pathname))) {
+  const recruiterRestrictedPath = pathname === ADMINISTRATION_PATH
+    || normalizedPath === getConfiguracionHref('analisis')
+    || pathname === PERFORMANCE_EVALUATIONS_2027_PATH
+    || normalizedPath === CANDIDATE_METRICS_PATH
+    || normalizedPath === VACANCY_ASSIGNMENTS_PATH
+    || isDailyReportPath(pathname);
+  if (profile?.role === 'reclutador' && recruiterRestrictedPath) {
     return <Navigate to={HOME_PATH} replace />;
   }
   return (
     <CandidatesProvider>
       <PositionsProvider>
         <MaintenanceGuard>
-          <TeamProvider>{CAREER_JOURNEY_ENABLED && pathname === CAREER_PATH
-            ? <Outlet />
-            : <><AppShell><Outlet /></AppShell><TopRecruiterModal /></>}</TeamProvider>
+          <TeamProvider><AppShell><Outlet /></AppShell><TopRecruiterModal /></TeamProvider>
         </MaintenanceGuard>
       </PositionsProvider>
     </CandidatesProvider>
@@ -86,12 +85,11 @@ function ProtectedContent() {
 }
 
 function ProtectedShell() {
-  const { pathname } = useLocation();
   if (isBoneyardBuild()) {
     return (
       <CandidatesProvider>
         <PositionsProvider>
-          <TeamProvider>{CAREER_JOURNEY_ENABLED && pathname === CAREER_PATH ? <Outlet /> : <AppShell><Outlet /></AppShell>}</TeamProvider>
+          <TeamProvider><AppShell><Outlet /></AppShell></TeamProvider>
         </PositionsProvider>
       </CandidatesProvider>
     );
@@ -178,8 +176,6 @@ function App() {
                 <Route path={ORGANIZATION_CHART_PATH} element={<OrganizationChartPage />} />
                 <Route path={LEAVE_REQUESTS_PATH} element={<LeaveRequestsPage />} />
                 <Route path={PERFORMANCE_EVALUATIONS_2027_PATH} element={<PerformanceEvaluationsPage />} />
-                <Route path={CAREER_PATH} element={CAREER_JOURNEY_ENABLED
-                  ? <CareerPage /> : <Navigate to={HOME_PATH} replace />} />
                 <Route path="/overview" element={<WithSupabaseData resources={WORKFORCE_DATA}><KpisPage /></WithSupabaseData>} />
                 <Route path={PLANTILLA_PATH} element={<PlantillaPage />} />
                 <Route path={VACANCY_ASSIGNMENTS_PATH} element={<WithSupabaseData resources={WORKFORCE_DATA}><VacancyAssignmentsPage /></WithSupabaseData>} />
@@ -195,7 +191,6 @@ function App() {
                 <Route path={DEPARTURE_REASONS_PATH} element={<MotivosBaja />} />
                 <Route path={ACTIVIDADES_PATH} element={<Actividades />} />
                 <Route path={ACTIVITY_IMAGE_ROUTE} element={<ActivityImagePage />} />
-                <Route path={KANBAN_PATH} element={<KanbanPage />} />
                 <Route path={DATA_UPDATE_PATH} element={<DataUpdatePage />} />
                 <Route path={ACCOUNT_PATH} element={<AccountPage />} />
                 <Route path={TEAM_PATH} element={<Navigate to={ACCOUNT_PATH} replace />} />

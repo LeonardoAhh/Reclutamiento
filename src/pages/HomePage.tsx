@@ -1,13 +1,12 @@
 import { lazy, Suspense, useCallback, useLayoutEffect, useRef, useState } from "react";
-import { ArrowUpRight, Brain, Scale, ShieldCheck, UsersRound } from "lucide-react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Modal } from "@/components/ui/Modal";
+import { ArrowUpRight, BadgeDollarSign, Brain, ChartNoAxesCombined, Scale, ShieldCheck, UsersRound } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage, type Language } from "@/contexts/LanguageContext";
 import { homeLesson, homeSection, homeText } from "./homeTranslations";
 import { getUserTitle } from "@/lib/userIdentity";
+import { getConfiguracionHref } from "@/lib/configuracionNavigation";
 import { useTeamDirectory } from '@/features/team/TeamProvider';
-import { CAREER_JOURNEY_ENABLED } from '@/features/career/types';
 import { toNaturalCase } from "@/lib/utils";
 import { HomeLessonCard } from "./home/HomeLessonCard";
 import { HomePager } from "./home/HomePager";
@@ -174,13 +173,6 @@ function TopicLessons({ topicId, leadershipCue, language }: {
 export function HomePage() {
   const { language } = useLanguage();
   const en = language === 'en';
-  const location = useLocation();
-  const navigate = useNavigate();
-  const navigationState: unknown = location.state;
-  const showCareerMotivation = CAREER_JOURNEY_ENABLED && navigationState !== null
-    && typeof navigationState === 'object'
-    && 'careerMotivation' in navigationState
-    && navigationState.careerMotivation === true;
   const { members } = useTeamDirectory();
   const { profile, username } = useAuth();
   const [activeIndex, setActiveIndex] = useState(0);
@@ -212,11 +204,6 @@ export function HomePage() {
     setActiveIndex(index);
   }
 
-  function closeCareerMotivation() {
-    navigate({ pathname: location.pathname, search: location.search, hash: location.hash },
-      { replace: true, state: null });
-  }
-
   if (!profile) return null;
 
   const displayName = toNaturalCase(profile.display_name || username, {
@@ -230,9 +217,33 @@ export function HomePage() {
 
   return (
     <main className="home-page container" aria-labelledby="home-page-title">
-      <h1 id="home-page-title" className="home-page__greeting">
-        {en ? 'Hello' : 'Hola'}, {firstName}.
-      </h1>
+      <header className="home-page__top-row">
+        <h1 id="home-page-title" className="home-page__greeting">
+          {en ? 'Hello' : 'Hola'}, {firstName}.
+        </h1>
+        <nav className="home-page__quick-links" aria-label={en ? 'Quick links' : 'Accesos directos'}>
+          <Link
+            className="home-page__quick-link"
+            to={getConfiguracionHref('tabulador')}
+            aria-label={en ? 'Pay Scale' : 'Tabulador'}
+            data-cuelume-navigate=""
+          >
+            <BadgeDollarSign aria-hidden="true" />
+            <span aria-hidden="true">{en ? 'Pay Scale' : 'Tabulador'}</span>
+          </Link>
+          {profile.role === 'admin' && (
+            <Link
+              className="home-page__quick-link"
+              to={getConfiguracionHref('indicadores')}
+              aria-label={en ? 'Metrics' : 'Indicadores'}
+              data-cuelume-navigate=""
+            >
+              <ChartNoAxesCombined aria-hidden="true" />
+              <span aria-hidden="true">{en ? 'Metrics' : 'Indicadores'}</span>
+            </Link>
+          )}
+        </nav>
+      </header>
 
       {activeIndex === 0 ? (
         <Suspense fallback={<div className="home-birthplace home-birthplace--loading" aria-hidden="true" />}>
@@ -263,15 +274,6 @@ export function HomePage() {
         </section>
         </div>
       )}
-      {CAREER_JOURNEY_ENABLED && <Modal isOpen={showCareerMotivation} title={en ? 'Your day, your focus' : 'Tu día, tu enfoque'}
-      onClose={closeCareerMotivation} size="sm"
-      footerActions={<button type="button" className="btn-primary" onClick={closeCareerMotivation}>{en ? 'Make it count' : 'Hacer que cuente'}</button>}>
-      <div className="modal-body">
-        <p className="type-body-md">
-      {en ? 'Every morning is a new opportunity to move forward. Take a minute, prioritize, and make today count.' : 'Cada mañana es una nueva oportunidad para avanzar. Tómate un minuto, prioriza y haz que hoy cuente.'}
-    </p>
-  </div>
-</Modal>}
     </main>
   );
 }

@@ -1392,7 +1392,7 @@
   }
 
   .data-update-admin__toolbar {
-    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) max-content;
     align-items: center;
   }
 
@@ -1483,6 +1483,47 @@
     inset-block-end: 0;
     z-index: var(--layer-sticky-navigation);
   }
+
+  .data-update-admin__toolbar:not(.data-update-admin__toolbar--empty) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: center;
+  }
+
+  .data-update-admin__search {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .data-update-admin__shift {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .data-update-admin__status {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  .data-update-admin__actions {
+    grid-column: 2;
+    grid-row: 1;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .data-update-admin__actions > button:not([hidden]) {
+    width: 100%;
+  }
+
+  .data-update-admin__shift .custom-select-trigger,
+  .data-update-admin__status .custom-select-trigger {
+    min-width: 0;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1079px) {
+  .data-update-admin__shift-label {
+    display: none;
+  }
 }
 
 @media (min-width: 1080px) {
@@ -1534,10 +1575,6 @@
 }
 
 @media (min-width: 1440px) {
-  .data-update-admin__toolbar:not(.data-update-admin__toolbar--empty) {
-    grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr)) max-content;
-  }
-
   .data-update-completed-card {
     grid-template-areas:
       "identity identity"

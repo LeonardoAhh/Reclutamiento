@@ -5,10 +5,17 @@
   max-width: 100%;
 }
 
-/* Radix compensa la barra al bloquear el scroll, pero el lienzo ya reserva
-   ese espacio con scrollbar-gutter y la doble compensación mueve la página. */
-body[data-scroll-locked]:has(.custom-select-dropdown) {
-  margin-right: 0 !important;
+@media (min-width: 768px) and (max-width: 1079px) {
+  body[data-scroll-locked]:has(.custom-select-dropdown) {
+    overflow-y: scroll !important;
+    margin-right: var(--removed-body-scroll-bar-size, 0px) !important;
+  }
+}
+
+@media (min-width: 1080px) {
+  body[data-scroll-locked]:has(.custom-select-dropdown) {
+    margin-right: 0 !important;
+  }
 }
 
 .custom-select-trigger {

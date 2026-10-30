@@ -2688,8 +2688,16 @@ button.reporte-card:hover,
   flex: 1 1 0;
 }
 
-.reporte-hero__motivos-link {
-  flex-basis: 100%;
+.reporte-hero__report-links {
+  display: grid;
+  flex: 1 1 100%;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-sm);
+  min-width: 0;
+}
+
+.reporte-hero__recent-link {
+  min-width: 0;
   justify-content: center;
 }
 
@@ -2699,7 +2707,7 @@ button.reporte-card:hover,
   justify-content: center;
 }
 
-@media (min-width: 1080px) {
+@media (min-width: 900px) {
   .reporte-hero__workspace {
     grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
     align-items: stretch;

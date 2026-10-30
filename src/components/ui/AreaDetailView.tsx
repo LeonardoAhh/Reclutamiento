@@ -1,21 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
   ArrowLeft,
-  BriefcaseBusiness,
   HeartPulse,
-  Star,
-  UsersRound,
 } from 'lucide-react';
 import { Badge, StarliteBadge, AreaStatusBadge } from './Badge';
-import { CoverageBar } from './CoverageBar';
 import { Tooltip } from './Tooltip';
 import { TabsContent, TabsList, TabsRoot, TabsTrigger } from './Tabs';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { COMMENT_TYPE_LABELS } from '@/lib/constants';
 import { normalizePuesto } from '@/lib/bajas';
 import { formatPercentage, getCoverageColor } from '@/lib/utils';
-import { summarizeOperationalCoverage } from '@/lib/workforceProjection';
-import type { WorkforceProjection } from '@/lib/workforceProjection';
 import { getStarlitePositionDisplayName } from '@/lib/positionCatalog';
 import type {
   Candidate,
@@ -42,7 +36,6 @@ const ACTIVE_CANDIDATE_STATUSES: ReadonlySet<CandidateStatus> = new Set<Candidat
 
 interface AreaDetailViewProps {
   dept: DepartmentCoverage | null;
-  projection: WorkforceProjection | undefined;
   comments: PositionComment[];
   /**
    * Pipeline completo (todas las áreas). Se filtra internamente al área
@@ -53,18 +46,14 @@ interface AreaDetailViewProps {
   onBack?: () => void;
   /** Mapa sección -> # empleados en incapacidad dentro del área activa. */
   incapacidadPorSeccion?: Map<string, number> | null;
-  /** Total de empleados en incapacidad para el área activa. */
-  incapacidadAreaTotal?: number;
 }
 
 export function AreaDetailView({
   dept,
-  projection,
   comments,
   candidates = [],
   onBack,
   incapacidadPorSeccion = null,
-  incapacidadAreaTotal = 0,
 }: AreaDetailViewProps) {
   const { language } = useLanguage();
   const t = (text: string) => workforceText(language, text);
@@ -155,28 +144,13 @@ export function AreaDetailView({
   };
 
   const sectionTabs = secciones.map((s) => {
-    const puestosInSection = dept.puestos.filter((p) => p.seccion === s);
-    const count = puestosInSection.reduce((acc, pos) => {
-      return acc + (pos.vacantes || 0);
-    }, 0);
-
     return {
       id: s,
       displayLabel: formatSeccionTabLabel(s),
-      count: count,
       incapacidad: incapacidadPorSeccion?.get(s) ?? 0,
     };
   });
   const tabs = sectionTabs;
-
-  // El resumen superior es la vista de ÁREA (totales del departamento), coherente
-  // con el título del área y la barra de cobertura. Los tabs sólo filtran la lista.
-  const activeTotals = {
-    autorizada: dept.plantilla_autorizada,
-    real: dept.plantilla_real,
-    vacantes: dept.vacantes,
-    urgentes: dept.urgentes,
-  };
 
   // Vínculo accesible tab <-> panel por índice; evita usar como id el texto
   // dinámico de la sección, que puede contener espacios o acentos.
@@ -237,20 +211,6 @@ export function AreaDetailView({
     return <span className="no-vacancy">—</span>;
   };
 
-  const currentCoverage = projection
-    ? summarizeOperationalCoverage(projection.current)
-    : null;
-  const coveragePercentage = currentCoverage?.percentage ?? null;
-  const coverageColor =
-    coveragePercentage === null
-      ? 'var(--color-muted)'
-      : getCoverageColor(coveragePercentage);
-  const coverageLabel = !projection
-    ? t('No disponible')
-    : coveragePercentage === null
-      ? t('No aplica')
-      : formatPercentage(coveragePercentage);
-
   return (
     <TabsRoot asChild value={activeTab} onValueChange={setActiveTab}>
     <section className="area-detail-view">
@@ -270,77 +230,6 @@ export function AreaDetailView({
         </h2>
       </header>
 
-      <section
-        className="area-detail-modal__summary"
-        aria-labelledby="area-detail-summary-title"
-      >
-        <div className="area-detail-modal__summary-heading">
-          <h3 id="area-detail-summary-title">{t('Resumen del área')}</h3>
-        </div>
-
-        <dl className="area-detail-modal__summary-stats">
-          <div className="area-detail-modal__stat">
-            <dt className="area-detail-modal__stat-label">
-              <UsersRound aria-hidden="true" />
-              {t('Real / Aut.')}
-            </dt>
-            <dd className="area-detail-modal__stat-value">
-              {activeTotals.real}
-              <span className="area-detail-modal__stat-sep">/</span>
-              {activeTotals.autorizada}
-            </dd>
-          </div>
-          <div className="area-detail-modal__stat">
-            <dt className="area-detail-modal__stat-label">
-              <BriefcaseBusiness aria-hidden="true" />
-              {t('Vacantes')}
-            </dt>
-            <dd className="area-detail-modal__stat-value">{activeTotals.vacantes}</dd>
-          </div>
-          {activeTotals.urgentes > 0 && (
-            <div className="area-detail-modal__stat">
-              <dt className="area-detail-modal__stat-label">
-                <Star aria-hidden="true" />
-                Starlite
-              </dt>
-              <dd className="area-detail-modal__stat-value">{activeTotals.urgentes}</dd>
-            </div>
-          )}
-          {incapacidadAreaTotal > 0 && (
-            <div className="area-detail-modal__stat area-detail-modal__stat--amber">
-              <dt className="area-detail-modal__stat-label">
-                <HeartPulse size="var(--icon-size-sm)" aria-hidden="true" /> {t('Incapacidad')}
-              </dt>
-              <dd className="area-detail-modal__stat-value">{incapacidadAreaTotal}</dd>
-            </div>
-          )}
-        </dl>
-
-        {/* Cobertura. El % ya queda
-            anunciado como texto arriba (showLabel=false), así que la
-            barra es puramente decorativa para lectores de pantalla. */}
-        <div className="area-detail-modal__coverage">
-          <div className="area-detail-modal__coverage-head">
-            <span
-              className="area-detail-modal__coverage-pct"
-              style={{ color: coverageColor }}
-            >
-              {coverageLabel}
-            </span>
-            <span className="area-detail-modal__coverage-label">{t('Cobertura del área')}</span>
-          </div>
-          {coveragePercentage !== null && (
-            <div aria-hidden="true">
-              <CoverageBar
-                percentage={coveragePercentage}
-                color={coverageColor}
-                showLabel={false}
-              />
-            </div>
-          )}
-        </div>
-      </section>
-
       {tabs.length > 1 && (
         <TabsList
           variant="underline"
@@ -355,10 +244,6 @@ export function AreaDetailView({
                 className="area-detail-modal__tab"
               >
                 <span className="area-detail-modal__tab-label">{tab.displayLabel}</span>
-                <span className="area-detail-modal__tab-count" aria-hidden="true">
-                  {tab.count}
-                </span>
-                <span className="sr-only">, {tab.count} {t('vacantes')}</span>
                 {tab.incapacidad > 0 && (
                   <span
                     className="area-detail-modal__tab-incapacidad"
@@ -445,7 +330,7 @@ export function AreaDetailView({
                     <span className="area-detail-modal__card-metric">
                       <span className="area-detail-modal__card-metric-value">
                         {row.plantilla_real}
-                        <span className="area-detail-modal__stat-sep">/</span>
+                        <span className="area-detail-modal__card-metric-separator">/</span>
                         {row.plantilla_autorizada}
                       </span>
                       <span className="area-detail-modal__card-metric-label">{t('Real / Aut.')}</span>

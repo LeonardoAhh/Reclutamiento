@@ -1,8 +1,5 @@
 import {
-  BadgeDollarSign,
   ChartNoAxesCombined,
-  ChartSpline,
-  Columns3,
   Contact,
   Files,
   House,
@@ -14,8 +11,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { PLANTILLA_PATH } from "@/lib/plantillaNavigation";
-import { ADMINISTRATION_PATH, getConfiguracionHref } from "@/lib/configuracionNavigation";
-import { KANBAN_PATH } from "@/features/kanban/types";
+import { getConfiguracionHref } from "@/lib/configuracionNavigation";
 import { REPORTS_PATH } from "@/components/reporte-diario/navigation";
 import type { Language } from "@/contexts/LanguageContext";
 
@@ -59,7 +55,6 @@ export const NAV_SECTIONS: ReadonlyArray<NavSection> = [
     items: [
       { to: CANDIDATES_PATH, label: "Candidatos", icon: UserSearch, mobilePriority: true },
       { to: "/data-update", label: "Campaña", icon: UserRoundPen, roles: ["admin", "reclutador"] },
-      { to: KANBAN_PATH, label: "Kanban", icon: Columns3, roles: ["reclutador"] },
       { to: ACTIVIDADES_PATH, label: "Actividades", icon: ListTodo },
       { to: getConfiguracionHref("formatos"), label: "Formatos", icon: Files },
     ],
@@ -70,16 +65,13 @@ export const NAV_SECTIONS: ReadonlyArray<NavSection> = [
     items: [
       { to: PLANTILLA_PATH, label: "Plantilla", icon: Contact },
       { to: "/overview", label: "Resumen", icon: ChartNoAxesCombined, end: false, mobilePriority: true },
-      { to: getConfiguracionHref("tabulador"), label: "Tabulador", icon: BadgeDollarSign },
     ],
   },
   {
     id: "tracking",
     label: "Seguimiento",
     items: [
-      { to: getConfiguracionHref("analisis"), label: "Análisis", icon: ChartSpline },
       { to: REPORTS_PATH, label: "Reporte Diario", icon: NotebookText, roles: ["admin"] },
-      { to: ADMINISTRATION_PATH, label: "Indicadores", icon: ChartNoAxesCombined, roles: ["admin"] },
       { to: getConfiguracionHref("rutas"), label: "Rutas", icon: Route },
     ],
   },
@@ -100,9 +92,7 @@ const ENGLISH_NAV_LABELS: Readonly<Record<string, string>> = {
   "Reporte Diario": "Daily Report",
   Actividades: "Activities",
   Formatos: "Forms",
-  Indicadores: "Metrics",
   Rutas: "Routes",
-  Tabulador: "Pay Scale",
 };
 
 export function getLocalizedNavigation(language: Language): NavSection[] {

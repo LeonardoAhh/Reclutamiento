@@ -3,6 +3,7 @@ import { PageHeading } from '@/components/layout/PageHeading';
 import { Link, useMatch, useNavigate } from "react-router-dom";
 import { ReportDayPage } from "@/pages/ReportDayPage";
 import { getReportDayPath, REPORT_DAY_PATTERN } from "./navigation";
+import { getConfiguracionHref } from "@/lib/configuracionNavigation";
 import "./ReporteDiario.css";
 import { Modal } from "@/components/ui/Modal";
 import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
@@ -790,14 +791,24 @@ export default function ReporteDiarioContent() {
               )}
 
               <div className="reporte-hero__recent-actions">
-                <Link
-                  className="btn-secondary reporte-hero__motivos-link"
-                  to="/departure-reasons"
-                  data-cuelume-navigate=""
-                >
-                  <BarChart3 size="var(--icon-size-sm)" aria-hidden="true" />
-                  {copy("Motivos de baja", "Reasons for leaving")}
-                </Link>
+                <div className="reporte-hero__report-links">
+                  <Link
+                    className="btn-secondary reporte-hero__recent-link"
+                    to="/departure-reasons"
+                    data-cuelume-navigate=""
+                  >
+                    <BarChart3 size="var(--icon-size-sm)" aria-hidden="true" />
+                    {copy("Motivos de baja", "Reasons for leaving")}
+                  </Link>
+                  <Link
+                    className="btn-secondary reporte-hero__recent-link"
+                    to={getConfiguracionHref("analisis")}
+                    data-cuelume-navigate=""
+                  >
+                    <ChartSpline size="var(--icon-size-sm)" aria-hidden="true" />
+                    {copy("Análisis", "Analysis")}
+                  </Link>
+                </div>
                 {savedSummaries.length > 0 && (
                   <>
                     <ReportesGuardadosDialog

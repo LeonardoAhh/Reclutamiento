@@ -203,7 +203,7 @@ export function DataUpdateAdminPanel({
             aria-label={`${t("Filtrar por turno: ")}${selectedShift || t("Todos")}`}
             customTrigger={
               <span className="data-update-admin__shift-trigger">
-                <span>{t("Turno")}</span>
+              <span className="data-update-admin__shift-label">{t("Turno")}</span>
                 <span className="data-update-admin__shift-value">{selectedShift || t("Todos")}</span>
                 <ChevronDown size="var(--icon-size-sm)" aria-hidden="true" />
               </span>

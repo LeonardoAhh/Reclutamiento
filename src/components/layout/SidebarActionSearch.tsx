@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
-import { CalendarDays, ClipboardCheck, Columns3, LayoutGrid, Network } from 'lucide-react';
+import { CalendarDays, ClipboardCheck, LayoutGrid, Network } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import { KANBAN_PATH } from '@/features/kanban/types';
 import { PERFORMANCE_EVALUATIONS_2027_PATH } from '@/features/performance-evaluations-2027/types';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -49,7 +48,6 @@ export function SidebarActionSearch({ mobileMenuOpen, role, quickActions }: Side
     }] : []),
     ...(role === 'reclutador' ? [] : [EVALUATION_ACTION]),
     ORGANIZATION_ACTION,
-    ...(role === 'reclutador' ? [] : [{ id: 'kanban' as const, path: KANBAN_PATH, icon: Columns3, es: 'Kanban', en: 'Kanban' }]),
   ];
 
   useEffect(() => {
@@ -88,8 +86,6 @@ export function SidebarActionSearch({ mobileMenuOpen, role, quickActions }: Side
     setOpen(false);
     if (action.id === 'requests') {
       navigate(LEAVE_REQUESTS_PATH);
-    } else if (action.id === 'kanban') {
-      navigate(KANBAN_PATH);
     } else if (action.id === 'org-chart') {
       navigate(ORGANIZATION_CHART_PATH);
     } else {
@@ -142,7 +138,7 @@ export function SidebarActionSearch({ mobileMenuOpen, role, quickActions }: Side
           <ul className="sidebar-action-search__list" aria-label={language === 'en' ? 'Available actions' : 'Acciones disponibles'}>
             {actions.map((action, index) => {
               const Icon = action.icon;
-              if (action.id === 'kanban' || action.id === 'performance-evaluations-2027') return (
+              if (action.id === 'performance-evaluations-2027') return (
                 <li key={action.id}>
                   <Link to={action.path} className="sidebar-action-search__action"
                     ref={(node) => { actionRefs.current[index] = node; }}

@@ -1,6 +1,5 @@
 import { toNaturalCase } from '@/lib/utils';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { kanbanCopy } from '@/features/kanban/copy';
 import { KanbanStatusBadge } from '@/features/kanban/KanbanBadge';
 import { getEvaluationStatusLabel } from './copy';
 import type { Language } from '@/contexts/LanguageContext';
@@ -58,7 +57,6 @@ export function EvaluationAreaCard({
     language === 'en' ? 'en-US' : 'es-MX',
     { maximumFractionDigits: 1 },
   ).format((completedPositions / area.positions.length) * 100);
-  const kanbanStatusCopy = kanbanCopy[language];
   const sortedPositions = [...area.positions].sort(
     (left, right) =>
       left.title.localeCompare(right.title, 'es-MX', { sensitivity: 'base' })
@@ -107,7 +105,6 @@ export function EvaluationAreaCard({
         </h3>
         <KanbanStatusBadge
           status={STATUS_BADGE_STATE[area.status]}
-          copy={kanbanStatusCopy}
           label={getEvaluationStatusLabel(area.status, language)}
         />
       </header>
@@ -184,7 +181,6 @@ export function EvaluationAreaCard({
                   <td data-label={copy.status}>
                     <KanbanStatusBadge
                       status={completed ? 'completed' : 'pending'}
-                      copy={kanbanStatusCopy}
                       label={completed ? copy.completed : copy.pending}
                     />
                   </td>

@@ -7,8 +7,6 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from '@/lib/notify';
 import { useLoader } from '@/hooks/useLoader';
 import { HOME_PATH } from '@/components/layout/navigation';
-import { CAREER_JOURNEY_ENABLED, CAREER_PATH } from '@/features/career/types';
-import { hasCompletedCareerJourney } from '@/features/career/completion';
 
 /** Conserva el acceso protegido y la espera del perfil después de autenticar. */
 export function AuthGuard({ children }: { children: ReactNode }) {
@@ -22,7 +20,7 @@ export function AuthGuard({ children }: { children: ReactNode }) {
   return <>{children}</>;
 }
 
-/** Un ingreso con credenciales abre el recorrido pendiente cuando está habilitado. */
+/** Un ingreso con credenciales abre el inicio después de completar la transición. */
 export function RedirectIfAuthed({ children }: { children: ReactNode }) {
   const { session, loading, loginTransition } = useAuth();
   const { flash } = useLoader();
@@ -44,9 +42,7 @@ export function RedirectIfAuthed({ children }: { children: ReactNode }) {
     if (transitionStarted.current) return;
     transitionStarted.current = true;
     if (loginTransition.phase === 'ready') flash({ variant: 'workspace-entry' });
-    setDestination(
-      CAREER_JOURNEY_ENABLED && !hasCompletedCareerJourney(session.user.user_metadata) ? CAREER_PATH : HOME_PATH,
-    );
+    setDestination(HOME_PATH);
   }, [session, loading, flash, loginTransition.phase]);
 
   if (destination && session) return <Navigate to={destination} replace />;

@@ -526,15 +526,11 @@ export function Dashboard() {
             {activeTab !== "general" && (
               <AreaDetailView
                 dept={filteredDepts.find((d) => d.area === activeTab) ?? null}
-                projection={departmentProjections.get(activeTab)}
                 comments={comments}
                 candidates={candidates}
                 onBack={() => setDepartmentSelection(null)}
                 incapacidadPorSeccion={
                   incapacidadPorAreaSeccion.get(activeTab) ?? null
-                }
-                incapacidadAreaTotal={
-                  incapacidadPorArea.get(activeTab) ?? 0
                 }
               />
             )}

@@ -1,134 +1,6 @@
 /* Detalle de departamento dentro de Plantilla.
    Mobile-first, tokens-only y sin alterar contratos de datos. */
 
-.area-detail-modal__summary {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--spacing-md);
-  padding: var(--spacing-lg);
-  background: var(--color-surface-card);
-  border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
-}
-
-/* ── Métricas en tiles ── */
-.area-detail-modal__summary-stats {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--spacing-sm);
-}
-
-.area-detail-modal__stat {
-  display: flex;
-  flex-direction: column;
-  gap: var(--design-spacing-xxs);
-  padding: var(--spacing-sm) var(--spacing-md);
-  min-width: 0;
-  background: var(--color-surface);
-  border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-md);
-  line-height: var(--type-body-sm-line);
-  transition: border-color var(--transition-fast);
-}
-
-/* .area-detail-modal__summary-stats es un <dl>; cada .stat es un par
-   <dt>(etiqueta)/<dd>(valor). El DOM lleva dt antes de dd (orden correcto
-   para un description list / lectores de pantalla); aquí se invierte
-   sólo el orden VISUAL para que el número grande siga apareciendo arriba. */
-.area-detail-modal__stat-value {
-  order: -1;
-  font-family: var(--font-body);
-  font-size: var(--type-body-strong-size);
-  font-weight: var(--type-body-strong-weight);
-  color: var(--color-ink);
-  font-variant-numeric: tabular-nums;
-  line-height: var(--type-body-strong-line);
-  letter-spacing: var(--type-body-strong-tracking);
-}
-
-.area-detail-modal__stat-sep {
-  color: var(--color-muted-soft);
-  font-weight: var(--type-body-md-weight);
-  margin: 0 var(--design-spacing-xxs);
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-}
-
-.area-detail-modal__stat-label {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  font-family: var(--font-body);
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  color: var(--color-muted);
-  text-transform: uppercase;
-  letter-spacing: var(--type-caption-up-tracking);
-  white-space: nowrap;
-  line-height: var(--type-caption-up-line);
-}
-
-.area-detail-modal__stat-label svg {
-  width: var(--icon-size-sm);
-  height: var(--icon-size-sm);
-  flex: 0 0 auto;
-}
-
-.area-detail-modal__stat--amber {
-  background: var(--color-warning-tint);
-  border-color: var(--color-warning-text);
-}
-.area-detail-modal__stat--amber .area-detail-modal__stat-value,
-.area-detail-modal__stat--amber .area-detail-modal__stat-label {
-  color: var(--color-accent-amber);
-}
-
-/* ── Cobertura: hero con porcentaje grande + barra ── */
-.area-detail-modal__coverage {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: var(--spacing-sm);
-  min-width: 0;
-  padding: var(--spacing-md);
-  background: var(--color-surface);
-  border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-md);
-}
-
-.area-detail-modal__coverage-head {
-  display: flex;
-  align-items: baseline;
-  gap: var(--spacing-sm);
-}
-
-.area-detail-modal__coverage-pct {
-  font-family: var(--font-body);
-  font-size: var(--type-body-strong-size);
-  font-weight: var(--type-body-strong-weight);
-  line-height: var(--type-body-strong-line);
-  letter-spacing: var(--type-body-strong-tracking);
-  font-variant-numeric: tabular-nums;
-}
-
-.area-detail-modal__coverage-label {
-  font-family: var(--font-body);
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  color: var(--color-muted);
-  text-transform: uppercase;
-  letter-spacing: var(--type-caption-up-tracking);
-  line-height: var(--type-caption-up-line);
-}
-
-/* La barra hereda geometría del sistema dentro del resumen. */
-.area-detail-modal__coverage .coverage-bar__track,
-.area-detail-modal__coverage .coverage-bar__fill {
-  border-radius: var(--rounded-xs);
-}
-
 /* ── Tabs ── */
 .area-detail-view .area-detail-modal__tabs {
   align-self: flex-start;
@@ -138,29 +10,8 @@
   -webkit-overflow-scrolling: touch;
 }
 
-.area-detail-modal__tab-count {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: var(--icon-size-control);
-  padding: 0 var(--spacing-xs);
-  height: var(--icon-size-control);
-  border-radius: var(--rounded-xs);
-  background: var(--color-surface);
-  border: var(--border-width) solid var(--color-hairline);
-  color: var(--color-charcoal);
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  font-variant-numeric: tabular-nums;
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-}
-
-.area-detail-modal__tab[data-state='active'] .area-detail-modal__tab-count {
-  background: var(--color-primary-tint);
-  border-color: var(--color-primary-border);
-  color: var(--color-primary-text);
+.area-detail-view .area-detail-modal__tab {
+  padding-inline: var(--design-spacing-sm);
 }
 
 .area-detail-modal__tab-incapacidad {
@@ -213,22 +64,6 @@
 
 /* Mobile: contenido apilado y sin desplazamiento horizontal principal. */
 @media (max-width: 767px) {
-  /* Summary: cobertura primero, métricas después. */
-  .area-detail-modal__summary {
-    gap: var(--spacing-md);
-  }
-
-  .area-detail-modal__coverage {
-    order: 1;
-    width: 100%;
-    min-width: 0;
-    flex: 0 0 auto;
-  }
-
-  .area-detail-modal__summary-stats {
-    order: 2;
-  }
-
   /* Evita que la última fila quede pegada al borde inferior. */
   .area-detail-modal__table-wrapper {
     padding-bottom: var(--spacing-md);
@@ -241,39 +76,6 @@
 
 /* Desktop: resumen horizontal y tabla completa. */
 @media (min-width: 768px) {
-  .area-detail-modal__summary {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: var(--spacing-lg);
-    align-items: center;
-  }
-
-  /* El heading ocupa toda la fila superior del grid; stats y cobertura
-     caen a la fila siguiente repartidas en las 2 columnas. Sin esto, al
-     ser el 1er hijo sin grid-column propio, "Resumen del área" se
-     intercalaba con las stats en lugar de encabezarlas. */
-  .area-detail-modal__summary-heading {
-    grid-column: 1 / -1;
-  }
-
-  .area-detail-modal__summary-stats {
-    display: flex;
-    flex-wrap: nowrap;
-    gap: var(--spacing-sm);
-  }
-
-  .area-detail-modal__stat {
-    flex: 1 1 0;
-  }
-
-  .area-detail-modal__coverage {
-    min-width: 0;
-    width: 100%;
-  }
-
-  .area-detail-modal__coverage-head {
-    align-items: baseline;
-  }
-
   .area-detail-modal__panel {
     flex: 1 1 auto;
   }
@@ -346,17 +148,6 @@
     align-items: flex-start;
   }
 
-}
-
-.area-detail-modal__summary-heading h3 {
-  font-family: var(--font-body);
-  font-size: var(--type-body-strong-size);
-  font-weight: var(--type-body-strong-weight);
-  letter-spacing: var(--type-body-strong-tracking);
-  text-transform: uppercase;
-  color: var(--color-muted);
-  margin: 0;
-  line-height: var(--type-body-strong-line);
 }
 
 /* Badge stack for process status */
@@ -443,6 +234,16 @@
   line-height: var(--type-body-strong-line);
   color: var(--color-ink);
   letter-spacing: var(--type-body-strong-tracking);
+}
+
+.area-detail-modal__card-metric-separator {
+  color: var(--color-muted-soft);
+  font-weight: var(--type-body-md-weight);
+  margin-inline: var(--design-spacing-xxs);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .area-detail-modal__card-metric-label {

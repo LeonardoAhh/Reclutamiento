@@ -1,6 +1,0 @@
-.kanban-badge[data-kind="activity"] { --kanban-badge-accent: var(--color-accent-purple); }
-.kanban-badge[data-kind="process"] { --kanban-badge-accent: var(--color-accent-orange); }
-.kanban-badge[data-kind="interview"] { --kanban-badge-accent: var(--color-accent-teal); }
-.kanban-badge[data-kind="todo"] { --kanban-badge-accent: var(--color-magenta); }
-.kanban-badge[data-kind] { border-color: var(--kanban-badge-accent); }
-.kanban-badge[data-kind] > svg { color: var(--kanban-badge-accent); }

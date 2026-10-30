@@ -28,6 +28,7 @@ type SelectAriaProps = Pick<
 
 interface CustomSelectProps extends SelectAriaProps {
   id?: string;
+  title?: string;
   value: string;
   onChange: (value: string) => void;
   options: readonly Option[];
@@ -50,6 +51,7 @@ function getItemValue(value: string) {
 
 export function CustomSelect({
   id,
+  title,
   value,
   onChange,
   options,
@@ -103,6 +105,7 @@ export function CustomSelect({
       >
         <SelectPrimitive.Trigger
           id={id}
+          title={title}
           className={cn(
             'custom-select-trigger',
             customTrigger && triggerAppearance === 'plain' && 'custom-select-trigger--unstyled',

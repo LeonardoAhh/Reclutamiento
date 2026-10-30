@@ -1,8 +1,4 @@
-import { supabase } from '@/lib/supabase';
-import { isCoverPath } from './types';
-
-const COVER_BUCKET = 'kanban-covers';
-export const COVER_MAX_BYTES = 300 * 1024;
+const COVER_MAX_BYTES = 300 * 1024;
 const COVER_MAX_SOURCE_BYTES = 10 * 1024 * 1024;
 const COVER_MAX_SIDE = 1280;
 const COVER_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
@@ -43,32 +39,4 @@ export async function prepareKanbanCover(file: File): Promise<File> {
     }
     throw new CoverError('compressedSize');
   } finally { bitmap.close(); }
-}
-
-export async function uploadKanbanCover(userId: string, taskId: string, uploadId: string, file: File): Promise<string> {
-  if (file.type !== 'image/webp' || file.size > COVER_MAX_BYTES) throw new CoverError('compressedSize');
-  const path = `${userId}/${taskId}/${uploadId}.webp`;
-  const { error } = await supabase.storage.from(COVER_BUCKET).upload(path, file, { contentType: 'image/webp' });
-  if (error && String(error.statusCode) !== '409') throw error;
-  return path;
-}
-
-export async function kanbanTaskUsesCover(userId: string, taskId: string, path: string): Promise<boolean | null> {
-  const { data, error } = await supabase.from('kanban_tasks').select('cover_path')
-    .eq('id', taskId).eq('owner_id', userId).maybeSingle();
-  if (error) return null;
-  return data?.cover_path === path;
-}
-
-export async function downloadKanbanCover(path: string): Promise<Blob> {
-  if (!isCoverPath(path) || !path) throw new CoverError('processing');
-  const { data, error } = await supabase.storage.from(COVER_BUCKET).download(path);
-  if (error || !data) throw error ?? new CoverError('processing');
-  return data;
-}
-
-export async function removeKanbanCover(path: string): Promise<void> {
-  if (!isCoverPath(path) || !path) throw new CoverError('processing');
-  const { error } = await supabase.storage.from(COVER_BUCKET).remove([path]);
-  if (error) throw error;
 }

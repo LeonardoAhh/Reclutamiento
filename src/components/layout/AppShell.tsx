@@ -11,7 +11,6 @@ import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { SessionNotice } from './SessionNotice';
 import { RouteLoadingFallback } from './RouteLoadingFallback';
 import { RouteErrorBoundary } from '@/components/ui/RouteErrorBoundary';
-import { CAREER_PATH } from '@/features/career/types';
 import { REPORT_COMPARISON_PATH, REPORT_DAY_PATTERN } from '@/components/reporte-diario/navigation';
 import { CANDIDATE_METRICS_PATH } from '@/pages/candidate-metrics/navigation';
 import { PERFORMANCE_EVALUATIONS_2027_PATH } from '@/features/performance-evaluations-2027/types';
@@ -21,8 +20,6 @@ import { useSidebarCollapsed } from './useSidebarCollapsed';
 
 const PAGE_TITLES: Readonly<Record<string, string>> = {
   [HOME_PATH]: 'Inicio',
-  '/kanban': 'Kanban',
-  [CAREER_PATH]: 'Tu camino profesional',
   '/employee-turnover': 'Rotación',
   '/departure-reasons': 'Motivos de baja',
   [DATA_UPDATE_PATH]: 'Actualización de datos',
@@ -46,6 +43,9 @@ export function AppShell({ children }: { children: ReactNode }) {
   const location = useLocation();
 
   const pageTitle = useMemo(() => {
+    if (location.pathname === getConfiguracionHref('analisis')) {
+      return language === 'en' ? 'Analysis' : 'Análisis';
+    }
     if (location.pathname === PERFORMANCE_EVALUATIONS_2027_PATH) {
       return language === 'en'
         ? '2027 Performance Evaluation Tracking'
