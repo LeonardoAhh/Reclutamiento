@@ -49,9 +49,14 @@
   width: 100%;
 }
 
-.recordatorios-route-date-field .config-filter-select {
+.recordatorios-route-date-field input[type="date"] {
+  display: block;
+  inline-size: 100%;
   min-inline-size: 0;
   max-inline-size: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  text-align: start;
 }
 
 .recordatorios-routes {
