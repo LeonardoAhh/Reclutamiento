@@ -30,7 +30,7 @@ export function SidebarAccountMenu({ username, displayName, avatarUrl, role, col
     : role === 'reclutador' ? (language === 'en' ? 'Recruiter' : 'Reclutador') : '';
   const trigger = (
     <DropdownMenuTrigger asChild>
-      <button type="button" className="sidebar__account-trigger" aria-label={language === 'en' ? `Account menu for ${name}` : `Menú de cuenta de ${name}`} aria-expanded={open}>
+      <button type="button" className="sidebar__account-trigger" aria-label={language === 'en' ? `Account menu for ${name}` : `Menú de cuenta de ${name}`} aria-expanded={open} onClick={() => playSound(open ? 'close' : 'open')}>
         <Avatar name={name} src={avatarUrl} fallback={<UserRound aria-hidden="true" />} />
         <span className="sidebar__account-copy">
           <span className="sidebar__account-name">{name}</span>
@@ -60,7 +60,7 @@ export function SidebarAccountMenu({ username, displayName, avatarUrl, role, col
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <div className="sidebar__account-actions" data-confirming={awaitingConfirmation}>
-          {awaitingConfirmation && <DropdownMenuItem onSelect={(event) => { event.preventDefault(); setConfirming(false); }}>
+          {awaitingConfirmation && <DropdownMenuItem data-cuelume-tap="" onSelect={(event) => { event.preventDefault(); setConfirming(false); }}>
             {language === 'en' ? 'Cancel' : 'Cancelar'}
           </DropdownMenuItem>}
           <DropdownMenuItem variant="destructive" disabled={isLoading} aria-busy={isLoading}

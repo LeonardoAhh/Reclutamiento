@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type RefCallback } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import * as echarts from 'echarts/core';
 import { EffectScatterChart, MapChart, ScatterChart } from 'echarts/charts';
@@ -10,7 +10,6 @@ import { motionTransition } from '@/lib/motionTokens';
 import { TYPEWRITER_INTERVAL_MS } from '@/lib/constants';
 import { TypewriterTitle } from '@/components/ui/TypewriterTitle';
 import { BIRTHPLACE_COUNTS } from './birthplaceData';
-import { HomePager } from './HomePager';
 import { BirthplaceMapTooltip } from './BirthplaceMapTooltip';
 import { useBirthplaceMapTooltip } from './useBirthplaceMapTooltip';
 import './BirthplaceMap.css';
@@ -24,11 +23,12 @@ function cssToken(name: string) {
 }
 
 type BirthplaceMapProps = {
-  titleRef: RefCallback<HTMLHeadingElement>;
-  onNext: () => void;
+  onReady?: () => void;
+  onLoadFailed?: () => void;
+  onInteractionChange?: (active: boolean) => void;
 };
 
-export default function BirthplaceMap({ titleRef, onNext }: BirthplaceMapProps) {
+export default function BirthplaceMap({ onReady, onLoadFailed, onInteractionChange }: BirthplaceMapProps) {
   const { language } = useLanguage();
   const en = language === 'en';
   const chartElement = useRef<HTMLDivElement>(null);
@@ -110,11 +110,14 @@ export default function BirthplaceMap({ titleRef, onNext }: BirthplaceMapProps) 
 
     async function loadMap() {
       try {
-        const response = await fetch(MAP_URL, { signal: controller.signal });
-        if (!response.ok) throw new Error('Map unavailable');
-        const mapData: unknown = await response.json();
+        if (!echarts.getMap('mexico-home')) {
+          const response = await fetch(MAP_URL, { signal: controller.signal });
+          if (!response.ok) throw new Error('Map unavailable');
+          const mapData: unknown = await response.json();
+          if (!active) return;
+          echarts.registerMap('mexico-home', mapData as Parameters<typeof echarts.registerMap>[1]);
+        }
         if (!active) return;
-        echarts.registerMap('mexico-home', mapData as Parameters<typeof echarts.registerMap>[1]);
         chart = echarts.init(element, undefined, { renderer: 'canvas' });
         chart.on('mouseover', showTooltip);
         chart.on('click', showTooltip);
@@ -122,8 +125,12 @@ export default function BirthplaceMap({ titleRef, onNext }: BirthplaceMapProps) 
         chart.getZr().on('globalout', hideTooltip);
         updateChart();
         setReady(true);
+        onReady?.();
       } catch {
-        if (active && !controller.signal.aborted) setLoadFailed(true);
+        if (active && !controller.signal.aborted) {
+          setLoadFailed(true);
+          onLoadFailed?.();
+        }
       }
     }
     void loadMap();
@@ -137,7 +144,7 @@ export default function BirthplaceMap({ titleRef, onNext }: BirthplaceMapProps) 
       scheme.removeEventListener('change', updateChart);
       chart?.dispose();
     };
-  }, [showTooltip, hideTooltip]);
+  }, [showTooltip, hideTooltip, onReady, onLoadFailed]);
 
   return (
     <section className="home-birthplace" aria-labelledby="home-birthplace-title">
@@ -147,7 +154,7 @@ export default function BirthplaceMap({ titleRef, onNext }: BirthplaceMapProps) 
         animate={{ opacity: 1, y: 0 }}
         transition={entrance.transition}
       >
-        <h2 id="home-birthplace-title" ref={titleRef} tabIndex={-1}>
+        <h2 id="home-birthplace-title">
           <TypewriterTitle
             key={language}
             sequences={[{ text: en ? 'Where we come from' : 'De dónde venimos' }]}
@@ -159,7 +166,6 @@ export default function BirthplaceMap({ titleRef, onNext }: BirthplaceMapProps) 
             showCursor={false}
           />
         </h2>
-        <HomePager previousDisabled nextDisabled={false} onNext={onNext} />
       </motion.header>
       {loadFailed ? (
         <p className="home-birthplace__fallback" role="status">
@@ -173,6 +179,9 @@ export default function BirthplaceMap({ titleRef, onNext }: BirthplaceMapProps) 
           transition={entrance.transition}
           aria-busy={!ready}
           onMouseLeave={hideTooltip}
+          onPointerEnter={() => onInteractionChange?.(true)}
+          onPointerLeave={() => onInteractionChange?.(false)}
+          onPointerCancel={() => onInteractionChange?.(false)}
         >
           <div
             ref={chartElement}

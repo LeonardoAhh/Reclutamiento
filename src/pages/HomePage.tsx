@@ -1,208 +1,71 @@
-import { lazy, Suspense, useCallback, useLayoutEffect, useRef, useState } from "react";
-import { ArrowUpRight, BadgeDollarSign, Brain, ChartNoAxesCombined, Scale, ShieldCheck, UsersRound } from "lucide-react";
-import { Link } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
-import { useLanguage, type Language } from "@/contexts/LanguageContext";
-import { homeLesson, homeSection, homeText } from "./homeTranslations";
-import { getUserTitle } from "@/lib/userIdentity";
-import { getConfiguracionHref } from "@/lib/configuracionNavigation";
-import { useTeamDirectory } from '@/features/team/TeamProvider';
-import { toNaturalCase } from "@/lib/utils";
-import { HomeLessonCard } from "./home/HomeLessonCard";
-import { HomePager } from "./home/HomePager";
-import {
-  LEADERSHIP_CUE_BY_TITLE,
-  DEFAULT_LEADERSHIP_CUE, EMPLOYEE_LIFECYCLE, LABOR_GUIDANCE,
-  DEVELOPMENT_SECTIONS, PRACTICE_REFLECTIONS, RESPONSIBLE_PROCESS_CARD,
-  RESPONSIBLE_PROCESS_COMMITMENTS, HOME_TOPICS, LEGACY_LESSONS,
-  type DevelopmentSection,
-} from "./homeContent";
-import "./HomePage.css";
+import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { BadgeDollarSign, ChartNoAxesCombined } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useMotionTokens } from '@/hooks/useMotionTokens';
+import { getConfiguracionHref } from '@/lib/configuracionNavigation';
+import { toNaturalCase } from '@/lib/utils';
+import { HomeCultureSection } from './home/HomeCultureSection';
+import './HomePage.css';
 
-const BirthplaceMap = lazy(() => import("./home/BirthplaceMap"));
+const BirthplaceMap = lazy(() => import('./home/BirthplaceMap'));
+const MAP_SCENE_MS = 5000;
+const CULTURE_SCENE_MS = 15000;
+const MAP_LOAD_TIMEOUT_MS = 12000;
 
-function HomeContext({ section }: { section: DevelopmentSection }) {
-  return (
-    <HomeLessonCard
-      title={section.title}
-      eyebrow={section.eyebrow}
-      icon={section.topics[0].icon}
-    >
-      <p>{section.introduction}</p>
-    </HomeLessonCard>
-  );
-}
-
-function TopicLessons({ topicId, leadershipCue, language }: {
-  topicId: string;
-  leadershipCue: string;
-  language: Language;
-}) {
-  const lesson = (data: (typeof LEGACY_LESSONS)[number]) => homeLesson(data, language);
-  const section = (index: number) => homeSection(DEVELOPMENT_SECTIONS[index], language);
-  switch (topicId) {
-    case "reclutamiento":
-      return (
-        <>
-          <HomeLessonCard {...homeLesson({ ...RESPONSIBLE_PROCESS_CARD, icon: ShieldCheck }, language)}>
-            <ul className="home-page__commitment-list">
-              {RESPONSIBLE_PROCESS_COMMITMENTS.map(({ title, description, icon: Icon }) => (
-                <li key={title}>
-                  <Icon aria-hidden="true" />
-                  <div><h4>{homeText(title, language)}</h4><p>{homeText(description, language)}</p></div>
-                </li>
-              ))}
-            </ul>
-          </HomeLessonCard>
-          <HomeLessonCard {...lesson(LEGACY_LESSONS[0])} />
-          <HomeLessonCard {...lesson(LEGACY_LESSONS[1])} />
-          <HomeContext section={section(0)} />
-          {section(0).topics.map(topic => (
-            <HomeLessonCard {...topic} key={topic.title} />
-          ))}
-        </>
-      );
-    case "administracion":
-      return (
-        <>
-          <HomeLessonCard {...lesson(LEGACY_LESSONS[2])} />
-          <HomeLessonCard
-            {...lesson(LEGACY_LESSONS[3])}
-            action={
-              <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/LFT.pdf"
-                target="_blank" rel="noreferrer">
-                {language === 'en' ? 'Official source' : 'Fuente oficial'}
-                <span className="sr-only">{language === 'en' ? '(opens in new tab)' : '(abre en nueva pestaña)'}</span>
-                <ArrowUpRight aria-hidden="true" />
-              </a>
-            }
-          >
-            <ul className="home-page__labor-list">
-              {LABOR_GUIDANCE.map(({ article, label }) => (
-                <li key={article}><strong>{article}</strong><span>{homeText(label, language)}</span></li>
-              ))}
-            </ul>
-            <footer className="home-page__legal-footer">
-              <span>{language === 'en' ? 'General guidance; consult the current law.' : 'Orientación general; consulta el texto vigente.'}</span>
-            </footer>
-          </HomeLessonCard>
-          <HomeLessonCard title={language === 'en' ? 'The complete experience' : 'Una experiencia completa'}
-            eyebrow={language === 'en' ? 'Employee lifecycle' : 'Ciclo de la persona'} icon={UsersRound}
-            description={language === 'en' ? 'Human Resources responsibilities continue before, during, and after hiring.' : 'La responsabilidad de Recursos Humanos continúa antes, durante y después de la contratación.'}
-            steps={EMPLOYEE_LIFECYCLE.map(value => homeText(value, language))} />
-          <HomeLessonCard {...section(2).topics[1]} />
-          <HomeLessonCard {...lesson(LEGACY_LESSONS[9])} />
-        </>
-      );
-    case "liderazgo":
-      return (
-        <>
-          <HomeLessonCard title={homeText(HOME_TOPICS[2].title, language)} icon={HOME_TOPICS[2].icon}>
-            <p>{leadershipCue}</p>
-          </HomeLessonCard>
-          {[4, 5, 6].map(index => (
-            <HomeLessonCard {...lesson(LEGACY_LESSONS[index])} key={LEGACY_LESSONS[index].title} />
-          ))}
-          <HomeContext section={section(1)} />
-          {section(1).topics.map(topic => (
-            <HomeLessonCard {...topic} key={topic.title} />
-          ))}
-          <HomeLessonCard {...section(2).topics[0]} />
-        </>
-      );
-    case "desarrollo":
-      return (
-        <>
-          {[7, 8, 10].map(index => (
-            <HomeLessonCard {...lesson(LEGACY_LESSONS[index])} key={LEGACY_LESSONS[index].title} />
-          ))}
-          <HomeContext section={section(2)} />
-          <HomeLessonCard {...section(2).topics[2]} />
-          <HomeContext section={section(3)} />
-          {section(3).topics.map(topic => (
-            <HomeLessonCard {...topic} key={topic.title} />
-          ))}
-        </>
-      );
-    case "reflexion":
-      return (
-        <>
-          {PRACTICE_REFLECTIONS.map(({ label, title, description, icon }) => (
-            <HomeLessonCard title={homeText(title, language)} eyebrow={homeText(label, language)} icon={icon} key={label}>
-              <p>{homeText(description, language)}</p>
-            </HomeLessonCard>
-          ))}
-          <HomeLessonCard title={language === 'en' ? 'When an impression comes before the evidence' : 'Cuando una impresión aparece antes que la evidencia'}
-            eyebrow={language === 'en' ? 'A case to consider' : 'Caso para pensar'} icon={Brain}
-            description={language === 'en' ? 'A quick conclusion about someone comes up during a conversation, but job-related questions remain unanswered.' : 'Durante una conversación surge una conclusión rápida sobre una persona, pero todavía faltan preguntas relacionadas con el puesto.'}>
-            <h4>{language === 'en' ? 'Before deciding' : 'Antes de decidir'}</h4>
-            <ul>
-              <li>{language === 'en' ? 'What did I observe directly?' : '¿Qué observé directamente?'}</li>
-              <li>{language === 'en' ? 'What am I interpreting?' : '¿Qué estoy interpretando?'}</li>
-              <li>{language === 'en' ? 'What question would provide relevant evidence?' : '¿Qué pregunta aportaría evidencia relevante?'}</li>
-            </ul>
-          </HomeLessonCard>
-          <HomeLessonCard title={language === 'en' ? 'Practical comparison' : 'Contraste práctico'}
-            description={language === 'en' ? 'Helps / Hinders' : 'Ayuda / Dificulta'} icon={Scale}>
-            <div className="home-page__contrast-columns">
-              <div>
-                <h4>{language === 'en' ? 'Helps' : 'Ayuda'}</h4>
-                <ul>
-                  <li>{language === 'en' ? 'Ask and confirm' : 'Preguntar y confirmar'}</li>
-                  <li>{language === 'en' ? 'Explain the criteria' : 'Explicar el criterio'}</li>
-                  <li>{language === 'en' ? 'Agree on the next step' : 'Acordar el siguiente paso'}</li>
-                </ul>
-              </div>
-              <div>
-                <h4>{language === 'en' ? 'Hinders' : 'Dificulta'}</h4>
-                <ul>
-                  <li>{language === 'en' ? 'Assume without checking' : 'Suponer sin verificar'}</li>
-                  <li>{language === 'en' ? 'Promise without support' : 'Prometer sin respaldo'}</li>
-                  <li>{language === 'en' ? 'Leave the outcome unclear' : 'Dejar un cierre ambiguo'}</li>
-                </ul>
-              </div>
-            </div>
-          </HomeLessonCard>
-        </>
-      );
-    default:
-      return null;
-  }
-}
+type HomeScene = 'map' | 'culture';
+type MapState = 'loading' | 'ready' | 'failed';
 
 export function HomePage() {
   const { language } = useLanguage();
   const en = language === 'en';
-  const { members } = useTeamDirectory();
   const { profile, username } = useAuth();
-  const [activeIndex, setActiveIndex] = useState(0);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const mapTitleRef = useRef<HTMLHeadingElement>(null);
-  const moveFocus = useRef(false);
-  const activeTopic = HOME_TOPICS[activeIndex - 1];
-  const setMapTitleRef = useCallback((node: HTMLHeadingElement | null) => {
-    mapTitleRef.current = node;
-    if (node && moveFocus.current) {
-      node.focus();
-      moveFocus.current = false;
-    }
+  const reduceMotion = useReducedMotion() ?? false;
+  const entrance = useMotionTokens('--transition-slow');
+  const [scene, setScene] = useState<HomeScene>('map');
+  const [mapState, setMapState] = useState<MapState>('loading');
+  const [mapInteracting, setMapInteracting] = useState(false);
+  const [pageVisible, setPageVisible] = useState(() => !document.hidden);
+
+  const onMapReady = useCallback(() => setMapState('ready'), []);
+  const onMapLoadFailed = useCallback(() => setMapState('failed'), []);
+  const onMapInteractionChange = useCallback((active: boolean) => setMapInteracting(active), []);
+
+  useEffect(() => {
+    const updateVisibility = () => setPageVisible(!document.hidden);
+    document.addEventListener('visibilitychange', updateVisibility);
+    return () => document.removeEventListener('visibilitychange', updateVisibility);
   }, []);
 
-  useLayoutEffect(() => {
-    if (moveFocus.current) {
-      const heading = (activeIndex === 0 ? mapTitleRef : titleRef).current;
-      if (heading) {
-        heading.focus();
-        moveFocus.current = false;
-      }
-    }
-  }, [activeIndex]);
+  useEffect(() => {
+    if (reduceMotion || scene !== 'map' || mapState !== 'loading') return;
+    const timeout = window.setTimeout(() => setMapState('failed'), MAP_LOAD_TIMEOUT_MS);
+    return () => window.clearTimeout(timeout);
+  }, [reduceMotion, scene, mapState]);
 
-  function selectTopic(index: number) {
-    if (index === activeIndex || index < 0 || index > HOME_TOPICS.length) return;
-    moveFocus.current = true;
-    setActiveIndex(index);
-  }
+  useEffect(() => {
+    if (reduceMotion || scene !== 'map' || mapState !== 'failed') return;
+    setScene('culture');
+  }, [reduceMotion, scene, mapState]);
+
+  const timerActive = !reduceMotion && pageVisible &&
+    (scene === 'map' ? mapState === 'ready' && !mapInteracting : mapState !== 'failed');
+
+  useEffect(() => {
+    if (!timerActive) return;
+    const timeout = window.setTimeout(() => {
+      if (scene === 'map') {
+        setScene('culture');
+      } else {
+        setMapState('loading');
+        setMapInteracting(false);
+        setScene('map');
+      }
+    }, scene === 'map' ? MAP_SCENE_MS : CULTURE_SCENE_MS);
+    return () => window.clearTimeout(timeout);
+  }, [scene, timerActive]);
 
   if (!profile) return null;
 
@@ -210,10 +73,9 @@ export function HomePage() {
     preserveAcronyms: false,
   });
   const firstName = displayName.split(/\s+/)[0] || displayName;
-  const userTitle = getUserTitle(profile.role, members.find(member => member.profile_id === profile.id)?.job_title);
-  const leadershipCue =
-    homeText(LEADERSHIP_CUE_BY_TITLE[userTitle] ?? DEFAULT_LEADERSHIP_CUE, language);
-
+  const sceneLabel = scene === 'map'
+    ? en ? 'Where we come from' : 'De dónde venimos'
+    : en ? 'Our HR culture' : 'Nuestra cultura RH';
 
   return (
     <main className="home-page container" aria-labelledby="home-page-title">
@@ -245,35 +107,49 @@ export function HomePage() {
         </nav>
       </header>
 
-      {activeIndex === 0 ? (
-        <Suspense fallback={<div className="home-birthplace home-birthplace--loading" aria-hidden="true" />}>
-          <BirthplaceMap titleRef={setMapTitleRef} onNext={() => selectTopic(1)} />
-        </Suspense>
-      ) : (
-        <div id="home-content" className="home-page__learning">
-        <section id="home-topic-content" className="home-page__topic-content"
-          aria-labelledby="home-topic-title">
-          <header className="home-page__section-header">
-            <div className="home-page__section-heading">
-              <h2 id="home-topic-title" ref={titleRef} tabIndex={-1}
-                className="home-page__section-title">
-                {homeText(activeTopic.title, language)}
-              </h2>
-              <HomePager
-                previousDisabled={false}
-                nextDisabled={activeIndex === HOME_TOPICS.length}
-                onPrevious={() => selectTopic(activeIndex - 1)}
-                onNext={() => selectTopic(activeIndex + 1)}
-              />
-            </div>
-            <p className="home-page__section-intro">{homeText(activeTopic.introduction, language)}</p>
-          </header>
-          <div className="home-page__lessons">
-            <TopicLessons topicId={activeTopic.id} leadershipCue={leadershipCue} language={language} />
+      <div className="home-page__stage">
+        {mapState === 'failed' && (
+          <p className="home-page__map-error" role="status">
+            {en ? 'The map could not be loaded. You can still read our HR culture.' : 'No se pudo cargar el mapa. Puedes seguir leyendo nuestra cultura RH.'}
+          </p>
+        )}
+        {reduceMotion ? (
+          <div className="home-page__reduced-scenes">
+            <Suspense fallback={<div className="home-birthplace home-birthplace--loading" role="status"><span className="sr-only">{en ? 'Loading map' : 'Cargando mapa'}</span></div>}>
+              <BirthplaceMap onReady={onMapReady} onLoadFailed={onMapLoadFailed} />
+            </Suspense>
+            <HomeCultureSection />
           </div>
-        </section>
-        </div>
-      )}
+        ) : (
+          <>
+            <p className="sr-only" role="status">{sceneLabel}</p>
+            <AnimatePresence mode="wait" initial={false}>
+              {scene === 'map' ? (
+                <motion.div key="map" className="home-page__scene"
+                  initial={{ opacity: 0, y: entrance.distance }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -entrance.distance }}
+                  transition={entrance.transition}
+                >
+                  <Suspense fallback={<div className="home-birthplace home-birthplace--loading" role="status"><span className="sr-only">{en ? 'Loading map' : 'Cargando mapa'}</span></div>}>
+                    <BirthplaceMap onReady={onMapReady} onLoadFailed={onMapLoadFailed}
+                      onInteractionChange={onMapInteractionChange} />
+                  </Suspense>
+                </motion.div>
+              ) : (
+                <motion.div key="culture" className="home-page__scene"
+                  initial={{ opacity: 0, y: entrance.distance }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -entrance.distance }}
+                  transition={entrance.transition}
+                >
+                  <HomeCultureSection />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </>
+        )}
+      </div>
     </main>
   );
 }

@@ -1,0 +1,78 @@
+.home-culture {
+  display: grid;
+  min-inline-size: 0;
+  gap: var(--design-spacing-xl);
+  padding: var(--design-spacing-lg);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-card);
+}
+
+.home-culture__header,
+.home-culture__pillar,
+.home-culture__closing {
+  display: grid;
+  min-inline-size: 0;
+  gap: var(--design-spacing-sm);
+}
+
+.home-culture__eyebrow {
+  margin: 0;
+  color: var(--color-muted);
+  font: var(--type-caption-up-weight) var(--type-caption-up-size)/var(--type-caption-up-line) var(--font-body);
+  letter-spacing: var(--type-caption-up-tracking);
+}
+
+.home-culture__title {
+  margin: 0;
+  color: var(--color-ink);
+  font: var(--type-heading-lg-weight) var(--type-heading-lg-size)/var(--type-heading-lg-line) var(--font-body);
+  letter-spacing: var(--type-heading-lg-tracking);
+  overflow-wrap: anywhere;
+}
+
+.home-culture__introduction,
+.home-culture__pillar p {
+  margin: 0;
+  color: var(--color-body);
+  font: var(--type-body-lg-weight) var(--type-body-lg-size)/var(--type-body-lg-line) var(--font-body);
+  letter-spacing: var(--type-body-lg-tracking);
+}
+
+.home-culture__pillars {
+  display: grid;
+  min-inline-size: 0;
+  gap: var(--design-spacing-lg);
+}
+
+.home-culture__pillar h3 {
+  margin: 0;
+  color: var(--color-ink);
+  font: var(--type-heading-sm-weight) var(--type-heading-sm-size)/var(--type-heading-sm-line) var(--font-body);
+  letter-spacing: var(--type-heading-sm-tracking);
+}
+
+.home-culture__closing {
+  padding-block-start: var(--design-spacing-lg);
+  border-block-start: var(--border-width) solid var(--color-hairline);
+}
+
+.home-culture__closing blockquote,
+.home-culture__closing p {
+  margin: 0;
+  color: var(--color-ink);
+  font: var(--type-body-strong-weight) var(--type-body-strong-size)/var(--type-body-strong-line) var(--font-body);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+@media (min-width: 768px) {
+  .home-culture {
+    padding: var(--design-spacing-xl);
+  }
+}
+
+@media (min-width: 1080px) {
+  .home-culture__pillars {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

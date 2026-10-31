@@ -121,6 +121,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           type="button"
           className="sidebar-mobile-overlay"
           onClick={closeMobileMenu}
+          data-cuelume-close=""
           aria-label={language === 'en' ? 'Close menu' : 'Cerrar menú'}
           tabIndex={-1}
         />

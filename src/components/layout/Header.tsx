@@ -34,6 +34,8 @@ export function Header({ pageTitle, isHome, isDesktop, onMobileMenuToggle,
           </div>
           {!isDesktop && <button ref={mobileMenuButtonRef} type="button" className="app-header__sidebar-toggle"
             onClick={onMobileMenuToggle}
+            data-cuelume-open={mobileMenuOpen ? undefined : ''}
+            data-cuelume-close={mobileMenuOpen ? '' : undefined}
             aria-expanded={mobileMenuOpen}
             aria-controls="app-sidebar" aria-label={toggleLabel}>
             <MorphMenuIcon isOpen={mobileMenuOpen} size="var(--icon-size-md)" />

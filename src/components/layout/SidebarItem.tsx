@@ -27,6 +27,7 @@ export function SidebarItem({ item, collapsed, onNavigate }: SidebarItemProps) {
         if (!event.defaultPrevented && event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) onNavigate?.();
       }}
       data-testid={`sidebar-nav-${to.replace('/', '') || 'kpis'}`}
+      data-cuelume-navigate=""
       onPointerEnter={() => preloadRoute(to)}
       onFocus={() => preloadRoute(to)}
     >

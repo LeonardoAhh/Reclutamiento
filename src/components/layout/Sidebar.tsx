@@ -59,7 +59,7 @@ export function Sidebar({ mobileMenuOpen = false, onCloseMobileMenu, collapsed =
 
   if (!username) return null;
   const desktopToggle = (
-    <button type="button" className="sidebar__desktop-toggle" onClick={onToggleCollapsed}
+    <button type="button" className="sidebar__desktop-toggle" data-cuelume-toggle="" onClick={onToggleCollapsed}
       aria-expanded={!collapsed} aria-controls="app-sidebar"
       aria-label={collapsed
         ? language === 'en' ? 'Show sidebar' : 'Mostrar barra lateral'
@@ -85,7 +85,7 @@ export function Sidebar({ mobileMenuOpen = false, onCloseMobileMenu, collapsed =
           : language === 'en' ? 'Collapse sidebar' : 'Contraer barra lateral'} side="right">
           {desktopToggle}
         </Tooltip>
-        <button type="button" className="sidebar__close-btn" onClick={onCloseMobileMenu}
+        <button type="button" className="sidebar__close-btn" data-cuelume-close="" onClick={onCloseMobileMenu}
           aria-expanded={mobileMenuOpen} aria-controls="app-sidebar"
           data-testid="sidebar-close-toggle"
           aria-label={language === 'en' ? 'Close menu' : 'Cerrar menú'}>
