@@ -31,7 +31,8 @@
 
 .sidebar-mobile-overlay {
   position: fixed;
-  inset: 0;
+  inset-block: var(--safe-area-top) var(--safe-area-bottom);
+  inset-inline: 0;
   background-color: var(--color-modal-scrim);
   z-index: var(--layer-navigation-overlay);
   border: 0;
