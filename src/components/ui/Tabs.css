@@ -27,7 +27,6 @@
   margin-inline-end: calc(-1 * var(--focus-ring-width));
   padding-inline-start: var(--focus-ring-width);
   padding-block-end: var(--focus-ring-width);
-  border-block-end: var(--border-width) solid var(--color-hairline-strong);
 }
 
 .ui-tabs__list[data-variant='outlined'] {
