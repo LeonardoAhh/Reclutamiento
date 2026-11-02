@@ -119,75 +119,84 @@ export function AppShell({ children }: { children: ReactNode }) {
       setMobileMenuOpen(true);
     }
   }, [mobileMenuOpen, closeMobileMenu, setDrawerProgress]);
-  const restoreMobileMenuFocus = useCallback(() => mobileMenuButtonRef.current?.focus(), []);
+  const restoreMobileMenuFocus = useCallback(() => mobileMenuButtonRef.current?.focus({ preventScroll: true }), []);
 
-  const handlePointerDown = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
-    if (isDesktop || !event.isPrimary || (event.pointerType !== 'touch' && event.pointerType !== 'pen')) return;
-    const target = event.target instanceof Element ? event.target : null;
-    if (target?.closest('input, textarea, select, [contenteditable="true"], [data-sidebar-no-drag]')) return;
-    if (mobileMenuOpen && target?.closest('.sidebar')) return;
-    if (!mobileMenuOpen) {
-      const edgeWidth = Number.parseFloat(
-        getComputedStyle(document.documentElement).getPropertyValue('--touch-target-min'),
-      );
-      if (event.clientX > (Number.isFinite(edgeWidth) ? edgeWidth : 44)) return;
-    }
+  const handlePointerDown = useCallback(
+    (event: ReactPointerEvent<HTMLDivElement>) => {
+      if (isDesktop || !event.isPrimary || (event.pointerType !== 'touch' && event.pointerType !== 'pen')) return;
+      const target = event.target instanceof Element ? event.target : null;
+      if (target?.closest('input, textarea, select, [contenteditable="true"], [data-sidebar-no-drag]')) return;
+      if (mobileMenuOpen && target?.closest('.sidebar')) return;
+      if (!mobileMenuOpen) {
+        const edgeWidth = Number.parseFloat(
+          getComputedStyle(document.documentElement).getPropertyValue('--touch-target-min'),
+        );
+        if (event.clientX > (Number.isFinite(edgeWidth) ? edgeWidth : 44)) return;
+      }
 
-    pointerStartRef.current = {
-      pointerId: event.pointerId,
-      startX: event.clientX,
-      startY: event.clientY,
-      startTime: performance.now(),
-      startProgress: mobileMenuOpen ? 1 : 0,
-      sidebarWidth: Math.max(1, sidebarRef.current?.getBoundingClientRect().width ?? 0),
-      dragging: false,
-    };
-  }, [isDesktop, mobileMenuOpen]);
+      pointerStartRef.current = {
+        pointerId: event.pointerId,
+        startX: event.clientX,
+        startY: event.clientY,
+        startTime: performance.now(),
+        startProgress: mobileMenuOpen ? 1 : 0,
+        sidebarWidth: Math.max(1, sidebarRef.current?.getBoundingClientRect().width ?? 0),
+        dragging: false,
+      };
+    },
+    [isDesktop, mobileMenuOpen],
+  );
 
-  const handlePointerMove = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
-    const pointer = pointerStartRef.current;
-    if (!pointer || pointer.pointerId !== event.pointerId) return;
-    const deltaX = event.clientX - pointer.startX;
-    const deltaY = event.clientY - pointer.startY;
-    if (!pointer.dragging) {
-      if (Math.abs(deltaY) > Math.abs(deltaX)) {
-        pointerStartRef.current = null;
+  const handlePointerMove = useCallback(
+    (event: ReactPointerEvent<HTMLDivElement>) => {
+      const pointer = pointerStartRef.current;
+      if (!pointer || pointer.pointerId !== event.pointerId) return;
+      const deltaX = event.clientX - pointer.startX;
+      const deltaY = event.clientY - pointer.startY;
+      if (!pointer.dragging) {
+        if (Math.abs(deltaY) > Math.abs(deltaX)) {
+          pointerStartRef.current = null;
+          return;
+        }
+        if (Math.abs(deltaX) < 8) return;
+        pointer.dragging = true;
+        const workspace = event.currentTarget.querySelector<HTMLElement>('.app-shell__workspace');
+        const visibleProgress = workspace
+          ? workspace.getBoundingClientRect().left / pointer.sidebarWidth
+          : pointer.startProgress;
+        pointer.startProgress = Math.max(0, Math.min(1, visibleProgress - deltaX / pointer.sidebarWidth));
+        event.currentTarget.dataset.sidebarDragging = 'true';
+        event.currentTarget.setPointerCapture(event.pointerId);
+      }
+      event.preventDefault();
+      setDrawerProgress(pointer.startProgress + deltaX / pointer.sidebarWidth, pointer.sidebarWidth);
+    },
+    [setDrawerProgress],
+  );
+
+  const finishPointerGesture = useCallback(
+    (event: ReactPointerEvent<HTMLDivElement>, cancelled = false) => {
+      const pointer = pointerStartRef.current;
+      if (!pointer || pointer.pointerId !== event.pointerId) return;
+      pointerStartRef.current = null;
+      if (!pointer.dragging) return;
+
+      delete event.currentTarget.dataset.sidebarDragging;
+      if (cancelled) {
+        setDrawerProgress(mobileMenuOpen ? 1 : 0);
         return;
       }
-      if (Math.abs(deltaX) < 8) return;
-      pointer.dragging = true;
-      const workspace = event.currentTarget.querySelector<HTMLElement>('.app-shell__workspace');
-      const visibleProgress = workspace
-        ? workspace.getBoundingClientRect().left / pointer.sidebarWidth
-        : pointer.startProgress;
-      pointer.startProgress = Math.max(0, Math.min(1, visibleProgress - deltaX / pointer.sidebarWidth));
-      event.currentTarget.dataset.sidebarDragging = 'true';
-      event.currentTarget.setPointerCapture(event.pointerId);
-    }
-    event.preventDefault();
-    setDrawerProgress(pointer.startProgress + deltaX / pointer.sidebarWidth, pointer.sidebarWidth);
-  }, [setDrawerProgress]);
 
-  const finishPointerGesture = useCallback((event: ReactPointerEvent<HTMLDivElement>, cancelled = false) => {
-    const pointer = pointerStartRef.current;
-    if (!pointer || pointer.pointerId !== event.pointerId) return;
-    pointerStartRef.current = null;
-    if (!pointer.dragging) return;
-
-    delete event.currentTarget.dataset.sidebarDragging;
-    if (cancelled) {
-      setDrawerProgress(mobileMenuOpen ? 1 : 0);
-      return;
-    }
-
-    const deltaX = event.clientX - pointer.startX;
-    const elapsed = Math.max(1, performance.now() - pointer.startTime);
-    const progress = pointer.startProgress + deltaX / pointer.sidebarWidth;
-    const velocity = deltaX / elapsed;
-    const shouldOpen = velocity > 0.5 ? true : velocity < -0.5 ? false : progress >= 0.5;
-    setDrawerProgress(shouldOpen ? 1 : 0, pointer.sidebarWidth);
-    setMobileMenuOpen(shouldOpen);
-  }, [mobileMenuOpen, setDrawerProgress]);
+      const deltaX = event.clientX - pointer.startX;
+      const elapsed = Math.max(1, performance.now() - pointer.startTime);
+      const progress = pointer.startProgress + deltaX / pointer.sidebarWidth;
+      const velocity = deltaX / elapsed;
+      const shouldOpen = velocity > 0.5 ? true : velocity < -0.5 ? false : progress >= 0.5;
+      setDrawerProgress(shouldOpen ? 1 : 0, pointer.sidebarWidth);
+      setMobileMenuOpen(shouldOpen);
+    },
+    [mobileMenuOpen, setDrawerProgress],
+  );
 
   useEffect(() => {
     const mediaQuery = window.matchMedia(DESKTOP_MEDIA_QUERY);

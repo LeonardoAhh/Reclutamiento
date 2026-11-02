@@ -8,12 +8,5 @@ interface MorphMenuIconProps {
 }
 
 export function MorphMenuIcon({ isOpen, size, className = '' }: MorphMenuIconProps) {
-  return (
-    <MorphingIcon
-      icon={isOpen ? X : Menu}
-      size={size}
-      className={className}
-      aria-hidden="true"
-    />
-  );
+  return <MorphingIcon icon={isOpen ? X : Menu} size={size} className={className} spring="smooth" aria-hidden="true" />;
 }

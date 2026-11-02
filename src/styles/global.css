@@ -334,10 +334,8 @@
   --control-padding-x: var(--design-spacing-sm);
   --control-padding-y: var(--design-spacing-xs);
   /* Campo y botón comparten altura exterior; el texto puede crecer con el zoom. */
-  --control-min-block-size: max(
-    var(--touch-target-min),
-    calc(var(--type-button-size) * var(--type-button-line) + var(--control-padding-y) * 2 + var(--border-width) * 2)
-  );
+  --control-min-block-size: max(var(--touch-target-min),
+      calc(var(--type-button-size) * var(--type-button-line) + var(--control-padding-y) * 2 + var(--border-width) * 2));
   --textarea-min-block-size: calc(var(--touch-target-min) * 2);
   --select-content-max-block-size: 15.625rem;
   --icon-size-sm: 1rem;
@@ -456,10 +454,7 @@
   --feature-responsibility-card-min-inline-size: var(--feature-vacancy-assignment-card-min-inline-size);
   --feature-activity-card-min-inline-size: var(--feature-vacancy-assignment-card-min-inline-size);
   --feature-assignment-description-max-lines: 2;
-  --feature-assignment-grid-max-inline-size: calc(
-    4 * var(--feature-vacancy-assignment-card-min-inline-size) + 3 * var(--spacing-md) + 2 * var(--design-spacing-sm) +
-      2 * var(--border-width)
-  );
+  --feature-assignment-grid-max-inline-size: calc(4 * var(--feature-vacancy-assignment-card-min-inline-size) + 3 * var(--spacing-md) + 2 * var(--design-spacing-sm) + 2 * var(--border-width));
   --feature-activity-filter-min-inline-size: 8.5rem;
   --search-field-min-inline-size: 18rem;
   /* Ancho máximo de búsquedas compactas en encabezados de página. */
@@ -783,6 +778,7 @@ video {
 
 /* Preferencia de accesibilidad: prevalece sobre animaciones de las features. */
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
@@ -870,9 +866,8 @@ select {
 
 /* WebKit en iOS amplía al enfocar campos con texto menor que body-lg. */
 @supports (-webkit-touch-callout: none) {
-  :where(
-    input:not(
-      [type='checkbox'],
+
+  :where(input:not([type='checkbox'],
       [type='radio'],
       [type='file'],
       [type='hidden'],
@@ -880,13 +875,11 @@ select {
       [type='submit'],
       [type='reset'],
       [type='range'],
-      [type='color']
-    ),
+      [type='color']),
     textarea,
     select,
     [contenteditable='true'],
-    [contenteditable='']
-  ) {
+    [contenteditable='']) {
     --editable-text-min-size: var(--type-body-lg-size);
   }
 
@@ -1152,8 +1145,8 @@ code:not(pre code) {
   overflow-wrap: anywhere;
 }
 
-.app-page-title > :is(a, button),
-.app-page-title > :is(a, button):is(:hover, :focus, :active, :visited) {
+.app-page-title> :is(a, button),
+.app-page-title> :is(a, button):is(:hover, :focus, :active, :visited) {
   color: inherit;
   text-decoration: none;
 }
@@ -1212,7 +1205,7 @@ code:not(pre code) {
   text-transform: uppercase;
 }
 
-.data-table tbody tr:last-child > * {
+.data-table tbody tr:last-child>* {
   border-block-end: 0;
 }
 
@@ -1357,14 +1350,11 @@ code:not(pre code) {
   color: var(--color-faint);
 }
 
-.form-group
-  :is(input, select, textarea):hover:not(
-    :focus-visible,
-    :disabled,
-    [aria-invalid='true'],
-    .input-error,
-    .input-success
-  ) {
+.form-group :is(input, select, textarea):hover:not( :focus-visible,
+  :disabled,
+  [aria-invalid='true'],
+  .input-error,
+  .input-success) {
   border-color: var(--color-charcoal);
 }
 
@@ -1837,21 +1827,21 @@ code:not(pre code) {
 
 /* Base móvil: se conserva el sheet existente y se respetan las safe areas. */
 
-.modal-content > .modal-header {
+.modal-content>.modal-header {
   padding-left: max(var(--modal-content-padding), var(--safe-area-left));
   padding-right: max(var(--modal-content-padding), var(--safe-area-right));
 }
 
-.modal-content > .modal-scroll-region > .modal-body {
+.modal-content>.modal-scroll-region>.modal-body {
   padding-left: max(var(--modal-content-padding), var(--safe-area-left));
   padding-right: max(var(--modal-content-padding), var(--safe-area-right));
 }
 
-.modal-content .modal-body > * {
+.modal-content .modal-body>* {
   flex-shrink: 0;
 }
 
-.modal-content > .modal-footer {
+.modal-content>.modal-footer {
   padding-left: max(var(--modal-content-padding), var(--safe-area-left));
   padding-right: max(var(--modal-content-padding), var(--safe-area-right));
   padding-bottom: calc(var(--modal-content-padding) + var(--safe-area-bottom));
@@ -1890,11 +1880,11 @@ code:not(pre code) {
     animation: slideDownModal var(--transition-fast) both;
   }
 
-  .modal-content .modal-body > * {
+  .modal-content .modal-body>* {
     flex-shrink: 1;
   }
 
-  .modal-content > .modal-footer {
+  .modal-content>.modal-footer {
     padding-block: var(--design-spacing-sm);
   }
 }
@@ -1918,18 +1908,14 @@ code:not(pre code) {
 
 .modal-content--placement-bottom {
   inset-block-end: max(var(--design-spacing-md), var(--safe-area-bottom));
-  inline-size: calc(
-    100% - max(var(--design-spacing-md), var(--safe-area-left)) - max(var(--design-spacing-md), var(--safe-area-right))
-  );
+  inline-size: calc(100% - max(var(--design-spacing-md), var(--safe-area-left)) - max(var(--design-spacing-md), var(--safe-area-right)));
 }
 
 .modal-content--placement-center {
   inset-block-start: 50%;
   inset-block-end: auto;
   transform: translate(-50%, -50%);
-  inline-size: calc(
-    100% - max(var(--design-spacing-md), var(--safe-area-left)) - max(var(--design-spacing-md), var(--safe-area-right))
-  );
+  inline-size: calc(100% - max(var(--design-spacing-md), var(--safe-area-left)) - max(var(--design-spacing-md), var(--safe-area-right)));
 }
 
 .modal-content--placement-bottom,
@@ -1956,8 +1942,8 @@ code:not(pre code) {
   flex: 1 1 auto;
 }
 
-.modal-title > svg,
-.modal-title > [data-icon] {
+.modal-title>svg,
+.modal-title>[data-icon] {
   flex-shrink: 0;
   width: var(--icon-size-md);
   height: var(--icon-size-md);
@@ -2044,9 +2030,9 @@ code:not(pre code) {
   background: var(--color-surface);
 }
 
-.modal-footer > .btn-primary,
-.modal-footer > .btn-secondary,
-.modal-footer > .btn-danger {
+.modal-footer>.btn-primary,
+.modal-footer>.btn-secondary,
+.modal-footer>.btn-danger {
   flex: 1 1 auto;
 }
 
@@ -2055,9 +2041,9 @@ code:not(pre code) {
     justify-content: flex-end;
   }
 
-  .modal-footer > .btn-primary,
-  .modal-footer > .btn-secondary,
-  .modal-footer > .btn-danger {
+  .modal-footer>.btn-primary,
+  .modal-footer>.btn-secondary,
+  .modal-footer>.btn-danger {
     flex: 0 1 auto;
   }
 }
@@ -2132,6 +2118,7 @@ code:not(pre code) {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .modal-content[data-state],
   .modal-overlay[data-state] {
     animation: none;
@@ -2223,6 +2210,7 @@ code:not(pre code) {
 
 /* Decoración en bucle: se detiene por completo con movimiento reducido. */
 @media (prefers-reduced-motion: reduce) {
+
   .animated-empty-state,
   .animated-empty-state__icon svg {
     animation: none;
@@ -2267,17 +2255,13 @@ code:not(pre code) {
 
 /* Un único indicador. Los campos compuestos lo delegan al contenedor solo
    mientras su input tiene foco; sus botones mantienen un indicador propio. */
-:focus-visible:not(
-  :where(
-    [data-focus-ring] > input,
+:focus-visible:not( :where([data-focus-ring] > input,
     [data-focus-ring] > textarea,
     label > input.sr-only,
     .toggle-switch input,
-    .ui-checkbox__input
-  )
-),
-.toggle-switch input:focus-visible + .toggle-switch__slider,
-.ui-checkbox__input:focus-visible ~ .ui-checkbox__indicator {
+    .ui-checkbox__input)),
+.toggle-switch input:focus-visible+.toggle-switch__slider,
+.ui-checkbox__input:focus-visible~.ui-checkbox__indicator {
   outline: var(--focus-ring-width) solid var(--color-focus);
   outline-offset: var(--focus-ring-offset);
 }
@@ -2291,8 +2275,8 @@ label:has(> input.sr-only:focus-visible) {
 
 /* El input conserva el foco real; su superficie visible dibuja el anillo.
    Se mantiene también en forced-colors para evitar un segundo indicador. */
-[data-focus-ring] > :is(input, textarea):focus-visible,
-label > input.sr-only:focus-visible,
+[data-focus-ring]> :is(input, textarea):focus-visible,
+label>input.sr-only:focus-visible,
 .toggle-switch input:focus-visible,
 .ui-checkbox__input:focus-visible {
   outline: none;
@@ -2368,15 +2352,15 @@ label > input.sr-only:focus-visible,
   box-shadow: var(--shadow-sm);
 }
 
-.toggle-switch input[type='checkbox']:checked + .toggle-switch__slider {
+.toggle-switch input[type='checkbox']:checked+.toggle-switch__slider {
   background-color: var(--color-primary);
 }
 
-.toggle-switch input[type='checkbox']:checked + .toggle-switch__slider::before {
+.toggle-switch input[type='checkbox']:checked+.toggle-switch__slider::before {
   transform: translateX(var(--toggle-thumb-travel));
 }
 
-.toggle-switch input[type='checkbox']:disabled + .toggle-switch__slider {
+.toggle-switch input[type='checkbox']:disabled+.toggle-switch__slider {
   opacity: var(--opacity-disabled);
   cursor: not-allowed;
 }
@@ -2407,17 +2391,14 @@ label > input.sr-only:focus-visible,
 }
 
 @media (forced-colors: active) {
-  :focus-visible:not(
-    :where(
-      [data-focus-ring] > input,
+
+  :focus-visible:not( :where([data-focus-ring] > input,
       [data-focus-ring] > textarea,
       label > input.sr-only,
       .toggle-switch input,
-      .ui-checkbox__input
-    )
-  ),
-  .toggle-switch input:focus-visible + .toggle-switch__slider,
-  .ui-checkbox__input:focus-visible ~ .ui-checkbox__indicator {
+      .ui-checkbox__input)),
+  .toggle-switch input:focus-visible+.toggle-switch__slider,
+  .ui-checkbox__input:focus-visible~.ui-checkbox__indicator {
     outline: var(--focus-ring-width) solid Highlight !important;
     outline-offset: var(--focus-ring-offset) !important;
     box-shadow: none !important;
@@ -2442,11 +2423,11 @@ label > input.sr-only:focus-visible,
     background: ButtonText;
   }
 
-  .toggle-switch input[type='checkbox']:checked + .toggle-switch__slider {
+  .toggle-switch input[type='checkbox']:checked+.toggle-switch__slider {
     background: Highlight;
   }
 
-  .toggle-switch input[type='checkbox']:checked + .toggle-switch__slider::before {
+  .toggle-switch input[type='checkbox']:checked+.toggle-switch__slider::before {
     background: HighlightText;
   }
 }

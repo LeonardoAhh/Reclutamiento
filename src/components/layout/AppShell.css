@@ -22,8 +22,8 @@
   transform: translateX(var(--sidebar-offset, 0));
   touch-action: pan-y;
   transition:
-    transform var(--transition-base),
-    border-radius var(--transition-base);
+    transform var(--transition-slow),
+    border-radius var(--transition-slow);
 }
 
 .app-shell__workspace::before {
@@ -37,7 +37,7 @@
   content: '';
   opacity: var(--sidebar-progress, 0);
   pointer-events: none;
-  transition: opacity var(--transition-base);
+  transition: opacity var(--transition-slow);
 }
 
 .app-shell__main {
@@ -129,7 +129,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .app-shell__workspace {
+  .app-shell__workspace,
+  .app-shell__workspace::before {
     transition: none;
   }
 }
