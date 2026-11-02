@@ -22,8 +22,8 @@
   transform: translateX(var(--sidebar-offset, 0));
   touch-action: pan-y;
   transition:
-    transform var(--transition-fast),
-    border-radius var(--transition-fast);
+    transform var(--transition-base),
+    border-radius var(--transition-base);
 }
 
 .app-shell__workspace::before {
@@ -37,7 +37,7 @@
   content: '';
   opacity: var(--sidebar-progress, 0);
   pointer-events: none;
-  transition: opacity var(--transition-fast);
+  transition: opacity var(--transition-base);
 }
 
 .app-shell__main {
