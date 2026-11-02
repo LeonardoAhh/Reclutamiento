@@ -15,8 +15,7 @@
     "/forms",
     "/activities",
     "/account",
-    "/leave-requests",
-    "/vacancy-assignments"
+    "/leave-requests"
   ],
   "wait": 2200,
   "color": "var(--color-hairline)",

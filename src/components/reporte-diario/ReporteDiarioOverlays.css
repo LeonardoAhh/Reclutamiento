@@ -1,0 +1,246 @@
+/* ============================================================================
+   MODAL: Reportes guardados — refinamientos.
+   - Chip de incidencias semántico (usa warning-tint en lugar de rojo puro).
+   - Mejor espaciado y micro-interacción hover en la card.
+   ============================================================================ */
+
+/* Chip resaltado cuando hay muchas incidencias (>50). Semántico, no rojo puro. */
+.reporte-saved__count:has(.reporte-saved__count-value--high) {
+  background: var(--color-warning-tint);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reporte-saved__item {
+    transition: none;
+  }
+}
+
+/* ============================================================================
+   Utilidades: elementos con color primary usados por overlays / drag.
+   Reemplazan los estilos inline anteriores.
+   ============================================================================ */
+
+.reporte-overlay__icon-primary {
+  color: var(--color-primary-text);
+}
+
+.reporte-drag__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  pointer-events: none;
+}
+
+.reporte-drag__icon {
+  width: var(--design-spacing-xxl);
+  height: var(--design-spacing-xxl);
+  margin-bottom: var(--spacing-lg);
+}
+
+/* Variant "labeled" del trigger — usado en el hero y en el grid */
+.reporte-saved__trigger--labeled {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  min-height: var(--control-min-block-size);
+  padding: var(--control-padding-y) var(--control-padding-x);
+  border-radius: var(--radius-control);
+  border: var(--border-width) solid var(--color-control-border);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-button-md-size);
+  font-weight: var(--type-button-md-weight);
+  line-height: var(--type-button-md-line);
+  cursor: pointer;
+  transition:
+    border-color var(--transition-fast),
+    background var(--transition-fast),
+    color var(--transition-fast);
+  white-space: nowrap;
+  letter-spacing: var(--type-button-md-tracking);
+}
+
+.reporte-saved__trigger--labeled:hover {
+  border-color: var(--color-primary-border);
+  color: var(--color-primary-text);
+}
+
+.reporte-saved__trigger-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+/* El chip del contador dentro del trigger labeled */
+.reporte-saved__trigger--labeled .reporte-saved__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  color: var(--color-primary-text);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  font-family: var(--font-body);
+  letter-spacing: var(--type-caption-up-tracking);
+}
+
+/* ============================================================================
+   HEADER CON DATOS — Flex layout para fluidez de los banners/botones
+   ============================================================================ */
+
+.reporte-incidents__empty--padded,
+.reporte-incidents__detail-list {
+  padding: var(--spacing-lg);
+}
+
+.reporte-saved__title--uppercase {
+  text-transform: uppercase;
+}
+
+/* Texto principal dentro de un chip: truncar con ellipsis */
+.reporte-head__grid-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+/* Valor numérico protagonista (ej. "543") */
+.reporte-head__grid-value {
+  font-family: var(--font-display);
+  font-weight: var(--type-body-strong-weight);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+/* Los dialogs (Comparison, Guardados) en el grid ya no forzan 100% de width */
+.reporte-head__grid .reporte-saved__trigger--labeled {
+  width: auto;
+}
+
+.reporte-employee-detail-modal {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.reporte-page :is(.btn-primary, .btn-secondary, .animated-submit-button) {
+  font-family: var(--font-body);
+  font-size: var(--type-button-md-size);
+  font-weight: var(--type-button-md-weight);
+  line-height: var(--type-button-md-line);
+  letter-spacing: var(--type-button-md-tracking);
+}
+
+.reporte-kpi__grid .kpi-card__label {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+}
+
+.reporte-kpi__grid .kpi-card__value {
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.reporte-kpi__grid .kpi-card__sub {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.reporte-employee-detail__employee-id {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.reporte-employee-detail__metric-label {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+}
+
+.reporte-employee-detail__metric-value {
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.reporte-employee-detail__incident-label {
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.report-dialog {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.report-dialog :is(.btn-primary, .btn-secondary, .btn-danger) {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+@media (max-width: 767px) {
+  .reporte-head__grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+
+  .reporte-head__grid > .reporte-status-banner--file {
+    flex: 1 0 100%;
+  }
+
+  .reporte-head__grid :is(.reporte-saved__trigger--labeled, .reporte-head__departure-action) {
+    min-inline-size: var(--touch-target-min);
+    min-block-size: var(--touch-target-min);
+    padding-inline: 0;
+    justify-content: center;
+  }
+
+  .reporte-head__grid :is(.reporte-saved__trigger-label, .reporte-head__departure-label) {
+    display: none;
+  }
+
+  .reporte-head__grid > .reporte-head__save-action {
+    flex: 1 1 0;
+    min-inline-size: 0;
+    grid-template-columns: minmax(0, 1fr);
+    justify-content: stretch;
+    align-self: flex-start;
+  }
+}

@@ -15,7 +15,6 @@ import _configuracion_tabulador from './configuracion-tabulador.bones.json'
 import _configuracion_formatos from './configuracion-formatos.bones.json'
 import _actividades_page from './actividades-page.bones.json'
 import _leave_requests_page from './leave-requests-page.bones.json'
-import _vacancy_assignments_page from './vacancy-assignments-page.bones.json'
 
 configureBoneyard({"color":"var(--color-hairline)","darkColor":"var(--color-hairline)","animate":"solid","speed":"var(--duration-skeleton)","boneClass":"boneyard-skeleton__bone"})
 
@@ -32,5 +31,4 @@ registerBones({
   "configuracion-formatos": _configuracion_formatos,
   "actividades-page": _actividades_page,
   "leave-requests-page": _leave_requests_page,
-  "vacancy-assignments-page": _vacancy_assignments_page,
 })

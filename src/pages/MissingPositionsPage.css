@@ -91,11 +91,13 @@
   gap: var(--spacing-xs) var(--spacing-sm);
   padding: var(--spacing-md);
   margin-block-end: var(--spacing-sm);
-  border: var(--border-width) solid var(--color-hairline-strong);
+  border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-lg);
   background: var(--color-surface-card);
   cursor: pointer;
-  transition: opacity var(--transition-fast), filter var(--transition-fast);
+  transition:
+    opacity var(--transition-fast),
+    filter var(--transition-fast);
 }
 
 .missing-positions-page__table tbody tr:hover td,
@@ -151,6 +153,25 @@
     padding: 0;
     border: 0;
   }
+}
+
+.missing-positions-page__row-toggle {
+  display: block;
+  inline-size: 100%;
+  min-block-size: var(--touch-target-min);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.missing-positions-page__row-toggle:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: var(--focus-ring-offset);
 }
 
 .missing-positions-page__puesto {

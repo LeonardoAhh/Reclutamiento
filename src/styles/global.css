@@ -1,6 +1,6 @@
 /* ========================================
-   DESIGN TOKENS — Graphite UI
-   Off-white canvas · blue primary actions · neutral focus and accessible links.
+   DESIGN TOKENS — Blue and neutral UI
+   White canvas · blue primary actions · neutral focus and accessible links.
    Fuente: desing.md. Alias legados preservan compatibilidad.
    ======================================== */
 
@@ -22,79 +22,90 @@
 
 :root {
   /* ── Brand & Accent ───────────────────────────────────────────── */
-  --color-primary: #12469c;
+  --color-primary: #2563eb;
   --color-primary-border: var(--color-primary-text);
-  --color-primary-text: #11428f;
-  --color-primary-text-on-dark: #d0e5ff;
-  /* Hover 8.86:1 y pressed 10.89:1 con on-primary; antes 1.08:1 y 1.27:1 contra el relleno. */
-  --color-primary-active: #0f3c85;
-  --color-primary-pressed: #0a2f6b;
+  --color-primary-text: #1e40af;
+  --color-primary-text-on-dark: #bfdbfe;
+
+  /* #3b82f6 de la referencia no admite texto blanco AA; #2563eb sí. */
+  --color-primary-active: #1d4ed8;
+  --color-primary-pressed: #1e40af;
   --color-primary-disabled: var(--color-hairline);
   --color-link: var(--color-primary-text);
-  --color-link-deep: #0d387c;
-  --color-link-soft: #e6f0ff;
-
+  --color-link-deep: #1e3a8a;
+  --color-link-soft: #e0f2fe;
   --color-secondary: var(--color-primary);
   --color-secondary-rgb: var(--color-primary-rgb);
 
   /* ── Surface ──────────────────────────────────────────────────── */
-  --color-canvas: #f1f2f4;
-  --color-canvas-soft: #e9ecf0;
-  --color-canvas-elevated: #fafbfc;
+  --color-canvas: #fff;
+  --color-canvas-soft: #f9fafb;
+  --color-canvas-elevated: var(--color-canvas);
   --color-surface: var(--color-canvas-elevated);
   --color-surface-soft: var(--color-surface-card);
-  --color-surface-card: #f7f8fa;
-  --color-surface-strong: #dde1e6;
-  --color-surface-dark: #23262a;
-  --color-surface-dark-elevated: #343b43;
-  --color-document-paper: #ffffff;
+  --color-surface-card: var(--color-canvas);
+  --color-surface-strong: #f3f4f6;
+  --color-surface-dark: #171717;
+  --color-surface-dark-elevated: #262626;
+  --color-document-paper: #fff;
+
   /* Salida oficial imprimible, independiente del tema */
-  --color-document-ink: #000000;
+  --color-document-ink: #000;
+
   /* Texto de salidas oficiales */
   --color-document-muted: #615d59;
+
   /* Texto secundario de salidas oficiales */
   --color-document-soft: #f2f2f2;
+
   /* Panel secundario de salidas oficiales */
   --color-document-hairline: #d9d9d9;
+
   /* Bordes de salidas oficiales */
   --color-document-table-header: #8c8c8c;
+
   /* Encabezados de tablas imprimibles */
   --color-document-table-row-alternate: #e5e5e5;
+
   /* Filas alternas imprimibles */
-  --color-document-primary: #000000;
+  --color-document-primary: #000;
+
   /* Encabezado de salidas oficiales */
-  --color-document-on-primary: #ffffff;
+  --color-document-on-primary: #fff;
+
   /* Texto sobre encabezado oficial */
 
   /* ── Hairlines ──────────────────────────────────────────────── */
-  --color-hairline: #d4d9e0;
-  --color-hairline-soft: #e3e7ec;
-  --color-hairline-strong: #bbc3ce;
-  --color-control-border: #727c8a;
+  --color-hairline: #e5e7eb;
+  --color-hairline-soft: var(--color-hairline);
+  --color-hairline-strong: #6b7280;
+  --color-control-border: var(--color-hairline-strong);
 
   /* ── Text ───────────────────────────────────────────────────── */
-  --color-ink: #2b3037;
+  --color-ink: #333;
   --color-body-strong: var(--color-ink);
-  --color-body: #2b3037;
+  --color-body: var(--color-ink);
   --color-charcoal: var(--color-body);
-  --color-mute: #586371;
-  --color-faint: #606a77;
+  --color-mute: #4b5563;
+  --color-faint: var(--color-mute);
   --color-muted: var(--color-mute);
   --color-muted-soft: var(--color-faint);
-  --color-on-primary: #e6edf3;
-  --color-on-neutral: #f7f8fa;
-  --color-on-error: #f7f8fa;
-  --color-on-success: #f7f8fa;
+  --color-on-primary: #fff;
+  --color-on-neutral: var(--color-on-primary);
+  --color-on-error: var(--color-on-primary);
+  --color-on-success: var(--color-on-primary);
   --color-on-warning: var(--color-ink);
   --color-on-dark-hover: var(--color-hairline);
   --color-shadow-rgb: 27 29 32;
-  --color-scene-light: #ffffff;
+  --color-scene-light: #fff;
+
   /* Iluminación neutral de la escena decorativa (leído por WebGL: debe ser color literal). */
   --color-shimmer-overlay: color-mix(in srgb, var(--color-scene-light) 30%, transparent);
+
   /* Brillo decorativo de progreso. */
-  --color-on-dark: #e6edf3;
-  --color-on-dark-soft: #a0a7b1;
-  --color-focus-on-inverted: #f7f8fa;
+  --color-on-dark: #e5e5e5;
+  --color-on-dark-soft: #b6b6b6;
+  --color-focus-on-inverted: #fff;
   --color-navigation-rail-text: var(--color-muted);
   --color-navigation-rail-text-strong: var(--color-ink);
   --color-avatar-ink: var(--color-ink);
@@ -128,7 +139,6 @@
   --color-accent-sky: var(--color-link);
   --color-accent-purple: var(--color-violet);
   --color-accent-purple-deep: #4c1680;
-
   --color-accent-orange: #c75000;
   --color-accent-orange-deep: #793400;
   --color-accent-teal: #087f7a;
@@ -140,39 +150,41 @@
   --color-brand-accent: var(--color-primary);
 
   /* Accent RGB channels (usados por gradientes/tintes en la app) */
+
   /* Debe coincidir con --color-accent-teal (#087f7a). */
   --color-accent-teal-rgb: 8 127 122;
   --color-accent-amber: var(--color-warning);
   --color-accent-amber-rgb: var(--color-warning-rgb);
 
   /* ── Channel values ─────────────────────────────────────────── */
-  --color-primary-rgb: 18 70 156;
-  --color-link-rgb: 17 66 143;
+  --color-primary-rgb: 37 99 235;
+  --color-link-rgb: 30 64 175;
   --color-success-rgb: 16 185 129;
   --color-warning-rgb: 245 158 11;
   --color-error-rgb: 239 68 68;
-  --color-ink-rgb: 43 48 55;
-  --color-canvas-rgb: 241 242 244;
+  --color-ink-rgb: 51 51 51;
+  --color-canvas-rgb: 255 255 255;
 
   /* ── Derived overlays ───────────────────────────────────────── */
+
   /* Blue brand channels serve fills; accessible foregrounds and borders use dedicated tokens. */
-  --color-focus-ring: rgb(var(--color-primary-rgb) / 0.2);
-  --color-modal-scrim: rgb(var(--color-shadow-rgb) / 0.32);
-  --color-vacancy-tint: rgb(var(--color-error-rgb) / 0.05);
-  --color-vacancy-chip-bg: rgb(var(--color-error-rgb) / 0.1);
+  --color-focus-ring: rgb(var(--color-primary-rgb) / 20%);
+  --color-modal-scrim: rgb(var(--color-shadow-rgb) / 32%);
+  --color-vacancy-tint: rgb(var(--color-error-rgb) / 5%);
+  --color-vacancy-chip-bg: rgb(var(--color-error-rgb) / 10%);
   --color-success-tint: var(--color-success-subtle);
   --color-error-tint: var(--color-error-subtle);
   --color-warning-tint: var(--color-warning-subtle);
-  --color-primary-tint: var(--color-hairline-soft);
+  --color-primary-tint: #e0f2fe;
+
   /* Hover de controles neutros: más marcado que surface-soft (= surface-card). */
-  --color-surface-hover: var(--color-hairline-soft);
-  --color-header-glass: rgb(var(--color-canvas-rgb) / 0.92);
+  --color-surface-hover: var(--color-surface-strong);
+  --color-header-glass: rgb(var(--color-canvas-rgb) / 92%);
 
   /* La interfaz usa la familia variable local en ambos temas. */
   --font-display: var(--font-body);
-  --font-body: 'IBM Plex Sans', -apple-system, system-ui, 'Segoe UI', Helvetica, Arial, sans-serif;
-  --font-code: 'Geist Mono', 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Monaco, Consolas, monospace;
-
+  --font-body: 'IBM Plex Sans', -apple-system, system-ui, 'Segoe UI', helvetica, arial, sans-serif;
+  --font-code: 'Geist Mono', 'JetBrains Mono', ui-monospace, 'SF Mono', menlo, monaco, consolas, monospace;
   --type-display-xl-size: 3rem;
   --type-display-xl-weight: 600;
   --type-display-xl-line: 1;
@@ -192,6 +204,7 @@
 
   /* Las tallas de heading-md/sm, body-sm/strong y caption-xs se conservan en px:
      candidateAccessCard.ts las lee como números para dibujar la salida en canvas. */
+
   /* heading-md — sub-section headings */
   --type-heading-md-size: 20px;
   --type-heading-md-weight: 600;
@@ -201,6 +214,7 @@
   /* Marca de la navegación: jerarquía propia dentro del ancho del rail. */
   --type-brand-size: 24px;
   --type-brand-weight: var(--type-heading-md-weight);
+
   /* desing.md {typography.brand}: 24px / 34px. */
   --type-brand-line: calc(34 / 24);
   --type-brand-tracking: var(--type-heading-md-tracking);
@@ -322,22 +336,28 @@
   --type-title-size: 1.25rem;
   --type-title-weight: 600;
   --type-title-line: 1.4;
+  /* stylelint-disable-next-line number-max-precision -- Conserva el tracking exacto de 1/160 em. */
   --type-title-tracking: -0.00625em;
 
   /* ── Control sizing ─────────────────────────────────────────── */
   --touch-target-min: 44px;
   --control-height: var(--touch-target-min);
+
   /* 32px: solo para elementos compactos NO interactivos (icon tiles, badges).
      Un control interactivo nunca debe quedar por debajo de --touch-target-min. */
   --control-height-sm: var(--spacing-xxl);
   --control-height-lg: var(--touch-target-min);
   --control-padding-x: var(--design-spacing-sm);
   --control-padding-y: var(--design-spacing-xs);
+
   /* Campo y botón comparten altura exterior; el texto puede crecer con el zoom. */
-  --control-min-block-size: max(var(--touch-target-min),
-      calc(var(--type-button-size) * var(--type-button-line) + var(--control-padding-y) * 2 + var(--border-width) * 2));
+  --control-min-block-size: max(
+    var(--touch-target-min),
+    calc(var(--type-button-size) * var(--type-button-line) + var(--control-padding-y) * 2 + var(--border-width) * 2)
+  );
   --textarea-min-block-size: calc(var(--touch-target-min) * 2);
   --select-content-max-block-size: 15.625rem;
+  --icon-size-xs: 0.75rem;
   --icon-size-sm: 1rem;
   --icon-size-md: 1.25rem;
   --icon-size-control: 1rem;
@@ -354,6 +374,7 @@
      para dibujar el pase en canvas. Equivalencias con la escala canónica:
      xs=design-xxs · sm=design-xs · md=design-sm · lg=design-md · xl=design-lg · xxl=design-xl.
      xxs y 2xl son alias obsoletos de la escala canónica: no usar en código nuevo. */
+
   /* Obsoleto: 2px no pertenece a la base de 4px. Alias al paso mínimo. */
   --spacing-xxs: var(--spacing-xs);
   --spacing-xs: 4px;
@@ -362,6 +383,7 @@
   --spacing-lg: 16px;
   --spacing-xl: 24px;
   --spacing-xxl: 32px;
+
   /* Obsoleto: 48px no pertenece a la escala. Alias a {spacing.2xl} (40px). */
   --spacing-2xl: var(--design-spacing-xxl);
   --spacing-section: 96px;
@@ -401,6 +423,7 @@
   --shadow-focus: 0 0 0 var(--focus-ring-width) var(--color-focus);
   --focus-ring-width: 2px;
   --focus-ring-offset: 0;
+
   /* Softens the boundary between decorative media and card content. */
   --blur-media-transition: 4px;
 
@@ -415,9 +438,11 @@
   --transition-normal: var(--transition-base);
   --transition-smooth: var(--transition-base);
   --transition-spinner: 1000ms linear;
+
   /* Ciclo decorativo existente de los estados vacíos; no es feedback de acción. */
   --transition-decorative-float: 3000ms ease-in-out;
   --motion-float-distance: var(--design-spacing-xs);
+
   /* Page side-by-side: shared list/detail navigation (transitions.dev). */
   --page-slide-dur: 250ms;
   --page-fade-dur: var(--page-slide-dur);
@@ -433,30 +458,39 @@
   --duration-loader-stagger-step: 150ms;
 
   /* ── Container ───────────────────────────────────────────────── */
-  --container-standard-max-inline-size: 80rem;
+  --container-standard-max-inline-size: 90rem;
   --container-compact-max-inline-size: 64rem;
   --container-wide-max-inline-size: 100rem;
   --container-max: var(--container-standard-max-inline-size);
   --container-padding: var(--design-spacing-md);
   --container-padding-mobile: var(--design-spacing-md);
+
   /* Medida máxima de lectura definida por desing.md. */
   --content-reading-max-inline-size: 65ch;
+
   /* Ancho mínimo legible de un bloque flexible antes de pasar a su propia línea. */
   --content-min-inline-size: 17.5rem;
+
   /* Máximo de líneas para vistas previas de texto antes de revelar el contenido completo. */
   --content-preview-max-lines: 3;
   --auth-form-max-inline-size: 28rem;
   --feature-result-card-min: 34rem;
   --feature-maintenance-card-max-inline-size: var(--modal-inline-size-sm);
+
   /* Ancho legible mínimo para cards de asignación antes de reflujo automático. */
   --feature-vacancy-assignment-card-min-inline-size: 18rem;
+
   /* Geometría responsive de responsabilidades y sus referencias visuales. */
   --feature-responsibility-card-min-inline-size: var(--feature-vacancy-assignment-card-min-inline-size);
   --feature-activity-card-min-inline-size: var(--feature-vacancy-assignment-card-min-inline-size);
   --feature-assignment-description-max-lines: 2;
-  --feature-assignment-grid-max-inline-size: calc(4 * var(--feature-vacancy-assignment-card-min-inline-size) + 3 * var(--spacing-md) + 2 * var(--design-spacing-sm) + 2 * var(--border-width));
+  --feature-assignment-grid-max-inline-size: calc(
+    4 * var(--feature-vacancy-assignment-card-min-inline-size) + 3 * var(--spacing-md) + 2 * var(--design-spacing-sm) +
+      2 * var(--border-width)
+  );
   --feature-activity-filter-min-inline-size: 8.5rem;
   --search-field-min-inline-size: 18rem;
+
   /* Ancho máximo de búsquedas compactas en encabezados de página. */
   --search-field-compact-max-inline-size: 24rem;
   --feature-reference-attachment-thumbnail-inline-size: 7.5rem;
@@ -466,13 +500,16 @@
   --feature-calendar-column-min: 10rem;
   --feature-calendar-column-max: 13rem;
   --feature-calendar-surface-max: 22rem;
+
   /* Ancho compacto del selector de semana junto al título de una página. */
   --week-filter-inline-size: 20rem;
+
   /* Anchura del espacio inicial para cargar y consultar reportes diarios. */
   --feature-report-onboarding-max-inline-size: var(--container-compact-max-inline-size);
   --feature-navigation-rail-inline-size: 15rem;
   --feature-reminders-panel-max-inline-size: 20rem;
   --feature-reminders-panel-max-block-size: 30rem;
+
   /* Altura legible para detalles extensos de validación antes de scroll interno. */
   --feature-validation-details-max-block-size: 12rem;
   --document-preview-max: 48rem;
@@ -481,12 +518,14 @@
   --system-update-panel-max: 28rem;
   --toast-max-inline-size: var(--system-update-panel-max);
   --menu-min-inline-size: 10rem;
+
   /* Ancho medio para menús de filtros con opciones cortas. */
   --menu-inline-size-md: calc(var(--menu-min-inline-size) + var(--design-spacing-3xl));
   --pipeline-table-date-inline-size: 7.5rem;
   --pagination-label-min-inline-size: 5.625rem;
   --pipeline-search-results-max-block-size: 25rem;
   --feature-profile-binary-min: 18rem;
+
   /* Anchos semánticos del diálogo compartido. */
   --modal-inline-size-xs: 25rem;
   --modal-inline-size-sm: 30rem;
@@ -495,9 +534,11 @@
   --modal-inline-size-xl: 65rem;
   --modal-max-block-size: min(85dvh, var(--modal-inline-size-lg));
   --modal-mobile-max-block-size: 92dvh;
+
   /* Interior compartido de header, cuerpo y acciones; crece en tablet. */
   --modal-content-padding: var(--design-spacing-md);
   --system-update-progress-segment: 40%;
+
   /* Capas estructurales del shell; mantienen Header, overlay y Sidebar ordenados. */
   --layer-sticky-navigation: 800;
   --layer-navigation-overlay: 899;
@@ -512,12 +553,16 @@
   --layer-toast: var(--layer-system-update);
   --layer-system-update-curtain: 1600;
   --tooltip-max-width: 17.5rem;
+
+  /* Anchura mínima legible para las dos series de un tooltip de gráfico. */
+  --tooltip-chart-min-inline-size: 20ch;
   --scrollbar-size: var(--spacing-sm);
   --toggle-track-inline-size: 2.25rem;
   --toggle-track-block-size: 1.25rem;
   --toggle-thumb-size: 1rem;
   --toggle-thumb-inset: 0.125rem;
   --toggle-thumb-travel: 1rem;
+
   /* Contador superpuesto de acciones: tamaño y solape independientes del texto. */
   --action-count-size: 1.125rem;
   --action-count-offset: calc(-1 * var(--design-spacing-xxs));
@@ -542,10 +587,10 @@
   --type-body-lg-weight: 400;
   --type-body-lg-line: 1.5;
   --type-body-lg-tracking: 0;
+
   /* Alias legados: apuntan a la escala tipográfica, no a valores sueltos. */
   --text-xs: var(--type-body-sm-size);
   --text-sm: var(--type-body-md-size);
-
   --font-medium: 500;
   --font-semibold: 600;
   --font-bold: 700;
@@ -555,20 +600,22 @@
   --font-mono: var(--font-code);
 
   /* Tight display tracking */
+
   /* Obsoletos: el tracking forma parte de cada rol tipográfico (--type-*-tracking).
      Se conservan como alias del rol equivalente; no usar en código nuevo. */
   --tracking-tight: var(--type-heading-lg-tracking);
   --tracking-snug: var(--type-label-sm-tracking);
   --tracking-wide: var(--type-caption-up-tracking);
   --tracking-wider: var(--type-caption-up-tracking);
-
   --radius-sm: var(--rounded-sm);
   --radius-md: var(--rounded-md);
   --border-width: 1px;
+
   /* Trazos y puntos compartidos de gráficas; patrones distinguibles sin color. */
   --chart-line-width: 2px;
   --chart-point-radius: 3px;
   --chart-active-point-radius: 6px;
+
   /* Altura media reutilizable para gráficas de indicadores en paneles. */
   --chart-height-md: 18rem;
   --chart-dash-long: 12px 4px;
@@ -583,7 +630,6 @@
   --space-md: var(--spacing-md);
   --space-lg: var(--spacing-lg);
   --space-xl: var(--spacing-xl);
-
   --color-amber: var(--color-accent-amber);
   --color-danger: var(--color-error);
   --color-foreground: var(--color-body);
@@ -598,16 +644,18 @@
   --color-text-tertiary: var(--color-muted);
 
   /* Level 0 = flat. Level 1 = whisper. Level 2 = floating surface. */
-  --shadow-xs: 0 1px 1px rgb(var(--color-shadow-rgb) / 0.04);
-  --shadow-sm: 0 1px 2px rgb(var(--color-shadow-rgb) / 0.05), 0 4px 12px rgb(var(--color-shadow-rgb) / 0.08);
+  --shadow-xs: 0 1px 1px rgb(var(--color-shadow-rgb) / 4%);
+  --shadow-sm: 0 1px 2px rgb(var(--color-shadow-rgb) / 5%), 0 4px 12px rgb(var(--color-shadow-rgb) / 8%);
   --shadow-subtle: var(--shadow-sm);
   --shadow-card: var(--shadow-xs);
   --shadow-soft: var(--shadow-sm);
   --shadow-md: var(--shadow-sm);
+
   /* desing.md solo define Level 1 (xs) y Level 2 (sm); los alias no crean niveles nuevos. */
   --shadow-prominent: var(--shadow-sm);
   --shadow-elevated: var(--shadow-prominent);
   --shadow-level-2: var(--shadow-elevated);
+
   /* Contrato estable del workspace; evita que una migración de primitivas
      desarme la superficie continua del shell y del login. */
   --workspace-canvas: var(--color-canvas);
@@ -623,8 +671,8 @@
   --type-caption-size: var(--type-caption-sm-size);
   --type-heading-xs-size: var(--type-caption-sm-size);
   --z-index-tooltip: var(--layer-tooltip);
-
   --header-height: var(--design-spacing-3xl);
+
   /* Barra móvil: touch target + aire vertical de la escala (56px). */
   --mobile-nav-height: calc(var(--touch-target-min) + var(--design-spacing-sm));
   --mobile-nav-content-space: calc(var(--mobile-nav-height) + var(--design-spacing-xxl));
@@ -639,54 +687,53 @@
   color-scheme: light;
 }
 
-/* Grafito suave: variantes semánticas; los tokens de documento conservan su salida clara. */
+/* Tema oscuro neutro: los tokens de documento conservan su salida clara. */
 :root[data-color-scheme='dark'] {
   color-scheme: dark;
+
   /* Estos alias se redeclaran: los valores derivados se resuelven antes de heredarse. */
   --color-primary-border: var(--color-primary-text);
   --color-primary-text: var(--color-primary-text-on-dark);
   --color-link: var(--color-primary-text);
-  --color-link-deep: #e6edf3;
+  --color-link-deep: var(--color-on-dark);
   --color-link-soft: var(--color-surface-soft);
-  --color-link-rgb: 208 229 255;
-
-  --color-canvas: #1b1d20;
-  --color-canvas-rgb: 27 29 32;
-  --color-canvas-soft: #202328;
+  --color-link-rgb: 191 219 254;
+  --color-canvas: #171717;
+  --color-canvas-rgb: 23 23 23;
+  --color-canvas-soft: #1f1f1f;
   --shell-workspace-surface: var(--color-canvas);
-  --color-canvas-elevated: #2b2f34;
-  --color-surface-card: #23262a;
+  --color-canvas-elevated: #262626;
+  --color-surface-card: var(--color-canvas-elevated);
   --color-surface-soft: var(--color-surface-card);
-  --color-surface-strong: #343b43;
-  --color-surface-dark: var(--color-surface-card);
-  --color-surface-dark-elevated: #414851;
+  --color-surface-strong: #404040;
+  --color-surface-dark: var(--color-canvas);
+  --color-surface-dark-elevated: var(--color-surface-strong);
   --color-surface-contrast: var(--color-surface-dark);
-
-  --color-ink: #e6edf3;
-  --color-ink-rgb: 230 237 243;
+  --color-ink: #e5e5e5;
+  --color-ink-rgb: 229 229 229;
   --color-body-strong: var(--color-ink);
-  --color-body: #e6edf3;
+  --color-body: var(--color-ink);
   --color-charcoal: var(--color-body);
-  --color-mute: #a0a7b1;
-  --color-faint: #969eaa;
+  --color-mute: #b6b6b6;
+  --color-faint: var(--color-mute);
   --color-on-dark: var(--color-ink);
   --color-on-dark-soft: var(--color-mute);
   --color-on-dark-hover: var(--color-primary-text);
-  --color-on-neutral: #202328;
-  --color-on-error: #202328;
-  --color-on-success: #202328;
-  --color-on-warning: #202328;
+  --color-on-neutral: var(--color-canvas);
+  --color-on-error: var(--color-canvas);
+  --color-on-success: var(--color-canvas);
+  --color-on-warning: var(--color-canvas);
   --color-focus: var(--color-focus-on-inverted);
-
-  --color-hairline: #414851;
-  --color-hairline-soft: #343b43;
-  --color-hairline-strong: #596370;
-  --color-control-border: #858e9b;
+  --color-hairline: #404040;
+  --color-hairline-soft: var(--color-hairline);
+  --color-hairline-strong: #a3a3a3;
+  --color-control-border: var(--color-hairline-strong);
   --color-shadow-rgb: 0 0 0;
-  --workspace-shadow: 0 1px 2px rgb(var(--color-shadow-rgb) / 0.2), 0 4px 12px rgb(var(--color-shadow-rgb) / 0.28);
-  --color-modal-scrim: rgb(var(--color-shadow-rgb) / 0.6);
-  --color-shimmer-overlay: rgb(var(--color-ink-rgb) / 0.08);
-
+  --workspace-shadow: 0 1px 2px rgb(var(--color-shadow-rgb) / 20%), 0 4px 12px rgb(var(--color-shadow-rgb) / 28%);
+  --color-modal-scrim: rgb(var(--color-shadow-rgb) / 60%);
+  --color-shimmer-overlay: rgb(var(--color-ink-rgb) / 8%);
+  --color-primary-tint: #1e3a8a;
+  --color-surface-hover: var(--color-surface-strong);
   --color-success: #83c9a3;
   --color-success-rgb: 131 201 163;
   --color-success-text: var(--color-success);
@@ -730,11 +777,14 @@
 html {
   /* Respeta el tamaño de texto configurado en el navegador. */
   font-size: 100%;
+
   /* Evita el inflado automático en iOS al girar; no bloquea el zoom del usuario. */
+  /* stylelint-disable-next-line property-no-vendor-prefix -- Safari iOS aún necesita este prefijo. */
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
   /* iOS: el safe-area toma su color del <html>, no del <body>. */
   background-color: var(--color-canvas);
 }
@@ -756,7 +806,10 @@ body {
   letter-spacing: var(--type-body-md-tracking);
   color: var(--color-body);
   background-color: var(--color-canvas);
+
+  /* stylelint-disable-next-line declaration-block-no-duplicate-properties -- Fallback para navegadores sin dvh. */
   min-height: 100vh;
+
   /* Viewport dinámico: no queda oculto tras la barra del navegador móvil. */
   min-height: 100dvh;
   padding-bottom: var(--safe-area-bottom);
@@ -770,6 +823,7 @@ video {
 }
 
 /* Breakpoints de desing.md. Las variables CSS no se evalúan en media queries. */
+/* stylelint-disable-next-line media-feature-range-notation -- Conserva la sintaxis de media queries del proyecto. */
 @media (min-width: 768px) {
   body {
     padding-bottom: 0;
@@ -778,7 +832,6 @@ video {
 
 /* Preferencia de accesibilidad: prevalece sobre animaciones de las features. */
 @media (prefers-reduced-motion: reduce) {
-
   *,
   *::before,
   *::after {
@@ -850,6 +903,7 @@ button {
   cursor: pointer;
   border: none;
   background: none;
+
   /* Elimina el retardo de doble toque sin impedir el zoom por pellizco. */
   touch-action: manipulation;
 }
@@ -866,8 +920,9 @@ select {
 
 /* WebKit en iOS amplía al enfocar campos con texto menor que body-lg. */
 @supports (-webkit-touch-callout: none) {
-
-  :where(input:not([type='checkbox'],
+  :where(
+    input:not(
+      [type='checkbox'],
       [type='radio'],
       [type='file'],
       [type='hidden'],
@@ -875,11 +930,13 @@ select {
       [type='submit'],
       [type='reset'],
       [type='range'],
-      [type='color']),
+      [type='color']
+    ),
     textarea,
     select,
     [contenteditable='true'],
-    [contenteditable='']) {
+    [contenteditable='']
+  ) {
     --editable-text-min-size: var(--type-body-lg-size);
   }
 
@@ -1109,10 +1166,9 @@ code:not(pre code) {
 
 .page-header {
   display: flex;
-  flex-direction: row;
+  flex-flow: row wrap;
   align-items: flex-end;
   justify-content: space-between;
-  flex-wrap: wrap;
   gap: var(--design-spacing-sm);
   padding-block: 0 var(--design-spacing-md);
   margin: 0 0 var(--design-spacing-sm);
@@ -1145,12 +1201,13 @@ code:not(pre code) {
   overflow-wrap: anywhere;
 }
 
-.app-page-title> :is(a, button),
-.app-page-title> :is(a, button):is(:hover, :focus, :active, :visited) {
+.app-page-title > :is(a, button),
+.app-page-title > :is(a, button):is(:hover, :focus, :active, :visited) {
   color: inherit;
   text-decoration: none;
 }
 
+/* stylelint-disable-next-line media-feature-range-notation -- Conserva la sintaxis de media queries del proyecto. */
 @media (min-width: 768px) {
   .page-header {
     padding-block-end: var(--design-spacing-lg);
@@ -1166,8 +1223,8 @@ code:not(pre code) {
   width: 100%;
   max-width: var(--container-max);
   margin: 0 auto;
-  padding-inline-start: max(var(--container-padding), var(--safe-area-left));
-  padding-inline-end: max(var(--container-padding), var(--safe-area-right));
+  padding-inline: max(var(--container-padding), var(--safe-area-left))
+    max(var(--container-padding), var(--safe-area-right));
 }
 
 .data-table {
@@ -1182,9 +1239,9 @@ code:not(pre code) {
   letter-spacing: var(--type-body-md-tracking);
 }
 
-.data-table :is(th, td) {
+:where(.data-table) :where(th, td) {
   padding: var(--design-spacing-sm) var(--design-spacing-md);
-  border-block-end: var(--border-width) solid var(--color-hairline-strong);
+  border-block-end: var(--border-width) solid var(--color-hairline);
   text-align: start;
   vertical-align: middle;
 }
@@ -1194,7 +1251,7 @@ code:not(pre code) {
   background-color: var(--color-canvas-soft);
 }
 
-.data-table th {
+:where(.data-table) :where(thead th) {
   color: var(--color-muted);
   font-family: var(--font-body);
   font-size: var(--type-caption-up-size);
@@ -1205,22 +1262,35 @@ code:not(pre code) {
   text-transform: uppercase;
 }
 
-.data-table tbody tr:last-child>* {
+:where(.data-table) :where(tbody th, tfoot th) {
+  color: var(--color-body);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+  text-transform: none;
+}
+
+.data-table tbody tr:last-child > * {
   border-block-end: 0;
 }
 
+/* stylelint-disable-next-line media-feature-range-notation -- Conserva la sintaxis de media queries del proyecto. */
 @media (min-width: 768px) {
   :root {
     --container-padding: var(--design-spacing-lg);
   }
 }
 
+/* stylelint-disable-next-line media-feature-range-notation -- Conserva la sintaxis de media queries del proyecto. */
 @media (min-width: 1080px) {
   :root {
     --container-padding: var(--design-spacing-xxl);
   }
 }
 
+/* stylelint-disable-next-line media-feature-range-notation -- Conserva la sintaxis de media queries del proyecto. */
 @media (min-width: 1440px) {
   :root {
     --container-padding: var(--design-spacing-3xl);
@@ -1285,6 +1355,7 @@ code:not(pre code) {
   gap: var(--design-spacing-md);
 }
 
+/* stylelint-disable-next-line media-feature-range-notation -- Conserva la sintaxis de media queries del proyecto. */
 @media (min-width: 768px) {
   .form-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1305,6 +1376,7 @@ code:not(pre code) {
   font-weight: var(--type-caption-up-weight);
   line-height: var(--type-caption-up-line);
   letter-spacing: var(--type-caption-up-tracking);
+
   /* caption-up es un rol en mayúsculas (design.md). Alternativa sin mayúsculas:
      usar body-sm-semibold (12/600, tracking 0). */
   text-transform: uppercase;
@@ -1350,11 +1422,14 @@ code:not(pre code) {
   color: var(--color-faint);
 }
 
-.form-group :is(input, select, textarea):hover:not( :focus-visible,
-  :disabled,
-  [aria-invalid='true'],
-  .input-error,
-  .input-success) {
+.form-group
+  :is(input, select, textarea):hover:not(
+    :focus-visible,
+    :disabled,
+    [aria-invalid='true'],
+    .input-error,
+    .input-success
+  ) {
   border-color: var(--color-charcoal);
 }
 
@@ -1486,6 +1561,8 @@ code:not(pre code) {
   line-height: var(--type-button-md-line);
   letter-spacing: var(--type-button-md-tracking);
 }
+
+/* stylelint-disable no-descending-specificity -- Los estados hover:not(:disabled) y :disabled son excluyentes; se conserva la cascada de botones existente. */
 
 /* Primary — único CTA con color estructural sólido */
 .btn-primary {
@@ -1655,6 +1732,7 @@ code:not(pre code) {
   color: var(--color-muted);
   cursor: not-allowed;
 }
+/* stylelint-enable no-descending-specificity */
 
 @media (prefers-reduced-motion: reduce) {
   .step-nav-control {
@@ -1703,6 +1781,7 @@ code:not(pre code) {
   background: var(--color-surface-dark);
   border-color: transparent;
   color: var(--color-on-dark);
+
   --color-focus: var(--color-focus-on-inverted);
   --color-primary-text: var(--color-primary-text-on-dark);
   --color-primary-border: var(--color-primary-text-on-dark);
@@ -1768,31 +1847,31 @@ code:not(pre code) {
 }
 
 .modal-overlay[data-state='closed'] {
-  animation: fadeOut var(--transition-fast) both;
+  animation: fade-out var(--transition-fast) both;
 }
 
 .modal-content[data-state='open'] {
-  animation: slideUpMobile var(--transition-base) both;
+  animation: slide-up-mobile var(--transition-base) both;
 }
 
 .modal-content[data-state='closed'] {
-  animation: slideDownMobile var(--transition-fast) both;
+  animation: slide-down-mobile var(--transition-fast) both;
 }
 
 .modal-content--placement-bottom[data-state='open'] {
-  animation: slideUpMobile var(--transition-base) both;
+  animation: slide-up-mobile var(--transition-base) both;
 }
 
 .modal-content--placement-bottom[data-state='closed'] {
-  animation: slideDownMobile var(--transition-fast) both;
+  animation: slide-down-mobile var(--transition-fast) both;
 }
 
 .modal-content--placement-center[data-state='open'] {
-  animation: slideUpModal var(--transition-base) both;
+  animation: slide-up-modal var(--transition-base) both;
 }
 
 .modal-content--placement-center[data-state='closed'] {
-  animation: slideDownModal var(--transition-fast) both;
+  animation: slide-down-modal var(--transition-fast) both;
 }
 
 .modal-content--xs {
@@ -1815,38 +1894,42 @@ code:not(pre code) {
   max-width: var(--modal-inline-size-xl);
 }
 
+/* stylelint-disable-next-line media-feature-range-notation -- Conserva la sintaxis de media queries del proyecto. */
 @media (max-width: 767px) {
-  .modal-content:not(.modal-content--placement-bottom):not(.modal-content--placement-center) {
+  .modal-content:not(.modal-content--placement-bottom, .modal-content--placement-center) {
     max-width: none;
   }
 
-  .modal-content:not(.modal-content--placement-bottom):not(.modal-content--placement-center).modal-alert {
+  .modal-content:not(.modal-content--placement-bottom, .modal-content--placement-center).modal-alert {
     max-width: var(--modal-inline-size-xs);
   }
 }
 
+/* stylelint-disable no-descending-specificity -- Los estilos de tabla y diálogo tienen raíces distintas; los selectores de contexto del diálogo conservan su orden. */
+
 /* Base móvil: se conserva el sheet existente y se respetan las safe areas. */
 
-.modal-content>.modal-header {
+.modal-content > .modal-header {
   padding-left: max(var(--modal-content-padding), var(--safe-area-left));
   padding-right: max(var(--modal-content-padding), var(--safe-area-right));
 }
 
-.modal-content>.modal-scroll-region>.modal-body {
+.modal-content > .modal-scroll-region > .modal-body {
   padding-left: max(var(--modal-content-padding), var(--safe-area-left));
   padding-right: max(var(--modal-content-padding), var(--safe-area-right));
 }
 
-.modal-content .modal-body>* {
+.modal-content .modal-body > * {
   flex-shrink: 0;
 }
 
-.modal-content>.modal-footer {
+.modal-content > .modal-footer {
   padding-left: max(var(--modal-content-padding), var(--safe-area-left));
   padding-right: max(var(--modal-content-padding), var(--safe-area-right));
   padding-bottom: calc(var(--modal-content-padding) + var(--safe-area-bottom));
 }
 
+/* stylelint-disable-next-line media-feature-range-notation -- Conserva la sintaxis de media queries del proyecto. */
 @media (min-width: 768px) {
   .modal-overlay {
     padding: var(--design-spacing-lg);
@@ -1855,16 +1938,15 @@ code:not(pre code) {
 
   .modal-content {
     --modal-content-padding: var(--design-spacing-lg);
-    inset-block-start: 50%;
-    inset-block-end: auto;
+
+    inset-block: 50% auto;
     max-height: var(--modal-max-block-size);
     border-radius: var(--radius-dialog);
     transform: translate(-50%, -50%);
   }
 
   .modal-content--placement-bottom {
-    inset-block-start: auto;
-    inset-block-end: max(var(--design-spacing-md), var(--safe-area-bottom));
+    inset-block: auto max(var(--design-spacing-md), var(--safe-area-bottom));
     transform: translateX(-50%);
   }
 
@@ -1873,18 +1955,18 @@ code:not(pre code) {
   }
 
   .modal-content[data-state='open'] {
-    animation: slideUpModal var(--transition-base) both;
+    animation: slide-up-modal var(--transition-base) both;
   }
 
   .modal-content[data-state='closed'] {
-    animation: slideDownModal var(--transition-fast) both;
+    animation: slide-down-modal var(--transition-fast) both;
   }
 
-  .modal-content .modal-body>* {
+  .modal-content .modal-body > * {
     flex-shrink: 1;
   }
 
-  .modal-content>.modal-footer {
+  .modal-content > .modal-footer {
     padding-block: var(--design-spacing-sm);
   }
 }
@@ -1892,10 +1974,8 @@ code:not(pre code) {
 /* Posiciones compactas explícitas: conservan gutters, radios y safe areas. */
 .modal-overlay--bottom,
 .modal-overlay--center {
-  padding-top: max(var(--design-spacing-md), var(--safe-area-top));
-  padding-right: max(var(--design-spacing-md), var(--safe-area-right));
-  padding-bottom: max(var(--design-spacing-md), var(--safe-area-bottom));
-  padding-left: max(var(--design-spacing-md), var(--safe-area-left));
+  padding: max(var(--design-spacing-md), var(--safe-area-top)) max(var(--design-spacing-md), var(--safe-area-right))
+    max(var(--design-spacing-md), var(--safe-area-bottom)) max(var(--design-spacing-md), var(--safe-area-left));
 }
 
 .modal-overlay--bottom {
@@ -1908,14 +1988,17 @@ code:not(pre code) {
 
 .modal-content--placement-bottom {
   inset-block-end: max(var(--design-spacing-md), var(--safe-area-bottom));
-  inline-size: calc(100% - max(var(--design-spacing-md), var(--safe-area-left)) - max(var(--design-spacing-md), var(--safe-area-right)));
+  inline-size: calc(
+    100% - max(var(--design-spacing-md), var(--safe-area-left)) - max(var(--design-spacing-md), var(--safe-area-right))
+  );
 }
 
 .modal-content--placement-center {
-  inset-block-start: 50%;
-  inset-block-end: auto;
+  inset-block: 50% auto;
   transform: translate(-50%, -50%);
-  inline-size: calc(100% - max(var(--design-spacing-md), var(--safe-area-left)) - max(var(--design-spacing-md), var(--safe-area-right)));
+  inline-size: calc(
+    100% - max(var(--design-spacing-md), var(--safe-area-left)) - max(var(--design-spacing-md), var(--safe-area-right))
+  );
 }
 
 .modal-content--placement-bottom,
@@ -1942,8 +2025,8 @@ code:not(pre code) {
   flex: 1 1 auto;
 }
 
-.modal-title>svg,
-.modal-title>[data-icon] {
+.modal-title > svg,
+.modal-title > [data-icon] {
   flex-shrink: 0;
   width: var(--icon-size-md);
   height: var(--icon-size-md);
@@ -2030,25 +2113,27 @@ code:not(pre code) {
   background: var(--color-surface);
 }
 
-.modal-footer>.btn-primary,
-.modal-footer>.btn-secondary,
-.modal-footer>.btn-danger {
+.modal-footer > .btn-primary,
+.modal-footer > .btn-secondary,
+.modal-footer > .btn-danger {
   flex: 1 1 auto;
 }
 
+/* stylelint-disable-next-line media-feature-range-notation -- Conserva la sintaxis de media queries del proyecto. */
 @media (min-width: 768px) {
   .modal-footer {
     justify-content: flex-end;
   }
 
-  .modal-footer>.btn-primary,
-  .modal-footer>.btn-secondary,
-  .modal-footer>.btn-danger {
+  .modal-footer > .btn-primary,
+  .modal-footer > .btn-secondary,
+  .modal-footer > .btn-danger {
     flex: 0 1 auto;
   }
 }
 
 /* Keyframes */
+/* stylelint-disable-next-line keyframes-name-pattern -- Pipeline.css también consume este nombre existente. */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -2059,7 +2144,7 @@ code:not(pre code) {
   }
 }
 
-@keyframes fadeOut {
+@keyframes fade-out {
   from {
     opacity: 1;
   }
@@ -2069,7 +2154,7 @@ code:not(pre code) {
   }
 }
 
-@keyframes slideUpModal {
+@keyframes slide-up-modal {
   from {
     opacity: 0;
     transform: translate(-50%, calc(-50% + var(--design-spacing-md)));
@@ -2081,7 +2166,7 @@ code:not(pre code) {
   }
 }
 
-@keyframes slideDownModal {
+@keyframes slide-down-modal {
   from {
     opacity: 1;
     transform: translate(-50%, -50%);
@@ -2093,7 +2178,7 @@ code:not(pre code) {
   }
 }
 
-@keyframes slideUpMobile {
+@keyframes slide-up-mobile {
   from {
     opacity: 0;
     transform: translate(-50%, var(--design-spacing-xl));
@@ -2105,7 +2190,7 @@ code:not(pre code) {
   }
 }
 
-@keyframes slideDownMobile {
+@keyframes slide-down-mobile {
   from {
     opacity: 1;
     transform: translate(-50%, 0);
@@ -2118,7 +2203,6 @@ code:not(pre code) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-
   .modal-content[data-state],
   .modal-overlay[data-state] {
     animation: none;
@@ -2143,6 +2227,7 @@ code:not(pre code) {
 .modal-alert .modal-footer {
   padding-top: var(--design-spacing-sm);
 }
+/* stylelint-enable no-descending-specificity */
 
 /* ========================================
    GLOBAL EMPTY STATE ANIMADO
@@ -2169,7 +2254,7 @@ code:not(pre code) {
 .animated-empty-state__icon svg {
   width: 100%;
   height: 100%;
-  animation: floatEmpty var(--transition-decorative-float) infinite;
+  animation: float-empty var(--transition-decorative-float) infinite;
 }
 
 /* Rol tipográfico de títulos breves (body-strong), no de botón. */
@@ -2194,7 +2279,7 @@ code:not(pre code) {
   font-family: var(--font-body);
 }
 
-@keyframes floatEmpty {
+@keyframes float-empty {
   0% {
     transform: translateY(0);
   }
@@ -2210,7 +2295,6 @@ code:not(pre code) {
 
 /* Decoración en bucle: se detiene por completo con movimiento reducido. */
 @media (prefers-reduced-motion: reduce) {
-
   .animated-empty-state,
   .animated-empty-state__icon svg {
     animation: none;
@@ -2255,13 +2339,17 @@ code:not(pre code) {
 
 /* Un único indicador. Los campos compuestos lo delegan al contenedor solo
    mientras su input tiene foco; sus botones mantienen un indicador propio. */
-:focus-visible:not( :where([data-focus-ring] > input,
+:focus-visible:not(
+  :where(
+    [data-focus-ring] > input,
     [data-focus-ring] > textarea,
     label > input.sr-only,
     .toggle-switch input,
-    .ui-checkbox__input)),
-.toggle-switch input:focus-visible+.toggle-switch__slider,
-.ui-checkbox__input:focus-visible~.ui-checkbox__indicator {
+    .ui-checkbox__input
+  )
+),
+.toggle-switch input:focus-visible + .toggle-switch__slider,
+.ui-checkbox__input:focus-visible ~ .ui-checkbox__indicator {
   outline: var(--focus-ring-width) solid var(--color-focus);
   outline-offset: var(--focus-ring-offset);
 }
@@ -2275,8 +2363,8 @@ label:has(> input.sr-only:focus-visible) {
 
 /* El input conserva el foco real; su superficie visible dibuja el anillo.
    Se mantiene también en forced-colors para evitar un segundo indicador. */
-[data-focus-ring]> :is(input, textarea):focus-visible,
-label>input.sr-only:focus-visible,
+[data-focus-ring] > :is(input, textarea):focus-visible,
+label > input.sr-only:focus-visible,
 .toggle-switch input:focus-visible,
 .ui-checkbox__input:focus-visible {
   outline: none;
@@ -2327,11 +2415,13 @@ label>input.sr-only:focus-visible,
   height: 0;
 }
 
+/* stylelint-disable-next-line no-descending-specificity -- El foco del control y la base del switch son estados distintos. */
 .toggle-switch__slider {
   position: relative;
   display: inline-block;
   width: var(--toggle-track-inline-size);
   height: var(--toggle-track-block-size);
+
   /* WCAG 1.4.11: el riel apagado usa el borde de control (≥3:1), no un hairline. */
   background-color: var(--color-control-border);
   border-radius: var(--rounded-full);
@@ -2352,15 +2442,15 @@ label>input.sr-only:focus-visible,
   box-shadow: var(--shadow-sm);
 }
 
-.toggle-switch input[type='checkbox']:checked+.toggle-switch__slider {
+.toggle-switch input[type='checkbox']:checked + .toggle-switch__slider {
   background-color: var(--color-primary);
 }
 
-.toggle-switch input[type='checkbox']:checked+.toggle-switch__slider::before {
+.toggle-switch input[type='checkbox']:checked + .toggle-switch__slider::before {
   transform: translateX(var(--toggle-thumb-travel));
 }
 
-.toggle-switch input[type='checkbox']:disabled+.toggle-switch__slider {
+.toggle-switch input[type='checkbox']:disabled + .toggle-switch__slider {
   opacity: var(--opacity-disabled);
   cursor: not-allowed;
 }
@@ -2391,14 +2481,17 @@ label>input.sr-only:focus-visible,
 }
 
 @media (forced-colors: active) {
-
-  :focus-visible:not( :where([data-focus-ring] > input,
+  :focus-visible:not(
+    :where(
+      [data-focus-ring] > input,
       [data-focus-ring] > textarea,
       label > input.sr-only,
       .toggle-switch input,
-      .ui-checkbox__input)),
-  .toggle-switch input:focus-visible+.toggle-switch__slider,
-  .ui-checkbox__input:focus-visible~.ui-checkbox__indicator {
+      .ui-checkbox__input
+    )
+  ),
+  .toggle-switch input:focus-visible + .toggle-switch__slider,
+  .ui-checkbox__input:focus-visible ~ .ui-checkbox__indicator {
     outline: var(--focus-ring-width) solid Highlight !important;
     outline-offset: var(--focus-ring-offset) !important;
     box-shadow: none !important;
@@ -2412,6 +2505,7 @@ label>input.sr-only:focus-visible,
   }
 
   /* Los colores del sistema conservan la posición y el contraste del switch. */
+  /* stylelint-disable-next-line no-descending-specificity -- El color forzado sustituye la base, no el estado de foco. */
   .toggle-switch__slider {
     forced-color-adjust: none;
     color: ButtonText;
@@ -2423,11 +2517,11 @@ label>input.sr-only:focus-visible,
     background: ButtonText;
   }
 
-  .toggle-switch input[type='checkbox']:checked+.toggle-switch__slider {
+  .toggle-switch input[type='checkbox']:checked + .toggle-switch__slider {
     background: Highlight;
   }
 
-  .toggle-switch input[type='checkbox']:checked+.toggle-switch__slider::before {
+  .toggle-switch input[type='checkbox']:checked + .toggle-switch__slider::before {
     background: HighlightText;
   }
 }

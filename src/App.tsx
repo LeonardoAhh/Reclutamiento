@@ -49,7 +49,6 @@ import {
   Pipeline,
   ReportComparisonPage,
   ReporteDiario,
-  VacancyAssignmentsPage,
 } from '@/lib/routePages';
 
 const Login = lazy(() =>
@@ -63,7 +62,6 @@ function ProtectedContent() {
   const recruiterRestrictedPath = pathname === ADMINISTRATION_PATH
     || normalizedPath === getConfiguracionHref('analisis')
     || normalizedPath === CANDIDATE_METRICS_PATH
-    || normalizedPath === VACANCY_ASSIGNMENTS_PATH
     || isDailyReportPath(pathname);
   if (profile?.role === 'reclutador' && recruiterRestrictedPath) {
     return <Navigate to={HOME_PATH} replace />;
@@ -170,7 +168,7 @@ function App() {
                 <Route path={LEAVE_REQUESTS_PATH} element={<LeaveRequestsPage />} />
                 <Route path="/overview" element={<WithSupabaseData resources={WORKFORCE_DATA}><KpisPage /></WithSupabaseData>} />
                 <Route path={PLANTILLA_PATH} element={<PlantillaPage />} />
-                <Route path={VACANCY_ASSIGNMENTS_PATH} element={<WithSupabaseData resources={WORKFORCE_DATA}><VacancyAssignmentsPage /></WithSupabaseData>} />
+                <Route path={VACANCY_ASSIGNMENTS_PATH} element={<Navigate to={PLANTILLA_PATH} replace />} />
                 <Route path={CANDIDATE_METRICS_PATH} element={<CandidateMetricsPage />} />
                 <Route path="/candidates" element={<WithSupabaseData resources={CANDIDATE_FORM_DATA}><Pipeline /></WithSupabaseData>} />
                 <Route path="/employee-turnover" element={<WithSupabaseData resources={EMPLOYEE_DATA}><Bajas /></WithSupabaseData>} />

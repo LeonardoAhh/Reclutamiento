@@ -11,6 +11,7 @@
 
 import './KpiHeroChart.css';
 import { Badge } from './Badge';
+import { TooltipSurface, type ChartTooltipEntry } from './Tooltip';
 import { useMemo, useId } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useIsMobile } from '@/hooks/useIsMobile';
@@ -110,16 +111,9 @@ function SeriesMarker({ seriesKey }: { seriesKey: string }) {
 // Tooltip personalizado
 // ─────────────────────────────────────────────
 
-type CustomTooltipPayloadItem = {
-  name: string;
-  value: number;
-  color: string;
-  dataKey: string;
-};
-
 interface CustomTooltipInternalProps extends TooltipProps<number, string> {
   active?: boolean;
-  payload?: CustomTooltipPayloadItem[];
+  payload?: ChartTooltipEntry[];
   label?: string;
   presentation?: boolean;
 }
@@ -129,19 +123,19 @@ function CustomTooltip({ active, payload, label, presentation }: CustomTooltipIn
   if (!active || !payload?.length) return null;
 
   return (
-    <div role="tooltip" className={`kpi-hero-tooltip${presentation ? ' kpi-hero-tooltip--presentation' : ''}`}>
-      <p className="kpi-hero-tooltip__title">{label}</p>
+    <TooltipSurface role="tooltip" variant="chart" className={presentation ? 'kpi-hero-tooltip--presentation' : undefined}>
+      <p className="tooltip-surface__title tooltip-surface__title--eyebrow">{label}</p>
       {payload.map((entry) => {
         const valor = entry.value.toLocaleString(language === 'en' ? 'en-US' : 'es-MX');
 
         return (
-          <p key={entry.dataKey} className="kpi-hero-tooltip__row">
+          <p key={entry.dataKey} className="tooltip-surface__row">
             <SeriesMarker seriesKey={entry.dataKey} />
             <span>{entry.name}:</span> <strong>{valor}</strong>
           </p>
         );
       })}
-    </div>
+    </TooltipSurface>
   );
 }
 

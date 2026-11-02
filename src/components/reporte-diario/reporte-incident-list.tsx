@@ -19,6 +19,7 @@ export function DataTable({ rows }: { rows: EmployeeRef[] }) {
   return (
     <div className="reporte-incidents__table-wrap">
       <table className="reporte-incidents__table data-table">
+        <caption className="sr-only">{copy('Listado de incidencias', 'Incident list')}</caption>
         <thead>
           <tr>
             {TABLE_HEADERS.map((header) => (

@@ -1,0 +1,337 @@
+/* ── Control group (toolbar) ──────────────────────────────────────────────── */
+
+.reporte-control-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+}
+
+/* ── Tab / icon trigger button ────────────────────────────────────────────── */
+
+.reporte-tab-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  min-height: var(--control-height);
+  min-width: var(--control-height);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-control);
+  border: var(--border-width) solid var(--color-control-border);
+  background: var(--color-surface-card);
+  color: var(--color-charcoal);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: 1;
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.reporte-tab-trigger:hover {
+  color: var(--color-ink);
+  background: var(--color-surface-soft);
+  border-color: var(--color-control-border);
+}
+
+/* ── Primary button — uses global .btn-primary ─────────────────────────────── */
+
+.reporte-employee-detail__tabs {
+  display: flex;
+  gap: var(--spacing-lg);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.reporte-employee-detail__tab {
+  padding: var(--spacing-sm) 0;
+  margin-bottom: calc(var(--border-width) * -1);
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-muted);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    border-color var(--transition-fast);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.reporte-employee-detail__tab:hover {
+  color: var(--color-ink);
+}
+
+.reporte-employee-detail__tab.is-active {
+  background: transparent;
+  border-bottom-color: var(--color-ink);
+  color: var(--color-ink);
+}
+
+.reporte-employee-detail__tab:focus-visible {
+  border-radius: var(--rounded-sm);
+}
+
+.reporte-employee-detail__panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.reporte-employee-detail__meta-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-md);
+}
+
+@media (max-width: 640px) {
+  .reporte-employee-detail__meta-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.reporte-employee-detail__info-item {
+  padding: var(--spacing-sm);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  background: var(--color-surface-soft);
+  display: flex;
+  flex-direction: column;
+  gap: var(--design-spacing-xxs);
+}
+
+.reporte-employee-detail__info-label {
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
+  color: var(--color-muted);
+  font-family: var(--font-body);
+  line-height: var(--type-caption-up-line);
+}
+
+/* ── Icon-only divider used in toolbars ───────────────────────────────────── */
+.reporte-divider-v {
+  width: 1px;
+  align-self: stretch;
+  min-height: var(--spacing-xl);
+  background: var(--color-hairline);
+  margin-inline: var(--spacing-xs);
+}
+
+/* Hide non-essential toolbar dividers on very small screens */
+@media (max-width: 519px) {
+  .reporte-divider-v {
+    display: none;
+  }
+}
+
+/* ── Day-detail header (title + nav + actions) ────────────────────────────── */
+
+.reporte-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: var(--spacing-xs);
+  padding: var(--design-spacing-xxl) var(--spacing-lg);
+  border: 2px dashed var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  background: var(--color-surface-soft);
+  cursor: pointer;
+  transition:
+    border-color var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.reporte-empty:hover {
+  border-color: var(--color-primary-border);
+  background: var(--color-surface-card);
+}
+
+.reporte-empty__icon {
+  color: var(--color-muted);
+  margin-bottom: var(--spacing-sm);
+}
+
+.reporte-overlay__title {
+  margin: 0;
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+/* ── Global drag overlay ──────────────────────────────────────────────────── */
+
+.reporte-drag {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  text-align: center;
+  margin: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background: var(--color-surface-soft);
+  border: 2px dashed var(--color-primary-border);
+  border-radius: var(--rounded-xl, var(--rounded-lg));
+}
+
+/* ── Errors list ──────────────────────────────────────────────────────────── */
+
+.reporte-errors {
+  align-items: flex-start;
+  width: 100%;
+}
+
+.reporte-errors__icon {
+  flex-shrink: 0;
+  margin-top: var(--design-spacing-xxs);
+}
+
+.reporte-errors__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+}
+
+.reporte-errors__header h2 {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.reporte-errors__header .reporte-iconbtn {
+  min-width: var(--touch-target-min);
+  min-height: var(--touch-target-min);
+}
+
+.reporte-errors__summary {
+  margin: var(--design-spacing-xxs) 0 0;
+  color: var(--color-charcoal);
+}
+
+.reporte-errors__groups {
+  margin: var(--spacing-md) 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  list-style: none;
+}
+
+.reporte-errors__group {
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid var(--color-hairline);
+}
+
+.reporte-errors__group-heading {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--design-spacing-xxs);
+  color: var(--color-charcoal);
+}
+
+@media (min-width: 768px) {
+  .reporte-errors__group-heading {
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+  }
+}
+
+.reporte-errors__group-heading strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.reporte-errors__group-heading span {
+  flex-shrink: 0;
+  color: var(--color-error);
+  font-weight: var(--type-body-strong-weight);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.reporte-errors__details {
+  margin-top: var(--spacing-xs);
+  color: var(--color-charcoal);
+}
+
+.reporte-errors__details summary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  min-height: var(--touch-target-min);
+  color: var(--color-primary-text);
+  font-weight: var(--type-body-strong-weight);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.reporte-errors__details-icon {
+  flex-shrink: 0;
+  transition: transform var(--transition-fast);
+}
+
+.reporte-errors__details[open] .reporte-errors__details-icon {
+  transform: rotate(180deg);
+}
+
+.reporte-errors__rows {
+  max-block-size: var(--feature-validation-details-max-block-size);
+  margin: 0;
+  padding: var(--spacing-sm);
+  overflow-y: auto;
+  overflow-wrap: anywhere;
+  background: var(--color-surface);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-xs);
+}
+
+/* ── Icon button (bare) ───────────────────────────────────────────────────── */
+
+.reporte-iconbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xs);
+  border: none;
+  background: none;
+  color: inherit;
+  border-radius: var(--rounded-sm);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.reporte-iconbtn:hover {
+  background: var(--color-surface-soft);
+}
+

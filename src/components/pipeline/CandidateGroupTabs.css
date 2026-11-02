@@ -35,7 +35,7 @@
 }
 
 .candidate-group-tabs__item--active {
-  border-bottom-color: var(--color-primary);
+  border-bottom-color: var(--color-primary-border);
   font-weight: var(--type-body-strong-weight);
 }
 

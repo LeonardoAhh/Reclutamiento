@@ -29,9 +29,7 @@ export function WeeklyMetrics({ stats }: { stats: WeekStat[] }) {
       setCopiedKey(key);
       playSound('success');
       toast.success({
-        title: en
-          ? `Week ${weekNum} metrics copied for Excel`
-          : `Métricas de semana ${weekNum} copiadas para Excel`,
+        title: en ? `Week ${weekNum} metrics copied for Excel` : `Métricas de semana ${weekNum} copiadas para Excel`,
         duration: 2000,
       });
       window.setTimeout(() => {
@@ -43,28 +41,113 @@ export function WeeklyMetrics({ stats }: { stats: WeekStat[] }) {
     }
   };
 
-  const renderWeeksTable = (weeks: WeekStat[], showHeader = true) => {
+  const renderWeeksTable = (weeks: WeekStat[]) => {
     const displayedWeeks = isExpanded ? weeks : weeks.slice(0, 3);
     const hasMore = weeks.length > 3;
 
     return (
       <div className="recruiter-metrics__table-wrap">
         <table className="recruiter-metrics__table data-table">
-          {showHeader && (
-            <thead>
-              <tr>
-                <th scope="col">{en ? 'Week' : 'Semana'}</th>
-                <th scope="col" className="recruiter-metrics__table-number">{en ? 'Candidates' : 'Candidatos'}</th>
-                <th scope="col" className="recruiter-metrics__table-number">{en ? 'Hired' : 'Contratados'}</th>
-                <th scope="col" className="recruiter-metrics__table-number">{en ? 'Target attainment' : 'Cumplimiento del objetivo'}</th>
-                <th scope="col" className="recruiter-metrics__table-copy-col">
-                  <span className="sr-only">{en ? 'Copy' : 'Copiar'}</span>
-                </th>
-              </tr>
-            </thead>
-          )}
+          <caption className="sr-only">{en ? 'Weekly metrics' : 'Métricas semanales'}</caption>
+          <thead>
+            <tr>
+              <th scope="col">{en ? 'Week' : 'Semana'}</th>
+              <th scope="col" className="recruiter-metrics__table-number">
+                {en ? 'Candidates' : 'Candidatos'}
+              </th>
+              <th scope="col" className="recruiter-metrics__table-number">
+                {en ? 'Hired' : 'Contratados'}
+              </th>
+              <th scope="col" className="recruiter-metrics__table-number">
+                {en ? 'Target attainment' : 'Cumplimiento del objetivo'}
+              </th>
+              <th scope="col" className="recruiter-metrics__table-copy-col">
+                <span className="sr-only">{en ? 'Copy' : 'Copiar'}</span>
+              </th>
+            </tr>
+          </thead>
           <tbody>
-          {displayedWeeks.map((stat) => {
+            {displayedWeeks.map((stat) => {
+              const tueWeek = isoWeekOf(stat.endTue).week;
+              const fmt = new Intl.DateTimeFormat(dateLocale, {
+                day: 'numeric',
+                month: 'short',
+              });
+              const wedStr = fmt.format(stat.startWed);
+              const tueStr = fmt.format(stat.endTue);
+              const effectiveness = stat.efectividadContratacion;
+              const { year, week } = isoWeekOf(stat.endTue);
+              const key = year + '-W' + week;
+              const isCopied = copiedKey === key;
+
+              return (
+                <tr key={key}>
+                  <td className="recruiter-metrics__table-week">
+                    <span className="recruiter-metrics__table-week-label">
+                      {en ? 'Week' : 'Semana'} {tueWeek}
+                    </span>
+                    <span className="recruiter-metrics__table-period">
+                      {wedStr} – {tueStr}
+                    </span>
+                  </td>
+                  <td className="recruiter-metrics__table-number">{stat.total}</td>
+                  <td className="recruiter-metrics__table-number recruiter-metrics__table-number--hired">
+                    {stat.contratados}
+                  </td>
+                  <td className="recruiter-metrics__table-number recruiter-metrics__table-number--pct">
+                    {effectiveness}%
+                  </td>
+                  <td className="recruiter-metrics__table-copy-col">
+                    <Tooltip content={en ? 'Copy weekly metrics for Excel' : 'Copiar métricas semanales para Excel'}>
+                      <button
+                        type="button"
+                        onClick={() => handleCopyRow(stat, tueWeek)}
+                        className={`recruiter-metrics__copy-btn${isCopied ? ' is-copied' : ''}`}
+                        aria-label={`${en ? 'Copy weekly metrics for Excel, week' : 'Copiar métricas semanales para Excel, semana'} ${tueWeek}`}
+                      >
+                        {isCopied ? (
+                          <CircleCheckBig size="var(--icon-size-sm)" aria-hidden="true" />
+                        ) : (
+                          <Copy size="var(--icon-size-sm)" aria-hidden="true" />
+                        )}
+                      </button>
+                    </Tooltip>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+        {hasMore && (
+          <div className="recruiter-metrics__table-actions">
+            <ButtonUtility
+              onClick={() => {
+                playSound(isExpanded ? 'close' : 'open');
+                setIsExpanded(!isExpanded);
+              }}
+              aria-expanded={isExpanded}
+              icon={
+                isExpanded ? (
+                  <Minus size="var(--icon-size-sm)" aria-hidden="true" />
+                ) : (
+                  <Plus size="var(--icon-size-sm)" aria-hidden="true" />
+                )
+              }
+            >
+              {isExpanded ? (en ? 'Show less' : 'Ver menos') : en ? 'Show more' : 'Ver más'}
+            </ButtonUtility>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <div className="recruiter-metrics__weeks">
+      {isMobile
+        ? (() => {
+            if (stats.length === 0) return <p>{en ? 'No data.' : 'No hay datos.'}</p>;
+            const stat = stats[0];
             const tueWeek = isoWeekOf(stat.endTue).week;
             const fmt = new Intl.DateTimeFormat(dateLocale, {
               day: 'numeric',
@@ -73,120 +156,51 @@ export function WeeklyMetrics({ stats }: { stats: WeekStat[] }) {
             const wedStr = fmt.format(stat.startWed);
             const tueStr = fmt.format(stat.endTue);
             const effectiveness = stat.efectividadContratacion;
+
             const { year, week } = isoWeekOf(stat.endTue);
-    const key = year + '-W' + week;
+            const key = year + '-W' + week;
             const isCopied = copiedKey === key;
 
             return (
-              <tr key={key}>
-                <td className="recruiter-metrics__table-week">
-                  <span className="recruiter-metrics__table-week-label">{en ? 'Week' : 'Semana'} {tueWeek}</span>
-                  <span className="recruiter-metrics__table-period">{wedStr} – {tueStr}</span>
-                </td>
-                <td className="recruiter-metrics__table-number">{stat.total}</td>
-                <td className="recruiter-metrics__table-number recruiter-metrics__table-number--hired">
-                  {stat.contratados}
-                </td>
-                <td className="recruiter-metrics__table-number recruiter-metrics__table-number--pct">
-                  {effectiveness}%
-                </td>
-                <td className="recruiter-metrics__table-copy-col">
-                  <Tooltip content={en ? 'Copy weekly metrics for Excel' : 'Copiar métricas semanales para Excel'}>
-                    <button
-                      type="button"
-                      onClick={() => handleCopyRow(stat, tueWeek)}
-                      className={`recruiter-metrics__copy-btn${isCopied ? ' is-copied' : ''}`}
-                      aria-label={`${en ? 'Copy weekly metrics for Excel, week' : 'Copiar métricas semanales para Excel, semana'} ${tueWeek}`}
-                    >
+              <div className="recruiter-metrics__mobile-current-week">
+                <p className="recruiter-metrics__week-heading">
+                  {en ? 'Current week' : 'Semana actual'} ({en ? 'Week' : 'Sem'} {tueWeek})<br />
+                  <span className="recruiter-metrics__table-period">
+                    {wedStr} – {tueStr}
+                  </span>
+                </p>
+                <div className="recruiter-metrics__card-stats recruiter-metrics__current-week-stats">
+                  <div className="recruiter-metrics__stat recruiter-metrics__stat--citados">
+                    <span className="recruiter-metrics__stat-value">{stat.total}</span>
+                    <span className="recruiter-metrics__stat-label">{en ? 'Candidates' : 'Candidatos'}</span>
+                  </div>
+                  <div className="recruiter-metrics__stat recruiter-metrics__stat--contratados">
+                    <span className="recruiter-metrics__stat-value">{stat.contratados}</span>
+                    <span className="recruiter-metrics__stat-label">{en ? 'Hired' : 'Contratados'}</span>
+                  </div>
+                  <div className="recruiter-metrics__stat">
+                    <span className="recruiter-metrics__stat-value">{effectiveness}%</span>
+                    <span className="recruiter-metrics__stat-label">
+                      {en ? 'Target attainment' : 'Cumplimiento del objetivo'}
+                    </span>
+                  </div>
+                </div>
+                <ButtonUtility onClick={() => handleCopyRow(stat, tueWeek)} className="recruiter-metrics__weekly-copy">
+                  <ActionStateContent active={isCopied}>
+                    <span className="btn-utility__icon">
                       {isCopied ? (
                         <CircleCheckBig size="var(--icon-size-sm)" aria-hidden="true" />
                       ) : (
                         <Copy size="var(--icon-size-sm)" aria-hidden="true" />
                       )}
-                    </button>
-                  </Tooltip>
-                </td>
-              </tr>
+                    </span>
+                    <span>{en ? 'Copy weekly metrics for Excel' : 'Copiar métricas semanales para Excel'}</span>
+                  </ActionStateContent>
+                </ButtonUtility>
+              </div>
             );
-          })}
-        </tbody>
-      </table>
-      {hasMore && (
-        <div className="recruiter-metrics__table-actions">
-          <ButtonUtility
-            onClick={() => {
-              playSound(isExpanded ? 'close' : 'open');
-              setIsExpanded(!isExpanded);
-            }}
-            aria-expanded={isExpanded}
-            icon={isExpanded ? <Minus size="var(--icon-size-sm)" aria-hidden="true" /> : <Plus size="var(--icon-size-sm)" aria-hidden="true" />}
-          >
-            {isExpanded ? (en ? 'Show less' : 'Ver menos') : (en ? 'Show more' : 'Ver más')}
-          </ButtonUtility>
-        </div>
-      )}
+          })()
+        : renderWeeksTable(stats)}
     </div>
-  );
-  };
-
-  return (
-          <div className="recruiter-metrics__weeks">
-            {isMobile ? (
-              (() => {
-                if (stats.length === 0) return <p>{en ? 'No data.' : 'No hay datos.'}</p>;
-                const stat = stats[0];
-                const tueWeek = isoWeekOf(stat.endTue).week;
-                const fmt = new Intl.DateTimeFormat(dateLocale, {
-                  day: 'numeric',
-                  month: 'short',
-                });
-                const wedStr = fmt.format(stat.startWed);
-                const tueStr = fmt.format(stat.endTue);
-                const effectiveness = stat.efectividadContratacion;
-                
-                const { year, week } = isoWeekOf(stat.endTue);
-                const key = year + '-W' + week;
-                const isCopied = copiedKey === key;
-
-                return (
-                  <div className="recruiter-metrics__mobile-current-week">
-                    <p className="recruiter-metrics__week-heading">
-                      {en ? 'Current week' : 'Semana actual'} ({en ? 'Week' : 'Sem'} {tueWeek})<br/>
-                      <span className="recruiter-metrics__table-period">{wedStr} – {tueStr}</span>
-                    </p>
-                    <div
-                      className="recruiter-metrics__card-stats recruiter-metrics__current-week-stats"
-                    >
-                      <div className="recruiter-metrics__stat recruiter-metrics__stat--citados">
-                        <span className="recruiter-metrics__stat-value">{stat.total}</span>
-                        <span className="recruiter-metrics__stat-label">{en ? 'Candidates' : 'Candidatos'}</span>
-                      </div>
-                      <div className="recruiter-metrics__stat recruiter-metrics__stat--contratados">
-                        <span className="recruiter-metrics__stat-value">{stat.contratados}</span>
-                        <span className="recruiter-metrics__stat-label">{en ? 'Hired' : 'Contratados'}</span>
-                      </div>
-                      <div className="recruiter-metrics__stat">
-                        <span className="recruiter-metrics__stat-value">{effectiveness}%</span>
-                        <span className="recruiter-metrics__stat-label">{en ? 'Target attainment' : 'Cumplimiento del objetivo'}</span>
-                      </div>
-                    </div>
-                    <ButtonUtility
-                      onClick={() => handleCopyRow(stat, tueWeek)}
-                      className="recruiter-metrics__weekly-copy"
-                    >
-                      <ActionStateContent active={isCopied}>
-                        <span className="btn-utility__icon">
-                          {isCopied ? <CircleCheckBig size="var(--icon-size-sm)" aria-hidden="true" /> : <Copy size="var(--icon-size-sm)" aria-hidden="true" />}
-                        </span>
-                        <span>{en ? 'Copy weekly metrics for Excel' : 'Copiar métricas semanales para Excel'}</span>
-                      </ActionStateContent>
-                    </ButtonUtility>
-                  </div>
-                );
-              })()
-            ) : (
-              renderWeeksTable(stats, true)
-            )}
-          </div>
   );
 }

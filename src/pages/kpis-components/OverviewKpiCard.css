@@ -78,6 +78,44 @@
   overflow-wrap: anywhere;
 }
 
+.overview-kpi--dated {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    'header header'
+    'value date';
+  align-items: end;
+  column-gap: var(--design-spacing-xxs);
+}
+
+.overview-kpi--dated .overview-kpi__header {
+  grid-area: header;
+}
+
+.overview-kpi--dated .overview-kpi__value {
+  grid-area: value;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.overview-kpi--dated .overview-kpi__corner-note {
+  grid-area: date;
+  min-inline-size: 0;
+}
+
+.overview-kpi--dated .overview-kpi__footer {
+  grid-column: 1 / -1;
+}
+
+@media (width >= 640px) {
+  .overview-kpi--dated {
+    grid-template-areas:
+      'header date'
+      'value value';
+    align-items: start;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .overview-kpi {
     transition: none;

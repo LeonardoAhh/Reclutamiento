@@ -4,10 +4,7 @@ import { usePagination } from '@/hooks/usePagination';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { indicatorBajaType, toBajaSentenceCase } from '@/lib/bajaReasonCatalog';
 import type { BajaReasonUpdate } from '@/lib/bajaReasonUpdates';
-import {
-  getMotivosBajaCopy,
-  translateBajaCatalogLabel,
-} from './motivosBajaTranslations';
+import { getMotivosBajaCopy, translateBajaCatalogLabel } from './motivosBajaTranslations';
 
 interface MotivosBajaRecordsProps {
   bajas: BajaReasonUpdate[];
@@ -25,16 +22,10 @@ export function MotivosBajaRecords({ bajas, year, month, exitType }: MotivosBaja
     () => [...bajas].sort((a, b) => employeeNumberCollator.compare(b.num_empleado, a.num_empleado)),
     [bajas],
   );
-  const {
-    currentPage,
-    totalPages,
-    pageItems,
-    goToPage,
-    nextPage,
-    prevPage,
-    canGoNext,
-    canGoPrev,
-  } = usePagination(sortedBajas, 10);
+  const { currentPage, totalPages, pageItems, goToPage, nextPage, prevPage, canGoNext, canGoPrev } = usePagination(
+    sortedBajas,
+    10,
+  );
 
   useEffect(() => {
     goToPage(1);
@@ -43,12 +34,26 @@ export function MotivosBajaRecords({ bajas, year, month, exitType }: MotivosBaja
   return (
     <>
       <table className="motivos-baja__records data-table data-table--cards">
+        <caption className="sr-only">{copy.title}</caption>
         <thead>
           <tr>
-            <th scope="col" className="motivos-baja__records-employee" aria-label={copy.employeeColumn} aria-sort="descending">{copy.employeeNumber}</th>
-            <th scope="col" className="motivos-baja__records-type">{copy.typeColumn}</th>
-            <th scope="col" className="motivos-baja__records-reason">{copy.reasonColumn}</th>
-            <th scope="col" className="motivos-baja__records-detail">{copy.detailColumn}</th>
+            <th
+              scope="col"
+              className="motivos-baja__records-employee"
+              aria-label={copy.employeeColumn}
+              aria-sort="descending"
+            >
+              {copy.employeeNumber}
+            </th>
+            <th scope="col" className="motivos-baja__records-type">
+              {copy.typeColumn}
+            </th>
+            <th scope="col" className="motivos-baja__records-reason">
+              {copy.reasonColumn}
+            </th>
+            <th scope="col" className="motivos-baja__records-detail">
+              {copy.detailColumn}
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -64,9 +69,7 @@ export function MotivosBajaRecords({ bajas, year, month, exitType }: MotivosBaja
                   : copy.unclassified}
               </td>
               <td data-label={copy.detailColumn}>
-                {baja.motivo_baja?.trim()
-                  ? toBajaSentenceCase(baja.motivo_baja)
-                  : copy.noDetail}
+                {baja.motivo_baja?.trim() ? toBajaSentenceCase(baja.motivo_baja) : copy.noDetail}
               </td>
             </tr>
           ))}

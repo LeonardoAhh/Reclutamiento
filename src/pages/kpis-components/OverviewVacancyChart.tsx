@@ -11,6 +11,7 @@ import {
   type TooltipProps,
 } from 'recharts';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { TooltipSurface, type ChartTooltipEntry } from '@/components/ui/Tooltip';
 import type { IsoWeekRange } from '@/lib/dates';
 import type { AuthorizedPosition, Baja, Employee } from '@/lib/types';
 import type { CoverageKey } from '@/lib/workforceProjection';
@@ -93,16 +94,9 @@ function SeriesMarker({ dataKey }: { dataKey: string }) {
   );
 }
 
-type CustomTooltipPayloadItem = {
-  name: string;
-  value: number;
-  color: string;
-  dataKey: string;
-};
-
 interface CustomTooltipProps extends TooltipProps<number, string> {
   active?: boolean;
-  payload?: CustomTooltipPayloadItem[];
+  payload?: ChartTooltipEntry[];
   label?: string | number;
 }
 
@@ -111,16 +105,16 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
   if (!active || !payload?.length) return null;
 
   return (
-    <div role="tooltip" className="overview-chart__tooltip">
-      <p className="overview-chart__tooltip-title">{String(label ?? '')}</p>
+    <TooltipSurface role="tooltip" variant="chart">
+      <p className="tooltip-surface__title tooltip-surface__title--eyebrow">{String(label ?? '')}</p>
       {payload.map((entry) => (
-        <p key={entry.dataKey} className="overview-chart__tooltip-row">
+        <p key={entry.dataKey} className="tooltip-surface__row">
           <span className={`overview-chart__swatch overview-chart__swatch--${entry.dataKey}`} aria-hidden="true" />
           <span>{entry.name}</span>
           <strong>{Number(entry.value).toLocaleString(language === 'en' ? 'en-US' : 'es-MX')}</strong>
         </p>
       ))}
-    </div>
+    </TooltipSurface>
   );
 }
 

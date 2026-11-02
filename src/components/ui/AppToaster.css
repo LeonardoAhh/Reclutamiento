@@ -1,6 +1,8 @@
 .app-toaster {
   position: fixed;
-  inset-block-start: calc(var(--design-spacing-md) + var(--safe-area-top));
+  inset-block-start: calc(
+    var(--safe-area-top) + var(--design-spacing-xs)
+  );
   inset-inline-start: 0;
   inset-inline-end: 0;
   z-index: var(--layer-toast);
@@ -12,7 +14,7 @@
   max-inline-size: var(--container-max);
   max-block-size: calc(
     100dvh - var(--safe-area-top) - var(--safe-area-bottom) -
-      (var(--design-spacing-md) * 2)
+      var(--design-spacing-md) - var(--design-spacing-xs)
   );
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -21,6 +23,19 @@
   padding-inline-end: max(var(--container-padding), var(--safe-area-right));
   list-style: none;
   pointer-events: none;
+}
+
+@media (width >= 1080px) {
+  .app-toaster {
+    inset-block-start: calc(
+      var(--safe-area-top) + var(--design-spacing-md) +
+        var(--design-spacing-xs)
+    );
+    max-block-size: calc(
+      100dvh - var(--safe-area-top) - var(--safe-area-bottom) -
+        (var(--design-spacing-md) * 2) - var(--design-spacing-xs)
+    );
+  }
 }
 
 .app-toaster--system-update {

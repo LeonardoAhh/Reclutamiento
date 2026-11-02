@@ -25,13 +25,15 @@ export function RutaDayEmployeesPage() {
   const searchTerm = params.get('search');
   const headingRef = useRef<HTMLAnchorElement>(null);
   const { rutas, loading, errorMsg } = useRutas();
-  const route = rutas.find(item => item.nombreRuta === routeName);
-  const validDay = ROUTE_DAYS.find(item => formatRouteDay(item, 'en').toLowerCase() === day);
+  const route = rutas.find((item) => item.nombreRuta === routeName);
+  const validDay = ROUTE_DAYS.find((item) => formatRouteDay(item, 'en').toLowerCase() === day);
   const employees = useMemo(() => {
     if (!route || !validDay) return [];
     return [...getEmpleadosPorDia(route.empleados, validDay)].sort(compareBySeccion);
   }, [route, validDay]);
-  const backHref = routeName ? `/routes?${new URLSearchParams({ route: routeName, ...(searchTerm ? { search: searchTerm } : {}) })}` : '/routes';
+  const backHref = routeName
+    ? `/routes?${new URLSearchParams({ route: routeName, ...(searchTerm ? { search: searchTerm } : {}) })}`
+    : '/routes';
   const displayDay = validDay ? formatRouteDay(validDay, language).toLowerCase() : '';
   const title = validDay ? `${copy.employeesOfDay} ${displayDay}` : copy.employeesByDayPage;
   const compactRouteName = route?.nombreRuta.match(/^\s*(R\d+)\s*-/i)?.[1] ?? route?.nombreRuta;
@@ -44,15 +46,26 @@ export function RutaDayEmployeesPage() {
     <main className="ruta-day-page container" aria-labelledby="ruta-day-page-title">
       <header className="ruta-day-page__header">
         <h1 id="ruta-day-page-title" className="app-page-title ruta-day-page__heading">
-          <Link ref={headingRef} className="ruta-day-page__title-link" to={backHref} aria-label={`${language === 'en' ? 'Back to Routes from' : 'Volver a Rutas desde'} ${title}`}>
+          <Link
+            ref={headingRef}
+            className="ruta-day-page__title-link"
+            to={backHref}
+            aria-label={`${language === 'en' ? 'Back to Routes from' : 'Volver a Rutas desde'} ${title}`}
+          >
             <ArrowLeft aria-hidden="true" />
             <span>{title}</span>
           </Link>
         </h1>
-        {route && <p className="type-body-md ruta-day-page__route-name" aria-label={route.nombreRuta}>
-          <span className="ruta-day-page__route-name-compact" aria-hidden="true">{compactRouteName}</span>
-          <span className="ruta-day-page__route-name-full" aria-hidden="true">{route.nombreRuta}</span>
-        </p>}
+        {route && (
+          <p className="type-body-md ruta-day-page__route-name" aria-label={route.nombreRuta}>
+            <span className="ruta-day-page__route-name-compact" aria-hidden="true">
+              {compactRouteName}
+            </span>
+            <span className="ruta-day-page__route-name-full" aria-hidden="true">
+              {route.nombreRuta}
+            </span>
+          </p>
+        )}
       </header>
 
       {loading ? (
@@ -69,20 +82,31 @@ export function RutaDayEmployeesPage() {
         </LoadingSkeleton>
       ) : errorMsg ? (
         <div role="alert" className="ruta-day-page__notice">
-          <p>{language === 'en' ? "Could not load route details. Check your connection and try again." : copy.routeEmployeesLoadError}</p>
+          <p>
+            {language === 'en'
+              ? 'Could not load route details. Check your connection and try again.'
+              : copy.routeEmployeesLoadError}
+          </p>
           {language === 'es' && <p>{errorMsg}</p>}
         </div>
       ) : !route || !validDay ? (
         <div className="ruta-day-page__notice">
           <p>{copy.routeOrDayUnavailable}</p>
-          <Link className="btn-text" to="/routes">{copy.viewAvailableRoutes}</Link>
+          <Link className="btn-text" to="/routes">
+            {copy.viewAvailableRoutes}
+          </Link>
         </div>
       ) : employees.length === 0 ? (
-        <p className="ruta-day-page__notice">{copy.noEmployeesAssigned} {displayDay}.</p>
+        <p className="ruta-day-page__notice">
+          {copy.noEmployeesAssigned} {displayDay}.
+        </p>
       ) : (
-        <section aria-label={`${language === 'en' ? 'Employees on' : 'Empleados de'} ${route.nombreRuta} ${language === 'en' ? 'on' : 'el'} ${displayDay}`}>
+        <section
+          aria-label={`${language === 'en' ? 'Employees on' : 'Empleados de'} ${route.nombreRuta} ${language === 'en' ? 'on' : 'el'} ${displayDay}`}
+        >
           <div className="ruta-day-page__table-wrapper">
             <table className="ruta-day-page__table data-table data-table--cards">
+              <caption className="sr-only">{title}</caption>
               <thead>
                 <tr>
                   <th scope="col">{copy.number}</th>
@@ -91,14 +115,22 @@ export function RutaDayEmployeesPage() {
                 </tr>
               </thead>
               <tbody>
-                {employees.map(emp => (
+                {employees.map((emp) => (
                   <tr key={emp.numeroEmpleado}>
                     <td className="ruta-day-page__number">
-                      <span className="ruta-day-page__mobile-label" aria-hidden="true">{copy.number} </span>{emp.numeroEmpleado}
+                      <span className="ruta-day-page__mobile-label" aria-hidden="true">
+                        {copy.number}{' '}
+                      </span>
+                      {emp.numeroEmpleado}
                     </td>
-                    <th scope="row" className="ruta-day-page__name">{emp.nombre}</th>
+                    <th scope="row" className="ruta-day-page__name">
+                      {emp.nombre}
+                    </th>
                     <td className="ruta-day-page__section">
-                      <span className="ruta-day-page__mobile-label" aria-hidden="true">{copy.section} </span>{emp.seccion || copy.noSection}
+                      <span className="ruta-day-page__mobile-label" aria-hidden="true">
+                        {copy.section}{' '}
+                      </span>
+                      {emp.seccion || copy.noSection}
                     </td>
                   </tr>
                 ))}

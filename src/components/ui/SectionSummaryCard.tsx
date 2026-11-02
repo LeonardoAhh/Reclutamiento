@@ -51,16 +51,7 @@ export function SectionSummaryCard({
   const { language } = useLanguage();
   const en = language === 'en';
 
-  let statusClass = '';
-  if (isDescanso) {
-    statusClass = ' section-summary-card--descanso';
-  } else if (incidence > 0) {
-    statusClass = ' section-summary-card--has-incidents';
-  } else {
-    statusClass = ' section-summary-card--no-incidents';
-  }
-
-  const className = `section-summary-card${isSelected ? ' section-summary-card--selected' : ''}${statusClass}`;
+  const className = `section-summary-card${isSelected ? ' section-summary-card--selected' : ''}`;
 
   const cardContent = (
     <>
@@ -136,7 +127,6 @@ export function SectionSummaryCard({
     return (
       <div
         className={className}
-        data-status-tone={isDescanso ? 'rest' : statusTone}
         data-testid={`area-card-${name.replace(/\s+/g, '-').toLowerCase()}`}
       >
         {cardContent}
@@ -149,7 +139,6 @@ export function SectionSummaryCard({
       type="button"
       onClick={onClick}
       className={className}
-      data-status-tone={isDescanso ? 'rest' : statusTone}
       aria-pressed={isSelected}
       aria-label={`${en ? 'Section' : 'Sección'} ${name}. ${en ? 'Authorized' : 'Autorizado'}: ${autorizado}`}
       data-testid={`area-card-${name.replace(/\s+/g, '-').toLowerCase()}`}

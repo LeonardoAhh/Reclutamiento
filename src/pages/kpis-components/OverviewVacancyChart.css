@@ -199,54 +199,6 @@
   r: var(--chart-active-point-radius);
 }
 
-.overview-chart__tooltip {
-  min-inline-size: 20ch;
-  padding: var(--design-spacing-sm) var(--design-spacing-md);
-  border: var(--border-width) solid var(--color-hairline-strong);
-  border-radius: var(--radius-menu);
-  background: var(--color-canvas-elevated);
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-}
-
-.overview-chart__tooltip-title {
-  margin: 0 0 var(--design-spacing-xs);
-  color: var(--color-ink);
-  font-family: var(--font-body);
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  line-height: var(--type-caption-up-line);
-  letter-spacing: var(--type-caption-up-tracking);
-  text-transform: uppercase;
-}
-
-.overview-chart__tooltip-row {
-  display: flex;
-  align-items: center;
-  gap: var(--design-spacing-xs);
-  margin: var(--design-spacing-xxs) 0 0;
-  color: var(--color-muted);
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-}
-
-.overview-chart__tooltip-row strong {
-  margin-inline-start: auto;
-  color: var(--color-ink);
-  font-family: var(--font-body);
-  font-size: var(--type-body-strong-size);
-  font-weight: var(--type-body-strong-weight);
-  line-height: var(--type-body-strong-line);
-  letter-spacing: var(--type-body-strong-tracking);
-  font-variant-numeric: tabular-nums;
-}
-
 .overview-chart__swatch {
   flex-shrink: 0;
   inline-size: var(--design-spacing-xs);

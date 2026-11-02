@@ -70,14 +70,11 @@ function netVacancies(pos: PositionCoverage): MissingRow {
     proximos,
     proxPlantilla,
     proxBackup,
-    proxExcedente
+    proxExcedente,
   };
 }
 
-export function MissingPositionsPage({
-  onBack,
-  coverage,
-}: MissingPositionsPageProps) {
+export function MissingPositionsPage({ onBack, coverage }: MissingPositionsPageProps) {
   const { language } = useLanguage();
   const t = (text: string) => workforceText(language, text);
   const { dismissedKeys, toggleDismiss } = useDismissedPositions();
@@ -88,10 +85,11 @@ export function MissingPositionsPage({
     return coverage
       .map(netVacancies)
       .filter((r) => r.netTotal > 0)
-      .sort((a, b) =>
-        a.pos.area.localeCompare(b.pos.area) ||
-        (a.pos.seccion || '').localeCompare(b.pos.seccion || '') ||
-        a.pos.puesto.localeCompare(b.pos.puesto)
+      .sort(
+        (a, b) =>
+          a.pos.area.localeCompare(b.pos.area) ||
+          (a.pos.seccion || '').localeCompare(b.pos.seccion || '') ||
+          a.pos.puesto.localeCompare(b.pos.puesto),
       );
   }, [coverage]);
 
@@ -101,32 +99,31 @@ export function MissingPositionsPage({
 
   return (
     <main className="missing-positions-page container" aria-labelledby="missing-positions-title">
-          <PageHeading id="missing-positions-title" className="app-page-title">
-            <button data-cuelume-tap=""
-              ref={titleRef}
-              type="button"
-              className="missing-positions-page__back-link"
-              onClick={onBack}
-              aria-label={`${t('Volver al resumen')}: ${t('Vacantes Pendientes')}`}
-            >
-              <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
-              {t("Vacantes Pendientes")}
-            </button>
-          </PageHeading>
+      <PageHeading id="missing-positions-title" className="app-page-title">
+        <button
+          data-cuelume-tap=""
+          ref={titleRef}
+          type="button"
+          className="missing-positions-page__back-link"
+          onClick={onBack}
+          aria-label={`${t('Volver al resumen')}: ${t('Vacantes Pendientes')}`}
+        >
+          <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
+          {t('Vacantes Pendientes')}
+        </button>
+      </PageHeading>
       <div className="missing-positions-page__body">
         {missingPositions.length === 0 ? (
-          <p className="missing-positions-page__empty">
-            {t('Excelente, no hay puestos con falta de cobertura.')}
-          </p>
+          <p className="missing-positions-page__empty">{t('Excelente, no hay puestos con falta de cobertura.')}</p>
         ) : (
           <section className="missing-positions-page__section">
-            <div
+            <section
               className="missing-positions-page__table-container"
               tabIndex={0}
-              role="region"
-              aria-label={t("Tabla de puestos faltantes")}
+              aria-label={t('Tabla de puestos faltantes')}
             >
               <table className="missing-positions-page__table data-table data-table--cards">
+                <caption className="sr-only">{t('Tabla de puestos faltantes')}</caption>
                 <colgroup>
                   <col className="missing-positions-page__position-column" />
                   <col className="missing-positions-page__metric-column" />
@@ -136,27 +133,22 @@ export function MissingPositionsPage({
                 <thead>
                   <tr>
                     <th scope="col">{t('Puesto')}</th>
-                    <th
-                      scope="col"
-                      className="missing-positions-page__num-col"
-                    >
-                      <Tooltip content={t("En plantilla")}>
+                    <th scope="col" aria-label={t('En plantilla')} className="missing-positions-page__num-col">
+                      <Tooltip content={t('En plantilla')}>
                         <span>{t('Plantilla')}</span>
                       </Tooltip>
                     </th>
-                    <th
-                      scope="col"
-                      className="missing-positions-page__num-col"
-                    >
-                      <Tooltip content={t("En backup")}>
+                    <th scope="col" aria-label={t('En backup')} className="missing-positions-page__num-col">
+                      <Tooltip content={t('En backup')}>
                         <span>{t('Backup')}</span>
                       </Tooltip>
                     </th>
                     <th
                       scope="col"
+                      aria-label={t('Starlite')}
                       className="missing-positions-page__num-col missing-positions-page__starlite-col"
                     >
-                      <Tooltip content={t("Starlite")}>
+                      <Tooltip content={t('Starlite')}>
                         <div className="missing-positions-page__starlite-label">
                           <Star size={12} className="missing-positions-page__starlite-icon" aria-hidden="true" />
                           Starlite
@@ -180,21 +172,31 @@ export function MissingPositionsPage({
                         key={rowKey}
                         className={isDismissed ? 'is-dismissed' : ''}
                         onClick={() => toggleDismiss(rowKey)}
-                        title={isDismissed ? t('Click para incluir de nuevo en el conteo') : t('Click para excluir del conteo')}
-                        aria-pressed={isDismissed}
+                        title={
+                          isDismissed
+                            ? t('Click para incluir de nuevo en el conteo')
+                            : t('Click para excluir del conteo')
+                        }
                       >
                         <td>
-                          <div className="missing-positions-page__puesto">
-                            <span className="missing-positions-page__puesto-name">
-                              {pos.puesto}
+                          <button
+                            type="button"
+                            className="missing-positions-page__row-toggle"
+                            aria-pressed={isDismissed}
+                            aria-label={`${isDismissed ? t('Click para incluir de nuevo en el conteo') : t('Click para excluir del conteo')}: ${pos.puesto}`}
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              toggleDismiss(rowKey);
+                            }}
+                          >
+                            <span className="missing-positions-page__puesto">
+                              <span className="missing-positions-page__puesto-name">{pos.puesto}</span>
+                              <span className="missing-positions-page__puesto-section">{pos.seccion || pos.area}</span>
                             </span>
-                            <span className="missing-positions-page__puesto-section">
-                              {pos.seccion || pos.area}
-                            </span>
-                          </div>
+                          </button>
                           {r.proximos > 0 && (
                             <div className="missing-positions-page__prox-details">
-                              <Tooltip content={t("Cubiertas (ingreso futuro)")}>
+                              <Tooltip content={t('Cubiertas (ingreso futuro)')}>
                                 <span className="missing-positions-page__puesto-note">
                                   −{r.proximos} {t(r.proximos === 1 ? 'PRÓXIMO INGRESO' : 'PRÓXIMOS INGRESOS')}
                                 </span>
@@ -205,7 +207,10 @@ export function MissingPositionsPage({
 
                                 const plantillaDisp = Math.min(r.proxPlantilla, regularDisp);
                                 const backupDisp = Math.min(r.proxBackup, regularDisp - plantillaDisp);
-                                const excedenteDisp = Math.min(r.proxExcedente, regularDisp - plantillaDisp - backupDisp);
+                                const excedenteDisp = Math.min(
+                                  r.proxExcedente,
+                                  regularDisp - plantillaDisp - backupDisp,
+                                );
 
                                 return (
                                   <span className="missing-positions-page__prox-breakdown">
@@ -215,7 +220,9 @@ export function MissingPositionsPage({
                                       plantillaDisp > 0 ? `${plantillaDisp} ${t('Plantilla')}` : null,
                                       backupDisp > 0 ? `${backupDisp} ${t('Backup')}` : null,
                                       excedenteDisp > 0 ? `${excedenteDisp} ${t('Excedente')}` : null,
-                                    ].filter(Boolean).join(', ')}
+                                    ]
+                                      .filter(Boolean)
+                                      .join(', ')}
                                     )
                                   </span>
                                 );
@@ -229,7 +236,12 @@ export function MissingPositionsPage({
                               {faltanPlantilla}
                             </span>
                           ) : (
-                            <span className="missing-positions-page__count-empty" aria-label={t("Sin faltantes en plantilla")}>—</span>
+                            <span
+                              className="missing-positions-page__count-empty"
+                              aria-label={t('Sin faltantes en plantilla')}
+                            >
+                              —
+                            </span>
                           )}
                         </td>
                         <td data-label={t('Backup')} className="missing-positions-page__num-col">
@@ -238,7 +250,12 @@ export function MissingPositionsPage({
                               {faltanBackup}
                             </span>
                           ) : (
-                            <span className="missing-positions-page__count-empty" aria-label={t("Sin faltantes en backup")}>—</span>
+                            <span
+                              className="missing-positions-page__count-empty"
+                              aria-label={t('Sin faltantes en backup')}
+                            >
+                              —
+                            </span>
                           )}
                         </td>
                         <td data-label={t('Starlite')} className="missing-positions-page__num-col">
@@ -247,7 +264,12 @@ export function MissingPositionsPage({
                               {r.netStarlite}
                             </span>
                           ) : (
-                            <span className="missing-positions-page__count-empty" aria-label={t("Sin faltantes en starlite")}>—</span>
+                            <span
+                              className="missing-positions-page__count-empty"
+                              aria-label={t('Sin faltantes en starlite')}
+                            >
+                              —
+                            </span>
                           )}
                         </td>
                       </tr>
@@ -255,7 +277,7 @@ export function MissingPositionsPage({
                   })}
                 </tbody>
               </table>
-            </div>
+            </section>
           </section>
         )}
       </div>

@@ -1,32 +1,32 @@
-# Design System - Grafito claro y oscuro / Azul de marca
+# Design System - Neutros claros y oscuros / Azul de marca
 
 This visual system applies to product interfaces throughout the repository.
 
 ## Overview
 
-The light theme uses the existing light graphite canvas and layered neutral surfaces. Primary fills are #12469C in both themes, with light labels and dedicated accessible foreground and border tokens. Structure comes from whitespace, surface changes and thin borders.
+The light theme uses a white canvas and soft neutral regions; the dark theme uses a near-black canvas and charcoal surfaces. Primary action fills use #2563EB from the supplied blue scale in both themes, with white labels and dedicated accessible foreground and border tokens. The supplied #3B82F6 remains a reference accent: white text on that blue reaches only 3.68:1.
 
 Typography does the heavy lifting. **IBM Plex Sans** is the interface family for headings, body, controls and labels in both themes; code retains the existing monospace stack. Existing type sizes, weights, line heights and tracking remain unchanged. App buttons, tabs, inputs and navigation controls, including icon-only buttons, use 10px corners; cards use 16px; menus and popovers use 12px; modals and floating panels use 20px. Badge and chip surfaces use compact 4px corners and never pills; only avatars and status dots remain circular. Application brand marks use a fixed 12px radius.
 
-Both themes use canvas as the base page surface, canvas-soft for quiet grouping, surface-card for content, and canvas-elevated for fields and overlays. On desktop, the app shell uses canvas-soft for the exterior floor and sidebar; the workspace panel uses the near-white elevated surface in light mode and retains canvas in dark mode. A low-contrast, decorative dot grid sits behind workspace content in both themes and derives its color and spacing from shared tokens. The graphite surfaces, text roles and independent document/export palette are preserved.
+Both themes use canvas as the base page surface, canvas-soft for quiet grouping, surface-card for content, and canvas-elevated for fields and overlays. On desktop, the app shell uses canvas-soft for the exterior floor and sidebar; the workspace panel uses the white elevated surface in light mode and retains canvas in dark mode. A low-contrast, decorative dot grid sits behind workspace content in both themes and derives its color and spacing from shared tokens. Text roles and the independent document/export palette are preserved.
 
 **Key Characteristics:**
-- Graphite surfaces with a shared #12469C primary, accessible blue text variants and an opaque neutral focus ring.
+- White and charcoal surfaces with a shared #2563EB primary, accessible blue text variants and an opaque neutral focus ring.
 - Neutral grouping regions and layered cards; controls and overlays retain their existing surfaces.
 - IBM Plex Sans unifies display headings, UI and body in both themes.
 - Compact 10px controls, including icon-only buttons, 16px cards, 12px menus and 20px dialogs. Badges and chips use compact 4px corners, never pills; only avatars and status dots remain circular.
 - Default depth is flat or a 1px hairline. Floating menus and dialogs use only a subtle shadow.
 - Controls keep the application's 44px minimum touch target.
 
-## Colors - Graphite and Blue
+## Colors - Neutral and Blue
 
 ### Brand & Accent
-- Primary fill: `--color-primary` = #12469C in light and dark; channels = 18 70 156.
-- Hover fill: `--color-primary-active` = #11428F. Pressed fill: `--color-primary-pressed` = #0D387C.
-- Text on solid primary: `--color-on-primary` = #E6EDF3 in both themes. Its contrast is 7.46:1 normally, 8.08:1 on hover and 9.48:1 when pressed.
-- Standalone primary text and functional links: `--color-primary-text` / `--color-link` = #11428F in light and #D0E5FF in dark. Do not use the fill token as normal-size text on neutral surfaces.
-- Primary boundaries: `--color-primary-border` follows the accessible text variant. This keeps thin outlines distinguishable on stronger graphite surfaces where the fill alone falls below 3:1.
-- Link hover: #0D387C in light and #E6EDF3 in dark. Keep the existing underline/interaction treatment.
+- Primary fill: `--color-primary` = #2563EB in light and dark; channels = 37 99 235. This is the first supplied blue that supports normal-size white labels at AA.
+- Hover fill: `--color-primary-active` = #1D4ED8. Pressed fill: `--color-primary-pressed` = #1E40AF.
+- Text on solid primary: `--color-on-primary` = #FFFFFF in both themes. Its contrast is 5.17:1 normally, 6.70:1 on hover and 8.72:1 when pressed.
+- Standalone primary text and functional links: `--color-primary-text` / `--color-link` = #1E40AF in light and #BFDBFE in dark. Do not use the fill token as normal-size text on neutral surfaces.
+- Primary boundaries: `--color-primary-border` follows the accessible text variant. This keeps thin outlines distinguishable on stronger dark surfaces where the fill alone can fall below 3:1.
+- Link hover: #1E3A8A in light and the light foreground in dark. Keep the existing underline/interaction treatment.
 - Focus: opaque neutral ink, 2px, zero offset; inverted surfaces and forced-colors retain their dedicated focus treatment. Translucent decorative rings do not replace this outline.
 - Semantic status fills/labels and document/export tokens remain independent from the primary foreground.
 
@@ -34,16 +34,16 @@ Both themes use canvas as the base page surface, canvas-soft for quiet grouping,
 
 | Role | Light | Dark |
 |---|---|---|
-| Canvas | #F1F2F4 | #1B1D20 |
-| Quiet region | #E9ECF0 | #202328 |
-| Content card | #F7F8FA | #23262A |
-| Elevated field/overlay | #FAFBFC | #2B2F34 |
-| Strong surface | #DDE1E6 | #343B43 |
-| Headings | #2B3037 | #E6EDF3 |
-| Body | #2B3037 | #E6EDF3 |
-| Secondary text | #586371 | #A0A7B1 |
-| Placeholder | #606A77 | #969EAA |
-| Required control border | #727C8A | #858E9B |
+| Canvas | #FFFFFF | #171717 |
+| Quiet region | #F9FAFB | #1F1F1F |
+| Content card | #FFFFFF | #262626 |
+| Elevated field/overlay | #FFFFFF | #262626 |
+| Strong surface | #F3F4F6 | #404040 |
+| Headings | #333333 | #E5E5E5 |
+| Body | #333333 | #E5E5E5 |
+| Secondary text | #4B5563 | #B6B6B6 |
+| Placeholder | #4B5563 | #B6B6B6 |
+| Required control border | #6B7280 | #A3A3A3 |
 
 Hairlines are decorative separators; required boundaries use the control-border or primary-border tokens. Status meaning retains its labels/icons as well as color. Official paper, ink and document headers keep their existing independent tokens.
 
@@ -51,27 +51,28 @@ Hairlines are decorative separators; required boundaries use the control-border 
 
 | Pair | Ratio | Criterion |
 |---|---|---|
-| #E6EDF3 label on #12469C | 7.46:1 | Enhanced text contrast, both themes |
-| #E6EDF3 label on #11428F | 8.08:1 | Hover text |
-| #E6EDF3 label on #0D387C | 9.48:1 | Pressed text |
-| #2B3037 body on #F1F2F4 | 11.86:1 | Light body |
-| #E6EDF3 body on #1B1D20 | 14.30:1 | Dark body |
-| Light standalone primary text / strongest light surface | 7.27:1 | Enhanced text contrast |
-| Dark standalone primary text / raised surface #414851 | 7.19:1 | Enhanced text contrast |
+| #FFFFFF label on #2563EB | 5.17:1 | AA text, both themes |
+| #FFFFFF label on #1D4ED8 | 6.70:1 | Hover text |
+| #FFFFFF label on #1E40AF | 8.72:1 | Pressed text |
+| #333333 body on #FFFFFF | 12.63:1 | Light body |
+| #E5E5E5 body on #171717 | 14.23:1 | Dark body |
+| #1E40AF standalone text on #FFFFFF | 8.72:1 | Enhanced text contrast |
+| #BFDBFE standalone text on #404040 | 7.30:1 | Enhanced text contrast |
 
-These opaque primary/body pairs exceed 7:1. This is not a blanket AAA certification for the site, legacy status colors, secondary text, charts or transparency. Disabled controls retain their existing programmatic state and opacity treatment. Neutral surfaces, spacing and reference radii stay unchanged.
+These opaque primary/body pairs meet AA for normal text; some exceed 7:1. This is not a blanket AA certification for legacy status colors, secondary text, charts or transparency. Disabled controls retain their existing programmatic state and opacity treatment. Typography, spacing and reference radii stay unchanged.
 
 ### Decorative Compatibility
-Legacy gradient tokens remain available for existing illustrations. Application UI uses graphite neutrals, blue actions and accessible blue text variants.
+Legacy gradient tokens remain available for existing illustrations. Application UI uses light and charcoal neutrals, blue actions and accessible blue text variants.
 
 
-## Dark Theme - Graphite
+## Dark Theme - Charcoal
 
-The optional dark theme extends the same semantic tokens using the existing graphite surface hierarchy. It shares the exact #12469C primary fill and light on-primary label with light mode, while its standalone blue text uses the brighter accessible variant. Theme selection does not change layout, radii, data or permissions.
+The optional dark theme extends the same semantic tokens using the supplied charcoal surface hierarchy. It shares the #2563EB primary fill and white on-primary label with light mode, while standalone blue text uses the brighter accessible variant. Theme selection does not change layout, radii, data or permissions.
 
 ### Appearance Preference
 
-- The appearance control lives in /account. It uses the shared CustomSelect to choose Sistema, Claro or Oscuro (System, Light or Dark in English). The row displays the saved preference, including Sistema even while its resolved colors are light or dark. Login shows no theme or language controls and continues to use the existing preference. The selector keeps the shared touch target, keyboard navigation and visible focus. Sistema remains the initial preference when no valid stored choice exists.
+- The appearance control lives in /account and in the sidebar account-menu footer from tablet upward. /account uses the shared CustomSelect to choose Sistema, Claro or Oscuro (System, Light or Dark in English); the sidebar footer offers the same choices with icons and a visible selected state. The row displays the saved preference, including Sistema even while its resolved colors are light or dark. Login shows no theme or language controls and continues to use the existing preference. Both controls keep the shared touch target, keyboard navigation and visible focus. Sistema remains the initial preference when no valid stored choice exists.
+- The sidebar appearance footer uses `--icon-size-xs` (12px) for its three secondary icons and `--color-control-border` to mark the selected choice. Each icon-only option retains a 44px target and an accessible name.
 - The browser preference is stored under `reclutamiento_color_scheme`; it is independent of account data and authentication. Sistema follows operating-system changes; other selections override them. Changes synchronize across tabs.
 - `public/theme.js` restores the preference on `html[data-color-scheme]` before the global stylesheet loads. `useTheme` subscribes to this single controller; portals inherit the same tokens.
 - If storage is unavailable, the selected theme still applies for the current visit and the selector explains that it cannot be saved.
@@ -81,16 +82,16 @@ The optional dark theme extends the same semantic tokens using the existing grap
 
 | Role | CSS token | Dark value |
 |---|---|---|
-| Page floor | `--color-canvas` | #1B1D20 |
-| Quiet region | `--color-canvas-soft` | #202328 |
-| Cards | `--color-surface-card` | #23262A |
-| Controls/overlays | `--color-canvas-elevated` | #2B2F34 |
-| Primary fill | `--color-primary` | #12469C |
-| Label on primary | `--color-on-primary` | #E6EDF3 |
-| Standalone blue text | `--color-primary-text` | #D0E5FF |
-| Focus | `--color-focus` | #F7F8FA |
+| Page floor | `--color-canvas` | #171717 |
+| Quiet region | `--color-canvas-soft` | #1F1F1F |
+| Cards | `--color-surface-card` | #262626 |
+| Controls/overlays | `--color-canvas-elevated` | #262626 |
+| Primary fill | `--color-primary` | #2563EB |
+| Label on primary | `--color-on-primary` | #FFFFFF |
+| Standalone blue text | `--color-primary-text` | #BFDBFE |
+| Focus | `--color-focus` | #FFFFFF |
 
-Primary remains the sole structural action color in dark mode. The shared blue fill uses light on-primary text; standalone blue text uses the brighter contrast-safe variant on graphite surfaces. Links retain their existing underline/interaction treatment. Semantic and existing chart/category colors remain localized and retain labels, icons or line patterns. Cards and dividers use subtle hairlines; required control boundaries use the stronger control-border token. Outside the desktop shell, page layout containers and the mobile header use --workspace-surface, which aliases --color-canvas. Inside the desktop shell, the workspace panel scopes --workspace-surface to --shell-workspace-surface; the floor and sidebar use --shell-floor. Elevated tokens are reserved for cards, controls and floating surfaces.
+Primary remains the sole structural action color in dark mode. The shared blue fill uses white on-primary text; standalone blue text uses the brighter contrast-safe variant on charcoal surfaces. Links retain their existing underline/interaction treatment. Semantic and existing chart/category colors remain localized and retain labels, icons or line patterns. Cards and dividers use subtle hairlines; required control boundaries use the stronger control-border token. Outside the desktop shell, page layout containers and the mobile header use --workspace-surface, which aliases --color-canvas. Inside the desktop shell, the workspace panel scopes --workspace-surface to --shell-workspace-surface; the floor and sidebar use --shell-floor. Elevated tokens are reserved for cards, controls and floating surfaces.
 
 ### Contrast and Shared Tokens
 
@@ -145,7 +146,7 @@ IBM Plex Sans is self-hosted as full variable WOFF2 files for normal and italic 
 - **Button sizing**: every interactive control has `min-height: 44px`. In-app controls use the shared horizontal-padding token. Height is never inferred from line-height alone.
 
 ### Grid & Container
-- Pages use the shared `.container` with an 80rem maximum width and responsive gutters. This is the only global page-container width; narrower or wider limits belong to specific content regions and must use their existing semantic tokens.
+- Pages use the shared `.container` with a 90rem maximum width and responsive gutters. This is the only global page-container width; narrower or wider limits belong to specific content regions and must use their existing semantic tokens.
 - Long-form text and focused content regions may use the shared 65ch reading-width token without changing the page container.
 - Authenticated workspace content starts one shared spacing step below the header: `{spacing.md}` on mobile and `{spacing.lg}` from tablet upward. The shell owns this gap; pages keep only their internal spacing.
 - The workspace header title uses IBM Plex Sans at the existing 20px/700 through the heading-md size and font-bold weight tokens, retaining the body-md line height and tracking and the mute color on the canvas, including linked and dynamic page titles.
@@ -186,7 +187,7 @@ Depth is deliberately minimal. The system prefers a crisp 1px hairline and small
 
 ### Data tables
 
-Product data tables use the shared `data-table` primitive: `{colors.surface-card}` for the body, `{colors.canvas-soft}` for the column header and total row, `{colors.hairline-strong}` for row separators, `caption-up` for column labels, and `body-md` for cells. The surrounding panel uses `{colors.hairline}` and `{rounded.lg}` when a frame is needed. The same tokenized cell spacing applies across desktop tables; numeric alignment and emphasis follow the meaning of each column. Tables that become stacked cards on narrow screens keep their existing mobile layout through `data-table--cards`. Printable and exported documents retain their separate `document-*` palette and layout.
+Product data tables use the shared `data-table` primitive: `{colors.surface-card}` for the body, `{colors.canvas-soft}` for the column header and total row, `{colors.hairline}` for quiet row separators, `caption-up` for column labels, and `body-md` for cells. Row headers use `body-strong` without uppercase styling. The surrounding panel uses `{colors.hairline}` and `{rounded.lg}` when a frame is needed. The same tokenized cell spacing applies across desktop tables; numeric alignment and emphasis follow the meaning of each column. Tables that become stacked cards on narrow screens keep their existing mobile layout through `data-table--cards`. Printable and exported documents retain their separate `document-*` palette and layout.
 
 ### Decorative Depth
 Decorative color is optional and localized. Product UI, data, and semantic states must remain understandable without gradients or color-only signals. No glows or heavy gradients.
@@ -213,6 +214,9 @@ All buttons, including icon-only buttons, are rectangles with soft 10px corners.
 ## Components
 
 > No hover states are documented. Each spec covers Default and (where extracted) pressed/active states. Variants live as separate `components:` entries.
+
+**`tooltip-surface`** - shared information surface
+- Radix `Tooltip` keeps hover, keyboard focus, Escape and collision handling for focusable triggers; chart content uses the presentational `TooltipSurface` and keeps its own chart data and accessible summary. Both use the same near-black surface, menu radius, body-md text, hairline-strong boundary and Level 2 shadow. Chart titles and values use body-strong; existing chart eyebrows use caption-up. On #171717, normal text #E5E5E5 reaches 14.23:1 and secondary text #B6B6B6 reaches 8.84:1; the boundary is at least 3.71:1. Tooltip content must never be the only source of essential information or contain controls. Reduced motion removes its entrance animation.
 
 **`session-splash`** - session transition typography
 - The shared TransitionLoader uses complete IBM Plex Sans body-strong (14px/600) for the product name and body-md (14px/400) for status messages. Workspace entry, exit and default loading share these roles. Its decorative mark reuses the login LiveOrb at a compact, viewport-safe size derived from --design-spacing-section. The CSS fallback remains visible without WebGL; reduced motion holds the orb still. The status is announced once and the short moving segment is indeterminate, not a measured percentage; reduced motion leaves the segment static. Entry messaging describes opening the authorized workspace after login validation, exit describes signing out, and the default describes loading. Existing auth coordination, destination rules, portal and flash duration remain unchanged.
@@ -246,7 +250,7 @@ All buttons, including icon-only buttons, are rectangles with soft 10px corners.
 
 **`app-workspace`** — authenticated application shell
 - On desktop, the sidebar is a full-height rail flush with the left viewport edge. Its brand/navigation header aligns vertically with the workspace header and divider. It uses `--shell-floor` (canvas-soft in both themes), has no border, radius or shadow, and remains fixed while the workspace scrolls. Mobile and tablet use a persistent sidebar behind a viewport-height workspace; the workspace translates horizontally by the sidebar width and its corner radius, border and shadow follow the same 0–1 drag progress. Its content scrolls inside the workspace, independent of the page body. A left-edge swipe opens it, a reverse swipe closes it, and release settles by velocity or halfway progress. The menu button remains available; tapping the transparent scrim or pressing Escape also closes the sidebar. The scrim stays within the safe area so it does not dim system status or home-indicator regions. A closed sidebar is inert and hidden from assistive technology; opening focuses its close button and closing restores focus to the trigger without a modal focus trap.
-- The desktop workspace uses `{rounded.md}` corners (12px), a 1px `{colors.hairline}` border and the two-layer `--workspace-shadow` for depth against the flat sidebar and exterior floor. Its light shadow reuses Level 2; dark mode keeps the same geometry with stronger shadow opacity so the depth remains visible on graphite. A `{spacing.md}` gap separates the rail from the workspace, and the workspace keeps a `{spacing.md}` exterior inset on its top, end and bottom edges. The workspace owns vertical scrolling so the sidebar remains stationary. Card, field, overlay and document colors remain unchanged.
+- The desktop workspace uses `{rounded.md}` corners (12px), a 1px `{colors.hairline}` border and the two-layer `--workspace-shadow` for depth against the flat sidebar and exterior floor. Its light shadow reuses Level 2; dark mode keeps the same geometry with stronger shadow opacity so the depth remains visible on charcoal. A `{spacing.md}` gap separates the rail from the workspace, and the workspace keeps a `{spacing.md}` exterior inset on its top, end and bottom edges. The workspace owns vertical scrolling so the sidebar remains stationary. Card, field, overlay and document colors follow the shared theme tokens.
 - The shell owns the page's top gutter: `{spacing.md}` on mobile and `{spacing.lg}` from tablet upward. Authenticated pages use `PageHeading` for the global header title and do not add page-level top padding or margin; retain page-specific widths and internal section spacing.
 - Back navigation embedded directly in app-page-title inherits the heading color in default, hover, focus, active and visited states and never gains an underline. Existing Link/button semantics, destinations, keyboard navigation and visible focus outlines remain unchanged.
 - Sidebar navigation reads grouped items, labels, icons, routes and role restrictions from `navigation.ts`. Inicio remains ungrouped; the visible group labels are Reclutamiento, Personal and Seguimiento using `{typography.caption-up}` and muted text. Active items use `--color-primary-tint` behind `--color-primary-text` with the complete body-strong role. Solid primary remains reserved for primary actions. The desktop sidebar contains its own collapse control beside the brand. The panel width and workspace inset use `--transition-slow` while nav labels fade and slide out before becoming hidden; expanding reverses it. In the collapsed icon rail, the brand mark and labels are hidden, tooltips identify links and hairline separators replace group headings. Reduced motion switches widths and labels instantly. The collapsed preference uses local storage and synchronizes across tabs. Mobile and tablet use the non-modal push-and-drag sidebar described above.
@@ -398,9 +402,9 @@ All buttons, including icon-only buttons, are rectangles with soft 10px corners.
 **`reports-workspace`** - reports overview typography
 - Reporte Diario is available to administrators; recruiters do not see its sidebar entry. Direct visits to `/reports`, its day and comparison views, and `/departure-reasons` redirect recruiters to `/home` before the reporting pages mount. Existing administrator reporting flows remain available.
 - The Recent reports card keeps Reasons for leaving and Analysis together on one action row, followed by the existing View all and Compare actions when available. Analysis opens `/analysis`; its administrator-only access is enforced by the authenticated route.
-- Day-report SectionSummaryCard reuses the calendar enhanced semantic pairs for soft card surfaces, count badges and status boundaries: green for existing muted/primary status tones, amber for warning, red for error. Preserve the area thresholds (warning above 5%, critical above 15%) and independent critical-trend threshold (above 10%); do not substitute calendar thresholds. Rest days stay neutral, selected cards retain their selection treatment, and KPI/group labels use ink. Status/count and trend semantics, calculations, layout and actions remain unchanged. Foreground/subtle text pairs exceed 8.1:1 as documented for the calendar; no browser or runtime verification was performed.
+- Day-report SectionSummaryCard cards keep neutral surfaces and borders regardless of status; status/count badges and trends remain localized semantic indicators. Preserve the area thresholds (warning above 5%, critical above 15%) and independent critical-trend threshold (above 10%); do not substitute calendar thresholds. Rest days stay neutral, selected cards retain their selection treatment, and KPI/group labels use ink. Status/count and trend semantics, calculations, layout and actions remain unchanged.
 
-- The attendance calendar uses semantic green for normal absenteeism (up to 2.5%), amber for warning (above 2.5% up to 5%) and red for critical (above 5%); existing thresholds remain unchanged. Reuse success/warning/error-subtle backgrounds with the enhanced semantic foreground tokens for day numbers, counts and boundaries. Empty days remain neutral; selected days retain primary-pressed/on-primary (9.48:1). No severity icons are shown; accessible severity descriptions remain.
+- The attendance calendar uses neutral surfaces and borders for day cells. Day numbers and incident counters retain semantic green for normal absenteeism (up to 2.5%), amber for warning (above 2.5% up to 5%) and red for critical (above 5%); existing thresholds remain unchanged. Empty days remain neutral; selected days retain primary-pressed/on-primary (9.48:1). No severity icons are shown; accessible severity descriptions remain.
 - Enhanced semantic text tokens, used by this calendar: light green #064E3B on #ECFDF5 (9.23:1), amber #78350F on #FFFBEB (8.75:1), red #7F1D1D on #FEF2F2 (9.16:1); dark green #A7F3D0 on #24332C (10.33:1), amber #FDE68A on #332F25 (10.71:1), red #FECACA on #35292A (9.66:1). Ratios are calculated from opaque tokens, without browser or runtime verification. Existing semantic tokens elsewhere remain unchanged.
 
 
@@ -421,8 +425,8 @@ All buttons, including icon-only buttons, are rectangles with soft 10px corners.
 - The Upcoming hires dialog uses one responsive card per employee at every width, with position as the heading and shift/date as labeled metadata. Keep the existing sort order, Starlite badge, empty state and Copy report action; do not place a horizontally scrolling table inside its Sheet.
 - The chart's Resultado subtitle reflects the category with the lowest current coverage (ties go to the category with more vacancies). Ver vacantes pendientes remains the single entry to pending positions; on mobile its icon-only 44px button stays at the top right of the chart header with the standard control radius, while wider widths show its label. The chart retains its three series, their tokens (Plantilla error, Backup amber, Starlite purple-deep), dash patterns and legend so lines remain distinguishable without relying on color. The compact legend keeps all three series on one mobile row. The mobile and desktop branches share the same components and dialogs.
 
-**`vacancy-assignments-workspace`** - vacancy assignment page typography
-- /vacancy-assignments is available only to administrators. Recruiters do not see its Report action in /workforce, and a direct visit redirects to /home before the page mounts. The page uses complete IBM Plex Sans roles: body-strong (14px/600) for department titles and position names; body-md (14px/400) for group counts, empty-state text, recruiter selectors and the Copy report action. The recruiter dropdown retains shared CustomSelect typography, including selected-option emphasis. The global header remains 20px/700. Assignment state, count exclusions, calculations, report content, clipboard behavior, layouts and motion remain unchanged.
+**`workforce-vacancy-report`** - WhatsApp vacancy summary
+- The administrator-only action in /workforce copies a plain-text vacancy summary directly to the clipboard and announces success or failure. It uses the already loaded position coverage, groups pending General and Starlite vacancies by area, discounts scheduled hires using the existing calculations, and includes all pending positions regardless of saved visual exclusions. The report has no recruiter assignment controls or separate page. Old /vacancy-assignments links redirect to /workforce. Typography, layout, data sources, permissions and the existing WhatsApp report format remain otherwise unchanged.
 
 **`workforce-workspace`** - workforce page typography
 - /workforce uses complete IBM Plex Sans roles: caption-up (12px/600) for table headers, short metric labels and status badges; body-md (14px/400) for coverage notes, search metadata, dates, tabs, counters and form actions; body-strong (14px/600) for department and position titles, employee names, internal headings and emphasized coverage values. Workforce numbers use IBM Plex Sans through the shared typography token. Employee creation, editing, promotion and position-settings dialogs retain their mobile Modal and desktop Sheet presentations. The incapacity dialog retains the shared Modal. All use these roles through scoped classes. The global header title stays 20px/700. Coverage and projection values remain unchanged while employee matching is shared across areas. Vacancy options are calculated on opening the add-employee form; the first empty load skips hidden coverage calculations until the skeleton clears. Search, permissions, persistence, layouts and motion remain unchanged.
@@ -552,6 +556,6 @@ All buttons, including icon-only buttons, are rectangles with soft 10px corners.
 - Authenticated routes register the existing Cuelume document binding through AppShell, covering page content and portaled controls. The sound wrapper reference-counts bindings for each root so legacy page registrations do not add duplicate listeners and cleanup cannot disconnect another mounted subscriber. Login keeps its existing scoped registration.
 - Standalone status pages and logout register the shared document binding for their actions; reference counting keeps them compatible with AppShell without duplicate listeners.
 - Shared SearchField marks editing and clearing interactions. CustomSelect plays select for a changed selection without changing its onChange contract. Pagination marks previous/next navigation and plays navigate for a committed page-number change. The sound wrapper coalesces identical synchronous playSound requests within a microtask so shared controls and existing callbacks do not replay the same cue.
-- Explicit interaction attributes complete topic navigation/details in Home; risk, status and view selection in Analysis; salary tabs; metric month navigation and recruiter drill-down; Workforce creation/report/settings; Data update tabs, filters and record opening; missing activations in Team, Overview, Vacancy assignments, Organization chart, Departure reasons, Missing positions and data-update administration/lockers; and navigation/actions on standalone status and logout pages. Routes plays navigate only from user selection/back handlers, never from automatic search selection.
+- Explicit interaction attributes complete topic navigation/details in Home; risk, status and view selection in Analysis; salary tabs; metric month navigation and recruiter drill-down; Workforce creation/report/settings; Data update tabs, filters and record opening; missing activations in Team, Overview, Organization chart, Departure reasons, Missing positions and data-update administration/lockers; and navigation/actions on standalone status and logout pages. Routes plays navigate only from user selection/back handlers, never from automatic search selection.
 - Reuse src/lib/sound.ts and installed Cuelume cues: type for editing, select for options, navigate for route/page changes, open/close for explicitly identified panels, and tap for ordinary activations. Existing outcome sounds remain tied to their current completion/error handlers; clicking does not announce a successful save. The existing sound preference and storage key remain unchanged. No new dependency, audio asset, layout, calculation, permission or persistence change is introduced.
 - The base integration received source inspection only; this follow-up is build-validated but not browser/audio-verified. No local server or test files were used or created.

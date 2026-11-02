@@ -17,7 +17,7 @@ import {
   ChartSpline,
   FileBraces,
   FileUp,
-  FileX2,
+  X,
 } from "lucide-react";
 import {
   PanelLeftClose,
@@ -785,7 +785,7 @@ export default function ReporteDiarioContent() {
                 className="reporte-iconbtn"
                 data-testid="clear-file-btn"
               >
-                <FileX2 size="var(--icon-size-sm)" aria-hidden="true" />
+                <X size="var(--icon-size-sm)" aria-hidden="true" />
               </button>
             </div>
           )}

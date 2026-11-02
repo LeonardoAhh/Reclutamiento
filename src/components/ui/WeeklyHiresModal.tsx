@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { CircleCheckBig, Copy, UsersRound } from 'lucide-react';
+import { UsersRound } from 'lucide-react';
 import { Modal } from './Modal';
 import { FormSheet } from './FormSheet';
 import { ExpandableSection } from './ExpandableSection';
@@ -47,9 +47,7 @@ function groupByPuesto(hires: Employee[]): PuestoCount[] {
       });
     }
   }
-  return Array.from(map.values()).sort(
-    (a, b) => b.count - a.count || a.puesto.localeCompare(b.puesto)
-  );
+  return Array.from(map.values()).sort((a, b) => b.count - a.count || a.puesto.localeCompare(b.puesto));
 }
 
 interface DeltaProps {
@@ -64,9 +62,7 @@ function Delta({ current, previous, invert = false }: DeltaProps) {
     return <span className="weekly-hires-modal__delta weekly-hires-modal__delta--neutral">= 0</span>;
   }
   const positive = invert ? diff < 0 : diff > 0;
-  const cls = positive
-    ? 'weekly-hires-modal__delta--up'
-    : 'weekly-hires-modal__delta--down';
+  const cls = positive ? 'weekly-hires-modal__delta--up' : 'weekly-hires-modal__delta--down';
   const sign = diff > 0 ? '+' : '';
   return (
     <span className={`weekly-hires-modal__delta ${cls}`}>
@@ -80,11 +76,9 @@ export function WeeklyHiresModal({
   isOpen,
   onClose,
   range,
-  rangeLabel,
   hires,
   bajas,
   previousRange,
-  previousRangeLabel,
   previousHires,
   previousBajas,
 }: WeeklyHiresModalProps) {
@@ -110,11 +104,7 @@ export function WeeklyHiresModal({
   const totalBajas = bajas.length + previousBajas.length;
   const netMovement = totalHires - totalBajas;
 
-  const renderHiresTable = (
-    hiresToRender: Employee[],
-    title?: string,
-    highlightStarlite = false,
-  ) => (
+  const renderHiresTable = (hiresToRender: Employee[], title?: string, highlightStarlite = false) => (
     <div className="weekly-hires-modal__section">
       {title && <h4 className="weekly-hires-modal__section-title">{title}</h4>}
       {isMobile ? (
@@ -129,9 +119,7 @@ export function WeeklyHiresModal({
                 <span className="weekly-hires-modal__mobile-date">{formatShortDate(e.fecha_ingreso, locale)}</span>
               </div>
               <div className="weekly-hires-modal__mobile-card-body">
-                <div className="weekly-hires-modal__mobile-seccion">
-                  {e.seccion || '-'}
-                </div>
+                <div className="weekly-hires-modal__mobile-seccion">{e.seccion || '-'}</div>
               </div>
             </div>
           ))}
@@ -139,10 +127,11 @@ export function WeeklyHiresModal({
       ) : (
         <div className="weekly-hires-modal__table-wrap">
           <table className="weekly-hires-modal__table data-table">
+            <caption className="sr-only">{title}</caption>
             <thead>
               <tr>
-                <th>{t('Puesto')}</th>
-                <th>{t('Fecha')}</th>
+                <th scope="col">{t('Puesto')}</th>
+                <th scope="col">{t('Fecha')}</th>
               </tr>
             </thead>
             <tbody>
@@ -154,9 +143,7 @@ export function WeeklyHiresModal({
                       {highlightStarlite && e.is_starlite && <StarliteBadge />}
                     </span>
                   </td>
-                  <td className="weekly-hires-modal__cell-mono">
-                    {formatShortDate(e.fecha_ingreso, locale)}
-                  </td>
+                  <td className="weekly-hires-modal__cell-mono">{formatShortDate(e.fecha_ingreso, locale)}</td>
                 </tr>
               ))}
             </tbody>
@@ -182,7 +169,10 @@ export function WeeklyHiresModal({
               </div>
               <div className="weekly-hires-modal__mobile-card-body">
                 <div className="weekly-hires-modal__mobile-seccion">
-                  {[b.seccion, b.turno].map((v) => v?.trim()).filter(Boolean).join(' · ') || '—'}
+                  {[b.seccion, b.turno]
+                    .map((v) => v?.trim())
+                    .filter(Boolean)
+                    .join(' · ') || '—'}
                 </div>
               </div>
             </div>
@@ -191,10 +181,11 @@ export function WeeklyHiresModal({
       ) : (
         <div className="weekly-hires-modal__table-wrap">
           <table className="weekly-hires-modal__table data-table">
+            <caption className="sr-only">{title}</caption>
             <thead>
               <tr>
-                <th>{t('Puesto')}</th>
-                <th>{t('Fecha')}</th>
+                <th scope="col">{t('Puesto')}</th>
+                <th scope="col">{t('Fecha')}</th>
               </tr>
             </thead>
             <tbody>
@@ -206,9 +197,7 @@ export function WeeklyHiresModal({
                       {highlightStarlite && b.is_starlite && <StarliteBadge />}
                     </span>
                   </td>
-                  <td className="weekly-hires-modal__cell-mono">
-                    {formatShortDate(b.fecha_baja, locale)}
-                  </td>
+                  <td className="weekly-hires-modal__cell-mono">{formatShortDate(b.fecha_baja, locale)}</td>
                 </tr>
               ))}
             </tbody>
@@ -231,135 +220,123 @@ export function WeeklyHiresModal({
         {/* Estadísticas principales */}
         <header className="weekly-hires-modal__summary">
           <div className="weekly-hires-modal__stat">
-            <div className="weekly-hires-modal__big-number">
-              {totalHires}
-            </div>
-            <p className="weekly-hires-modal__big-label">
-              {t(totalHires === 1 ? 'Ingreso' : 'Ingresos')}
-            </p>
+            <div className="weekly-hires-modal__big-number">{totalHires}</div>
+            <p className="weekly-hires-modal__big-label">{t(totalHires === 1 ? 'Ingreso' : 'Ingresos')}</p>
           </div>
           <div className="weekly-hires-modal__stat">
-            <div className="weekly-hires-modal__big-number weekly-hires-modal__big-number--bajas">
-              {totalBajas}
-            </div>
-            <p className="weekly-hires-modal__big-label">
-              {t(totalBajas === 1 ? 'Baja' : 'Bajas')}
-            </p>
+            <div className="weekly-hires-modal__big-number weekly-hires-modal__big-number--bajas">{totalBajas}</div>
+            <p className="weekly-hires-modal__big-label">{t(totalBajas === 1 ? 'Baja' : 'Bajas')}</p>
           </div>
           {!isMobile && (
             <div className="weekly-hires-modal__stat">
-              <div className={`weekly-hires-modal__big-number ${netMovement >= 0 ? 'weekly-hires-modal__big-number--positive' : 'weekly-hires-modal__big-number--negative'}`}>
-                {netMovement > 0 ? '+' : ''}{netMovement}
+              <div
+                className={`weekly-hires-modal__big-number ${netMovement >= 0 ? 'weekly-hires-modal__big-number--positive' : 'weekly-hires-modal__big-number--negative'}`}
+              >
+                {netMovement > 0 ? '+' : ''}
+                {netMovement}
               </div>
-              <p className="weekly-hires-modal__big-label">
-                {t('Balance neto')}
-              </p>
+              <p className="weekly-hires-modal__big-label">{t('Balance neto')}</p>
             </div>
           )}
         </header>
 
         <div className="weekly-hires-modal__weeks-grid">
           {/* Semana Actual */}
-          <ExpandableSection
-            title={`${t('Semana')} ${range.week}`}
-          >
-          <div className="weekly-hires-modal__week-content">
-            <div className="weekly-hires-modal__week-stats">
-              <div className="weekly-hires-modal__week-stat">
-                <span className="weekly-hires-modal__week-stat-label">{t('Ingresos')}</span>
-                <span className="weekly-hires-modal__week-stat-value">
-                  {hires.length}
-                  <Delta current={hires.length} previous={previousHires.length} />
-                </span>
+          <ExpandableSection title={`${t('Semana')} ${range.week}`}>
+            <div className="weekly-hires-modal__week-content">
+              <div className="weekly-hires-modal__week-stats">
+                <div className="weekly-hires-modal__week-stat">
+                  <span className="weekly-hires-modal__week-stat-label">{t('Ingresos')}</span>
+                  <span className="weekly-hires-modal__week-stat-value">
+                    {hires.length}
+                    <Delta current={hires.length} previous={previousHires.length} />
+                  </span>
+                </div>
+                <div className="weekly-hires-modal__week-stat">
+                  <span className="weekly-hires-modal__week-stat-label">{t('Bajas')}</span>
+                  <span className="weekly-hires-modal__week-stat-value weekly-hires-modal__week-stat-value--bajas">
+                    {bajas.length}
+                    <Delta current={bajas.length} previous={previousBajas.length} invert />
+                  </span>
+                </div>
               </div>
-              <div className="weekly-hires-modal__week-stat">
-                <span className="weekly-hires-modal__week-stat-label">{t('Bajas')}</span>
-                <span className="weekly-hires-modal__week-stat-value weekly-hires-modal__week-stat-value--bajas">
-                  {bajas.length}
-                  <Delta current={bajas.length} previous={previousBajas.length} invert />
-                </span>
-              </div>
+
+              {groupedHires.length > 0 && (
+                <div className="weekly-hires-modal__puestos">
+                  <h5 className="weekly-hires-modal__puestos-title">{t('Puestos contratados')}</h5>
+                  <ul className="weekly-hires-modal__puesto-list">
+                    {groupedHires.map((g, idx) => (
+                      <li key={`${g.puesto}-${g.isStarlite}-${idx}`} className="weekly-hires-modal__puesto-item">
+                        <span className="weekly-hires-modal__puesto-name">
+                          {g.puesto}
+                          {g.isStarlite && (
+                            <span style={{ marginLeft: '6px', verticalAlign: 'middle' }}>
+                              <StarliteBadge compact />
+                            </span>
+                          )}
+                        </span>
+                        <span className="weekly-hires-modal__puesto-count">{g.count}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {hires.length > 0 && renderHiresTable(sortedHires, t('Detalle de ingresos'), true)}
+              {bajas.length > 0 && renderBajasTable(bajas, t('Detalle de bajas'), true)}
             </div>
+          </ExpandableSection>
 
-            {groupedHires.length > 0 && (
-              <div className="weekly-hires-modal__puestos">
-                <h5 className="weekly-hires-modal__puestos-title">{t('Puestos contratados')}</h5>
-                <ul className="weekly-hires-modal__puesto-list">
-                  {groupedHires.map((g, idx) => (
-                    <li key={`${g.puesto}-${g.isStarlite}-${idx}`} className="weekly-hires-modal__puesto-item">
-                      <span className="weekly-hires-modal__puesto-name">
-                        {g.puesto}
-                        {g.isStarlite && (
-                          <span style={{ marginLeft: '6px', verticalAlign: 'middle' }}>
-                            <StarliteBadge compact />
-                          </span>
-                        )}
-                      </span>
-                      <span className="weekly-hires-modal__puesto-count">{g.count}</span>
-                    </li>
-                  ))}
-                </ul>
+          {/* Semana Anterior */}
+          <ExpandableSection title={`${t('Semana')} ${previousRange.week}`}>
+            <div className="weekly-hires-modal__week-content">
+              <div className="weekly-hires-modal__week-stats">
+                <div className="weekly-hires-modal__week-stat">
+                  <span className="weekly-hires-modal__week-stat-label">{t('Ingresos')}</span>
+                  <span className="weekly-hires-modal__week-stat-value">{previousHires.length}</span>
+                </div>
+                <div className="weekly-hires-modal__week-stat">
+                  <span className="weekly-hires-modal__week-stat-label">{t('Bajas')}</span>
+                  <span className="weekly-hires-modal__week-stat-value weekly-hires-modal__week-stat-value--bajas">
+                    {previousBajas.length}
+                  </span>
+                </div>
               </div>
-            )}
 
-            {hires.length > 0 && renderHiresTable(sortedHires, t('Detalle de ingresos'), true)}
-            {bajas.length > 0 && renderBajasTable(bajas, t('Detalle de bajas'), true)}
-          </div>
-        </ExpandableSection>
+              {groupedPreviousHires.length > 0 && (
+                <div className="weekly-hires-modal__puestos">
+                  <h5 className="weekly-hires-modal__puestos-title">{t('Puestos contratados')}</h5>
+                  <ul className="weekly-hires-modal__puesto-list">
+                    {groupedPreviousHires.map((g, idx) => (
+                      <li key={`${g.puesto}-${g.isStarlite}-${idx}`} className="weekly-hires-modal__puesto-item">
+                        <span className="weekly-hires-modal__puesto-name">
+                          {g.puesto}
+                          {g.isStarlite && (
+                            <span style={{ marginLeft: '6px', verticalAlign: 'middle' }}>
+                              <StarliteBadge compact />
+                            </span>
+                          )}
+                        </span>
+                        <span className="weekly-hires-modal__puesto-count">{g.count}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
-        {/* Semana Anterior */}
-        <ExpandableSection
-          title={`${t('Semana')} ${previousRange.week}`}
-        >
-          <div className="weekly-hires-modal__week-content">
-            <div className="weekly-hires-modal__week-stats">
-              <div className="weekly-hires-modal__week-stat">
-                <span className="weekly-hires-modal__week-stat-label">{t('Ingresos')}</span>
-                <span className="weekly-hires-modal__week-stat-value">
-                  {previousHires.length}
-                </span>
-              </div>
-              <div className="weekly-hires-modal__week-stat">
-                <span className="weekly-hires-modal__week-stat-label">{t('Bajas')}</span>
-                <span className="weekly-hires-modal__week-stat-value weekly-hires-modal__week-stat-value--bajas">
-                  {previousBajas.length}
-                </span>
-              </div>
+              {previousHires.length > 0 &&
+                renderHiresTable(
+                  [...previousHires].sort((a, b) => {
+                    const cmpArea = (a.area || '').localeCompare(b.area || '');
+                    if (cmpArea !== 0) return cmpArea;
+                    return (a.seccion || '').localeCompare(b.seccion || '');
+                  }),
+                  t('Detalle de ingresos'),
+                  true,
+                )}
+              {previousBajas.length > 0 && renderBajasTable(previousBajas, t('Detalle de bajas'), true)}
             </div>
-
-            {groupedPreviousHires.length > 0 && (
-              <div className="weekly-hires-modal__puestos">
-                <h5 className="weekly-hires-modal__puestos-title">{t('Puestos contratados')}</h5>
-                <ul className="weekly-hires-modal__puesto-list">
-                  {groupedPreviousHires.map((g, idx) => (
-                    <li key={`${g.puesto}-${g.isStarlite}-${idx}`} className="weekly-hires-modal__puesto-item">
-                      <span className="weekly-hires-modal__puesto-name">
-                        {g.puesto}
-                        {g.isStarlite && (
-                          <span style={{ marginLeft: '6px', verticalAlign: 'middle' }}>
-                            <StarliteBadge compact />
-                          </span>
-                        )}
-                      </span>
-                      <span className="weekly-hires-modal__puesto-count">{g.count}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {previousHires.length > 0 && renderHiresTable(
-              [...previousHires].sort((a, b) => {
-                const cmpArea = (a.area || '').localeCompare(b.area || '');
-                if (cmpArea !== 0) return cmpArea;
-                return (a.seccion || '').localeCompare(b.seccion || '');
-              }),
-              t('Detalle de ingresos'),
-              true
-            )}
-            {previousBajas.length > 0 && renderBajasTable(previousBajas, t('Detalle de bajas'), true)}
-          </div>
-            </ExpandableSection>
+          </ExpandableSection>
         </div>
       </div>
     </Dialog>

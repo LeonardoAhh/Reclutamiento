@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type RefObject } from 'react';
 import { useLocation } from 'react-router-dom';
 import { MorphMenuIcon } from '@/components/ui/MorphMenuIcon';
-import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { FoldHorizontal, UnfoldHorizontal } from 'lucide-react';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { useTeamDirectory } from '@/features/team/TeamProvider';
 import { useAuth } from '@/hooks/useAuth';
@@ -68,8 +68,8 @@ export function Sidebar({
       ? 'Show sidebar'
       : 'Mostrar barra lateral'
     : language === 'en'
-      ? 'Collapse sidebar'
-      : 'Contraer barra lateral';
+      ? 'Collapse'
+      : 'Contraer';
   const desktopToggle = (
     <button
       type="button"
@@ -80,7 +80,7 @@ export function Sidebar({
       aria-controls="app-sidebar"
       aria-label={collapseLabel}
     >
-      {collapsed ? <PanelLeftOpen aria-hidden="true" /> : <PanelLeftClose aria-hidden="true" />}
+      {collapsed ? <UnfoldHorizontal aria-hidden="true" /> : <FoldHorizontal aria-hidden="true" />}
     </button>
   );
   const content = (quickActions: SidebarQuickActionsControls) => (

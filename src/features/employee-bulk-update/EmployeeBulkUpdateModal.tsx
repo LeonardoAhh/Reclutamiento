@@ -4,11 +4,7 @@ import { Modal } from '@/components/ui/Modal';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from '@/lib/notify';
 import type { Employee, EmployeeAssignmentUpdate } from '@/lib/types';
-import {
-  buildEmployeeAssignmentPreview,
-  parseEmployeeAssignmentJson,
-  type EmployeeAssignmentPreview,
-} from './model';
+import { buildEmployeeAssignmentPreview, parseEmployeeAssignmentJson, type EmployeeAssignmentPreview } from './model';
 import './EmployeeBulkUpdateModal.css';
 
 const EMPLOYEE_BULK_UPDATE_TRIGGER_VISIBLE = false;
@@ -39,10 +35,7 @@ function FieldChange({ current, next }: { current: string; next: string }) {
   );
 }
 
-export function EmployeeBulkUpdateModal({
-  employees,
-  onApply,
-}: EmployeeBulkUpdateModalProps) {
+export function EmployeeBulkUpdateModal({ employees, onApply }: EmployeeBulkUpdateModalProps) {
   const { language } = useLanguage();
   const english = language === 'en';
   const inputRef = useRef<HTMLInputElement>(null);
@@ -118,11 +111,7 @@ export function EmployeeBulkUpdateModal({
             onChange={(event) => void handleFile(event)}
             hidden
           />
-          <button
-            type="button"
-            className="btn-secondary"
-            onClick={() => inputRef.current?.click()}
-          >
+          <button type="button" className="btn-secondary" onClick={() => inputRef.current?.click()}>
             <Upload aria-hidden="true" />
             Actualizar asignaciones
           </button>
@@ -162,18 +151,26 @@ export function EmployeeBulkUpdateModal({
             <div className="employee-bulk-update__errors" role="alert">
               <p>No se puede aplicar el archivo:</p>
               <ul>
-                {errors.map(error => <li key={error}>{error}</li>)}
+                {errors.map((error) => (
+                  <li key={error}>{error}</li>
+                ))}
               </ul>
             </div>
           )}
 
           {preview && (
             <>
-              <div className="employee-bulk-update__summary" role="status">
-                <span><strong>{preview.changes.length}</strong> con cambios</span>
-                <span><strong>{preview.unchanged}</strong> sin cambios</span>
-                <span><strong>{preview.notFound.length}</strong> no encontrados</span>
-              </div>
+              <output className="employee-bulk-update__summary">
+                <span>
+                  <strong>{preview.changes.length}</strong> con cambios
+                </span>
+                <span>
+                  <strong>{preview.unchanged}</strong> sin cambios
+                </span>
+                <span>
+                  <strong>{preview.notFound.length}</strong> no encontrados
+                </span>
+              </output>
 
               {preview.notFound.length > 0 && (
                 <details className="employee-bulk-update__missing">
@@ -185,13 +182,13 @@ export function EmployeeBulkUpdateModal({
               {preview.changes.length === 0 ? (
                 <p className="employee-bulk-update__empty">El archivo no contiene cambios aplicables.</p>
               ) : (
-                <div
+                <section
                   className="employee-bulk-update__table-wrap"
-                  role="region"
                   aria-label="Cambios de puesto, categoría y turno"
                   tabIndex={0}
                 >
                   <table className="employee-bulk-update__table data-table data-table--cards">
+                    <caption className="sr-only">Cambios de puesto, categoría y turno</caption>
                     <thead>
                       <tr>
                         <th scope="col">Empleado</th>
@@ -207,14 +204,20 @@ export function EmployeeBulkUpdateModal({
                             <strong>{employee.nombre}</strong>
                             <span className="employee-bulk-update__number">#{employee.num_empleado}</span>
                           </td>
-                          <td data-label="Puesto"><FieldChange current={employee.puesto} next={update.puesto} /></td>
-                          <td data-label="Categoría"><FieldChange current={employee.categoria} next={update.categoria} /></td>
-                          <td data-label="Turno"><FieldChange current={employee.turno} next={update.turno} /></td>
+                          <td data-label="Puesto">
+                            <FieldChange current={employee.puesto} next={update.puesto} />
+                          </td>
+                          <td data-label="Categoría">
+                            <FieldChange current={employee.categoria} next={update.categoria} />
+                          </td>
+                          <td data-label="Turno">
+                            <FieldChange current={employee.turno} next={update.turno} />
+                          </td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
-                </div>
+                </section>
               )}
             </>
           )}

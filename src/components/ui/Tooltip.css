@@ -1,38 +1,95 @@
 /* ================================================================
-   Tooltip — Geist inverted surface.
+   Tooltip — high-contrast inverted surface.
    Radix UI portal: rendered outside the DOM tree.
    Tokens: colors, spacing, type, rounded, shadow, z-index, motion.
    ================================================================ */
 
-.tooltip-content {
-  background-color: var(--color-surface-dark);
-  color: var(--color-on-dark);
-  --color-body-strong: var(--color-on-dark);
+.tooltip-surface {
+  box-sizing: border-box;
+  max-inline-size: var(--tooltip-max-width);
   padding: var(--design-spacing-xs) var(--design-spacing-sm);
-  border: var(--border-width) solid var(--color-surface-dark-elevated);
+  border: var(--border-width) solid var(--color-hairline-strong);
   border-radius: var(--radius-menu);
+  color: var(--color-on-dark);
+  background: var(--color-surface-dark);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
-  line-height: var(--type-body-md-line);
   font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
   letter-spacing: var(--type-body-md-tracking);
   box-shadow: var(--shadow-level-2);
-  z-index: var(--layer-tooltip);
-  animation: tooltipFadeIn var(--transition-fast);
-  white-space: normal;
-  max-width: min(var(--tooltip-max-width), var(--radix-tooltip-content-available-width));
   overflow-wrap: anywhere;
   text-align: start;
+}
+
+.tooltip-surface--chart {
+  min-inline-size: var(--tooltip-chart-min-inline-size);
+  padding: var(--design-spacing-sm) var(--design-spacing-md);
+}
+
+.tooltip-content {
+  --color-body-strong: var(--color-on-dark);
+
+  z-index: var(--layer-tooltip);
+  animation: tooltip-fade-in var(--transition-fast);
+  white-space: normal;
+  max-inline-size: min(var(--tooltip-max-width), var(--radix-tooltip-content-available-width));
+}
+
+.tooltip-surface__title {
+  margin: 0 0 var(--design-spacing-xs);
+  color: inherit;
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.tooltip-surface__title--eyebrow {
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
+}
+
+.tooltip-surface__row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--design-spacing-xs);
+  margin: 0;
+  color: inherit;
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.tooltip-surface__row + .tooltip-surface__row {
+  margin-block-start: var(--design-spacing-xxs);
+}
+
+.tooltip-surface__row strong {
+  margin-inline-start: auto;
+  color: inherit;
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+  font-variant-numeric: tabular-nums;
 }
 
 .tooltip-arrow {
   fill: var(--color-surface-dark);
 }
 
-@keyframes tooltipFadeIn {
+@keyframes tooltip-fade-in {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -103,8 +160,8 @@
 }
 
 .trend-tooltip__list li::before {
-  content: "•";
+  content: '•';
   position: absolute;
   inset-inline-start: 0;
-  color: var(--color-on-dark-soft);
+  color: var(--color-on-dark);
 }

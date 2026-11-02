@@ -188,7 +188,7 @@ export function FutureHiresModal({
         >
           <span className="future-hires-modal__action-inner">
             <Copy size="var(--icon-size-sm)" aria-hidden="true" />
-            {t('Copiar reporte para WhatsApp')}
+            {t('Copiar reporte')}
           </span>
         </button>
       }

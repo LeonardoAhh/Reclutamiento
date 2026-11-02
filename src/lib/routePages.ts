@@ -8,7 +8,6 @@ import {
   CANDIDATES_PATH,
   HOME_PATH,
   TEAM_PATH,
-  VACANCY_ASSIGNMENTS_PATH,
 } from '@/components/layout/navigation';
 import { REPORT_COMPARISON_PATH } from '@/components/reporte-diario/navigation';
 import { CANDIDATE_METRICS_PATH } from '@/pages/candidate-metrics/navigation';
@@ -47,7 +46,6 @@ export const CandidateMetricsPage = lazyWithPreload(() => import('@/pages/Candid
 export const Pipeline = lazyWithPreload(() => import('@/pages/Pipeline').then(({ Pipeline }) => ({ default: Pipeline })));
 export const Bajas = lazyWithPreload(() => import('@/pages/Bajas').then(({ Bajas }) => ({ default: Bajas })));
 export const KpisPage = lazyWithPreload(() => import('@/pages/KpisPage').then(({ KpisPage }) => ({ default: KpisPage })));
-export const VacancyAssignmentsPage = lazyWithPreload(() => import('@/pages/VacancyAssignmentsPage').then(({ VacancyAssignmentsPage }) => ({ default: VacancyAssignmentsPage })));
 export const ReportComparisonPage = lazyWithPreload(() => import('@/pages/ReportComparisonPage').then(({ ReportComparisonPage }) => ({ default: ReportComparisonPage })));
 export const ReporteDiario = lazyWithPreload(() => import('@/pages/ReporteDiario').then(({ ReporteDiario }) => ({ default: ReporteDiario })));
 export const MotivosBaja = lazyWithPreload(() => import('@/pages/MotivosBaja').then(({ MotivosBaja }) => ({ default: MotivosBaja })));
@@ -100,7 +98,6 @@ const ROUTE_PAGES: readonly RoutePage[] = [
   { matches: exact(LEAVE_REQUESTS_PATH), page: LeaveRequestsPage, bones: pageBones('leave-requests-page') },
   { matches: exact('/overview'), page: KpisPage, bones: pageBones('resumen-page') },
   { matches: exact(PLANTILLA_PATH), page: Dashboard, bones: pageBones('plantilla-page') },
-  { matches: exact(VACANCY_ASSIGNMENTS_PATH), page: VacancyAssignmentsPage, bones: pageBones('vacancy-assignments-page') },
   { matches: exact(CANDIDATE_METRICS_PATH), page: CandidateMetricsPage },
   { matches: exact(CANDIDATES_PATH), page: Pipeline, bones: pageBones('candidatos-page') },
   { matches: exact('/employee-turnover'), page: Bajas, bones: pageBones('bajas-page') },

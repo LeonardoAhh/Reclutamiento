@@ -1,4 +1,4 @@
-import { Menu, X } from 'lucide';
+import { FoldHorizontal, UnfoldHorizontal } from 'lucide';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
 
 interface MorphMenuIconProps {
@@ -8,5 +8,13 @@ interface MorphMenuIconProps {
 }
 
 export function MorphMenuIcon({ isOpen, size, className = '' }: MorphMenuIconProps) {
-  return <MorphingIcon icon={isOpen ? X : Menu} size={size} className={className} spring="smooth" aria-hidden="true" />;
+  return (
+    <MorphingIcon
+      icon={isOpen ? FoldHorizontal : UnfoldHorizontal}
+      size={size}
+      className={className}
+      spring="smooth"
+      aria-hidden="true"
+    />
+  );
 }

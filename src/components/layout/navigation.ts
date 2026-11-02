@@ -1,12 +1,12 @@
 import {
   ChartNoAxesCombined,
   Contact,
-  Files,
+  Database,
+  FilePenLine,
   House,
   ListTodo,
   NotebookText,
   Route,
-  UserRoundPen,
   UserSearch,
   type LucideIcon,
 } from 'lucide-react';
@@ -48,9 +48,9 @@ const NAV_SECTIONS: ReadonlyArray<NavSection> = [
     label: 'Reclutamiento',
     items: [
       { to: CANDIDATES_PATH, label: 'Candidatos', icon: UserSearch },
-      { to: '/data-update', label: 'Campaña', icon: UserRoundPen, roles: ['admin', 'reclutador'] },
+      { to: '/data-update', label: 'Campaña', icon: Database, roles: ['admin', 'reclutador'] },
       { to: ACTIVIDADES_PATH, label: 'Actividades', icon: ListTodo },
-      { to: getConfiguracionHref('formatos'), label: 'Formatos', icon: Files },
+      { to: getConfiguracionHref('formatos'), label: 'Formatos', icon: FilePenLine },
     ],
   },
   {
@@ -90,10 +90,10 @@ const ENGLISH_NAV_LABELS: Readonly<Record<string, string>> = {
 export function getLocalizedNavigation(language: Language): NavSection[] {
   const sections = NAV_SECTIONS.map((section) => ({
     ...section,
-    label: language === 'en' ? ENGLISH_NAV_LABELS[section.label] ?? section.label : section.label,
+    label: language === 'en' ? (ENGLISH_NAV_LABELS[section.label] ?? section.label) : section.label,
     items: section.items.map((item) => ({
       ...item,
-      label: language === 'en' ? ENGLISH_NAV_LABELS[item.label] ?? item.label : item.label,
+      label: language === 'en' ? (ENGLISH_NAV_LABELS[item.label] ?? item.label) : item.label,
     })),
   }));
   const collator = new Intl.Collator(language === 'en' ? 'en' : 'es', { sensitivity: 'base' });

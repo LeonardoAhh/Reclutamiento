@@ -340,8 +340,7 @@
 }
 
 .motivos-baja__chart .recharts-cartesian-axis-tick-value,
-.motivos-baja__chart .recharts-default-legend,
-.motivos-baja__chart .recharts-default-tooltip {
+.motivos-baja__chart .recharts-default-legend {
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);

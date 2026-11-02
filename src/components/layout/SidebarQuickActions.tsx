@@ -1,5 +1,5 @@
 import { useId, useLayoutEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
-import { ArrowRight, Ban, CalendarDays, CircleAlert, CircleCheckBig, Info, RotateCcw, Sun, TriangleAlert } from "lucide-react";
+import { ArrowRight, Ban, CalendarOff, CalendarRange, CalendarX, CircleAlert, Info, Send, TriangleAlert, Umbrella } from "lucide-react";
 import { differenceInCalendarDays } from "date-fns";
 import { enUS, es } from "date-fns/locale";
 import type { Profile } from "@/hooks/useAuth";
@@ -174,7 +174,7 @@ export function SidebarQuickActions({ profile, members, children }: SidebarQuick
     : '';
   const leaveSummary = <div className="home-page__leave-review-frame">
     <div className="home-page__leave-review-type">
-      <span className="home-page__leave-review-icon" aria-hidden="true">{leaveDraft.type === "vacation" ? <Sun size="var(--icon-size-md)" /> : <CalendarDays size="var(--icon-size-md)" />}</span>
+      <span className="home-page__leave-review-icon" aria-hidden="true">{leaveDraft.type === "vacation" ? <Umbrella aria-hidden="true" size="var(--icon-size-md)" /> : <CalendarOff aria-hidden="true" size="var(--icon-size-md)" />}</span>
       <div>
         <span className="type-caption-up">{en ? "Type" : "Tipo"}</span>
         <strong className="type-heading-sm">{en ? (leaveDraft.type === "vacation" ? "Vacation" : "Leave") : leaveTypeLabel(leaveDraft.type)}</strong>
@@ -186,7 +186,7 @@ export function SidebarQuickActions({ profile, members, children }: SidebarQuick
       <div><dt className="type-caption-up">{en ? "End" : "Fin"}</dt><dd><span className="home-page__leave-review-date-main type-heading-sm">{reviewDateLabel(reviewEndDate)}</span><span className="home-page__leave-review-year">{reviewDateYear(reviewEndDate)}</span></dd></div>
     </dl>
     <div className="home-page__leave-review-total">
-      <span><CalendarDays aria-hidden="true" size="var(--icon-size-sm)" />Total</span>
+      <span><CalendarRange aria-hidden="true" size="var(--icon-size-sm)" />Total</span>
       <strong className="type-body-strong">{reviewDays} {en ? (reviewDays === 1 ? "day" : "days") : (reviewDays === 1 ? "día" : "días")}</strong>
     </div>
     {showShortNotice && <p className="home-page__leave-review-notice">{en ? "Shorter notice requires approval." : "La menor anticipación requiere autorización."}</p>}
@@ -208,7 +208,7 @@ export function SidebarQuickActions({ profile, members, children }: SidebarQuick
           headerActions={leaveStep === "form" ?
             <button type="button" className="home-page__leave-header-clear" aria-label={en ? "Clear selected dates" : "Limpiar fechas seleccionadas"} disabled={leaveSaving || !leaveDraft.startDate}
               onClick={() => { playSound('tap'); setLeaveDraft(draft => ({ ...draft, startDate: "", endDate: "" })); setLeaveError(""); }}>
-              <RotateCcw aria-hidden="true" />
+              <CalendarX aria-hidden="true" />
               <span>{en ? "Clear dates" : "Limpiar fechas"}</span>
             </button> : undefined}
           className={`home-page__leave-modal${leaveStep === "form" ? " home-page__leave-modal--form" : ""}`}
@@ -239,7 +239,7 @@ export function SidebarQuickActions({ profile, members, children }: SidebarQuick
             <ul className="home-page__leave-policy-rules">
               <li><span className="home-page__leave-policy-mark" aria-hidden="true">{LEAVE_NOTICE_DAYS}</span><p><strong>{en ? "Days of notice." : "Días de anticipación."}</strong> {homeText(LEAVE_POLICY_NOTICE.advanceNotice, language)}</p></li>
               <li><span className="home-page__leave-policy-mark" aria-hidden="true">{LEAVE_POLICY_NOTICE.firstPeriodDays}</span><p><strong>{en ? "Consecutive days." : "Días continuos."}</strong> {homeText(LEAVE_POLICY_NOTICE.firstPeriod, language)}</p></li>
-              <li><span className="home-page__leave-policy-mark" aria-hidden="true"><Ban size="var(--icon-size-md)" /></span><p><strong>{en ? "Not allowed." : "No permitido."}</strong> {homeText(LEAVE_POLICY_NOTICE.unavailableDates, language)}</p></li>
+              <li><span className="home-page__leave-policy-mark" aria-hidden="true"><Ban aria-hidden="true" size="var(--icon-size-md)" /></span><p><strong>{en ? "Not allowed." : "No permitido."}</strong> {homeText(LEAVE_POLICY_NOTICE.unavailableDates, language)}</p></li>
             </ul>
             <p className="home-page__leave-policy-warning"><TriangleAlert aria-hidden="true" size="var(--icon-size-md)" /><span>{homeText(LEAVE_POLICY_NOTICE.shortNotice, language)}</span></p>
           </div> : leaveStep === "form" ?
@@ -349,7 +349,7 @@ export function SidebarQuickActions({ profile, members, children }: SidebarQuick
             </div> :
             <div className="modal-body home-page__leave-policy home-page__leave-confirmation type-body-md">
               <div className="home-page__leave-confirmation-heading">
-                <span className="home-page__leave-confirmation-icon" aria-hidden="true"><CircleCheckBig size="var(--icon-size-lg)" /></span>
+                <span className="home-page__leave-confirmation-icon" aria-hidden="true"><Send aria-hidden="true" size="var(--icon-size-lg)" /></span>
                 <div>
                   <h3 ref={leaveSuccessRef} tabIndex={-1} className="home-page__leave-success">{en ? "Your request will be reviewed" : "Se validará tu solicitud"}</h3>
                   <p>{en ? "Your coordinator will review the request and provide the physical forms." : "Tu coordinador revisará la solicitud y te entregará los formatos físicos."}</p>

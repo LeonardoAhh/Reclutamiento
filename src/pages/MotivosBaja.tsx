@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react';
 import { PageHeading } from '@/components/layout/PageHeading';
 import { BarChart3, SlidersHorizontal } from 'lucide-react';
-import { CartesianGrid, Label, LabelList, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { CartesianGrid, Label, LabelList, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, type TooltipProps } from 'recharts';
 import { CustomSelect } from '@/components/ui/CustomSelect';
+import { TooltipSurface, type ChartTooltipEntry } from '@/components/ui/Tooltip';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
 import { CapturarMotivoBajaModal } from '@/pages/bajas-components/CapturarMotivoBajaModal';
@@ -33,6 +34,27 @@ function chartMonthLabel(value: string, language: 'es' | 'en'): string {
     timeZone: TZ_MX,
   }).format(new Date(Date.UTC(Number(year), Number(month) - 1, 15, 12)));
   return `${label.charAt(0).toUpperCase()}${label.slice(1).replace('.', '')} ${year}`;
+}
+
+interface MonthlyTrendTooltipProps extends TooltipProps<number, string> {
+  payload?: ChartTooltipEntry[];
+  label?: string | number;
+}
+
+function MonthlyTrendTooltip({ active, payload, label }: MonthlyTrendTooltipProps) {
+  if (!active || !payload?.length) return null;
+
+  return (
+    <TooltipSurface variant="chart" role="tooltip">
+      <p className="tooltip-surface__title">{String(label ?? '')}</p>
+      {payload.map((entry) => (
+        <p key={String(entry.dataKey ?? entry.name)} className="tooltip-surface__row">
+          <span>{entry.name}</span>
+          <strong>{String(entry.value ?? '')}</strong>
+        </p>
+      ))}
+    </TooltipSurface>
+  );
 }
 
 export function MotivosBaja() {
@@ -230,7 +252,7 @@ export function MotivosBaja() {
                 <CartesianGrid vertical={false} stroke="var(--color-hairline)" />
                 <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fill: 'var(--color-muted)' }} />
                 <YAxis allowDecimals={false} domain={[0, (dataMax: number) => Math.max(1, Math.ceil(dataMax * 1.15))]} tickLine={false} axisLine={false} tick={{ fill: 'var(--color-muted)' }} width="auto" />
-                <Tooltip />
+                <Tooltip content={<MonthlyTrendTooltip />} />
                 {monthlyRows.length > 1 && <Legend />}
                 {monthlyRows.length > 1 && (
                   <Line

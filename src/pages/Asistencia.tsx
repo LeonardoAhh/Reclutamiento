@@ -312,27 +312,32 @@ export function Asistencia() {
           </div>
 
           <div className="asistencia-table-wrapper">
-            <table className="asistencia-table data-table">
+            <table className="asistencia-table data-table data-table--cards">
+              <caption className="sr-only">Asistencia del Personal</caption>
               <thead>
                 <tr>
-                  <th>No. Empleado</th>
-                  <th>Nombre</th>
-                  <th>Turno</th>
-                  <th>Sección</th>
-                  <th>Puesto</th>
-                  <th>Proyecto</th>
-                  <th style={{ textAlign: 'center' }}>Tipo</th>
+                  <th scope="col">No. Empleado</th>
+                  <th scope="col">Nombre</th>
+                  <th scope="col">Turno</th>
+                  <th scope="col">Sección</th>
+                  <th scope="col">Puesto</th>
+                  <th scope="col">Proyecto</th>
+                  <th scope="col" className="asistencia-table__type">
+                    Tipo
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {filteredData?.map((item, idx) => (
                   <tr key={`${item['numero empleado']}-${idx}`}>
-                    <td>{item['numero empleado']}</td>
-                    <td className="fw-500">{item.nombre}</td>
-                    <td>{item.turno}</td>
-                    <td>{item.sección}</td>
-                    <td>{(item.puesto || '').replace(/\s+[A-Z]$/i, '').trim() || '-'}</td>
-                    <td>
+                    <td data-label="No. Empleado">{item['numero empleado']}</td>
+                    <th scope="row" className="asistencia-table__name">
+                      {item.nombre}
+                    </th>
+                    <td data-label="Turno">{item.turno}</td>
+                    <td data-label="Sección">{item.sección}</td>
+                    <td data-label="Puesto">{(item.puesto || '').replace(/\s+[A-Z]$/i, '').trim() || '-'}</td>
+                    <td data-label="Proyecto">
                       {item.proyecto ? (
                         item.proyecto.toLowerCase() === 'starlite' ? (
                           <StarliteBadge />
@@ -343,7 +348,7 @@ export function Asistencia() {
                         '-'
                       )}
                     </td>
-                    <td style={{ textAlign: 'center' }}>
+                    <td data-label="Tipo" className="asistencia-table__type">
                       <Badge variant={getVariantForIncidencia(item.tipo)}>
                         {INCIDENCIA_LABELS[item.tipo] || item.tipo || '-'}
                       </Badge>
@@ -352,7 +357,7 @@ export function Asistencia() {
                 ))}
                 {filteredData?.length === 0 && (
                   <tr>
-                    <td colSpan={6} style={{ textAlign: 'center', padding: 'var(--spacing-xl)' }}>
+                    <td colSpan={7} className="asistencia-table__empty">
                       No se encontraron resultados para la búsqueda.
                     </td>
                   </tr>

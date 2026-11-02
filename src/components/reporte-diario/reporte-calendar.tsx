@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/Badge";
 import { useReportLocale } from "./useReportLocale";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
@@ -126,9 +127,17 @@ function DayCell({
                 <div className="reporte-cal__kpi reporte-cal__kpi--right">
                     <span className="sr-only">{copy("Incidencias", "Incidents")}:</span>
                     {count > 0 ? (
-                        <span className="reporte-cal__count" title={severityLabel ?? undefined}>
-                            {count}
-                        </span>
+                        <Badge
+                            variant="neutral"
+                            size="compact"
+                            className="reporte-cal__count-badge"
+                            title={severityLabel ?? undefined}
+                        >
+                            <span className="reporte-cal__count">{count}</span>
+                            <span className="reporte-cal__count-label">
+                                {copy("Incidencias", "Incidents")}
+                            </span>
+                        </Badge>
                     ) : (
                         <span aria-hidden="true" className="reporte-cal__empty-dash">—</span>
                     )}

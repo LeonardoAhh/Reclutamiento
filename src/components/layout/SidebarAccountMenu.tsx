@@ -1,6 +1,6 @@
 import { Fragment, useId, useRef, useState } from 'react';
 import { Link, useMatch } from 'react-router-dom';
-import { CalendarDays, ChevronUp, LogOut, UserRound } from 'lucide-react';
+import { CalendarDays, CalendarPlus, ChevronsUp, CircleUserRound, LogOut, UserRound } from 'lucide-react';
 import { Avatar } from '@/components/ui/Avatar';
 import { Tooltip } from '@/components/ui/Tooltip';
 import {
@@ -15,11 +15,13 @@ import {
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSignOut } from '@/features/account/useSignOut';
 import { LEAVE_REQUESTS_PATH } from '@/features/leave/requests';
+import { useIsMobile } from '@/hooks/useIsMobile';
 import { preloadRoute } from '@/lib/routePages';
 import { playSound } from '@/lib/sound';
 import { toNaturalCase } from '@/lib/utils';
 import { ACCOUNT_PATH } from './navigation';
 import type { SidebarQuickActionsControls } from './SidebarQuickActions';
+import { SidebarThemeFooter } from './SidebarThemeFooter';
 import './SidebarAccountMenu.css';
 
 type SidebarAccountMenuProps = {
@@ -42,6 +44,7 @@ export function SidebarAccountMenu({
   quickActions,
 }: SidebarAccountMenuProps) {
   const { language } = useLanguage();
+  const isMobileViewport = useIsMobile();
   const accountActive = Boolean(useMatch(ACCOUNT_PATH));
   const leaveRequestsActive = Boolean(useMatch(LEAVE_REQUESTS_PATH));
   const groupId = useId();
@@ -77,7 +80,7 @@ export function SidebarAccountMenu({
           <span className="sidebar__account-name">{name}</span>
           {roleLabel && <span className="sidebar__account-role">{roleLabel}</span>}
         </span>
-        <ChevronUp className="sidebar__account-chevron" aria-hidden="true" />
+        <ChevronsUp className="sidebar__account-chevron" aria-hidden="true" />
       </button>
     </DropdownMenuTrigger>
   );
@@ -86,16 +89,14 @@ export function SidebarAccountMenu({
       label: language === 'en' ? 'Account' : 'Cuenta',
       content: (
         <DropdownMenuGroup aria-labelledby={`${groupId}-account`}>
-          <DropdownMenuLabel id={`${groupId}-account`}>
-            {language === 'en' ? 'Account' : 'Cuenta'}
-          </DropdownMenuLabel>
+          <DropdownMenuLabel id={`${groupId}-account`}>{language === 'en' ? 'Account' : 'Cuenta'}</DropdownMenuLabel>
           <DropdownMenuItem asChild>
             <Link
               to={ACCOUNT_PATH}
               aria-current={accountActive ? 'page' : undefined}
               onClick={() => playSound('navigate')}
             >
-              <UserRound aria-hidden="true" />
+              <CircleUserRound aria-hidden="true" />
               {language === 'en' ? 'My profile' : 'Mi perfil'}
             </Link>
           </DropdownMenuItem>
@@ -103,53 +104,53 @@ export function SidebarAccountMenu({
       ),
     },
     ...(quickActions
-      ? [{
-        label: language === 'en' ? 'Requests' : 'Solicitudes',
-        content: (
-          <DropdownMenuGroup aria-labelledby={`${groupId}-requests`}>
-            <DropdownMenuLabel id={`${groupId}-requests`}>
-              {language === 'en' ? 'Requests' : 'Solicitudes'}
-            </DropdownMenuLabel>
-            {quickActions.canReviewRequests ? (
-              <DropdownMenuItem asChild>
-                <Link
-                  to={LEAVE_REQUESTS_PATH}
-                  aria-current={leaveRequestsActive ? 'page' : undefined}
-                  onClick={() => playSound('navigate')}
-                  onPointerEnter={() => preloadRoute(LEAVE_REQUESTS_PATH)}
-                  onFocus={() => preloadRoute(LEAVE_REQUESTS_PATH)}
-                >
-                  <CalendarDays aria-hidden="true" />
-                  {language === 'en' ? 'Requests' : 'Gestionar'}
-                </Link>
-              </DropdownMenuItem>
-            ) : (
-              <DropdownMenuItem
-                onSelect={(event) => {
-                  event.preventDefault();
-                  const focusTarget = triggerRef.current;
-                  if (!focusTarget) return;
-                  openingLeavePolicyRef.current = true;
-                  setOpen(false);
-                  playSound('open');
-                  quickActions.openLeavePolicy(focusTarget);
-                }}
-              >
-                <CalendarDays aria-hidden="true" />
-                {language === 'en' ? 'Leave' : 'Solicitar'}
-              </DropdownMenuItem>
-            )}
-          </DropdownMenuGroup>
-        ),
-      }]
+      ? [
+          {
+            label: language === 'en' ? 'Requests' : 'Solicitudes',
+            content: (
+              <DropdownMenuGroup aria-labelledby={`${groupId}-requests`}>
+                <DropdownMenuLabel id={`${groupId}-requests`}>
+                  {language === 'en' ? 'Requests' : 'Solicitudes'}
+                </DropdownMenuLabel>
+                {quickActions.canReviewRequests ? (
+                  <DropdownMenuItem asChild>
+                    <Link
+                      to={LEAVE_REQUESTS_PATH}
+                      aria-current={leaveRequestsActive ? 'page' : undefined}
+                      onClick={() => playSound('navigate')}
+                      onPointerEnter={() => preloadRoute(LEAVE_REQUESTS_PATH)}
+                      onFocus={() => preloadRoute(LEAVE_REQUESTS_PATH)}
+                    >
+                      <CalendarDays aria-hidden="true" />
+                      {language === 'en' ? 'Requests' : 'Gestionar'}
+                    </Link>
+                  </DropdownMenuItem>
+                ) : (
+                  <DropdownMenuItem
+                    onSelect={(event) => {
+                      event.preventDefault();
+                      const focusTarget = triggerRef.current;
+                      if (!focusTarget) return;
+                      openingLeavePolicyRef.current = true;
+                      setOpen(false);
+                      playSound('open');
+                      quickActions.openLeavePolicy(focusTarget);
+                    }}
+                  >
+                    <CalendarPlus aria-hidden="true" />
+                    {language === 'en' ? 'Leave' : 'Solicitar'}
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuGroup>
+            ),
+          },
+        ]
       : []),
     {
       label: language === 'en' ? 'Session' : 'Sesión',
       content: (
         <DropdownMenuGroup aria-labelledby={`${groupId}-session`}>
-          <DropdownMenuLabel id={`${groupId}-session`}>
-            {language === 'en' ? 'Session' : 'Sesión'}
-          </DropdownMenuLabel>
+          <DropdownMenuLabel id={`${groupId}-session`}>{language === 'en' ? 'Session' : 'Sesión'}</DropdownMenuLabel>
           <div className="sidebar__account-actions" data-confirming={awaitingConfirmation}>
             {awaitingConfirmation && (
               <DropdownMenuItem
@@ -254,6 +255,12 @@ export function SidebarAccountMenu({
             {content}
           </Fragment>
         ))}
+        {!isMobileViewport && (
+          <>
+            <DropdownMenuSeparator />
+            <SidebarThemeFooter language={language} />
+          </>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

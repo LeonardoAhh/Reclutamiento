@@ -1,0 +1,508 @@
+/* ============================================================================
+   KPI DASHBOARD — compact, mobile-first.
+   Móvil y tablet: 2 columnas. PC: 4 columnas en una sola fila.
+   ============================================================================ */
+
+.reporte-kpi__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--design-spacing-xs);
+}
+
+.reporte-kpi__grid > * {
+  min-inline-size: 0;
+  max-width: 100%;
+}
+
+@media (max-width: 767px) {
+  .reporte-kpi__grid .kpi-card {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: var(--spacing-xs);
+    row-gap: var(--design-spacing-xxs);
+    align-content: start;
+  }
+
+  .reporte-kpi__grid .kpi-card__content {
+    display: contents;
+  }
+
+  .reporte-kpi__grid .kpi-card__value-row {
+    grid-column: 1 / -1;
+    min-inline-size: 0;
+  }
+
+  .reporte-kpi__grid :is(.kpi-card__label, .kpi-card__value, .kpi-card__sub) {
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (min-width: 768px) {
+  .reporte-kpi__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--design-spacing-sm);
+  }
+}
+
+@media (min-width: 1080px) {
+  .reporte-kpi__grid {
+    grid-template-columns:
+      minmax(0, 0.9fr)
+      minmax(0, 0.9fr)
+      minmax(0, 0.9fr)
+      minmax(0, 1.3fr);
+  }
+}
+
+/* ============================================================================
+   INCIDENT TABS — mobile-first responsive (cards + inline expand on mobile,
+   full table on desktop). Token-driven, accessible.
+   ============================================================================ */
+
+.reporte-incidents {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.reporte-incidents__tablist {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+}
+
+.reporte-incidents__tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  min-height: var(--touch-target-min);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-control);
+  border: var(--border-width) solid var(--color-control-border);
+  background: var(--color-surface-card);
+  color: var(--color-charcoal);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.reporte-incidents__tab:hover {
+  background: var(--color-surface-soft);
+}
+
+.reporte-incidents__tab[aria-selected='true'] {
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+  border-color: var(--color-primary-border);
+}
+
+.reporte-incidents__clear {
+  margin-left: auto;
+}
+
+/* Desktop data table — hidden on mobile */
+.reporte-incidents__table-wrap {
+  display: none;
+  overflow-x: auto;
+  border-radius: var(--rounded-lg);
+  border: 1px solid var(--color-hairline);
+}
+
+.reporte-incidents__table {
+  table-layout: auto;
+}
+
+.reporte-incidents__table td {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.reporte-incidents__td-name {
+  font-weight: var(--type-body-strong-weight);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.reporte-incidents__td-num {
+  color: var(--color-muted);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+/* Mobile card list — shown on mobile, hidden on desktop */
+.reporte-incidents__cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.reporte-incidents__card {
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  background: var(--color-surface-card);
+  overflow: hidden;
+}
+
+.reporte-incidents__card-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+  padding: var(--spacing-md);
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.reporte-incidents__card-summary:hover {
+  background: var(--color-surface-soft);
+}
+
+.reporte-incidents__card-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--design-spacing-xxs);
+  min-width: 0;
+  flex: 1;
+}
+
+.reporte-incidents__card-name {
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  color: var(--color-ink);
+  white-space: normal;
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.reporte-incidents__card-sub {
+  font-size: var(--type-body-md-size);
+  line-height: var(--type-body-md-line);
+  color: var(--color-muted);
+  white-space: normal;
+  overflow-wrap: anywhere;
+  font-family: var(--font-body);
+  font-weight: var(--type-body-md-weight);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.reporte-incidents__chevron {
+  flex-shrink: 0;
+  color: var(--color-muted);
+}
+
+.reporte-incidents__card-detail {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--spacing-xs) var(--spacing-md);
+  padding: 0 var(--spacing-md) var(--spacing-md);
+  border-top: 1px solid var(--color-hairline-soft);
+  padding-top: var(--spacing-md);
+}
+
+.reporte-incidents__detail-label {
+  font-size: var(--type-caption-up-size);
+  line-height: var(--type-caption-up-line);
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--type-caption-up-tracking);
+  font-family: var(--font-body);
+  font-weight: var(--type-caption-up-weight);
+}
+
+.reporte-incidents__detail-value {
+  font-size: var(--type-body-md-size);
+  line-height: var(--type-body-md-line);
+  color: var(--color-ink);
+  word-break: break-word;
+  font-family: var(--font-body);
+  font-weight: var(--type-body-md-weight);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.reporte-incidents__card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  min-width: 0;
+}
+
+/* Empty state */
+.reporte-incidents__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  text-align: center;
+  padding: var(--spacing-xl) var(--spacing-lg);
+  border: 1px dashed var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  background: var(--color-surface-soft);
+  color: var(--color-muted);
+}
+
+.reporte-incidents__empty p {
+  margin: 0;
+  font-size: var(--type-body-md-size);
+  line-height: var(--type-body-md-line);
+  font-family: var(--font-body);
+  font-weight: var(--type-body-md-weight);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+/* Breakpoint switch: table from md up, cards below */
+@media (min-width: 768px) {
+  .reporte-incidents__cards {
+    display: none;
+  }
+  .reporte-incidents__table-wrap {
+    display: block;
+  }
+}
+
+/* ============================================================================
+   CALENDAR — mobile-first 7-column grid that always fits the viewport.
+   Columns use minmax(0, 1fr) so they shrink; sizing scales up by breakpoint.
+   Severity colors apply to date numbers and incident counts only.
+   ============================================================================ */
+
+.reporte-cal {
+  width: 100%;
+}
+
+.reporte-cal__weekdays,
+.reporte-cal__grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: var(--design-spacing-xxs);
+}
+
+.reporte-cal__weekdays {
+  margin-bottom: var(--spacing-xs);
+  padding-block-end: var(--spacing-xs);
+  border-block-end: var(--border-width) solid var(--color-hairline-strong);
+}
+
+@media (min-width: 480px) {
+  .reporte-cal__weekdays,
+  .reporte-cal__grid {
+    gap: var(--spacing-xs);
+  }
+  .reporte-cal__weekdays {
+    margin-bottom: var(--spacing-sm);
+  }
+}
+
+.reporte-cal__weekday {
+  min-width: 0;
+  overflow: hidden;
+  text-align: center;
+  padding: var(--design-spacing-xxs) 0;
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  text-transform: uppercase;
+  letter-spacing: var(--type-caption-up-tracking);
+  color: var(--color-ink);
+  user-select: none;
+  font-family: var(--font-body);
+  line-height: var(--type-caption-up-line);
+}
+
+.reporte-cal__spacer {
+  min-width: 0;
+  min-height: 0;
+}
+
+.reporte-cal__cell {
+  min-width: 0;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--design-spacing-xxs);
+  border: var(--border-width) solid var(--color-control-border);
+  border-radius: var(--radius-control);
+  padding: var(--spacing-xs);
+  min-height: calc(var(--touch-target-min) + var(--design-spacing-xs));
+  text-align: left;
+  background: var(--color-surface-card);
+  color: var(--color-ink);
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+@media (min-width: 480px) {
+  .reporte-cal__cell {
+    padding: var(--spacing-sm);
+    min-height: calc(var(--touch-target-min) + var(--design-spacing-md));
+    gap: var(--spacing-xs);
+  }
+}
+
+@media (min-width: 768px) {
+  .reporte-cal__cell {
+    min-height: calc(var(--touch-target-min) + var(--design-spacing-lg));
+  }
+}
+
+.reporte-cal__cell--empty {
+  cursor: not-allowed;
+}
+
+.reporte-cal__cell--active {
+  background: var(--color-primary-pressed);
+  color: var(--color-on-primary);
+  border-color: var(--color-primary-border);
+}
+
+.reporte-cal__top {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--design-spacing-xxs);
+  width: 100%;
+  min-width: 0;
+  flex: 1;
+}
+
+.reporte-cal__kpi {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  width: 100%;
+  align-items: flex-start;
+  justify-content: center;
+  gap: var(--design-spacing-xxs);
+}
+
+.reporte-cal__kpi--right {
+  align-items: flex-start;
+}
+
+.reporte-cal__daynum {
+  font-family: var(--font-body);
+  font-weight: var(--type-body-strong-weight);
+  font-size: var(--type-body-strong-size);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.reporte-cal__count {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  color: inherit;
+  font-family: var(--font-body);
+  letter-spacing: var(--type-caption-up-tracking);
+  flex-wrap: wrap;
+  gap: var(--design-spacing-xxs);
+}
+
+.reporte-cal__count-label {
+  display: none;
+}
+
+.reporte-cal__cell .reporte-cal__count-badge {
+  min-block-size: 0;
+  padding: 0;
+  border-color: transparent;
+  background: transparent;
+  text-transform: none;
+  justify-content: flex-start;
+}
+
+.reporte-cal__cell--crit :is(.reporte-cal__daynum, .reporte-cal__count) {
+  color: var(--color-error-text-enhanced);
+}
+
+.reporte-cal__cell--warn :is(.reporte-cal__daynum, .reporte-cal__count) {
+  color: var(--color-warning-text-enhanced);
+}
+
+.reporte-cal__cell--ok :is(.reporte-cal__daynum, .reporte-cal__count) {
+  color: var(--color-success-text-enhanced);
+}
+
+.reporte-cal__cell--active .reporte-cal__count {
+  color: var(--color-on-primary);
+}
+
+@media (min-width: 768px) {
+  .reporte-cal__count-label {
+    display: inline;
+  }
+
+  .reporte-cal__cell .reporte-cal__count-badge {
+    min-block-size: var(--icon-size-lg);
+    padding: var(--design-spacing-xxs) var(--design-spacing-xs);
+    border-color: var(--color-hairline);
+    background: var(--color-surface-soft);
+    text-transform: uppercase;
+  }
+}
+
+.reporte-cal__empty-dash {
+  font-size: var(--type-body-md-size);
+  color: inherit;
+  font-family: var(--font-body);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.reporte-cal__cell--active .reporte-cal__empty-dash {
+  color: var(--color-on-primary);
+}
+
+.reporte-cal__holiday {
+  border-radius: var(--rounded-sm);
+  padding: var(--design-spacing-xxs);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background: var(--color-surface-card);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  letter-spacing: var(--type-caption-up-tracking);
+}
+
+.reporte-cal__cell--active .reporte-cal__holiday {
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+}
+
+/* ── Reduced motion ───────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .reporte-card,
+  .reporte-tab-trigger,
+  .reporte-cal__cell,
+  .reporte-incidents__tab {
+    transition: none;
+  }
+}

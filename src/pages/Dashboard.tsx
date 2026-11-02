@@ -3,7 +3,7 @@ import { PageHeading } from '@/components/layout/PageHeading';
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
-  ClipboardList,
+  Copy,
   SlidersHorizontal,
   UserRoundPlus as UserPlusIcon,
   UsersRound,
@@ -22,7 +22,6 @@ import { IncapacidadModal } from "@/components/ui/IncapacidadModal";
 import { PromoteEmployeeModal } from "@/components/ui/PromoteEmployeeModal";
 import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
 import {
-  transformEmployeeData,
   calculatePositionCoverage,
   calculateDepartmentCoverage,
   normalizeString,
@@ -42,9 +41,11 @@ import { useAuth } from "@/hooks/useAuth";
 import { usePositions } from "@/lib/positions";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { workforceText } from "@/pages/workforce-translations";
-import { VACANCY_ASSIGNMENTS_PATH } from "@/components/layout/navigation";
+import { buildWorkforceVacancyReport } from "@/lib/workforceVacancyReport";
+import { copyTextToClipboard } from "@/lib/whatsappReport";
+import { toast } from "@/lib/notify";
 import { getSidebarCreateAction } from "@/lib/sidebarActionNavigation";
-import type { Employee, EmployeeRaw } from "@/lib/types";
+import type { Employee } from "@/lib/types";
 import "./Dashboard.css";
 
 export function Dashboard() {
@@ -57,15 +58,12 @@ export function Dashboard() {
     employees,
     comments,
     loading,
-    upsertEmployees,
     addSingleEmployee,
     updateEmployee,
     deleteEmployee,
     updateEmployeeIncapacidad,
     promoteEmployee,
     coverBajaForPosition,
-    assignTurnos,
-    purgeAllEmployees,
   } = useSupabaseData();
 
   const { coverVacancyForEmployee } = useVacancyRequests({ loadHistory: false, autoLoad: false });
@@ -78,7 +76,6 @@ export function Dashboard() {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [showOnlyStarlite, setShowOnlyStarlite] = useState(false);
-  const [filterArea, setFilterArea] = useState("");
   const location = useLocation();
   const [departmentSelection, setDepartmentSelection] = useState<{
     area: string;
@@ -131,6 +128,15 @@ export function Dashboard() {
     [employees, comments, positions, isInitialWorkforceLoad],
   );
 
+  const handleCopyVacancyReport = async () => {
+    try {
+      await copyTextToClipboard(buildWorkforceVacancyReport(positionCoverage, language));
+      toast.success({ title: t("Reporte para WhatsApp copiado") });
+    } catch {
+      toast.error({ title: t("No se pudo copiar el reporte") });
+    }
+  };
+
   const departmentCoverage = useMemo(
     () => calculateDepartmentCoverage(positionCoverage),
     [positionCoverage],
@@ -155,9 +161,6 @@ export function Dashboard() {
   const filteredDepts = useMemo(() => {
     if (showOnlyStarlite) return [];
     let result = departmentCoverage;
-    if (filterArea) {
-      result = result.filter((d) => d.area === filterArea);
-    }
     if (hasSearchQuery) {
       result = result
         .map((dept) => ({
@@ -172,14 +175,13 @@ export function Dashboard() {
         .filter((dept) => dept.puestos.length > 0);
     }
     return result;
-  }, [departmentCoverage, filterArea, hasSearchQuery, normalizedSearchTerm, showOnlyStarlite]);
+  }, [departmentCoverage, hasSearchQuery, normalizedSearchTerm, showOnlyStarlite]);
 
   const matchingEmployees = useMemo(() => {
     if (!hasSearchQuery && !showOnlyStarlite) return [];
     return employees
       .filter(
         (e) =>
-          (!filterArea || e.area === filterArea) &&
           (!showOnlyStarlite || e.is_starlite) &&
           (!hasSearchQuery ||
             normalizeString(e.nombre).includes(normalizedSearchTerm) ||
@@ -190,12 +192,7 @@ export function Dashboard() {
               normalizeString(e.seccion).includes(normalizedSearchTerm)
             ))),
       );
-  }, [employees, filterArea, hasSearchQuery, normalizedSearchTerm, showOnlyStarlite]);
-
-  const areas = useMemo(
-    () => departmentCoverage.map((d) => d.area),
-    [departmentCoverage],
-  );
+  }, [employees, hasSearchQuery, normalizedSearchTerm, showOnlyStarlite]);
 
   // Conteos de empleados en incapacidad por área y por área+sección.
   const { incapacidadPorArea, incapacidadPorAreaSeccion } = useMemo(() => {
@@ -213,28 +210,6 @@ export function Dashboard() {
       incapacidadPorAreaSeccion: porAreaSeccion,
     };
   }, [employees]);
-
-  async function handleImport(rawData: EmployeeRaw[]) {
-    // Preserva en_incapacidad / incapacidad_hasta para empleados que ya existían,
-    // de modo que un re-import del JSON no borre el estado de incapacidad.
-    const prevByNum = new Map(employees.map((e) => [e.num_empleado, e]));
-    const transformed = rawData.map((r) => {
-      const base = transformEmployeeData(r) as Employee;
-      const prev = prevByNum.get(base.num_empleado);
-      return prev
-        ? {
-            ...base,
-            en_incapacidad: prev.en_incapacidad ?? false,
-            incapacidad_hasta: prev.incapacidad_hasta ?? null,
-          }
-        : base;
-    });
-    const incoming = transformed.filter((e) => !prevByNum.has(e.num_empleado));
-    await upsertEmployees(transformed);
-    for (const emp of incoming) {
-      await coverVacancyForEmployee(emp, { source: "json-import" });
-    }
-  }
 
   async function handleSaveEmployee(emp: Employee) {
     const result = await addSingleEmployee(emp);
@@ -381,7 +356,7 @@ export function Dashboard() {
                         aria-label={t("Filtrar por proyecto")}
                         value={showOnlyStarlite ? "starlite" : "all"}
                         options={[
-                          { value: "all", label: t("Todos los proyectos") },
+                          { value: "all", label: t("Proyectos") },
                           { value: "starlite", label: "Starlite" },
                         ]}
                         showPlaceholderOption={false}
@@ -406,11 +381,12 @@ export function Dashboard() {
                         {isAdmin && <button
                           type="button"
                           className="btn-secondary dashboard__report-btn"
-                          data-cuelume-navigate=""
-                          onClick={() => navigate(VACANCY_ASSIGNMENTS_PATH)}
-                          aria-label={t("Asignación de vacantes")}
+                          data-cuelume-tap=""
+                          onClick={() => void handleCopyVacancyReport()}
+                          aria-label={t("Reporte")}
+                          disabled={isInitialWorkforceLoad}
                         >
-                          <ClipboardList size={16} aria-hidden="true" />
+                          <Copy size={16} aria-hidden="true" />
                           <span className="dashboard__report-btn-label">
                             {t("Reporte")}
                           </span>

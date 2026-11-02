@@ -52,13 +52,11 @@ export function TurnosUpdater({ onPreview, onApply }: TurnosUpdaterProps) {
         const getKey = (obj: BajaRaw, key: string): string | undefined => {
           if (obj[key] !== undefined) return obj[key] as string;
           const variant = Object.keys(obj).find((k) => k.trim() === key);
-          return variant ? obj[variant] as string : undefined;
+          return variant ? (obj[variant] as string) : undefined;
         };
 
         const valid = arr.every(
-          (item) =>
-            getKey(item, 'Num Empleado') !== undefined &&
-            getKey(item, 'Turno') !== undefined
+          (item) => getKey(item, 'Num Empleado') !== undefined && getKey(item, 'Turno') !== undefined,
         );
 
         if (!valid) {
@@ -76,7 +74,7 @@ export function TurnosUpdater({ onPreview, onApply }: TurnosUpdaterProps) {
         setMessage(
           `${result.updated} actualizaciones disponibles${
             result.notFound > 0 ? `, ${result.notFound} no encontrados` : ''
-          }.`
+          }.`,
         );
       } catch (err) {
         setStatus('error');
@@ -112,14 +110,7 @@ export function TurnosUpdater({ onPreview, onApply }: TurnosUpdaterProps) {
 
   return (
     <div className="turnos-updater">
-      <input
-        ref={fileRef}
-        type="file"
-        accept=".json"
-        onChange={handleFile}
-        hidden
-        id="turnos-json-input"
-      />
+      <input ref={fileRef} type="file" accept=".json" onChange={handleFile} hidden id="turnos-json-input" />
       <button
         type="button"
         className="btn-secondary"
@@ -133,7 +124,7 @@ export function TurnosUpdater({ onPreview, onApply }: TurnosUpdaterProps) {
       </button>
 
       {status !== 'idle' && status !== 'preview' && (
-        <div className={`json-importer__status json-importer__status--${status}`} role="status">
+        <output className={`json-importer__status json-importer__status--${status}`}>
           {status === 'success' ? (
             <>
               <CircleCheckBig size={14} aria-hidden="true" />
@@ -145,24 +136,25 @@ export function TurnosUpdater({ onPreview, onApply }: TurnosUpdaterProps) {
               <span>{message}</span>
             </>
           )}
-        </div>
+        </output>
       )}
 
       {status === 'preview' && previewData && (
         <div className="turnos-updater__preview-modal">
-          <div className="turnos-updater__preview-backdrop" onClick={handleCancel} />
+          <button
+            type="button"
+            className="turnos-updater__preview-backdrop"
+            onClick={handleCancel}
+            aria-label="Cerrar vista previa"
+            tabIndex={-1}
+          />
           <div className="turnos-updater__preview-content">
             <header className="turnos-updater__preview-header">
               <div>
                 <h3>Preview de Actualización de Turnos</h3>
                 <p className="turnos-updater__preview-subtitle">{message}</p>
               </div>
-              <button
-                type="button"
-                className="turnos-updater__close-btn"
-                onClick={handleCancel}
-                aria-label="Cerrar"
-              >
+              <button type="button" className="turnos-updater__close-btn" onClick={handleCancel} aria-label="Cerrar">
                 <X size={20} />
               </button>
             </header>
@@ -171,24 +163,27 @@ export function TurnosUpdater({ onPreview, onApply }: TurnosUpdaterProps) {
               {previewData.preview.length === 0 ? (
                 <p className="turnos-updater__empty">No hay cambios para aplicar.</p>
               ) : (
-                <table className="turnos-updater__table data-table">
+                <table className="turnos-updater__table data-table data-table--cards">
+                  <caption className="sr-only">Vista previa de cambios de turno</caption>
                   <thead>
                     <tr>
-                      <th>Num. Empleado</th>
-                      <th>Nombre</th>
-                      <th>Turno Anterior</th>
-                      <th>Turno Nuevo</th>
+                      <th scope="col">Num. Empleado</th>
+                      <th scope="col">Nombre</th>
+                      <th scope="col">Turno Anterior</th>
+                      <th scope="col">Turno Nuevo</th>
                     </tr>
                   </thead>
                   <tbody>
                     {previewData.preview.map((item) => (
                       <tr key={item.num_empleado}>
-                        <td>{item.num_empleado}</td>
-                        <td>{item.nombre}</td>
-                        <td className="turnos-updater__turno-old">
+                        <td data-label="Num. Empleado">{item.num_empleado}</td>
+                        <th scope="row" data-label="Nombre">
+                          {item.nombre}
+                        </th>
+                        <td data-label="Turno Anterior" className="turnos-updater__turno-old">
                           {item.turno_anterior || '—'}
                         </td>
-                        <td className="turnos-updater__turno-new">
+                        <td data-label="Turno Nuevo" className="turnos-updater__turno-new">
                           {item.turno_nuevo}
                         </td>
                       </tr>
@@ -199,11 +194,7 @@ export function TurnosUpdater({ onPreview, onApply }: TurnosUpdaterProps) {
             </div>
 
             <footer className="turnos-updater__preview-footer">
-              <button
-                type="button"
-                className="btn-secondary"
-                onClick={handleCancel}
-              >
+              <button type="button" className="btn-secondary" onClick={handleCancel}>
                 Cancelar
               </button>
               <button

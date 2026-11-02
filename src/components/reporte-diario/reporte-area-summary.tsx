@@ -129,6 +129,7 @@ function DetailList({ rows }: { rows: AreaDetailRow[] }) {
       {/* Desktop: tabla */}
       <div className="reporte-incidents__table-wrap">
         <table className="reporte-incidents__table data-table">
+          <caption className="sr-only">{copy('Detalle de ausencias por empleado', 'Absences by employee')}</caption>
           <thead>
             <tr>
               <th scope="col">{copy('Empleado', 'Employee')}</th>

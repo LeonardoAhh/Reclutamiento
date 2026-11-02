@@ -19,6 +19,8 @@
 .turnos-updater__preview-backdrop {
   position: absolute;
   inset: 0;
+  padding: 0;
+  border: 0;
   background: var(--color-modal-scrim);
   backdrop-filter: blur(2px);
 }
@@ -118,10 +120,63 @@
 }
 
 /* ── Responsive ──────────────────────────────────────────────────────── */
-@media (max-width: 640px) {
+@media (width <= 640px) {
   .turnos-updater__preview-content {
     width: 95%;
     max-height: 90vh;
   }
 
+  .turnos-updater__preview-body {
+    min-width: 0;
+    padding: var(--design-spacing-sm);
+  }
+
+  .turnos-updater__table {
+    display: block;
+    overflow-wrap: anywhere;
+  }
+
+  .turnos-updater__table thead {
+    position: absolute;
+    inline-size: var(--border-width);
+    block-size: var(--border-width);
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .turnos-updater__table tbody {
+    display: grid;
+    gap: var(--design-spacing-sm);
+  }
+
+  .turnos-updater__table tbody tr {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--design-spacing-sm);
+    padding: var(--design-spacing-md);
+    border: var(--border-width) solid var(--color-hairline);
+    border-radius: var(--radius-card);
+    background: var(--color-surface-card);
+  }
+
+  .turnos-updater__table tbody :is(th, td) {
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .turnos-updater__table tbody :is(th, td)::before {
+    display: block;
+    content: attr(data-label);
+    margin-block-end: var(--design-spacing-xxs);
+    color: var(--color-muted);
+    font-family: var(--font-body);
+    font-size: var(--type-caption-up-size);
+    font-weight: var(--type-caption-up-weight);
+    line-height: var(--type-caption-up-line);
+    letter-spacing: var(--type-caption-up-tracking);
+    text-transform: uppercase;
+  }
 }

@@ -1,6 +1,8 @@
 import type { Ref } from 'react';
 import { MorphMenuIcon } from '@/components/ui/MorphMenuIcon';
+import { Tooltip } from '@/components/ui/Tooltip';
 import type { Language } from '@/contexts/LanguageContext';
+import { useIsMobile } from '@/hooks/useIsMobile';
 import './Header.css';
 
 interface HeaderProps {
@@ -22,13 +24,29 @@ export function Header({
   mobileMenuButtonRef,
   language,
 }: HeaderProps) {
+  const isMobile = useIsMobile();
   const toggleLabel = mobileMenuOpen
     ? language === 'en'
       ? 'Hide menu'
       : 'Ocultar menú'
     : language === 'en'
-      ? 'Show menu'
-      : 'Mostrar menú';
+      ? 'Sidebar'
+      : 'Barra lateral';
+  const sidebarToggle = (
+    <button
+      ref={mobileMenuButtonRef}
+      type="button"
+      className="app-header__sidebar-toggle"
+      onClick={onMobileMenuToggle}
+      data-cuelume-open={mobileMenuOpen ? undefined : ''}
+      data-cuelume-close={mobileMenuOpen ? '' : undefined}
+      aria-expanded={mobileMenuOpen}
+      aria-controls="app-sidebar"
+      aria-label={toggleLabel}
+    >
+      <MorphMenuIcon isOpen={mobileMenuOpen} size="var(--icon-size-md)" />
+    </button>
+  );
 
   return (
     <header className="app-header" id="main-header">
@@ -41,21 +59,14 @@ export function Header({
               <h1 className="app-header__fallback-title">{pageTitle}</h1>
             )}
           </div>
-          {!isDesktop && (
-            <button
-              ref={mobileMenuButtonRef}
-              type="button"
-              className="app-header__sidebar-toggle"
-              onClick={onMobileMenuToggle}
-              data-cuelume-open={mobileMenuOpen ? undefined : ''}
-              data-cuelume-close={mobileMenuOpen ? '' : undefined}
-              aria-expanded={mobileMenuOpen}
-              aria-controls="app-sidebar"
-              aria-label={toggleLabel}
-            >
-              <MorphMenuIcon isOpen={mobileMenuOpen} size="var(--icon-size-md)" />
-            </button>
-          )}
+          {!isDesktop &&
+            (isMobile ? (
+              sidebarToggle
+            ) : (
+              <Tooltip content={toggleLabel} side="bottom">
+                {sidebarToggle}
+              </Tooltip>
+            ))}
         </div>
       </div>
     </header>

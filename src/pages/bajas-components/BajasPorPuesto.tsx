@@ -12,21 +12,11 @@ interface BajasPorPuestoProps {
 
 const DEFAULT_PAGE_SIZE = 5;
 
-export function BajasPorPuesto({
-  byPuesto,
-  filterKey,
-  pageSize = DEFAULT_PAGE_SIZE,
-}: BajasPorPuestoProps) {
-  const {
-    currentPage,
-    totalPages,
-    pageItems,
-    goToPage,
-    nextPage,
-    prevPage,
-    canGoNext,
-    canGoPrev,
-  } = usePagination(byPuesto, pageSize);
+export function BajasPorPuesto({ byPuesto, filterKey, pageSize = DEFAULT_PAGE_SIZE }: BajasPorPuestoProps) {
+  const { currentPage, totalPages, pageItems, goToPage, nextPage, prevPage, canGoNext, canGoPrev } = usePagination(
+    byPuesto,
+    pageSize,
+  );
 
   // Reset to page 1 whenever filters change
   useEffect(() => {
@@ -49,7 +39,8 @@ export function BajasPorPuesto({
       ) : (
         <>
           <div className="bajas-por-puesto__table-container">
-            <table className="bajas-por-puesto__table data-table">
+            <table className="bajas-por-puesto__table data-table data-table--cards">
+              <caption className="sr-only">Bajas por puesto</caption>
               <thead>
                 <tr>
                   <th scope="col" className="bajas-por-puesto__th bajas-por-puesto__th--main">
@@ -68,31 +59,31 @@ export function BajasPorPuesto({
               </thead>
               <tbody>
                 {pageItems.map((row) => {
-                  const pct =
-                    row.bajas > 0 ? Math.round((row.cubiertas10d / row.bajas) * 100) : 0;
+                  const pct = row.bajas > 0 ? Math.round((row.cubiertas10d / row.bajas) * 100) : 0;
                   return (
                     <tr key={`${row.area}-${row.puesto}`} className="bajas-por-puesto__tr">
-                      <td className="bajas-por-puesto__td bajas-por-puesto__td--main">
+                      <th
+                        scope="row"
+                        aria-label={`${row.puesto}, ${row.area}`}
+                        className="bajas-por-puesto__td bajas-por-puesto__td--main"
+                      >
                         <div className="bajas-por-puesto__identity">
                           <span className="bajas-por-puesto__puesto">{row.puesto}</span>
                           <span className="bajas-por-puesto__area">{row.area}</span>
                         </div>
-                      </td>
-                      <td className="bajas-por-puesto__td bajas-por-puesto__td--num">
+                      </th>
+                      <td data-label="Bajas" className="bajas-por-puesto__td bajas-por-puesto__td--num">
                         <span className="bajas-por-puesto__val">{row.bajas}</span>
                       </td>
-                      <td className="bajas-por-puesto__td bajas-por-puesto__td--num">
+                      <td data-label="Ingresos" className="bajas-por-puesto__td bajas-por-puesto__td--num">
                         <span className="bajas-por-puesto__val">{row.ingresos}</span>
                       </td>
-                      <td className="bajas-por-puesto__td bajas-por-puesto__td--num">
+                      <td data-label="Cubiertas" className="bajas-por-puesto__td bajas-por-puesto__td--num">
                         {row.bajas > 0 ? (
                           <span
-                            className={`bajas-por-puesto__val ${
-                              pct === 100 ? 'bajas-por-puesto__val--success' : ''
-                            }`}
+                            className={`bajas-por-puesto__val ${pct === 100 ? 'bajas-por-puesto__val--success' : ''}`}
                           >
-                            {row.cubiertas10d}{' '}
-                            <span className="bajas-por-puesto__pct">({pct}%)</span>
+                            {row.cubiertas10d} <span className="bajas-por-puesto__pct">({pct}%)</span>
                           </span>
                         ) : (
                           <span className="bajas-por-puesto__muted">—</span>
