@@ -5,6 +5,7 @@
   --app-sidebar-width: var(--feature-navigation-rail-inline-size);
 
   min-block-size: 100dvh;
+  overflow-x: clip;
 }
 
 .app-shell[data-sidebar-collapsed='true'] {
@@ -14,7 +15,29 @@
 .app-shell__workspace {
   position: relative;
   isolation: isolate;
+  z-index: 1;
   min-inline-size: 0;
+  background: var(--workspace-canvas);
+  border-radius: var(--sidebar-corner-radius, 0);
+  transform: translateX(var(--sidebar-offset, 0));
+  touch-action: pan-y;
+  transition:
+    transform var(--transition-fast),
+    border-radius var(--transition-fast);
+}
+
+.app-shell__workspace::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border: var(--border-width) solid var(--workspace-border-color);
+  border-radius: inherit;
+  background: var(--shell-workspace-surface);
+  box-shadow: var(--workspace-shadow);
+  content: '';
+  opacity: var(--sidebar-progress, 0);
+  pointer-events: none;
+  transition: opacity var(--transition-fast);
 }
 
 .app-shell__main {
@@ -25,6 +48,42 @@
 @media (width >= 768px) {
   .app-shell__main {
     padding-block-start: var(--design-spacing-lg);
+  }
+}
+
+@media (width < 1080px) {
+  .app-shell {
+    position: fixed;
+    inset: 0;
+    block-size: 100dvh;
+    min-block-size: 0;
+    overflow: hidden;
+  }
+
+  .app-shell__workspace {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    min-block-size: 0;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .app-shell[data-sidebar-open='true'] .app-shell__workspace {
+    transition:
+      transform var(--transition-slow),
+      border-radius var(--transition-slow);
+  }
+
+  .app-shell[data-sidebar-open='true'] .app-shell__workspace::before {
+    transition: opacity var(--transition-slow);
+  }
+
+  .app-shell__main {
+    min-block-size: 0;
+    flex: 1 1 auto;
+    overflow: clip auto;
+    overscroll-behavior: contain;
   }
 }
 
@@ -50,9 +109,16 @@
     border: var(--border-width) solid var(--workspace-border-color);
     border-radius: var(--workspace-radius);
     box-shadow: var(--workspace-shadow);
+    transform: none;
 
     /* Acompaña el mismo pliegue que la barra lateral. */
-    transition: margin-inline-start var(--transition-slow);
+    transition:
+      margin-inline-start var(--transition-slow),
+      border-radius var(--transition-slow);
+  }
+
+  .app-shell__workspace::before {
+    display: none;
   }
 
   .app-shell__main {
@@ -62,6 +128,14 @@
     overscroll-behavior: contain;
     scrollbar-gutter: stable;
   }
+}
+
+[data-sidebar-dragging='true'] .app-shell__workspace {
+  transition: none;
+}
+
+[data-sidebar-dragging='true'] .app-shell__workspace::before {
+  transition: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

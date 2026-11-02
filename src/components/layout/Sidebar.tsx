@@ -1,6 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type RefObject } from 'react';
 import { useLocation } from 'react-router-dom';
-import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { MorphMenuIcon } from '@/components/ui/MorphMenuIcon';
 import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { Tooltip } from '@/components/ui/Tooltip';
@@ -12,7 +11,6 @@ import { SidebarBrand } from './SidebarBrand';
 import { SidebarGroup } from './SidebarGroup';
 import { SidebarAccountMenu } from './SidebarAccountMenu';
 import { SidebarQuickActions, type SidebarQuickActionsControls } from './SidebarQuickActions';
-import { playSound } from '@/lib/sound';
 import './Sidebar.css';
 import './SidebarNavigation.css';
 
@@ -22,6 +20,7 @@ type SidebarProps = {
   collapsed?: boolean;
   onToggleCollapsed: () => void;
   isDesktop: boolean;
+  sidebarRef: RefObject<HTMLElement | null>;
   onRestoreMobileFocus: () => void;
 };
 
@@ -31,6 +30,7 @@ export function Sidebar({
   collapsed = false,
   onToggleCollapsed,
   isDesktop,
+  sidebarRef,
   onRestoreMobileFocus,
 }: SidebarProps) {
   const { username, profile } = useAuth();
@@ -38,13 +38,29 @@ export function Sidebar({
   const { language } = useLanguage();
   const location = useLocation();
   const previousPath = useRef(location.pathname);
+  const wasMobileMenuOpen = useRef(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const [brandRevealed, setBrandRevealed] = useState(false);
+
   useEffect(() => {
     if (previousPath.current === location.pathname) return;
     previousPath.current = location.pathname;
     onCloseMobileMenu?.();
   }, [location.pathname, onCloseMobileMenu]);
+
+  useEffect(() => {
+    if (isDesktop) {
+      wasMobileMenuOpen.current = false;
+      return;
+    }
+    if (mobileMenuOpen) {
+      closeButtonRef.current?.focus();
+      wasMobileMenuOpen.current = true;
+    } else if (wasMobileMenuOpen.current) {
+      wasMobileMenuOpen.current = false;
+      onRestoreMobileFocus();
+    }
+  }, [isDesktop, mobileMenuOpen, onRestoreMobileFocus]);
 
   if (!username) return null;
   const collapseLabel = collapsed
@@ -117,47 +133,17 @@ export function Sidebar({
   return (
     <SidebarQuickActions profile={profile} members={members}>
       {(quickActions) =>
-        isDesktop ? (
-          <aside
-            className="sidebar"
-            id="app-sidebar"
-            data-testid="app-sidebar"
-            aria-label={language === 'en' ? 'Main navigation' : 'Navegación principal'}
-          >
-            {content(quickActions)}
-          </aside>
-        ) : (
-          <DialogPrimitive.Root
-            open={mobileMenuOpen}
-            onOpenChange={(open) => {
-              if (!open) onCloseMobileMenu?.();
-            }}
-          >
-            <DialogPrimitive.Portal>
-              <DialogPrimitive.Overlay className="sidebar-mobile-overlay" onPointerDown={() => playSound('close')} />
-              <DialogPrimitive.Content
-                className="sidebar"
-                id="app-sidebar"
-                data-testid="app-sidebar"
-                aria-describedby={undefined}
-                onEscapeKeyDown={() => playSound('close')}
-                onOpenAutoFocus={(event) => {
-                  event.preventDefault();
-                  closeButtonRef.current?.focus();
-                }}
-                onCloseAutoFocus={(event) => {
-                  event.preventDefault();
-                  onRestoreMobileFocus();
-                }}
-              >
-                <DialogPrimitive.Title className="sr-only">
-                  {language === 'en' ? 'Main navigation' : 'Navegación principal'}
-                </DialogPrimitive.Title>
-                {content(quickActions)}
-              </DialogPrimitive.Content>
-            </DialogPrimitive.Portal>
-          </DialogPrimitive.Root>
-        )
+        <aside
+          ref={sidebarRef}
+          className="sidebar"
+          id="app-sidebar"
+          data-testid="app-sidebar"
+          aria-label={language === 'en' ? 'Main navigation' : 'Navegación principal'}
+          aria-hidden={!isDesktop && !mobileMenuOpen}
+          inert={!isDesktop && !mobileMenuOpen}
+        >
+          {content(quickActions)}
+        </aside>
       }
     </SidebarQuickActions>
   );

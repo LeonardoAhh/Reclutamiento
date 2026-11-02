@@ -50,7 +50,7 @@ export function Header({
               data-cuelume-open={mobileMenuOpen ? undefined : ''}
               data-cuelume-close={mobileMenuOpen ? '' : undefined}
               aria-expanded={mobileMenuOpen}
-              aria-controls={mobileMenuOpen ? 'app-sidebar' : undefined}
+              aria-controls="app-sidebar"
               aria-label={toggleLabel}
             >
               <MorphMenuIcon isOpen={mobileMenuOpen} size="var(--icon-size-md)" />

@@ -6,7 +6,7 @@
   position: fixed;
   inset-block: 0;
   inset-inline-start: 0;
-  z-index: var(--layer-navigation);
+  z-index: 0;
   display: flex;
   flex-direction: column;
 
@@ -17,56 +17,6 @@
     max(var(--design-spacing-sm), var(--safe-area-right));
   color: var(--color-navigation-rail-text);
   background: var(--workspace-canvas);
-  box-shadow: var(--shadow-elevated);
-}
-
-.sidebar[data-state='open'] {
-  animation: sidebar-enter var(--transition-base) both;
-}
-
-.sidebar[data-state='closed'] {
-  animation: sidebar-exit var(--transition-base) both;
-  pointer-events: none;
-}
-
-.sidebar-mobile-overlay {
-  position: fixed;
-  inset-block: var(--safe-area-top) var(--safe-area-bottom);
-  inset-inline: 0;
-  background-color: var(--color-modal-scrim);
-  z-index: var(--layer-navigation-overlay);
-  border: 0;
-  border-radius: 0;
-  padding: 0;
-}
-
-.sidebar-mobile-overlay[data-state='open'] {
-  animation: fadeIn var(--transition-base) both;
-}
-
-.sidebar-mobile-overlay[data-state='closed'] {
-  animation: fadeOut var(--transition-base) both;
-  pointer-events: none;
-}
-
-@keyframes sidebar-enter {
-  from {
-    transform: translateX(-100%);
-  }
-
-  to {
-    transform: translateX(0);
-  }
-}
-
-@keyframes sidebar-exit {
-  from {
-    transform: translateX(0);
-  }
-
-  to {
-    transform: translateX(-100%);
-  }
 }
 
 .sidebar__top {
@@ -206,10 +156,25 @@ button.sidebar__desktop-toggle:hover {
   overscroll-behavior: contain;
 }
 
+.app-shell__drawer-scrim {
+  position: fixed;
+  z-index: 2;
+  inset-block: var(--safe-area-top) var(--safe-area-bottom);
+  inset-inline-start: var(--sidebar-offset, 0);
+  inline-size: calc(100% - var(--sidebar-offset, 0));
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  cursor: pointer;
+  touch-action: pan-y;
+}
+
 @media (width >= 1080px) {
   .sidebar {
     inset-block: 0;
     inset-inline-start: 0;
+    z-index: var(--layer-navigation);
     width: var(--app-sidebar-width);
     padding: var(--design-spacing-sm);
     padding-block-start: max(var(--design-spacing-md), var(--safe-area-top));
@@ -325,11 +290,4 @@ button.sidebar__desktop-toggle:hover {
     transition: none;
   }
 
-  .sidebar-mobile-overlay {
-    animation: none;
-  }
-
-  .sidebar[data-state] {
-    animation: none;
-  }
 }
