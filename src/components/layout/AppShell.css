@@ -69,16 +69,6 @@
     overflow: hidden;
   }
 
-  .app-shell[data-sidebar-open='true'] .app-shell__workspace {
-    transition:
-      transform var(--transition-slow),
-      border-radius var(--transition-slow);
-  }
-
-  .app-shell[data-sidebar-open='true'] .app-shell__workspace::before {
-    transition: opacity var(--transition-slow);
-  }
-
   .app-shell__main {
     min-block-size: 0;
     flex: 1 1 auto;
