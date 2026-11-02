@@ -11,12 +11,13 @@ import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { SessionNotice } from './SessionNotice';
 import { RouteLoadingFallback } from './RouteLoadingFallback';
 import { RouteErrorBoundary } from '@/components/ui/RouteErrorBoundary';
+import { DotGrid } from '@/components/ui/DotGrid';
 import { REPORT_COMPARISON_PATH, REPORT_DAY_PATTERN } from '@/components/reporte-diario/navigation';
 import { CANDIDATE_METRICS_PATH } from '@/pages/candidate-metrics/navigation';
-import { PERFORMANCE_EVALUATIONS_2027_PATH } from '@/features/performance-evaluations-2027/types';
 import { bindSoundInteractions } from '@/lib/sound';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSidebarCollapsed } from './useSidebarCollapsed';
+import './AppShell.css';
 
 const PAGE_TITLES: Readonly<Record<string, string>> = {
   [HOME_PATH]: 'Inicio',
@@ -36,7 +37,6 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { language } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
-  const restoreMenuFocusRef = useRef(false);
   const isDesktop = useMediaQuery(DESKTOP_MEDIA_QUERY);
   const { collapsed, toggleCollapsed } = useSidebarCollapsed();
   const isMobileMenuOpen = mobileMenuOpen && !isDesktop;
@@ -46,13 +46,9 @@ export function AppShell({ children }: { children: ReactNode }) {
     if (location.pathname === getConfiguracionHref('analisis')) {
       return language === 'en' ? 'Analysis' : 'Análisis';
     }
-    if (location.pathname === PERFORMANCE_EVALUATIONS_2027_PATH) {
-      return language === 'en'
-        ? '2027 Performance Evaluation Tracking'
-        : 'Seguimiento de Evaluaciones 2027';
-    }
     if (matchPath(REPORT_DAY_PATTERN, location.pathname)) return language === 'en' ? 'Day details' : 'Detalle del día';
-    if (location.pathname === REPORT_COMPARISON_PATH) return language === 'en' ? 'Monthly comparison' : 'Comparativa mensual';
+    if (location.pathname === REPORT_COMPARISON_PATH)
+      return language === 'en' ? 'Monthly comparison' : 'Comparativa mensual';
     if (location.pathname === CANDIDATE_METRICS_PATH) return language === 'en' ? 'Metrics and KPIs' : 'Métricas y KPIs';
     if (language === 'en' && location.pathname === ACCOUNT_PATH) return 'Account';
     if (language === 'en' && location.pathname === VACANCY_ASSIGNMENTS_PATH) return 'Vacancy assignments';
@@ -74,10 +70,8 @@ export function AppShell({ children }: { children: ReactNode }) {
   useEffect(() => bindSoundInteractions(document), []);
 
   const closeMobileMenu = useCallback(() => {
-    if (!mobileMenuOpen) return;
-    restoreMenuFocusRef.current = !isDesktop;
     setMobileMenuOpen(false);
-  }, [mobileMenuOpen, isDesktop]);
+  }, []);
   const toggleMobileMenu = useCallback(() => {
     if (mobileMenuOpen) closeMobileMenu();
     else setMobileMenuOpen(true);
@@ -88,25 +82,6 @@ export function AppShell({ children }: { children: ReactNode }) {
     if (isDesktop) setMobileMenuOpen(false);
   }, [isDesktop]);
 
-  useEffect(() => {
-    if (isMobileMenuOpen || !restoreMenuFocusRef.current) return;
-    restoreMenuFocusRef.current = false;
-    mobileMenuButtonRef.current?.focus();
-  }, [isMobileMenuOpen]);
-
-  // Cerrar menú móvil con Escape
-  useEffect(() => {
-    if (!isMobileMenuOpen) return;
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key !== 'Escape' || !(e.target instanceof Node)) return;
-      if (document.getElementById('app-sidebar')?.contains(e.target)) {
-        closeMobileMenu();
-      }
-    };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isMobileMenuOpen, closeMobileMenu]);
-
   return (
     <div className="app-shell" data-sidebar-collapsed={collapsed}>
       <SessionNotice />
@@ -115,19 +90,11 @@ export function AppShell({ children }: { children: ReactNode }) {
         onCloseMobileMenu={closeMobileMenu}
         collapsed={isDesktop && collapsed}
         onToggleCollapsed={toggleCollapsed}
+        isDesktop={isDesktop}
+        onRestoreMobileFocus={() => mobileMenuButtonRef.current?.focus()}
       />
-      {isMobileMenuOpen && (
-        <button
-          type="button"
-          className="sidebar-mobile-overlay"
-          onClick={closeMobileMenu}
-          data-cuelume-close=""
-          aria-label={language === 'en' ? 'Close menu' : 'Cerrar menú'}
-          tabIndex={-1}
-        />
-      )}
-
-      <div className="app-shell__workspace" inert={isMobileMenuOpen}>
+      <div className="app-shell__workspace">
+        <DotGrid />
         <Header
           pageTitle={pageTitle}
           isHome={location.pathname === HOME_PATH}
@@ -140,9 +107,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className="app-shell__main">
           {/* La carga de código de una página no desmonta el shell ni muestra el splash. */}
           <RouteErrorBoundary key={location.pathname}>
-            <Suspense fallback={<RouteLoadingFallback />}>
-              {children}
-            </Suspense>
+            <Suspense fallback={<RouteLoadingFallback />}>{children}</Suspense>
           </RouteErrorBoundary>
         </div>
       </div>

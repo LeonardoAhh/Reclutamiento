@@ -1,0 +1,13 @@
+.dot-grid {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border-radius: inherit;
+  background-image: radial-gradient(
+    circle,
+    var(--color-workspace-dot) var(--workspace-dot-size),
+    transparent var(--workspace-dot-size)
+  );
+  background-size: var(--workspace-dot-spacing) var(--workspace-dot-spacing);
+  pointer-events: none;
+}

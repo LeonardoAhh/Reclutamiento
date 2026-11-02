@@ -3,6 +3,7 @@
 
 .login {
   position: relative;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
   min-block-size: 100vh;
@@ -34,16 +35,23 @@
   .login {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--design-spacing-sm);
+    gap: 0;
     max-inline-size: none;
     padding: var(--design-spacing-sm);
+    border: var(--border-width) solid var(--workspace-border-color);
+    border-radius: var(--workspace-radius);
+    background: var(--shell-workspace-surface);
+    box-shadow: var(--workspace-shadow);
   }
 
   .login__form-panel {
     grid-column: 2;
     grid-row: 1;
-    background: var(--shell-workspace-surface);
-    border-radius: var(--workspace-radius);
+  }
+
+  .login__form-panel,
+  .login-story {
+    padding: var(--design-spacing-3xl);
   }
 
   .login__card {
@@ -77,6 +85,8 @@
 .login-story__copy {
   display: grid;
   gap: var(--design-spacing-md);
+  inline-size: 100%;
+  max-inline-size: var(--auth-form-max-inline-size);
   text-align: center;
   overflow-wrap: anywhere;
 }
@@ -99,10 +109,6 @@
     justify-content: center;
     align-items: center;
     gap: var(--design-spacing-lg);
-    padding: var(--design-spacing-3xl);
-    border: var(--border-width) solid var(--workspace-border-color);
-    border-radius: var(--workspace-radius);
-    background: var(--color-canvas-soft);
   }
 }
 
@@ -143,31 +149,6 @@
   letter-spacing: var(--type-body-md-tracking);
   text-align: start;
   overflow-wrap: anywhere;
-}
-
-.login__brand {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--design-spacing-xs);
-  color: var(--color-ink);
-  text-align: center;
-}
-
-.login__brand-icon {
-  flex: 0 0 var(--design-spacing-3xl);
-  inline-size: var(--design-spacing-3xl);
-  block-size: var(--design-spacing-3xl);
-}
-
-.login__brand-name {
-  min-inline-size: 0;
-  overflow-wrap: anywhere;
-  font-family: var(--font-body);
-  font-size: var(--type-body-strong-size);
-  font-weight: var(--type-body-strong-weight);
-  line-height: var(--type-body-strong-line);
-  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .login__title {

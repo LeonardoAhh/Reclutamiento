@@ -83,7 +83,6 @@ export function MotivosBajaRecords({ bajas, year, month, exitType }: MotivosBaja
             canGoPrev={canGoPrev}
             canGoNext={canGoNext}
             ariaLabel={copy.pagination}
-            sticky
           />
         </div>
       )}

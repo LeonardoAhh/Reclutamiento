@@ -1,0 +1,4 @@
+{
+  "project": ["src/**/*.{ts,tsx}", "dev-tools/**/*.ts"],
+  "ignore": ["!src/components/layout/**"]
+}

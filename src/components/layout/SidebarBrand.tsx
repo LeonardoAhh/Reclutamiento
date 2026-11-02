@@ -2,15 +2,16 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { fadeUp } from '@/lib/motion';
 import { BrandMarkPath } from '@/components/ui/BrandMark';
 
-export function SidebarBrand() {
+export function SidebarBrand({ animate = true, onReveal }: { animate?: boolean; onReveal?: () => void }) {
   const reduceMotion = useReducedMotion();
   return (
     <div className="sidebar__brand">
       <motion.span
         className="sidebar__brand-mark"
         variants={fadeUp}
-        initial={reduceMotion ? false : 'hidden'}
+        initial={reduceMotion || !animate ? false : 'hidden'}
         animate="show"
+        onAnimationComplete={onReveal}
       >
         <svg
           viewBox="0 0 1800 1800"

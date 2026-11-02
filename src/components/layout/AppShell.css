@@ -1,0 +1,75 @@
+/* App shell: layout sidebar + contenido.
+   Fuente única de verdad para los anchos del sidebar (los consume
+   .sidebar por herencia de custom properties). */
+.app-shell {
+  --app-sidebar-width: var(--feature-navigation-rail-inline-size);
+
+  min-block-size: 100dvh;
+}
+
+.app-shell[data-sidebar-collapsed='true'] {
+  --app-sidebar-width: calc(var(--touch-target-min) + var(--design-spacing-lg));
+}
+
+.app-shell__workspace {
+  position: relative;
+  isolation: isolate;
+  min-inline-size: 0;
+}
+
+.app-shell__main {
+  min-inline-size: 0;
+  padding-block-start: var(--design-spacing-md);
+}
+
+@media (width >= 768px) {
+  .app-shell__main {
+    padding-block-start: var(--design-spacing-lg);
+  }
+}
+
+@media (width >= 1080px) {
+  .app-shell {
+    block-size: 100dvh;
+    padding-block: var(--design-spacing-sm);
+    padding-inline-end: max(var(--design-spacing-sm), var(--safe-area-right));
+    overflow: hidden;
+    background: var(--shell-floor);
+
+    --app-sidebar-inset-inline-start: max(var(--design-spacing-sm), var(--safe-area-left));
+  }
+
+  .app-shell__workspace {
+    --workspace-surface: var(--shell-workspace-surface);
+
+    display: flex;
+    block-size: 100%;
+    min-block-size: 0;
+    flex-direction: column;
+    margin-inline-start: calc(
+      var(--app-sidebar-width) + var(--app-sidebar-inset-inline-start) + var(--design-spacing-sm)
+    );
+    overflow: hidden;
+    background: var(--workspace-surface);
+    border: var(--border-width) solid var(--workspace-border-color);
+    border-radius: var(--workspace-radius);
+    box-shadow: var(--workspace-shadow);
+
+    /* Acompaña el mismo pliegue que la barra lateral. */
+    transition: margin-inline-start var(--transition-slow);
+  }
+
+  .app-shell__main {
+    min-block-size: 0;
+    flex: 1 1 auto;
+    overflow: clip auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-shell__workspace {
+    transition: none;
+  }
+}

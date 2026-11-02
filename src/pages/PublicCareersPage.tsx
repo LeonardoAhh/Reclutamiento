@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react';
-import { ArrowRight, BriefcaseBusiness, Building2, CheckCircle2, Globe, MapPin, Search, Sparkles } from 'lucide-react';
+import { ArrowRight, BriefcaseBusiness, Building2, Globe, MapPin, Search, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguage, type Language } from '@/contexts/LanguageContext';
 import { ONBOARDING_DOCUMENT_CONFIG } from '@/lib/constants';
+import { Badge } from '@/components/ui/Badge';
 import './PublicCareersPage.css';
 
 const companyName = ONBOARDING_DOCUMENT_CONFIG.companyName;
@@ -138,20 +139,26 @@ const copy: Record<Language, PublicCopy> = {
     ],
     valuesTitle: 'Áreas de operación',
     values: [
-      { title: 'Producción y calidad', description: 'Procesos de inyección, control de calidad y cumplimiento con estándares operativos.' },
-      { title: 'Almacén y logística', description: 'Movimientos de material, inventario y flujo interno para sostener la operación.' },
-      { title: 'Mantenimiento y seguridad', description: 'Mantenimiento preventivo, continuidad de equipos y condiciones seguras en la planta.' },
+      {
+        title: 'Producción y calidad',
+        description: 'Procesos de inyección, control de calidad y cumplimiento con estándares operativos.',
+      },
+      {
+        title: 'Almacén y logística',
+        description: 'Movimientos de material, inventario y flujo interno para sostener la operación.',
+      },
+      {
+        title: 'Mantenimiento y seguridad',
+        description: 'Mantenimiento preventivo, continuidad de equipos y condiciones seguras en la planta.',
+      },
     ],
     cultureTitle: 'Operación industrial',
     cultureDescription:
       'La operación de Viñoplastic en Santa Rosa Jáuregui está enfocada en producción, control de calidad, orden y continuidad de procesos.',
-    cultureItems: [
-      'Producción y control de procesos',
-      'Calidad en cada etapa',
-      'Seguridad y mejora continua',
-    ],
+    cultureItems: ['Producción y control de procesos', 'Calidad en cada etapa', 'Seguridad y mejora continua'],
     jobsTitle: 'Vacantes abiertas',
-    jobsDescription: 'Consulta las posiciones disponibles en la planta de Santa Rosa Jáuregui y encuentra la oportunidad que mejor se ajuste a tu perfil.',
+    jobsDescription:
+      'Consulta las posiciones disponibles en la planta de Santa Rosa Jáuregui y encuentra la oportunidad que mejor se ajuste a tu perfil.',
     searchPlaceholder: 'Buscar por puesto, área o palabra clave',
     allDepartments: 'Todas',
     noResults: 'No encontramos vacantes con ese criterio. Intenta otra búsqueda o cambia el filtro.',
@@ -188,20 +195,26 @@ const copy: Record<Language, PublicCopy> = {
     ],
     valuesTitle: 'Operating areas',
     values: [
-      { title: 'Production and quality', description: 'Injection processes, quality control, and compliance with operational standards.' },
-      { title: 'Warehouse and logistics', description: 'Material movement, inventory, and internal flow to support operations.' },
-      { title: 'Maintenance and safety', description: 'Preventive maintenance, equipment continuity, and safe plant conditions.' },
+      {
+        title: 'Production and quality',
+        description: 'Injection processes, quality control, and compliance with operational standards.',
+      },
+      {
+        title: 'Warehouse and logistics',
+        description: 'Material movement, inventory, and internal flow to support operations.',
+      },
+      {
+        title: 'Maintenance and safety',
+        description: 'Preventive maintenance, equipment continuity, and safe plant conditions.',
+      },
     ],
     cultureTitle: 'Industrial operation',
     cultureDescription:
       'The Viñoplastic operation in Santa Rosa Jáuregui is focused on production, quality control, order, and process continuity.',
-    cultureItems: [
-      'Production and process control',
-      'Quality at every stage',
-      'Safety and continuous improvement',
-    ],
+    cultureItems: ['Production and process control', 'Quality at every stage', 'Safety and continuous improvement'],
     jobsTitle: 'Open positions',
-    jobsDescription: 'Review current openings at the Santa Rosa Jáuregui plant and find the role that best matches your profile.',
+    jobsDescription:
+      'Review current openings at the Santa Rosa Jáuregui plant and find the role that best matches your profile.',
     searchPlaceholder: 'Search by role, area, or keyword',
     allDepartments: 'All',
     noResults: 'We did not find any roles matching that criteria. Try another search or change the filters.',
@@ -295,7 +308,6 @@ export function PublicLandingPage() {
               </div>
             </div>
           </section>
-
         </main>
       </div>
     </div>
@@ -312,16 +324,19 @@ export function PublicJobsPage() {
     const normalizedQuery = query.trim().toLowerCase();
 
     return jobs.filter((job) => {
-      const matchesDepartment = selectedDepartment === 'All'
-        || job.department.en === selectedDepartment
-        || job.department.es === selectedDepartment;
+      const matchesDepartment =
+        selectedDepartment === 'All' ||
+        job.department.en === selectedDepartment ||
+        job.department.es === selectedDepartment;
       const haystack = [
         job.title[language],
         job.department[language],
         job.location[language],
         job.modality[language],
         ...job.tags,
-      ].join(' ').toLowerCase();
+      ]
+        .join(' ')
+        .toLowerCase();
       const matchesQuery = !normalizedQuery || haystack.includes(normalizedQuery);
       return matchesDepartment && matchesQuery;
     });
@@ -357,15 +372,14 @@ export function PublicJobsPage() {
                 aria-label={t.searchPlaceholder}
               />
             </label>
-            <div className="public-careers__chip-row" role="tablist" aria-label="Departments filters">
+            <div className="public-careers__chip-row" role="group" aria-label="Departments filters">
               {departmentFilterValues.map((option) => {
                 const isActive = selectedDepartment === option.key;
                 return (
                   <button
                     key={option.key}
                     type="button"
-                    role="tab"
-                    aria-selected={isActive}
+                    aria-pressed={isActive}
                     className={isActive ? 'public-careers__chip is-active' : 'public-careers__chip'}
                     onClick={() => setSelectedDepartment(option.key)}
                   >
@@ -405,7 +419,11 @@ export function PublicJobsPage() {
                   </div>
                   <ul className="public-careers__tag-list" aria-label={`Tags for ${job.title[language]}`}>
                     {job.tags.map((tag) => (
-                      <li key={tag}>{tag}</li>
+                      <li key={tag}>
+                        <Badge size="compact" variant="neutral">
+                          {tag}
+                        </Badge>
+                      </li>
                     ))}
                   </ul>
                   <div className="public-careers__job-actions">

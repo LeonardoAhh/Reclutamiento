@@ -1,50 +1,96 @@
-import { Briefcase, CalendarClock, CircleCheckBig, HeartPulse, LifeBuoy, Star, UserRound, UsersRound } from 'lucide-react';
+import { CalendarClock, HeartPulse, LifeBuoy, Star, UsersRound, type LucideIcon } from 'lucide-react';
 import { Tooltip } from './Tooltip';
 import './Badge.css';
 
+export type BadgeVariant =
+  | 'neutral'
+  | 'neutral-solid'
+  | 'warning'
+  | 'success'
+  | 'error'
+  | 'error-solid'
+  | 'default'
+  | 'coral'
+  | 'teal'
+  | 'amber';
+
+export type BadgeSize = 'regular' | 'compact' | 'icon';
+
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   children: React.ReactNode;
-  variant?: 'default' | 'neutral-solid' | 'coral' | 'teal' | 'amber' | 'success' | 'error' | 'error-solid';
-  className?: string;
+  variant?: BadgeVariant;
+  size?: BadgeSize;
 }
 
-export function Badge({ children, variant = 'default', className = '', ...props }: BadgeProps) {
+type BadgeTone = 'neutral' | 'neutral-solid' | 'warning' | 'success' | 'error' | 'error-solid';
+const VARIANT_TONE: Record<BadgeVariant, BadgeTone> = {
+  neutral: 'neutral',
+  'neutral-solid': 'neutral-solid',
+  warning: 'warning',
+  success: 'success',
+  error: 'error',
+  'error-solid': 'error-solid',
+  default: 'neutral',
+  coral: 'neutral',
+  teal: 'neutral',
+  amber: 'warning',
+};
+
+export function Badge({ children, variant = 'default', size = 'regular', className = '', ...props }: BadgeProps) {
   return (
-    <span className={`badge badge--${variant} ${className}`.trim()} {...props}>
+    <span className={`badge badge--${VARIANT_TONE[variant]} badge--${size} ${className}`.trim()} {...props}>
       {children}
     </span>
   );
 }
 
-export const StarliteBadge = ({ compact = false }: { compact?: boolean } = {}) => {
-  const Icon = Star;
-  const label = "Starlite";
+type StatusIconKind = 'starlite' | 'plantilla' | 'backup' | 'incapacidad' | 'proximo-ingreso';
 
-  if (compact) {
-    return (
-      <Tooltip content={label}>
-        <span className="status-badge status-badge--starlite status-badge--icon-only" aria-label={label} role="img">
-          <Icon size={14} className="status-badge__icon" aria-hidden="true" />
-        </span>
-      </Tooltip>
-    );
-  }
+interface StatusIconBadgeProps {
+  kind: StatusIconKind;
+  label: string;
+  icon: LucideIcon;
+  iconOnly?: boolean;
+  className?: string;
+  variant?: BadgeVariant;
+}
 
-  return (
-    <span className="status-badge status-badge--starlite">
-      <Icon size={14} className="status-badge__icon" aria-hidden="true" />
-      <span>{label}</span>
-    </span>
+function StatusIconBadge({
+  kind,
+  label,
+  icon: Icon,
+  iconOnly = false,
+  className = '',
+  variant = 'neutral',
+}: StatusIconBadgeProps) {
+  const badge = (
+    <Badge
+      variant={variant}
+      size={iconOnly ? 'icon' : 'compact'}
+      className={`status-badge status-badge--${kind} ${className}`.trim()}
+      role={iconOnly ? 'img' : undefined}
+      aria-label={iconOnly ? label : undefined}
+    >
+      <Icon className="status-badge__icon" aria-hidden="true" />
+      {!iconOnly && <span>{label}</span>}
+    </Badge>
   );
-};
+  return iconOnly ? <Tooltip content={label}>{badge}</Tooltip> : badge;
+}
 
-export const VinoplasticBadge = () => (
-  <Tooltip content="ViñoPlastic">
-    <span className="project-badge project-badge--vinoplastic">
-      ViñoPlastic
-    </span>
-  </Tooltip>
-);
+export function StarliteBadge({ compact = false }: { compact?: boolean } = {}) {
+  return <StatusIconBadge kind="starlite" label="Starlite" icon={Star} iconOnly={compact} />;
+}
+
+export function VinoplasticBadge() {
+  return (
+    <Tooltip content="ViñoPlastic">
+      <Badge variant="neutral" size="compact" className="project-badge">
+        ViñoPlastic
+      </Badge>
+    </Tooltip>
+  );
+}
 
 interface RoleBadgeProps {
   role?: string;
@@ -52,73 +98,37 @@ interface RoleBadgeProps {
 }
 
 export function RoleBadge({ role = 'default', label }: RoleBadgeProps) {
-  const displayLabel = label || role;
-  
-  let variant: 'default' | 'coral' | 'teal' | 'amber' | 'success' | 'error' = 'default';
-  const roleLower = role.toLowerCase();
-  
-  if (roleLower === 'admin' || roleLower === 'administrador') {
-    variant = 'coral';
-  } else if (roleLower === 'reclutador' || roleLower === 'reclutadora') {
-    variant = 'teal';
-  }
-
-  return <Badge variant={variant}>{displayLabel}</Badge>;
+  const normalizedRole = role.toLowerCase();
+  const badgeRole =
+    normalizedRole === 'admin' || normalizedRole === 'administrador'
+      ? 'admin'
+      : normalizedRole === 'reclutador' || normalizedRole === 'reclutadora'
+        ? 'reclutador'
+        : 'default';
+  return (
+    <Badge variant="neutral" size="compact" className="role-badge" data-role={badgeRole}>
+      <span className="role-badge__dot" aria-hidden="true" />
+      {label || role}
+    </Badge>
+  );
 }
 
 export { ReclutadorBadge, getReclutadorMeta } from './ReclutadorBadge';
 export type { ReclutadorBadgeProps } from './ReclutadorBadge';
 
-// ─── Status Badges (Plantilla, Backup) ───
-
 interface StatusBadgeProps {
-  /** Variación minimalista solo con el icono y tooltip */
   iconOnly?: boolean;
   className?: string;
 }
 
 export function PlantillaBadge({ iconOnly = false, className = '' }: StatusBadgeProps) {
-  const Icon = UsersRound;
-  const label = "Plantilla";
-
-  if (iconOnly) {
-    return (
-      <Tooltip content={label}>
-        <span className={`status-badge status-badge--plantilla status-badge--icon-only ${className}`.trim()} aria-label={label} role="img">
-          <Icon size={14} className="status-badge__icon" aria-hidden="true" />
-        </span>
-      </Tooltip>
-    );
-  }
-
   return (
-    <span className={`status-badge status-badge--plantilla ${className}`.trim()}>
-      <Icon size={14} className="status-badge__icon" aria-hidden="true" />
-      <span>{label}</span>
-    </span>
+    <StatusIconBadge kind="plantilla" label="Plantilla" icon={UsersRound} iconOnly={iconOnly} className={className} />
   );
 }
 
 export function BackupBadge({ iconOnly = false, className = '' }: StatusBadgeProps) {
-  const Icon = LifeBuoy;
-  const label = "Backup";
-
-  if (iconOnly) {
-    return (
-      <Tooltip content={label}>
-        <span className={`status-badge status-badge--backup status-badge--icon-only ${className}`.trim()} aria-label={label} role="img">
-          <Icon size={14} className="status-badge__icon" aria-hidden="true" />
-        </span>
-      </Tooltip>
-    );
-  }
-
-  return (
-    <span className={`status-badge status-badge--backup ${className}`.trim()}>
-      <Icon size={14} className="status-badge__icon" aria-hidden="true" />
-      <span>{label}</span>
-    </span>
-  );
+  return <StatusIconBadge kind="backup" label="Backup" icon={LifeBuoy} iconOnly={iconOnly} className={className} />;
 }
 
 export interface AreaStatusBadgeProps {
@@ -129,53 +139,41 @@ export interface AreaStatusBadgeProps {
 export function AreaStatusBadge({ type, count }: AreaStatusBadgeProps) {
   const label = type === 'proceso' ? 'Proceso' : type === 'ingreso' ? 'Ingreso' : 'Sin proceso';
   return (
-    <span className={`status-badge status-badge--${type}`}>
+    <Badge
+      variant={type === 'sin_proceso' ? 'error' : 'warning'}
+      size="compact"
+      className={`status-badge status-badge--${type === 'sin_proceso' ? 'sin-proceso' : type}`}
+    >
       <span className="status-badge__dot" aria-hidden="true" />
-      <span>{label}{count !== undefined && count > 0 ? ` (${count})` : ''}</span>
-    </span>
+      <span>
+        {label}
+        {count !== undefined && count > 0 ? ` (${count})` : ''}
+      </span>
+    </Badge>
   );
 }
 
 export function IncapacidadBadge({ iconOnly = false, className = '' }: StatusBadgeProps) {
-  const Icon = HeartPulse;
-  const label = "Incapacidad";
-
-  if (iconOnly) {
-    return (
-      <Tooltip content={label}>
-        <span className={`status-badge status-badge--incapacidad status-badge--icon-only ${className}`.trim()} aria-label={label} role="img">
-          <Icon size={14} className="status-badge__icon" aria-hidden="true" />
-        </span>
-      </Tooltip>
-    );
-  }
-
   return (
-    <span className={`status-badge status-badge--incapacidad ${className}`.trim()}>
-      <Icon size={14} className="status-badge__icon" aria-hidden="true" />
-      <span>{label}</span>
-    </span>
+    <StatusIconBadge
+      kind="incapacidad"
+      label="Incapacidad"
+      icon={HeartPulse}
+      iconOnly={iconOnly}
+      className={className}
+      variant="warning"
+    />
   );
 }
 
 export function ProximoIngresoBadge({ iconOnly = false, className = '' }: StatusBadgeProps) {
-  const Icon = CalendarClock;
-  const label = "Próximo ingreso";
-
-  if (iconOnly) {
-    return (
-      <Tooltip content={label}>
-        <span className={`status-badge status-badge--proximo-ingreso status-badge--icon-only ${className}`.trim()} aria-label={label} role="img">
-          <Icon size={14} className="status-badge__icon" aria-hidden="true" />
-        </span>
-      </Tooltip>
-    );
-  }
-
   return (
-    <span className={`status-badge status-badge--proximo-ingreso ${className}`.trim()}>
-      <Icon size={14} className="status-badge__icon" aria-hidden="true" />
-      <span>{label}</span>
-    </span>
+    <StatusIconBadge
+      kind="proximo-ingreso"
+      label="Próximo ingreso"
+      icon={CalendarClock}
+      iconOnly={iconOnly}
+      className={className}
+    />
   );
 }

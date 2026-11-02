@@ -97,27 +97,3 @@
   line-height: var(--type-body-strong-line);
   letter-spacing: var(--type-body-strong-tracking);
 }
-
-.candidates-cited-today-modal .expandable-section__badge {
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-}
-
-.candidates-cited-today-modal .badge {
-  font-family: var(--font-body);
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  line-height: var(--type-caption-up-line);
-  letter-spacing: var(--type-caption-up-tracking);
-}
-
-.candidates-cited-today-modal .reclutador-badge {
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-}

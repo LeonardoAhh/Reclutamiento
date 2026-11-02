@@ -1,13 +1,9 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { BadgeAlert, Building2, CalendarX2, UsersRound } from 'lucide-react';
 import { isIncidence } from "./helpers";
 import { useReportLocale } from "./useReportLocale";
 import type { ReporteRow } from "./types";
 import { KpiCard, type KpiTone } from "@/components/ui/KpiCard";
-import { Modal } from "@/components/ui/Modal";
-import { useIsMobile } from "@/hooks/useIsMobile";
-import { toNaturalCase } from "@/lib/utils";
-import { playSound } from "@/lib/sound";
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
@@ -103,31 +99,13 @@ export default function ReporteKpiDashboard({
     selectedRows,
     dayHeaders,
     currentMonth,
-}: ReporteKpiDashboardProps) {
+} : ReporteKpiDashboardProps) {
     const { en, copy, month } = useReportLocale();
-    const isMobile = useIsMobile();
-    const [isWorstAreaModalOpen, setIsWorstAreaModalOpen] = useState(false);
 
     const kpis = useMemo(
         () => computeKpis(selectedRows, dayHeaders, currentMonth),
         [selectedRows, dayHeaders, currentMonth]
     );
-
-    const worstAreaEmployees = useMemo(() => {
-        if (!kpis?.worstArea || !isWorstAreaModalOpen) return [];
-        
-        const areaRows = selectedRows.filter(r => r.area === kpis.worstArea);
-        const withIncidents = areaRows.map(row => {
-            let incCount = 0;
-            for (const day of dayHeaders) {
-                if (isIncidence(row.days[day])) incCount++;
-            }
-            return { ...row, incCount };
-        }).filter(r => r.incCount > 0)
-        .sort((a, b) => b.incCount - a.incCount);
-        
-        return withIncidents;
-    }, [kpis?.worstArea, selectedRows, dayHeaders, isWorstAreaModalOpen]);
 
     if (!kpis) return null;
 
@@ -161,78 +139,14 @@ export default function ReporteKpiDashboard({
             valueSize: "compact" as const,
             icon: <Building2 size={18} />,
             tone: getTone(kpis.worstAreaCount, { warning: 1, destructive: 11 }),
-            onClick: kpis.worstArea ? () => { playSound('open'); setIsWorstAreaModalOpen(true); } : undefined,
         },
     ];
 
-    const worstAreaLabel = toNaturalCase(kpis.worstArea).replace(
-        /\b([1-4])(ER|RA|RO|DO|DA|TO|TA|O)\b/gi,
-        (_, number: string, suffix: string) =>
-            `${number}${suffix.toLocaleLowerCase("es-MX")}`,
-    );
-
     return (
-        <>
-            <div className="reporte-kpi__grid">
-                {cards.map((card) => (
-                    <KpiCard key={card.label} {...card} />
-                ))}
-            </div>
-
-            <Modal
-                className="report-dialog"
-                isOpen={isWorstAreaModalOpen}
-                onClose={() => { playSound('close'); setIsWorstAreaModalOpen(false); }}
-                title={`${copy("Incidencias", "Incidents")} · ${worstAreaLabel}`}
-                size="sm"
-                presentation={isMobile ? "modal" : "sheet"}
-            >
-                <div className="top-emp-modal">
-                    {worstAreaEmployees.length > 0 ? (
-                        <ol className="top-emp-list" aria-label={`${copy("Empleados con incidencias en", "Employees with incidents in")} ${kpis.worstArea}`}>
-                            {worstAreaEmployees.map((emp, idx) => {
-                                const maxTotal = worstAreaEmployees[0].incCount;
-                                const barPct = Math.round((emp.incCount / maxTotal) * 100);
-                                return (
-                                    <li key={emp.numero_empleado} className="top-emp-item">
-                                        <div className="top-emp-row" style={{ cursor: 'default' }}>
-                                            <span
-                                                className={`top-emp-rank${idx === 0 ? " top-emp-rank--first" : ""}`}
-                                                aria-label={`${copy("Posición", "Rank")} ${idx + 1}`}
-                                            >
-                                                {idx + 1}
-                                            </span>
-                                            <span className="top-emp-row__info">
-                                                <span className="top-emp-row__name">{emp.nombre}</span>
-                                                <span className="top-emp-row__meta">
-                                                    #{emp.numero_empleado}
-                                                    {emp.puesto && (
-                                                        <>
-                                                            <span aria-hidden="true"> · </span>
-                                                            {emp.puesto}
-                                                        </>
-                                                    )}
-                                                </span>
-                                            </span>
-                                            <span className="top-emp-row__right">
-                                                <span className="top-emp-row__bar-wrap">
-                                                    <span
-                                                        className="top-emp-row__bar"
-                                                        style={{ width: `${barPct}%` }}
-                                                    />
-                                                </span>
-                                                <span className="top-emp-row__total">{emp.incCount}</span>
-                                            </span>
-                                        </div>
-                                    </li>
-                                );
-                            })}
-                        </ol>
-                    ) : (
-                        <p className="top-emp-drill-empty">{copy("No hay incidencias registradas para esta área.", "No incidents recorded for this area.")}</p>
-                    )}
-                </div>
-            </Modal>
-        </>
+        <div className="reporte-kpi__grid">
+            {cards.map((card) => (
+                <KpiCard key={card.label} {...card} />
+            ))}
+        </div>
     );
 }

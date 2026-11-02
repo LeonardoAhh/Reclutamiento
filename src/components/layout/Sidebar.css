@@ -7,36 +7,26 @@
   inset-block: 0;
   inset-inline-start: 0;
   z-index: var(--layer-navigation);
-
   display: flex;
-  transform: translateX(-100%);
   flex-direction: column;
 
   /* Ancho compartido con .app-shell (fuente única de verdad, ver abajo). */
   width: min(var(--feature-navigation-rail-inline-size), 100%);
-  padding-block-start: var(--safe-area-top);
-  padding-block-end: calc(var(--design-spacing-sm) + var(--safe-area-bottom));
-  padding-inline: max(var(--design-spacing-sm), var(--safe-area-left)) max(var(--design-spacing-sm), var(--safe-area-right));
-
+  padding-block: var(--safe-area-top) calc(var(--design-spacing-sm) + var(--safe-area-bottom));
+  padding-inline: max(var(--design-spacing-sm), var(--safe-area-left))
+    max(var(--design-spacing-sm), var(--safe-area-right));
   color: var(--color-navigation-rail-text);
   background: var(--workspace-canvas);
-  /* visibility se retrasa solo al cerrar: la hoja termina de deslizarse
-     antes de salir del árbol de accesibilidad. */
-  transition:
-    transform var(--transition-base),
-    visibility 0s linear var(--transition-base);
-  visibility: hidden;
-  pointer-events: none;
   box-shadow: var(--shadow-elevated);
 }
 
-.sidebar[data-mobile-open="true"] {
-  transform: translateX(0);
-  visibility: visible;
-  pointer-events: auto;
-  transition:
-    transform var(--transition-base),
-    visibility 0s linear 0s;
+.sidebar[data-state='open'] {
+  animation: sidebar-enter var(--transition-base) both;
+}
+
+.sidebar[data-state='closed'] {
+  animation: sidebar-exit var(--transition-base) both;
+  pointer-events: none;
 }
 
 .sidebar-mobile-overlay {
@@ -44,10 +34,38 @@
   inset: 0;
   background-color: var(--color-modal-scrim);
   z-index: var(--layer-navigation-overlay);
-  animation: fadeIn var(--transition-base) forwards;
   border: 0;
   border-radius: 0;
   padding: 0;
+}
+
+.sidebar-mobile-overlay[data-state='open'] {
+  animation: fadeIn var(--transition-base) both;
+}
+
+.sidebar-mobile-overlay[data-state='closed'] {
+  animation: fadeOut var(--transition-base) both;
+  pointer-events: none;
+}
+
+@keyframes sidebar-enter {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes sidebar-exit {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-100%);
+  }
 }
 
 .sidebar__top {
@@ -62,7 +80,7 @@
   flex-shrink: 0;
 }
 
-/* El símbolo y el puesto del usuario comparten una superficie delimitada. */
+/* La marca comparte la fila superior con el control de menú o pliegue. */
 .sidebar__brand {
   grid-column: 1;
   grid-row: 1;
@@ -178,333 +196,27 @@ button.sidebar__desktop-toggle:hover {
   flex: 1;
   min-inline-size: 0;
   min-height: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden auto;
   scrollbar-width: thin;
   border-block-start: var(--border-width) solid var(--color-hairline);
+
   /* Reserva el anillo de foco dentro de la región desplazable. */
   padding: var(--design-spacing-sm) var(--design-spacing-xxs) var(--design-spacing-xxs);
   overscroll-behavior: contain;
 }
 
-.sidebar__footer {
-  display: block;
-  flex: 0 0 auto;
-  margin-block-start: var(--design-spacing-sm);
-}
-
-.sidebar__footer .sidebar__account-trigger {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: var(--design-spacing-sm);
-  inline-size: 100%;
-  min-block-size: var(--touch-target-min);
-  min-inline-size: 0;
-  padding: var(--design-spacing-xs);
-  border: var(--border-width) solid transparent;
-  border-radius: var(--radius-control);
-  background: transparent;
-  color: var(--color-ink);
-  text-align: start;
-  cursor: pointer;
-  transition:
-    background-color var(--transition-fast),
-    gap var(--transition-slow),
-    padding-inline var(--transition-slow);
-}
-
-.sidebar__account-trigger:hover,
-.sidebar__account-trigger[data-state="open"] {
-  background: var(--color-surface-soft);
-}
-
-.sidebar__account-trigger .ui-avatar {
-  flex: 0 0 var(--icon-size-lg);
-  inline-size: var(--icon-size-lg);
-  block-size: var(--icon-size-lg);
-}
-
-.sidebar__account-copy {
-  display: flex;
-  min-inline-size: 0;
-  flex-direction: column;
-}
-
-.sidebar__account-name,
-.sidebar__account-role {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-family: var(--font-body);
-}
-
-.sidebar__account-trigger .sidebar__account-chevron {
-  flex: 0 0 auto;
-  margin-inline-start: auto;
-  inline-size: var(--icon-size-sm);
-  block-size: var(--icon-size-sm);
-  color: var(--color-muted);
-  transition: transform var(--transition-fast);
-}
-
-.sidebar__account-trigger[data-state="open"] .sidebar__account-chevron {
-  transform: rotate(180deg);
-}
-
-.sidebar__account-name {
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-strong-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-}
-
-.sidebar__account-role {
-  color: var(--color-muted);
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-sm-weight);
-  line-height: var(--type-body-sm-line);
-  letter-spacing: var(--type-body-sm-tracking);
-}
-
-.sidebar__account-menu svg {
-  inline-size: var(--icon-size-sm);
-  block-size: var(--icon-size-sm);
-}
-
-.dropdown-menu-content.sidebar__account-menu {
-  inline-size: var(--menu-inline-size-md);
-  max-inline-size: var(--radix-dropdown-menu-content-available-width);
-}
-
-.sidebar__account-menu-header {
-  display: flex;
-  min-inline-size: 0;
-  flex-direction: column;
-  gap: var(--design-spacing-xxs);
-  padding: var(--design-spacing-xs) var(--design-spacing-sm);
-  text-transform: none;
-}
-
-.sidebar__account-menu-name,
-.sidebar__account-menu-meta {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.sidebar__account-menu-name {
-  color: var(--color-ink);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-strong-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-}
-
-.sidebar__account-menu-meta {
-  color: var(--color-muted);
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-sm-weight);
-  line-height: var(--type-body-sm-line);
-  letter-spacing: var(--type-body-sm-tracking);
-}
-
-.sidebar__account-menu .dropdown-menu-item {
-  text-decoration: none;
-}
-
-.sidebar__account-actions[data-confirming="true"] {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: var(--design-spacing-xxs);
-}
-
-.sidebar__account-actions[data-confirming="true"] .dropdown-menu-item {
-  min-inline-size: 0;
-  padding-inline: var(--design-spacing-xs);
-  white-space: nowrap;
-}
-
-.sidebar__account-menu .dropdown-menu-item[data-variant="destructive"] {
-  color: var(--color-error-text);
-}
-
-.sidebar__account-menu .dropdown-menu-item[data-variant="destructive"][data-highlighted] {
-  background: var(--color-error-tint);
-  color: var(--color-error-text);
-}
-
-.sidebar__list {
-  display: flex;
-  flex-direction: column;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.sidebar__group + .sidebar__group {
-  margin-block-start: var(--design-spacing-sm);
-}
-
-.sidebar__group-label {
-  margin: 0;
-  padding: var(--design-spacing-xs) var(--design-spacing-sm) var(--design-spacing-xxs);
-  color: var(--color-muted);
-  font-family: var(--font-body);
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  line-height: var(--type-caption-up-line);
-  letter-spacing: var(--type-caption-up-tracking);
-  text-transform: uppercase;
-}
-
-.sidebar__item {
-  display: flex;
-  align-items: center;
-  gap: var(--design-spacing-sm);
-
-  min-height: var(--touch-target-min);
-  padding: var(--design-spacing-xs) var(--design-spacing-sm);
-  border-radius: var(--radius-control);
-
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-  color: var(--color-body);
-  text-decoration: none;
-
-  position: relative;
-  cursor: pointer;
-  transition:
-    color var(--transition-fast),
-    background var(--transition-fast),
-    gap var(--transition-slow);
-  min-width: 0;
-}
-
-.sidebar__item:hover {
-  color: var(--color-navigation-rail-text-strong);
-  background: var(--color-surface-soft);
-}
-
-.sidebar__item--active,
-.sidebar__item--active:hover {
-  color: var(--color-primary-text);
-  background: var(--color-primary-tint);
-  font-weight: var(--type-body-strong-weight);
-}
-
-/* Pressed: retroalimentación sutil dentro de la escala de superficies neutras. */
-.sidebar__item:active:not(.sidebar__item--active) {
-  color: var(--color-navigation-rail-text-strong);
-  background: var(--color-surface-strong);
-}
-
-.sidebar__item--active:active {
-  color: var(--color-primary-text);
-  background: var(--color-primary-tint);
-}
-
-.sidebar__item--active .sidebar__item-icon {
-  color: var(--color-primary-text);
-}
-
-.sidebar__item-icon {
-  flex-shrink: 0;
-  color: var(--color-navigation-rail-text);
-  transition: color var(--transition-fast);
-  width: var(--icon-size-md);
-  height: var(--icon-size-md);
-}
-
-.sidebar__item:hover .sidebar__item-icon {
-  color: var(--color-navigation-rail-text-strong);
-}
-
-.sidebar__item--active:hover .sidebar__item-icon {
-  color: var(--color-primary-text);
-}
-
-.sidebar__item-label {
-  flex: 1 1 auto;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  transition:
-    opacity var(--transition-fast),
-    transform var(--transition-slow);
-}
-
-.sidebar__item-badge {
-  display: inline-flex;
-  flex-shrink: 0;
-  align-items: center;
-  margin-inline-start: auto;
-  padding: var(--design-spacing-xxs) var(--design-spacing-xs);
-  color: var(--color-navigation-rail-text-strong);
-  background: var(--color-navigation-rail-elevated);
-  border: var(--border-width) solid var(--color-navigation-rail-elevated);
-  border-radius: var(--rounded-sm);
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-}
-
-/* App shell: layout sidebar + contenido.
-   Fuente única de verdad para los anchos del sidebar (los consume
-   .sidebar por herencia de custom properties). */
-.app-shell {
-  --_app-sidebar-w: var(--feature-navigation-rail-inline-size);
-  min-block-size: 100dvh;
-}
-
-.app-shell[data-sidebar-collapsed="true"] {
-  --_app-sidebar-w: calc(var(--touch-target-min) + var(--design-spacing-lg));
-}
-
-.app-shell__workspace,
-.app-shell__main {
-  min-inline-size: 0;
-}
-
-.app-shell__main {
-  padding-block-start: var(--design-spacing-md);
-}
-
-@media (min-width: 768px) {
-  .app-shell__main {
-    padding-block-start: var(--design-spacing-lg);
-  }
-}
-
-@media (min-width: 1080px) {
-  .app-shell {
-    block-size: 100dvh;
-    padding-block: var(--design-spacing-sm);
-    padding-inline-end: max(var(--design-spacing-sm), var(--safe-area-right));
-    overflow: hidden;
-    background: var(--shell-floor);
-    --_app-sidebar-inset-inline-start: max(var(--design-spacing-sm), var(--safe-area-left));
-  }
-
+@media (width >= 1080px) {
   .sidebar {
-    inset-block-start: max(var(--design-spacing-sm), var(--safe-area-top));
-    inset-block-end: max(var(--design-spacing-sm), var(--safe-area-bottom));
-    inset-inline-start: var(--_app-sidebar-inset-inline-start);
-    transform: none;
-    visibility: visible;
-    pointer-events: auto;
-    width: var(--_app-sidebar-w);
+    inset-block: max(var(--design-spacing-sm), var(--safe-area-top))
+      max(var(--design-spacing-sm), var(--safe-area-bottom));
+    inset-inline-start: var(--app-sidebar-inset-inline-start);
+    width: var(--app-sidebar-width);
     padding: var(--design-spacing-sm);
     padding-block-start: var(--border-width);
     border-radius: var(--workspace-radius);
     background: var(--shell-floor);
     box-shadow: none;
+
     /* El ancho y el padding cambian con la preferencia; el workspace acompaña
        el pliegue y el rail conserva su columna interna de 44px. */
     transition:
@@ -531,26 +243,26 @@ button.sidebar__desktop-toggle:hover {
     justify-self: end;
   }
 
-  .app-shell[data-sidebar-collapsed="true"] .sidebar {
+  .app-shell[data-sidebar-collapsed='true'] .sidebar {
     padding-inline: var(--design-spacing-xs);
   }
 
-  .app-shell[data-sidebar-collapsed="true"] .sidebar__top {
+  .app-shell[data-sidebar-collapsed='true'] .sidebar__top {
     grid-template-columns: minmax(0, 1fr) auto;
     column-gap: 0;
   }
 
   /* El riel no muestra barra de scroll: su ancho reduciría la columna interna
      de forma asimétrica y desplazaría los iconos respecto del toggle y el avatar. */
-  .app-shell[data-sidebar-collapsed="true"] .sidebar__nav {
+  .app-shell[data-sidebar-collapsed='true'] .sidebar__nav {
     scrollbar-width: none;
   }
 
-  .app-shell[data-sidebar-collapsed="true"] .sidebar__nav::-webkit-scrollbar {
+  .app-shell[data-sidebar-collapsed='true'] .sidebar__nav::-webkit-scrollbar {
     display: none;
   }
 
-  .app-shell[data-sidebar-collapsed="true"] .sidebar__brand {
+  .app-shell[data-sidebar-collapsed='true'] .sidebar__brand {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
@@ -559,30 +271,29 @@ button.sidebar__desktop-toggle:hover {
       visibility 0s linear var(--transition-slow);
   }
 
-  .app-shell[data-sidebar-collapsed="true"] .sidebar__account-trigger,
-  .app-shell[data-sidebar-collapsed="true"] .sidebar__item {
+  .app-shell[data-sidebar-collapsed='true'] .sidebar__account-trigger,
+  .app-shell[data-sidebar-collapsed='true'] .sidebar__item {
     justify-content: center;
     gap: 0;
   }
 
   /* El avatar comparte con items y toggle la misma columna de 44px para que
      fondo, foco e iconos queden centrados en el rail. */
-  .app-shell[data-sidebar-collapsed="true"] .sidebar__account-trigger {
+  .app-shell[data-sidebar-collapsed='true'] .sidebar__account-trigger {
     inline-size: var(--touch-target-min);
     margin-inline: auto;
   }
 
-  .app-shell[data-sidebar-collapsed="true"] .sidebar__brand-text,
-  .app-shell[data-sidebar-collapsed="true"] .sidebar__account-copy,
-  .app-shell[data-sidebar-collapsed="true"] .sidebar__account-chevron,
-  .app-shell[data-sidebar-collapsed="true"] .sidebar__item-badge,
-  .app-shell[data-sidebar-collapsed="true"] .sidebar__group-label {
+  .app-shell[data-sidebar-collapsed='true'] .sidebar__brand-text,
+  .app-shell[data-sidebar-collapsed='true'] .sidebar__account-copy,
+  .app-shell[data-sidebar-collapsed='true'] .sidebar__account-chevron,
+  .app-shell[data-sidebar-collapsed='true'] .sidebar__group-label {
     display: none;
   }
 
   /* La etiqueta se desvanece y retrocede mientras la barra se pliega; la
      visibilidad se retrasa para retirarla del árbol de accesibilidad al final. */
-  .app-shell[data-sidebar-collapsed="true"] .sidebar__item-label {
+  .app-shell[data-sidebar-collapsed='true'] .sidebar__item-label {
     opacity: 0;
     visibility: hidden;
     transform: translateX(calc(-1 * var(--design-spacing-xxs)));
@@ -592,42 +303,9 @@ button.sidebar__desktop-toggle:hover {
       visibility 0s linear var(--transition-slow);
   }
 
-  .app-shell[data-sidebar-collapsed="true"] .sidebar__group + .sidebar__group {
+  .app-shell[data-sidebar-collapsed='true'] .sidebar__group + .sidebar__group {
     border-block-start: var(--border-width) solid var(--color-hairline);
     padding-block-start: var(--design-spacing-sm);
-  }
-
-  button.sidebar__close-btn {
-    display: none;
-  }
-
-  .app-shell__workspace {
-    --workspace-surface: var(--shell-workspace-surface);
-    display: flex;
-    block-size: 100%;
-    min-block-size: 0;
-    flex-direction: column;
-    margin-inline-start: calc(
-      var(--_app-sidebar-w) +
-      var(--_app-sidebar-inset-inline-start) +
-      var(--design-spacing-sm)
-    );
-    overflow: hidden;
-    background: var(--workspace-surface);
-    border: var(--border-width) solid var(--workspace-border-color);
-    border-radius: var(--workspace-radius);
-    box-shadow: var(--workspace-shadow);
-    /* Acompaña el mismo pliegue que la barra lateral. */
-    transition: margin-inline-start var(--transition-slow);
-  }
-
-  .app-shell__main {
-    min-block-size: 0;
-    flex: 1 1 auto;
-    overflow-x: clip;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    scrollbar-gutter: stable;
   }
 }
 
@@ -639,17 +317,20 @@ button.sidebar__desktop-toggle:hover {
   .sidebar__item-icon,
   .sidebar__account-trigger,
   .sidebar__account-chevron,
-  .sidebar__desktop-toggle,
-  .app-shell__workspace {
+  .sidebar__desktop-toggle {
     transition: none;
   }
 
-  .app-shell[data-sidebar-collapsed="true"] .sidebar__item-label,
-  .app-shell[data-sidebar-collapsed="true"] .sidebar__brand {
+  .app-shell[data-sidebar-collapsed='true'] .sidebar__item-label,
+  .app-shell[data-sidebar-collapsed='true'] .sidebar__brand {
     transition: none;
   }
 
   .sidebar-mobile-overlay {
+    animation: none;
+  }
+
+  .sidebar[data-state] {
     animation: none;
   }
 }

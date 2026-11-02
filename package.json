@@ -8,6 +8,10 @@
     "icons:catalog": "node dev-tools/lucide-catalog/generate.mjs",
     "bones:build": "boneyard-js build http://localhost:3000 --no-scan",
     "build": "tsc -b && vite build",
+    "lint:js": "eslint eslint.config.mjs dev-tools/lucide-catalog/generate.mjs",
+    "lint:app-chrome": "oxlint --type-aware src/components/layout/AppShell.tsx src/components/layout/Header.tsx src/components/layout/PageHeading.tsx src/components/layout/Sidebar.tsx src/components/layout/SidebarAccountMenu.tsx src/components/layout/SidebarActionSearch.tsx src/components/layout/SidebarBrand.tsx src/components/layout/SidebarGroup.tsx src/components/layout/SidebarItem.tsx src/components/layout/navigation.ts",
+    "lint:app-chrome:css": "stylelint \"src/components/layout/{AppShell,Header,Sidebar,SidebarAccountMenu,SidebarActionSearch,SidebarNavigation}.css\"",
+    "check:app-chrome:dead-code": "knip --config knip.app-chrome.json --include files,exports",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -73,6 +77,13 @@
   "devDependencies": {
     "@types/node": "^26.6.2",
     "@types/three": "^0.186.0",
+    "eslint": "^10.14.0",
+    "knip": "^6.44.1",
+    "oxlint": "^1.90.0",
+    "oxlint-tsgolint": "^7.0.2005",
+    "prettier": "^3.9.10",
+    "stylelint": "^17.16.0",
+    "stylelint-config-standard": "^40.0.0",
     "tsx": "^4.23.15"
   },
   "allowScripts": {

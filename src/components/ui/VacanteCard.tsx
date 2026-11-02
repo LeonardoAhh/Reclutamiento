@@ -1,14 +1,15 @@
-import { BriefcaseBusiness, EllipsisVertical, Trash2, UserRoundPlus } from "lucide-react";
+import { BriefcaseBusiness, EllipsisVertical, Trash2, UserRoundPlus } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/DropdownMenu";
-import { ReclutadorBadge } from "@/components/ui/ReclutadorBadge";
-import { Tooltip } from "@/components/ui/Tooltip";
-import "./ActivityCard.css";
+} from '@/components/ui/DropdownMenu';
+import { ReclutadorBadge } from '@/components/ui/ReclutadorBadge';
+import { Badge } from '@/components/ui/Badge';
+import { Tooltip } from '@/components/ui/Tooltip';
+import './ActivityCard.css';
 
 export interface VacanteCardProps {
   id: string;
@@ -32,26 +33,26 @@ export function VacanteCard({
   onAssign,
   onDelete,
 }: VacanteCardProps) {
-  const filteredAssignees = assignees.filter(
-    (a) => !currentUserId || a.id !== currentUserId,
-  );
+  const filteredAssignees = assignees.filter((a) => !currentUserId || a.id !== currentUserId);
 
   return (
     <article className="activity-card" role="listitem">
       <div className="activity-card__header">
         <div className="activity-card__title-wrap">
-          {isNew && <span className="activity-new-badge">Nueva</span>}
-          <h3 className="activity-card__title" title={title}>{title}</h3>
+          {isNew && (
+            <Badge size="compact" data-state="new">
+              Nueva
+            </Badge>
+          )}
+          <h3 className="activity-card__title" title={title}>
+            {title}
+          </h3>
         </div>
         {isAdmin && (
           <div className="activity-card__menu">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button
-                  type="button"
-                  aria-label="Opciones"
-                  className="activity-card__menu-btn"
-                >
+                <button type="button" aria-label="Opciones" className="activity-card__menu-btn">
                   <EllipsisVertical size="var(--icon-size-sm)" aria-hidden="true" />
                 </button>
               </DropdownMenuTrigger>
@@ -110,21 +111,21 @@ export function VacanteCard({
 
         <div className="activity-card__assignees">
           {filteredAssignees.length > 0 ? (
-            filteredAssignees.slice(0, 3).map((assignee) => (
-              <ReclutadorBadge
-                key={assignee.id}
-                nombre={assignee.display_name || assignee.username || "—"}
-                size="sm"
-                showRole={false}
-              />
-            ))
+            filteredAssignees
+              .slice(0, 3)
+              .map((assignee) => (
+                <ReclutadorBadge
+                  key={assignee.id}
+                  nombre={assignee.display_name || assignee.username || '—'}
+                  size="sm"
+                  showRole={false}
+                />
+              ))
           ) : (
             <span className="activity-card__assignees-empty">Sin asignar</span>
           )}
           {filteredAssignees.length > 3 && (
-            <span className="activity-card__assignees-more">
-              +{filteredAssignees.length - 3}
-            </span>
+            <span className="activity-card__assignees-more">+{filteredAssignees.length - 3}</span>
           )}
         </div>
       </div>

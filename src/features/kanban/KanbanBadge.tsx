@@ -8,16 +8,10 @@ const STATUS_ICONS: Record<TaskStatus, LucideIcon> = {
   completed: BadgeCheck,
 };
 
-export function KanbanStatusBadge({
-  status,
-  label,
-}: {
-  status: TaskStatus;
-  label: string;
-}) {
+export function KanbanStatusBadge({ status, label }: { status: TaskStatus; label: string }) {
   const Icon = STATUS_ICONS[status];
   return (
-    <Badge className="badge--compact" data-state={status}>
+    <Badge size="compact" data-state={status}>
       <Icon size="var(--icon-size-sm)" aria-hidden="true" />
       <span>{label}</span>
     </Badge>

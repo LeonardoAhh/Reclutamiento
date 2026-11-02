@@ -7,15 +7,12 @@ import {
   ACTIVIDADES_PATH,
   CANDIDATES_PATH,
   HOME_PATH,
-  ORGANIZATION_CHART_PATH,
   TEAM_PATH,
   VACANCY_ASSIGNMENTS_PATH,
 } from '@/components/layout/navigation';
 import { REPORT_COMPARISON_PATH } from '@/components/reporte-diario/navigation';
 import { CANDIDATE_METRICS_PATH } from '@/pages/candidate-metrics/navigation';
 import { LEAVE_REQUESTS_PATH } from '@/features/leave/requests';
-import { ACTIVITY_IMAGE_ROUTE } from '@/pages/activityImageNavigation';
-import { PERFORMANCE_EVALUATIONS_2027_PATH } from '@/features/performance-evaluations-2027/types';
 
 /** Las páginas de ruta no reciben props: toman sus datos del router y contexto. */
 type AnyComponent = ComponentType;
@@ -61,8 +58,6 @@ export const DataUpdatePage = lazyWithPreload(() => import('@/features/data-upda
 export const AccountPage = lazyWithPreload(() => import('@/pages/AccountPage').then(({ AccountPage }) => ({ default: AccountPage })));
 export const LeaveRequestsPage = lazyWithPreload(() => import('@/pages/LeaveRequestsPage').then(({ LeaveRequestsPage }) => ({ default: LeaveRequestsPage })));
 export const HomePage = lazyWithPreload(() => import('@/pages/HomePage').then(({ HomePage }) => ({ default: HomePage })));
-export const OrganizationChartPage = lazyWithPreload(() => import('@/pages/OrganizationChartPage').then(({ OrganizationChartPage }) => ({ default: OrganizationChartPage })));
-export const PerformanceEvaluationsPage = lazyWithPreload(() => import('@/features/performance-evaluations-2027/PerformanceEvaluationsPage').then(({ PerformanceEvaluationsPage }) => ({ default: PerformanceEvaluationsPage })));
 
 /**
  * Dónde se capturó el snapshot, para reproducir su geometría en el fallback:
@@ -102,8 +97,6 @@ const CONFIGURACION_BONES: Readonly<Record<string, RouteBones>> = {
 /** Orden relevante: las rutas exactas anidadas van antes que sus prefijos. */
 const ROUTE_PAGES: readonly RoutePage[] = [
   { matches: exact(HOME_PATH), page: HomePage },
-  { matches: exact(PERFORMANCE_EVALUATIONS_2027_PATH), page: PerformanceEvaluationsPage },
-  { matches: exact(ORGANIZATION_CHART_PATH), page: OrganizationChartPage },
   { matches: exact(LEAVE_REQUESTS_PATH), page: LeaveRequestsPage, bones: pageBones('leave-requests-page') },
   { matches: exact('/overview'), page: KpisPage, bones: pageBones('resumen-page') },
   { matches: exact(PLANTILLA_PATH), page: Dashboard, bones: pageBones('plantilla-page') },

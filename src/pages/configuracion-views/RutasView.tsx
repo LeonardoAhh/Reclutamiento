@@ -1,7 +1,8 @@
-import { playSound } from "@/lib/sound";
-import { useState, useRef, useMemo, useEffect } from "react";
+import { playSound } from '@/lib/sound';
+import { Badge } from '@/components/ui/Badge';
+import { useState, useRef, useMemo, useEffect } from 'react';
 import { PageHeading } from '@/components/layout/PageHeading';
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation } from 'react-router-dom';
 import {
   ArrowDownRight,
   ArrowLeftRight,
@@ -11,25 +12,20 @@ import {
   Minus,
   Route,
   UserRoundSearch,
-} from "lucide-react";
-import { getShortName } from "@/lib/names";
-import { formatReadableDate } from "@/lib/dates";
-import {
-  useRutas,
-  ROUTE_DAYS,
-  RutaAgrupada,
-  type EmpleadoRuta,
-} from "@/hooks/useRutas";
-import { ROUTE_DAY_EMPLOYEES_PATH, ROUTE_SCANNER_PATH } from "@/lib/configuracionNavigation";
-import { Tooltip } from "@/components/ui/Tooltip";
-import { BackButton } from "@/components/ui/BackButton";
-import { SearchField } from "@/components/ui/SearchField";
-import { useLanguage } from "@/contexts/LanguageContext";
-import { formatRouteDay, getConfiguracionCopy } from "./configuracion-translations";
-import { RouteItinerarySection } from "./RouteItinerarySection";
+} from 'lucide-react';
+import { getShortName } from '@/lib/names';
+import { formatReadableDate } from '@/lib/dates';
+import { useRutas, ROUTE_DAYS, RutaAgrupada, type EmpleadoRuta } from '@/hooks/useRutas';
+import { ROUTE_DAY_EMPLOYEES_PATH, ROUTE_SCANNER_PATH } from '@/lib/configuracionNavigation';
+import { Tooltip } from '@/components/ui/Tooltip';
+import { BackButton } from '@/components/ui/BackButton';
+import { SearchField } from '@/components/ui/SearchField';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { formatRouteDay, getConfiguracionCopy } from './configuracion-translations';
+import { RouteItinerarySection } from './RouteItinerarySection';
 
-import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
-import "./Rutas.css";
+import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
+import './Rutas.css';
 
 interface RutaCardProps {
   ruta: RutaAgrupada;
@@ -37,16 +33,11 @@ interface RutaCardProps {
   onClick: () => void;
 }
 
-function RutaCard({
-  ruta,
-  isActive,
-  onClick,
-  matchCount,
-}: RutaCardProps & { matchCount?: number }) {
+function RutaCard({ ruta, isActive, onClick, matchCount }: RutaCardProps & { matchCount?: number }) {
   const { language } = useLanguage();
   const copy = getConfiguracionCopy(language).routes;
-  const [routeCode, ...routeNameParts] = ruta.nombreRuta.split("-");
-  const routeName = routeNameParts.join("-").trim();
+  const [routeCode, ...routeNameParts] = ruta.nombreRuta.split('-');
+  const routeName = routeNameParts.join('-').trim();
   const isOverCapacity = Object.entries(ruta.turnosCount).some(
     ([t, c]) => ruta.maxCapacityPerShift[t] && c > ruta.maxCapacityPerShift[t],
   );
@@ -54,7 +45,7 @@ function RutaCard({
   return (
     <button
       type="button"
-      className={`ruta-card${isActive ? " ruta-card--active" : ""}${matchCount ? " ruta-card--has-match" : ""}`}
+      className={`ruta-card${isActive ? ' ruta-card--active' : ''}${matchCount ? ' ruta-card--has-match' : ''}`}
       onClick={onClick}
       aria-pressed={isActive}
       aria-controls="rutas-detail-pane"
@@ -75,12 +66,13 @@ function RutaCard({
         {routeName && <span className="ruta-card__subtitle">{routeName}</span>}
       </span>
       {matchCount !== undefined && matchCount > 0 && (
-        <span
-          className="ruta-card__match-badge"
+        <Badge
+          size="compact"
+          variant="neutral"
           aria-label={`${matchCount} ${matchCount === 1 ? copy.match : copy.matches}`}
         >
           {matchCount}
-        </span>
+        </Badge>
       )}
     </button>
   );
@@ -109,9 +101,9 @@ function ShiftBars({
   const { language } = useLanguage();
   const copy = getConfiguracionCopy(language).routes;
   const english = language === 'en';
-  const entries = Array.from(
-    new Set([...Object.keys(turnosCount), ...Object.keys(turnosCountPrev)]),
-  ).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+  const entries = Array.from(new Set([...Object.keys(turnosCount), ...Object.keys(turnosCountPrev)])).sort((a, b) =>
+    a.localeCompare(b, undefined, { numeric: true }),
+  );
 
   return (
     <div className="shift-bars" key={animKey}>
@@ -125,36 +117,37 @@ function ShiftBars({
         const currentEmps = empleados.filter((e) => e.turno === turno);
         const prevEmps = empleadosPrev.filter((e) => e.turno === turno);
         const added = currentEmps.filter(
-          (curr) =>
-            !prevEmps.some(
-              (prev) => prev.numeroEmpleado === curr.numeroEmpleado,
-            ),
+          (curr) => !prevEmps.some((prev) => prev.numeroEmpleado === curr.numeroEmpleado),
         );
         const removed = prevEmps.filter(
-          (prev) =>
-            !currentEmps.some(
-              (curr) => curr.numeroEmpleado === prev.numeroEmpleado,
-            ),
+          (prev) => !currentEmps.some((curr) => curr.numeroEmpleado === prev.numeroEmpleado),
         );
         const netChange = added.length - removed.length;
-        const trendAria = added.length > 0 || removed.length > 0
-          ? english
-            ? `${added.length} ${copy.additions} and ${removed.length} ${copy.departures}`
-            : `${added.length} alta${added.length === 1 ? "" : "s"} y ${removed.length} baja${removed.length === 1 ? "" : "s"}`
-          : copy.noChanges;
-        const trendClass = added.length > 0 && removed.length > 0
-          ? "trend-mixed"
-          : added.length > 0
-            ? "trend-up"
-            : removed.length > 0
-              ? "trend-down"
-              : "trend-flat";
+        const trendAria =
+          added.length > 0 || removed.length > 0
+            ? english
+              ? `${added.length} ${copy.additions} and ${removed.length} ${copy.departures}`
+              : `${added.length} alta${added.length === 1 ? '' : 's'} y ${removed.length} baja${removed.length === 1 ? '' : 's'}`
+            : copy.noChanges;
+        const trendClass =
+          added.length > 0 && removed.length > 0
+            ? 'trend-mixed'
+            : added.length > 0
+              ? 'trend-up'
+              : removed.length > 0
+                ? 'trend-down'
+                : 'trend-flat';
 
         let iconNode;
         if (added.length > 0 && removed.length > 0) {
-          iconNode = netChange > 0 ? <ArrowUpRight aria-hidden="true" /> :
-                     netChange < 0 ? <ArrowDownRight aria-hidden="true" /> :
-                     <ArrowLeftRight aria-hidden="true" />;
+          iconNode =
+            netChange > 0 ? (
+              <ArrowUpRight aria-hidden="true" />
+            ) : netChange < 0 ? (
+              <ArrowDownRight aria-hidden="true" />
+            ) : (
+              <ArrowLeftRight aria-hidden="true" />
+            );
         } else if (added.length > 0) {
           iconNode = <ArrowUpRight aria-hidden="true" />;
         } else if (removed.length > 0) {
@@ -169,7 +162,8 @@ function ShiftBars({
               {added.length > 0 && (
                 <div className="trend-tooltip__section">
                   <strong className="trend-tooltip__title trend-tooltip__title--success">
-                    <ArrowUpRight aria-hidden="true" /> {english ? `Added (${added.length}):` : `Altas (${added.length}):`}
+                    <ArrowUpRight aria-hidden="true" />{' '}
+                    {english ? `Added (${added.length}):` : `Altas (${added.length}):`}
                   </strong>
                   <ul className="trend-tooltip__list">
                     {added.map((e) => (
@@ -183,7 +177,8 @@ function ShiftBars({
               {removed.length > 0 && (
                 <div className="trend-tooltip__section">
                   <strong className="trend-tooltip__title trend-tooltip__title--danger">
-                    <ArrowDownRight aria-hidden="true" /> {english ? `Departures (${removed.length}):` : `Bajas (${removed.length}):`}
+                    <ArrowDownRight aria-hidden="true" />{' '}
+                    {english ? `Departures (${removed.length}):` : `Bajas (${removed.length}):`}
                   </strong>
                   <ul className="trend-tooltip__list">
                     {removed.map((e) => (
@@ -197,13 +192,18 @@ function ShiftBars({
             </div>
           ) : null;
 
-        const textContent = (added.length > 0 && removed.length > 0)
-          ? (netChange > 0 ? `+${netChange}` : netChange < 0 ? `−${Math.abs(netChange)}` : "0")
-          : added.length > 0
-            ? `+${added.length}`
-            : removed.length > 0
-              ? `−${removed.length}`
-              : "0";
+        const textContent =
+          added.length > 0 && removed.length > 0
+            ? netChange > 0
+              ? `+${netChange}`
+              : netChange < 0
+                ? `−${Math.abs(netChange)}`
+                : '0'
+            : added.length > 0
+              ? `+${added.length}`
+              : removed.length > 0
+                ? `−${removed.length}`
+                : '0';
 
         const trendBadge = (
           <span
@@ -219,10 +219,10 @@ function ShiftBars({
         return (
           <div
             key={turno}
-            className={`shift-bars__row${isOverCapacity ? " shift-bars__row--over" : ""}`}
+            className={`shift-bars__row${isOverCapacity ? ' shift-bars__row--over' : ''}`}
             style={
               {
-                "--bar-pct": `${Math.min(pct, 100)}%`,
+                '--bar-pct': `${Math.min(pct, 100)}%`,
               } as React.CSSProperties
             }
           >
@@ -244,12 +244,8 @@ function ShiftBars({
             >
               <div className="shift-bars__fill" />
             </div>
-            <div
-              className={`shift-bars__stats${hasComparison ? " shift-bars__stats--comparison" : ""}`}
-            >
-              <span
-                className={`shift-bars__count type-body-strong${isOverCapacity ? " shift-bars__count--over" : ""}`}
-              >
+            <div className={`shift-bars__stats${hasComparison ? ' shift-bars__stats--comparison' : ''}`}>
+              <span className={`shift-bars__count type-body-strong${isOverCapacity ? ' shift-bars__count--over' : ''}`}>
                 {assignedCapacity ? `${count} / ${assignedCapacity}` : count}
               </span>
               {hasComparison &&
@@ -276,12 +272,7 @@ interface DailyCapacityBarsProps {
   animKey: number;
 }
 
-function DailyCapacityBars({
-  capacityPerDay,
-  routeName,
-  searchTerm,
-  animKey,
-}: DailyCapacityBarsProps) {
+function DailyCapacityBars({ capacityPerDay, routeName, searchTerm, animKey }: DailyCapacityBarsProps) {
   const { language } = useLanguage();
   const copy = getConfiguracionCopy(language).routes;
   return (
@@ -321,9 +312,7 @@ function Placeholder() {
       <h2 id="rutas-placeholder-title" className="type-body-strong">
         {copy.selectRoute}
       </h2>
-      <p className="type-body-md">
-        {copy.selectRouteHelp}
-      </p>
+      <p className="type-body-md">{copy.selectRouteHelp}</p>
     </div>
   );
 }
@@ -338,20 +327,10 @@ function RouteSearchMatches({ employees }: RouteSearchMatchesProps) {
   if (employees.length === 0) return null;
 
   return (
-    <section
-      id="rutas-search-results"
-      className="ruta-search-results"
-      aria-labelledby="ruta-search-results-title"
-    >
+    <section id="rutas-search-results" className="ruta-search-results" aria-labelledby="ruta-search-results-title">
       <header className="ruta-search-results__header">
-        <h2
-          id="ruta-search-results-title"
-          className="ruta-section__title ruta-section__title-wrapper type-body-strong"
-        >
-          <UserRoundSearch
-            aria-hidden="true"
-            className="ruta-section__title-icon"
-          />
+        <h2 id="ruta-search-results-title" className="ruta-section__title ruta-section__title-wrapper type-body-strong">
+          <UserRoundSearch aria-hidden="true" className="ruta-section__title-icon" />
           {copy.foundEmployees}
         </h2>
         <span className="ruta-search-results__count">
@@ -399,14 +378,7 @@ interface RutaDetailProps {
   comparisonDate: string | null;
 }
 
-function RutaDetail({
-  ruta,
-  searchMatches,
-  searchTerm,
-  animKey,
-  hasComparison,
-  comparisonDate,
-}: RutaDetailProps) {
+function RutaDetail({ ruta, searchMatches, searchTerm, animKey, hasComparison, comparisonDate }: RutaDetailProps) {
   const { language } = useLanguage();
   const copy = getConfiguracionCopy(language).routes;
   return (
@@ -435,10 +407,7 @@ function RutaDetail({
 
             <section className="ruta-section">
               <h2 className="ruta-section__title ruta-section__title-wrapper type-body-strong">
-                <CalendarRange
-                  aria-hidden="true"
-                  className="ruta-section__title-icon"
-                />
+                <CalendarRange aria-hidden="true" className="ruta-section__title-icon" />
                 {copy.employeesByDay}
               </h2>
               <DailyCapacityBars
@@ -456,7 +425,6 @@ function RutaDetail({
   );
 }
 
-
 export function RutasView() {
   const { language } = useLanguage();
   const copy = getConfiguracionCopy(language).routes;
@@ -465,24 +433,24 @@ export function RutasView() {
   const location = useLocation();
   const [selectedRuta, setSelectedRuta] = useState<RutaAgrupada | null>(null);
   const [animKey, setAnimKey] = useState(0);
-  const [searchTerm, setSearchTerm] = useState(() => new URLSearchParams(location.search).get("search") ?? "");
-  
+  const [searchTerm, setSearchTerm] = useState(() => new URLSearchParams(location.search).get('search') ?? '');
+
   /**
    * mobileView controls which panel is shown on small screens.
    * On desktop both panels are always visible (CSS grid).
    */
-  const [mobileView, setMobileView] = useState<"list" | "detail">("list");
+  const [mobileView, setMobileView] = useState<'list' | 'detail'>('list');
   const listRef = useRef<HTMLUListElement>(null);
   const detailRef = useRef<HTMLElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (loading || errorMsg) return;
-    const routeName = new URLSearchParams(location.search).get("route");
-    const route = rutas.find(item => item.nombreRuta === routeName);
+    const routeName = new URLSearchParams(location.search).get('route');
+    const route = rutas.find((item) => item.nombreRuta === routeName);
     if (!route) return;
     setSelectedRuta(route);
-    setMobileView("detail");
+    setMobileView('detail');
   }, [loading, errorMsg, location.search, rutas]);
 
   // Filter routes based on search term (by employee number or name)
@@ -493,9 +461,7 @@ export function RutasView() {
     const map = new Map<string, EmpleadoRuta[]>();
     for (const ruta of rutas) {
       const matches = ruta.empleados.filter(
-        (emp) =>
-          emp.numeroEmpleado.toLowerCase().includes(searchNorm) ||
-          emp.nombre.toLowerCase().includes(searchNorm),
+        (emp) => emp.numeroEmpleado.toLowerCase().includes(searchNorm) || emp.nombre.toLowerCase().includes(searchNorm),
       );
       if (matches.length > 0) map.set(ruta.nombreRuta, matches);
     }
@@ -503,11 +469,7 @@ export function RutasView() {
   }, [rutas, searchNorm]);
 
   const totalSearchMatches = useMemo(
-    () =>
-      Array.from(searchMatchesByRoute.values()).reduce(
-        (total, matches) => total + matches.length,
-        0,
-      ),
+    () => Array.from(searchMatchesByRoute.values()).reduce((total, matches) => total + matches.length, 0),
     [searchMatchesByRoute],
   );
 
@@ -517,17 +479,16 @@ export function RutasView() {
   }, [rutas, searchNorm, searchMatchesByRoute]);
 
   const handleClearSearch = () => {
-    setSearchTerm("");
+    setSearchTerm('');
     searchInputRef.current?.focus();
   };
 
   // Auto-select first matching route when search changes
   useEffect(() => {
     if (searchNorm && filteredRutas.length > 0) {
-      const routeFromUrl = new URLSearchParams(location.search).get("route");
-      if (!selectedRuta && filteredRutas.some(item => item.nombreRuta === routeFromUrl)) return;
-      const currentStillVisible =
-        selectedRuta && searchMatchesByRoute.has(selectedRuta.nombreRuta);
+      const routeFromUrl = new URLSearchParams(location.search).get('route');
+      if (!selectedRuta && filteredRutas.some((item) => item.nombreRuta === routeFromUrl)) return;
+      const currentStillVisible = selectedRuta && searchMatchesByRoute.has(selectedRuta.nombreRuta);
       if (!currentStillVisible) {
         setSelectedRuta(filteredRutas[0]);
         setAnimKey((k) => k + 1);
@@ -536,51 +497,40 @@ export function RutasView() {
   }, [searchNorm, filteredRutas, searchMatchesByRoute, location.search, selectedRuta]);
 
   function handleSelect(ruta: RutaAgrupada) {
-    playSound("navigate");
+    playSound('navigate');
     setSelectedRuta(ruta);
     setAnimKey((k) => k + 1);
-    setMobileView("detail"); // push to detail on mobile
+    setMobileView('detail'); // push to detail on mobile
   }
 
   function handleBack() {
-    playSound("navigate", { direction: "back" });
-    setMobileView("list");
+    playSound('navigate', { direction: 'back' });
+    setMobileView('list');
     window.requestAnimationFrame(() => {
-      listRef.current
-        ?.querySelector<HTMLButtonElement>('.ruta-card[aria-pressed="true"]')
-        ?.focus();
+      listRef.current?.querySelector<HTMLButtonElement>('.ruta-card[aria-pressed="true"]')?.focus();
     });
   }
 
   useEffect(() => {
-    if (mobileView !== "detail") return;
+    if (mobileView !== 'detail') return;
     const frame = window.requestAnimationFrame(() => {
-      detailRef.current
-        ?.querySelector<HTMLButtonElement>(".rutas-back-btn")
-        ?.focus();
+      detailRef.current?.querySelector<HTMLButtonElement>('.rutas-back-btn')?.focus();
     });
     return () => window.cancelAnimationFrame(frame);
   }, [mobileView]);
 
   const handleListKeyDown = (event: React.KeyboardEvent) => {
-    if (!["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) return;
+    if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) return;
     event.preventDefault();
-    const buttons = Array.from(
-      listRef.current?.querySelectorAll<HTMLButtonElement>(".ruta-card") ?? [],
-    );
+    const buttons = Array.from(listRef.current?.querySelectorAll<HTMLButtonElement>('.ruta-card') ?? []);
     if (!buttons.length) return;
-    const currentIndex = buttons.indexOf(
-      document.activeElement as HTMLButtonElement,
-    );
+    const currentIndex = buttons.indexOf(document.activeElement as HTMLButtonElement);
     const nextIndex =
-      event.key === "Home"
+      event.key === 'Home'
         ? 0
-        : event.key === "End"
+        : event.key === 'End'
           ? buttons.length - 1
-          : (Math.max(currentIndex, 0) +
-              (event.key === "ArrowDown" ? 1 : -1) +
-              buttons.length) %
-            buttons.length;
+          : (Math.max(currentIndex, 0) + (event.key === 'ArrowDown' ? 1 : -1) + buttons.length) % buttons.length;
     buttons[nextIndex]?.focus();
   };
 
@@ -591,21 +541,16 @@ export function RutasView() {
       data-search-active={Boolean(searchNorm)}
       aria-labelledby="rutas-page-title"
     >
-          <PageHeading id="rutas-page-title" className="config-page__title app-page-title">
-            {copy.title}
-          </PageHeading>
-
-
+      <PageHeading id="rutas-page-title" className="config-page__title app-page-title">
+        {copy.title}
+      </PageHeading>
 
       <div
         className="rutas-layout"
-        data-mobile-view={searchNorm ? "detail" : mobileView}
+        data-mobile-view={searchNorm ? 'detail' : mobileView}
         data-search-active={Boolean(searchNorm)}
       >
-        <section
-          className="rutas-toolbar"
-          aria-label={copy.tools}
-        >
+        <section className="rutas-toolbar" aria-label={copy.tools}>
           <div className="rutas-toolbar-flex">
             <div className="rutas-search-container">
               <SearchField
@@ -617,14 +562,8 @@ export function RutasView() {
                 value={searchTerm}
                 onChange={(event) => setSearchTerm(event.target.value)}
                 onClear={handleClearSearch}
-                aria-describedby={
-                  searchNorm ? "rutas-search-status" : undefined
-                }
-                aria-controls={
-                  searchNorm && totalSearchMatches > 0
-                    ? "rutas-search-results"
-                    : undefined
-                }
+                aria-describedby={searchNorm ? 'rutas-search-status' : undefined}
+                aria-controls={searchNorm && totalSearchMatches > 0 ? 'rutas-search-results' : undefined}
                 autoComplete="off"
               />
               {searchNorm && (
@@ -636,71 +575,41 @@ export function RutasView() {
                 >
                   {filteredRutas.length === 0
                     ? copy.noResults
-                    : `${totalSearchMatches} ${totalSearchMatches === 1 ? copy.employee : copy.employeesPlural} ${copy.of} ${searchMatchesByRoute.size} ${english ? searchMatchesByRoute.size === 1 ? 'route' : 'routes' : `ruta${searchMatchesByRoute.size === 1 ? '' : 's'}`}`
-                  }
+                    : `${totalSearchMatches} ${totalSearchMatches === 1 ? copy.employee : copy.employeesPlural} ${copy.of} ${searchMatchesByRoute.size} ${english ? (searchMatchesByRoute.size === 1 ? 'route' : 'routes') : `ruta${searchMatchesByRoute.size === 1 ? '' : 's'}`}`}
                 </p>
               )}
             </div>
             <div className="rutas-scanner-action">
-              <Link
-                className="btn-secondary"
-                to={ROUTE_SCANNER_PATH}
-              >
+              <Link className="btn-secondary" to={ROUTE_SCANNER_PATH}>
                 {copy.scanner}
               </Link>
             </div>
           </div>
         </section>
-        <section
-          className="rutas-list-panel"
-          aria-label={copy.routeList}
-        >
-          <BoneyardSkeleton
-            name="configuracion-rutas"
-            loading={loading}
-            loadingLabel={copy.loading}
-          >
-            <ul
-              ref={listRef}
-              className="rutas-list"
-              aria-label={copy.routeList}
-              onKeyDown={handleListKeyDown}
-            >
+        <section className="rutas-list-panel" aria-label={copy.routeList}>
+          <BoneyardSkeleton name="configuracion-rutas" loading={loading} loadingLabel={copy.loading}>
+            <ul ref={listRef} className="rutas-list" aria-label={copy.routeList} onKeyDown={handleListKeyDown}>
               {errorMsg && (
                 <li className="rutas-error">
                   <div role="alert">
                     <p className="type-body-strong">{copy.loadError}</p>
-                    <p className="type-body-md">{english ? "Check your connection and try again." : errorMsg}</p>
+                    <p className="type-body-md">{english ? 'Check your connection and try again.' : errorMsg}</p>
                   </div>
                 </li>
               )}
 
-              {!loading &&
-                !errorMsg &&
-                !searchNorm &&
-                filteredRutas.length === 0 && (
-                  <li className="rutas-empty type-body-md">
-                    {copy.noRoutesInFile}
-                  </li>
-                )}
+              {!loading && !errorMsg && !searchNorm && filteredRutas.length === 0 && (
+                <li className="rutas-empty type-body-md">{copy.noRoutesInFile}</li>
+              )}
 
-              {!loading &&
-                !errorMsg &&
-                searchNorm &&
-                filteredRutas.length === 0 && (
-                  <li className="rutas-empty">
-                    <p className="type-body-md">
-                      {copy.noMatchingRoutes}
-                    </p>
-                    <button
-                      type="button"
-                      className="btn-text"
-                      onClick={handleClearSearch}
-                    >
-                      {copy.clearSearch}
-                    </button>
-                  </li>
-                )}
+              {!loading && !errorMsg && searchNorm && filteredRutas.length === 0 && (
+                <li className="rutas-empty">
+                  <p className="type-body-md">{copy.noMatchingRoutes}</p>
+                  <button type="button" className="btn-text" onClick={handleClearSearch}>
+                    {copy.clearSearch}
+                  </button>
+                </li>
+              )}
 
               {!loading &&
                 !errorMsg &&
@@ -710,11 +619,7 @@ export function RutasView() {
                       ruta={ruta}
                       isActive={selectedRuta?.nombreRuta === ruta.nombreRuta}
                       onClick={() => handleSelect(ruta)}
-                      matchCount={
-                        searchNorm
-                          ? searchMatchesByRoute.get(ruta.nombreRuta)?.length
-                          : undefined
-                      }
+                      matchCount={searchNorm ? searchMatchesByRoute.get(ruta.nombreRuta)?.length : undefined}
                     />
                   </li>
                 ))}
@@ -728,7 +633,7 @@ export function RutasView() {
           ref={detailRef}
           className="rutas-detail-pane"
           aria-label={selectedRuta?.nombreRuta}
-          aria-labelledby={selectedRuta ? undefined : "rutas-placeholder-title"}
+          aria-labelledby={selectedRuta ? undefined : 'rutas-placeholder-title'}
         >
           {/* Back button — mobile only, rendered via CSS display */}
           {selectedRuta && (
@@ -743,11 +648,7 @@ export function RutasView() {
           {selectedRuta ? (
             <RutaDetail
               ruta={selectedRuta}
-              searchMatches={
-                searchNorm
-                  ? searchMatchesByRoute.get(selectedRuta.nombreRuta) ?? []
-                  : []
-              }
+              searchMatches={searchNorm ? (searchMatchesByRoute.get(selectedRuta.nombreRuta) ?? []) : []}
               searchTerm={searchTerm}
               animKey={animKey}
               hasComparison={hasComparison}
@@ -758,10 +659,6 @@ export function RutasView() {
           )}
         </section>
       </div>
-
-
-
-
     </section>
   );
 }

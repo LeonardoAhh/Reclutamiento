@@ -342,7 +342,7 @@ export function FormatosView() {
                   aria-label={copy.routeAssignment}
                 >
                   <div ref={tableRef} className="recordatorios-export-canvas">
-                    <table className="config-table recordatorios-table data-table data-table--cards">
+                    <table className="recordatorios-table data-table data-table--cards">
                       <caption className="sr-only">
                         {copy.routeAssignment} · {selectedRouteDate}
                       </caption>

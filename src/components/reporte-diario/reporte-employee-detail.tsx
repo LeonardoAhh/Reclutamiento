@@ -110,32 +110,6 @@ const STYLES = {
         border: "var(--border-width) solid var(--color-hairline)",
         overflow: "hidden",
     },
-    table: {
-        minWidth: "100%",
-        borderCollapse: "collapse" as const,
-    },
-    thead: {
-        borderBottom: "var(--border-width) solid var(--color-hairline-strong)",
-        background: "var(--color-canvas-soft)",
-    },
-    th: {
-        padding: "var(--design-spacing-xs) var(--design-spacing-md)",
-        textAlign: "left" as const,
-        textTransform: "uppercase" as const,
-        color: "var(--color-body)",
-    },
-    tbody: {},
-    tr: {
-        borderBottom: "var(--border-width) solid var(--color-hairline-strong)",
-    },
-    td: {
-        base: {
-            padding: "var(--design-spacing-xs) var(--design-spacing-md)",
-        },
-        type: {
-            color: "var(--color-ink)",
-        },
-    },
     modalFooter: {
         display: "flex",
         justifyContent: "flex-end",
@@ -299,11 +273,11 @@ function IncidentTable({ incidents, year, month }: IncidentTableProps) {
                 {copy("Detalle de incidencias", "Incident details")} ({incidents.length})
             </p>
             <div style={STYLES.incidentTableWrapper}>
-                <table className="reporte-employee-detail__table data-table" style={STYLES.table}>
-                    <thead style={STYLES.thead}>
+                <table className="data-table">
+                    <thead>
                         <tr>
                             {TABLE_HEADERS.map((header) => (
-                                <th key={header.spanish} scope="col" className="reporte-employee-detail__table-heading" style={STYLES.th}>
+                                <th key={header.spanish} scope="col">
                                     {copy(header.spanish, header.english)}
                                 </th>
                             ))}
@@ -316,14 +290,14 @@ function IncidentTable({ incidents, year, month }: IncidentTableProps) {
                             const weekday = dayNames[date.getDay()];
 
                             return (
-                                <tr key={day} style={STYLES.tr}>
-                                    <td className="reporte-employee-detail__date" style={STYLES.td.base}>
+                                <tr key={day}>
+                                    <td>
                                         {weekday} {dayNum}
                                     </td>
-                                    <td style={STYLES.td.base}>
+                                    <td>
                                         <Badge variant="error">{code}</Badge>
                                     </td>
-                                    <td style={{ ...STYLES.td.base, ...STYLES.td.type }}>
+                                    <td>
                                         {incident(code)}
                                     </td>
                                 </tr>

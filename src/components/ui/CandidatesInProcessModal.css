@@ -104,20 +104,3 @@
   line-height: var(--type-body-strong-line);
   letter-spacing: var(--type-body-strong-tracking);
 }
-
-.candidates-in-process-modal .expandable-section__badge {
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-}
-
-.candidates-in-process-modal .badge,
-.candidates-in-process-modal .candidate-status-badge {
-  font-family: var(--font-body);
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  line-height: var(--type-caption-up-line);
-  letter-spacing: var(--type-caption-up-tracking);
-}

@@ -24,7 +24,10 @@ export interface ReclutadorBadgeProps {
   showCaret?: boolean;
 }
 
-export function getReclutadorMeta(nombre: string, members: readonly TeamMember[] = []): {
+export function getReclutadorMeta(
+  nombre: string,
+  members: readonly TeamMember[] = [],
+): {
   key: string;
   nombreFormateado: string;
   rol: RecruiterRole;
@@ -35,10 +38,12 @@ export function getReclutadorMeta(nombre: string, members: readonly TeamMember[]
 
   const rol: RecruiterRole = info?.badge_role ?? 'reclutadora';
 
-  const nombreFormateado = info?.short_name ?? nombre
-    .trim()
-    .toLowerCase()
-    .replace(/(^\w|\s\w)/g, (m) => m.toUpperCase());
+  const nombreFormateado =
+    info?.short_name ??
+    nombre
+      .trim()
+      .toLowerCase()
+      .replace(/(^\w|\s\w)/g, (m) => m.toUpperCase());
 
   const labelRol = rol === 'coordinador' ? 'Coordinador' : 'Reclutadora';
 
@@ -87,15 +92,11 @@ export function ReclutadorBadge({
     return (
       <Tooltip content={titleText}>
         <span
-          className={`reclutador-badge reclutador-badge--${rol} reclutador-badge--person-${key.toLowerCase()} reclutador-badge--${size} reclutador-badge--icon-only ${className}`.trim()}
+          className={`badge badge--neutral badge--icon reclutador-badge reclutador-badge--${rol} reclutador-badge--person-${key.toLowerCase()} ${className}`.trim()}
           aria-label={titleText}
           role="img"
         >
-          <IconComponent
-            size={size === 'sm' ? 12 : 14}
-            className="reclutador-badge__icon"
-            aria-hidden="true"
-          />
+          <IconComponent className="reclutador-badge__icon" aria-hidden="true" />
         </span>
       </Tooltip>
     );
@@ -103,22 +104,16 @@ export function ReclutadorBadge({
 
   return (
     <span
-      className={`reclutador-badge reclutador-badge--${rol} reclutador-badge--person-${key.toLowerCase()} reclutador-badge--${size} ${className}`.trim()}
+      className={`badge badge--neutral badge--compact reclutador-badge reclutador-badge--${rol} reclutador-badge--person-${key.toLowerCase()} reclutador-badge--${size} ${className}`.trim()}
     >
-      {showIcon && (
-        <IconComponent
-          size={size === 'sm' ? 12 : 14}
-          className="reclutador-badge__icon"
-          aria-hidden="true"
-        />
-      )}
+      {showIcon && <IconComponent className="reclutador-badge__icon" aria-hidden="true" />}
       <span className="reclutador-badge__name">{nombreFormateado}</span>
       {showRole && (
-        <span className="reclutador-badge__role-tag">{language === 'en' ? (isCoordinador ? 'Coordinator' : 'Recruiter') : labelRol}</span>
+        <span className="reclutador-badge__role-tag">
+          {language === 'en' ? (isCoordinador ? 'Coordinator' : 'Recruiter') : labelRol}
+        </span>
       )}
-      {showCaret && (
-        <ChevronDown className="reclutador-badge__caret" aria-hidden="true" />
-      )}
+      {showCaret && <ChevronDown className="reclutador-badge__caret" aria-hidden="true" />}
     </span>
   );
 }

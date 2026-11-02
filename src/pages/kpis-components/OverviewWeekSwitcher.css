@@ -1,14 +1,15 @@
 .overview-week {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
-  gap: var(--design-spacing-sm);
+  gap: var(--design-spacing-xs);
   min-inline-size: 0;
 }
 
 .overview-week__group {
   display: inline-flex;
   align-items: center;
+  flex: 1 1 auto;
   min-inline-size: 0;
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--radius-control);
@@ -39,8 +40,8 @@
 }
 
 .overview-week__label {
+  flex: 1 1 auto;
   margin: 0;
-  padding-inline: var(--design-spacing-xs);
   color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--type-body-strong-size);
@@ -59,22 +60,14 @@
   display: inline;
 }
 
-@media (min-width: 640px) {
-  .overview-week__label-full {
-    display: inline;
-  }
-
-  .overview-week__label-short {
-    display: none;
-  }
-}
-
 .overview-week__today {
   display: inline-flex;
   align-items: center;
-  gap: var(--design-spacing-xs);
+  justify-content: center;
+  flex: 0 0 var(--touch-target-min);
+  inline-size: var(--touch-target-min);
   min-block-size: var(--touch-target-min);
-  padding-inline: var(--design-spacing-md);
+  padding: 0;
   border: var(--border-width) solid var(--color-control-border);
   border-radius: var(--radius-control);
   background: var(--color-surface-card);
@@ -90,14 +83,51 @@
     border-color var(--transition-fast);
 }
 
-.overview-week__today:not(:disabled):hover {
-  border-color: var(--color-hairline-strong);
-  background: var(--color-surface-soft);
+.overview-week__today-label {
+  display: none;
+}
+
+@media (width >= 640px) {
+  .overview-week {
+    gap: var(--design-spacing-sm);
+  }
+
+  .overview-week__group {
+    flex: 0 1 auto;
+  }
+
+  .overview-week__label {
+    padding-inline: var(--design-spacing-xs);
+  }
+
+  .overview-week__label-full {
+    display: inline;
+  }
+
+  .overview-week__label-short {
+    display: none;
+  }
+
+  .overview-week__today {
+    gap: var(--design-spacing-xs);
+    flex: 0 0 auto;
+    inline-size: auto;
+    padding-inline: var(--design-spacing-md);
+  }
+
+  .overview-week__today-label {
+    display: inline;
+  }
 }
 
 .overview-week__today:disabled {
   opacity: var(--opacity-disabled);
   cursor: not-allowed;
+}
+
+.overview-week__today:not(:disabled):hover {
+  border-color: var(--color-hairline-strong);
+  background: var(--color-surface-soft);
 }
 
 @media (prefers-reduced-motion: reduce) {

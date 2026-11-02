@@ -59,41 +59,8 @@
 }
 
 .leave-requests-page__table {
-  inline-size: 100%;
   min-inline-size: var(--container-compact-max-inline-size);
-  border-collapse: collapse;
-  color: var(--color-body);
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-}
-
-.leave-requests-page__table th,
-.leave-requests-page__table td {
-  padding: var(--design-spacing-sm);
-  border-block-end: var(--border-width) solid var(--color-hairline);
-  text-align: start;
-  vertical-align: top;
   overflow-wrap: anywhere;
-}
-
-.leave-requests-page__table th {
-  color: var(--color-ink);
-}
-
-.leave-requests-page__table tbody th,
-.leave-requests-page__table tbody td {
-  vertical-align: middle;
-}
-
-.leave-requests-page__table thead {
-  background: var(--color-surface-soft);
-}
-
-.leave-requests-page__table tbody tr:last-child > * {
-  border-block-end: 0;
 }
 
 .leave-requests-page__status {
@@ -389,14 +356,6 @@
   }
 }
 
-.leave-requests-page__table thead th {
-  font-family: var(--font-body);
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  line-height: var(--type-caption-up-line);
-  letter-spacing: var(--type-caption-up-tracking);
-}
-
 .leave-requests-page__table tbody th {
   font-family: var(--font-body);
   font-size: var(--type-body-strong-size);
@@ -405,7 +364,7 @@
   letter-spacing: var(--type-body-strong-tracking);
 }
 
-.leave-requests-page__card-label, .leave-requests-page__status-badge.badge {
+.leave-requests-page__card-label {
   font-family: var(--font-body);
   font-size: var(--type-caption-up-size);
   font-weight: var(--type-caption-up-weight);
@@ -413,7 +372,9 @@
   letter-spacing: var(--type-caption-up-tracking);
 }
 
-.leave-requests-page__card-type, .leave-requests-page__card-requested, .leave-requests-page .btn-secondary {
+.leave-requests-page__card-type,
+.leave-requests-page__card-requested,
+.leave-requests-page .btn-secondary {
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);

@@ -16,8 +16,15 @@ type HomeLeaveDialogProps = Pick<ComponentProps<typeof Modal>,
 export function HomeLeaveDialog({ triggerRef, ...props }: HomeLeaveDialogProps) {
   const isMobile = useIsMobile();
   const { language } = useLanguage();
+  const restoreTriggerFocus = (event: Event) => {
+    const trigger = triggerRef.current;
+    if (trigger?.isConnected) {
+      event.preventDefault();
+      trigger.focus();
+    }
+  };
 
-  if (isMobile) return <Modal {...props} />;
+  if (isMobile) return <Modal {...props} onCloseAutoFocus={restoreTriggerFocus} />;
 
   return (
     <Sheet open={props.isOpen} onOpenChange={open => { if (!open) props.onClose(); }}>
@@ -26,13 +33,7 @@ export function HomeLeaveDialog({ triggerRef, ...props }: HomeLeaveDialogProps) 
         size={props.size}
         className={props.className}
         aria-describedby={undefined}
-        onCloseAutoFocus={event => {
-          const trigger = triggerRef.current;
-          if (trigger?.isConnected) {
-            event.preventDefault();
-            trigger.focus();
-          }
-        }}
+        onCloseAutoFocus={restoreTriggerFocus}
       >
         <SheetHeader>
           <div className="home-page__leave-sheet-heading">

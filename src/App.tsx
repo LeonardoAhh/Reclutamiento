@@ -27,13 +27,11 @@ import { ADMINISTRATION_PATH, CONFIGURACION_ROUTES, getConfiguracionHref, ROUTE_
 import { RutaDayEmployeesPage } from '@/components/ui/RutaDayEmployeesModal';
 import { RouteScannerPage } from '@/pages/configuracion-views/RouteScannerPage';
 import { DATA_UPDATE_PATH } from '@/features/data-update/types';
-import { ACCOUNT_PATH, ACTIVIDADES_PATH, HOME_PATH, LOGOUT_PATH, ORGANIZATION_CHART_PATH, TEAM_PATH, VACANCY_ASSIGNMENTS_PATH } from '@/components/layout/navigation';
-import { LogoutPage } from '@/features/account/LogoutPage';
+import { ACCOUNT_PATH, ACTIVIDADES_PATH, HOME_PATH, TEAM_PATH, VACANCY_ASSIGNMENTS_PATH } from '@/components/layout/navigation';
 import { DEPARTURE_REASONS_PATH, REPORT_COMPARISON_PATH, REPORT_DAY_ROUTE, REPORTS_PATH, isDailyReportPath } from '@/components/reporte-diario/navigation';
 import { CANDIDATE_METRICS_PATH } from '@/pages/candidate-metrics/navigation';
 import { LEAVE_REQUESTS_PATH } from '@/features/leave/requests';
 import { ACTIVITY_IMAGE_ROUTE } from '@/pages/activityImageNavigation';
-import { PERFORMANCE_EVALUATIONS_2027_PATH } from '@/features/performance-evaluations-2027/types';
 import { useLanguage } from '@/contexts/LanguageContext';
 import {
   AccountPage,
@@ -48,8 +46,6 @@ import {
   KpisPage,
   LeaveRequestsPage,
   MotivosBaja,
-  OrganizationChartPage,
-  PerformanceEvaluationsPage,
   Pipeline,
   ReportComparisonPage,
   ReporteDiario,
@@ -66,7 +62,6 @@ function ProtectedContent() {
   const normalizedPath = pathname.replace(/\/+$/, '');
   const recruiterRestrictedPath = pathname === ADMINISTRATION_PATH
     || normalizedPath === getConfiguracionHref('analisis')
-    || pathname === PERFORMANCE_EVALUATIONS_2027_PATH
     || normalizedPath === CANDIDATE_METRICS_PATH
     || normalizedPath === VACANCY_ASSIGNMENTS_PATH
     || isDailyReportPath(pathname);
@@ -169,13 +164,10 @@ function App() {
                   </RedirectIfAuthed>
                 }
               />
-              <Route path={LOGOUT_PATH} element={<AuthGuard><LogoutPage /></AuthGuard>} />
               <Route path="/session-expired" element={<SessionExpiredRoute />} />
               <Route element={<ProtectedShell />}>
                 <Route path={HOME_PATH} element={<HomePage />} />
-                <Route path={ORGANIZATION_CHART_PATH} element={<OrganizationChartPage />} />
                 <Route path={LEAVE_REQUESTS_PATH} element={<LeaveRequestsPage />} />
-                <Route path={PERFORMANCE_EVALUATIONS_2027_PATH} element={<PerformanceEvaluationsPage />} />
                 <Route path="/overview" element={<WithSupabaseData resources={WORKFORCE_DATA}><KpisPage /></WithSupabaseData>} />
                 <Route path={PLANTILLA_PATH} element={<PlantillaPage />} />
                 <Route path={VACANCY_ASSIGNMENTS_PATH} element={<WithSupabaseData resources={WORKFORCE_DATA}><VacancyAssignmentsPage /></WithSupabaseData>} />

@@ -1,20 +1,20 @@
-import { createPortal } from "react-dom";
-import { useLayoutEffect, useState, type ComponentPropsWithRef, type ReactNode } from "react";
+import { createPortal } from 'react-dom';
+import { useLayoutEffect, useState, type ComponentPropsWithRef, type ReactNode } from 'react';
 
 function useHeaderTitleTarget() {
   const [target, setTarget] = useState<HTMLElement | null | undefined>(undefined);
 
   useLayoutEffect(() => {
-    setTarget(document.getElementById("app-header-title"));
+    setTarget(document.getElementById('app-header-title'));
   }, []);
 
   return target;
 }
 
-export function PageHeading(props: ComponentPropsWithRef<"h1">) {
+export function PageHeading(props: ComponentPropsWithRef<'h1'>) {
   const target = useHeaderTitleTarget();
   if (target === undefined) return null;
-  const heading = <h1 {...props} />;
+  const heading = <h1 {...props}>{props.children}</h1>;
 
   return target ? createPortal(heading, target) : heading;
 }

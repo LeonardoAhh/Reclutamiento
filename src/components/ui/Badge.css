@@ -1,24 +1,32 @@
-/* Badges compartidos: superficies opacas y radios compactos en ambos temas. */
-
 .badge {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: var(--design-spacing-xxs);
+  max-inline-size: 100%;
+  min-block-size: var(--icon-size-lg);
   padding: var(--design-spacing-xxs) var(--design-spacing-sm);
+  border: var(--border-width) solid transparent;
   border-radius: var(--rounded-xs);
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--type-caption-up-size);
   font-weight: var(--type-caption-up-weight);
-  white-space: nowrap;
   line-height: var(--type-caption-up-line);
   letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+  vertical-align: middle;
 }
 
 .badge svg {
-  flex-shrink: 0;
+  inline-size: var(--icon-size-sm);
+  block-size: var(--icon-size-sm);
+  flex: none;
 }
 
-.badge--default {
+.badge--neutral {
   background: var(--color-surface-soft);
   color: var(--color-ink);
 }
@@ -28,17 +36,7 @@
   color: var(--color-on-neutral);
 }
 
-.badge--coral {
-  background: var(--color-primary);
-  color: var(--color-on-primary);
-}
-
-.badge--teal {
-  background: var(--color-accent-teal);
-  color: var(--color-on-neutral);
-}
-
-.badge--amber {
+.badge--warning {
   background: var(--color-warning-subtle);
   color: var(--color-warning-text);
 }
@@ -58,202 +56,43 @@
   color: var(--color-on-error);
 }
 
-.badge--compact,
-.reclutador-badge.badge--compact,
-.assignment-meta__badge.badge--compact {
-  gap: var(--design-spacing-xxs);
-  min-height: var(--icon-size-lg);
+.badge--compact {
   padding: var(--design-spacing-xxs) var(--design-spacing-xs);
-  border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-xs);
-  background: var(--color-canvas-elevated);
-  color: var(--color-ink);
-  font-family: var(--font-body);
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  line-height: var(--type-caption-up-line);
-  letter-spacing: var(--type-caption-up-tracking);
-  white-space: normal;
-  overflow-wrap: anywhere;
+  border-color: var(--color-hairline);
 }
 
-.badge--compact[data-state="pending"] { background: var(--color-warning-subtle); color: var(--color-warning-text); }
-.badge--compact[data-state="in_progress"],
-.badge--compact[data-state="new"] { background: var(--color-primary); color: var(--color-on-primary); }
-.badge--compact[data-state="completed"] { background: var(--color-success-subtle); color: var(--color-success-text); }
-
-/* ── Project Badges ── */
-
-.project-badge {
-  display: inline-flex;
-  align-items: center;
-  height: var(--icon-size-lg);
-  padding-inline: var(--design-spacing-xs);
-  border-radius: var(--rounded-xs);
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-label-sm-weight);
-  line-height: var(--type-body-sm-line);
-  background: var(--color-surface);
-  color: var(--color-ink);
-  border: var(--border-width) solid var(--color-hairline-soft);
-  white-space: nowrap;
-}
-
-.project-badge--compact {
-  padding-inline: var(--design-spacing-xxs);
-  width: var(--icon-size-md);
-  justify-content: center;
-  gap: 0;
-}
-
-.project-badge--vinoplastic {
-  color: var(--color-primary-text);
-}
-
-.project-badge__icon {
-  fill: currentColor;
-}
-
-/* ── Role Badges ── */
-
-.role-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--design-spacing-xxs);
-  min-height: var(--design-spacing-lg);
-  padding-inline: var(--design-spacing-xs);
-  background: var(--color-surface-soft);
-  border-radius: var(--rounded-xs);
-  font-size: var(--type-caption-sm-size);
-  line-height: var(--type-caption-sm-line);
-  color: var(--color-ink);
-  font-weight: var(--font-semibold);
-}
-
-.role-badge::before {
-  content: '';
-  width: var(--design-spacing-xs);
-  height: var(--design-spacing-xs);
-  flex-shrink: 0;
-  border-radius: var(--rounded-full);
-  background: var(--color-muted-soft);
-}
-
-.role-badge--admin::before { background: var(--color-accent-purple); }
-.role-badge--reclutador::before { background: var(--color-accent-teal); }
-
-/* ── Reclutador Badges (RECLUTADORES_ACTIVOS) ── */
-
-.reclutador-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--design-spacing-xxs);
-  min-height: var(--icon-size-lg);
-  padding-inline: var(--design-spacing-xs);
-  border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-xs);
-  background: var(--color-surface);
-  color: var(--color-ink);
-  font-family: var(--font-body);
-  font-size: var(--type-label-sm-size);
-  font-weight: var(--type-label-sm-weight);
-  line-height: var(--type-label-sm-line);
-  letter-spacing: var(--type-label-sm-tracking);
-  white-space: nowrap;
-  user-select: none;
-}
-
-.reclutador-badge--sm {
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-sm-strong-weight);
-  line-height: var(--type-body-sm-line);
-  letter-spacing: var(--type-body-sm-tracking);
-}
-
-/* Versión minimalista solo ícono */
-.reclutador-badge--icon-only {
+.badge--icon {
+  inline-size: var(--icon-size-lg);
+  block-size: var(--icon-size-lg);
   padding: 0;
-  width: var(--icon-size-lg);
-  height: var(--icon-size-lg);
-  justify-content: center;
-  border-radius: var(--rounded-full);
+  border-color: var(--color-hairline);
 }
 
-.reclutador-badge--icon-only.reclutador-badge--sm {
-  width: var(--icon-size-md);
-  height: var(--icon-size-md);
-  min-height: var(--icon-size-md);
+.badge[data-state='pending'],
+.badge[data-state='in_progress'] {
+  background: var(--color-warning-subtle);
+  color: var(--color-warning-text);
 }
 
-.reclutador-badge__icon {
-  flex-shrink: 0;
-  color: var(--color-accent-teal);
-}
-
-.reclutador-badge__name {
-  min-width: 0;
-  overflow-wrap: anywhere;
-}
-
-.reclutador-badge__role-tag {
-  font-family: var(--font-body);
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  line-height: var(--type-caption-up-line);
-  letter-spacing: var(--type-caption-up-tracking);
-  text-transform: uppercase;
-  margin-inline-start: var(--design-spacing-xxs);
-  padding-inline-start: var(--design-spacing-xs);
-  border-inline-start: var(--border-width) solid var(--color-hairline);
-}
-
-.reclutador-badge--coordinador .reclutador-badge__icon {
-  color: var(--color-accent-purple);
-}
-
-.reclutador-badge--person-daniela .reclutador-badge__icon {
-  color: var(--color-accent-orange);
-}
-
-.reclutador-badge__caret {
-  width: var(--icon-size-sm);
-  height: var(--icon-size-sm);
-  flex-shrink: 0;
-  color: var(--color-muted);
-}
-
-/* ── Status Badges (Plantilla, Backup) ── */
-
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--design-spacing-xxs);
-  padding: var(--design-spacing-xxs) var(--design-spacing-xs);
-  border-radius: var(--rounded-xs);
-  font-family: var(--font-body);
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--font-semibold);
-  line-height: var(--type-caption-up-line);
-  white-space: nowrap;
+.badge[data-state='new'] {
   background: var(--color-surface-soft);
   color: var(--color-ink);
-  user-select: none;
 }
 
-.status-badge--icon-only {
-  padding: 0;
-  width: var(--icon-size-lg);
-  height: var(--icon-size-lg);
-  justify-content: center;
-  /* Los indicadores solo-icono conservan la forma circular del sistema. */
-  border-radius: var(--rounded-full);
+.badge[data-state='completed'] {
+  background: var(--color-success-subtle);
+  color: var(--color-success-text);
 }
 
 .status-badge__icon {
-  flex-shrink: 0;
+  flex: none;
 }
 
-/* Colores semánticos usando sticker palette para el icono */
+.project-badge,
+.status-badge--starlite {
+  text-transform: none;
+}
+
 .status-badge--plantilla .status-badge__icon {
   color: var(--color-accent-teal);
 }
@@ -263,7 +102,7 @@
 }
 
 .status-badge--starlite .status-badge__icon {
-  color: var(--color-warning-text);
+  color: var(--color-accent-orange);
 }
 
 .status-badge--incapacidad .status-badge__icon {
@@ -271,15 +110,14 @@
 }
 
 .status-badge--proximo-ingreso .status-badge__icon {
-  color: var(--color-primary-text);
+  color: var(--color-muted);
 }
 
-/* ── AreaStatusBadge dots ── */
 .status-badge__dot {
-  width: var(--design-spacing-xxs);
-  height: var(--design-spacing-xxs);
+  inline-size: var(--design-spacing-xxs);
+  block-size: var(--design-spacing-xxs);
   border-radius: var(--rounded-full);
-  flex-shrink: 0;
+  flex: none;
   background: var(--color-muted);
 }
 
@@ -291,6 +129,63 @@
   background: var(--color-accent-orange);
 }
 
-.status-badge--sin_proceso .status-badge__dot {
+.status-badge--sin-proceso .status-badge__dot {
   background: var(--color-error);
+}
+
+.role-badge__dot {
+  inline-size: var(--design-spacing-xxs);
+  block-size: var(--design-spacing-xxs);
+  border-radius: var(--rounded-full);
+  flex: none;
+  background: var(--color-muted);
+}
+
+.role-badge[data-role='admin'] .role-badge__dot {
+  background: var(--color-accent-purple);
+}
+
+.role-badge[data-role='reclutador'] .role-badge__dot {
+  background: var(--color-accent-teal);
+}
+
+.reclutador-badge {
+  user-select: none;
+  text-transform: none;
+  font-size: var(--type-body-sm-semibold-size);
+  font-weight: var(--type-body-sm-semibold-weight);
+  line-height: var(--type-body-sm-semibold-line);
+  letter-spacing: var(--type-body-sm-semibold-tracking);
+}
+
+.reclutador-badge__icon {
+  color: var(--color-accent-teal);
+}
+
+.reclutador-badge--coordinador .reclutador-badge__icon {
+  color: var(--color-accent-purple);
+}
+
+.reclutador-badge--person-daniela .reclutador-badge__icon {
+  color: var(--color-accent-orange);
+}
+
+.reclutador-badge__name {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.reclutador-badge__role-tag {
+  margin-inline-start: var(--design-spacing-xxs);
+  padding-inline-start: var(--design-spacing-xs);
+  border-inline-start: var(--border-width) solid var(--color-hairline);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
+}
+
+.reclutador-badge__caret {
+  color: var(--color-muted);
 }

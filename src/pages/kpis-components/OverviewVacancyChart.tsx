@@ -1,5 +1,5 @@
-import { useId, useMemo } from "react";
-import { ClipboardList } from "lucide-react";
+import { useId, useMemo } from 'react';
+import { ClipboardList } from 'lucide-react';
 import {
   CartesianGrid,
   Line,
@@ -9,37 +9,34 @@ import {
   XAxis,
   YAxis,
   type TooltipProps,
-} from "recharts";
-import { useLanguage } from "@/contexts/LanguageContext";
-import type { IsoWeekRange } from "@/lib/dates";
-import type { AuthorizedPosition, Baja, Employee } from "@/lib/types";
-import type { CoverageKey } from "@/lib/workforceProjection";
-import { workforceText } from "@/pages/workforce-translations";
-import { coverageCategoryLabel } from "./overview-categories";
-import {
-  buildVacancySeries,
-  type VacancySeriesPoint,
-} from "./overview-vacancy-series";
-import "./OverviewVacancyChart.css";
+} from 'recharts';
+import { useLanguage } from '@/contexts/LanguageContext';
+import type { IsoWeekRange } from '@/lib/dates';
+import type { AuthorizedPosition, Baja, Employee } from '@/lib/types';
+import type { CoverageKey } from '@/lib/workforceProjection';
+import { workforceText } from '@/pages/workforce-translations';
+import { coverageCategoryLabel } from './overview-categories';
+import { buildVacancySeries, type VacancySeriesPoint } from './overview-vacancy-series';
+import './OverviewVacancyChart.css';
 
 const SERIES = [
   {
-    key: "plantilla",
-    label: "Plantilla",
-    color: "var(--color-error)",
+    key: 'plantilla',
+    label: 'Plantilla',
+    color: 'var(--color-error)',
     dash: undefined,
   },
   {
-    key: "backup",
-    label: "Backup",
-    color: "var(--color-accent-amber)",
-    dash: "var(--chart-dash-short)",
+    key: 'backup',
+    label: 'Backup',
+    color: 'var(--color-accent-amber)',
+    dash: 'var(--chart-dash-short)',
   },
   {
-    key: "starlite",
-    label: "Starlite",
-    color: "var(--color-accent-purple-deep)",
-    dash: "var(--chart-dash-dotted)",
+    key: 'starlite',
+    label: 'Starlite',
+    color: 'var(--color-accent-purple-deep)',
+    dash: 'var(--chart-dash-dotted)',
   },
 ] as const;
 
@@ -64,19 +61,14 @@ interface DotProps {
 }
 
 function isFinitePair(cx?: number, cy?: number): cx is number {
-  return (
-    typeof cx === "number" &&
-    Number.isFinite(cx) &&
-    typeof cy === "number" &&
-    Number.isFinite(cy)
-  );
+  return typeof cx === 'number' && Number.isFinite(cx) && typeof cy === 'number' && Number.isFinite(cy);
 }
 
 function SeriesDot({ cx, cy, fill, stroke, active = false }: DotProps) {
   if (!isFinitePair(cx, cy)) return <g />;
   return (
     <circle
-      className={`overview-chart__dot${active ? " overview-chart__dot--active" : ""}`}
+      className={`overview-chart__dot${active ? ' overview-chart__dot--active' : ''}`}
       cx={cx}
       cy={cy}
       fill={fill}
@@ -120,17 +112,12 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
 
   return (
     <div role="tooltip" className="overview-chart__tooltip">
-      <p className="overview-chart__tooltip-title">{String(label ?? "")}</p>
+      <p className="overview-chart__tooltip-title">{String(label ?? '')}</p>
       {payload.map((entry) => (
         <p key={entry.dataKey} className="overview-chart__tooltip-row">
-          <span
-            className={`overview-chart__swatch overview-chart__swatch--${entry.dataKey}`}
-            aria-hidden="true"
-          />
+          <span className={`overview-chart__swatch overview-chart__swatch--${entry.dataKey}`} aria-hidden="true" />
           <span>{entry.name}</span>
-          <strong>
-            {Number(entry.value).toLocaleString(language === "en" ? "en-US" : "es-MX")}
-          </strong>
+          <strong>{Number(entry.value).toLocaleString(language === 'en' ? 'en-US' : 'es-MX')}</strong>
         </p>
       ))}
     </div>
@@ -138,7 +125,7 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
 }
 
 function formatAxisValue(value: number): string {
-  return Number.isInteger(value) ? String(value) : "";
+  return Number.isInteger(value) ? String(value) : '';
 }
 
 export function OverviewVacancyChart({
@@ -173,18 +160,14 @@ export function OverviewVacancyChart({
   const isEmpty = data.length === 0;
 
   return (
-    <figure
-      className="overview-chart"
-      aria-labelledby={titleId}
-      aria-describedby={descriptionId}
-    >
+    <figure className="overview-chart" aria-labelledby={titleId} aria-describedby={descriptionId}>
       <header className="overview-chart__header">
         <div className="overview-chart__heading">
           <h2 id={titleId} className="overview-chart__title">
-            {t("Vacantes por día")}
+            {t('Vacantes por día')}
           </h2>
           <p className="overview-chart__subtitle">
-            {t("Resultado")}: {t(coverageCategoryLabel(resultKey))} · {rangeLabel}
+            {t('Resultado')}: {t(coverageCategoryLabel(resultKey))} · {rangeLabel}
           </p>
         </div>
 
@@ -192,19 +175,20 @@ export function OverviewVacancyChart({
           data-cuelume-tap=""
           type="button"
           className="overview-chart__action"
+          aria-label={t('Ver vacantes pendientes')}
           onClick={onOpenMissingPositions}
         >
-          <ClipboardList size={16} aria-hidden="true" />
-          <span>{t("Ver vacantes pendientes")}</span>
+          <ClipboardList className="overview-chart__action-icon" aria-hidden="true" />
+          <span className="overview-chart__action-label">{t('Ver vacantes pendientes')}</span>
         </button>
       </header>
 
       <p id={descriptionId} className="sr-only">
-        {t("Semana")} {week.week} · {rangeLabel}. {t("Series de vacantes")}:{" "}
-        {SERIES.map((series) => t(series.label)).join(", ")}.
+        {t('Semana')} {week.week} · {rangeLabel}. {t('Series de vacantes')}:{' '}
+        {SERIES.map((series) => t(series.label)).join(', ')}.
       </p>
 
-      <ul className="overview-chart__legend" aria-label={t("Series de vacantes")}>
+      <ul className="overview-chart__legend" aria-label={t('Series de vacantes')}>
         {SERIES.map((series) => (
           <li key={series.key}>
             <SeriesMarker dataKey={series.key} />
@@ -214,7 +198,7 @@ export function OverviewVacancyChart({
       </ul>
 
       {isEmpty ? (
-        <p className="overview-chart__empty">{t("Sin datos para mostrar")}</p>
+        <p className="overview-chart__empty">{t('Sin datos para mostrar')}</p>
       ) : (
         <div className="overview-chart__plot">
           <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
@@ -222,7 +206,7 @@ export function OverviewVacancyChart({
               data={data}
               margin={{ top: 16, right: 16, left: 0, bottom: 8 }}
               accessibilityLayer
-              aria-label={t("Vacantes por día")}
+              aria-label={t('Vacantes por día')}
             >
               <CartesianGrid
                 strokeDasharray="var(--chart-dash-short)"
@@ -235,8 +219,8 @@ export function OverviewVacancyChart({
                 tickLine={false}
                 dy={8}
                 tick={{
-                  fill: "var(--color-muted)",
-                  className: "overview-chart__axis",
+                  fill: 'var(--color-muted)',
+                  className: 'overview-chart__axis',
                 }}
               />
               <YAxis
@@ -246,15 +230,15 @@ export function OverviewVacancyChart({
                 allowDecimals={false}
                 tickFormatter={formatAxisValue}
                 tick={{
-                  fill: "var(--color-muted)",
-                  className: "overview-chart__axis",
+                  fill: 'var(--color-muted)',
+                  className: 'overview-chart__axis',
                 }}
               />
               <Tooltip
                 content={<CustomTooltip />}
                 cursor={{
-                  stroke: "var(--color-muted)",
-                  strokeDasharray: "var(--chart-dash-short)",
+                  stroke: 'var(--color-muted)',
+                  strokeDasharray: 'var(--chart-dash-short)',
                 }}
               />
               {SERIES.map((series) => (
@@ -267,19 +251,8 @@ export function OverviewVacancyChart({
                   strokeWidth="var(--chart-line-width)"
                   strokeDasharray={series.dash}
                   strokeLinecap="round"
-                  dot={
-                    <SeriesDot
-                      fill="var(--color-surface)"
-                      stroke={series.color}
-                    />
-                  }
-                  activeDot={
-                    <SeriesDot
-                      active
-                      fill={series.color}
-                      stroke="var(--color-surface)"
-                    />
-                  }
+                  dot={<SeriesDot fill="var(--color-surface)" stroke={series.color} />}
+                  activeDot={<SeriesDot active fill={series.color} stroke="var(--color-surface)" />}
                   isAnimationActive={false}
                 />
               ))}

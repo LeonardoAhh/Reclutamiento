@@ -1,15 +1,12 @@
-import { useState } from "react";
-import {
-  BriefcaseBusiness,
-  Plus,
-} from "lucide-react";
-import type { Activity, AuthorizedPosition } from "@/lib/types";
-import { useLanguage } from "@/contexts/LanguageContext";
-import { AssignmentMeta } from "@/components/ui/AssignmentMeta";
-import { Badge } from "@/components/ui/Badge";
-import { CustomSelect, type Option } from "@/components/ui/CustomSelect";
-import "./VacancyAssignmentSection.css";
-import { playSound } from "@/lib/sound";
+import { useState } from 'react';
+import { BriefcaseBusiness, Plus } from 'lucide-react';
+import type { Activity, AuthorizedPosition } from '@/lib/types';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { AssignmentMeta } from '@/components/ui/AssignmentMeta';
+import { Badge } from '@/components/ui/Badge';
+import { CustomSelect, type Option } from '@/components/ui/CustomSelect';
+import './VacancyAssignmentSection.css';
+import { playSound } from '@/lib/sound';
 
 interface VacancyAssignmentSectionProps {
   vacancies: Activity[];
@@ -51,13 +48,13 @@ export function VacancyAssignmentSection({
   onDelete,
 }: VacancyAssignmentSectionProps) {
   const { language } = useLanguage();
-  const en = language === "en";
+  const en = language === 'en';
   const [confirmingDeleteId, setConfirmingDeleteId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const confirmDelete = async (vacancy: Activity) => {
     if (!vacancy.id || deletingId) return;
     if (confirmingDeleteId !== vacancy.id) {
-      playSound("warning");
+      playSound('warning');
       setConfirmingDeleteId(vacancy.id);
       return;
     }
@@ -72,12 +69,14 @@ export function VacancyAssignmentSection({
     vacancies
       .reduce<Map<string, VacancyGroup>>((groups, vacancy) => {
         const vacancyWithAssignee = vacancy as ActivityWithAssignee;
-        const key = vacancy.asignado_a ?? "unassigned";
+        const key = vacancy.asignado_a ?? 'unassigned';
         const label = vacancy.asignado_a
           ? vacancyWithAssignee.asignado_a_profile?.display_name ||
             vacancyWithAssignee.asignado_a_profile?.username ||
-            (en ? "Unnamed" : "Sin nombre")
-          : (en ? "Unassigned" : "Sin asignar");
+            (en ? 'Unnamed' : 'Sin nombre')
+          : en
+            ? 'Unassigned'
+            : 'Sin asignar';
         const group = groups.get(key);
 
         if (group) {
@@ -96,28 +95,22 @@ export function VacancyAssignmentSection({
       .values(),
   ).sort((first, second) => {
     if (first.assigned !== second.assigned) return first.assigned ? -1 : 1;
-    return first.label.localeCompare(second.label, "es", {
-      sensitivity: "base",
+    return first.label.localeCompare(second.label, 'es', {
+      sensitivity: 'base',
     });
   });
 
   return (
-    <section
-      className="vacancy-assignment-section"
-      aria-labelledby="vacancy-assignment-heading"
-    >
+    <section className="vacancy-assignment-section" aria-labelledby="vacancy-assignment-heading">
       <header className="vacancy-assignment-section__header">
-        <h2
-          id="vacancy-assignment-heading"
-          className="vacancy-assignment-section__title"
-        >
-          {isAdmin ? (en ? "Vacancy assignments" : "Asignación de Vacantes") : (en ? "Your vacancies" : "Tus Vacantes")}
+        <h2 id="vacancy-assignment-heading" className="vacancy-assignment-section__title">
+          {isAdmin ? (en ? 'Vacancy assignments' : 'Asignación de Vacantes') : en ? 'Your vacancies' : 'Tus Vacantes'}
         </h2>
 
         {isAdmin && (
           <button type="button" className="btn-primary btn-sm activities-create-action" onClick={onCreate}>
             <Plus size="var(--icon-size-sm)" aria-hidden="true" />
-            <span>{en ? "Create" : "Crear"}</span>
+            <span>{en ? 'Create' : 'Crear'}</span>
           </button>
         )}
       </header>
@@ -129,11 +122,9 @@ export function VacancyAssignmentSection({
             className="vacancy-assignment-section__empty-icon"
             aria-hidden="true"
           />
-          <p className="vacancy-assignment-section__empty-title">
-            {en ? "No vacancies" : "Sin vacantes"}
-          </p>
+          <p className="vacancy-assignment-section__empty-title">{en ? 'No vacancies' : 'Sin vacantes'}</p>
           <p className="vacancy-assignment-section__empty-description">
-            {en ? "Create a new vacancy assignment manually." : "Crea una nueva asignación de vacante manualmente."}
+            {en ? 'Create a new vacancy assignment manually.' : 'Crea una nueva asignación de vacante manualmente.'}
           </p>
         </div>
       ) : (
@@ -142,131 +133,116 @@ export function VacancyAssignmentSection({
             <section
               key={group.key}
               className={`assignment-results vacancy-assignment-group vacancy-assignment-group--${Math.min(group.vacancies.length, 4)}`}
-              aria-label={`${en ? "Vacancies for" : "Vacantes de"} ${group.label}`}
+              aria-label={`${en ? 'Vacancies for' : 'Vacantes de'} ${group.label}`}
             >
               <header className="vacancy-assignment-group__header">
-                <h3 className="vacancy-assignment-group__title">
-                  {group.label}
-                </h3>
+                <h3 className="vacancy-assignment-group__title">{group.label}</h3>
                 <span
                   className="vacancy-assignment-group__count"
-                  aria-label={`${group.vacancies.length} ${group.vacancies.length === 1 ? (en ? "vacancy" : "vacante") : (en ? "vacancies" : "vacantes")}`}
+                  aria-label={`${group.vacancies.length} ${group.vacancies.length === 1 ? (en ? 'vacancy' : 'vacante') : en ? 'vacancies' : 'vacantes'}`}
                 >
                   {group.vacancies.length}
                 </span>
               </header>
 
               <div className="vacancy-assignment-grid" role="list">
-          {group.vacancies.map((vacancy) => {
-            const vacancyWithAssignee = vacancy as ActivityWithAssignee;
-            const [area, ...sectionParts] = (vacancy.descripcion || "").split(
-              " - ",
-            );
-            let section = sectionParts.join(" - ");
+                {group.vacancies.map((vacancy) => {
+                  const vacancyWithAssignee = vacancy as ActivityWithAssignee;
+                  const [area, ...sectionParts] = (vacancy.descripcion || '').split(' - ');
+                  let section = sectionParts.join(' - ');
 
-            if (!section) {
-              const match = positions.find(
-                (position) =>
-                  position.area === area && position.puesto === vacancy.titulo,
-              );
-              if (match?.seccion) section = match.seccion;
-            }
+                  if (!section) {
+                    const match = positions.find(
+                      (position) => position.area === area && position.puesto === vacancy.titulo,
+                    );
+                    if (match?.seccion) section = match.seccion;
+                  }
 
-            return (
-              <article
-                key={vacancy.id}
-                className="card vacancy-assignment-card"
-                role="listitem"
-              >
-                {isNew(vacancy) && (
-                  <Badge className="badge--compact vacancy-assignment-card__status" data-state="new">
-                    {en ? "New" : "Nueva"}
-                  </Badge>
-                )}
-                <div className="vacancy-assignment-card__body">
-                  <div className="vacancy-assignment-card__icon">
-                    <BriefcaseBusiness
-                      size="var(--icon-size-md)"
-                      aria-hidden="true"
-                    />
-                  </div>
-                  <div className="vacancy-assignment-card__content">
-                    <div className="vacancy-assignment-card__title-row">
-                      <h4 className="vacancy-assignment-card__title">
-                        {vacancy.titulo}
-                      </h4>
-                    </div>
-                    {section && (
-                      <p className="vacancy-assignment-card__section">
-                        {section}
-                      </p>
-                    )}
-                  </div>
-                </div>
+                  return (
+                    <article key={vacancy.id} className="card vacancy-assignment-card" role="listitem">
+                      {isNew(vacancy) && (
+                        <Badge size="compact" className="vacancy-assignment-card__status" data-state="new">
+                          {en ? 'New' : 'Nueva'}
+                        </Badge>
+                      )}
+                      <div className="vacancy-assignment-card__body">
+                        <div className="vacancy-assignment-card__icon">
+                          <BriefcaseBusiness size="var(--icon-size-md)" aria-hidden="true" />
+                        </div>
+                        <div className="vacancy-assignment-card__content">
+                          <div className="vacancy-assignment-card__title-row">
+                            <h4 className="vacancy-assignment-card__title">{vacancy.titulo}</h4>
+                          </div>
+                          {section && <p className="vacancy-assignment-card__section">{section}</p>}
+                        </div>
+                      </div>
 
-                <footer className="vacancy-assignment-card__footer">
-                  <AssignmentMeta
-                    appearance="compact"
-                    assignee={
-                      vacancy.asignado_a
-                        ? {
-                            id: vacancy.asignado_a,
-                            display_name:
-                              vacancyWithAssignee.asignado_a_profile
-                                ?.display_name,
-                            username:
-                              vacancyWithAssignee.asignado_a_profile?.username,
+                      <footer className="vacancy-assignment-card__footer">
+                        <AssignmentMeta
+                          appearance="compact"
+                          assignee={
+                            vacancy.asignado_a
+                              ? {
+                                  id: vacancy.asignado_a,
+                                  display_name: vacancyWithAssignee.asignado_a_profile?.display_name,
+                                  username: vacancyWithAssignee.asignado_a_profile?.username,
+                                }
+                              : undefined
                           }
-                        : undefined
-                    }
-                    currentUserId={currentUserId}
-                  />
-                  {isAdmin && (
-                    <div className="vacancy-assignment-card__footer-actions">
-                      <CustomSelect
-                        className="vacancy-assignment-card__select"
-                        value={vacancy.asignado_a || ""}
-                        options={recruiterOptions}
-                        showPlaceholderOption={false}
-                        disabled={isAssigning || deletingId !== null}
-                        aria-label={`${en ? "Assign recruiter for" : "Asignar reclutador a"} ${vacancy.titulo}`}
-                        customTrigger={
-                          <span className="vacancy-assignment-card__action-label">
-                            {en ? "Assign to..." : "Asignar a..."}
-                          </span>
-                        }
-                        onChange={(assigneeId) => {
-                          if (vacancy.id) onAssign(vacancy.id, assigneeId);
-                        }}
-                      />
-                      <button
-                        type="button"
-                        className="vacancy-assignment-card__action vacancy-assignment-card__action--delete"
-                        onClick={() => void confirmDelete(vacancy)}
-                        onBlur={() => {
-                          if (deletingId !== vacancy.id) setConfirmingDeleteId(null);
-                        }}
-                        onKeyDown={(event) => {
-                          if (event.key === "Escape") setConfirmingDeleteId(null);
-                        }}
-                        disabled={deletingId !== null || !vacancy.id}
-                        aria-busy={deletingId === vacancy.id}
-                        aria-label={`${confirmingDeleteId === vacancy.id ? (en ? "Confirm deletion of" : "Confirmar eliminación de") : (en ? "Delete" : "Eliminar")} ${vacancy.titulo}`}
-                      >
-                        <span className="vacancy-assignment-card__action-label">
-                          {deletingId === vacancy.id
-                            ? (en ? "Deleting..." : "Eliminando...")
-                            : confirmingDeleteId === vacancy.id
-                              ? (en ? "Confirm" : "Confirmar")
-                              : (en ? "Delete" : "Eliminar")}
-                        </span>
-                      </button>
-                    </div>
-                  )}
-                </footer>
-              </article>
-            );
-          })}
+                          currentUserId={currentUserId}
+                        />
+                        {isAdmin && (
+                          <div className="vacancy-assignment-card__footer-actions">
+                            <CustomSelect
+                              className="vacancy-assignment-card__select"
+                              value={vacancy.asignado_a || ''}
+                              options={recruiterOptions}
+                              showPlaceholderOption={false}
+                              disabled={isAssigning || deletingId !== null}
+                              aria-label={`${en ? 'Assign recruiter for' : 'Asignar reclutador a'} ${vacancy.titulo}`}
+                              customTrigger={
+                                <span className="vacancy-assignment-card__action-label">
+                                  {en ? 'Assign to...' : 'Asignar a...'}
+                                </span>
+                              }
+                              onChange={(assigneeId) => {
+                                if (vacancy.id) onAssign(vacancy.id, assigneeId);
+                              }}
+                            />
+                            <button
+                              type="button"
+                              className="vacancy-assignment-card__action vacancy-assignment-card__action--delete"
+                              onClick={() => void confirmDelete(vacancy)}
+                              onBlur={() => {
+                                if (deletingId !== vacancy.id) setConfirmingDeleteId(null);
+                              }}
+                              onKeyDown={(event) => {
+                                if (event.key === 'Escape') setConfirmingDeleteId(null);
+                              }}
+                              disabled={deletingId !== null || !vacancy.id}
+                              aria-busy={deletingId === vacancy.id}
+                              aria-label={`${confirmingDeleteId === vacancy.id ? (en ? 'Confirm deletion of' : 'Confirmar eliminación de') : en ? 'Delete' : 'Eliminar'} ${vacancy.titulo}`}
+                            >
+                              <span className="vacancy-assignment-card__action-label">
+                                {deletingId === vacancy.id
+                                  ? en
+                                    ? 'Deleting...'
+                                    : 'Eliminando...'
+                                  : confirmingDeleteId === vacancy.id
+                                    ? en
+                                      ? 'Confirm'
+                                      : 'Confirmar'
+                                    : en
+                                      ? 'Delete'
+                                      : 'Eliminar'}
+                              </span>
+                            </button>
+                          </div>
+                        )}
+                      </footer>
+                    </article>
+                  );
+                })}
               </div>
             </section>
           ))}

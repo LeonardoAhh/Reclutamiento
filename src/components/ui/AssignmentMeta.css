@@ -15,7 +15,6 @@
   margin: 0;
 }
 
-.assignment-meta__value .reclutador-badge:not(.badge--compact),
 .assignment-meta__badge:not(.badge--compact) {
   max-inline-size: 100%;
   white-space: normal;
@@ -31,18 +30,9 @@
   overflow-wrap: anywhere;
 }
 
-.assignment-meta__value .badge--compact {
-  max-inline-size: 100%;
-}
-
 .assignment-meta__badge {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  padding: var(--design-spacing-xxs) var(--spacing-xs);
-  border-radius: var(--rounded-sm);
-  background: var(--color-surface-soft);
-  color: var(--color-ink);
+  justify-content: flex-start;
+  text-transform: none;
 }
 
 .assignment-meta__badge svg {

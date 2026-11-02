@@ -56,12 +56,7 @@
 }
 
 .workforce-projection__card-badge {
-  font-weight: var(--type-caption-up-weight);
   font-variant-numeric: tabular-nums;
-  font-family: var(--font-body);
-  font-size: var(--type-caption-up-size);
-  line-height: var(--type-caption-up-line);
-  letter-spacing: var(--type-caption-up-tracking);
 }
 
 .workforce-projection__card-body {

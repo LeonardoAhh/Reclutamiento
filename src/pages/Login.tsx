@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { BrandMark } from "@/components/ui/BrandMark";
+import { DotGrid } from "@/components/ui/DotGrid";
 import { bindSoundInteractions } from "@/lib/sound";
 import { LoginForm } from "./LoginForm";
 import { LoginPreferences } from "./LoginPreferences";
@@ -25,16 +25,13 @@ export function Login() {
 
   return (
     <main ref={mainRef} className="login">
+      <DotGrid />
       <LoginPreferences
         language={language}
         storageError={storageError}
       />
       <div className="login__form-panel">
         <div className="login__content">
-          <div className="login__brand">
-            <BrandMark className="login__brand-icon" />
-            <span className="login__brand-name">ViñoPlastic</span>
-          </div>
           <LoginForm
             language={language}
             onRememberedUsernameChange={setRememberedUsername}

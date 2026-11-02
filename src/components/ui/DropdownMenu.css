@@ -5,7 +5,7 @@
   align-items: center;
   justify-content: center;
   border: var(--border-width) solid transparent;
-  border-radius: var(--rounded-full);
+  border-radius: var(--radius-control);
   background: transparent;
   color: var(--color-body);
   cursor: pointer;
@@ -15,8 +15,8 @@
     border-color var(--transition-fast);
 }
 
-.dropdown-menu-trigger:where(:not(:disabled):not([data-disabled])):hover,
-.dropdown-menu-trigger[data-state="open"] {
+.dropdown-menu-trigger:where(:not(:disabled, [data-disabled])):hover,
+.dropdown-menu-trigger[data-state='open'] {
   border-color: var(--color-hairline-soft);
   background: var(--color-surface-soft);
   color: var(--color-ink);
@@ -36,17 +36,17 @@
 .dropdown-menu-content {
   z-index: var(--layer-menu);
   display: flex;
-  min-inline-size: var(--menu-min-inline-size);
+  min-inline-size: min(var(--menu-min-inline-size), var(--radix-dropdown-menu-content-available-width));
   max-inline-size: var(--radix-dropdown-menu-content-available-width);
   max-block-size: var(--radix-dropdown-menu-content-available-height);
   overflow: auto;
   overscroll-behavior: contain;
   flex-direction: column;
   gap: var(--design-spacing-xxs);
-  padding: var(--spacing-xs);
+  padding: var(--design-spacing-xxs);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--radius-menu);
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
   box-shadow: var(--shadow-elevated);
   transform-origin: var(--radix-dropdown-menu-content-transform-origin);
   will-change: transform, opacity;
@@ -57,25 +57,26 @@
   letter-spacing: var(--type-body-md-tracking);
 }
 
-.dropdown-menu-content[data-state="open"][data-side="top"] {
+.dropdown-menu-content[data-state='open'][data-side='top'] {
   animation: dropdown-menu-slide-up-and-fade var(--transition-base);
 }
 
-.dropdown-menu-content[data-state="open"][data-side="right"] {
+.dropdown-menu-content[data-state='open'][data-side='right'] {
   animation: dropdown-menu-slide-right-and-fade var(--transition-base);
 }
 
-.dropdown-menu-content[data-state="open"][data-side="bottom"] {
+.dropdown-menu-content[data-state='open'][data-side='bottom'] {
   animation: dropdown-menu-slide-down-and-fade var(--transition-base);
 }
 
-.dropdown-menu-content[data-state="open"][data-side="left"] {
+.dropdown-menu-content[data-state='open'][data-side='left'] {
   animation: dropdown-menu-slide-left-and-fade var(--transition-base);
 }
 
 .dropdown-menu-label {
-  padding: var(--spacing-xs) var(--spacing-sm);
+  padding: var(--design-spacing-xxs) var(--design-spacing-xs);
   color: var(--color-muted);
+  text-transform: uppercase;
   font-family: var(--font-body);
   font-size: var(--type-caption-up-size);
   font-weight: var(--type-caption-up-weight);
@@ -90,15 +91,17 @@
 .dropdown-menu-item {
   display: flex;
   inline-size: 100%;
+  min-inline-size: 0;
   min-block-size: var(--touch-target-min);
   align-items: center;
   justify-content: flex-start;
-  gap: var(--spacing-sm);
-  padding-inline: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
+  padding-inline: var(--design-spacing-xs);
   border-radius: var(--radius-control);
   color: var(--color-body);
   text-align: start;
   text-decoration: none;
+  overflow-wrap: anywhere;
   cursor: pointer;
   user-select: none;
   font-family: var(--font-body);
@@ -108,10 +111,8 @@
   letter-spacing: var(--type-body-md-tracking);
 }
 
-/* Un enlace dentro del ítem hereda el color y nunca se subraya. */
-.dropdown-menu-item a {
-  color: inherit;
-  text-decoration: none;
+.dropdown-menu-item > span {
+  min-inline-size: 0;
 }
 
 .dropdown-menu-item[data-highlighted] {
@@ -124,13 +125,13 @@
   opacity: var(--opacity-disabled);
 }
 
-.dropdown-menu-item[data-variant="destructive"] {
-  color: var(--color-error);
+.dropdown-menu-item[data-variant='destructive'] {
+  color: var(--color-error-text);
 }
 
-.dropdown-menu-item[data-variant="destructive"][data-highlighted] {
+.dropdown-menu-item[data-variant='destructive'][data-highlighted] {
   background: var(--color-error-tint);
-  color: var(--color-error);
+  color: var(--color-error-text);
 }
 
 .dropdown-menu-item svg {
@@ -194,7 +195,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .dropdown-menu-content[data-state="open"] {
+  .dropdown-menu-content[data-state='open'] {
     animation: none;
   }
 }

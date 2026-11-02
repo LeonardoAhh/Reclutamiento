@@ -26,10 +26,15 @@ import { toast } from "@/lib/notify";
 import { playSound } from '@/lib/sound';
 import "./SidebarQuickActions.css";
 
+export type SidebarQuickActionsControls = {
+  canReviewRequests: boolean;
+  openLeavePolicy: (focusTarget: HTMLElement) => void;
+};
+
 type SidebarQuickActionsProps = {
   profile: Profile | null;
   members: readonly TeamMember[];
-  children: (actions: { canReviewRequests: boolean; openLeavePolicy: (focusTarget: HTMLElement) => void }) => ReactNode;
+  children: (actions: SidebarQuickActionsControls) => ReactNode;
 };
 
 function LeaveStepProgress({ step, en }: { step: 1 | 2 | 3; en: boolean }) {

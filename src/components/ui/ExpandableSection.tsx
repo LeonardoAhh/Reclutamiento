@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
+import { Badge } from './Badge';
 import './ExpandableSection.css';
 
 interface ExpandableSectionProps {
@@ -51,18 +52,15 @@ export function ExpandableSection({
       >
         <span className="expandable-section__header">
           <span className="expandable-section__title">{title}</span>
-          {badge && <span className="expandable-section__badge">{badge}</span>}
+          {badge && (
+            <Badge size="compact" variant="neutral">
+              {badge}
+            </Badge>
+          )}
         </span>
-        <MorphingIcon
-          icon={isExpanded ? ChevronUp : ChevronDown}
-          size={16}
-          className="expandable-section__icon"
-        />
+        <MorphingIcon icon={isExpanded ? ChevronUp : ChevronDown} size={16} className="expandable-section__icon" />
       </button>
-      <div
-        className="expandable-section__content"
-        aria-hidden={!isExpanded}
-      >
+      <div className="expandable-section__content" aria-hidden={!isExpanded}>
         <div className="expandable-section__content-wrapper">
           <div className="expandable-section__inner">{children}</div>
         </div>

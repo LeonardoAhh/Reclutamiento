@@ -15,8 +15,12 @@ export function SidebarGroup({ section, role, collapsed, onNavigate }: SidebarGr
 
   return (
     <div className="sidebar__group">
-      {section.label && <h2 id={titleId} className="sidebar__group-label">{section.label}</h2>}
-      <ul className="sidebar__list" role="list" aria-labelledby={section.label ? titleId : undefined}>
+      {section.label && (
+        <span id={titleId} className="sidebar__group-label">
+          {section.label}
+        </span>
+      )}
+      <ul className="sidebar__list" aria-labelledby={section.label ? titleId : undefined}>
         {items.map((item) => (
           <SidebarItem key={item.to} item={item} collapsed={collapsed} onNavigate={onNavigate} />
         ))}

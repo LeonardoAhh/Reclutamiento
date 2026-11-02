@@ -25,9 +25,7 @@ export function PipelineTableRow({ candidate: c, isDesktop, language, onOpen }: 
   const { members } = useTeamDirectory();
   const { apellidos, nombres } = splitCandidateName(c.nombre);
   const fechaEntrevista = c.fecha_cita ? formatInterviewDate(c.fecha_cita, language) : null;
-  const fechaEntrevistaDesktop = c.fecha_cita
-    ? formatWeekdayDate(c.fecha_cita, en ? 'en-US' : 'es-MX')
-    : null;
+  const fechaEntrevistaDesktop = c.fecha_cita ? formatWeekdayDate(c.fecha_cita, en ? 'en-US' : 'es-MX') : null;
   const reclutador = c.reclutador ? getReclutadorMeta(c.reclutador, members) : null;
 
   return (
@@ -45,7 +43,9 @@ export function PipelineTableRow({ candidate: c, isDesktop, language, onOpen }: 
       }}
     >
       <div className="pipeline__ccard-name-col" role={isDesktop ? 'cell' : undefined}>
-        <span className="pipeline__name-avatar" aria-hidden="true">{getInitials(c.nombre)}</span>
+        <span className="pipeline__name-avatar" aria-hidden="true">
+          {getInitials(c.nombre)}
+        </span>
         <span className="pipeline__name-desktop">{c.nombre}</span>
 
         {/* Resumen móvil: nombre y cita, puesto, sección, estado y reclutador. */}
@@ -66,7 +66,9 @@ export function PipelineTableRow({ candidate: c, isDesktop, language, onOpen }: 
 
         <div className="pipeline__ccard-mobile-info">
           <div className="pipeline__ccard-mobile-info__puesto">
-            <span className="pipeline__puesto-name" title={c.puesto}>{c.puesto}</span>
+            <span className="pipeline__puesto-name" title={c.puesto}>
+              {c.puesto}
+            </span>
             {c.seccion && <span className="pipeline__ccard-mobile-info__seccion">{c.seccion}</span>}
           </div>
           <div className="pipeline__ccard-mobile-info__meta">
@@ -85,25 +87,21 @@ export function PipelineTableRow({ candidate: c, isDesktop, language, onOpen }: 
 
       <div className="pipeline__ccard-puesto-col" role={isDesktop ? 'cell' : undefined}>
         <div className="pipeline__puesto">
-          <div className="pipeline__puesto-name" title={c.puesto}>{c.puesto}</div>
+          <div className="pipeline__puesto-name" title={c.puesto}>
+            {c.puesto}
+          </div>
         </div>
       </div>
 
-      <div
-        className="pipeline__ccard-recruiter-col pipeline__cell-recruiter"
-        role={isDesktop ? 'cell' : undefined}
-      >
+      <div className="pipeline__ccard-recruiter-col pipeline__cell-recruiter" role={isDesktop ? 'cell' : undefined}>
         {c.reclutador ? (
-          <ReclutadorBadge nombre={c.reclutador} size="sm" className="pipeline__recruiter-badge" />
+          <ReclutadorBadge nombre={c.reclutador} size="sm" />
         ) : (
           <span className="pipeline__muted">—</span>
         )}
       </div>
 
-      <div
-        className="pipeline__ccard-dates-col pipeline__cell-dates"
-        role={isDesktop ? 'cell' : undefined}
-      >
+      <div className="pipeline__ccard-dates-col pipeline__cell-dates" role={isDesktop ? 'cell' : undefined}>
         {fechaEntrevistaDesktop ? (
           <span className="pipeline__date">
             <CalendarDays size={13} aria-hidden="true" />

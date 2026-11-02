@@ -430,8 +430,8 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   grid-template-areas:
-    "identity actions"
-    "details details";
+    'identity actions'
+    'details details';
   align-items: center;
   column-gap: var(--design-spacing-sm);
   row-gap: var(--design-spacing-xs);
@@ -555,43 +555,7 @@
 
 .data-update-status {
   align-self: flex-start;
-  padding: var(--design-spacing-xxs) var(--design-spacing-xs);
-  border: var(--border-width) solid var(--color-control-border);
-  border-radius: var(--rounded-xs);
-  color: var(--color-body);
-  background: var(--color-surface-soft);
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  line-height: var(--type-caption-up-line);
-  letter-spacing: var(--type-caption-up-tracking);
   text-transform: capitalize;
-  font-family: var(--font-body);
-}
-
-.data-update-status--en_proceso {
-  color: var(--color-warning-text);
-  background: var(--color-warning-subtle);
-  border-color: var(--color-warning-text);
-}
-
-.data-update-status--completado {
-  color: var(--color-success-text);
-  background: var(--color-success-subtle);
-  border-color: var(--color-success-text);
-}
-
-.data-update-status--icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  border: 0;
-  background: none;
-}
-
-.data-update-status--icon svg {
-  inline-size: var(--icon-size-sm);
-  block-size: var(--icon-size-sm);
 }
 
 .data-update-message,
@@ -800,7 +764,7 @@
   accent-color: var(--color-primary);
 }
 
-.data-update-binary-field[aria-invalid="true"] .data-update-binary-field__options label {
+.data-update-binary-field[aria-invalid='true'] .data-update-binary-field__options label {
   background: var(--color-error-subtle);
   border-color: var(--color-error-text);
 }
@@ -1350,8 +1314,6 @@
   background: var(--color-hairline);
 }
 
-
-
 @media (min-width: 768px) {
   .data-update-completed-card {
     padding: var(--design-spacing-md);
@@ -1474,7 +1436,6 @@
     flex-direction: row;
     align-items: center;
   }
-
 }
 
 @media (max-width: 767px) {
@@ -1527,7 +1488,6 @@
 }
 
 @media (min-width: 1080px) {
-
   .form-wizard .data-update-transport-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -1577,8 +1537,8 @@
 @media (min-width: 1440px) {
   .data-update-completed-card {
     grid-template-areas:
-      "identity identity"
-      "details actions";
+      'identity identity'
+      'details actions';
     align-items: end;
   }
 }

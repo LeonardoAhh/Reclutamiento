@@ -33,8 +33,8 @@
       minmax(0, 1fr);
     grid-template-rows: min-content 1fr;
     grid-template-areas:
-      "search detail"
-      "list detail";
+      'search detail'
+      'list detail';
     align-items: start;
   }
 
@@ -50,18 +50,18 @@
     grid-area: detail;
   }
 
-  .rutas-layout[data-search-active="true"] {
-    grid-template-areas: "search" "detail";
+  .rutas-layout[data-search-active='true'] {
+    grid-template-areas: 'search' 'detail';
     grid-template-rows: auto auto;
   }
 }
 
-.rutas-layout[data-search-active="true"] {
+.rutas-layout[data-search-active='true'] {
   grid-template-columns: minmax(0, 1fr);
 }
 
-.rutas-layout[data-search-active="true"] .rutas-list-panel,
-.rutas-layout[data-search-active="true"] .rutas-back-btn {
+.rutas-layout[data-search-active='true'] .rutas-list-panel,
+.rutas-layout[data-search-active='true'] .rutas-back-btn {
   display: none;
 }
 
@@ -73,21 +73,21 @@
 ═══════════════════════════════════════════════════════════ */
 
 @media (max-width: 768px) {
-  .rutas-layout[data-mobile-view="detail"] .rutas-list-panel {
+  .rutas-layout[data-mobile-view='detail'] .rutas-list-panel {
     display: none;
   }
 
-  .rutas-layout[data-mobile-view="list"] .rutas-detail-pane {
+  .rutas-layout[data-mobile-view='list'] .rutas-detail-pane {
     display: none;
   }
 
   /* Al ver el detalle de una ruta ocultamos la cabecera y la búsqueda.
      El botón "Todas las rutas" se conserva. */
-  .rutas-page[data-mobile-view="detail"] .rutas-toolbar {
+  .rutas-page[data-mobile-view='detail'] .rutas-toolbar {
     display: none;
   }
 
-  .rutas-page[data-search-active="true"] .rutas-toolbar {
+  .rutas-page[data-search-active='true'] .rutas-toolbar {
     display: block;
   }
 }
@@ -338,22 +338,6 @@
 }
 
 /* ─── Match badge (search active) ─── */
-
-.ruta-card__match-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: var(--design-spacing-xxs) var(--spacing-sm);
-  border-radius: var(--rounded-sm);
-  background: var(--color-hairline-soft);
-  color: var(--color-charcoal);
-  font-family: var(--font-body);
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  white-space: nowrap;
-  flex-shrink: 0;
-  line-height: var(--type-caption-up-line);
-  letter-spacing: var(--type-caption-up-tracking);
-}
 
 .ruta-card--has-match {
   border-color: var(--color-hairline-strong);
@@ -748,7 +732,6 @@
   letter-spacing: var(--type-body-md-tracking);
 }
 
-
 /* ═══════════════════════════════════════════════════════════
    DAILY CAPACITY LIST
 ═══════════════════════════════════════════════════════════ */
@@ -775,7 +758,9 @@
   text-align: left;
   text-decoration: none;
   cursor: pointer;
-  transition: border-color var(--transition-fast), transform var(--transition-fast);
+  transition:
+    border-color var(--transition-fast),
+    transform var(--transition-fast);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
@@ -884,15 +869,15 @@
     inline-size: 100%;
   }
 
-  .rutas-page[data-mobile-view="detail"] .rutas-toolbar {
+  .rutas-page[data-mobile-view='detail'] .rutas-toolbar {
     display: block;
   }
 
-  .rutas-page[data-mobile-view="detail"]:not([data-search-active="true"]) .rutas-search-container {
+  .rutas-page[data-mobile-view='detail']:not([data-search-active='true']) .rutas-search-container {
     display: none;
   }
 
-  .rutas-page[data-mobile-view="detail"]:not([data-search-active="true"]) .rutas-scanner-action {
+  .rutas-page[data-mobile-view='detail']:not([data-search-active='true']) .rutas-scanner-action {
     margin-top: 0;
   }
 }

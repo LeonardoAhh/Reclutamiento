@@ -1,4 +1,3 @@
-
 /**
  * KpiHeroChart.tsx
  * Gráfica de líneas 2D para el dashboard de KPIs de Reclutamiento.
@@ -11,6 +10,7 @@
  */
 
 import './KpiHeroChart.css';
+import { Badge } from './Badge';
 import { useMemo, useId } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useIsMobile } from '@/hooks/useIsMobile';
@@ -69,9 +69,30 @@ const PALETTE = {
 };
 
 const SERIES = [
-  { key: 'vacantesPlantilla', label: 'Plantilla', name: 'Vacantes Plantilla', axis: 'left', color: PALETTE.red, dash: 'var(--chart-dash-long)' },
-  { key: 'vacantesBackup', label: 'Backup', name: 'Vacantes Backup', axis: 'left', color: PALETTE.amber, dash: 'var(--chart-dash-short)' },
-  { key: 'vacantesStarlite', label: 'Starlite', name: 'Vacantes Starlite', axis: 'left', color: PALETTE.starlite, dash: 'var(--chart-dash-dotted)' },
+  {
+    key: 'vacantesPlantilla',
+    label: 'Plantilla',
+    name: 'Vacantes Plantilla',
+    axis: 'left',
+    color: PALETTE.red,
+    dash: 'var(--chart-dash-long)',
+  },
+  {
+    key: 'vacantesBackup',
+    label: 'Backup',
+    name: 'Vacantes Backup',
+    axis: 'left',
+    color: PALETTE.amber,
+    dash: 'var(--chart-dash-short)',
+  },
+  {
+    key: 'vacantesStarlite',
+    label: 'Starlite',
+    name: 'Vacantes Starlite',
+    axis: 'left',
+    color: PALETTE.starlite,
+    dash: 'var(--chart-dash-dotted)',
+  },
 ] as const;
 
 function SeriesMarker({ seriesKey }: { seriesKey: string }) {
@@ -109,20 +130,14 @@ function CustomTooltip({ active, payload, label, presentation }: CustomTooltipIn
 
   return (
     <div role="tooltip" className={`kpi-hero-tooltip${presentation ? ' kpi-hero-tooltip--presentation' : ''}`}>
-      <p className="kpi-hero-tooltip__title">
-        {label}
-      </p>
+      <p className="kpi-hero-tooltip__title">{label}</p>
       {payload.map((entry) => {
         const valor = entry.value.toLocaleString(language === 'en' ? 'en-US' : 'es-MX');
 
         return (
-          <p
-            key={entry.dataKey}
-            className="kpi-hero-tooltip__row"
-          >
+          <p key={entry.dataKey} className="kpi-hero-tooltip__row">
             <SeriesMarker seriesKey={entry.dataKey} />
-            <span>{entry.name}:</span>{' '}
-            <strong>{valor}</strong>
+            <span>{entry.name}:</span> <strong>{valor}</strong>
           </p>
         );
       })}
@@ -143,12 +158,7 @@ function formatYLeft(value: number): string {
    cy/r: Expected length, 'undefined'". Solo renderizamos el punto cuando
    las coordenadas son números finitos. */
 function isFinitePair(cx?: number, cy?: number): cx is number {
-  return (
-    typeof cx === 'number' &&
-    Number.isFinite(cx) &&
-    typeof cy === 'number' &&
-    Number.isFinite(cy)
-  );
+  return typeof cx === 'number' && Number.isFinite(cx) && typeof cy === 'number' && Number.isFinite(cy);
 }
 
 interface SafeDotProps {
@@ -166,7 +176,13 @@ function SafeLineDot({
 }: SafeDotProps & { fill: string; stroke?: string; active?: boolean }) {
   if (!isFinitePair(cx, cy) || typeof cy !== 'number') return <g />;
   return (
-    <circle className={`kpi-hero-line-dot${active ? ' kpi-hero-line-dot--active' : ''}`} cx={cx} cy={cy} fill={fill} stroke={stroke} />
+    <circle
+      className={`kpi-hero-line-dot${active ? ' kpi-hero-line-dot--active' : ''}`}
+      cx={cx}
+      cy={cy}
+      fill={fill}
+      stroke={stroke}
+    />
   );
 }
 
@@ -185,14 +201,10 @@ function DayCard({ data }: DayCardProps) {
   return (
     <div className={`kpi-hero-day-card${isCritical ? ' kpi-hero-day-card--critical' : ''}`}>
       {/* Día */}
-      <p className="kpi-hero-day-card__day">
-        {data.day}
-      </p>
+      <p className="kpi-hero-day-card__day">{data.day}</p>
 
       {/* % cobertura */}
-      <p className="kpi-hero-day-card__coverage">
-        {formatPercentage(data.cobertura)}
-      </p>
+      <p className="kpi-hero-day-card__coverage">{formatPercentage(data.cobertura)}</p>
 
       <p className={`kpi-hero-day-card__vacancies${hasAlta ? ' kpi-hero-day-card__vacancies--high' : ''}`}>
         {data.vacantesPlantilla}P
@@ -200,9 +212,7 @@ function DayCard({ data }: DayCardProps) {
       <p className={`kpi-hero-day-card__vacancies${hasAlta ? ' kpi-hero-day-card__vacancies--high' : ''}`}>
         +{data.vacantesBackup}B
       </p>
-      <p className="kpi-hero-day-card__vacancies">
-        +{data.vacantesStarlite}S
-      </p>
+      <p className="kpi-hero-day-card__vacancies">+{data.vacantesStarlite}S</p>
     </div>
   );
 }
@@ -221,7 +231,15 @@ interface ChartHeaderProps {
   weekNumber?: number;
 }
 
-function ChartHeader({ data, presentation, onClick, onPrevWeek, onNextWeek, disableNextWeek, weekNumber }: ChartHeaderProps) {
+function ChartHeader({
+  data,
+  presentation,
+  onClick,
+  onPrevWeek,
+  onNextWeek,
+  disableNextWeek,
+  weekNumber,
+}: ChartHeaderProps) {
   const { language } = useLanguage();
   const t = (text: string) => workforceText(language, text);
   if (!data.length) return null;
@@ -238,20 +256,25 @@ function ChartHeader({ data, presentation, onClick, onPrevWeek, onNextWeek, disa
               type="button"
               className="kpi-hero-title-action"
               aria-label={t('Cobertura: ver detalle de vacantes')}
-              onClick={(event) => { event.stopPropagation(); onClick(); }}
+              onClick={(event) => {
+                event.stopPropagation();
+                onClick();
+              }}
             >
               {t('Cobertura')}
             </button>
-          ) : t('Cobertura')}
+          ) : (
+            t('Cobertura')
+          )}
         </h2>
       </div>
 
       <div className="kpi-hero-metrics">
         <div className="kpi-hero-avg-container">
           {weekNumber && (
-            <div className="kpi-hero-badge">
+            <Badge size="compact" variant="neutral">
               {t('Semana')} {weekNumber}
-            </div>
+            </Badge>
           )}
           <div className="kpi-hero-avg-top">
             {(onPrevWeek || onNextWeek) && (
@@ -286,14 +309,12 @@ function ChartHeader({ data, presentation, onClick, onPrevWeek, onNextWeek, disa
 
         {isCriticalWeek && (
           <>
-            <div className={`kpi-hero-critical-divider${presentation ? ' kpi-hero-critical-divider--presentation' : ''}`} />
+            <div
+              className={`kpi-hero-critical-divider${presentation ? ' kpi-hero-critical-divider--presentation' : ''}`}
+            />
             <div className={`kpi-hero-critical${presentation ? ' kpi-hero-critical--presentation' : ''}`}>
-              <p className="kpi-hero-critical__label">
-                {t('Mín. cobertura')}
-              </p>
-              <p className="kpi-hero-critical__value">
-                {formatPercentage(minCobertura)}
-              </p>
+              <p className="kpi-hero-critical__label">{t('Mín. cobertura')}</p>
+              <p className="kpi-hero-critical__value">{formatPercentage(minCobertura)}</p>
             </div>
           </>
         )}
@@ -400,10 +421,7 @@ export function KpiHeroChart({
       className={`kpi-hero-chart${presentation ? ' kpi-hero-chart--presentation' : ''}${onClick ? ' kpi-hero-chart--interactive' : ''}`}
       onClick={onClick}
     >
-      <figcaption
-        id={descId}
-        className="kpi-hero-sr-only"
-      >
+      <figcaption id={descId} className="kpi-hero-sr-only">
         {chartAriaLabel}.{' '}
         {isEmpty
           ? t('No hay datos disponibles.')
@@ -426,95 +444,89 @@ export function KpiHeroChart({
             weekNumber={weekNumber}
           />
 
-              <section
-                className={`kpi-hero-plot${presentation ? ' kpi-hero-plot--presentation' : ''}`}
-                aria-labelledby={`${descId}-vacancies`}
-              >
-                <header className="kpi-hero-panel-header">
-                  <h3 id={`${descId}-vacancies`} className="kpi-hero-panel-title">{t('Vacantes')}</h3>
-                  <ul className="kpi-hero-legend" aria-label={t('Series de vacantes')}>
-                    {SERIES.map((series) => (
-                      <li key={series.key}>
-                        <SeriesMarker seriesKey={series.key} />
-                        {t(series.label)}
-                      </li>
-                    ))}
-                  </ul>
-                </header>
-                <ResponsiveContainer width="100%" height={chartHeight} minWidth={1} minHeight={1}>
-                  <LineChart
-                    data={chartData}
-                    margin={MARGIN}
-                    aria-label={ariaLabel}
-                    accessibilityLayer
-                  >
-                    <CartesianGrid
-                      strokeDasharray="var(--chart-dash-short)"
-                      vertical={false}
-                      stroke={PALETTE.grid}
-                      strokeOpacity={1}
-                    />
+          <section
+            className={`kpi-hero-plot${presentation ? ' kpi-hero-plot--presentation' : ''}`}
+            aria-labelledby={`${descId}-vacancies`}
+          >
+            <header className="kpi-hero-panel-header">
+              <h3 id={`${descId}-vacancies`} className="kpi-hero-panel-title">
+                {t('Vacantes')}
+              </h3>
+              <ul className="kpi-hero-legend" aria-label={t('Series de vacantes')}>
+                {SERIES.map((series) => (
+                  <li key={series.key}>
+                    <SeriesMarker seriesKey={series.key} />
+                    {t(series.label)}
+                  </li>
+                ))}
+              </ul>
+            </header>
+            <ResponsiveContainer width="100%" height={chartHeight} minWidth={1} minHeight={1}>
+              <LineChart data={chartData} margin={MARGIN} aria-label={ariaLabel} accessibilityLayer>
+                <CartesianGrid
+                  strokeDasharray="var(--chart-dash-short)"
+                  vertical={false}
+                  stroke={PALETTE.grid}
+                  strokeOpacity={1}
+                />
 
-                    <XAxis
-                      dataKey="day"
-                      axisLine={false}
-                      tickLine={false}
-                      tick={{
-                        fill: PALETTE.axis,
-                        className: 'kpi-hero-axis-label',
-                      }}
-                      dy={presentation ? 12 : 8}
-                    />
+                <XAxis
+                  dataKey="day"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{
+                    fill: PALETTE.axis,
+                    className: 'kpi-hero-axis-label',
+                  }}
+                  dy={presentation ? 12 : 8}
+                />
 
-                    <YAxis
-                      yAxisId="left"
-                      axisLine={false}
-                      tickLine={false}
-                      tick={{
-                        fill: PALETTE.axis,
-                        className: 'kpi-hero-axis-label',
-                      }}
-                      tickFormatter={formatYLeft}
-                      width={Y_AXIS_WIDTH}
-                      allowDecimals={false}
-                    />
+                <YAxis
+                  yAxisId="left"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{
+                    fill: PALETTE.axis,
+                    className: 'kpi-hero-axis-label',
+                  }}
+                  tickFormatter={formatYLeft}
+                  width={Y_AXIS_WIDTH}
+                  allowDecimals={false}
+                />
 
-                    <Tooltip
-                      content={<CustomTooltip presentation={presentation} />}
-                      cursor={{
-                        stroke: PALETTE.axis,
-                        strokeDasharray: 'var(--chart-dash-short)',
-                      }}
-                    />
-                    {SERIES.map((series) => (
-                      <Line
-                        key={series.key}
-                        yAxisId={series.axis}
-                        type="linear"
-                        dataKey={series.key}
-                        name={t(series.name)}
-                        stroke={series.color}
-                        strokeWidth="var(--chart-line-width)"
-                        strokeDasharray={series.dash}
-                        strokeLinecap="round"
-                        dot={<SafeLineDot fill={PALETTE.surfaceCard} stroke={series.color} />}
-                        activeDot={<SafeLineDot active fill={series.color} stroke={PALETTE.surfaceCard} />}
-                        isAnimationActive={false}
-                      />
-                    ))}
-                  </LineChart>
-                </ResponsiveContainer>
-              </section>
+                <Tooltip
+                  content={<CustomTooltip presentation={presentation} />}
+                  cursor={{
+                    stroke: PALETTE.axis,
+                    strokeDasharray: 'var(--chart-dash-short)',
+                  }}
+                />
+                {SERIES.map((series) => (
+                  <Line
+                    key={series.key}
+                    yAxisId={series.axis}
+                    type="linear"
+                    dataKey={series.key}
+                    name={t(series.name)}
+                    stroke={series.color}
+                    strokeWidth="var(--chart-line-width)"
+                    strokeDasharray={series.dash}
+                    strokeLinecap="round"
+                    dot={<SafeLineDot fill={PALETTE.surfaceCard} stroke={series.color} />}
+                    activeDot={<SafeLineDot active fill={series.color} stroke={PALETTE.surfaceCard} />}
+                    isAnimationActive={false}
+                  />
+                ))}
+              </LineChart>
+            </ResponsiveContainer>
+          </section>
           {presentation && (
-                      <div className="kpi-hero-day-grid">
-                        {visibleCards.map((d) => (
-                          <DayCard
-                            key={d.dateIso}
-                            data={d}
-                          />
-                        ))}
-                      </div>
-                    )}
+            <div className="kpi-hero-day-grid">
+              {visibleCards.map((d) => (
+                <DayCard key={d.dateIso} data={d} />
+              ))}
+            </div>
+          )}
         </>
       )}
     </figure>

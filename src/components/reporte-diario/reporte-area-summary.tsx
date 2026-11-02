@@ -1,25 +1,26 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState } from 'react';
 import { ChevronDown, ChevronRight } from 'lucide';
-import type { AreaDetailRow, AreaStaffSummary } from "./types";
-import { useReportLocale } from "./useReportLocale";
-import { PLANTILLA_AUTORIZADA } from "@/lib/constants";
-import { Modal } from "@/components/ui/Modal";
-import { Tooltip } from "@/components/ui/Tooltip";
+import type { AreaDetailRow, AreaStaffSummary } from './types';
+import { useReportLocale } from './useReportLocale';
+import { PLANTILLA_AUTORIZADA } from '@/lib/constants';
+import { Modal } from '@/components/ui/Modal';
+import { Tooltip } from '@/components/ui/Tooltip';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
-import { SectionSummaryCard} from "@/components/ui/SectionSummaryCard";
+import { SectionSummaryCard } from '@/components/ui/SectionSummaryCard';
+import { Badge, type BadgeVariant } from '@/components/ui/Badge';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
 interface ReporteAreaSummaryProps {
-    areas: AreaStaffSummary[];
-    selectedArea: string | null;
-    onSelectArea: (area: string | null) => void;
-    detailRows: AreaDetailRow[];
+  areas: AreaStaffSummary[];
+  selectedArea: string | null;
+  onSelectArea: (area: string | null) => void;
+  detailRows: AreaDetailRow[];
 }
 
 interface AreaGroup {
-    area: string;
-    sections: AreaStaffSummary[];
+  area: string;
+  sections: AreaStaffSummary[];
 }
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
@@ -27,315 +28,325 @@ interface AreaGroup {
 const STATUS_THRESHOLDS = { critical: 15, warning: 5 } as const;
 const TREND_THRESHOLD = 10;
 
-type StatusTone = "muted" | "error" | "warning" | "primary";
+type StatusTone = 'muted' | 'error' | 'warning' | 'primary';
 
 function getStatusTone(pct: number, hasIncidents: boolean): StatusTone {
-    if (!hasIncidents) return "muted";
-    if (pct > STATUS_THRESHOLDS.critical) return "error";
-    if (pct > STATUS_THRESHOLDS.warning) return "warning";
-    return "primary";
+  if (!hasIncidents) return 'muted';
+  if (pct > STATUS_THRESHOLDS.critical) return 'error';
+  if (pct > STATUS_THRESHOLDS.warning) return 'warning';
+  return 'primary';
 }
 
 // ─── AreaCard Helper (Legacy data parsing for SectionSummaryCard) ────────────
 
 function getAreaCardProps(area: AreaStaffSummary, en: boolean) {
-    const active = area.operadores_autorizados > 0 ? area.operadores_contratados : area.personal_activo;
-    const incidence = area.operadores_autorizados > 0 ? area.operadores_incidencia : area.personal_incidencia;
-    const pct = active > 0 ? (incidence / active) * 100 : 0;
+  const active = area.operadores_autorizados > 0 ? area.operadores_contratados : area.personal_activo;
+  const incidence = area.operadores_autorizados > 0 ? area.operadores_incidencia : area.personal_incidencia;
+  const pct = active > 0 ? (incidence / active) * 100 : 0;
 
-    const isDescanso = area.is_descanso;
-    const isCriticalTrend = pct > TREND_THRESHOLD;
-    const isClickable = incidence > 0;
-    const statusTone = getStatusTone(pct, incidence > 0);
-    const asistenciaValue = isDescanso ? (en ? "Rest day" : "Descanso") : Math.max(active - incidence, 0);
+  const isDescanso = area.is_descanso;
+  const isCriticalTrend = pct > TREND_THRESHOLD;
+  const isClickable = incidence > 0;
+  const statusTone = getStatusTone(pct, incidence > 0);
+  const asistenciaValue = isDescanso ? (en ? 'Rest day' : 'Descanso') : Math.max(active - incidence, 0);
 
-    const opTitle = area.operadores_autorizados > 0 ? "OP. DE MÁQUINA" : undefined;
-    const autorizado = area.operadores_autorizados > 0 ? area.operadores_autorizados : area.personal_autorizado;
-    const contratados = area.operadores_autorizados > 0 ? area.operadores_contratados : area.personal_activo;
+  const autorizado = area.operadores_autorizados > 0 ? area.operadores_autorizados : area.personal_autorizado;
+  const contratados = area.operadores_autorizados > 0 ? area.operadores_contratados : area.personal_activo;
 
-    // Solo mostramos el porcentaje de tendencia en áreas de Producción (Op. de Máquina)
-    // EXCEPTO para Starlite, ya que no aplica la misma regla visual de tendencia.
-    const isStarlite = area.area.includes("(STARLITE)");
-    const showTrend = area.operadores_autorizados > 0 && !isStarlite;
+  // Solo mostramos el porcentaje de tendencia en áreas de Producción (Op. de Máquina)
+  // EXCEPTO para Starlite, ya que no aplica la misma regla visual de tendencia.
+  const isStarlite = area.area.includes('(STARLITE)');
+  const showTrend = area.operadores_autorizados > 0 && !isStarlite;
 
-    let displayName = area.area;
-    if (displayName.includes("(STARLITE)")) {
-        displayName = "STARLITE";
-    }
+  let displayName = area.area;
+  if (displayName.includes('(STARLITE)')) {
+    displayName = 'STARLITE';
+  }
 
-    return {
-        name: displayName,
-        autorizado,
-        contratados,
-        asistencia: asistenciaValue,
-        incidence,
-        pct: showTrend ? pct : 0,
-        showTrend,
-        isDescanso,
-        isCriticalTrend: showTrend ? isCriticalTrend : false,
-        isClickable,
-        statusTone,
-    };
+  return {
+    name: displayName,
+    autorizado,
+    contratados,
+    asistencia: asistenciaValue,
+    incidence,
+    pct: showTrend ? pct : 0,
+    showTrend,
+    isDescanso,
+    isCriticalTrend: showTrend ? isCriticalTrend : false,
+    isClickable,
+    statusTone,
+  };
 }
 
 // ─── IncidenceBadge ────────────────────────────────────────────────────────────
 
-const INC_TONE: Record<string, "error" | "warn" | "info"> = {
-    F: "error", S: "error", I: "error",
-    FJ: "warn", P: "warn", PH: "warn", CT: "warn", TXT: "warn",
-    V: "info",
+const INC_TONE: Record<string, 'error' | 'warn' | 'info'> = {
+  F: 'error',
+  S: 'error',
+  I: 'error',
+  FJ: 'warn',
+  P: 'warn',
+  PH: 'warn',
+  CT: 'warn',
+  TXT: 'warn',
+  V: 'info',
 };
 
 function IncidenceBadge({ code }: { code: string }) {
-    const { incident } = useReportLocale();
-    const tone = INC_TONE[code] ?? "warn";
-    return <span className={`reporte-inc-badge reporte-inc-badge--${tone}`}>{incident(code)}</span>;
+  const { incident } = useReportLocale();
+  const tone = INC_TONE[code] ?? 'warn';
+  const variant: BadgeVariant = tone === 'error' ? 'error' : tone === 'warn' ? 'warning' : 'neutral';
+  return (
+    <Badge size="compact" variant={variant}>
+      {incident(code)}
+    </Badge>
+  );
 }
 
 // ─── DetailList ────────────────────────────────────────────────────────────────
 
 function DetailList({ rows }: { rows: AreaDetailRow[] }) {
-    const { copy } = useReportLocale();
-    const [expanded, setExpanded] = useState<Set<string>>(new Set());
+  const { copy } = useReportLocale();
+  const [expanded, setExpanded] = useState<Set<string>>(new Set());
 
-    const toggle = (key: string) => setExpanded((prev) => {
-        const next = new Set(prev);
-        if (next.has(key)) next.delete(key); else next.add(key);
-        return next;
+  const toggle = (key: string) =>
+    setExpanded((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
     });
 
-    if (rows.length === 0) return (
-        <div className="reporte-incidents__empty reporte-incidents__empty--padded">
-            <p>{copy("No hay ausencias registradas.", "No absences recorded.")}</p>
-        </div>
-    );
-
+  if (rows.length === 0)
     return (
-        <div className="reporte-incidents__detail-list">
-            {/* Desktop: tabla */}
-            <div className="reporte-incidents__table-wrap">
-                <table className="reporte-incidents__table data-table">
-                    <thead>
-                        <tr>
-                            <th scope="col">{copy("Empleado", "Employee")}</th>
-                            <th scope="col">{copy("Puesto", "Position")}</th>
-                            <th scope="col">{copy("Turno", "Shift")}</th>
-                            <th scope="col">{copy("Incidencia", "Incident")}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {rows.map((row) => {
-                            // En México, la "categoría" suele ser la letra final (A, B, C...)
-                            const puestoLimpio = row.puesto
-                                ? row.puesto.replace(/\s+[A-Z]$/i, '').trim()
-                                : "-";
-                            return (
-                                <tr key={row.key}>
-                                    <td className="reporte-incidents__td-num">
-                                        <Tooltip content={row.nombre || copy('Sin nombre', 'No name')} side="right">
-                                            <span>
-                                                {row.numero_empleado}
-                                            </span>
-                                        </Tooltip>
-                                    </td>
-                                    <td>{puestoLimpio}</td>
-                                    <td><span className="reporte-chip">{row.turno}</span></td>
-                                    <td><IncidenceBadge code={row.tipo_incidencia} /></td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
-            </div>
-
-            {/* Mobile: cards colapsables */}
-            <ul className="reporte-incidents__cards" aria-label={copy("Detalle de ausencias por empleado", "Absences by employee")}>
-                {rows.map((row) => {
-                    const isOpen = expanded.has(row.key);
-                    const detailId = `area-detail-${row.key}`;
-                    const puestoLimpio = row.puesto
-                        ? row.puesto.replace(/\s+[A-Z]$/i, '').trim()
-                        : "-";
-                    return (
-                        <li key={row.key} className="reporte-incidents__card">
-                            <button
-                                type="button"
-                                className="reporte-incidents__card-summary"
-                                aria-expanded={isOpen}
-                                aria-controls={detailId}
-                                onClick={() => toggle(row.key)}
-                                data-testid={`area-detail-card-${row.key}`}
-                            >
-                                <span className="reporte-incidents__card-main">
-                                    <span className="reporte-incidents__card-name">{row.nombre}</span>
-                                    <span className="reporte-incidents__card-tags">
-                                        <IncidenceBadge code={row.tipo_incidencia} />
-                                    </span>
-                                </span>
-                                <span className="reporte-chip">T{row.turno}</span>
-                                <MorphingIcon
-                                    icon={isOpen ? ChevronDown : ChevronRight}
-                                    size={18}
-                                    className="reporte-incidents__chevron"
-                                    aria-hidden="true"
-                                />
-                            </button>
-
-                            {isOpen && (
-                                <div id={detailId} className="reporte-incidents__card-detail">
-                                    <span className="reporte-incidents__detail-label">{copy("Empleado", "Employee")}</span>
-                                    <span className="reporte-incidents__detail-value">{row.numero_empleado}</span>
-                                    {row.puesto && (
-                                        <>
-                                            <span className="reporte-incidents__detail-label">{copy("Puesto", "Position")}</span>
-                                            <span className="reporte-incidents__detail-value">{puestoLimpio}</span>
-                                        </>
-                                    )}
-                                </div>
-                            )}
-                        </li>
-                    );
-                })}
-            </ul>
-        </div>
+      <div className="reporte-incidents__empty reporte-incidents__empty--padded">
+        <p>{copy('No hay ausencias registradas.', 'No absences recorded.')}</p>
+      </div>
     );
+
+  return (
+    <div className="reporte-incidents__detail-list">
+      {/* Desktop: tabla */}
+      <div className="reporte-incidents__table-wrap">
+        <table className="reporte-incidents__table data-table">
+          <thead>
+            <tr>
+              <th scope="col">{copy('Empleado', 'Employee')}</th>
+              <th scope="col">{copy('Puesto', 'Position')}</th>
+              <th scope="col">{copy('Turno', 'Shift')}</th>
+              <th scope="col">{copy('Incidencia', 'Incident')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row) => {
+              // En México, la "categoría" suele ser la letra final (A, B, C...)
+              const puestoLimpio = row.puesto ? row.puesto.replace(/\s+[A-Z]$/i, '').trim() : '-';
+              return (
+                <tr key={row.key}>
+                  <td className="reporte-incidents__td-num">
+                    <Tooltip content={row.nombre || copy('Sin nombre', 'No name')} side="right">
+                      <span>{row.numero_empleado}</span>
+                    </Tooltip>
+                  </td>
+                  <td>{puestoLimpio}</td>
+                  <td>
+                    <Badge size="compact" variant="neutral">
+                      {row.turno}
+                    </Badge>
+                  </td>
+                  <td>
+                    <IncidenceBadge code={row.tipo_incidencia} />
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Mobile: cards colapsables */}
+      <ul
+        className="reporte-incidents__cards"
+        aria-label={copy('Detalle de ausencias por empleado', 'Absences by employee')}
+      >
+        {rows.map((row) => {
+          const isOpen = expanded.has(row.key);
+          const detailId = `area-detail-${row.key}`;
+          const puestoLimpio = row.puesto ? row.puesto.replace(/\s+[A-Z]$/i, '').trim() : '-';
+          return (
+            <li key={row.key} className="reporte-incidents__card">
+              <button
+                type="button"
+                className="reporte-incidents__card-summary"
+                aria-expanded={isOpen}
+                aria-controls={detailId}
+                onClick={() => toggle(row.key)}
+                data-testid={`area-detail-card-${row.key}`}
+              >
+                <span className="reporte-incidents__card-main">
+                  <span className="reporte-incidents__card-name">{row.nombre}</span>
+                  <span className="reporte-incidents__card-tags">
+                    <IncidenceBadge code={row.tipo_incidencia} />
+                  </span>
+                </span>
+                <Badge size="compact" variant="neutral">
+                  T{row.turno}
+                </Badge>
+                <MorphingIcon
+                  icon={isOpen ? ChevronDown : ChevronRight}
+                  size={18}
+                  className="reporte-incidents__chevron"
+                  aria-hidden="true"
+                />
+              </button>
+
+              {isOpen && (
+                <div id={detailId} className="reporte-incidents__card-detail">
+                  <span className="reporte-incidents__detail-label">{copy('Empleado', 'Employee')}</span>
+                  <span className="reporte-incidents__detail-value">{row.numero_empleado}</span>
+                  {row.puesto && (
+                    <>
+                      <span className="reporte-incidents__detail-label">{copy('Puesto', 'Position')}</span>
+                      <span className="reporte-incidents__detail-value">{puestoLimpio}</span>
+                    </>
+                  )}
+                </div>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
 }
 
 // ─── Main Component ────────────────────────────────────────────────────────────
 
-export default function ReporteAreaSummary({
-    areas,
-    selectedArea,
-    onSelectArea,
-    detailRows,
-}: ReporteAreaSummaryProps) {
-    const { en, copy } = useReportLocale();
-    const [isDetailOpen, setIsDetailOpen] = useState(false);
+export default function ReporteAreaSummary({ areas, selectedArea, onSelectArea, detailRows }: ReporteAreaSummaryProps) {
+  const { en, copy } = useReportLocale();
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
 
-    // Mapa seccion → área padre derivado de PLANTILLA_AUTORIZADA
-    const sectionAreaMap = useMemo(() => {
-        const map = new Map<string, string>();
-        for (const pos of PLANTILLA_AUTORIZADA) {
-            map.set(pos.seccion, pos.area);
-        }
-        return map;
-    }, []);
+  // Mapa seccion → área padre derivado de PLANTILLA_AUTORIZADA
+  const sectionAreaMap = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const pos of PLANTILLA_AUTORIZADA) {
+      map.set(pos.seccion, pos.area);
+    }
+    return map;
+  }, []);
 
-    // Agrupa las secciones por su área padre y ordena internamente.
-    // Los grupos con 1 sola sección se fusionan en "OTRAS ÁREAS" para
-    // evitar filas de grid con espacios vacíos.
-    const { mainGroups, otrasAreas } = useMemo(() => {
-        const groups = new Map<string, AreaStaffSummary[]>();
-        for (const sec of areas) {
-            // Removemos sufijos como (STARLITE) para encontrar el área padre correcta en el mapa
-            const normalizedSecArea = sec.area.replace(/\s*\([^)]*\)\s*$/i, '').trim();
-            const parent = sectionAreaMap.get(normalizedSecArea) ?? sec.area;
+  // Agrupa las secciones por su área padre y ordena internamente.
+  // Los grupos con 1 sola sección se fusionan en "OTRAS ÁREAS" para
+  // evitar filas de grid con espacios vacíos.
+  const { mainGroups, otrasAreas } = useMemo(() => {
+    const groups = new Map<string, AreaStaffSummary[]>();
+    for (const sec of areas) {
+      // Removemos sufijos como (STARLITE) para encontrar el área padre correcta en el mapa
+      const normalizedSecArea = sec.area.replace(/\s*\([^)]*\)\s*$/i, '').trim();
+      const parent = sectionAreaMap.get(normalizedSecArea) ?? sec.area;
 
-            if (!groups.has(parent)) groups.set(parent, []);
-            groups.get(parent)!.push(sec);
-        }
+      if (!groups.has(parent)) groups.set(parent, []);
+      groups.get(parent)!.push(sec);
+    }
 
-        const sorted = Array.from(groups.entries())
-            .sort(([a], [b]) => a.localeCompare(b, "es", { sensitivity: "base" }))
-            .map(([area, sections]) => ({
-                area,
-                sections: sections.sort((a, b) =>
-                    a.area.localeCompare(b.area, "es", { sensitivity: "base" })
-                ),
-            }));
+    const sorted = Array.from(groups.entries())
+      .sort(([a], [b]) => a.localeCompare(b, 'es', { sensitivity: 'base' }))
+      .map(([area, sections]) => ({
+        area,
+        sections: sections.sort((a, b) => a.area.localeCompare(b.area, 'es', { sensitivity: 'base' })),
+      }));
 
-        const main: AreaGroup[] = [];
-        const singles: AreaStaffSummary[] = [];
+    const main: AreaGroup[] = [];
+    const singles: AreaStaffSummary[] = [];
 
-        for (const g of sorted) {
-            if (g.sections.length > 1) main.push(g);
-            else singles.push(...g.sections);
-        }
+    for (const g of sorted) {
+      if (g.sections.length > 1) main.push(g);
+      else singles.push(...g.sections);
+    }
 
-        return {
-            mainGroups: main,
-            otrasAreas: singles.sort((a, b) =>
-                a.area.localeCompare(b.area, "es", { sensitivity: "base" })
-            ),
-        };
-    }, [areas, sectionAreaMap]);
-
-    const handleSelectArea = (area: string) => {
-        if (selectedArea === area) {
-            onSelectArea(null);
-        } else {
-            onSelectArea(area);
-            setIsDetailOpen(true);
-        }
+    return {
+      mainGroups: main,
+      otrasAreas: singles.sort((a, b) => a.area.localeCompare(b.area, 'es', { sensitivity: 'base' })),
     };
+  }, [areas, sectionAreaMap]);
 
-    if (areas.length === 0) return null;
+  const handleSelectArea = (area: string) => {
+    if (selectedArea === area) {
+      onSelectArea(null);
+    } else {
+      onSelectArea(area);
+      setIsDetailOpen(true);
+    }
+  };
 
-    const totalIncidencias = areas.reduce((n, a) => n + (a.operadores_autorizados > 0 ? a.operadores_incidencia : a.personal_incidencia), 0);
+  if (areas.length === 0) return null;
 
-    return (
-        <section className="ras" aria-labelledby="ras-heading">
-
-            {/* Grid agrupado por área */}
-            <div className="ras__groups" role="list" aria-label={copy("Secciones de la plantilla", "Workforce sections")}>
-                {/* Grupos con varias secciones */}
-                {mainGroups.map(({ area, sections }) => (
-                    <div key={area} className="ras__group" role="listitem">
-                        <h3 className="ras__group-label">
-                            <span>{area}</span>
-                            <span className="ras__group-count" aria-label={`${sections.length} ${copy("secciones", "sections")}`}>
-                                {sections.length}
-                            </span>
-                        </h3>
-                        <div className="ras__grid" role="group" aria-label={`${copy("Secciones de", "Sections of")} ${area}`}>
-                            {sections.map((sec) => (
-                                <SectionSummaryCard
-                                    key={sec.area}
-                                    {...getAreaCardProps(sec, en)}
-                                    isSelected={selectedArea === sec.area}
-                                    onClick={() => handleSelectArea(sec.area)}
-                                />
-                            ))}
-                        </div>
-                    </div>
-                ))}
-
-                {/* Grupos de 1 sección → fusionados en "Otras Áreas" */}
-                {otrasAreas.length > 0 && (
-                    <div className="ras__group" role="listitem">
-                        <h3 className="ras__group-label">
-                            <span>{copy("Otras Áreas", "Other areas")}</span>
-                            <span className="ras__group-count" aria-label={`${otrasAreas.length} ${copy("secciones", "sections")}`}>
-                                {otrasAreas.length}
-                            </span>
-                        </h3>
-                        <div className="ras__grid" role="group" aria-label={copy("Otras áreas de la plantilla", "Other workforce areas")}>
-                            {otrasAreas.map((sec) => (
-                                <SectionSummaryCard
-                                    key={sec.area}
-                                    {...getAreaCardProps(sec, en)}
-                                    isSelected={selectedArea === sec.area}
-                                    onClick={() => handleSelectArea(sec.area)}
-                                />
-                            ))}
-                        </div>
-                    </div>
-                )}
+  return (
+    <section className="ras" aria-labelledby="ras-heading">
+      {/* Grid agrupado por área */}
+      <div className="ras__groups" role="list" aria-label={copy('Secciones de la plantilla', 'Workforce sections')}>
+        {/* Grupos con varias secciones */}
+        {mainGroups.map(({ area, sections }) => (
+          <div key={area} className="ras__group" role="listitem">
+            <h3 className="ras__group-label">
+              <span>{area}</span>
+              <span className="ras__group-count" aria-label={`${sections.length} ${copy('secciones', 'sections')}`}>
+                {sections.length}
+              </span>
+            </h3>
+            <div className="ras__grid" role="group" aria-label={`${copy('Secciones de', 'Sections of')} ${area}`}>
+              {sections.map((sec) => (
+                <SectionSummaryCard
+                  key={sec.area}
+                  {...getAreaCardProps(sec, en)}
+                  isSelected={selectedArea === sec.area}
+                  onClick={() => handleSelectArea(sec.area)}
+                />
+              ))}
             </div>
+          </div>
+        ))}
 
-            {/* Modal de detalle de ausencias */}
-            <Modal
-                className="report-dialog"
-                isOpen={isDetailOpen && selectedArea !== null}
-                onClose={() => {
-                    setIsDetailOpen(false);
-                    onSelectArea(null);
-                }}
-                title={selectedArea || copy('Detalle de sección', 'Section details')}
-                size="lg"
+        {/* Grupos de 1 sección → fusionados en "Otras Áreas" */}
+        {otrasAreas.length > 0 && (
+          <div className="ras__group" role="listitem">
+            <h3 className="ras__group-label">
+              <span>{copy('Otras Áreas', 'Other areas')}</span>
+              <span className="ras__group-count" aria-label={`${otrasAreas.length} ${copy('secciones', 'sections')}`}>
+                {otrasAreas.length}
+              </span>
+            </h3>
+            <div
+              className="ras__grid"
+              role="group"
+              aria-label={copy('Otras áreas de la plantilla', 'Other workforce areas')}
             >
-                <DetailList rows={detailRows} />
-            </Modal>
-        </section>
-    );
+              {otrasAreas.map((sec) => (
+                <SectionSummaryCard
+                  key={sec.area}
+                  {...getAreaCardProps(sec, en)}
+                  isSelected={selectedArea === sec.area}
+                  onClick={() => handleSelectArea(sec.area)}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Modal de detalle de ausencias */}
+      <Modal
+        className="report-dialog"
+        isOpen={isDetailOpen && selectedArea !== null}
+        onClose={() => {
+          setIsDetailOpen(false);
+          onSelectArea(null);
+        }}
+        title={selectedArea || copy('Detalle de sección', 'Section details')}
+        size="lg"
+      >
+        <DetailList rows={detailRows} />
+      </Modal>
+    </section>
+  );
 }

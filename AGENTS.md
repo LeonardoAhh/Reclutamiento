@@ -298,7 +298,7 @@ Antes de utilizar texto muted o faint, se DEBE comprobar su contraste sobre la s
 
 ## 9. Tipografía
 
-- Usar únicamente las familias definidas en `desing.md`: **Plus Jakarta Sans** autoalojada para cuerpo, controles y headings, y el stack monoespaciado solo para código y eyebrows técnicos.
+- Usar únicamente las familias definidas en `desing.md`: **IBM Plex Sans** autoalojada para cuerpo, controles y headings, y el stack monoespaciado solo para código.
 - No descargar ni simular Cal Sans u otra fuente sin permiso.
 - Usar los tokens tipográficos completos, no solo el tamaño: cada regla aplica familia, tamaño, peso, line-height y tracking del mismo rol (`--type-<rol>-*`).
 - El tracking forma parte del rol. Los alias `--tracking-*` están obsoletos.
@@ -338,8 +338,8 @@ Antes de utilizar texto muted o faint, se DEBE comprobar su contraste sobre la s
   - Modales y paneles flotantes: 20px mediante `--radius-dialog`.
   - Marca de aplicación: 12px mediante `--radius-brand`, sin porcentajes.
   - Indicadores de checkbox: 4px.
-  - Badges de estado, avatares y botones solo-icono: `{rounded.full}`.
-- Los controles ordinarios son rectangulares con esquinas suaves. Las píldoras se reservan para etiquetas de estado; los campos conservan su radio propio y no se convierten en píldoras.
+  - Badges de estado: `--rounded-xs` (4px). Botones solo-icono: `--radius-control` (10px). Avatares y puntos de estado pueden conservar su forma circular.
+- Los controles y badges son rectangulares con esquinas suaves. Los campos conservan su radio propio; no se usan píldoras.
 - Todo control interactivo tiene un mínimo explícito de 44px (`--touch-target-min`); la altura nunca se infiere solo del line-height.
 - Las cards deben utilizar hairline y la elevación definida: Level 0 plano, Level 1 `{shadows.xs}`, Level 2 `{shadows.sm}` solo para menús, modales y popovers.
 - Está prohibido introducir sombras pesadas, glows o gradientes en el chrome de la aplicación.
@@ -347,10 +347,10 @@ Antes de utilizar texto muted o faint, se DEBE comprobar su contraste sobre la s
 - No acumular overrides para corregir una regla anterior.
 - No usar offsets negativos salvo que formen parte de un patrón documentado.
 
-### 10.1 Prohibición de full rounded
+### 10.1 Prohibición de full rounded en controles
 
-- **PROHIBIDO** usar `border-radius: 9999px`, `50%` o cualquier valor que produzca forma de píldora en: botones, inputs, selects, textareas, cards, tabs, menús, modales, popovers, paneles, filas de navegación, segmented controls.
-- El full rounded se reserva **únicamente** para: badges de estado, avatares y botones solo-icono.
+- **PROHIBIDO** usar `border-radius: 9999px`, `50%` o cualquier valor que produzca forma de píldora en: botones (incluidos los solo-icono), inputs, selects, textareas, cards, tabs, badges, menús, modales, popovers, paneles, filas de navegación y segmented controls.
+- Los avatares y puntos de estado son las únicas formas circulares; no establecen una excepción para controles o badges.
 - La marca de aplicación usa `--radius-brand` (12px), nunca forma circular completa.
 - Un checkbox no se redondea a píldora; su indicador usa el radio definido.
 
@@ -1151,7 +1151,7 @@ Antes de responder al usuario, confirmar:
 - [ ] No existen fuentes o tamaños tipográficos arbitrarios.
 - [ ] No existen paddings, márgenes o gaps fuera de tokens.
 - [ ] No existen radios o sombras inventados.
-- [ ] No se usa full rounded fuera de badges, avatares e icon-only.
+- [ ] No se usa full rounded en controles ni badges; solo avatares y puntos de estado pueden ser circulares.
 - [ ] Los colores decorativos se usan únicamente como decoración.
 - [ ] `{colors.primary}` sigue siendo el único color estructural de acción y `{colors.link}` se usa solo en enlaces.
 - [ ] Los tokens tipográficos se aplican como rol completo.
@@ -1336,7 +1336,7 @@ Si en algún momento el agente debe priorizar, el orden es:
 1. **Seguridad y contratos** — no romper datos, permisos ni auth.
 2. **Accesibilidad** — WCAG 2.2 AA + 8.1.1 mínimo, bloqueante.
 3. **Preservación funcional** — la lógica existente se conserva.
-4. **Tokens y sistema visual** — sin hardcodeo, sin duplicados, sin full rounded indebido.
+4. **Tokens y sistema visual** — sin hardcodeo, sin duplicados, sin full rounded en controles o badges.
 5. **Responsive real** — móvil, tablet, desktop y wide verificados.
 6. **Sin consultas innecesarias** — deduplicar, cancelar, cachear.
 7. **Reutilización y primitivas** — buscar antes de crear, crear si falta.

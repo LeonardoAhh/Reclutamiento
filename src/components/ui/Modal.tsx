@@ -25,6 +25,7 @@ export interface ModalProps {
   /** Oculta el botón X de cerrar en el encabezado */
   hideCloseButton?: boolean;
   closeLabel?: string;
+  onCloseAutoFocus?: React.ComponentProps<typeof DialogPrimitive.Content>['onCloseAutoFocus'];
 }
 
 /** Accessible modal shell with Radix-managed focus, dismissal and exit presence. */
@@ -45,6 +46,7 @@ export function Modal({
   presentation: presentationOverride,
   hideCloseButton = false,
   closeLabel,
+  onCloseAutoFocus,
 }: ModalProps) {
   const configuredPresentation = useContext(ModalPresentationContext);
   const presentation = placement
@@ -73,6 +75,7 @@ export function Modal({
         size={size}
         hideCloseButton={hideCloseButton}
         closeLabel={closeLabel}
+        onCloseAutoFocus={onCloseAutoFocus}
       >
         {children}
       </FormSheet>
@@ -110,6 +113,7 @@ export function Modal({
           aria-describedby={undefined}
           aria-labelledby={titleId}
           tabIndex={-1}
+          onCloseAutoFocus={onCloseAutoFocus}
         >
           <header className="modal-header">
             <div className="modal-title">

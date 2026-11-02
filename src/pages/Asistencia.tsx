@@ -1,34 +1,40 @@
 import { useState, useMemo } from 'react';
 import { PageHeading } from '@/components/layout/PageHeading';
-import { CircleAlert, CircleCheckBig, UsersRound } from 'lucide-react';
-import { Badge, StarliteBadge } from '@/components/ui/Badge';
-import { StatCard } from '@/components/ui/StatCard';
+import { CircleAlert, UsersRound } from 'lucide-react';
+import { Badge, StarliteBadge, type BadgeVariant } from '@/components/ui/Badge';
 import { SearchField } from '@/components/ui/SearchField';
 import { INCIDENCIA_LABELS } from '@/components/reporte-diario/constants';
 import './Asistencia.css';
 
 interface AsistenciaRecord {
-  "numero empleado": string;
+  'numero empleado': string;
   nombre: string;
   turno: string;
-  "sección": string;
+  sección: string;
   tipo: string;
   puesto: string;
   proyecto?: string;
 }
 
-function getVariantForIncidencia(tipo: string): "default" | "coral" | "teal" | "amber" | "success" | "error" {
+function getVariantForIncidencia(tipo: string): BadgeVariant {
   switch (tipo) {
-    case 'A': return 'success';
-    case 'F': return 'error';
-    case 'FJ': return 'coral';
+    case 'A':
+      return 'success';
+    case 'F':
+      return 'error';
+    case 'FJ':
+      return 'warning';
     case 'P':
-    case 'PH': return 'amber';
-    case 'I': return 'teal';
+    case 'PH':
+      return 'warning';
+    case 'I':
+      return 'error';
     case 'CT':
     case 'V':
-    case 'TXT': return 'teal';
-    default: return 'default';
+    case 'TXT':
+      return 'warning';
+    default:
+      return 'neutral';
   }
 }
 
@@ -51,115 +57,130 @@ export function Asistencia() {
       } else {
         setError('El texto debe contener un arreglo JSON válido.');
       }
-    } catch (err) {
+    } catch {
       setError('Error al procesar el JSON. Asegúrate de que el formato sea correcto.');
     }
   };
 
-  const filteredData = data?.filter((item) => {
-    const term = searchTerm.toLowerCase();
-    const nombreMatch = item.nombre?.toLowerCase().includes(term);
-    const numMatch = item["numero empleado"]?.toString().includes(term);
-    return nombreMatch || numMatch;
-  }).sort((a, b) => {
-    const isA = a.tipo === 'A';
-    const isB = b.tipo === 'A';
-    if (isA === isB) {
-      if (!isA && a.tipo !== b.tipo) {
-        const labelA = INCIDENCIA_LABELS[a.tipo] || a.tipo || '';
-        const labelB = INCIDENCIA_LABELS[b.tipo] || b.tipo || '';
-        return labelA.localeCompare(labelB);
+  const filteredData = data
+    ?.filter((item) => {
+      const term = searchTerm.toLowerCase();
+      const nombreMatch = item.nombre?.toLowerCase().includes(term);
+      const numMatch = item['numero empleado']?.toString().includes(term);
+      return nombreMatch || numMatch;
+    })
+    .sort((a, b) => {
+      const isA = a.tipo === 'A';
+      const isB = b.tipo === 'A';
+      if (isA === isB) {
+        if (!isA && a.tipo !== b.tipo) {
+          const labelA = INCIDENCIA_LABELS[a.tipo] || a.tipo || '';
+          const labelB = INCIDENCIA_LABELS[b.tipo] || b.tipo || '';
+          return labelA.localeCompare(labelB);
+        }
+        const numA = parseInt(a['numero empleado'], 10) || 0;
+        const numB = parseInt(b['numero empleado'], 10) || 0;
+        return numA - numB;
       }
-      const numA = parseInt(a["numero empleado"], 10) || 0;
-      const numB = parseInt(b["numero empleado"], 10) || 0;
-      return numA - numB;
-    }
-    return isA ? 1 : -1;
-  });
+      return isA ? 1 : -1;
+    });
 
   const summaryByProyecto = useMemo(() => {
     if (!data) return [];
-    
+
     interface ProyectoSummary {
       proyecto: string;
       total: number;
       breakdown: Record<string, number>;
     }
-    
-    const grouped = data.reduce((acc, curr) => {
-      if (!curr.proyecto) return acc;
-      const proyecto = curr.proyecto.trim();
-      
-      const tipoCode = curr.tipo || 'Sin registro';
-      const tipoLabel = INCIDENCIA_LABELS[tipoCode] || tipoCode;
 
-      if (!acc[proyecto]) {
-        acc[proyecto] = { proyecto, total: 0, breakdown: {} };
-      }
-      
-      acc[proyecto].total += 1;
-      acc[proyecto].breakdown[tipoLabel] = (acc[proyecto].breakdown[tipoLabel] || 0) + 1;
-      
-      return acc;
-    }, {} as Record<string, ProyectoSummary>);
-    
+    const grouped = data.reduce(
+      (acc, curr) => {
+        if (!curr.proyecto) return acc;
+        const proyecto = curr.proyecto.trim();
+
+        const tipoCode = curr.tipo || 'Sin registro';
+        const tipoLabel = INCIDENCIA_LABELS[tipoCode] || tipoCode;
+
+        if (!acc[proyecto]) {
+          acc[proyecto] = { proyecto, total: 0, breakdown: {} };
+        }
+
+        acc[proyecto].total += 1;
+        acc[proyecto].breakdown[tipoLabel] = (acc[proyecto].breakdown[tipoLabel] || 0) + 1;
+
+        return acc;
+      },
+      {} as Record<string, ProyectoSummary>,
+    );
+
     return Object.values(grouped).sort((a, b) => b.total - a.total);
   }, [data]);
 
   const summaryByPuesto = useMemo(() => {
     if (!data) return [];
-    
+
     interface PuestoSummary {
       puesto: string;
       total: number;
       breakdown: Record<string, number>;
     }
-    
-    const grouped = data.reduce((acc, curr) => {
-      // Remove trailing category letters like " A", " B", " C", " D" for grouping
-      const rawPuesto = curr.puesto || 'Sin puesto';
-      const puesto = rawPuesto.replace(/\s+[A-Z]$/i, '').trim();
-      
-      const tipoCode = curr.tipo || 'Sin registro';
-      const tipoLabel = INCIDENCIA_LABELS[tipoCode] || tipoCode;
 
-      if (!acc[puesto]) {
-        acc[puesto] = { puesto, total: 0, breakdown: {} };
-      }
-      
-      acc[puesto].total += 1;
-      acc[puesto].breakdown[tipoLabel] = (acc[puesto].breakdown[tipoLabel] || 0) + 1;
-      
-      return acc;
-    }, {} as Record<string, PuestoSummary>);
-    
+    const grouped = data.reduce(
+      (acc, curr) => {
+        // Remove trailing category letters like " A", " B", " C", " D" for grouping
+        const rawPuesto = curr.puesto || 'Sin puesto';
+        const puesto = rawPuesto.replace(/\s+[A-Z]$/i, '').trim();
+
+        const tipoCode = curr.tipo || 'Sin registro';
+        const tipoLabel = INCIDENCIA_LABELS[tipoCode] || tipoCode;
+
+        if (!acc[puesto]) {
+          acc[puesto] = { puesto, total: 0, breakdown: {} };
+        }
+
+        acc[puesto].total += 1;
+        acc[puesto].breakdown[tipoLabel] = (acc[puesto].breakdown[tipoLabel] || 0) + 1;
+
+        return acc;
+      },
+      {} as Record<string, PuestoSummary>,
+    );
+
     // Sort descending by total count
     return Object.values(grouped).sort((a, b) => b.total - a.total);
   }, [data]);
 
   return (
     <div className="asistencia-page container">
-        <PageHeading className="config-page__title app-page-title">
-          <UsersRound className="text-primary" size="var(--icon-size-lg)" aria-hidden="true" />
-          Asistencia del Personal
-        </PageHeading>
+      <PageHeading className="config-page__title app-page-title">
+        <UsersRound className="text-primary" size="var(--icon-size-lg)" aria-hidden="true" />
+        Asistencia del Personal
+      </PageHeading>
 
       {!data ? (
         <div className="feature-card" style={{ marginTop: 'var(--spacing-xl)', maxWidth: '800px' }}>
-          <h2 className="type-heading-3" style={{ marginBottom: 'var(--spacing-xs)' }}>Pegar JSON</h2>
+          <h2 className="type-heading-3" style={{ marginBottom: 'var(--spacing-xs)' }}>
+            Pegar JSON
+          </h2>
           <p className="type-body-sm color-ink-muted" style={{ marginBottom: 'var(--spacing-lg)' }}>
             Pega aquí el contenido del reporte de asistencia generado en formato JSON.
           </p>
 
           <div className="form-group" style={{ marginBottom: 'var(--spacing-lg)' }}>
             <textarea
-              placeholder="[\n  {\n    &quot;numero empleado&quot;: &quot;...&quot;\n  }\n]"
+              placeholder='[\n  {\n    "numero empleado": "..."\n  }\n]'
               value={jsonInput}
               onChange={(e) => {
                 setJsonInput(e.target.value);
                 if (error) setError(null);
               }}
-              style={{ minHeight: '250px', width: '100%', fontFamily: 'var(--font-code)', fontSize: 'var(--type-code-sm-size)' }}
+              style={{
+                minHeight: '250px',
+                width: '100%',
+                fontFamily: 'var(--font-code)',
+                fontSize: 'var(--type-code-sm-size)',
+              }}
             />
           </div>
 
@@ -180,22 +201,42 @@ export function Asistencia() {
         <div className="asistencia-content">
           {summaryByProyecto.length > 0 && (
             <div style={{ marginBottom: 'var(--spacing-xl)' }}>
-              <h2 className="type-heading-sm" style={{ marginBottom: 'var(--spacing-md)' }}>Resumen por Proyecto</h2>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 'var(--spacing-md)' }}>
+              <h2 className="type-heading-sm" style={{ marginBottom: 'var(--spacing-md)' }}>
+                Resumen por Proyecto
+              </h2>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
+                  gap: 'var(--spacing-md)',
+                }}
+              >
                 {summaryByProyecto.map((summary, i) => (
                   <div key={`proyecto-${i}`} className="feature-card" style={{ padding: 'var(--spacing-lg)' }}>
-                    <h3 className="type-caption-up color-muted" style={{ marginBottom: 'var(--spacing-xs)' }}>{summary.proyecto}</h3>
-                    <div className="type-display-lg color-ink" style={{ marginBottom: 'var(--spacing-md)' }}>{summary.total}</div>
-                    
+                    <h3 className="type-caption-up color-muted" style={{ marginBottom: 'var(--spacing-xs)' }}>
+                      {summary.proyecto}
+                    </h3>
+                    <div className="type-display-lg color-ink" style={{ marginBottom: 'var(--spacing-md)' }}>
+                      {summary.total}
+                    </div>
+
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xs)' }}>
                       {Object.entries(summary.breakdown)
                         .sort((a, b) => b[1] - a[1])
                         .map(([label, count]) => (
-                        <div key={label} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--color-hairline)', paddingBottom: '4px' }}>
-                          <span className="type-body-sm color-muted">{label}</span>
-                          <span className="type-body-sm-strong color-ink">{count}</span>
-                        </div>
-                      ))}
+                          <div
+                            key={label}
+                            style={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              borderBottom: '1px solid var(--color-hairline)',
+                              paddingBottom: '4px',
+                            }}
+                          >
+                            <span className="type-body-sm color-muted">{label}</span>
+                            <span className="type-body-sm-strong color-ink">{count}</span>
+                          </div>
+                        ))}
                     </div>
                   </div>
                 ))}
@@ -205,22 +246,42 @@ export function Asistencia() {
 
           {summaryByPuesto.length > 0 && (
             <div style={{ marginBottom: 'var(--spacing-xl)' }}>
-              <h2 className="type-heading-sm" style={{ marginBottom: 'var(--spacing-md)' }}>Resumen por Puesto</h2>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 'var(--spacing-md)' }}>
+              <h2 className="type-heading-sm" style={{ marginBottom: 'var(--spacing-md)' }}>
+                Resumen por Puesto
+              </h2>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
+                  gap: 'var(--spacing-md)',
+                }}
+              >
                 {summaryByPuesto.map((summary, i) => (
                   <div key={`puesto-${i}`} className="feature-card" style={{ padding: 'var(--spacing-lg)' }}>
-                    <h3 className="type-caption-up color-muted" style={{ marginBottom: 'var(--spacing-xs)' }}>{summary.puesto}</h3>
-                    <div className="type-display-lg color-ink" style={{ marginBottom: 'var(--spacing-md)' }}>{summary.total}</div>
-                    
+                    <h3 className="type-caption-up color-muted" style={{ marginBottom: 'var(--spacing-xs)' }}>
+                      {summary.puesto}
+                    </h3>
+                    <div className="type-display-lg color-ink" style={{ marginBottom: 'var(--spacing-md)' }}>
+                      {summary.total}
+                    </div>
+
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xs)' }}>
                       {Object.entries(summary.breakdown)
                         .sort((a, b) => b[1] - a[1])
                         .map(([label, count]) => (
-                        <div key={label} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--color-hairline)', paddingBottom: '4px' }}>
-                          <span className="type-body-sm color-muted">{label}</span>
-                          <span className="type-body-sm-strong color-ink">{count}</span>
-                        </div>
-                      ))}
+                          <div
+                            key={label}
+                            style={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              borderBottom: '1px solid var(--color-hairline)',
+                              paddingBottom: '4px',
+                            }}
+                          >
+                            <span className="type-body-sm color-muted">{label}</span>
+                            <span className="type-body-sm-strong color-ink">{count}</span>
+                          </div>
+                        ))}
                     </div>
                   </div>
                 ))}
@@ -265,18 +326,22 @@ export function Asistencia() {
               </thead>
               <tbody>
                 {filteredData?.map((item, idx) => (
-                  <tr key={`${item["numero empleado"]}-${idx}`}>
-                    <td>{item["numero empleado"]}</td>
+                  <tr key={`${item['numero empleado']}-${idx}`}>
+                    <td>{item['numero empleado']}</td>
                     <td className="fw-500">{item.nombre}</td>
                     <td>{item.turno}</td>
                     <td>{item.sección}</td>
                     <td>{(item.puesto || '').replace(/\s+[A-Z]$/i, '').trim() || '-'}</td>
                     <td>
                       {item.proyecto ? (
-                        item.proyecto.toLowerCase() === 'starlite' 
-                          ? <StarliteBadge /> 
-                          : <Badge>{item.proyecto}</Badge>
-                      ) : '-'}
+                        item.proyecto.toLowerCase() === 'starlite' ? (
+                          <StarliteBadge />
+                        ) : (
+                          <Badge>{item.proyecto}</Badge>
+                        )
+                      ) : (
+                        '-'
+                      )}
                     </td>
                     <td style={{ textAlign: 'center' }}>
                       <Badge variant={getVariantForIncidencia(item.tipo)}>

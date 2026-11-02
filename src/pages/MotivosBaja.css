@@ -1,8 +1,8 @@
 .motivos-baja {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
-  padding-block-end: var(--spacing-xxl);
+  gap: var(--design-spacing-md);
+  padding-block-end: var(--design-spacing-xl);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
@@ -12,15 +12,16 @@
 
 .motivos-baja__panel-heading {
   display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
+  align-items: flex-start;
+  gap: var(--design-spacing-sm);
   min-width: 0;
+  margin-block-end: var(--design-spacing-md);
 }
 
 .motivos-baja__panel-actions {
   display: flex;
   align-items: center;
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
   margin-inline-start: auto;
 }
 
@@ -44,33 +45,27 @@
 }
 
 .motivos-baja__pagination {
-  margin-top: var(--spacing-md);
-}
-
-.motivos-baja__pagination .pagination--sticky {
-  border-block-start: 0;
+  margin-block-start: var(--design-spacing-sm);
 }
 
 .motivos-baja__panel {
-  background: var(--color-surface);
+  min-width: 0;
+  padding: var(--design-spacing-lg);
+  background: var(--color-surface-card);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
-}
-
-.motivos-baja__panel {
-  padding: var(--spacing-lg);
+  border-radius: var(--radius-card);
 }
 
 .motivos-baja__panel-heading h2 {
-  font-size: var(--type-body-strong-size);
-  font-weight: var(--type-body-strong-weight);
-  line-height: var(--type-body-strong-line);
-  letter-spacing: var(--type-body-strong-tracking);
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  line-height: var(--type-heading-md-line);
+  letter-spacing: var(--type-heading-md-tracking);
   font-family: var(--font-body);
 }
 
 .motivos-baja__message {
-  margin: var(--spacing-md) 0 0;
+  margin: var(--design-spacing-sm) 0 0;
   font-size: var(--type-body-md-size);
   line-height: var(--type-body-md-line);
   overflow-wrap: anywhere;
@@ -93,7 +88,7 @@
 .modal-body.motivos-baja__capture-form {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--spacing-md);
+  gap: var(--design-spacing-sm);
 }
 
 .motivos-baja__capture-error {
@@ -102,7 +97,7 @@
 
 .motivos-baja__bars {
   display: grid;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
   padding: 0;
   margin: 0;
   list-style: none;
@@ -111,7 +106,7 @@
 .motivos-baja__filters {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--spacing-md);
+  gap: var(--design-spacing-sm);
 }
 
 .motivos-baja__filter-popover {
@@ -142,16 +137,7 @@
 .motivos-baja__dashboard {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--spacing-lg);
-}
-
-.motivos-baja__panel {
-  min-width: 0;
-}
-
-.motivos-baja__panel-heading {
-  align-items: flex-start;
-  margin-bottom: var(--spacing-lg);
+  gap: var(--design-spacing-md);
 }
 
 .motivos-baja__chart {
@@ -161,13 +147,13 @@
 
 .motivos-baja__bars li {
   display: grid;
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
 }
 
 .motivos-baja__bar-label {
   display: flex;
   justify-content: space-between;
-  gap: var(--spacing-md);
+  gap: var(--design-spacing-sm);
   font-size: var(--type-body-md-size);
   font-family: var(--font-body);
   font-weight: var(--type-body-md-weight);
@@ -206,7 +192,7 @@
 }
 
 .motivos-baja__bar-track {
-  height: var(--spacing-sm);
+  height: var(--design-spacing-xs);
   overflow: hidden;
   border-radius: var(--rounded-full);
   background: var(--color-surface-soft);
@@ -220,14 +206,7 @@
 }
 
 .motivos-baja__records {
-  width: 100%;
   table-layout: fixed;
-  border-collapse: collapse;
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
 }
 
 .motivos-baja__records-employee {
@@ -249,23 +228,10 @@
 .motivos-baja__records th,
 .motivos-baja__records td {
   min-width: 0;
-  padding: var(--spacing-sm);
-  border-bottom: var(--border-width) solid var(--color-hairline);
-  text-align: start;
-  vertical-align: middle;
   overflow-wrap: anywhere;
 }
 
-.motivos-baja__records th {
-  color: var(--color-body);
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  line-height: var(--type-caption-up-line);
-  letter-spacing: var(--type-caption-up-tracking);
-  font-family: var(--font-body);
-}
-
-@media (max-width: 767px) {
+@media (width < 768px) {
   .motivos-baja__records thead {
     position: absolute;
     width: 1px;
@@ -273,7 +239,7 @@
     padding: 0;
     margin: -1px;
     overflow: hidden;
-    clip: rect(0, 0, 0, 0);
+    clip-path: inset(50%);
     white-space: nowrap;
     border: 0;
   }
@@ -288,19 +254,19 @@
 
   .motivos-baja__records tbody {
     display: grid;
-    gap: var(--spacing-md);
+    gap: var(--design-spacing-sm);
   }
 
   .motivos-baja__records tr {
     overflow: hidden;
     border: var(--border-width) solid var(--color-hairline);
-    border-radius: var(--rounded-md);
+    border-radius: var(--radius-card);
   }
 
   .motivos-baja__records td {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: var(--spacing-md);
+    gap: var(--design-spacing-sm);
     border-bottom-color: var(--color-hairline-soft);
   }
 
@@ -321,14 +287,11 @@
 
 .motivos-baja__empty {
   margin: 0;
-  padding-block: var(--spacing-xl);
+  padding-block: var(--design-spacing-lg);
   text-align: center;
 }
 
-@media (min-width: 640px) {
-}
-
-@media (min-width: 768px) {
+@media (width >= 768px) {
   .modal-content .modal-body.motivos-baja__capture-form {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -340,13 +303,13 @@
 
   .motivos-baja__bars {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: var(--spacing-lg);
+    column-gap: var(--design-spacing-md);
   }
 }
 
-@media (min-width: 1024px) {
+@media (width >= 1024px) {
   .motivos-baja {
-    gap: var(--spacing-xl);
+    gap: var(--design-spacing-lg);
     padding-block-end: var(--design-spacing-xxl);
   }
 }

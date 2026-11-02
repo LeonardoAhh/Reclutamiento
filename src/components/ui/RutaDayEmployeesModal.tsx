@@ -81,28 +81,30 @@ export function RutaDayEmployeesPage() {
         <p className="ruta-day-page__notice">{copy.noEmployeesAssigned} {displayDay}.</p>
       ) : (
         <section aria-label={`${language === 'en' ? 'Employees on' : 'Empleados de'} ${route.nombreRuta} ${language === 'en' ? 'on' : 'el'} ${displayDay}`}>
-          <table className="ruta-day-page__table data-table data-table--cards">
-            <thead>
-              <tr>
-                <th scope="col">{copy.number}</th>
-                <th scope="col">{copy.employeeName}</th>
-                <th scope="col">{copy.section}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {employees.map(emp => (
-                <tr key={emp.numeroEmpleado}>
-                  <td className="ruta-day-page__number">
-                    <span className="ruta-day-page__mobile-label" aria-hidden="true">{copy.number} </span>{emp.numeroEmpleado}
-                  </td>
-                  <th scope="row" className="ruta-day-page__name">{emp.nombre}</th>
-                  <td className="ruta-day-page__section">
-                    <span className="ruta-day-page__mobile-label" aria-hidden="true">{copy.section} </span>{emp.seccion || copy.noSection}
-                  </td>
+          <div className="ruta-day-page__table-wrapper">
+            <table className="ruta-day-page__table data-table data-table--cards">
+              <thead>
+                <tr>
+                  <th scope="col">{copy.number}</th>
+                  <th scope="col">{copy.employeeName}</th>
+                  <th scope="col">{copy.section}</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {employees.map(emp => (
+                  <tr key={emp.numeroEmpleado}>
+                    <td className="ruta-day-page__number">
+                      <span className="ruta-day-page__mobile-label" aria-hidden="true">{copy.number} </span>{emp.numeroEmpleado}
+                    </td>
+                    <th scope="row" className="ruta-day-page__name">{emp.nombre}</th>
+                    <td className="ruta-day-page__section">
+                      <span className="ruta-day-page__mobile-label" aria-hidden="true">{copy.section} </span>{emp.seccion || copy.noSection}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </section>
       )}
     </main>

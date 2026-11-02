@@ -258,21 +258,6 @@
   opacity: 0.4;
 }
 
-.kpi-hero-badge {
-  background: var(--color-surface-sunken);
-  border: 1px solid var(--color-hairline);
-  padding: var(--spacing-xs) var(--spacing-md);
-  border-radius: var(--rounded-sm);
-  font-size: var(--type-caption-up-size);
-  color: var(--color-muted);
-  margin: 0;
-  text-transform: uppercase;
-  letter-spacing: var(--type-caption-up-tracking);
-  font-family: var(--font-body);
-  font-weight: var(--type-caption-up-weight);
-  line-height: var(--type-caption-up-line);
-}
-
 .kpi-hero-critical-divider {
   width: var(--border-width);
   height: var(--control-height);

@@ -1,25 +1,18 @@
-import type { VacancyStatus, VacancyPriority } from '@/lib/types';
-import { VACANCY_STATUS_LABEL, VACANCY_PRIORITY_LABEL } from '@/lib/types';
-import { Badge } from './Badge';
+import { VACANCY_STATUS_LABEL, VACANCY_PRIORITY_LABEL, type VacancyStatus, type VacancyPriority } from '@/lib/types';
+import { Badge, type BadgeVariant } from './Badge';
 
-const STATUS_VARIANT: Record<
-  VacancyStatus,
-  'default' | 'coral' | 'teal' | 'amber' | 'success' | 'error'
-> = {
-  abierta: 'coral',
-  en_proceso: 'amber',
-  pausa: 'default',
+const STATUS_VARIANT: Record<VacancyStatus, BadgeVariant> = {
+  abierta: 'neutral',
+  en_proceso: 'warning',
+  pausa: 'warning',
   cubierta: 'success',
   cancelada: 'error',
 };
 
-const PRIORITY_VARIANT: Record<
-  VacancyPriority,
-  'default' | 'coral' | 'teal' | 'amber' | 'success' | 'error'
-> = {
+const PRIORITY_VARIANT: Record<VacancyPriority, BadgeVariant> = {
   alta: 'error',
-  media: 'amber',
-  baja: 'default',
+  media: 'warning',
+  baja: 'neutral',
 };
 
 export function VacancyStatusBadge({ status }: { status: VacancyStatus }) {
@@ -27,7 +20,5 @@ export function VacancyStatusBadge({ status }: { status: VacancyStatus }) {
 }
 
 export function VacancyPriorityBadge({ priority }: { priority: VacancyPriority }) {
-  return (
-    <Badge variant={PRIORITY_VARIANT[priority]}>{VACANCY_PRIORITY_LABEL[priority]}</Badge>
-  );
+  return <Badge variant={PRIORITY_VARIANT[priority]}>{VACANCY_PRIORITY_LABEL[priority]}</Badge>;
 }

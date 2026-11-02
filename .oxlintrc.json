@@ -1,0 +1,8 @@
+{
+  "plugins": ["react", "jsx-a11y"],
+  "rules": {
+    "no-duplicate-imports": "error",
+    "no-unused-expressions": "error",
+    "typescript/no-unused-vars": "error"
+  }
+}

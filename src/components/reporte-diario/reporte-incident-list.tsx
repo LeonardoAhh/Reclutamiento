@@ -1,110 +1,119 @@
-import { useState } from "react";
-import { ListX } from "lucide-react";
-import { ChevronDown, ChevronRight } from "lucide";
-import { MorphingIcon } from "@/components/ui/MorphingIcon";
-import type { EmployeeRef } from "./types";
-import { useReportLocale } from "./useReportLocale";
+import { useState } from 'react';
+import { ListX } from 'lucide-react';
+import { ChevronDown, ChevronRight } from 'lucide';
+import { MorphingIcon } from '@/components/ui/MorphingIcon';
+import { Badge } from '@/components/ui/Badge';
+import type { EmployeeRef } from './types';
+import { useReportLocale } from './useReportLocale';
 
 const TABLE_HEADERS = [
-    { spanish: "No.", english: "No." },
-    { spanish: "Empleado", english: "Employee" },
-    { spanish: "Área", english: "Area" },
-    { spanish: "Puesto", english: "Position" },
-    { spanish: "Turno", english: "Shift" },
+  { spanish: 'No.', english: 'No.' },
+  { spanish: 'Empleado', english: 'Employee' },
+  { spanish: 'Área', english: 'Area' },
+  { spanish: 'Puesto', english: 'Position' },
+  { spanish: 'Turno', english: 'Shift' },
 ] as const;
 
 export function DataTable({ rows }: { rows: EmployeeRef[] }) {
-    const { copy } = useReportLocale();
-    return (
-        <div className="reporte-incidents__table-wrap">
-            <table className="reporte-incidents__table data-table">
-                <thead>
-                    <tr>
-                        {TABLE_HEADERS.map((header) => (
-                            <th key={header.spanish} scope="col">{copy(header.spanish, header.english)}</th>
-                        ))}
-                    </tr>
-                </thead>
-                <tbody>
-                    {rows.map((row) => (
-                        <tr key={row.key}>
-                            <td className="reporte-incidents__td-num">{row.numero_empleado}</td>
-                            <td className="reporte-incidents__td-name">{row.nombre}</td>
-                            <td>{row.area}</td>
-                            <td>{row.puesto || "-"}</td>
-                            <td><span className="reporte-chip">{row.turno}</span></td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
-    );
+  const { copy } = useReportLocale();
+  return (
+    <div className="reporte-incidents__table-wrap">
+      <table className="reporte-incidents__table data-table">
+        <thead>
+          <tr>
+            {TABLE_HEADERS.map((header) => (
+              <th key={header.spanish} scope="col">
+                {copy(header.spanish, header.english)}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr key={row.key}>
+              <td className="reporte-incidents__td-num">{row.numero_empleado}</td>
+              <td className="reporte-incidents__td-name">{row.nombre}</td>
+              <td>{row.area}</td>
+              <td>{row.puesto || '-'}</td>
+              <td>
+                <Badge size="compact" variant="neutral">
+                  {row.turno}
+                </Badge>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 }
 
 export function MobileCards({ rows }: { rows: EmployeeRef[] }) {
-    const { copy } = useReportLocale();
-    const [expanded, setExpanded] = useState<Set<string>>(new Set());
+  const { copy } = useReportLocale();
+  const [expanded, setExpanded] = useState<Set<string>>(new Set());
 
-    const toggle = (key: string) => {
-        setExpanded((prev) => {
-            const next = new Set(prev);
-            if (next.has(key)) next.delete(key);
-            else next.add(key);
-            return next;
-        });
-    };
+  const toggle = (key: string) => {
+    setExpanded((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  };
 
-    return (
-        <ul className="reporte-incidents__cards" aria-label={copy("Listado de incidencias", "Incident list")}>
-            {rows.map((row) => {
-                const isOpen = expanded.has(row.key);
-                const detailId = `inc-detail-${row.key}`;
-                return (
-                    <li key={row.key} className="reporte-incidents__card">
-                        <button
-                            type="button"
-                            className="reporte-incidents__card-summary"
-                            aria-expanded={isOpen}
-                            aria-controls={detailId}
-                            onClick={() => toggle(row.key)}
-                            data-testid={`incident-card-${row.key}`}
-                        >
-                            <span className="reporte-incidents__card-main">
-                                <span className="reporte-incidents__card-name">{row.nombre}</span>
-                                <span className="reporte-incidents__card-sub">{row.area}</span>
-                            </span>
-                            <span className="reporte-chip">{row.turno}</span>
-                            <MorphingIcon
-                                icon={isOpen ? ChevronDown : ChevronRight}
-                                size={18}
-                                className="reporte-incidents__chevron"
-                                aria-hidden="true"
-                            />
-                        </button>
+  return (
+    <ul className="reporte-incidents__cards" aria-label={copy('Listado de incidencias', 'Incident list')}>
+      {rows.map((row) => {
+        const isOpen = expanded.has(row.key);
+        const detailId = `inc-detail-${row.key}`;
+        return (
+          <li key={row.key} className="reporte-incidents__card">
+            <button
+              type="button"
+              className="reporte-incidents__card-summary"
+              aria-expanded={isOpen}
+              aria-controls={detailId}
+              onClick={() => toggle(row.key)}
+              data-testid={`incident-card-${row.key}`}
+            >
+              <span className="reporte-incidents__card-main">
+                <span className="reporte-incidents__card-name">{row.nombre}</span>
+                <span className="reporte-incidents__card-sub">{row.area}</span>
+              </span>
+              <Badge size="compact" variant="neutral">
+                {row.turno}
+              </Badge>
+              <MorphingIcon
+                icon={isOpen ? ChevronDown : ChevronRight}
+                size={18}
+                className="reporte-incidents__chevron"
+                aria-hidden="true"
+              />
+            </button>
 
-                        {isOpen && (
-                            <div id={detailId} className="reporte-incidents__card-detail">
-                                <span className="reporte-incidents__detail-label">No.</span>
-                                <span className="reporte-incidents__detail-value">{row.numero_empleado}</span>
-                                <span className="reporte-incidents__detail-label">{copy("Departamento", "Department")}</span>
-                                <span className="reporte-incidents__detail-value">{row.departamento}</span>
-                                <span className="reporte-incidents__detail-label">{copy("Área", "Area")}</span>
-                                <span className="reporte-incidents__detail-value">{row.area}</span>
-                            </div>
-                        )}
-                    </li>
-                );
-            })}
-        </ul>
-    );
+            {isOpen && (
+              <div id={detailId} className="reporte-incidents__card-detail">
+                <span className="reporte-incidents__detail-label">No.</span>
+                <span className="reporte-incidents__detail-value">{row.numero_empleado}</span>
+                <span className="reporte-incidents__detail-label">{copy('Departamento', 'Department')}</span>
+                <span className="reporte-incidents__detail-value">{row.departamento}</span>
+                <span className="reporte-incidents__detail-label">{copy('Área', 'Area')}</span>
+                <span className="reporte-incidents__detail-value">{row.area}</span>
+              </div>
+            )}
+          </li>
+        );
+      })}
+    </ul>
+  );
 }
 
 export function EmptyState() {
-    const { copy } = useReportLocale();
-    return (
-        <div className="reporte-incidents__empty">
-            <ListX size={24} aria-hidden="true" />
-            <p>{copy("Sin registros para este criterio.", "No records match this criterion.")}</p>
-        </div>
-    );
+  const { copy } = useReportLocale();
+  return (
+    <div className="reporte-incidents__empty">
+      <ListX size={24} aria-hidden="true" />
+      <p>{copy('Sin registros para este criterio.', 'No records match this criterion.')}</p>
+    </div>
+  );
 }

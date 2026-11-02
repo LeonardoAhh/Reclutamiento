@@ -2,6 +2,7 @@ import type { WorkforceProjection as Projection } from '@/lib/workforceProjectio
 import { formatPercentage } from '@/lib/utils';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { workforceText } from '@/pages/workforce-translations';
+import { Badge } from '@/components/ui/Badge';
 import './WeeklyWorkforceProjection.css';
 
 const CATEGORIES = [
@@ -39,9 +40,9 @@ export function WorkforceProjection({ projection }: Props) {
               <header className="workforce-projection__card-header">
                 <h3 className="type-caption-up text-muted">{t(label)}</h3>
                 {current.target > 0 && hasVacancies && (
-                  <span className="workforce-projection__card-badge type-caption-up text-error">
+                  <Badge size="compact" variant="neutral" className="workforce-projection__card-badge">
                     {current.vacancies} {t(current.vacancies === 1 ? 'vacante' : 'vacantes')}
-                  </span>
+                  </Badge>
                 )}
               </header>
               <div className="workforce-projection__card-body">
@@ -61,7 +62,8 @@ export function WorkforceProjection({ projection }: Props) {
       )}
       {projection.ambiguousEmployees > 0 && (
         <p className="workforce-projection__note type-body-md text-error">
-          {projection.ambiguousEmployees} {t('registros coinciden con varios puestos y no están incluidos. Revisa su área, sección y puesto.')}
+          {projection.ambiguousEmployees}{' '}
+          {t('registros coinciden con varios puestos y no están incluidos. Revisa su área, sección y puesto.')}
         </p>
       )}
     </section>

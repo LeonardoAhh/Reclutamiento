@@ -89,9 +89,9 @@
 
 .recordatorios-table-region {
   overflow-x: auto;
-  background: var(--color-surface);
-  border: 1px solid var(--color-hairline-soft);
-  border-radius: var(--rounded-md);
+  background: var(--color-surface-card);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
 }
 
 .recordatorios-routes > .config-card {
@@ -113,40 +113,15 @@
 }
 
 .recordatorios-table {
-  width: 100%;
   min-width: var(--recordatorios-route-table-min);
-  border-collapse: collapse;
   table-layout: auto;
 }
 
 .recordatorios-table th,
 .recordatorios-table td {
-  padding: var(--spacing-sm);
   overflow: visible;
-  color: var(--color-ink);
-  background: var(--color-surface-card);
-  border: 1px solid var(--color-hairline-strong);
   white-space: normal;
   overflow-wrap: break-word;
-  vertical-align: middle;
-}
-
-.recordatorios-table th {
-  color: var(--color-muted);
-  background: var(--color-surface-soft);
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  line-height: var(--type-caption-up-line);
-  font-family: var(--font-body);
-  letter-spacing: var(--type-caption-up-tracking);
-}
-
-.recordatorios-table td {
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  font-family: var(--font-body);
-  letter-spacing: var(--type-body-md-tracking);
 }
 
 .recordatorios-export-canvas.is-exporting {
@@ -234,7 +209,7 @@
   .recordatorios-table tr {
     overflow: hidden;
     border: var(--border-width) solid var(--color-hairline);
-    border-radius: var(--rounded-md);
+    border-radius: var(--rounded-lg);
   }
 
   .recordatorios-table td {

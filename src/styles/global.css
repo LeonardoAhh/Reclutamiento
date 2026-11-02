@@ -5,39 +5,19 @@
    ======================================== */
 
 @font-face {
-  font-family: "Plus Jakarta Sans";
+  font-family: 'IBM Plex Sans';
   font-style: normal;
-  font-weight: 200 800;
+  font-weight: 100 700;
   font-display: swap;
-  src: url("/fonts/plus-jakarta-sans-latin-ext.woff2") format("woff2");
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  src: url('/fonts/ibm-plex-sans-variable-roman.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: "Plus Jakarta Sans";
-  font-style: normal;
-  font-weight: 200 800;
-  font-display: swap;
-  src: url("/fonts/plus-jakarta-sans-latin.woff2") format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-@font-face {
-  font-family: "Plus Jakarta Sans";
+  font-family: 'IBM Plex Sans';
   font-style: italic;
-  font-weight: 200 800;
+  font-weight: 100 700;
   font-display: swap;
-  src: url("/fonts/plus-jakarta-sans-italic-latin-ext.woff2") format("woff2");
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-
-@font-face {
-  font-family: "Plus Jakarta Sans";
-  font-style: italic;
-  font-weight: 200 800;
-  font-display: swap;
-  src: url("/fonts/plus-jakarta-sans-italic-latin.woff2") format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  src: url('/fonts/ibm-plex-sans-variable-italic.woff2') format('woff2');
 }
 
 :root {
@@ -115,12 +95,8 @@
   --color-on-dark: #e6edf3;
   --color-on-dark-soft: #a0a7b1;
   --color-focus-on-inverted: #f7f8fa;
-  --color-navigation-rail: var(--color-canvas-soft);
-  --color-navigation-rail-elevated: var(--color-hairline);
   --color-navigation-rail-text: var(--color-muted);
   --color-navigation-rail-text-strong: var(--color-ink);
-  --color-navigation-rail-active: var(--color-primary);
-  --color-navigation-rail-on-active: var(--color-on-primary);
   --color-avatar-ink: var(--color-ink);
 
   /* ── Semantic ───────────────────────────────────────────────── */
@@ -159,13 +135,9 @@
   --color-accent-green: #167d2b;
   --color-accent-brown: #523410;
 
-  /* Legacy alias (badges existentes en la app) mapeados al sticker palette. */
+  /* Acentos de marca para integraciones existentes. */
   --color-brand-whatsapp: #25d366;
   --color-brand-accent: var(--color-primary);
-  --color-badge-orange: var(--color-accent-orange);
-
-  --color-badge-violet: var(--color-accent-purple);
-  --color-badge-emerald: var(--color-accent-green);
 
   /* Accent RGB channels (usados por gradientes/tintes en la app) */
   /* Debe coincidir con --color-accent-teal (#087f7a). */
@@ -198,12 +170,8 @@
 
   /* La interfaz usa la familia variable local en ambos temas. */
   --font-display: var(--font-body);
-  --font-body:
-    "Plus Jakarta Sans", -apple-system, system-ui, "Segoe UI", Helvetica,
-    Arial, sans-serif;
-  --font-code:
-    "Geist Mono", "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Monaco,
-    Consolas, monospace;
+  --font-body: 'IBM Plex Sans', -apple-system, system-ui, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-code: 'Geist Mono', 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Monaco, Consolas, monospace;
 
   --type-display-xl-size: 3rem;
   --type-display-xl-weight: 600;
@@ -366,8 +334,10 @@
   --control-padding-x: var(--design-spacing-sm);
   --control-padding-y: var(--design-spacing-xs);
   /* Campo y botón comparten altura exterior; el texto puede crecer con el zoom. */
-  --control-min-block-size: max(var(--touch-target-min),
-      calc(var(--type-button-size) * var(--type-button-line) + var(--control-padding-y) * 2 + var(--border-width) * 2));
+  --control-min-block-size: max(
+    var(--touch-target-min),
+    calc(var(--type-button-size) * var(--type-button-line) + var(--control-padding-y) * 2 + var(--border-width) * 2)
+  );
   --textarea-min-block-size: calc(var(--touch-target-min) * 2);
   --select-content-max-block-size: 15.625rem;
   --icon-size-sm: 1rem;
@@ -477,11 +447,6 @@
   --content-min-inline-size: 17.5rem;
   /* Máximo de líneas para vistas previas de texto antes de revelar el contenido completo. */
   --content-preview-max-lines: 3;
-  /* Diagramas: espacio para nodos y conectores legibles con movimiento pausado. */
-  --diagram-stage-min-block-size: 24rem;
-  --diagram-connector-width: 2px;
-  /* Ancho máximo compartido de los puestos del organigrama. */
-  --diagram-node-max-inline-size: 16rem;
   --auth-form-max-inline-size: 28rem;
   --feature-result-card-min: 34rem;
   --feature-maintenance-card-max-inline-size: var(--modal-inline-size-sm);
@@ -491,7 +456,10 @@
   --feature-responsibility-card-min-inline-size: var(--feature-vacancy-assignment-card-min-inline-size);
   --feature-activity-card-min-inline-size: var(--feature-vacancy-assignment-card-min-inline-size);
   --feature-assignment-description-max-lines: 2;
-  --feature-assignment-grid-max-inline-size: calc(4 * var(--feature-vacancy-assignment-card-min-inline-size) + 3 * var(--spacing-md) + 2 * var(--design-spacing-sm) + 2 * var(--border-width));
+  --feature-assignment-grid-max-inline-size: calc(
+    4 * var(--feature-vacancy-assignment-card-min-inline-size) + 3 * var(--spacing-md) + 2 * var(--design-spacing-sm) +
+      2 * var(--border-width)
+  );
   --feature-activity-filter-min-inline-size: 8.5rem;
   --search-field-min-inline-size: 18rem;
   /* Ancho máximo de búsquedas compactas en encabezados de página. */
@@ -508,8 +476,6 @@
   /* Anchura del espacio inicial para cargar y consultar reportes diarios. */
   --feature-report-onboarding-max-inline-size: var(--container-compact-max-inline-size);
   --feature-navigation-rail-inline-size: 15rem;
-  /* Ancho útil de superficies flotantes abiertas dentro del rail móvil. */
-  --feature-navigation-popover-inline-size: calc(var(--feature-navigation-rail-inline-size) - var(--design-spacing-md) - var(--design-spacing-md));
   --feature-reminders-panel-max-inline-size: 20rem;
   --feature-reminders-panel-max-block-size: 30rem;
   /* Altura legible para detalles extensos de validación antes de scroll interno. */
@@ -522,8 +488,6 @@
   --menu-min-inline-size: 10rem;
   /* Ancho medio para menús de filtros con opciones cortas. */
   --menu-inline-size-md: calc(var(--menu-min-inline-size) + var(--design-spacing-3xl));
-  /* Ancho compacto del menú de cuenta sin comprometer etiquetas ni touch targets. */
-  --feature-account-menu-inline-size: calc(var(--menu-min-inline-size) + var(--design-spacing-md));
   --pipeline-table-date-inline-size: 7.5rem;
   --pagination-label-min-inline-size: 5.625rem;
   --pipeline-search-results-max-block-size: 25rem;
@@ -640,9 +604,7 @@
 
   /* Level 0 = flat. Level 1 = whisper. Level 2 = floating surface. */
   --shadow-xs: 0 1px 1px rgb(var(--color-shadow-rgb) / 0.04);
-  --shadow-sm:
-    0 1px 2px rgb(var(--color-shadow-rgb) / 0.05),
-    0 4px 12px rgb(var(--color-shadow-rgb) / 0.08);
+  --shadow-sm: 0 1px 2px rgb(var(--color-shadow-rgb) / 0.05), 0 4px 12px rgb(var(--color-shadow-rgb) / 0.08);
   --shadow-subtle: var(--shadow-sm);
   --shadow-card: var(--shadow-xs);
   --shadow-soft: var(--shadow-sm);
@@ -658,8 +620,11 @@
   --shell-floor: var(--color-canvas-soft);
   --shell-workspace-surface: var(--color-canvas-elevated);
   --workspace-border-color: var(--color-hairline);
-  --workspace-radius: var(--rounded-lg);
+  --workspace-radius: var(--rounded-md);
   --workspace-shadow: var(--shadow-sm);
+  --color-workspace-dot: color-mix(in srgb, var(--color-mute) 14%, transparent);
+  --workspace-dot-size: var(--border-width);
+  --workspace-dot-spacing: var(--design-spacing-lg);
   --type-caption-size: var(--type-caption-sm-size);
   --type-heading-xs-size: var(--type-caption-sm-size);
   --z-index-tooltip: var(--layer-tooltip);
@@ -679,9 +644,8 @@
   color-scheme: light;
 }
 
-
 /* Grafito suave: variantes semánticas; los tokens de documento conservan su salida clara. */
-:root[data-color-scheme="dark"] {
+:root[data-color-scheme='dark'] {
   color-scheme: dark;
   /* Estos alias se redeclaran: los valores derivados se resuelven antes de heredarse. */
   --color-primary-border: var(--color-primary-text);
@@ -724,9 +688,7 @@
   --color-hairline-strong: #596370;
   --color-control-border: #858e9b;
   --color-shadow-rgb: 0 0 0;
-  --workspace-shadow:
-    0 1px 2px rgb(var(--color-shadow-rgb) / 0.2),
-    0 4px 12px rgb(var(--color-shadow-rgb) / 0.28);
+  --workspace-shadow: 0 1px 2px rgb(var(--color-shadow-rgb) / 0.2), 0 4px 12px rgb(var(--color-shadow-rgb) / 0.28);
   --color-modal-scrim: rgb(var(--color-shadow-rgb) / 0.6);
   --color-shimmer-overlay: rgb(var(--color-ink-rgb) / 0.08);
 
@@ -790,7 +752,9 @@ html {
 
 body {
   font-family: var(--font-body);
-  font-feature-settings: "lnum" 1, "locl" 1;
+  font-feature-settings:
+    'lnum' 1,
+    'locl' 1;
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
@@ -819,7 +783,6 @@ video {
 
 /* Preferencia de accesibilidad: prevalece sobre animaciones de las features. */
 @media (prefers-reduced-motion: reduce) {
-
   *,
   *::before,
   *::after {
@@ -836,7 +799,9 @@ h2,
 h3,
 h4 {
   font-family: var(--font-display);
-  font-feature-settings: "lnum" 1, "locl" 1;
+  font-feature-settings:
+    'lnum' 1,
+    'locl' 1;
   color: var(--color-ink);
 }
 
@@ -905,16 +870,27 @@ select {
 
 /* WebKit en iOS amplía al enfocar campos con texto menor que body-lg. */
 @supports (-webkit-touch-callout: none) {
-
-  :where(input:not([type="checkbox"], [type="radio"], [type="file"], [type="hidden"], [type="button"], [type="submit"], [type="reset"], [type="range"], [type="color"]),
+  :where(
+    input:not(
+      [type='checkbox'],
+      [type='radio'],
+      [type='file'],
+      [type='hidden'],
+      [type='button'],
+      [type='submit'],
+      [type='reset'],
+      [type='range'],
+      [type='color']
+    ),
     textarea,
     select,
-    [contenteditable="true"],
-    [contenteditable=""]) {
+    [contenteditable='true'],
+    [contenteditable='']
+  ) {
     --editable-text-min-size: var(--type-body-lg-size);
   }
 
-  :where([contenteditable="true"], [contenteditable=""]) {
+  :where([contenteditable='true'], [contenteditable='']) {
     font-size: max(1em, var(--editable-text-min-size));
   }
 }
@@ -1176,8 +1152,8 @@ code:not(pre code) {
   overflow-wrap: anywhere;
 }
 
-.app-page-title> :is(a, button),
-.app-page-title> :is(a, button):is(:hover, :focus, :active, :visited) {
+.app-page-title > :is(a, button),
+.app-page-title > :is(a, button):is(:hover, :focus, :active, :visited) {
   color: inherit;
   text-decoration: none;
 }
@@ -1187,7 +1163,6 @@ code:not(pre code) {
     padding-block-end: var(--design-spacing-lg);
     margin-bottom: var(--design-spacing-md);
   }
-
 }
 
 /* ========================================
@@ -1202,20 +1177,43 @@ code:not(pre code) {
   padding-inline-end: max(var(--container-padding), var(--safe-area-right));
 }
 
-.container--compact {
-  --container-max: var(--container-compact-max-inline-size);
+.data-table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  background-color: var(--color-surface-card);
+  color: var(--color-body);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
-.container--wide {
-  --container-max: var(--container-wide-max-inline-size);
+.data-table :is(th, td) {
+  padding: var(--design-spacing-sm) var(--design-spacing-md);
+  border-block-end: var(--border-width) solid var(--color-hairline-strong);
+  text-align: start;
+  vertical-align: middle;
 }
 
-.container--fluid {
-  --container-max: none;
+.data-table thead,
+.data-table tfoot {
+  background-color: var(--color-canvas-soft);
 }
 
-.container--reading {
-  --container-max: var(--content-reading-max-inline-size);
+.data-table th {
+  color: var(--color-muted);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-align: start;
+  text-transform: uppercase;
+}
+
+.data-table tbody tr:last-child > * {
+  border-block-end: 0;
 }
 
 @media (min-width: 768px) {
@@ -1319,7 +1317,7 @@ code:not(pre code) {
   text-transform: uppercase;
 }
 
-.form-group input:not(:where([type="checkbox"], [type="radio"], [type="file"], [type="hidden"])),
+.form-group input:not(:where([type='checkbox'], [type='radio'], [type='file'], [type='hidden'])),
 .form-group select,
 .form-group textarea {
   width: 100%;
@@ -1335,7 +1333,7 @@ code:not(pre code) {
   appearance: none;
 }
 
-.form-group input:not(:where([type="checkbox"], [type="radio"], [type="file"], [type="hidden"])),
+.form-group input:not(:where([type='checkbox'], [type='radio'], [type='file'], [type='hidden'])),
 .form-group select {
   height: auto;
   min-height: var(--control-min-block-size);
@@ -1359,11 +1357,18 @@ code:not(pre code) {
   color: var(--color-faint);
 }
 
-.form-group :is(input, select, textarea):hover:not(:focus-visible, :disabled, [aria-invalid="true"], .input-error, .input-success) {
+.form-group
+  :is(input, select, textarea):hover:not(
+    :focus-visible,
+    :disabled,
+    [aria-invalid='true'],
+    .input-error,
+    .input-success
+  ) {
   border-color: var(--color-charcoal);
 }
 
-.form-group :is(input, select, textarea)[aria-invalid="true"] {
+.form-group :is(input, select, textarea)[aria-invalid='true'] {
   border-color: var(--color-error);
   background: var(--color-error-subtle);
 }
@@ -1768,35 +1773,35 @@ code:not(pre code) {
   box-shadow: var(--shadow-level-2);
 }
 
-.modal-overlay[data-state="open"] {
+.modal-overlay[data-state='open'] {
   animation: fadeIn var(--transition-base) both;
 }
 
-.modal-overlay[data-state="closed"] {
+.modal-overlay[data-state='closed'] {
   animation: fadeOut var(--transition-fast) both;
 }
 
-.modal-content[data-state="open"] {
+.modal-content[data-state='open'] {
   animation: slideUpMobile var(--transition-base) both;
 }
 
-.modal-content[data-state="closed"] {
+.modal-content[data-state='closed'] {
   animation: slideDownMobile var(--transition-fast) both;
 }
 
-.modal-content--placement-bottom[data-state="open"] {
+.modal-content--placement-bottom[data-state='open'] {
   animation: slideUpMobile var(--transition-base) both;
 }
 
-.modal-content--placement-bottom[data-state="closed"] {
+.modal-content--placement-bottom[data-state='closed'] {
   animation: slideDownMobile var(--transition-fast) both;
 }
 
-.modal-content--placement-center[data-state="open"] {
+.modal-content--placement-center[data-state='open'] {
   animation: slideUpModal var(--transition-base) both;
 }
 
-.modal-content--placement-center[data-state="closed"] {
+.modal-content--placement-center[data-state='closed'] {
   animation: slideDownModal var(--transition-fast) both;
 }
 
@@ -1832,21 +1837,21 @@ code:not(pre code) {
 
 /* Base móvil: se conserva el sheet existente y se respetan las safe areas. */
 
-.modal-content>.modal-header {
+.modal-content > .modal-header {
   padding-left: max(var(--modal-content-padding), var(--safe-area-left));
   padding-right: max(var(--modal-content-padding), var(--safe-area-right));
 }
 
-.modal-content>.modal-scroll-region>.modal-body {
+.modal-content > .modal-scroll-region > .modal-body {
   padding-left: max(var(--modal-content-padding), var(--safe-area-left));
   padding-right: max(var(--modal-content-padding), var(--safe-area-right));
 }
 
-.modal-content .modal-body>* {
+.modal-content .modal-body > * {
   flex-shrink: 0;
 }
 
-.modal-content>.modal-footer {
+.modal-content > .modal-footer {
   padding-left: max(var(--modal-content-padding), var(--safe-area-left));
   padding-right: max(var(--modal-content-padding), var(--safe-area-right));
   padding-bottom: calc(var(--modal-content-padding) + var(--safe-area-bottom));
@@ -1877,19 +1882,19 @@ code:not(pre code) {
     transform: translate(-50%, -50%);
   }
 
-  .modal-content[data-state="open"] {
+  .modal-content[data-state='open'] {
     animation: slideUpModal var(--transition-base) both;
   }
 
-  .modal-content[data-state="closed"] {
+  .modal-content[data-state='closed'] {
     animation: slideDownModal var(--transition-fast) both;
   }
 
-  .modal-content .modal-body>* {
+  .modal-content .modal-body > * {
     flex-shrink: 1;
   }
 
-  .modal-content>.modal-footer {
+  .modal-content > .modal-footer {
     padding-block: var(--design-spacing-sm);
   }
 }
@@ -1913,14 +1918,18 @@ code:not(pre code) {
 
 .modal-content--placement-bottom {
   inset-block-end: max(var(--design-spacing-md), var(--safe-area-bottom));
-  inline-size: calc(100% - max(var(--design-spacing-md), var(--safe-area-left)) - max(var(--design-spacing-md), var(--safe-area-right)));
+  inline-size: calc(
+    100% - max(var(--design-spacing-md), var(--safe-area-left)) - max(var(--design-spacing-md), var(--safe-area-right))
+  );
 }
 
 .modal-content--placement-center {
   inset-block-start: 50%;
   inset-block-end: auto;
   transform: translate(-50%, -50%);
-  inline-size: calc(100% - max(var(--design-spacing-md), var(--safe-area-left)) - max(var(--design-spacing-md), var(--safe-area-right)));
+  inline-size: calc(
+    100% - max(var(--design-spacing-md), var(--safe-area-left)) - max(var(--design-spacing-md), var(--safe-area-right))
+  );
 }
 
 .modal-content--placement-bottom,
@@ -1947,8 +1956,8 @@ code:not(pre code) {
   flex: 1 1 auto;
 }
 
-.modal-title>svg,
-.modal-title>[data-icon] {
+.modal-title > svg,
+.modal-title > [data-icon] {
   flex-shrink: 0;
   width: var(--icon-size-md);
   height: var(--icon-size-md);
@@ -2035,9 +2044,9 @@ code:not(pre code) {
   background: var(--color-surface);
 }
 
-.modal-footer>.btn-primary,
-.modal-footer>.btn-secondary,
-.modal-footer>.btn-danger {
+.modal-footer > .btn-primary,
+.modal-footer > .btn-secondary,
+.modal-footer > .btn-danger {
   flex: 1 1 auto;
 }
 
@@ -2046,9 +2055,9 @@ code:not(pre code) {
     justify-content: flex-end;
   }
 
-  .modal-footer>.btn-primary,
-  .modal-footer>.btn-secondary,
-  .modal-footer>.btn-danger {
+  .modal-footer > .btn-primary,
+  .modal-footer > .btn-secondary,
+  .modal-footer > .btn-danger {
     flex: 0 1 auto;
   }
 }
@@ -2123,7 +2132,6 @@ code:not(pre code) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-
   .modal-content[data-state],
   .modal-overlay[data-state] {
     animation: none;
@@ -2215,7 +2223,6 @@ code:not(pre code) {
 
 /* Decoración en bucle: se detiene por completo con movimiento reducido. */
 @media (prefers-reduced-motion: reduce) {
-
   .animated-empty-state,
   .animated-empty-state__icon svg {
     animation: none;
@@ -2260,9 +2267,17 @@ code:not(pre code) {
 
 /* Un único indicador. Los campos compuestos lo delegan al contenedor solo
    mientras su input tiene foco; sus botones mantienen un indicador propio. */
-:focus-visible:not(:where([data-focus-ring] > input, [data-focus-ring] > textarea, label > input.sr-only, .toggle-switch input, .ui-checkbox__input)),
-.toggle-switch input:focus-visible+.toggle-switch__slider,
-.ui-checkbox__input:focus-visible~.ui-checkbox__indicator {
+:focus-visible:not(
+  :where(
+    [data-focus-ring] > input,
+    [data-focus-ring] > textarea,
+    label > input.sr-only,
+    .toggle-switch input,
+    .ui-checkbox__input
+  )
+),
+.toggle-switch input:focus-visible + .toggle-switch__slider,
+.ui-checkbox__input:focus-visible ~ .ui-checkbox__indicator {
   outline: var(--focus-ring-width) solid var(--color-focus);
   outline-offset: var(--focus-ring-offset);
 }
@@ -2276,8 +2291,8 @@ label:has(> input.sr-only:focus-visible) {
 
 /* El input conserva el foco real; su superficie visible dibuja el anillo.
    Se mantiene también en forced-colors para evitar un segundo indicador. */
-[data-focus-ring]> :is(input, textarea):focus-visible,
-label>input.sr-only:focus-visible,
+[data-focus-ring] > :is(input, textarea):focus-visible,
+label > input.sr-only:focus-visible,
 .toggle-switch input:focus-visible,
 .ui-checkbox__input:focus-visible {
   outline: none;
@@ -2321,7 +2336,7 @@ label>input.sr-only:focus-visible,
   color: var(--color-foreground);
 }
 
-.toggle-switch input[type="checkbox"] {
+.toggle-switch input[type='checkbox'] {
   position: absolute;
   opacity: 0;
   width: 0;
@@ -2341,7 +2356,7 @@ label>input.sr-only:focus-visible,
 }
 
 .toggle-switch__slider::before {
-  content: "";
+  content: '';
   position: absolute;
   height: var(--toggle-thumb-size);
   width: var(--toggle-thumb-size);
@@ -2353,15 +2368,15 @@ label>input.sr-only:focus-visible,
   box-shadow: var(--shadow-sm);
 }
 
-.toggle-switch input[type="checkbox"]:checked+.toggle-switch__slider {
+.toggle-switch input[type='checkbox']:checked + .toggle-switch__slider {
   background-color: var(--color-primary);
 }
 
-.toggle-switch input[type="checkbox"]:checked+.toggle-switch__slider::before {
+.toggle-switch input[type='checkbox']:checked + .toggle-switch__slider::before {
   transform: translateX(var(--toggle-thumb-travel));
 }
 
-.toggle-switch input[type="checkbox"]:disabled+.toggle-switch__slider {
+.toggle-switch input[type='checkbox']:disabled + .toggle-switch__slider {
   opacity: var(--opacity-disabled);
   cursor: not-allowed;
 }
@@ -2392,10 +2407,17 @@ label>input.sr-only:focus-visible,
 }
 
 @media (forced-colors: active) {
-
-  :focus-visible:not(:where([data-focus-ring] > input, [data-focus-ring] > textarea, label > input.sr-only, .toggle-switch input, .ui-checkbox__input)),
-  .toggle-switch input:focus-visible+.toggle-switch__slider,
-  .ui-checkbox__input:focus-visible~.ui-checkbox__indicator {
+  :focus-visible:not(
+    :where(
+      [data-focus-ring] > input,
+      [data-focus-ring] > textarea,
+      label > input.sr-only,
+      .toggle-switch input,
+      .ui-checkbox__input
+    )
+  ),
+  .toggle-switch input:focus-visible + .toggle-switch__slider,
+  .ui-checkbox__input:focus-visible ~ .ui-checkbox__indicator {
     outline: var(--focus-ring-width) solid Highlight !important;
     outline-offset: var(--focus-ring-offset) !important;
     box-shadow: none !important;
@@ -2420,11 +2442,11 @@ label>input.sr-only:focus-visible,
     background: ButtonText;
   }
 
-  .toggle-switch input[type="checkbox"]:checked+.toggle-switch__slider {
+  .toggle-switch input[type='checkbox']:checked + .toggle-switch__slider {
     background: Highlight;
   }
 
-  .toggle-switch input[type="checkbox"]:checked+.toggle-switch__slider::before {
+  .toggle-switch input[type='checkbox']:checked + .toggle-switch__slider::before {
     background: HighlightText;
   }
 }

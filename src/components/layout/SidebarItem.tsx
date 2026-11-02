@@ -12,19 +12,25 @@ type SidebarItemProps = {
 
 export function SidebarItem({ item, collapsed, onNavigate }: SidebarItemProps) {
   const location = useLocation();
-  const { to, label, icon: Icon, badge, end } = item;
-  const isActive = end
-    ? location.pathname === to
-    : location.pathname === to || location.pathname.startsWith(`${to}/`);
+  const { to, label, icon: Icon, end } = item;
+  const isActive = end ? location.pathname === to : location.pathname === to || location.pathname.startsWith(`${to}/`);
   const link = (
     <NavLink
       to={to}
       end={end}
       className={clsx('sidebar__item', isActive && 'sidebar__item--active')}
       aria-current={isActive ? 'page' : undefined}
-      aria-label={badge ? `${label}, ${badge}` : label}
+      aria-label={label}
       onClick={(event) => {
-        if (!event.defaultPrevented && event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) onNavigate?.();
+        if (
+          !event.defaultPrevented &&
+          event.button === 0 &&
+          !event.metaKey &&
+          !event.ctrlKey &&
+          !event.shiftKey &&
+          !event.altKey
+        )
+          onNavigate?.();
       }}
       data-testid={`sidebar-nav-${to.replace('/', '') || 'kpis'}`}
       data-cuelume-navigate=""
@@ -33,9 +39,18 @@ export function SidebarItem({ item, collapsed, onNavigate }: SidebarItemProps) {
     >
       <Icon aria-hidden="true" className="sidebar__item-icon" />
       <span className="sidebar__item-label">{label}</span>
-      {badge && <span className="sidebar__item-badge">{badge}</span>}
     </NavLink>
   );
 
-  return <li>{collapsed ? <Tooltip content={label} side="right">{link}</Tooltip> : link}</li>;
+  return (
+    <li>
+      {collapsed ? (
+        <Tooltip content={label} side="right">
+          {link}
+        </Tooltip>
+      ) : (
+        link
+      )}
+    </li>
+  );
 }

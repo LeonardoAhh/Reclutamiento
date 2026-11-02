@@ -108,10 +108,8 @@
   inline-size: 52%;
 }
 
-.ruta-day-page__table {
-  inline-size: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
+.ruta-day-page__table-wrapper {
+  min-inline-size: 0;
 }
 
 .ruta-day-page__table tbody {
@@ -140,15 +138,13 @@
 
 .ruta-day-page__table tbody :is(td, th) {
   min-inline-size: 0;
-  padding: 0;
-  color: var(--color-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-  text-align: start;
   overflow-wrap: anywhere;
-  font-family: var(--font-body);
+}
+
+@media (max-width: 767px) {
+  .ruta-day-page__table tbody :is(td, th) {
+    padding: 0;
+  }
 }
 
 .ruta-day-page__table tbody .ruta-day-page__name {
@@ -179,11 +175,11 @@
     display: inline;
   }
 
-  .ruta-day-page__table {
-    border-spacing: 0;
+  .ruta-day-page__table-wrapper {
     border: var(--border-width) solid var(--color-hairline);
     border-radius: var(--rounded-lg);
     background: var(--color-surface-card);
+    overflow: auto;
   }
 
   .ruta-day-page__table thead {
@@ -196,18 +192,6 @@
   .ruta-day-page__table tbody {
     display: table-row-group;
     gap: 0;
-  }
-
-  .ruta-day-page__table thead th {
-    padding: var(--design-spacing-sm) var(--design-spacing-md);
-    border-block-end: var(--border-width) solid var(--color-hairline);
-    color: var(--color-muted);
-    font-size: var(--type-caption-up-size);
-    font-weight: var(--type-caption-up-weight);
-    line-height: var(--type-caption-up-line);
-    letter-spacing: var(--type-caption-up-tracking);
-    text-align: start;
-    font-family: var(--font-body);
   }
 
   .ruta-day-page__skeleton-row {
@@ -224,14 +208,10 @@
 
   .ruta-day-page__table tbody tr {
     display: table-row;
-  }
-
-  .ruta-day-page__table tbody tr + tr :is(td, th) {
-    border-block-start: var(--border-width) solid var(--color-hairline-soft);
-  }
-
-  .ruta-day-page__table tbody :is(td, th) {
-    padding: var(--design-spacing-sm) var(--design-spacing-md);
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
   }
 
   .ruta-day-page__mobile-label {

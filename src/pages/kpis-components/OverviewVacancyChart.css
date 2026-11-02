@@ -15,18 +15,11 @@
   letter-spacing: var(--type-body-md-tracking);
 }
 
-@media (min-width: 640px) {
-  .overview-chart {
-    padding: var(--design-spacing-lg);
-  }
-}
-
 .overview-chart__header {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--touch-target-min);
   align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--design-spacing-md);
+  gap: var(--design-spacing-xs);
   min-inline-size: 0;
 }
 
@@ -59,9 +52,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--design-spacing-xs);
+  inline-size: var(--touch-target-min);
   min-block-size: var(--touch-target-min);
-  padding-inline: var(--design-spacing-md);
+  padding: 0;
   border: var(--border-width) solid var(--color-control-border);
   border-radius: var(--radius-control);
   background: var(--color-surface-card);
@@ -77,6 +70,37 @@
     border-color var(--transition-fast);
 }
 
+.overview-chart__action-icon {
+  inline-size: var(--icon-size-md);
+  block-size: var(--icon-size-md);
+}
+
+.overview-chart__action-label {
+  display: none;
+}
+
+@media (width >= 640px) {
+  .overview-chart {
+    padding: var(--design-spacing-lg);
+  }
+
+  .overview-chart__header {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--design-spacing-md);
+  }
+
+  .overview-chart__action {
+    gap: var(--design-spacing-xs);
+    inline-size: auto;
+    padding-inline: var(--design-spacing-md);
+  }
+
+  .overview-chart__action-label {
+    display: inline;
+  }
+}
+
 .overview-chart__action:hover {
   border-color: var(--color-hairline-strong);
   background: var(--color-surface-soft);
@@ -84,8 +108,10 @@
 
 .overview-chart__legend {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--design-spacing-md);
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  gap: var(--design-spacing-xxs);
+  min-inline-size: 0;
   margin: 0;
   padding: 0;
   color: var(--color-muted);
@@ -100,18 +126,34 @@
 .overview-chart__legend li {
   display: inline-flex;
   align-items: center;
-  gap: var(--design-spacing-xs);
+  gap: var(--design-spacing-xxs);
+  white-space: nowrap;
 }
 
 .overview-chart__marker {
   flex-shrink: 0;
-  inline-size: var(--design-spacing-xxl);
+  inline-size: var(--icon-size-md);
   block-size: var(--design-spacing-sm);
+}
+
+@media (width >= 640px) {
+  .overview-chart__legend {
+    justify-content: flex-start;
+    gap: var(--design-spacing-md);
+  }
+
+  .overview-chart__legend li {
+    gap: var(--design-spacing-xs);
+  }
+
+  .overview-chart__marker {
+    inline-size: var(--design-spacing-xxl);
+  }
 }
 
 .overview-chart__marker line,
 .overview-chart__marker circle {
-  stroke: currentColor;
+  stroke: currentcolor;
   stroke-width: var(--chart-line-width);
   stroke-linecap: round;
 }

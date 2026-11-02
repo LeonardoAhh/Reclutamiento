@@ -5,7 +5,6 @@ import { ReportDayPage } from "@/pages/ReportDayPage";
 import { getReportDayPath, REPORT_DAY_PATTERN } from "./navigation";
 import { getConfiguracionHref } from "@/lib/configuracionNavigation";
 import "./ReporteDiario.css";
-import { Modal } from "@/components/ui/Modal";
 import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { toast } from "@/lib/notify";
@@ -42,7 +41,6 @@ import type {
 } from "./types";
 
 import ReporteCalendar from "./reporte-calendar";
-import { AnalisisAsistenciaModal } from "./AnalisisAsistenciaModal";
 import ReporteKpiDashboard from "./reporte-kpi-dashboard";
 import ReporteComparison from "./reporte-comparison";
 import ReporteEmployeeDetail from "./reporte-employee-detail";
@@ -64,7 +62,7 @@ const SAVE_SUCCESS_DURATION_MS = 1500;
 
 export default function ReporteDiarioContent() {
   useEffect(() => bindSoundInteractions(document), []);
-  const { en, copy, month, incident } = useReportLocale();
+  const { en, copy, month } = useReportLocale();
   const [rows, setRows] = useState<ReporteRow[]>([]);
   const [selectedMes, setSelectedMes] = useState("");
   const [selectedEmployee, setSelectedEmployee] = useState<string>("");
@@ -97,9 +95,6 @@ export default function ReporteDiarioContent() {
   const saveSuccessTimerRef = useRef<number | null>(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
-  // collapse behaviour removed — panel is always visible
-  const [topEmpModalOpen, setTopEmpModalOpen] = useState(false);
-
   const reduceMotion = useReducedMotion();
 
   const enterFromBelow = reduceMotion ? false : { opacity: 0, y: 8 };
@@ -118,7 +113,6 @@ export default function ReporteDiarioContent() {
     error: dbError,
     fetchSummaries,
     fetchByMes,
-    fetchByMesList,
     saveReport,
     deleteReport,
   } = useReporteDiario();
@@ -127,8 +121,6 @@ export default function ReporteDiarioContent() {
     [],
   );
   const [loadingDb, setLoadingDb] = useState(true);
-  // Filas de TODOS los meses guardados en Supabase (para análisis cross-month)
-  const [allMonthsRows, setAllMonthsRows] = useState<ReporteRow[]>([]);
 
   useEffect(() => {
     return () => {
@@ -161,24 +153,6 @@ export default function ReporteDiarioContent() {
     });
   }, [fetchSummaries]);
 
-  // Cuando cambia la lista de meses guardados, trae el contenido completo
-  // de todos los meses para el cálculo cross-month (récord de incidencias).
-  useEffect(() => {
-    if (savedSummaries.length === 0) {
-      setAllMonthsRows([]);
-      return;
-    }
-    const mesList = savedSummaries.map((s) => s.mes);
-    fetchByMesList(mesList).then((records) => {
-      const combined: ReporteRow[] = [];
-      for (const record of records) {
-        const { rows: parsed } = parseReporteJSON(record.data as unknown[]);
-        combined.push(...parsed);
-      }
-      setAllMonthsRows(combined);
-    });
-  }, [savedSummaries, fetchByMesList]);
-
   // Notifica a la navbar (badge del Menú) cuando cambian los datos del
   // reporte o la lista de meses guardados en Supabase.
   useEffect(() => {
@@ -195,68 +169,6 @@ export default function ReporteDiarioContent() {
   const dayHeaders = Array.from({ length: dayCount }, (_, i) =>
     String(i + 1).padStart(2, "0"),
   );
-
-  // ── Top 10 empleados con más incidencias (todos los meses guardados) ──────
-  const topIncidenceEmployees = useMemo(() => {
-    const dbMeses = new Set(allMonthsRows.map((r) => r.mes));
-    const currentMes = rows[0]?.mes ?? null;
-    const analysisRowsRaw: ReporteRow[] =
-      currentMes && !dbMeses.has(currentMes)
-        ? [...allMonthsRows, ...rows]
-        : allMonthsRows;
-
-    const analysisRows = analysisRowsRaw.filter(
-      (r) =>
-        VISIBLE_SECTIONS.has(r.departamento) || VISIBLE_SECTIONS.has(r.area),
-    );
-
-    if (analysisRows.length === 0) return [];
-
-    const empMap = new Map<
-      string,
-      {
-        numero_empleado: string;
-        nombre: string;
-        departamento: string;
-        area: string;
-        total: number;
-        byCode: Record<string, number>;
-        byMes: Record<string, number>;
-      }
-    >();
-
-    for (const row of analysisRows) {
-      const k = row.numero_empleado;
-      if (!empMap.has(k)) {
-        empMap.set(k, {
-          numero_empleado: row.numero_empleado,
-          nombre: row.nombre,
-          departamento: row.departamento,
-          area: row.area,
-          total: 0,
-          byCode: {},
-          byMes: {},
-        });
-      }
-      const emp = empMap.get(k)!;
-      for (const code of Object.values(row.days)) {
-        if (isIncidence(code)) {
-          // TODO: Temporalmente ignoramos "I" (Incapacidad) y "V" (Vacaciones) a petición del usuario.
-          // Eliminar este bloque if cuando se requiera volver a contarlas.
-          if (code === "I" || code === "V") continue;
-
-          emp.total++;
-          emp.byCode[code] = (emp.byCode[code] ?? 0) + 1;
-          emp.byMes[row.mes] = (emp.byMes[row.mes] ?? 0) + 1;
-        }
-      }
-    }
-
-    return Array.from(empMap.values())
-      .filter((e) => e.total > 0)
-      .sort((a, b) => b.total - a.total)
-      .slice(0, 10);
-  }, [allMonthsRows, rows]);
 
   const selectedRows = useMemo(() => {
     return rows
@@ -618,47 +530,6 @@ export default function ReporteDiarioContent() {
       }
     },
     [deleteReport, fetchSummaries],
-  );
-
-  // Días con incidencia de un empleado en un mes específico (para drill-down)
-  const getDrillDownDays = useCallback(
-    (empKey: string, mes: string) => {
-      const [year, month] = mes.split("-").map(Number);
-      const DAY_NAMES = en
-        ? ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-        : ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
-      const empRows = allMonthsRows.filter(
-        (r) => r.numero_empleado === empKey && r.mes === mes,
-      );
-      const seen = new Set<string>();
-      const days: {
-        day: string;
-        dayLabel: string;
-        code: string;
-        label: string;
-      }[] = [];
-      for (const row of empRows) {
-        for (const [day, code] of Object.entries(row.days)) {
-          if (isIncidence(code) && !seen.has(day)) {
-            // TODO: Temporalmente ignoramos "I" (Incapacidad) y "V" (Vacaciones).
-            if (code === "I" || code === "V") continue;
-
-            seen.add(day);
-            const dayNum = parseInt(day, 10);
-            const weekday =
-              DAY_NAMES[new Date(year, month - 1, dayNum).getDay()];
-            days.push({
-              day,
-              dayLabel: `${weekday} ${dayNum}`,
-              code,
-              label: incident(code),
-            });
-          }
-        }
-      }
-      return days.sort((a, b) => parseInt(a.day, 10) - parseInt(b.day, 10));
-    },
-    [allMonthsRows, en, incident],
   );
 
   const hasData = rows.length > 0 && Boolean(currentMonth);
@@ -1057,23 +928,6 @@ export default function ReporteDiarioContent() {
                           {month(currentMonth)}
                         </h2>
                       </div>
-                      <div className="reporte-cal-actions">
-                        {topIncidenceEmployees.length > 0 && (
-                          <button
-                            type="button"
-                            className="reporte-top-emp-btn"
-                            onClick={() => {
-                              playSound('open');
-                              setTopEmpModalOpen(true);
-                            }}
-                            data-testid="top-incidence-btn"
-                            aria-label={copy("Ver top 10 empleados con más incidencias", "View the 10 employees with the most incidents")}
-                          >
-                            <ChartSpline size={13} aria-hidden="true" />
-                            <span>{copy("Análisis de asistencia", "Attendance analysis")}</span>
-                          </button>
-                        )}
-                      </div>
                     </div>
                   </div>
 
@@ -1115,14 +969,6 @@ export default function ReporteDiarioContent() {
         />
 
 
-        {/* ── Modal: Top 10 empleados con más incidencias ──────── */}
-        <AnalisisAsistenciaModal
-          isOpen={topEmpModalOpen}
-          onClose={() => { playSound('close'); setTopEmpModalOpen(false); }}
-          topIncidenceEmployees={topIncidenceEmployees}
-          getDrillDownDays={getDrillDownDays}
-          formatMes={month}
-        />
       </div>
     </>
   );

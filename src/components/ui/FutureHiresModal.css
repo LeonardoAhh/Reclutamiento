@@ -69,10 +69,6 @@
   min-width: 0;
 }
 
-.future-hires-modal__position .status-badge--icon-only {
-  flex: 0 0 auto;
-}
-
 .future-hires-modal__details {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -122,14 +118,6 @@
   .future-hires-modal__action {
     width: 100%;
   }
-}
-
-.future-hires-modal .badge {
-  font-family: var(--font-body);
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  line-height: var(--type-caption-up-line);
-  letter-spacing: var(--type-caption-up-tracking);
 }
 
 .future-hires-modal__action {

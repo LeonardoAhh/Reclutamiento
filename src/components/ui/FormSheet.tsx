@@ -12,7 +12,7 @@ type FormSheetProps = ModalProps & {
 
 export function FormSheet({
   isOpen, onClose, onBack, className, icon, title, footerActions, headerActions, children,
-  hideCloseButton = false, closeLabel, labelledById, returnFocusRef, size = "sm",
+  hideCloseButton = false, closeLabel, labelledById, returnFocusRef, onCloseAutoFocus, size = "sm",
 }: FormSheetProps) {
   const triggerRef = useRef<HTMLElement | null>(null);
   const { language } = useLanguage();
@@ -30,6 +30,8 @@ export function FormSheet({
             ? document.activeElement : null;
         }}
         onCloseAutoFocus={event => {
+          onCloseAutoFocus?.(event);
+          if (event.defaultPrevented) return;
           const returnFocusTarget = returnFocusRef?.current;
           const focusTarget = returnFocusTarget?.isConnected
             ? returnFocusTarget : triggerRef.current;
