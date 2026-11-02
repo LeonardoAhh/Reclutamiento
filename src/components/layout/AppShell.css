@@ -31,12 +31,12 @@
 @media (width >= 1080px) {
   .app-shell {
     block-size: 100dvh;
-    padding-block: var(--design-spacing-sm);
-    padding-inline-end: max(var(--design-spacing-sm), var(--safe-area-right));
+    padding-block: var(--design-spacing-md);
+    padding-inline-end: max(var(--design-spacing-md), var(--safe-area-right));
     overflow: hidden;
     background: var(--shell-floor);
 
-    --app-sidebar-inset-inline-start: max(var(--design-spacing-sm), var(--safe-area-left));
+    --app-sidebar-inset-inline-start: max(var(--design-spacing-md), var(--safe-area-left));
   }
 
   .app-shell__workspace {

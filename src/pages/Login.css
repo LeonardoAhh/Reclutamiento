@@ -27,8 +27,8 @@
   min-inline-size: 0;
   padding-block: max(var(--design-spacing-lg), var(--safe-area-top))
     max(var(--design-spacing-lg), var(--safe-area-bottom));
-  padding-inline: max(var(--container-padding), var(--safe-area-left))
-    max(var(--container-padding), var(--safe-area-right));
+  padding-inline: max(var(--design-spacing-lg), var(--container-padding), var(--safe-area-left))
+    max(var(--design-spacing-lg), var(--container-padding), var(--safe-area-right));
 }
 
 @media (min-width: 1080px) {
@@ -36,8 +36,11 @@
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0;
+    inline-size: auto;
     max-inline-size: none;
-    padding: var(--design-spacing-sm);
+    min-block-size: calc(100dvh - var(--design-spacing-md) - var(--design-spacing-md));
+    margin: var(--design-spacing-md);
+    padding: var(--design-spacing-md);
     border: var(--border-width) solid var(--workspace-border-color);
     border-radius: var(--workspace-radius);
     background: var(--shell-workspace-surface);
@@ -125,7 +128,7 @@
 .login__preferences {
   position: absolute;
   inset-block-start: max(var(--design-spacing-lg), var(--safe-area-top));
-  inset-inline-start: max(var(--container-padding), var(--safe-area-left));
+  inset-inline-start: max(var(--design-spacing-lg), var(--container-padding), var(--safe-area-left));
   display: flex;
   flex-wrap: wrap;
   align-items: center;
