@@ -207,13 +207,11 @@ button.sidebar__desktop-toggle:hover {
 
 @media (width >= 1080px) {
   .sidebar {
-    inset-block: max(var(--design-spacing-md), var(--safe-area-top))
-      max(var(--design-spacing-md), var(--safe-area-bottom));
-    inset-inline-start: var(--app-sidebar-inset-inline-start);
+    inset-block: 0;
+    inset-inline-start: 0;
     width: var(--app-sidebar-width);
     padding: var(--design-spacing-sm);
-    padding-block-start: var(--border-width);
-    border-radius: var(--workspace-radius);
+    padding-block-start: max(var(--design-spacing-md), var(--safe-area-top));
     background: var(--shell-floor);
     box-shadow: none;
 

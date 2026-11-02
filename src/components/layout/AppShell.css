@@ -35,8 +35,6 @@
     padding-inline-end: max(var(--design-spacing-md), var(--safe-area-right));
     overflow: hidden;
     background: var(--shell-floor);
-
-    --app-sidebar-inset-inline-start: max(var(--design-spacing-md), var(--safe-area-left));
   }
 
   .app-shell__workspace {
@@ -46,9 +44,7 @@
     block-size: 100%;
     min-block-size: 0;
     flex-direction: column;
-    margin-inline-start: calc(
-      var(--app-sidebar-width) + var(--app-sidebar-inset-inline-start) + var(--design-spacing-sm)
-    );
+    margin-inline-start: calc(var(--app-sidebar-width) + var(--design-spacing-md));
     overflow: hidden;
     background: var(--workspace-surface);
     border: var(--border-width) solid var(--workspace-border-color);
