@@ -28,7 +28,7 @@ import { RutaDayEmployeesPage } from '@/components/ui/RutaDayEmployeesModal';
 import { RouteScannerPage } from '@/pages/configuracion-views/RouteScannerPage';
 import { DATA_UPDATE_PATH } from '@/features/data-update/types';
 import { ACCOUNT_PATH, ACTIVIDADES_PATH, HOME_PATH, TEAM_PATH, VACANCY_ASSIGNMENTS_PATH } from '@/components/layout/navigation';
-import { DEPARTURE_REASONS_PATH, REPORT_COMPARISON_PATH, REPORT_DAY_ROUTE, REPORTS_PATH, isDailyReportPath } from '@/components/reporte-diario/navigation';
+import { DEPARTMENT_INCIDENCES_PATH, DEPARTURE_REASONS_PATH, REPORT_COMPARISON_PATH, REPORT_DAY_ROUTE, REPORTS_PATH, isDailyReportPath } from '@/components/reporte-diario/navigation';
 import { CANDIDATE_METRICS_PATH } from '@/pages/candidate-metrics/navigation';
 import { LEAVE_REQUESTS_PATH } from '@/features/leave/requests';
 import { ACTIVITY_IMAGE_ROUTE } from '@/pages/activityImageNavigation';
@@ -42,6 +42,7 @@ import {
   Configuracion,
   Dashboard,
   DataUpdatePage,
+  DepartmentIncidencesPage,
   HomePage,
   KpisPage,
   LeaveRequestsPage,
@@ -62,6 +63,7 @@ function ProtectedContent() {
   const recruiterRestrictedPath = pathname === ADMINISTRATION_PATH
     || normalizedPath === getConfiguracionHref('analisis')
     || normalizedPath === CANDIDATE_METRICS_PATH
+    || normalizedPath === DEPARTMENT_INCIDENCES_PATH
     || isDailyReportPath(pathname);
   if (profile?.role === 'reclutador' && recruiterRestrictedPath) {
     return <Navigate to={HOME_PATH} replace />;
@@ -170,6 +172,7 @@ function App() {
                 <Route path={PLANTILLA_PATH} element={<PlantillaPage />} />
                 <Route path={VACANCY_ASSIGNMENTS_PATH} element={<Navigate to={PLANTILLA_PATH} replace />} />
                 <Route path={CANDIDATE_METRICS_PATH} element={<CandidateMetricsPage />} />
+                <Route path={DEPARTMENT_INCIDENCES_PATH} element={<WithSupabaseData resources={EMPLOYEE_DATA}><DepartmentIncidencesPage /></WithSupabaseData>} />
                 <Route path="/candidates" element={<WithSupabaseData resources={CANDIDATE_FORM_DATA}><Pipeline /></WithSupabaseData>} />
                 <Route path="/employee-turnover" element={<WithSupabaseData resources={EMPLOYEE_DATA}><Bajas /></WithSupabaseData>} />
                 <Route path={ROUTE_DAY_EMPLOYEES_PATH} element={<RutaDayEmployeesPage />} />

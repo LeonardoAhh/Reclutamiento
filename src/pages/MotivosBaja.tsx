@@ -1,10 +1,11 @@
 import { useMemo, useState } from 'react';
 import { PageHeading } from '@/components/layout/PageHeading';
-import { BarChart3, SlidersHorizontal } from 'lucide-react';
+import { BarChart3, Plus, SlidersHorizontal } from 'lucide-react';
 import { CartesianGrid, Label, LabelList, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, type TooltipProps } from 'recharts';
 import { CustomSelect } from '@/components/ui/CustomSelect';
-import { TooltipSurface, type ChartTooltipEntry } from '@/components/ui/Tooltip';
+import { Tooltip as UiTooltip, TooltipSurface, type ChartTooltipEntry } from '@/components/ui/Tooltip';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useIsMobile } from '@/hooks/useIsMobile';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
 import { CapturarMotivoBajaModal } from '@/pages/bajas-components/CapturarMotivoBajaModal';
 import { MotivosBajaRecords } from '@/pages/bajas-components/MotivosBajaRecords';
@@ -13,6 +14,8 @@ import { BAJA_REASON_CATALOG, indicatorBajaType, toBajaSentenceCase } from '@/li
 import { monthKey, TZ_MX } from '@/lib/dates';
 import { getMotivosBajaCopy, translateBajaCatalogLabel } from '@/pages/bajas-components/motivosBajaTranslations';
 import './MotivosBaja.css';
+
+const MOBILE_MONTH_COUNT = 3;
 
 function yearFromDate(value: string): string | null {
   const match = /^(\d{4})-/.exec(value);
@@ -59,6 +62,7 @@ function MonthlyTrendTooltip({ active, payload, label }: MonthlyTrendTooltipProp
 
 export function MotivosBaja() {
   const { language } = useLanguage();
+  const isMobile = useIsMobile();
   const copy = getMotivosBajaCopy(language);
   const { records: indicatorBajas, loading, error, reload, createRecord } = useBajaIndicatorOnly();
   const [year, setYear] = useState('all');
@@ -139,9 +143,12 @@ export function MotivosBaja() {
       const key = monthKey(baja.fecha_baja);
       counts.set(key, (counts.get(key) ?? 0) + 1);
     }
-    const rows = Array.from(counts.entries())
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([key, count]) => ({ month: chartMonthLabel(key, language), monthIndex: Number(key.slice(0, 4)) * 12 + Number(key.slice(5, 7)), count }));
+    const months = Array.from(counts.entries()).sort(([a], [b]) => a.localeCompare(b));
+    const rows = (isMobile ? months.slice(-MOBILE_MONTH_COUNT) : months).map(([key, count]) => ({
+      month: chartMonthLabel(key, language),
+      monthIndex: Number(key.slice(0, 4)) * 12 + Number(key.slice(5, 7)),
+      count,
+    }));
     if (rows.length < 2) return rows;
 
     const averageMonth = rows.reduce((sum, row) => sum + row.monthIndex, 0) / rows.length;
@@ -152,7 +159,7 @@ export function MotivosBaja() {
       ...row,
       trend: Number(Math.max(0, average + slope * (row.monthIndex - averageMonth)).toFixed(1)),
     }));
-  }, [filteredBajas, language]);
+  }, [filteredBajas, isMobile, language]);
 
   return (
     <main className="motivos-baja container" aria-labelledby="motivos-baja-title">
@@ -176,20 +183,25 @@ export function MotivosBaja() {
       )}
 
       <section className="motivos-baja__panel" aria-labelledby="motivos-trend-title" aria-busy={loading}>
-        <div className="motivos-baja__panel-heading">
+        <div className="motivos-baja__panel-heading motivos-baja__panel-heading--chart">
           <BarChart3 size="var(--icon-size-lg)" aria-hidden="true" />
           <div>
             <h2 id="motivos-trend-title">{copy.monthlyDepartures}</h2>
           </div>
           <div className="motivos-baja__panel-actions">
-            <button data-cuelume-tap=""
-              type="button"
-              className="btn-ghost motivos-baja__capture-trigger"
-              onClick={() => setCaptureOpen(true)}
-              disabled={loading || Boolean(error)}
-            >
-              {copy.register}
-            </button>
+            <UiTooltip content={copy.register} side="bottom">
+              <button
+                data-cuelume-tap=""
+                type="button"
+                className="btn-ghost motivos-baja__capture-trigger"
+                aria-label={copy.register}
+                onClick={() => setCaptureOpen(true)}
+                disabled={loading || Boolean(error)}
+              >
+                <Plus className="motivos-baja__capture-icon" size="var(--icon-size-md)" aria-hidden="true" />
+                <span className="motivos-baja__capture-label">{copy.register}</span>
+              </button>
+            </UiTooltip>
             <Popover>
               <PopoverTrigger asChild>
                 <button type="button" className="btn-icon motivos-baja__filter-trigger" aria-label={copy.indicatorFilters}>
@@ -250,7 +262,13 @@ export function MotivosBaja() {
             <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
               <LineChart data={monthlyRows} accessibilityLayer>
                 <CartesianGrid vertical={false} stroke="var(--color-hairline)" />
-                <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fill: 'var(--color-muted)' }} />
+                <XAxis
+                  dataKey="month"
+                  interval={isMobile ? 0 : undefined}
+                  tickLine={false}
+                  axisLine={false}
+                  tick={{ fill: 'var(--color-muted)' }}
+                />
                 <YAxis allowDecimals={false} domain={[0, (dataMax: number) => Math.max(1, Math.ceil(dataMax * 1.15))]} tickLine={false} axisLine={false} tick={{ fill: 'var(--color-muted)' }} width="auto" />
                 <Tooltip content={<MonthlyTrendTooltip />} />
                 {monthlyRows.length > 1 && <Legend />}

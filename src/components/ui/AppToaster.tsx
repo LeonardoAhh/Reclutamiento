@@ -16,6 +16,7 @@ import {
   type ToastType,
 } from '@/lib/notify';
 import { TOAST_CONFIG } from '@/lib/constants';
+import { useLanguage, type Language } from '@/contexts/LanguageContext';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import './AppToaster.css';
 
@@ -27,7 +28,7 @@ const TOAST_ICONS: Record<ToastType, LucideIcon> = {
   loading: LoaderCircle,
 };
 
-function ToastItem({ toast }: { toast: ToastState }) {
+function ToastItem({ toast, language }: { toast: ToastState; language: Language }) {
   const Icon = TOAST_ICONS[toast.type];
   const iconActions = toast.actions?.filter((action) => action.icon) ?? [];
   const textActions = toast.actions?.filter((action) => !action.icon) ?? [];
@@ -61,7 +62,7 @@ function ToastItem({ toast }: { toast: ToastState }) {
     <button
       type="button"
       className="app-toaster__dismiss"
-      aria-label="Cerrar notificación"
+      aria-label={language === 'en' ? 'Dismiss notification' : 'Cerrar notificación'}
       onClick={() => toastStore.remove(toast.id)}
     >
       <X aria-hidden="true" />
@@ -73,7 +74,6 @@ function ToastItem({ toast }: { toast: ToastState }) {
       className={`app-toaster__item app-toaster__item--${toast.type}${compact ? ' app-toaster__item--compact' : ''}${toast.hideAvatar ? ' app-toaster__item--without-avatar' : ''}${toast.presentation === 'system-update' ? ' app-toaster__item--system-update' : ''}`}
       role={toast.type === 'error' ? 'alert' : 'status'}
       aria-atomic="true"
-      aria-busy={toast.type === 'loading'}
     >
       {toast.presentation === 'system-update' ? (
         <span className="app-toaster__brand-mark" aria-hidden="true">
@@ -153,6 +153,7 @@ function ToastItem({ toast }: { toast: ToastState }) {
  * Host único de notificaciones, accesible y limitado a tres mensajes.
  */
 export function AppToaster() {
+  const { language } = useLanguage();
   const toasts = useSyncExternalStore(
     toastStore.subscribe,
     toastStore.getSnapshot,
@@ -162,9 +163,9 @@ export function AppToaster() {
   return (
     <ol
       className={`app-toaster${visibleToast?.presentation === 'system-update' ? ' app-toaster--system-update' : ''}`}
-      aria-label="Notificaciones"
+      aria-label={language === 'en' ? 'Notifications' : 'Notificaciones'}
     >
-      {visibleToast && <ToastItem key={visibleToast.id} toast={visibleToast} />}
+      {visibleToast && <ToastItem key={visibleToast.id} toast={visibleToast} language={language} />}
     </ol>
   );
 }

@@ -84,7 +84,7 @@ export function BajasDetalle({
                   <button
                     type="button"
                     className={cardClass}
-                    aria-label={`Ver detalle de baja de ${b.nombre}`}
+                    aria-label={`Ver detalle de baja de ${b.nombre}${b.puesto ? `, ${b.puesto}` : ''}`}
                     onClick={() => onSelectBaja(b)}
                   >
                     <div className="bajas-detalle__card-body">

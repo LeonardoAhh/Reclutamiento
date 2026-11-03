@@ -63,6 +63,8 @@ const SAVE_SUCCESS_DURATION_MS = 1500;
 export default function ReporteDiarioContent() {
   useEffect(() => bindSoundInteractions(document), []);
   const { en, copy, month } = useReportLocale();
+  const departureLinkLabel = copy("Motivos de baja", "Reasons");
+  const departureAccessibleLabel = copy("Motivos de baja", "Reasons for leaving");
   const [rows, setRows] = useState<ReporteRow[]>([]);
   const [selectedMes, setSelectedMes] = useState("");
   const [selectedEmployee, setSelectedEmployee] = useState<string>("");
@@ -667,9 +669,10 @@ export default function ReporteDiarioContent() {
                     className="btn-secondary reporte-hero__recent-link"
                     to="/departure-reasons"
                     data-cuelume-navigate=""
+                    aria-label={departureAccessibleLabel}
                   >
                     <BarChart3 size="var(--icon-size-sm)" aria-hidden="true" />
-                    {copy("Motivos de baja", "Reasons for leaving")}
+                    {departureLinkLabel}
                   </Link>
                   <Link
                     className="btn-secondary reporte-hero__recent-link"
@@ -806,9 +809,9 @@ export default function ReporteDiarioContent() {
             />
           )}
 
-          <Link className="btn-secondary reporte-head__departure-action" to="/departure-reasons" data-cuelume-navigate="" aria-label={copy("Motivos de baja", "Reasons for leaving")} title={copy("Motivos de baja", "Reasons for leaving")}>
+          <Link className="btn-secondary reporte-head__departure-action" to="/departure-reasons" data-cuelume-navigate="" aria-label={departureAccessibleLabel} title={departureAccessibleLabel}>
             <BarChart3 size="var(--icon-size-sm)" aria-hidden="true" />
-            <span className="reporte-head__departure-label">{copy("Motivos de baja", "Reasons for leaving")}</span>
+            <span className="reporte-head__departure-label">{departureLinkLabel}</span>
           </Link>
 
           {hasData && (

@@ -5,14 +5,14 @@
   max-width: 100%;
 }
 
-@media (min-width: 768px) and (max-width: 1079px) {
+@media (width >= 768px) and (width <= 1079px) {
   body[data-scroll-locked]:has(.custom-select-dropdown) {
     overflow-y: scroll !important;
-    margin-right: var(--removed-body-scroll-bar-size, 0px) !important;
+    margin-right: var(--removed-body-scroll-bar-size, 0) !important;
   }
 }
 
-@media (min-width: 1080px) {
+@media (width >= 1080px) {
   body[data-scroll-locked]:has(.custom-select-dropdown) {
     margin-right: 0 !important;
   }
@@ -51,11 +51,6 @@
   min-width: 0;
 }
 
-.custom-select-trigger:hover:not(:focus-visible):where(:not(:disabled):not([data-disabled]):not([aria-invalid='true']):not(.custom-select-trigger--unstyled)) {
-  border-color: var(--color-charcoal);
-  background: var(--color-surface-soft);
-}
-
 .custom-select-trigger.is-placeholder {
   color: var(--color-muted);
 }
@@ -71,6 +66,13 @@
   color: var(--color-muted);
   opacity: var(--opacity-disabled);
   cursor: not-allowed;
+}
+
+.custom-select-trigger:hover:not(:focus-visible):where(
+    :not(:disabled, [data-disabled], [aria-invalid='true'], .custom-select-trigger--unstyled)
+  ) {
+  border-color: var(--color-charcoal);
+  background: var(--color-surface-soft);
 }
 
 .custom-select-trigger--unstyled {
@@ -95,9 +97,7 @@
   min-width: 0;
   max-width: 100%;
   width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
   line-height: inherit;
 }
 
@@ -116,15 +116,9 @@
 .custom-select-dropdown {
   z-index: var(--layer-menu);
   width: var(--radix-select-trigger-width);
-  min-width: min(
-    var(--menu-min-inline-size),
-    var(--radix-select-content-available-width)
-  );
+  min-width: min(var(--menu-min-inline-size), var(--radix-select-content-available-width));
   max-width: var(--radix-select-content-available-width);
-  max-height: min(
-    var(--select-content-max-block-size),
-    var(--radix-select-content-available-height)
-  );
+  max-height: min(var(--select-content-max-block-size), var(--radix-select-content-available-height));
   overflow: hidden;
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--radius-menu);
@@ -194,9 +188,8 @@
   display: block;
   min-width: 0;
   width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+  white-space: normal;
   line-height: inherit;
   max-width: 100%;
 }

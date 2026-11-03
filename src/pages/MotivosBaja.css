@@ -85,6 +85,10 @@
   letter-spacing: var(--type-body-md-tracking);
 }
 
+.motivos-baja__capture-icon {
+  display: none;
+}
+
 .modal-body.motivos-baja__capture-form {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -116,6 +120,7 @@
 .motivos-baja__filter-trigger {
   flex: 0 0 auto;
   border: 0;
+  border-radius: var(--radius-control);
 }
 
 .motivos-baja__filter {
@@ -232,6 +237,31 @@
 }
 
 @media (width < 768px) {
+  .motivos-baja__panel-heading--chart {
+    display: grid;
+    grid-template-columns: var(--icon-size-lg) minmax(0, 1fr) auto;
+    align-items: center;
+  }
+
+  .motivos-baja__panel-heading--chart .motivos-baja__panel-actions {
+    margin-inline-start: 0;
+  }
+
+  .motivos-baja__capture-trigger {
+    min-width: var(--touch-target-min);
+    padding: 0;
+    border: 0;
+    color: var(--color-ink);
+  }
+
+  .motivos-baja__capture-icon {
+    display: block;
+  }
+
+  .motivos-baja__capture-label {
+    display: none;
+  }
+
   .motivos-baja__records thead {
     position: absolute;
     width: 1px;

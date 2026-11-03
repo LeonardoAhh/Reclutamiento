@@ -1,5 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
-import type { ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
 import { StatusPage } from '@/components/ui/StatusPage';
 import { useAuth } from '@/hooks/useAuth';
@@ -15,7 +14,10 @@ export function AuthGuard({ children }: { children: ReactNode }) {
   if (loading || (session && profileLoading)) return null;
   if (!session) return <Navigate to={sessionExpired ? '/session-expired' : '/login'} replace />;
   if (!profile) return <StatusPage kind={navigator.onLine ? 'server' : 'offline'} standalone onRetry={() => window.location.reload()} onSignOut={() => {
-    void signOut().catch(() => toast.error({ title: language === 'en' ? 'Could not sign out. Try again.' : 'No se pudo cerrar sesión. Intenta de nuevo.' }));
+    void signOut().catch(() => toast.error({
+      title: language === 'en' ? 'Could not sign out' : 'No se pudo cerrar sesión',
+      description: language === 'en' ? 'Try again.' : 'Intenta de nuevo.',
+    }));
   }} />;
   return <>{children}</>;
 }

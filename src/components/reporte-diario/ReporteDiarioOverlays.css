@@ -103,12 +103,9 @@
   text-transform: uppercase;
 }
 
-/* Texto principal dentro de un chip: truncar con ellipsis */
 .reporte-head__grid-text {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
   min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 /* Valor numérico protagonista (ej. "543") */
@@ -212,7 +209,7 @@
   letter-spacing: var(--type-body-md-tracking);
 }
 
-@media (max-width: 767px) {
+@media (width <= 767px) {
   .reporte-head__grid {
     display: flex;
     flex-wrap: wrap;

@@ -1,4 +1,5 @@
 export const REPORTS_PATH = '/reports';
+export const DEPARTMENT_INCIDENCES_PATH = '/department-incidences';
 export const DEPARTURE_REASONS_PATH = '/departure-reasons';
 export const REPORT_COMPARISON_PATH = `${REPORTS_PATH}/comparison`;
 export const REPORT_DAY_ROUTE = 'day/:month/:day';

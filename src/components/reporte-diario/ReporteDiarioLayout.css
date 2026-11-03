@@ -15,7 +15,7 @@
   letter-spacing: var(--type-body-md-tracking);
 }
 
-@media (min-width: 768px) {
+@media (width >= 768px) {
   .reporte-page {
     padding-block-end: var(--design-spacing-lg);
   }
@@ -28,7 +28,7 @@
   width: 100%;
 }
 
-@media (min-width: 768px) {
+@media (width >= 768px) {
   .reporte-container {
     gap: var(--spacing-xl);
   }
@@ -38,9 +38,8 @@
 
 .reporte-header__top {
   display: flex;
-  flex-direction: column;
+  flex-flow: column wrap;
   align-items: stretch;
-  flex-wrap: wrap;
   width: 100%;
   box-sizing: border-box;
   gap: var(--spacing-md);
@@ -49,7 +48,7 @@
   margin: 0;
 }
 
-@media (min-width: 768px) {
+@media (width >= 768px) {
   .reporte-header__top {
     flex-direction: row;
     justify-content: space-between;
@@ -92,14 +91,7 @@
   inline-size: 100%;
 }
 
-/* Evitar que la apariencia de 'card' se aplique al header */
-.reporte-header__top .reporte-card {
-  background: transparent;
-  border: none;
-  box-shadow: none;
-}
-
-@media (min-width: 768px) {
+@media (width >= 768px) {
   .reporte-head__grid {
     margin-top: 0;
   }
@@ -124,7 +116,7 @@
   padding: var(--spacing-md);
 }
 
-@media (min-width: 768px) {
+@media (width >= 768px) {
   .reporte-head {
     gap: var(--spacing-lg);
     padding: var(--spacing-lg);
@@ -133,11 +125,10 @@
 
 .reporte-head__row {
   display: flex;
-  flex-direction: row;
+  flex-flow: row nowrap;
   justify-content: space-between;
   align-items: center;
   gap: var(--spacing-sm);
-  flex-wrap: nowrap;
 }
 
 .reporte-head__launchers {
@@ -153,6 +144,13 @@
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-lg);
   overflow: hidden;
+}
+
+/* Evitar que la apariencia de 'card' se aplique al header */
+.reporte-header__top .reporte-card {
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
 /* Interactive card (button rendered as card) */
@@ -184,7 +182,7 @@ button.reporte-card:hover,
   border-block-end-color: var(--color-hairline-strong);
 }
 
-@media (min-width: 768px) {
+@media (width >= 768px) {
   .reporte-card__header {
     padding: var(--spacing-lg);
   }
@@ -222,7 +220,7 @@ button.reporte-card:hover,
   flex: 1;
 }
 
-@media (min-width: 768px) {
+@media (width >= 768px) {
   .reporte-card__content {
     padding: var(--spacing-lg);
   }
@@ -237,16 +235,17 @@ button.reporte-card:hover,
   gap: var(--spacing-md);
 }
 
-@media (min-width: 640px) {
+@media (width >= 640px) {
   .reporte-grid-2 {
     grid-template-columns: repeat(2, 1fr);
   }
+
   .reporte-grid-4 {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (min-width: 1024px) {
+@media (width >= 1024px) {
   .reporte-grid-4 {
     grid-template-columns: repeat(4, 1fr);
   }
@@ -290,9 +289,8 @@ button.reporte-card:hover,
 }
 
 .reporte-status-banner > span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .reporte-status-banner.error {

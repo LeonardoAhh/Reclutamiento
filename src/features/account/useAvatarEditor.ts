@@ -107,7 +107,7 @@ export function useAvatarEditor(copy: AccountCopy) {
         if (storageError) {
           trigger('error', { sound: false });
           playSound('warning');
-          toast.warning({ title: copy.photoFileKept });
+          toast.warning({ title: copy.photoFileKeptTitle, description: copy.photoFileKept });
           return true;
         }
       }

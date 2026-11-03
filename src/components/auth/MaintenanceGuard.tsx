@@ -94,8 +94,8 @@ export function MaintenanceGuard({ children }: { children: ReactNode }) {
 
     toast.warning({
       title: english
-        ? 'The system is still under maintenance.'
-        : 'El sistema sigue en mantenimiento.',
+        ? 'Maintenance continues'
+        : 'Continúa el mantenimiento',
     });
     setHasChecked(false);
   }, [english, hasChecked, isMaintenance]);

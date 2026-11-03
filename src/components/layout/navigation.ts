@@ -6,13 +6,14 @@ import {
   House,
   ListTodo,
   NotebookText,
+  Percent,
   Route,
   UserSearch,
   type LucideIcon,
 } from 'lucide-react';
 import { PLANTILLA_PATH } from '@/lib/plantillaNavigation';
 import { getConfiguracionHref } from '@/lib/configuracionNavigation';
-import { REPORTS_PATH } from '@/components/reporte-diario/navigation';
+import { DEPARTMENT_INCIDENCES_PATH, REPORTS_PATH } from '@/components/reporte-diario/navigation';
 import type { Language } from '@/contexts/LanguageContext';
 
 export type NavigationRole = 'admin' | 'reclutador';
@@ -66,6 +67,7 @@ const NAV_SECTIONS: ReadonlyArray<NavSection> = [
     label: 'Seguimiento',
     items: [
       { to: REPORTS_PATH, label: 'Reporte Diario', icon: NotebookText, roles: ['admin'] },
+      { to: DEPARTMENT_INCIDENCES_PATH, label: 'Incidencias', icon: Percent, roles: ['admin'] },
       { to: getConfiguracionHref('rutas'), label: 'Rutas', icon: Route },
     ],
   },
@@ -82,6 +84,7 @@ const ENGLISH_NAV_LABELS: Readonly<Record<string, string>> = {
   Resumen: 'Overview',
   Campaña: 'Data update',
   'Reporte Diario': 'Daily Report',
+  Incidencias: 'Incidents',
   Actividades: 'Activities',
   Formatos: 'Forms',
   Rutas: 'Routes',

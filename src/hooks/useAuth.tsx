@@ -93,7 +93,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (inactive && !expiredNotifiedRef.current && window.location.pathname !== '/login') {
       expiredNotifiedRef.current = true;
       toast.error({
-        title: english ? 'Your account is inactive. Contact an administrator.' : 'Tu cuenta está inactiva. Contacta al administrador.',
+        title: english ? 'Account inactive' : 'Cuenta inactiva',
+        description: english ? 'Contact an administrator.' : 'Contacta al administrador.',
       });
     }
 
