@@ -1,35 +1,19 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowLeft, History } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { PageHeading } from '@/components/layout/PageHeading';
 import { useReportLocale } from '@/components/reporte-diario/useReportLocale';
 import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton';
-import { Tooltip } from '@/components/ui/Tooltip';
 import { useReporteDiario, type ReporteDiarioRecord } from '@/hooks/useReporteDiario';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
+import { DepartmentCardImage } from './DepartmentCardImage';
+import { DepartmentEmployeeSearch } from './DepartmentEmployeeSearch';
+import { DepartmentEmployeesTable } from './DepartmentEmployeesTable';
 import { DepartmentEmployeeProfile } from './DepartmentEmployeeProfile';
 import { summarizeDepartmentIncidences } from './department-incidences';
 import './DepartmentIncidencesPage.css';
 
-function PreviousDepartmentsTooltip({ label }: { label: string }) {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <Tooltip content={label} open={open} onOpenChange={setOpen}>
-      <button
-        type="button"
-        className="department-incidences-page__history"
-        aria-label={label}
-        onClick={() => setOpen(true)}
-        onBlur={() => setOpen(false)}
-      >
-        <History size="var(--icon-size-sm)" aria-hidden="true" />
-      </button>
-    </Tooltip>
-  );
-}
-
 export function DepartmentIncidencesPage() {
-  const { copy, en } = useReportLocale();
+  const { copy } = useReportLocale();
   const { fetchSummaries, fetchByMesList, error } = useReporteDiario();
   const { employees, loading: employeesLoading, error: employeesError } = useSupabaseData();
   const [reports, setReports] = useState<ReporteDiarioRecord[] | null>(null);
@@ -54,17 +38,7 @@ export function DepartmentIncidencesPage() {
   const currentDepartment = data.departments.find((department) => department.name === selectedDepartment);
   const currentEmployees = selectedDepartment ? (data.employeesByDepartment.get(selectedDepartment) ?? []) : [];
   const currentEmployee = currentEmployees.find((employee) => employee.number === selectedEmployeeNumber);
-  const percentageFormatter = useMemo(
-    () =>
-      new Intl.NumberFormat(en ? 'en-US' : 'es-MX', {
-        style: 'percent',
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }),
-    [en],
-  );
-  const formatPercentage = (incidents: number, trackedDays: number) =>
-    trackedDays > 0 ? percentageFormatter.format(incidents / trackedDays) : copy('Sin datos', 'No data');
+  const allEmployees = useMemo(() => [...data.employeesByDepartment.values()].flat(), [data.employeesByDepartment]);
 
   useEffect(() => {
     let active = true;
@@ -119,8 +93,9 @@ export function DepartmentIncidencesPage() {
     setSelectedDepartment(null);
   };
 
-  const selectEmployee = (number: string) => {
+  const selectEmployee = (number: string, department = selectedDepartment) => {
     pendingFocusRef.current = 'profile';
+    if (department) setSelectedDepartment(department);
     setSelectedEmployeeNumber(number);
   };
   const returnToEmployees = () => {
@@ -134,6 +109,11 @@ export function DepartmentIncidencesPage() {
       <PageHeading id="department-incidences-title" className="app-page-title">
         {copy('Incidencias', 'Incidents')}
       </PageHeading>
+      <DepartmentEmployeeSearch
+        employees={allEmployees}
+        disabled={reports === null || employeesLoading || Boolean(error) || Boolean(employeesError)}
+        onSelect={(employee) => selectEmployee(employee.number, employee.department)}
+      />
 
       {reports === null ? (
         <LoadingSkeleton
@@ -167,14 +147,6 @@ export function DepartmentIncidencesPage() {
                   aria-labelledby="department-incidences-detail-title"
                 >
                   <div className="department-incidences-page__detail-heading">
-                    <h2
-                      ref={detailHeadingRef}
-                      tabIndex={-1}
-                      id="department-incidences-detail-title"
-                      className="department-incidences-page__section-title"
-                    >
-                      {currentDepartment.name}
-                    </h2>
                     <button
                       type="button"
                       className="btn-ghost department-incidences-page__back"
@@ -183,6 +155,14 @@ export function DepartmentIncidencesPage() {
                       <ArrowLeft size="var(--icon-size-sm)" aria-hidden="true" />
                       {copy('Volver', 'Back')}
                     </button>
+                    <h2
+                      ref={detailHeadingRef}
+                      tabIndex={-1}
+                      id="department-incidences-detail-title"
+                      className="department-incidences-page__section-title"
+                    >
+                      {currentDepartment.name}
+                    </h2>
                   </div>
                   {employeesLoading ? (
                     <LoadingSkeleton
@@ -203,49 +183,12 @@ export function DepartmentIncidencesPage() {
                       )}
                     </output>
                   ) : (
-                    <table ref={employeeTableRef} className="data-table department-incidences-page__table">
-                      <caption className="sr-only">
-                        {copy('Empleados de ', 'Employees in ')}
-                        {currentDepartment.name}
-                      </caption>
-                      <thead>
-                        <tr>
-                          <th scope="col">{copy('Núm. Emp.', 'Emp. No.')}</th>
-                          <th scope="col">{copy('Nombre', 'Name')}</th>
-                          <th scope="col">{copy('Departamento', 'Department')}</th>
-                          <th scope="col">{copy('Sección', 'Section')}</th>
-                          <th scope="col">{copy('Puesto', 'Position')}</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {currentEmployees.map((employee) => {
-                          const historyLabel = `${copy('Antes en: ', 'Previously in: ')}${employee.previousDepartments.join(', ')}`;
-                          return (
-                            <tr key={employee.number}>
-                              <td>{employee.number}</td>
-                              <th scope="row">
-                                <span className="department-incidences-page__employee-name">
-                                  <button
-                                    type="button"
-                                    className="department-incidences-page__employee-button"
-                                    data-employee={employee.number}
-                                    onClick={() => selectEmployee(employee.number)}
-                                  >
-                                    {employee.name}
-                                  </button>
-                                  {employee.previousDepartments.length > 0 && (
-                                    <PreviousDepartmentsTooltip label={historyLabel} />
-                                  )}
-                                </span>
-                              </th>
-                              <td>{employee.department}</td>
-                              <td>{employee.section}</td>
-                              <td>{employee.position || '—'}</td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
+                    <DepartmentEmployeesTable
+                      employees={currentEmployees}
+                      departmentName={currentDepartment.name}
+                      tableRef={employeeTableRef}
+                      onSelectEmployee={selectEmployee}
+                    />
                   )}
                 </section>
               )}
@@ -274,11 +217,8 @@ export function DepartmentIncidencesPage() {
                       data-department={department.name}
                       onClick={() => selectDepartment(department.name)}
                     >
+                      <DepartmentCardImage department={department.name} />
                       <span className="department-incidences-page__card-title">{department.name}</span>
-                      <span className="department-incidences-page__card-value">
-                        <span className="sr-only">{copy('Porcentaje de incidencias: ', 'Incident rate: ')}</span>
-                        {formatPercentage(department.incidents, department.trackedDays)}
-                      </span>
                     </button>
                   </li>
                 ))}

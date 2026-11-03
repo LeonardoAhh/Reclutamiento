@@ -37,11 +37,11 @@ export function parseNameWords(full: string): string[] {
       buffer = [];
     }
   }
-  
+
   if (buffer.length > 0) {
     words.push(buffer.join(' '));
   }
-  
+
   return words;
 }
 
@@ -58,26 +58,31 @@ export function splitCandidateName(full: string | null | undefined): SplitName {
   };
 }
 
+export function getFirstGivenName(full: string | null | undefined): string {
+  const { nombres } = splitCandidateName(full);
+  return parseNameWords(nombres)[0] ?? nombres;
+}
+
 /**
  * Retorna "ApellidoPaterno PrimerNombre".
  * Maneja apellidos compuestos (DE LA CRUZ) y nombres compuestos comunes (MA DEL CARMEN).
  */
 export function getShortName(full: string | null | undefined): string {
   const words = parseNameWords(full || '');
-  
+
   if (words.length === 0) return '';
   if (words.length === 1) return words[0];
   if (words.length === 2) return `${words[0]} ${words[1]}`;
-  
+
   // 3+ palabras: words[0] = Paterno, words[1] = Materno, words[2] = Nombre
   let nombre = words[2];
-  
+
   // Si el primer nombre es muy corto o es un prefijo común compuesto (MA, J, MARIA, JOSE),
   // tomamos también el segundo nombre si existe para que no quede solo "PEREZ MA"
   const upper = nombre.toUpperCase().replace('.', '');
   if (['MA', 'J', 'MARIA', 'JOSE'].includes(upper) && words.length > 3) {
     nombre = `${nombre} ${words[3]}`;
   }
-  
+
   return `${words[0]} ${nombre}`;
 }

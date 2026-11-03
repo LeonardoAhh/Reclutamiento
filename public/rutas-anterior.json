@@ -320,16 +320,6 @@
     "parada": "PARADA DE CAMIONES EN EL OXXO DE LA CALLE COAHUILA"
   },
   {
-    "numero_empleado": "2227",
-    "nombre": "LEON TAPIA MARIO",
-    "seccion": "PRODUCCIÓN MONTAJE",
-    "puesto": "MONTADOR DE MOLDES B",
-    "turno": "2",
-    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
-    "colonia": "OBRERA",
-    "parada": "PARADA DE CAMIONES EN EL OXXO DE LA CALLE COAHUILA"
-  },
-  {
     "numero_empleado": "2247",
     "nombre": "BIBIANO GARCIA FLOR",
     "seccion": "PRODUCCIÓN ADMTVO",
@@ -2500,6 +2490,16 @@
     "parada": "PARADA DE CAMIONES"
   },
   {
+    "numero_empleado": "4312",
+    "nombre": "HERNANDEZ MAGDALENO ANDREA OLIVIA",
+    "seccion": "ALMACÉN 2DO TURNO ",
+    "puesto": "AUXILIAR DE ALMACÉN C",
+    "turno": "2",
+    "nombre ruta": "R1- QUERETARO- PIE DE LA CUESTA",
+    "colonia": "PIE DE LA CUESTA",
+    "parada": "ESQ. BELEN, EN LA LLANTERA LOS VEGA/TIENDA NETO"
+  },
+  {
     "numero_empleado": "4314",
     "nombre": "ACUÑA TELLEZ CRESCENCIO",
     "seccion": "PRODUCCIÓN MONTAJE",
@@ -2900,26 +2900,6 @@
     "parada": "CRUZ ROJA MEXICANA"
   },
   {
-    "numero_empleado": "4409",
-    "nombre": "HERNANDEZ CHAVEZ MARIBEL",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
-    "puesto": "OPERADOR DE MÁQUINA D",
-    "turno": "1",
-    "nombre ruta": "R4-SANTA ROSA",
-    "colonia": "HDA SANTA ROSA ",
-    "parada": "FARMACIA GUADALAJARA"
-  },
-  {
-    "numero_empleado": "4410",
-    "nombre": "MENDOZA SANCHEZ MARIA BELEN",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
-    "puesto": "OPERADOR DE MÁQUINA D",
-    "turno": "1",
-    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
-    "colonia": "LA BARRETA",
-    "parada": "TIENDA EN LA ENTRADA"
-  },
-  {
     "numero_empleado": "4411",
     "nombre": "GAYTAN MEDINA CARMEN MAYREN",
     "seccion": "ALMACÉN 2DO TURNO ",
@@ -2958,5 +2938,55 @@
     "nombre ruta": "R4-SANTA ROSA",
     "colonia": "PUERTO AGUIRRE",
     "parada": "PARADA EN LA TORTILLERIA"
+  },
+  {
+    "numero_empleado": "4417",
+    "nombre": "SANCHEZ PICHARDO ROSA MARIA",
+    "seccion": "PRODUCCIÓN 4o. TURNO",
+    "puesto": "OPERADOR DE MÁQUINA D",
+    "turno": "4",
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "colonia": "SAN ISIDRO",
+    "parada": "PARADA DE CAMIONES"
+  },
+  {
+    "numero_empleado": "4418",
+    "nombre": "JUAREZ RIVERA ANGEL",
+    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "puesto": "OPERADOR DE MÁQUINA D",
+    "turno": "2",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "colonia": "SAN JOSE ITURBIDE",
+    "parada": "PARADA DE AUTOBUSES DE COPPEL"
+  },
+  {
+    "numero_empleado": "4419",
+    "nombre": "OCAMPO MALDONADO NELIDA",
+    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "puesto": "OPERADOR DE MÁQUINA D",
+    "turno": "2",
+    "nombre ruta": "R4-SANTA ROSA",
+    "colonia": "SANTA ROSA",
+    "parada": "CALLE INDEPENDENCIA, PARADA DE CAMIONES PRIMARIA EMILIANO ZAPATA"
+  },
+  {
+    "numero_empleado": "4421",
+    "nombre": "FIGUEROA AGUILAR LEZLY ALEJANDRA",
+    "seccion": "A. CALIDAD 3ER TURNO",
+    "puesto": "OPERADOR DE ACABADOS GP-12 D",
+    "turno": "3",
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "colonia": "COREA",
+    "parada": "PARADA DE CAMIONES"
+  },
+  {
+    "numero_empleado": "4422",
+    "nombre": "BALDERAS ZUÑIGA MARTHA ESMERALDA",
+    "seccion": "A. CALIDAD 2DO. TURNO",
+    "puesto": "OPERADOR DE ACABADOS GP-12 D",
+    "turno": "2",
+    "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
+    "colonia": "COREA",
+    "parada": "PARADA DE CAMIONES"
   }
 ]

@@ -21,6 +21,10 @@ export function DepartmentEmployeeProfile({ employee, headingRef, onBack }: Depa
   return (
     <section className="department-incidences-page__profile" aria-labelledby="department-employee-profile-title">
       <div className="department-incidences-page__detail-heading">
+        <button type="button" className="btn-ghost department-incidences-page__back" onClick={onBack}>
+          <ArrowLeft size="var(--icon-size-sm)" aria-hidden="true" />
+          {copy('Volver', 'Back')}
+        </button>
         <h2
           ref={headingRef}
           tabIndex={-1}
@@ -29,10 +33,6 @@ export function DepartmentEmployeeProfile({ employee, headingRef, onBack }: Depa
         >
           {employee.name}
         </h2>
-        <button type="button" className="btn-ghost department-incidences-page__back" onClick={onBack}>
-          <ArrowLeft size="var(--icon-size-sm)" aria-hidden="true" />
-          {copy('Volver', 'Back')}
-        </button>
       </div>
 
       <dl className="department-incidences-page__profile-facts">

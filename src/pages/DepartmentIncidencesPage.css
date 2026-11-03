@@ -20,27 +20,49 @@
 }
 
 .department-incidences-page__card {
+  position: relative;
   display: grid;
-  align-content: space-between;
-  gap: var(--design-spacing-md);
+  align-items: end;
+  aspect-ratio: 16 / 9;
   min-width: 0;
   min-height: var(--touch-target-min);
   width: 100%;
-  padding: var(--design-spacing-lg);
+  padding: 0;
+  overflow: hidden;
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--radius-card);
-  background: var(--color-surface-card);
+  background: var(--color-surface-dark);
   text-align: start;
   cursor: pointer;
 }
 
-.department-incidences-page__card:hover {
-  background: var(--color-canvas-soft);
+.department-incidences-page__card::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, var(--color-surface-dark), transparent);
+  content: '';
+  pointer-events: none;
+}
+
+.department-incidences-page__card-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-base);
+}
+
+.department-incidences-page__card:is(:hover, :focus-visible) .department-incidences-page__card-image {
+  transform: scale(1.05);
 }
 
 .department-incidences-page__card-title {
+  position: relative;
+  z-index: 1;
+  padding: var(--design-spacing-md);
   overflow-wrap: anywhere;
-  color: var(--color-body);
+  color: var(--color-on-dark);
   font-family: var(--font-body);
   font-size: var(--type-body-strong-size);
   font-weight: var(--type-body-strong-weight);
@@ -48,14 +70,11 @@
   letter-spacing: var(--type-body-strong-tracking);
 }
 
-.department-incidences-page__card-value {
-  color: var(--color-ink);
-  font-family: var(--font-body);
-  font-size: var(--type-heading-lg-size);
-  font-weight: var(--type-heading-lg-weight);
-  line-height: var(--type-heading-lg-line);
-  letter-spacing: var(--type-heading-lg-tracking);
-  font-variant-numeric: tabular-nums;
+.department-incidences-page__sort-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--design-spacing-xxs);
+  white-space: nowrap;
 }
 
 .department-incidences-page__section-title {
@@ -95,7 +114,9 @@
 
 .department-incidences-page__detail-heading .department-incidences-page__section-title {
   min-width: 0;
+  margin-inline-start: auto;
   overflow-wrap: anywhere;
+  text-align: end;
 }
 
 .department-incidences-page__detail-empty {
@@ -127,6 +148,41 @@
 .department-incidences-page__table :is(th, td):first-child {
   width: calc(var(--touch-target-min) * 2);
   font-variant-numeric: tabular-nums;
+}
+
+.department-incidences-page__table :is(th, td):last-child {
+  text-align: center;
+}
+
+.department-incidences-page__indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.department-incidences-page__indicator--excellent {
+  color: var(--color-success-text);
+}
+
+.department-incidences-page__indicator--attention {
+  color: var(--color-warning-text);
+}
+
+.department-incidences-page__indicator--priority {
+  color: var(--color-error-text);
+  animation: department-incidence-indicator-enter var(--transition-fast) both;
+}
+
+@keyframes department-incidence-indicator-enter {
+  from {
+    opacity: 0;
+    transform: translateY(var(--design-spacing-xxs));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .department-incidences-page__employee-name {
@@ -312,7 +368,6 @@
 
 .department-incidences-page__back {
   flex: 0 0 auto;
-  margin-inline-start: auto;
   white-space: nowrap;
 }
 
@@ -340,7 +395,8 @@
 }
 
 @media (width < 768px) {
-  .department-incidences-page__table :is(th, td):nth-child(n + 3) {
+  .department-incidences-page__table :is(th, td):nth-child(3),
+  .department-incidences-page__table :is(th, td):nth-child(4) {
     display: none;
   }
 
@@ -360,11 +416,11 @@
   }
 
   .department-incidences-page__table thead th:nth-child(2) {
-    width: 25%;
+    width: 35%;
   }
 
   .department-incidences-page__table thead th:last-child {
-    width: 32%;
+    width: 15%;
   }
 
   .department-incidences-page__profile-facts {
@@ -385,5 +441,15 @@
 @media (width >= 1440px) {
   .department-incidences-page__grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .department-incidences-page__card-image {
+    transition: none;
+  }
+
+  .department-incidences-page__card:is(:hover, :focus-visible) .department-incidences-page__card-image {
+    transform: none;
   }
 }

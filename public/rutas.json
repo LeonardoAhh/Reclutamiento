@@ -2740,16 +2740,6 @@
     "parada": "FARMACIA GUADALAJARA"
   },
   {
-    "numero_empleado": "4380",
-    "nombre": "ORTIZ ROSALES MARIA GUADALUPE",
-    "seccion": "PRODUCCIÓN 4o. TURNO",
-    "puesto": "OPERADOR DE MÁQUINA D",
-    "turno": "4",
-    "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
-    "colonia": "AV. DE LA LUZ",
-    "parada": "PARADA DE CAMIONES ESQ. MAYAS"
-  },
-  {
     "numero_empleado": "4383",
     "nombre": "GARCIA CARRILLO PABLO",
     "seccion": "ALMACÉN 2DO TURNO ",
@@ -2858,16 +2848,6 @@
     "nombre ruta": "R6- AV. DE LA LUZ - PASEOS QUERETARO",
     "colonia": "PASEOS QUERETARO",
     "parada": "PARADA EN LA PANADERIA LECAROZ"
-  },
-  {
-    "numero_empleado": "4404",
-    "nombre": "TAPIA VALENTE ISIS YAMILETH",
-    "seccion": "PRODUCCIÓN 1ER. TURNO",
-    "puesto": "OPERADOR DE MÁQUINA D",
-    "turno": "1",
-    "nombre ruta": "R2- SAN JOSE ITURBIDE",
-    "colonia": "SAN JOSE ITURBIDE",
-    "parada": "PARADA DE LA ALAMEDA"
   },
   {
     "numero_empleado": "4405",
