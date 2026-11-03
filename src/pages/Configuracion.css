@@ -205,7 +205,6 @@
   padding: var(--focus-ring-width);
   background: transparent;
   border: 0;
-  border-block-end: var(--border-width) solid var(--color-hairline-strong);
 }
 
 .config-segmented-control {

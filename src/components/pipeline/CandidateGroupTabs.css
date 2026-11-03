@@ -4,7 +4,6 @@
   gap: var(--spacing-sm);
   min-inline-size: 0;
   overflow-x: auto;
-  border-bottom: var(--border-width) solid var(--color-hairline);
 }
 
 @media (min-width: 1080px) {

@@ -39,7 +39,6 @@
   max-inline-size: 100%;
   margin-inline: calc(-1 * var(--focus-ring-width));
   padding: var(--focus-ring-width);
-  border-block-end: var(--border-width) solid var(--color-hairline-strong);
   overflow-x: auto;
   overflow-y: hidden;
   scroll-padding-inline: var(--focus-ring-width);
