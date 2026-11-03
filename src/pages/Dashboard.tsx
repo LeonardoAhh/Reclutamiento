@@ -130,7 +130,7 @@ export function Dashboard() {
 
   const handleCopyVacancyReport = async () => {
     try {
-      await copyTextToClipboard(buildWorkforceVacancyReport(positionCoverage, language));
+      await copyTextToClipboard(buildWorkforceVacancyReport(positionCoverage));
       toast.success({ title: t("Reporte para WhatsApp copiado") });
     } catch {
       toast.error({ title: t("No se pudo copiar el reporte") });

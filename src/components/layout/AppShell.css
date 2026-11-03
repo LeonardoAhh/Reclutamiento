@@ -9,7 +9,8 @@
 }
 
 .app-shell[data-sidebar-collapsed='true'] {
-  --app-sidebar-width: calc(var(--touch-target-min) + var(--design-spacing-lg));
+  /* 44px de control + padding del rail (xs) y de sus regiones internas (xxs). */
+  --app-sidebar-width: calc(var(--touch-target-min) + 2 * var(--design-spacing-xs) + 2 * var(--design-spacing-xxs));
 }
 
 .app-shell__workspace {

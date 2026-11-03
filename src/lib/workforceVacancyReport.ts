@@ -1,9 +1,7 @@
-import type { Language } from '@/contexts/LanguageContext';
 import { formatReadableDate } from '@/lib/dates';
 import type { PositionCoverage } from '@/lib/types';
-import { toNaturalCase } from '@/lib/utils';
-import { buildWhatsAppReportFromBlocks, formatWhatsAppLabel } from '@/lib/whatsappReport';
-import { workforceText } from '@/pages/workforce-translations';
+import { normalizePuesto } from '@/lib/utils';
+import { formatWhatsAppLabel } from '@/lib/whatsappReport';
 
 interface PendingVacancy {
   area: string;
@@ -45,42 +43,68 @@ function pendingVacancies(positions: PositionCoverage[]): PendingVacancy[] {
     );
 }
 
-function projectBlocks(rows: PendingVacancy[], project: 'general' | 'starlite', language: Language): string[] {
-  const byArea = new Map<string, string[]>();
+interface VacancyGroupPresentation {
+  title: string;
+  role: string;
+}
+
+const POSITION_PRESENTATION_KEYS: Record<string, { title: string; role: string }> = {
+  'OPERADOR DE ACABADOS GP-12': { title: 'Acabados GP-12', role: 'Operador' },
+  'TECNICO DE TAMPOGRAFIA': { title: 'Tampografía', role: 'Técnico de Tampografía' },
+  'OPERADOR DE MAQUINA': { title: 'Operador de Máquina', role: '' },
+  'MONTADOR DE MOLDES': { title: 'Montador de Moldes', role: '' },
+};
+
+function positionPresentation(position: string, project: 'general' | 'starlite'): VacancyGroupPresentation {
+  if (project === 'starlite') {
+    return {
+      title: 'Starlite',
+      role: normalizePuesto(position) === 'OPERADOR DE MAQUINA' ? 'Operador' : formatWhatsAppLabel(position),
+    };
+  }
+
+  const presentation = POSITION_PRESENTATION_KEYS[normalizePuesto(position)];
+  if (!presentation) {
+    return { title: formatWhatsAppLabel(position), role: '' };
+  }
+
+  return presentation;
+}
+
+function projectBlocks(rows: PendingVacancy[], project: 'general' | 'starlite'): string[] {
+  const groupedLines = new Map<string, Map<string, number>>();
 
   for (const row of rows) {
     const count = row[project];
     if (count === 0) continue;
 
-    let puesto = formatWhatsAppLabel(row.puesto, language);
-    if (project === 'starlite' && puesto.toLocaleLowerCase('es-MX').includes('operador de máquina')) {
-      puesto = language === 'en' ? 'Starlite machine operator' : 'Operador de Starlite';
-    }
-    const turno = row.turno ? formatWhatsAppLabel(row.turno, language) : '';
-    const label = [puesto, turno].filter(Boolean).join(' · ');
-    const unit = workforceText(language, count === 1 ? 'vacante' : 'vacantes');
-    const lines = byArea.get(row.area) ?? [];
-    lines.push(`• ${label}: ${count} ${unit}`);
-    byArea.set(row.area, lines);
+    const presentation = positionPresentation(row.puesto, project);
+    const turno = row.turno ? formatWhatsAppLabel(row.turno) : '';
+    const label = [presentation.role, turno].filter(Boolean).join(' · ');
+    const lines = groupedLines.get(presentation.title) ?? new Map<string, number>();
+    lines.set(label, (lines.get(label) ?? 0) + count);
+    groupedLines.set(presentation.title, lines);
   }
 
-  const projectTitle = project === 'general' ? workforceText(language, 'General') : 'Starlite';
-  return Array.from(byArea, ([area, lines]) => `*${projectTitle} · ${toNaturalCase(area)}*\n${lines.join('\n')}`);
+  return Array.from(groupedLines, ([title, lines]) => {
+    const items = Array.from(lines, ([label, count]) => {
+      const unit = count === 1 ? 'vacante' : 'vacantes';
+      return `• ${label ? `${label}: ` : ''}*${count} ${unit}*`;
+    });
+    return `*${title}*\n${items.join('\n')}`;
+  });
 }
 
 /** Usa el mismo conteo del reporte anterior, sin asignaciones ni exclusiones manuales. */
-export function buildWorkforceVacancyReport(positions: PositionCoverage[], language: Language): string {
+export function buildWorkforceVacancyReport(positions: PositionCoverage[]): string {
   const rows = pendingVacancies(positions);
   const total = rows.reduce((sum, row) => sum + row.general + row.starlite, 0);
-  const blocks = [...projectBlocks(rows, 'general', language), ...projectBlocks(rows, 'starlite', language)];
-  const t = (text: string) => workforceText(language, text);
+  const blocks = [...projectBlocks(rows, 'general'), ...projectBlocks(rows, 'starlite')];
+  const totalLabel = total === 1 ? 'vacante' : 'vacantes';
+  const updatedAt = formatReadableDate(new Date().toISOString(), 'es-MX', 'long');
+  const header = ['*Vacantes abiertas*', `*Actualización: ${updatedAt}*`, `*Total: ${total} ${totalLabel}*`];
 
-  return buildWhatsAppReportFromBlocks({
-    title: t('Vacantes pendientes'),
-    date: `${t('Corte')}: ${formatReadableDate(new Date().toISOString(), language === 'en' ? 'en-US' : 'es-MX')}`,
-    total,
-    totalLabel: t(total === 1 ? 'vacante' : 'vacantes'),
-    blocks,
-    emptyMessage: t('Sin vacantes pendientes.'),
-  });
+  return blocks.length > 0
+    ? [...header, '', blocks.join('\n\n')].join('\n')
+    : [...header, '', 'Sin vacantes pendientes.'].join('\n');
 }

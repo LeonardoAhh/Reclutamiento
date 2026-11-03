@@ -102,3 +102,13 @@
     opacity var(--transition-fast),
     transform var(--transition-slow);
 }
+
+@media (width >= 1080px) {
+  .app-shell[data-sidebar-collapsed='false'] .sidebar__group + .sidebar__group {
+    margin-block-start: var(--design-spacing-xs);
+  }
+
+  .app-shell[data-sidebar-collapsed='false'] .sidebar__group-label {
+    padding-block-start: var(--design-spacing-xxs);
+  }
+}

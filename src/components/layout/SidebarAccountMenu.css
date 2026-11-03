@@ -81,6 +81,11 @@
 .dropdown-menu-content.sidebar__account-menu {
   inline-size: var(--menu-inline-size-md);
   max-inline-size: var(--radix-dropdown-menu-content-available-width);
+  gap: 0;
+}
+
+.sidebar__account-menu .dropdown-menu-separator {
+  margin-block: 0;
 }
 
 .sidebar__account-menu-header {
@@ -88,7 +93,7 @@
   min-inline-size: 0;
   flex-direction: column;
   gap: var(--design-spacing-xxs);
-  padding: var(--design-spacing-xs) var(--design-spacing-sm);
+  padding: var(--design-spacing-xxs) var(--design-spacing-xs);
   text-transform: none;
 }
 
@@ -130,7 +135,6 @@
 .sidebar__theme-footer {
   display: grid;
   min-inline-size: 0;
-  gap: var(--design-spacing-xxs);
 }
 
 .sidebar__theme-options {

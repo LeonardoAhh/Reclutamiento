@@ -218,7 +218,11 @@ export function formatDayMonth(iso: string | null | undefined, locale = 'es-MX')
 /**
  * Formato más legible para el usuario (`18 feb 2026`), en TZ MX.
  */
-export function formatReadableDate(iso: string | null | undefined, locale = 'es-MX'): string {
+export function formatReadableDate(
+  iso: string | null | undefined,
+  locale = 'es-MX',
+  month: 'short' | 'long' = 'short',
+): string {
   if (!iso) return '—';
   const trimmed = String(iso).trim();
   if (!trimmed) return '—';
@@ -231,7 +235,7 @@ export function formatReadableDate(iso: string | null | undefined, locale = 'es-
   if (Number.isNaN(d.getTime())) return '—';
   return d.toLocaleDateString(locale, {
     day: 'numeric',
-    month: 'short',
+    month,
     year: 'numeric',
     timeZone: TZ_MX,
   });

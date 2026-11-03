@@ -11,7 +11,7 @@ import {
 import { matchPath, useLocation } from 'react-router-dom';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
-import { ACCOUNT_PATH, HOME_PATH, getLocalizedNavigation } from './navigation';
+import { ACCOUNT_PATH, HOME_PATH, getLocalizedNavigation, localizeNavigationText } from './navigation';
 import { isPlantillaPath, PLANTILLA_PATH } from '@/lib/plantillaNavigation';
 import { FEATURES, getConfiguracionHref } from '@/lib/configuracionNavigation';
 import { DATA_UPDATE_PATH } from '@/features/data-update/types';
@@ -48,6 +48,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const appShellRef = useRef<HTMLDivElement>(null);
   const sidebarRef = useRef<HTMLElement>(null);
   const workspaceRadiusRef = useRef<number | null>(null);
+  const edgeWidthRef = useRef<number | null>(null);
   const pointerStartRef = useRef<{
     pointerId: number;
     startX: number;
@@ -81,13 +82,11 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   const pageTitle = useMemo(() => {
     if (location.pathname === getConfiguracionHref('analisis')) {
-      return language === 'en' ? 'Analysis' : 'Análisis';
+      return localizeNavigationText(language, 'Análisis');
     }
-    if (matchPath(REPORT_DAY_PATTERN, location.pathname)) return language === 'en' ? 'Day details' : 'Detalle del día';
-    if (location.pathname === REPORT_COMPARISON_PATH)
-      return language === 'en' ? 'Monthly comparison' : 'Comparativa mensual';
-    if (location.pathname === CANDIDATE_METRICS_PATH) return language === 'en' ? 'Metrics and KPIs' : 'Métricas y KPIs';
-    if (language === 'en' && location.pathname === ACCOUNT_PATH) return 'Account';
+    if (matchPath(REPORT_DAY_PATTERN, location.pathname)) return localizeNavigationText(language, 'Detalle del día');
+    if (location.pathname === REPORT_COMPARISON_PATH) return localizeNavigationText(language, 'Comparativa mensual');
+    if (location.pathname === CANDIDATE_METRICS_PATH) return localizeNavigationText(language, 'Métricas y KPIs');
     const currentNavItem = getLocalizedNavigation(language)
       .flatMap((section) => section.items)
       .find((item) => {
@@ -96,7 +95,10 @@ export function AppShell({ children }: { children: ReactNode }) {
         return location.pathname.startsWith(item.to);
       });
     const feature = FEATURES.find(({ id }) => getConfiguracionHref(id) === location.pathname);
-    return currentNavItem?.label ?? PAGE_TITLES[location.pathname] ?? feature?.label ?? 'App';
+    return localizeNavigationText(
+      language,
+      currentNavItem?.label ?? PAGE_TITLES[location.pathname] ?? feature?.label ?? 'App',
+    );
   }, [language, location.pathname]);
 
   useEffect(() => {
@@ -126,10 +128,13 @@ export function AppShell({ children }: { children: ReactNode }) {
       if (target?.closest('input, textarea, select, [contenteditable="true"], [data-sidebar-no-drag]')) return;
       if (mobileMenuOpen && target?.closest('.sidebar')) return;
       if (!mobileMenuOpen) {
-        const edgeWidth = Number.parseFloat(
-          getComputedStyle(document.documentElement).getPropertyValue('--touch-target-min'),
-        );
-        if (event.clientX > (Number.isFinite(edgeWidth) ? edgeWidth : 44)) return;
+        if (edgeWidthRef.current === null) {
+          const edgeWidth = Number.parseFloat(
+            getComputedStyle(document.documentElement).getPropertyValue('--touch-target-min'),
+          );
+          edgeWidthRef.current = Number.isFinite(edgeWidth) ? edgeWidth : 44;
+        }
+        if (event.clientX > edgeWidthRef.current) return;
       }
 
       pointerStartRef.current = {
@@ -248,7 +253,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           onClick={closeMobileMenu}
         />
       )}
-      <div className="app-shell__workspace">
+      <div className="app-shell__workspace" inert={isMobileMenuOpen}>
         <DotGrid />
         <Header
           pageTitle={pageTitle}

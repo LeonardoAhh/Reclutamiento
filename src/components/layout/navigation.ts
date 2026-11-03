@@ -79,6 +79,15 @@ const ENGLISH_NAV_LABELS: Readonly<Record<string, string>> = {
   Seguimiento: 'Tracking',
   Inicio: 'Home',
   Análisis: 'Analysis',
+  'Detalle del día': 'Day details',
+  'Comparativa mensual': 'Monthly comparison',
+  'Métricas y KPIs': 'Metrics and KPIs',
+  Rotación: 'Turnover',
+  'Motivos de baja': 'Reasons for leaving',
+  'Actualización de datos': 'Data update',
+  Cuenta: 'Account',
+  Indicadores: 'Metrics',
+  Tabulador: 'Pay scale',
   Candidatos: 'Candidates',
   Plantilla: 'Workforce',
   Resumen: 'Overview',
@@ -90,13 +99,17 @@ const ENGLISH_NAV_LABELS: Readonly<Record<string, string>> = {
   Rutas: 'Routes',
 };
 
+export function localizeNavigationText(language: Language, text: string): string {
+  return language === 'en' ? (ENGLISH_NAV_LABELS[text] ?? text) : text;
+}
+
 export function getLocalizedNavigation(language: Language): NavSection[] {
   const sections = NAV_SECTIONS.map((section) => ({
     ...section,
-    label: language === 'en' ? (ENGLISH_NAV_LABELS[section.label] ?? section.label) : section.label,
+    label: localizeNavigationText(language, section.label),
     items: section.items.map((item) => ({
       ...item,
-      label: language === 'en' ? (ENGLISH_NAV_LABELS[item.label] ?? item.label) : item.label,
+      label: localizeNavigationText(language, item.label),
     })),
   }));
   const collator = new Intl.Collator(language === 'en' ? 'en' : 'es', { sensitivity: 'base' });
