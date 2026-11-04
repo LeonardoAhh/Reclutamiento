@@ -64,7 +64,7 @@
   width: 100%;
   min-width: 0;
   gap: var(--spacing-sm);
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   margin-top: var(--spacing-sm);
 }
 
@@ -74,6 +74,11 @@
   min-width: 0;
   min-height: var(--control-min-block-size);
   justify-content: flex-start;
+}
+
+.reporte-head__grid > .reporte-status-banner--file {
+  flex: 0 1 auto;
+  border-radius: var(--radius-control);
 }
 
 .reporte-head__save-action {

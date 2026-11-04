@@ -108,6 +108,18 @@
   overflow-wrap: anywhere;
 }
 
+@media (width >= 768px) {
+  .reporte-head__grid > .reporte-status-banner--file {
+    overflow: hidden;
+  }
+
+  .reporte-head__grid-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
 /* Valor numérico protagonista (ej. "543") */
 .reporte-head__grid-value {
   font-family: var(--font-display);
@@ -209,19 +221,7 @@
   letter-spacing: var(--type-body-md-tracking);
 }
 
-@media (width <= 767px) {
-  .reporte-head__grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    align-items: flex-start;
-    gap: var(--spacing-sm);
-  }
-
-  .reporte-head__grid > .reporte-status-banner--file {
-    flex: 1 0 100%;
-  }
-
+@media (768px <= width < 1080px) {
   .reporte-head__grid :is(.reporte-saved__trigger--labeled, .reporte-head__departure-action) {
     min-inline-size: var(--touch-target-min);
     min-block-size: var(--touch-target-min);
@@ -232,12 +232,45 @@
   .reporte-head__grid :is(.reporte-saved__trigger-label, .reporte-head__departure-label) {
     display: none;
   }
+}
+
+@media (width <= 767px) {
+  .reporte-head__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+    gap: var(--spacing-sm);
+  }
+
+  .reporte-head__grid > .reporte-status-banner--file {
+    grid-column: 1 / -1;
+  }
+
+  .reporte-head__grid :is(.reporte-saved__trigger--labeled, .reporte-head__departure-action) {
+    inline-size: 100%;
+    min-inline-size: 0;
+    justify-content: center;
+    white-space: nowrap;
+  }
+
+  .reporte-head__grid :is(.reporte-saved__trigger-label, .reporte-head__departure-label) {
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
   .reporte-head__grid > .reporte-head__save-action {
-    flex: 1 1 0;
     min-inline-size: 0;
     grid-template-columns: minmax(0, 1fr);
-    justify-content: stretch;
-    align-self: flex-start;
+  }
+}
+
+@media (width < 375px) {
+  .reporte-head__grid :is(.reporte-saved__trigger--labeled, .reporte-head__departure-action) {
+    padding-inline: 0;
+  }
+
+  .reporte-head__grid :is(.reporte-saved__trigger-label, .reporte-head__departure-label) {
+    display: none;
   }
 }
