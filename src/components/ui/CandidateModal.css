@@ -8,7 +8,7 @@
 }
 
 /* ── Mobile adjustments ── */
-@media (max-width: 640px) {
+@media (width <= 640px) {
   .candidate-modal .form-grid {
     grid-template-columns: 1fr;
   }
@@ -60,7 +60,7 @@
   align-items: start;
 }
 
-@media (min-width: 1080px) {
+@media (width >= 1080px) {
   .candidate-modal__field-row {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }

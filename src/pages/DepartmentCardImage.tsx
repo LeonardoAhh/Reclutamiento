@@ -10,7 +10,7 @@ const DEPARTMENT_IMAGE_SOURCES: Readonly<Record<string, string>> = {
   'RECURSOS HUMANOS': '/images/organization-chart/recruitment.jpg',
   SGI: '/images/organization-chart/hr-analysis.jpg',
   SISTEMAS: '/images/organization-chart/hr-support.jpg',
-  'TALLER DE MOLDES': '/images/organization-chart/cleaning-team.jpg',
+  'TALLER DE MOLDES': '/images/department-cards/mold-workshop.jpg',
 };
 
 function getDepartmentImageSource(department: string): string | undefined {

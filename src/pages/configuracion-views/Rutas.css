@@ -25,56 +25,21 @@
   min-width: 0;
 }
 
-@media (width >= 1080px) {
-  .rutas-layout {
-    grid-template:
-      'search detail' min-content
-      'list detail' 1fr
-      / minmax(0, var(--feature-navigation-rail-inline-size)) minmax(0, 1fr);
-    align-items: start;
-  }
-
-  .rutas-layout > .rutas-toolbar {
-    grid-area: search;
-  }
-
-  .rutas-layout > .rutas-list-panel {
-    grid-area: list;
-  }
-
-  .rutas-layout > .rutas-detail-pane {
-    grid-area: detail;
-  }
-
-  .rutas-layout[data-search-active='true'] {
-    grid-template-areas: 'search' 'detail';
-    grid-template-rows: auto auto;
-  }
-}
-
-.rutas-layout[data-search-active='true'] {
-  grid-template-columns: minmax(0, 1fr);
-}
-
 /* ═══════════════════════════════════════════════════════════
    MOBILE NAVIGATION STATE
    On small screens, list and detail are mutually exclusive views.
    The active panel is shown; the inactive one is hidden via
-   data-mobile-view on the layout wrapper.
+   data-route-view on the layout wrapper.
 ═══════════════════════════════════════════════════════════ */
 
 @media (width <= 768px) {
-  .rutas-layout[data-mobile-view='detail'] .rutas-list-panel {
-    display: none;
-  }
-
-  .rutas-layout[data-mobile-view='list'] .rutas-detail-pane {
+  .rutas-layout[data-route-view='list'] .rutas-detail-pane {
     display: none;
   }
 
   /* Al ver el detalle de una ruta ocultamos la cabecera y la búsqueda.
      El botón "Todas las rutas" se conserva. */
-  .rutas-page[data-mobile-view='detail'] .rutas-toolbar {
+  .rutas-page[data-route-view='detail'] .rutas-toolbar {
     display: none;
   }
 
@@ -83,9 +48,9 @@
   }
 }
 
-/* ── Back button (mobile only) ── */
+/* ── Back button ── */
 .rutas-back-btn {
-  display: none;
+  display: inline-flex;
   color: var(--color-ink);
   text-decoration: none;
 }
@@ -99,7 +64,6 @@
   text-decoration: none;
 }
 
-.ruta-card__icon svg,
 .ruta-section__title-icon,
 .shift-bars__trend svg {
   width: var(--spacing-lg);
@@ -108,7 +72,6 @@
 
 @media (width <= 768px) {
   .rutas-back-btn {
-    display: inline-flex;
     margin-bottom: var(--spacing-md);
   }
 }
@@ -122,10 +85,6 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
-}
-
-.rutas-layout[data-search-active='true'] .rutas-list-panel {
-  display: none;
 }
 
 .rutas-list-panel__header {
@@ -170,21 +129,20 @@
   min-width: 0;
 }
 
-@media (width >= 600px) {
+@media (width >= 768px) {
   .rutas-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-@media (width >= 1080px) {
-  .rutas-list-panel {
-    position: sticky;
-    top: var(--spacing-lg);
-  }
-
+@media (width >= 1440px) {
   .rutas-list {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+}
+
+.rutas-layout[data-route-view='detail'] .rutas-list-panel {
+  display: none;
 }
 
 .rutas-empty {
@@ -221,20 +179,23 @@
 /* ─── Route card ─── */
 
 .ruta-card {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: var(--spacing-sm);
-  width: 100%;
-  min-width: 0;
-  min-height: var(--touch-target-min);
+  display: grid;
+  grid-template-columns: var(--control-height-sm) minmax(0, 1fr);
+  grid-template-areas:
+    'icon copy'
+    'indicators indicators';
+  align-items: start;
+  gap: var(--design-spacing-sm);
+  inline-size: 100%;
+  min-inline-size: 0;
+  min-block-size: var(--touch-target-min);
   box-sizing: border-box;
-  padding: var(--spacing-md);
+  padding: var(--design-spacing-md);
   border-radius: var(--radius-card);
   border: var(--border-width) solid var(--color-hairline);
   background: var(--color-surface-card);
   cursor: pointer;
-  text-align: left;
+  text-align: start;
   transition:
     background var(--transition-fast),
     border-color var(--transition-fast);
@@ -255,15 +216,20 @@
 }
 
 .ruta-card__icon {
-  width: var(--spacing-xxl);
-  height: var(--spacing-xxl);
-  border-radius: var(--rounded-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  grid-area: icon;
+  display: grid;
+  place-items: center;
+  inline-size: var(--control-height-sm);
+  block-size: var(--control-height-sm);
   color: var(--color-muted);
-  flex-shrink: 0;
-  transition: color var(--transition-fast);
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.ruta-card__icon svg {
+  inline-size: var(--icon-size-md);
+  block-size: var(--icon-size-md);
 }
 
 .ruta-card--active .ruta-card__icon {
@@ -271,35 +237,35 @@
 }
 
 .ruta-card__copy {
-  flex: 1 1 auto;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
+  grid-area: copy;
+  display: grid;
   gap: var(--design-spacing-xxs);
+  min-inline-size: 0;
 }
 
 .ruta-card__heading {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
-  min-width: 0;
+  flex-wrap: wrap;
+  gap: var(--design-spacing-xxs) var(--design-spacing-sm);
+  min-inline-size: 0;
 }
 
 .ruta-card__title {
-  margin: 0;
+  min-inline-size: 0;
   color: var(--color-ink);
   font-size: var(--type-body-strong-size);
   font-weight: var(--type-body-strong-weight);
   line-height: var(--type-body-strong-line);
   font-family: var(--font-body);
   letter-spacing: var(--type-body-strong-tracking);
+  overflow-wrap: anywhere;
 }
 
 .ruta-card__subtitle {
   display: block;
-  min-width: 0;
-  max-width: 100%;
-  color: var(--color-muted);
+  min-inline-size: 0;
+  color: var(--color-body);
   font-size: var(--type-body-md-size);
   line-height: var(--type-body-md-line);
   overflow-wrap: anywhere;
@@ -308,31 +274,71 @@
   letter-spacing: var(--type-body-md-tracking);
 }
 
-.ruta-card__capacity-alert {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  flex-shrink: 0;
-  white-space: nowrap;
-  color: var(--color-error-text);
-  font-size: var(--type-caption-up-size);
-  line-height: var(--type-caption-up-line);
-  font-family: var(--font-body);
-  font-weight: var(--type-caption-up-weight);
-  letter-spacing: var(--type-caption-up-tracking);
+.ruta-card__indicators {
+  grid-area: indicators;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--design-spacing-xs) var(--design-spacing-md);
+  min-inline-size: 0;
 }
 
-.ruta-card__alert-dot {
-  width: var(--spacing-xs);
-  height: var(--spacing-xs);
-  flex-shrink: 0;
-  background: var(--color-error);
-  border-radius: var(--rounded-full);
+.ruta-card__capacity {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--design-spacing-xxs);
+  min-inline-size: 0;
+  padding-block-start: var(--design-spacing-xs);
+  border-block-start: var(--border-width) solid var(--color-hairline);
+  font-variant-numeric: tabular-nums;
+}
+
+.ruta-card__capacity-label {
+  grid-column: 1 / -1;
+  color: var(--color-muted);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
+}
+
+.ruta-card__capacity-count,
+.ruta-card__capacity-percent {
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.ruta-card__capacity-percent {
+  text-align: end;
+}
+
+.ruta-card__capacity--over :is(.ruta-card__capacity-count, .ruta-card__capacity-percent, .ruta-card__capacity-alert) {
+  color: var(--color-error-text);
+}
+
+.ruta-card__capacity-alert {
+  grid-column: 1 / -1;
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
+}
+
+.ruta-card__matches {
+  grid-column: 1 / -1;
+  justify-self: end;
 }
 
 /* ─── Match badge (search active) ─── */
 
-.ruta-card--has-match {
+.ruta-card--has-match:not(.ruta-card--active) {
   border-color: var(--color-hairline-strong);
 }
 
@@ -343,6 +349,10 @@
 .rutas-detail-pane {
   min-width: 0;
   min-height: var(--config-panel-min-height);
+}
+
+.rutas-layout[data-route-view='list'] .rutas-detail-pane {
+  display: none;
 }
 
 /* ─── Placeholder ─── */
@@ -410,10 +420,11 @@
 .ruta-detail__grids {
   display: grid;
   grid-template-columns: 1fr;
+  align-items: start;
   gap: var(--spacing-lg);
 }
 
-@media (width >= 1440px) {
+@media (width >= 1080px) {
   .ruta-detail__grids {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -735,7 +746,7 @@
 /* ── Daily capacity cards ── */
 .daily-cards {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: var(--spacing-xs);
 }
 
@@ -745,7 +756,7 @@
   gap: var(--spacing-xs);
   min-width: 0;
   min-height: var(--touch-target-min);
-  padding: var(--spacing-sm);
+  padding: var(--design-spacing-xs);
   border: var(--border-width) solid var(--color-hairline-soft);
   border-radius: var(--radius-card);
   background: var(--color-surface);
@@ -761,6 +772,14 @@
   font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
   letter-spacing: var(--type-body-md-tracking);
+}
+
+.daily-cards__card:nth-child(-n + 3) {
+  grid-column: span 4;
+}
+
+.daily-cards__card:nth-child(n + 4) {
+  grid-column: span 3;
 }
 
 .daily-cards__card:hover {
@@ -780,6 +799,11 @@
   font-family: var(--font-body);
   line-height: var(--type-body-strong-line);
   letter-spacing: var(--type-body-strong-tracking);
+}
+
+.daily-cards__day-full,
+.daily-cards__label {
+  display: none;
 }
 
 .daily-cards__stats {
@@ -813,10 +837,22 @@
   letter-spacing: var(--type-body-strong-tracking);
 }
 
-@media (width >= 600px) {
+@media (width >= 768px) {
   .daily-cards {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--spacing-sm);
+  }
+
+  .daily-cards__card {
+    padding: var(--spacing-sm);
+  }
+
+  .daily-cards__day-short {
+    display: none;
+  }
+
+  .daily-cards__day-full,
+  .daily-cards__label {
+    display: inline;
   }
 }
 
@@ -865,15 +901,15 @@
     inline-size: 100%;
   }
 
-  .rutas-page[data-mobile-view='detail'] .rutas-toolbar {
+  .rutas-page[data-route-view='detail'] .rutas-toolbar {
     display: block;
   }
 
-  .rutas-page[data-mobile-view='detail']:not([data-search-active='true']) .rutas-search-container {
+  .rutas-page[data-route-view='detail']:not([data-search-active='true']) .rutas-search-container {
     display: none;
   }
 
-  .rutas-page[data-mobile-view='detail']:not([data-search-active='true']) .rutas-scanner-action {
+  .rutas-page[data-route-view='detail']:not([data-search-active='true']) .rutas-scanner-action {
     margin-top: 0;
   }
 }

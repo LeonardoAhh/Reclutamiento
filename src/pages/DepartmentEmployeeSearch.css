@@ -1,18 +1,3 @@
-.app-header__title:has(.department-employee-search) .app-header__title-accessory {
-  margin-inline-start: auto;
-}
-
-.search-field--department-header {
-  border: 0;
-  border-block-end: var(--border-width) solid var(--color-control-border);
-  border-radius: 0;
-  background: transparent;
-}
-
-.search-field--department-header:has(> .search-field__input:focus-visible) {
-  border-radius: var(--radius-field);
-}
-
 .department-employee-search {
   inline-size: fit-content;
   min-inline-size: 0;

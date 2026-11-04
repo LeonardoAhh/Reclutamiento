@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { BriefcaseBusiness, EllipsisVertical, Plus, Trash2, UserRoundPlus } from 'lucide-react';
 import type { Activity, AuthorizedPosition } from '@/lib/types';
+import type { ActivityWithAssignee } from '@/lib/activityTypes';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { AssignmentCard } from '@/components/ui/AssignmentCard';
 import type { Option } from '@/components/ui/CustomSelect';
@@ -19,20 +20,12 @@ interface VacancyAssignmentSectionProps {
   vacancies: Activity[];
   positions: AuthorizedPosition[];
   isAdmin: boolean;
-  currentUserId?: string;
   isNew: (vacancy: Activity) => boolean;
   onCreate: () => void;
   recruiterOptions: readonly Option[];
   isAssigning: boolean;
   onAssign: (vacancyId: string, assigneeId: string) => void;
   onDelete: (vacancy: Activity) => Promise<boolean>;
-}
-
-interface ActivityWithAssignee extends Activity {
-  asignado_a_profile?: {
-    display_name?: string | null;
-    username?: string | null;
-  } | null;
 }
 
 interface VacancyGroup {

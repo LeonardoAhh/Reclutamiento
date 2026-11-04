@@ -1,6 +1,7 @@
 import { ListRestart, Plus } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import type { Activity } from '@/lib/types';
+import type { ActivityWithAssignee } from '@/lib/activityTypes';
 import { Pagination } from '@/components/ui/Pagination';
 import { ResponsabilidadCard } from '@/components/ui/ResponsabilidadCard';
 import { getResponsibilityContent } from '@/components/ui/responsibilityContent';
@@ -20,9 +21,6 @@ export interface AssignmentSectionCopy {
   headingId: string;
   panelId: string;
   title: string;
-  singular: string;
-  plural: string;
-  description: string;
   emptyTitle: string;
   adminEmptyDescription: string;
   assigneeEmptyDescription: string;
@@ -46,9 +44,6 @@ const RESPONSIBILITIES_COPY: AssignmentSectionCopy = {
   headingId: 'responsibilities-heading',
   panelId: 'responsabilidades-panel',
   title: 'Responsabilidades',
-  singular: 'responsabilidad',
-  plural: 'responsabilidades',
-  description: 'De manera recurrente, sin seguimiento de evidencias.',
   emptyTitle: 'Sin responsabilidades',
   adminEmptyDescription: 'Crea una actividad tipo "Responsabilidad" para asignarla.',
   assigneeEmptyDescription: 'Aún no tienes responsabilidades asignadas.',
@@ -59,22 +54,12 @@ const RESPONSIBILITIES_COPY: AssignmentSectionCopy = {
 const RESPONSIBILITIES_COPY_EN: AssignmentSectionCopy = {
   ...RESPONSIBILITIES_COPY,
   title: 'Responsibilities',
-  singular: 'responsibility',
-  plural: 'responsibilities',
-  description: 'Recurring work without evidence tracking.',
   emptyTitle: 'No responsibilities',
   adminEmptyDescription: 'Create a "Responsibility" activity to assign it.',
   assigneeEmptyDescription: 'You have no assigned responsibilities yet.',
   listLabel: 'Responsibilities',
   paginationLabel: 'Responsibility pages',
 };
-
-interface ActivityWithAssignee extends Activity {
-  asignado_a_profile?: {
-    display_name?: string | null;
-    username?: string | null;
-  } | null;
-}
 
 export function ResponsibilitiesSection({
   responsibilities,

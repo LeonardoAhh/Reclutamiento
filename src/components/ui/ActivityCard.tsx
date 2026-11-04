@@ -13,7 +13,6 @@ export interface ActivityCardProps {
     display_name?: string | null;
     username?: string | null;
   };
-  referenceImage?: string;
   isNew?: boolean;
   currentUserId?: string;
   onClick: () => void;

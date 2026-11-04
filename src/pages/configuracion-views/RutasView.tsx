@@ -1,7 +1,7 @@
 import { playSound } from '@/lib/sound';
 import { Badge } from '@/components/ui/Badge';
 import { useState, useRef, useMemo, useEffect } from 'react';
-import { PageHeading } from '@/components/layout/PageHeading';
+import { PageHeaderAccessory, PageHeading } from '@/components/layout/PageHeading';
 import { Link, useLocation } from 'react-router-dom';
 import {
   ArrowDownRight,
@@ -21,6 +21,7 @@ import { Tooltip } from '@/components/ui/Tooltip';
 import { BackButton } from '@/components/ui/BackButton';
 import { SearchField } from '@/components/ui/SearchField';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useIsMobile } from '@/hooks/useIsMobile';
 import { formatRouteDay, getConfiguracionCopy } from './configuracion-translations';
 import { RouteItinerarySection } from './RouteItinerarySection';
 
@@ -38,14 +39,19 @@ function RutaCard({ ruta, isActive, onClick, matchCount }: RutaCardProps & { mat
   const copy = getConfiguracionCopy(language).routes;
   const [routeCode, ...routeNameParts] = ruta.nombreRuta.split('-');
   const routeName = routeNameParts.join('-').trim();
-  const isOverCapacity = Object.entries(ruta.turnosCount).some(
-    ([t, c]) => ruta.maxCapacityPerShift[t] && c > ruta.maxCapacityPerShift[t],
-  );
+  const capacityByShift = Object.entries(ruta.maxCapacityPerShift)
+    .filter(([, capacity]) => Number.isFinite(capacity) && capacity > 0)
+    .map(([shift, capacity]) => {
+      const count = ruta.turnosCount[shift] ?? 0;
+      return { shift, capacity, count, percentage: Math.round((count / capacity) * 100) };
+    })
+    .sort((a, b) => Number(a.shift) - Number(b.shift));
 
   return (
     <button
       type="button"
       className={`ruta-card${isActive ? ' ruta-card--active' : ''}${matchCount ? ' ruta-card--has-match' : ''}`}
+      data-route={ruta.nombreRuta}
       onClick={onClick}
       aria-pressed={isActive}
       aria-controls="rutas-detail-pane"
@@ -56,24 +62,48 @@ function RutaCard({ ruta, isActive, onClick, matchCount }: RutaCardProps & { mat
       <span className="ruta-card__copy">
         <span className="ruta-card__heading">
           <span className="ruta-card__title">{routeCode.trim()}</span>
-          {isOverCapacity && (
-            <span className="ruta-card__capacity-alert">
-              <span className="ruta-card__alert-dot" aria-hidden="true" />
-              <span>{copy.overCapacity}</span>
-            </span>
-          )}
         </span>
         {routeName && <span className="ruta-card__subtitle">{routeName}</span>}
       </span>
-      {matchCount !== undefined && matchCount > 0 && (
-        <Badge
-          size="compact"
-          variant="neutral"
-          aria-label={`${matchCount} ${matchCount === 1 ? copy.match : copy.matches}`}
-        >
-          {matchCount}
-        </Badge>
-      )}
+      <span className="ruta-card__indicators">
+        {capacityByShift.map(({ shift, capacity, count, percentage }) => {
+          const isOverCapacity = count > capacity;
+          return (
+            <span
+              key={shift}
+              className={`ruta-card__capacity${isOverCapacity ? ' ruta-card__capacity--over' : ''}`}
+            >
+              <span className="sr-only">
+                {`${isOverCapacity ? `${copy.overCapacity}. ` : ''}${copy.shift} ${shift}: ${count} ${copy.of} ${capacity} ${copy.employeesPlural}, ${percentage}% ${copy.capacity}`}
+              </span>
+              <span className="ruta-card__capacity-label" aria-hidden="true">
+                {copy.shift} {shift}
+              </span>
+              <span className="ruta-card__capacity-count" aria-hidden="true">
+                {count}/{capacity}
+              </span>
+              <span className="ruta-card__capacity-percent" aria-hidden="true">
+                {percentage}%
+              </span>
+              {isOverCapacity && (
+                <span className="ruta-card__capacity-alert" aria-hidden="true">
+                  {copy.overCapacity}
+                </span>
+              )}
+            </span>
+          );
+        })}
+        {matchCount !== undefined && matchCount > 0 && (
+          <Badge
+            size="compact"
+            variant="neutral"
+            className="ruta-card__matches"
+            aria-label={`${matchCount} ${matchCount === 1 ? copy.match : copy.matches}`}
+          >
+            {matchCount}
+          </Badge>
+        )}
+      </span>
     </button>
   );
 }
@@ -279,14 +309,18 @@ function DailyCapacityBars({ capacityPerDay, routeName, searchTerm, animKey }: D
     <div className="daily-cards" key={`daily-${animKey}`}>
       {ROUTE_DAYS.map((day) => {
         const count = capacityPerDay[day] || 0;
+        const dayLabel = formatRouteDay(day, language);
         return (
           <Link
             key={day}
             className="daily-cards__card"
             to={`${ROUTE_DAY_EMPLOYEES_PATH}?${new URLSearchParams({ route: routeName, day: formatRouteDay(day, 'en').toLowerCase(), ...(searchTerm ? { search: searchTerm } : {}) })}`}
-            aria-label={`${language === 'en' ? 'View' : 'Ver'} ${count} ${count === 1 ? copy.employee : copy.employeesPlural} ${language === 'en' ? 'on the route on' : 'de la ruta el'} ${formatRouteDay(day, language)}`}
+            aria-label={`${language === 'en' ? 'View' : 'Ver'} ${count} ${count === 1 ? copy.employee : copy.employeesPlural} ${language === 'en' ? 'on the route on' : 'de la ruta el'} ${dayLabel}`}
           >
-            <span className="daily-cards__day">{formatRouteDay(day, language)}</span>
+            <span className="daily-cards__day">
+              <span className="daily-cards__day-short" aria-hidden="true">{dayLabel.slice(0, 3)}</span>
+              <span className="daily-cards__day-full" aria-hidden="true">{dayLabel}</span>
+            </span>
             <div className="daily-cards__stats">
               <div className="daily-cards__stat">
                 <span className="daily-cards__label">{copy.employees}</span>
@@ -427,6 +461,7 @@ function RutaDetail({ ruta, searchMatches, searchTerm, animKey, hasComparison, c
 
 export function RutasView() {
   const { language } = useLanguage();
+  const isMobile = useIsMobile();
   const copy = getConfiguracionCopy(language).routes;
   const english = language === 'en';
   const { rutas, lastUpdated, hasComparison, loading, errorMsg } = useRutas();
@@ -435,11 +470,8 @@ export function RutasView() {
   const [animKey, setAnimKey] = useState(0);
   const [searchTerm, setSearchTerm] = useState(() => new URLSearchParams(location.search).get('search') ?? '');
 
-  /**
-   * mobileView controls which panel is shown on small screens.
-   * On desktop both panels are always visible (CSS grid).
-   */
-  const [mobileView, setMobileView] = useState<'list' | 'detail'>('list');
+  /** Controls whether the route list or selected route detail is shown. */
+  const [routeView, setRouteView] = useState<'list' | 'detail'>('list');
   const listRef = useRef<HTMLUListElement>(null);
   const detailRef = useRef<HTMLElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -450,7 +482,7 @@ export function RutasView() {
     const route = rutas.find((item) => item.nombreRuta === routeName);
     if (!route) return;
     setSelectedRuta(route);
-    setMobileView('detail');
+    setRouteView('detail');
   }, [loading, errorMsg, location.search, rutas]);
 
   // Filter routes based on search term (by employee number or name)
@@ -483,6 +515,22 @@ export function RutasView() {
     searchInputRef.current?.focus();
   };
 
+  const searchField = (
+    <SearchField
+      id="rutas-search-input"
+      className="search-field--intrinsic search-field--header"
+      ref={searchInputRef}
+      label={copy.searchEmployee}
+      placeholder={copy.search}
+      value={searchTerm}
+      onChange={(event) => setSearchTerm(event.target.value)}
+      onClear={handleClearSearch}
+      aria-describedby={searchNorm ? 'rutas-search-status' : undefined}
+      aria-controls={searchNorm && totalSearchMatches > 0 ? 'rutas-search-results' : undefined}
+      autoComplete="off"
+    />
+  );
+
   // Auto-select first matching route when search changes
   useEffect(() => {
     if (searchNorm && filteredRutas.length > 0) {
@@ -500,24 +548,29 @@ export function RutasView() {
     playSound('navigate');
     setSelectedRuta(ruta);
     setAnimKey((k) => k + 1);
-    setMobileView('detail'); // push to detail on mobile
+    setRouteView('detail');
   }
 
   function handleBack() {
     playSound('navigate', { direction: 'back' });
-    setMobileView('list');
+    const routeName = selectedRuta?.nombreRuta;
+    setSelectedRuta(null);
+    setRouteView('list');
     window.requestAnimationFrame(() => {
-      listRef.current?.querySelector<HTMLButtonElement>('.ruta-card[aria-pressed="true"]')?.focus();
+      const cards = listRef.current?.querySelectorAll<HTMLButtonElement>('.ruta-card');
+      Array.from(cards ?? [])
+        .find((card) => card.dataset.route === routeName)
+        ?.focus();
     });
   }
 
   useEffect(() => {
-    if (mobileView !== 'detail') return;
+    if (routeView !== 'detail') return;
     const frame = window.requestAnimationFrame(() => {
       detailRef.current?.querySelector<HTMLButtonElement>('.rutas-back-btn')?.focus();
     });
     return () => window.cancelAnimationFrame(frame);
-  }, [mobileView]);
+  }, [routeView]);
 
   const handleListKeyDown = (event: React.KeyboardEvent) => {
     if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) return;
@@ -537,35 +590,24 @@ export function RutasView() {
   return (
     <section
       className="rutas-page config-page"
-      data-mobile-view={mobileView}
+      data-route-view={routeView}
       data-search-active={Boolean(searchNorm)}
       aria-labelledby="rutas-page-title"
     >
       <PageHeading id="rutas-page-title" className="config-page__title app-page-title">
         {copy.title}
       </PageHeading>
+      {!isMobile && <PageHeaderAccessory>{searchField}</PageHeaderAccessory>}
 
       <div
         className="rutas-layout"
-        data-mobile-view={searchNorm ? 'detail' : mobileView}
+        data-route-view={searchNorm ? 'detail' : routeView}
         data-search-active={Boolean(searchNorm)}
       >
-        <section className="rutas-toolbar" aria-label={copy.tools}>
+        {(isMobile || Boolean(searchNorm)) && <section className="rutas-toolbar" aria-label={copy.tools}>
           <div className="rutas-toolbar-flex">
             <div className="rutas-search-container">
-              <SearchField
-                id="rutas-search-input"
-                className="search-field--intrinsic"
-                ref={searchInputRef}
-                label={copy.searchEmployee}
-                placeholder={copy.search}
-                value={searchTerm}
-                onChange={(event) => setSearchTerm(event.target.value)}
-                onClear={handleClearSearch}
-                aria-describedby={searchNorm ? 'rutas-search-status' : undefined}
-                aria-controls={searchNorm && totalSearchMatches > 0 ? 'rutas-search-results' : undefined}
-                autoComplete="off"
-              />
+              {isMobile && searchField}
               {searchNorm && (
                 <p
                   id="rutas-search-status"
@@ -585,7 +627,7 @@ export function RutasView() {
               </Link>
             </div>
           </div>
-        </section>
+        </section>}
         <section className="rutas-list-panel" aria-label={copy.routeList}>
           <BoneyardSkeleton name="configuracion-rutas" loading={loading} loadingLabel={copy.loading}>
             <ul ref={listRef} className="rutas-list" aria-label={copy.routeList} onKeyDown={handleListKeyDown}>

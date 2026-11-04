@@ -2968,5 +2968,25 @@
     "nombre ruta": "R5- QUERETARO-AV. DE LA LUZ",
     "colonia": "COREA",
     "parada": "PARADA DE CAMIONES"
+  },
+  {
+    "numero_empleado": "4423",
+    "nombre": "CRUZ OLVERA JUDITH",
+    "seccion": "A. CALIDAD 1ER TURNO",
+    "puesto": "OPERADOR DE ACABADOS GP-12 D",
+    "turno": "1",
+    "nombre ruta": "R3- SAN JOSE ITURBIDE 2",
+    "colonia": "LA LUZ",
+    "parada": "PARADA EN LA IGLESIA"
+  },
+  {
+    "numero_empleado": "4424",
+    "nombre": "MENDEZ MAY JESUS YOSMAR",
+    "seccion": "PRODUCCIÓN 2o. TURNO",
+    "puesto": "OPERADOR DE MÁQUINA D",
+    "turno": "2",
+    "nombre ruta": "R2- SAN JOSE ITURBIDE",
+    "colonia": "SAN JOSE ITURBIDE",
+    "parada": "PARADA DE LA ALAMEDA"
   }
 ]

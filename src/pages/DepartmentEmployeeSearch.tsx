@@ -49,7 +49,7 @@ export function DepartmentEmployeeSearch({ employees, disabled = false, onSelect
             <SearchField
               aria-describedby="department-employee-search-hint"
               autoComplete="off"
-              className="search-field--intrinsic search-field--department-header"
+              className="search-field--intrinsic search-field--header"
               disabled={disabled}
               inputMode="numeric"
               label={copy('Buscar empleado por número, de 3 a 5 dígitos', 'Search employee by number, 3 to 5 digits')}

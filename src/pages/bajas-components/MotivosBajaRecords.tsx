@@ -33,7 +33,7 @@ export function MotivosBajaRecords({ bajas, year, month, exitType }: MotivosBaja
 
   return (
     <>
-      <table className="motivos-baja__records data-table data-table--cards">
+      <table className="motivos-baja__records data-table">
         <caption className="sr-only">{copy.title}</caption>
         <thead>
           <tr>
@@ -59,16 +59,16 @@ export function MotivosBajaRecords({ bajas, year, month, exitType }: MotivosBaja
         <tbody>
           {pageItems.map((baja) => (
             <tr key={baja.num_empleado}>
-              <td data-label={copy.employeeColumn}>{baja.num_empleado}</td>
-              <td data-label={copy.typeColumn}>
+              <td className="motivos-baja__records-number">{baja.num_empleado}</td>
+              <td className="motivos-baja__records-secondary">
                 {translateBajaCatalogLabel(toBajaSentenceCase(indicatorBajaType(baja.tipo_baja)), language)}
               </td>
-              <td data-label={copy.reasonColumn}>
+              <td className="motivos-baja__records-reason-value">
                 {baja.motivo_baja_estandarizado?.trim()
                   ? translateBajaCatalogLabel(toBajaSentenceCase(baja.motivo_baja_estandarizado), language)
                   : copy.unclassified}
               </td>
-              <td data-label={copy.detailColumn}>
+              <td className="motivos-baja__records-secondary">
                 {baja.motivo_baja?.trim() ? toBajaSentenceCase(baja.motivo_baja) : copy.noDetail}
               </td>
             </tr>

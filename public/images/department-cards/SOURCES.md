@@ -9,3 +9,5 @@ The local industrial photos are downloaded at 960 px wide from Wikimedia Commons
 | `warehouse.jpg`         | Axisadman, “Modern warehouse with pallet rack storage system” | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/) | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Modern_warehouse_with_pallet_rack_storage_system.jpg)   |
 
 Office and safety photos reuse the existing assets and Pexels licensing information in [organization-chart/SOURCES.md](../organization-chart/SOURCES.md).
+
+`mold-workshop.jpg` was generated for this project with imagegen using the mold workshop image supplied by the user as its reference.

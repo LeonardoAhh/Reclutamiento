@@ -1,69 +1,40 @@
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { PageHeading } from '@/components/layout/PageHeading';
-import { isBoneyardBuild } from "@/lib/boneyard";
-import { BONEYARD_SAMPLE_ACTIVITIES } from "@/lib/boneyardFixtures";
-import { TabsContent, TabsList, TabsRoot, TabsTrigger } from "@/components/ui/Tabs";
-import { BriefcaseBusiness, ClipboardPenLine, ListChecks } from "lucide-react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { useActivities } from "@/hooks/useActivities";
-import { useIsMobile } from "@/hooks/useIsMobile";
-import { ModalPresentationProvider } from "@/components/ui/ModalPresentation";
-import { usePositions } from "@/lib/positions";
-import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
-import { useAuth } from "@/hooks/useAuth";
-import { useLanguage } from "@/contexts/LanguageContext";
-import { usePagination } from "@/hooks/usePagination";
-import { ActivitiesSection } from "@/components/ui/ActivitiesSection";
-import { ResponsibilitiesSection } from "@/components/ui/ResponsibilitiesSection";
-import {
-  Activity,
-  ActivityProof,
-  ActivityStatus,
-  AssignableActivityType,
-} from "@/lib/types";
-import { useTeamDirectory } from '@/features/team/TeamProvider';
-import {
-  CreateActivityModal,
-  type CreateActivityModalProps,
-} from "@/components/ui/CreateActivityModal";
-import { CreateResponsibilityModal } from "@/components/ui/CreateResponsibilityModal";
-import { CreateVacancyModal } from "@/components/ui/CreateVacancyModal";
-import { EditActivityModal } from "@/components/ui/EditActivityModal";
-import { TaskDetailsModal } from "@/components/ui/TaskDetailsModal";
-import { VacancyAssignmentSection } from "@/components/ui/VacancyAssignmentSection";
-import { toast } from "@/lib/notify";
-import { getActivityImagePath } from "./activityImageNavigation";
-import { bindSoundInteractions, playSound } from "@/lib/sound";
-import "./Actividades.css";
-
-function isImage(filename: string): boolean {
-  if (!filename) return false;
-  const extension = filename.split(".").pop()?.toLowerCase() || "";
-  return ["jpg", "jpeg", "png", "gif", "webp", "bmp"].includes(extension);
-}
+import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
+import { useActivities } from '@/hooks/useActivities';
+import { useAuth } from '@/hooks/useAuth';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { usePagination } from '@/hooks/usePagination';
+import { isBoneyardBuild } from '@/lib/boneyard';
+import { BONEYARD_SAMPLE_ACTIVITIES } from '@/lib/boneyardFixtures';
+import { ActivityDialogs } from '@/features/activities/ActivitiesDialogs';
+import { ActivitiesSections } from '@/features/activities/ActivitiesSections';
+import { useActivityCreation } from '@/features/activities/useActivityCreation';
+import { useActivityDetails } from '@/features/activities/useActivityDetails';
+import { useActivityEditor } from '@/features/activities/useActivityEditor';
+import { useLastActivitiesVisit } from '@/features/activities/useLastActivitiesVisit';
+import type { ActivityStatusFilter, ActivityWithAssignee } from '@/lib/activityTypes';
+import { bindSoundInteractions, playSound } from '@/lib/sound';
+import './Actividades.css';
 
 export function Actividades() {
   useEffect(() => bindSoundInteractions(document), []);
-  const isMobile = useIsMobile();
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { language } = useLanguage();
-  const en = language === "en";
-  const { members } = useTeamDirectory();
   const { profile } = useAuth();
-
-  const lastVisitRef = useRef<string | null>(null);
-
-  // Actualizar la fecha de última visita para que el sistema de notificaciones sepa
-  // qué actividades ya fueron "vistas" por el usuario
-  useEffect(() => {
-    // Guardamos la referencia de cuándo fue la última vez (antes de sobreescribir)
-    // para poder ponerle una etiqueta de "NUEVO" en el render a lo que sea más reciente.
-    lastVisitRef.current = localStorage.getItem("last_activities_visit");
-
-    // Y actualizamos el localStorage para la próxima vez
-    localStorage.setItem("last_activities_visit", new Date().toISOString());
-  }, []);
+  const en = language === 'en';
+  const isAdmin = profile?.role === 'admin';
+  const isNewActivity = useLastActivitiesVisit();
+  const [statusFilter, setStatusFilter] = useState<ActivityStatusFilter>(() => {
+    const requested = searchParams.get('status');
+    return requested === 'todas' ||
+      requested === 'pendiente' ||
+      requested === 'en_proceso' ||
+      requested === 'completada'
+      ? requested
+      : 'pendiente';
+  });
 
   const {
     activities: liveActivities,
@@ -78,702 +49,163 @@ export function Actividades() {
     getProofs,
     deleteProof,
   } = useActivities();
-  // Solo en la captura de Boneyard (sin perfil): muestra representativa para
-  // que el snapshot dibuje las cards reales y no el estado vacío.
   const activities = useMemo(
     () => (isBoneyardBuild() && liveActivities.length === 0 ? [...BONEYARD_SAMPLE_ACTIVITIES] : liveActivities),
     [liveActivities],
   );
-
-  const isNewActivity = (act: Activity) => {
-    if (!lastVisitRef.current || !act.created_at) return false;
-    return new Date(act.created_at) > new Date(lastVisitRef.current);
+  const activityMutations = {
+    createActivity,
+    updateActivity,
+    updateActivityStatus,
+    deleteActivity,
+    uploadProof,
+    uploadReferenceImage,
+    removeReferenceImage,
+    getProofs,
+    deleteProof,
   };
-
-  const [createModalType, setCreateModalType] =
-    useState<AssignableActivityType | null>(null);
-  const [isCreateVacanteModalOpen, setIsCreateVacanteModalOpen] =
-    useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [previewResponsibility, setPreviewResponsibility] = useState(false);
-  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-  const [selectedActivity, setSelectedActivity] = useState<Activity | null>(
-    null,
-  );
-  const canSubmitProgress = profile?.role === "admin" || Boolean(profile?.id && selectedActivity?.asignado_a === profile.id);
-  const [proofs, setProofs] = useState<ActivityProof[]>([]);
-
-  /* ── Create activity form state ─────────────────────────────────────── */
-  const [titulo, setTitulo] = useState("");
-  const [descripcion, setDescripcion] = useState("");
-  const [asignadoA, setAsignadoA] = useState("");
-  const [isCreating, setIsCreating] = useState(false);
-
-  /* ── Create vacancy form state (isolated from activities) ───────────── */
-  const [vacanteTitulo, setVacanteTitulo] = useState("");
-  const [vacanteArea, setVacanteArea] = useState("");
-  const [vacanteSeccion, setVacanteSeccion] = useState("");
-  const [vacanteAsignadoA, setVacanteAsignadoA] = useState("");
-  const [isCreatingVacancy, setIsCreatingVacancy] = useState(false);
-
-  const reclutadores = useMemo(() => members.flatMap(member => member.active && member.selectable && member.profile_id && member.profile_role === 'reclutador'
-    ? [{ id: member.profile_id, display_name: member.full_name, username: member.short_name }] : []), [members]);
-  const [referenceImageFile, setReferenceImageFile] = useState<File | null>(
-    null,
-  );
-  const [referenceImagePreview, setReferenceImagePreview] = useState<
-    string | null
-  >(null);
-
-  /* ── Filter / Search / Sort state ────────────────────────────────────── */
-  const [statusFilter, setStatusFilter] = useState<ActivityStatus | "todas">(() => {
-    const requested = searchParams.get("status");
-    return requested === "todas" || requested === "pendiente" || requested === "en_proceso" || requested === "completada"
-      ? requested : "pendiente";
-  });
-
-  /* ── Edit form state ───────────────────────────────────────────────── */
-  const [editTitulo, setEditTitulo] = useState("");
-  const [editDescripcion, setEditDescripcion] = useState("");
-  const [editAsignadoA, setEditAsignadoA] = useState("");
-  const [editReferenceImageFile, setEditReferenceImageFile] =
-    useState<File | null>(null);
-  const [editReferenceImagePreview, setEditReferenceImagePreview] = useState<
-    string | null
-  >(null);
-  const [editExistingReferenceImage, setEditExistingReferenceImage] = useState<
-    string | null
-  >(null);
-  const [proofsLoading, setProofsLoading] = useState(false);
-  const [isUploadingProof, setIsUploadingProof] = useState(false);
-  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [isAssigningVacancy, setIsAssigningVacancy] = useState(false);
-  const proofsRequestRef = useRef(0);
-
-  const teamRecruiterOptions = useMemo(
-    () => [
-      { value: "", label: en ? "Whole team" : "Todo el equipo" },
-      ...reclutadores.map((reclutador) => ({
-        value: reclutador.id,
-        label: reclutador.username,
-      })),
-    ],
-    [reclutadores, en],
+  const creation = useActivityCreation(en, activityMutations);
+  const details = useActivityDetails(activityMutations);
+  const editor = useActivityEditor(
+    activityMutations,
+    details.selectedActivity,
+    details.setSelectedActivity,
+    details.setIsDetailModalOpen,
   );
 
-  const vacancyRecruiterOptions = useMemo(
-    () => [
-      { value: "", label: en ? "Unassigned" : "Sin asignar" },
-      ...reclutadores.map((reclutador) => ({
-        value: reclutador.id,
-        label: reclutador.username,
-      })),
-    ],
-    [reclutadores, en],
-  );
-  const { positions, configurablePositions } = usePositions();
+  const vacancies = useMemo(() => {
+    const list = activities.filter((activity) => activity.tipo === 'vacante');
+    list.sort((first, second) => {
+      const firstIsNew = isNewActivity(first);
+      const secondIsNew = isNewActivity(second);
+      if (firstIsNew && !secondIsNew) return -1;
+      if (!firstIsNew && secondIsNew) return 1;
+      if (!first.asignado_a && second.asignado_a) return -1;
+      if (first.asignado_a && !second.asignado_a) return 1;
 
-  const areasOptions = useMemo(
-    () => Array.from(new Set(configurablePositions.map((p) => p.area))).sort((a, b) => a.localeCompare(b, 'es')),
-    [configurablePositions],
-  );
-
-  const seccionesOptions = useMemo(() => {
-    let base = configurablePositions;
-    if (vacanteArea) {
-      base = base.filter((p) => p.area === vacanteArea);
-    }
-    return Array.from(new Set(base.map((p) => p.seccion).filter(Boolean))).sort(
-      (a, b) => a.localeCompare(b, "es"),
-    );
-  }, [configurablePositions, vacanteArea]);
-
-  const puestosOptions = useMemo(() => {
-    let base = configurablePositions;
-    if (vacanteArea) {
-      base = base.filter((p) => p.area === vacanteArea);
-    }
-    if (vacanteSeccion) {
-      base = base.filter((p) => p.seccion === vacanteSeccion);
-    }
-    return Array.from(new Set(base.map((p) => p.puesto))).sort((a, b) =>
-      a.localeCompare(b, "es"),
-    );
-  }, [configurablePositions, vacanteArea, vacanteSeccion]);
-
-  const vacantesManuales = useMemo(() => {
-    const list = activities.filter((a) => a.tipo === "vacante");
-
-    list.sort((a, b) => {
-      // 0. Nuevas primero
-      const aNew = isNewActivity(a);
-      const bNew = isNewActivity(b);
-      if (aNew && !bNew) return -1;
-      if (!aNew && bNew) return 1;
-
-      // 1. Sin asignar primero
-      if (!a.asignado_a && b.asignado_a) return -1;
-      if (a.asignado_a && !b.asignado_a) return 1;
-
-      // 2. Por reclutador
-      if (a.asignado_a && b.asignado_a && a.asignado_a !== b.asignado_a) {
-        const nameA =
-          (a as any).asignado_a_profile?.display_name ||
-          (a as any).asignado_a_profile?.username ||
-          "Z";
-        const nameB =
-          (b as any).asignado_a_profile?.display_name ||
-          (b as any).asignado_a_profile?.username ||
-          "Z";
-        const nameCmp = nameA.localeCompare(nameB, "es");
-        if (nameCmp !== 0) return nameCmp;
+      const firstWithAssignee = first as ActivityWithAssignee;
+      const secondWithAssignee = second as ActivityWithAssignee;
+      if (first.asignado_a && second.asignado_a && first.asignado_a !== second.asignado_a) {
+        const firstName =
+          firstWithAssignee.asignado_a_profile?.display_name || firstWithAssignee.asignado_a_profile?.username || 'Z';
+        const secondName =
+          secondWithAssignee.asignado_a_profile?.display_name || secondWithAssignee.asignado_a_profile?.username || 'Z';
+        const nameComparison = firstName.localeCompare(secondName, 'es');
+        if (nameComparison !== 0) return nameComparison;
       }
 
-      // 3. Por Puesto/Área (título y descripción)
-      const titleA = a.titulo || "";
-      const titleB = b.titulo || "";
-      const titleCmp = titleA.localeCompare(titleB, "es");
-      if (titleCmp !== 0) return titleCmp;
-
-      const descA = a.descripcion || "";
-      const descB = b.descripcion || "";
-      return descA.localeCompare(descB, "es");
+      const titleComparison = (first.titulo || '').localeCompare(second.titulo || '', 'es');
+      if (titleComparison !== 0) return titleComparison;
+      return (first.descripcion || '').localeCompare(second.descripcion || '', 'es');
     });
-
     return list;
-  }, [activities]);
+  }, [activities, isNewActivity]);
 
-  const handleAssignVacancy = async (
-    activityId: string,
-    recruiterId: string,
-  ) => {
-    if (isAssigningVacancy) return;
-    setIsAssigningVacancy(true);
-    const updated = await updateActivity(activityId, {
-      asignado_a: recruiterId || null,
+  const responsibilities = useMemo(() => {
+    const list = activities.filter((activity) => activity.tipo === 'rutinaria');
+    return list.sort((first, second) => {
+      const firstIsNew = isNewActivity(first);
+      const secondIsNew = isNewActivity(second);
+      if (firstIsNew && !secondIsNew) return -1;
+      if (!firstIsNew && secondIsNew) return 1;
+      return (second.created_at ?? '').localeCompare(first.created_at ?? '');
     });
-    playSound(updated ? "success" : "error");
-    setIsAssigningVacancy(false);
-    return Boolean(updated);
-  };
+  }, [activities, isNewActivity]);
 
-  const handleCreateVacante = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const normalizedTitle = vacanteTitulo.trim();
-    if (!normalizedTitle) return;
-
-    setIsCreatingVacancy(true);
-    const finalDesc = vacanteSeccion
-      ? `${vacanteArea} - ${vacanteSeccion}`
-      : vacanteArea;
-    const act = await createActivity(
-      normalizedTitle,
-      finalDesc,
-      vacanteAsignadoA || null,
-      "vacante",
-    );
-
-    setIsCreatingVacancy(false);
-    playSound(act ? "success" : "error");
-    if (act) {
-      setIsCreateVacanteModalOpen(false);
-      setVacanteTitulo("");
-      setVacanteArea("");
-      setVacanteSeccion("");
-      setVacanteAsignadoA("");
-    }
-  };
-
-  /* ── Handlers ──────────────────────────────────────────────────────── */
-  const handleCreate = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const normalizedTitle = titulo.trim();
-    if (!normalizedTitle || !createModalType) return;
-
-    setIsCreating(true);
-    const act = await createActivity(
-      normalizedTitle,
-      descripcion,
-      asignadoA || null,
-      createModalType,
-    );
-
-    if (act && referenceImageFile) {
-      const url = await uploadReferenceImage(act.id!, referenceImageFile);
-      if (url) {
-        const updated = await updateActivity(act.id!, { reference_image: url });
-        if (!updated) await removeReferenceImage(act.id!, url);
-      }
-    }
-
-    setIsCreating(false);
-    playSound(act ? "success" : "error");
-    if (act) {
-      setCreateModalType(null);
-      setTitulo("");
-      setDescripcion("");
-      setAsignadoA("");
-      setReferenceImageFile(null);
-      setReferenceImagePreview(null);
-    }
-  };
-
-  const openDetails = async (activity: Activity) => {
-    playSound("open");
-    const requestId = ++proofsRequestRef.current;
-    setSelectedActivity(activity);
-    setProofs([]);
-    setProofsLoading(true);
-    setIsDetailModalOpen(true);
-
-    const nextProofs = await getProofs(activity.id!);
-    if (requestId === proofsRequestRef.current) {
-      setProofs(nextProofs);
-      setProofsLoading(false);
-    }
-  };
-
-  const handleStatusChange = async (newStatusString: string) => {
-    if (!selectedActivity || !canSubmitProgress || isUpdatingStatus) return;
-
-    const previousStatus = selectedActivity.estado;
-    const newStatus = newStatusString as ActivityStatus;
-    setSelectedActivity({ ...selectedActivity, estado: newStatus });
-    setIsUpdatingStatus(true);
-
-    const updated = await updateActivityStatus(selectedActivity.id!, newStatus);
-    playSound(updated ? "success" : "error");
-    setIsUpdatingStatus(false);
-    if (updated) {
-      setSelectedActivity(updated as Activity);
-    } else {
-      setSelectedActivity((current) =>
-        current ? { ...current, estado: previousStatus } : current,
-      );
-    }
-  };
-
-  const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
-
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!selectedActivity || !canSubmitProgress || !e.target.files || e.target.files.length === 0)
-      return;
-    const file = e.target.files[0];
-
-    if (file.size > MAX_FILE_SIZE) {
-      playSound("warning");
-      toast.error({
-        title: en ? "File too large" : "Archivo demasiado grande",
-        description: en ? `The limit is 10 MB. Your file is ${(file.size / (1024 * 1024)).toFixed(1)} MB.` : `El límite es 10 MB. Tu archivo pesa ${(file.size / (1024 * 1024)).toFixed(1)} MB.`,
-      });
-      e.target.value = "";
-      return;
-    }
-
-    setIsUploadingProof(true);
-    const proof = await uploadProof(selectedActivity.id!, file);
-    playSound(proof ? "success" : "error");
-    if (proof) setProofs((prev) => [proof, ...prev]);
-    setIsUploadingProof(false);
-    e.target.value = "";
-  };
-
-  const handleDeleteProof = async (proofId: string, url: string) => {
-    if (profile?.role !== "admin") return false;
-    const ok = await deleteProof(proofId, url);
-    playSound(ok ? "success" : "error");
-    if (ok) setProofs((prev) => prev.filter((proof) => proof.id !== proofId));
-    return ok;
-  };
-
-  const openEdit = (activity: Activity, e?: React.MouseEvent) => {
-    playSound("open");
-    e?.stopPropagation();
-    setPreviewResponsibility(false);
-    setSelectedActivity(activity);
-    setEditTitulo(activity.titulo);
-    setEditDescripcion(activity.descripcion || "");
-    setEditAsignadoA(activity.asignado_a || "");
-    setEditReferenceImageFile(null);
-    setEditReferenceImagePreview(null);
-    setEditExistingReferenceImage(activity.reference_image || null);
-    setIsEditModalOpen(true);
-  };
-
-  const openResponsibility = (activity: Activity) => {
-    openEdit(activity);
-    setPreviewResponsibility(true);
-  };
-
-  const handleEdit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (profile?.role !== "admin") return;
-    const normalizedTitle = editTitulo.trim();
-    if (!selectedActivity || !normalizedTitle) return;
-    setIsEditing(true);
-
-    let newImageUrl = editExistingReferenceImage;
-
-    if (editReferenceImageFile) {
-      const url = await uploadReferenceImage(
-        selectedActivity.id!,
-        editReferenceImageFile,
-      );
-      if (!url) {
-        playSound("error");
-        setIsEditing(false);
-        return;
-      }
-      newImageUrl = url;
-    }
-
-    const act = await updateActivity(selectedActivity.id!, {
-      titulo: normalizedTitle,
-      descripcion: editDescripcion,
-      asignado_a: editAsignadoA || null,
-      reference_image: newImageUrl,
-    });
-    if (act && selectedActivity.reference_image && selectedActivity.reference_image !== newImageUrl) {
-      await removeReferenceImage(selectedActivity.id!, selectedActivity.reference_image);
-    } else if (!act && editReferenceImageFile && newImageUrl) {
-      await removeReferenceImage(selectedActivity.id!, newImageUrl);
-    }
-    setIsEditing(false);
-    playSound(act ? "success" : "error");
-    if (act) {
-      setIsEditModalOpen(false);
-      setPreviewResponsibility(false);
-      setSelectedActivity(null);
-    }
-  };
-
-  const handleDelete = async (activity: Activity) => {
-    if (!activity.id) return false;
-    const ok = await deleteActivity(activity.id);
-    playSound(ok ? "success" : "error");
-    if (ok) {
-      setIsEditModalOpen(false);
-      setPreviewResponsibility(false);
-      setIsDetailModalOpen(false);
-      setSelectedActivity(null);
-    }
-    return ok;
-  };
-
-  /* ── Derived data ──────────────────────────────────────────────────── */
-  const isAdmin = profile?.role === "admin";
-  const responsabilidades = useMemo(() => {
-    const list = activities.filter((a) => a.tipo === "rutinaria");
-    return list.sort((a, b) => {
-      const aNew = isNewActivity(a);
-      const bNew = isNewActivity(b);
-      if (aNew && !bNew) return -1;
-      if (!aNew && bNew) return 1;
-      return (b.created_at ?? "").localeCompare(a.created_at ?? "");
-    });
-  }, [activities]);
-
-  const allUnicas = activities.filter((a) => a.tipo === "unica" || !a.tipo);
-
-  /* ── Counts for filter badges ──────────────────────────────────────── */
+  const allActivities = activities.filter((activity) => activity.tipo === 'unica' || !activity.tipo);
   const statusCounts = useMemo(
     () => ({
-      todas: allUnicas.length,
-      pendiente: allUnicas.filter((a) => a.estado === "pendiente").length,
-      en_proceso: allUnicas.filter((a) => a.estado === "en_proceso").length,
-      completada: allUnicas.filter((a) => a.estado === "completada").length,
+      todas: allActivities.length,
+      pendiente: allActivities.filter((activity) => activity.estado === 'pendiente').length,
+      en_proceso: allActivities.filter((activity) => activity.estado === 'en_proceso').length,
+      completada: allActivities.filter((activity) => activity.estado === 'completada').length,
     }),
-    [allUnicas],
+    [allActivities],
   );
-
-  /* ── Filtered + sorted tasks ──────────────────────────────────────── */
-  const unicas = useMemo(() => {
-    let result = allUnicas;
-
-    // Filter by status
-    if (statusFilter !== "todas") {
-      result = result.filter((a) => a.estado === statusFilter);
+  const filteredActivities = useMemo(() => {
+    let result = allActivities;
+    if (statusFilter !== 'todas') {
+      result = result.filter((activity) => activity.estado === statusFilter);
     }
-
-    result = [...result].sort((a, b) => {
-      const aNew = isNewActivity(a);
-      const bNew = isNewActivity(b);
-      if (aNew && !bNew) return -1;
-      if (!aNew && bNew) return 1;
-      return (b.created_at ?? "").localeCompare(a.created_at ?? "");
+    return [...result].sort((first, second) => {
+      const firstIsNew = isNewActivity(first);
+      const secondIsNew = isNewActivity(second);
+      if (firstIsNew && !secondIsNew) return -1;
+      if (!firstIsNew && secondIsNew) return 1;
+      return (second.created_at ?? '').localeCompare(first.created_at ?? '');
     });
+  }, [allActivities, statusFilter, isNewActivity]);
 
-    return result;
-  }, [allUnicas, statusFilter]);
+  const responsibilityPages = usePagination(responsibilities, 9);
+  const activityPages = usePagination(filteredActivities, 9);
+  const initialTab =
+    searchParams.get('tab') === 'responsibilities'
+      ? 'responsibilities'
+      : searchParams.get('tab') === 'activities'
+        ? 'activities'
+        : 'vacancies';
 
-  /* ── Pagination ──────────────────────────────────────────────────────── */
-  const {
-    pageItems: responsabilidadesPaginadas,
-    currentPage: responsabilidadesPage,
-    totalPages: responsabilidadesTotalPages,
-    goToPage: goToresponsabilidadesPage,
-    nextPage: nextresponsabilidadesPage,
-    prevPage: prevresponsabilidadesPage,
-    canGoNext: canGoNextResponsabilidades,
-    canGoPrev: canGoPrevResponsabilidades,
-  } = usePagination(responsabilidades, 9);
-
-  const {
-    pageItems: actividadesPaginadas,
-    currentPage: actividadesPage,
-    totalPages: actividadesTotalPages,
-    goToPage: goToActividadesPage,
-    nextPage: nextActividadesPage,
-    prevPage: prevActividadesPage,
-    canGoNext: canGoNextActividades,
-    canGoPrev: canGoPrevActividades,
-  } = usePagination(unicas, 9);
-
-  const createAssignmentModalProps: Omit<
-    CreateActivityModalProps,
-    "isOpen"
-  > = {
-    onClose: () => {
-      if (!isCreating) { playSound("close"); setCreateModalType(null); }
-    },
-    isCreating,
-    titulo,
-    setTitulo,
-    asignadoA,
-    setAsignadoA: (value) => { playSound("select"); setAsignadoA(value); },
-    recruitersOptions: teamRecruiterOptions,
-    descripcion,
-    setDescripcion,
-    referenceImagePreview,
-    referenceImageFile,
-    setReferenceImageFile: (file) => { playSound("select"); setReferenceImageFile(file); },
-    setReferenceImagePreview,
-    onSubmit: handleCreate,
-  };
-
-  /* ── Render ─────────────────────────────────────────────────────────── */
   return (
     <BoneyardSkeleton
       name="actividades-page"
       loading={loading}
-      loadingLabel={en ? "Loading activities..." : "Cargando actividades..."}
+      loadingLabel={en ? 'Loading activities...' : 'Cargando actividades...'}
     >
       <main className="actividades-page container">
-        <PageHeading className="app-page-title">{en ? "Activities" : "Actividades"}</PageHeading>
-
-      <TabsRoot onValueChange={() => playSound("select")} defaultValue={
-        searchParams.get("tab") === "responsibilities" ? "responsibilities"
-          : searchParams.get("tab") === "activities" ? "activities" : "vacancies"
-      }>
-        <TabsList className="actividades-tabs__list" variant="underline" aria-label={en ? "Activity sections" : "Secciones de actividades"}>
-          <TabsTrigger value="vacancies">
-            <BriefcaseBusiness size="var(--icon-size-sm)" aria-hidden="true" />
-            {en ? "Vacancies" : "Vacantes"}
-          </TabsTrigger>
-          <TabsTrigger value="responsibilities">
-            <ListChecks size="var(--icon-size-sm)" aria-hidden="true" />
-            {en ? "Responsibilities" : "Responsabilidades"}
-          </TabsTrigger>
-          <TabsTrigger value="activities">
-            <ClipboardPenLine size="var(--icon-size-sm)" aria-hidden="true" />
-            {en ? "Activities" : "Actividades"}
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="vacancies">
-          <VacancyAssignmentSection
-            vacancies={vacantesManuales}
-            positions={positions}
-            isAdmin={isAdmin}
-            currentUserId={profile?.id}
-            isNew={isNewActivity}
-            onCreate={() => { playSound("open"); setIsCreateVacanteModalOpen(true); }}
-            recruiterOptions={vacancyRecruiterOptions}
-            isAssigning={isAssigningVacancy}
-            onAssign={(vacancyId, assigneeId) => {
-              void handleAssignVacancy(vacancyId, assigneeId);
-            }}
-            onDelete={async (vacancy) => {
-              if (!vacancy.id) return false;
-              const deleted = await deleteActivity(vacancy.id);
-              playSound(deleted ? "success" : "error");
-              return deleted;
-            }}
-          />
-        </TabsContent>
-
-        <TabsContent value="responsibilities">
-          <ResponsibilitiesSection
-            responsibilities={responsabilidades}
-            pageItems={responsabilidadesPaginadas}
-            isAdmin={isAdmin}
-            currentUserId={profile?.id}
-            pagination={{
-              currentPage: responsabilidadesPage,
-              totalPages: responsabilidadesTotalPages,
-              onPageChange: (page) => { playSound("navigate"); goToresponsabilidadesPage(page); },
-              onPrev: () => { playSound("navigate", { direction: "back" }); prevresponsabilidadesPage(); },
-              onNext: () => { playSound("navigate"); nextresponsabilidadesPage(); },
-              canGoPrev: canGoPrevResponsabilidades,
-              canGoNext: canGoNextResponsabilidades,
-            }}
-            isNew={isNewActivity}
-            onCreate={() => { playSound("open"); setCreateModalType("rutinaria"); }}
-            onOpen={openResponsibility}
-          />
-        </TabsContent>
-
-        <TabsContent value="activities">
-          <ActivitiesSection
-            activities={allUnicas}
-            filteredActivities={unicas}
-            pageItems={actividadesPaginadas}
-            isAdmin={isAdmin}
-            currentUserId={profile?.id}
-            statusFilter={statusFilter}
-            statusCounts={statusCounts}
-            pagination={{
-              currentPage: actividadesPage,
-              totalPages: actividadesTotalPages,
-              onPageChange: (page) => { playSound("navigate"); goToActividadesPage(page); },
-              onPrev: () => { playSound("navigate", { direction: "back" }); prevActividadesPage(); },
-              onNext: () => { playSound("navigate"); nextActividadesPage(); },
-              canGoPrev: canGoPrevActividades,
-              canGoNext: canGoNextActividades,
-            }}
-            isNew={isNewActivity}
-            onStatusFilterChange={(status) => { if (status !== statusFilter) playSound("select"); setStatusFilter(status); }}
-            onClearFilters={() => { playSound("select"); setStatusFilter("todas"); }}
-            onCreate={() => { playSound("open"); setCreateModalType("unica"); }}
-            onOpen={openDetails}
-          />
-        </TabsContent>
-      </TabsRoot>
-
-      <ModalPresentationProvider value={isMobile ? "modal" : "sheet"}>
-      <CreateVacancyModal
-        isOpen={isCreateVacanteModalOpen}
-        onClose={() => {
-          if (!isCreatingVacancy) { playSound("close"); setIsCreateVacanteModalOpen(false); }
-        }}
-        isCreating={isCreatingVacancy}
-        area={vacanteArea}
-        onAreaChange={(value) => {
-          playSound("select");
-          setVacanteArea(value);
-          setVacanteSeccion("");
-          setVacanteTitulo("");
-        }}
-        areasOptions={areasOptions}
-        seccion={vacanteSeccion}
-        onSeccionChange={(value) => {
-          playSound("select");
-          setVacanteSeccion(value);
-          setVacanteTitulo("");
-        }}
-        seccionesOptions={seccionesOptions}
-        puesto={vacanteTitulo}
-        onPuestoChange={(value) => { playSound("select"); setVacanteTitulo(value); }}
-        puestosOptions={puestosOptions}
-        asignadoA={vacanteAsignadoA}
-        onAsignadoAChange={(value) => { playSound("select"); setVacanteAsignadoA(value); }}
-        recruitersOptions={[
-          { value: "", label: en ? "Unassigned" : "Sin asignar" },
-          ...reclutadores.map((reclutador) => ({
-            value: reclutador.id,
-            label: reclutador.username,
-          })),
-        ]}
-        onSubmit={handleCreateVacante}
-      />
-
-      <CreateActivityModal
-        {...createAssignmentModalProps}
-        isOpen={createModalType === "unica"}
-      />
-
-      <CreateResponsibilityModal
-        {...createAssignmentModalProps}
-        isOpen={createModalType === "rutinaria"}
-      />
-
-      {/* ── Modal: Edit ──────────────────────────────────────────── */}
-      <EditActivityModal
-        isOpen={isEditModalOpen}
-        onClose={() => {
-          if (!isEditing) { playSound("close"); setIsEditModalOpen(false); setPreviewResponsibility(false); }
-        }}
-        isEditing={isEditing}
-        activityType={
-          selectedActivity?.tipo === "rutinaria" ||
-          selectedActivity?.tipo === "soporte"
-            ? selectedActivity.tipo
-            : "unica"
-        }
-        titulo={editTitulo}
-        setTitulo={setEditTitulo}
-        asignadoA={editAsignadoA}
-        setAsignadoA={(value) => { playSound("select"); setEditAsignadoA(value); }}
-        recruitersOptions={selectedActivity?.asignado_a && !teamRecruiterOptions.some(option => option.value === selectedActivity.asignado_a)
-          ? [...teamRecruiterOptions, { value: selectedActivity.asignado_a,
-            label: `${members.find(member => member.profile_id === selectedActivity.asignado_a)?.full_name ?? (en ? 'Current assignment' : 'Asignación actual')} (${en ? 'inactive' : 'inactivo'})` }]
-          : teamRecruiterOptions}
-        descripcion={editDescripcion}
-        setDescripcion={setEditDescripcion}
-        referenceImagePreview={editReferenceImagePreview}
-        referenceImageFile={editReferenceImageFile}
-        existingReferenceImage={editExistingReferenceImage}
-        setReferenceImageFile={(file) => { playSound("select"); setEditReferenceImageFile(file); }}
-        setReferenceImagePreview={setEditReferenceImagePreview}
-        setExistingReferenceImage={setEditExistingReferenceImage}
-        onSubmit={handleEdit}
-        previewActivity={previewResponsibility ? selectedActivity : null}
-        previewAssignee={selectedActivity?.asignado_a ? {
-          id: selectedActivity.asignado_a,
-          display_name: members.find(member => member.profile_id === selectedActivity.asignado_a)?.full_name,
-        } : undefined}
-        currentUserId={profile?.id}
-        onStartEditing={isAdmin ? () => { playSound("select"); setPreviewResponsibility(false); } : undefined}
-        onDelete={isAdmin && previewResponsibility && selectedActivity ? () => handleDelete(selectedActivity) : undefined}
-      />
-
-      </ModalPresentationProvider>
-
-      {/* ── Modal: Detail / Proofs ─────────────────────────────────── */}
-      <ModalPresentationProvider value={isMobile ? "modal" : "sheet"}>
-      <TaskDetailsModal
-        isOpen={isDetailModalOpen}
-        onClose={() => {
-          playSound("close");
-          proofsRequestRef.current += 1;
-          setIsDetailModalOpen(false);
-        }}
-        activity={selectedActivity}
-        statusFilter={statusFilter}
-        onStatusChange={handleStatusChange}
-        isUpdatingStatus={isUpdatingStatus}
-        onImageOpen={(proofId) => {
-          if (selectedActivity?.id) { playSound("navigate"); navigate(getActivityImagePath(selectedActivity.id, "activities", proofId, statusFilter)); }
-        }}
-        proofsLoading={proofsLoading}
-        proofs={proofs}
-        isImage={isImage}
-        isAdmin={isAdmin}
-        canSubmitProgress={canSubmitProgress}
-        onEdit={isAdmin && selectedActivity ? () => {
-          proofsRequestRef.current += 1;
-          setIsDetailModalOpen(false);
-          openEdit(selectedActivity);
-        } : undefined}
-        onDelete={isAdmin && selectedActivity ? () => handleDelete(selectedActivity) : undefined}
-        onDeleteProof={handleDeleteProof}
-        onUploadProof={handleFileUpload}
-        isUploadingProof={isUploadingProof}
-      />
-      </ModalPresentationProvider>
-
-    </main>
-  </BoneyardSkeleton>
+        <PageHeading className="app-page-title">{en ? 'Activities' : 'Actividades'}</PageHeading>
+        <ActivitiesSections
+          en={en}
+          initialTab={initialTab}
+          isAdmin={isAdmin}
+          currentUserId={profile?.id}
+          vacancies={vacancies}
+          positions={creation.positions}
+          recruiterOptions={creation.vacancyRecruiterOptions}
+          isAssigningVacancy={creation.isAssigningVacancy}
+          responsibilities={responsibilities}
+          activities={allActivities}
+          filteredActivities={filteredActivities}
+          statusFilter={statusFilter}
+          statusCounts={statusCounts}
+          pages={{
+            responsibilities: responsibilityPages,
+            activities: activityPages,
+          }}
+          isNew={isNewActivity}
+          onAssignVacancy={(vacancyId, recruiterId) => {
+            void creation.handleAssignVacancy(vacancyId, recruiterId);
+          }}
+          onDeleteVacancy={async (vacancy) => {
+            if (!vacancy.id) return false;
+            const deleted = await deleteActivity(vacancy.id);
+            playSound(deleted ? 'success' : 'error');
+            return deleted;
+          }}
+          onCreateVacancy={() => {
+            playSound('open');
+            creation.setIsCreateVacanteModalOpen(true);
+          }}
+          onCreateResponsibility={() => {
+            playSound('open');
+            creation.setCreateModalType('rutinaria');
+          }}
+          onCreateActivity={() => {
+            playSound('open');
+            creation.setCreateModalType('unica');
+          }}
+          onOpenResponsibility={editor.openResponsibility}
+          onOpenActivity={details.openDetails}
+          onStatusFilterChange={(status) => {
+            if (status !== statusFilter) playSound('select');
+            setStatusFilter(status);
+          }}
+          onClearFilters={() => {
+            playSound('select');
+            setStatusFilter('todas');
+          }}
+        />
+        <ActivityDialogs creation={creation} details={details} editor={editor} statusFilter={statusFilter} />
+      </main>
+    </BoneyardSkeleton>
   );
 }

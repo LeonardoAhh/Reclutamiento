@@ -1,12 +1,11 @@
 import { Inbox, Plus, Search } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import type { Activity, ActivityStatus } from '@/lib/types';
+import type { Activity } from '@/lib/types';
+import type { ActivityStatusFilter, ActivityWithAssignee } from '@/lib/activityTypes';
 import { ActivityCard } from '@/components/ui/ActivityCard';
 import { Pagination } from '@/components/ui/Pagination';
 import { Toolbar, ToolbarGroup } from '@/components/ui/Toolbar';
 import './ActivitiesSection.css';
-
-type ActivityStatusFilter = ActivityStatus | 'todas';
 
 interface ActivitiesPagination {
   currentPage: number;
@@ -32,13 +31,6 @@ interface ActivitiesSectionProps {
   onClearFilters: () => void;
   onCreate: () => void;
   onOpen: (activity: Activity) => void;
-}
-
-interface ActivityWithAssignee extends Activity {
-  asignado_a_profile?: {
-    display_name?: string | null;
-    username?: string | null;
-  } | null;
 }
 
 const STATUS_FILTERS: Array<{
@@ -170,7 +162,6 @@ export function ActivitiesSection({
                     description={activity.descripcion ?? undefined}
                     status={activity.estado}
                     assignee={assignee}
-                    referenceImage={activity.reference_image ?? undefined}
                     isNew={isNew(activity)}
                     currentUserId={currentUserId}
                     onClick={() => onOpen(activity)}

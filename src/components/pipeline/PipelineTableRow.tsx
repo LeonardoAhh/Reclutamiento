@@ -29,20 +29,14 @@ export function PipelineTableRow({ candidate: c, isDesktop, language, onOpen }: 
   const reclutador = c.reclutador ? getReclutadorMeta(c.reclutador, members) : null;
 
   return (
-    <article
-      className={`pipeline__ccard pipeline__ccard--${c.status}`}
-      role={isDesktop ? 'row' : 'button'}
-      tabIndex={0}
-      aria-label={`${en ? 'Preview candidate' : 'Vista previa de'} ${c.nombre}`}
-      onClick={() => onOpen(c)}
-      onKeyDown={(event) => {
-        if (event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) {
-          event.preventDefault();
-          onOpen(c);
-        }
-      }}
-    >
+    <article className={`pipeline__ccard pipeline__ccard--${c.status}`} role={isDesktop ? 'row' : undefined}>
       <div className="pipeline__ccard-name-col" role={isDesktop ? 'cell' : undefined}>
+        <button
+          type="button"
+          className="pipeline__ccard-open"
+          aria-label={`${en ? 'Preview candidate' : 'Vista previa de'} ${c.nombre}`}
+          onClick={() => onOpen(c)}
+        />
         <span className="pipeline__name-avatar" aria-hidden="true">
           {getInitials(c.nombre)}
         </span>
@@ -65,13 +59,13 @@ export function PipelineTableRow({ candidate: c, isDesktop, language, onOpen }: 
         </div>
 
         <div className="pipeline__ccard-mobile-info">
-          <div className="pipeline__ccard-mobile-info__puesto">
+          <div className="pipeline__ccard-mobile-info-puesto">
             <span className="pipeline__puesto-name" title={c.puesto}>
               {c.puesto}
             </span>
-            {c.seccion && <span className="pipeline__ccard-mobile-info__seccion">{c.seccion}</span>}
+            {c.seccion && <span className="pipeline__ccard-mobile-info-seccion">{c.seccion}</span>}
           </div>
-          <div className="pipeline__ccard-mobile-info__meta">
+          <div className="pipeline__ccard-mobile-info-meta">
             <CandidateStatusBadge status={c.status} icon />
             {reclutador && (
               <span className="pipeline__ccard-recruiter">

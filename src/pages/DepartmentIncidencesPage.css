@@ -77,6 +77,10 @@
   white-space: nowrap;
 }
 
+.department-incidences-page__heading-short {
+  display: none;
+}
+
 .department-incidences-page__section-title {
   margin: 0;
   color: var(--color-ink);
@@ -395,6 +399,31 @@
 }
 
 @media (width < 768px) {
+  .department-incidences-page__table :is(th, td) {
+    padding-inline: var(--design-spacing-xs);
+  }
+
+  .department-incidences-page__table :is(th, td):first-child,
+  .department-incidences-page__table :is(th, td):last-child {
+    width: calc(var(--touch-target-min) + var(--design-spacing-md));
+  }
+
+  .department-incidences-page__table :is(th, td):first-child {
+    white-space: nowrap;
+  }
+
+  .department-incidences-page__table tbody th {
+    overflow-wrap: break-word;
+  }
+
+  .department-incidences-page__heading-full {
+    display: none;
+  }
+
+  .department-incidences-page__heading-short {
+    display: inline;
+  }
+
   .department-incidences-page__table :is(th, td):nth-child(3),
   .department-incidences-page__table :is(th, td):nth-child(4) {
     display: none;
@@ -406,6 +435,17 @@
 
   .department-incidences-page__history-legend {
     display: none;
+  }
+}
+
+@media (width < 375px) {
+  .department-incidences-page__table :is(th, td) {
+    padding-inline: var(--design-spacing-xxs);
+  }
+
+  .department-incidences-page__table :is(th, td):first-child,
+  .department-incidences-page__table :is(th, td):last-child {
+    width: calc(var(--touch-target-min) + var(--design-spacing-xs));
   }
 }
 

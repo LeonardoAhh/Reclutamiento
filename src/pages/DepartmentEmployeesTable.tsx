@@ -67,15 +67,27 @@ export function DepartmentEmployeesTable({
       </caption>
       <thead>
         <tr>
-          <th scope="col">
-            <span className="department-incidences-page__sort-label">{copy('Núm. Emp.', 'Emp. No.')}</span>
+          <th scope="col" aria-label={copy('Núm. Emp.', 'Emp. No.')}>
+            <span className="department-incidences-page__sort-label">
+              <span className="department-incidences-page__heading-full" aria-hidden="true">
+                {copy('Núm. Emp.', 'Emp. No.')}
+              </span>
+              <span className="department-incidences-page__heading-short" aria-hidden="true">
+                {copy('Núm.', 'No.')}
+              </span>
+            </span>
           </th>
           <th scope="col">{copy('Nombre', 'Name')}</th>
           <th scope="col">{copy('Sección', 'Section')}</th>
           <th scope="col">{copy('Puesto', 'Position')}</th>
-          <th scope="col" aria-sort="descending">
+          <th scope="col" aria-sort="descending" aria-label={copy('Indicador', 'Indicator')}>
             <span className="department-incidences-page__sort-label">
-              {copy('Indicador', 'Indicator')}
+              <span className="department-incidences-page__heading-full" aria-hidden="true">
+                {copy('Indicador', 'Indicator')}
+              </span>
+              <span className="department-incidences-page__heading-short" aria-hidden="true">
+                {copy('Ind.', 'Ind.')}
+              </span>
               <ArrowDown size="var(--icon-size-sm)" aria-hidden="true" />
             </span>
           </th>

@@ -6,7 +6,6 @@ import { Modal } from './Modal';
 import { MorphingIcon } from './MorphingIcon';
 import { ActionStateContent } from './ActionStateContent';
 import type { Candidate, Employee } from '@/lib/types';
-import { localTodayIso } from '@/lib/dates';
 import { CustomSelect } from './CustomSelect';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { playSound } from '@/lib/sound';
