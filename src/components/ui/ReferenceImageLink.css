@@ -1,7 +1,9 @@
 .activity-reference-image {
-  display: block;
+  display: grid;
+  place-items: center;
   min-inline-size: 0;
   min-block-size: var(--touch-target-min);
+  aspect-ratio: 16 / 10;
   overflow: hidden;
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-lg);
@@ -11,6 +13,16 @@
 .activity-reference-image img {
   display: block;
   inline-size: 100%;
-  aspect-ratio: 16 / 10;
+  block-size: 100%;
   object-fit: contain;
+}
+
+.activity-reference-image span {
+  padding: var(--design-spacing-sm);
+  color: var(--color-muted);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }

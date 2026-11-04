@@ -8,6 +8,7 @@ import { SearchField } from '@/components/ui/SearchField';
 import { TabsContent, TabsList, TabsRoot, TabsTrigger } from '@/components/ui/Tabs';
 import { TabuladorAreaSection, type PuestoTabulador } from './components/TabuladorAreaSection';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { loadPrivateAppDatasets } from '@/lib/privateAppDatasets';
 import { getConfiguracionCopy, localizeTabulatorFallback } from './configuracion-translations';
 import '../Configuracion.css';
 
@@ -21,6 +22,13 @@ interface PuestoTabuladorSource {
 }
 
 type TabuladorType = 'sindicalizado' | 'nosindicalizado';
+
+function isPuestoTabuladorSource(value: unknown): value is PuestoTabuladorSource {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  const row = value as Record<string, unknown>;
+  return ['ÁREA', 'PUESTO', 'TIPO', 'SALARIO DIARIO 2026', 'SUELDO DIARIO 2026', 'SUELDO MENSUAL 2026']
+    .every((key) => row[key] === undefined || typeof row[key] === 'string');
+}
 
 function normalizePuesto(item: PuestoTabuladorSource): PuestoTabulador {
   return {
@@ -52,24 +60,19 @@ export function TabuladorView() {
 
     async function fetchData() {
       try {
-        const [resSindicalizado, resNoSindicalizado] = await Promise.all([
-          fetch('/sindicalizado.json', { signal: controller.signal }),
-          fetch('/nosindicalizado.json', { signal: controller.signal }),
-        ]);
-
-        if (!resSindicalizado.ok || !resNoSindicalizado.ok) {
-          throw new Error('Could not load salary scale data.');
+        const datasets = await loadPrivateAppDatasets(['salary_union', 'salary_non_union'], controller.signal);
+        if (controller.signal.aborted) return;
+        const jsonS = datasets.get('salary_union');
+        const jsonN = datasets.get('salary_non_union');
+        if (!Array.isArray(jsonS) || !Array.isArray(jsonN)
+          || !jsonS.every(isPuestoTabuladorSource) || !jsonN.every(isPuestoTabuladorSource)) {
+          throw new Error('No se pudieron cargar los datos del tabulador.');
         }
-
-        const [jsonS, jsonN] = await Promise.all([
-          resSindicalizado.json() as Promise<PuestoTabuladorSource[]>,
-          resNoSindicalizado.json() as Promise<PuestoTabuladorSource[]>,
-        ]);
 
         setDataSindicalizado(jsonS.map(normalizePuesto));
         setDataNoSindicalizado(jsonN.map(normalizePuesto));
       } catch (error) {
-        if (error instanceof DOMException && error.name === 'AbortError') return;
+        if (controller.signal.aborted) return;
         console.error('Error cargando tabuladores:', error);
         setLoadError('error');
       } finally {

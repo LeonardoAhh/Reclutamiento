@@ -2,11 +2,11 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { normalizeEmpleadoRuta } from '../src/lib/rutas-data.ts';
 
-test('normalizes the current rutas JSON headers', () => {
+test('normalizes the current private route dataset headers', () => {
   assert.deepEqual(
     normalizeEmpleadoRuta({
       numero_empleado: '4',
-      nombre: 'PACHECO ALCAYA MARIA GABRIELA',
+      nombre: 'PERSONA DE PRUEBA',
       sección: ' A. CALIDAD 1ER TURNO ',
       turno: '1',
       'nombre ruta': 'R3- SAN JOSE ITURBIDE 2',
@@ -15,7 +15,7 @@ test('normalizes the current rutas JSON headers', () => {
     }),
     {
       numeroEmpleado: '4',
-      nombre: 'PACHECO ALCAYA MARIA GABRIELA',
+      nombre: 'PERSONA DE PRUEBA',
       turno: '1',
       nombreRuta: 'R3- SAN JOSE ITURBIDE 2',
       colonia: 'PARADA EN LA IGLESIA',

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { signActivityProofUrl } from "@/lib/activityProofUrls";
 
 interface ActivityImage {
   title: string;
@@ -48,12 +49,16 @@ export function useActivityImage(activityId: string | undefined, proofId: string
         if (cancelled) return;
         if (proofError) setState({ status: "error", image: null });
         else if (!proof?.file_url) setState({ status: "missing", image: null });
-        else setState({ status: "ready", image: { title: proof.file_name, src: proof.file_url } });
+        else {
+          const signedUrl = await signActivityProofUrl(proof.file_url);
+          if (!cancelled) setState({ status: "ready", image: { title: proof.file_name, src: signedUrl } });
+        }
         return;
       }
 
       if (activity.reference_image) {
-        setState({ status: "ready", image: { title: activity.titulo, src: activity.reference_image } });
+        const signedUrl = await signActivityProofUrl(activity.reference_image);
+        if (!cancelled) setState({ status: "ready", image: { title: activity.titulo, src: signedUrl } });
       } else {
         setState({ status: "missing", image: null });
       }

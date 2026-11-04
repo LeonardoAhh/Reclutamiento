@@ -3,6 +3,7 @@ import {
   normalizeEmpleadoRuta,
   type EmpleadoRuta,
 } from '@/lib/rutas-data';
+import { loadPrivateAppDatasets, type PrivateDatasetId } from '@/lib/privateAppDatasets';
 
 export type { EmpleadoRuta } from '@/lib/rutas-data';
 
@@ -184,55 +185,35 @@ export function useRutas({ currentOnly = false }: { currentOnly?: boolean } = {}
     async function load() {
       setErrorMsg(null);
       try {
-        const ts = Date.now();
-        const base = import.meta.env.BASE_URL || '/';
-        const urlRutas = (base.endsWith('/') ? base + 'rutas.json' : base + '/rutas.json') + '?t=' + ts;
-        const urlAnterior = (base.endsWith('/') ? base + 'rutas-anterior.json' : base + '/rutas-anterior.json') + '?t=' + ts;
-        const urlInfo = (base.endsWith('/') ? base + 'rutas-info.json' : base + '/rutas-info.json') + '?t=' + ts;
-        
-        console.log("Fetching rutas from:", urlRutas);
+        const ids: PrivateDatasetId[] = currentOnly
+          ? ['routes_current']
+          : ['routes_current', 'routes_previous', 'routes_info'];
+        const datasets = await loadPrivateAppDatasets(ids, controller.signal);
+        if (controller.signal.aborted) return;
+        const currentData = datasets.get('routes_current');
+        if (!Array.isArray(currentData)) throw new Error('No se pudieron cargar las rutas actuales.');
+        setRawData(currentData
+          .map(normalizeEmpleadoRuta)
+          .filter((emp): emp is EmpleadoRuta => emp !== null));
 
-        const [res, resPrev, resInfo] = await Promise.all([
-          fetch(urlRutas, { signal: controller.signal }),
-          currentOnly ? Promise.resolve(null) : fetch(urlAnterior, { signal: controller.signal }).catch(() => null),
-          currentOnly ? Promise.resolve(null) : fetch(urlInfo, { signal: controller.signal }).catch(() => null)
-        ]);
-
-        if (res && res.ok) {
-          const ct = res.headers.get('content-type') || '';
-          if (ct.includes('text/html')) {
-            throw new Error(`El servidor devolvió HTML (posible SPA fallback) en lugar de JSON.`);
-          }
-
-          const data: unknown = await res.json();
-          const currentMapped = (Array.isArray(data) ? data : [])
-            .map(normalizeEmpleadoRuta)
-            .filter((emp): emp is EmpleadoRuta => emp !== null);
-          setRawData(currentMapped);
-        } else {
-          throw new Error(`No se pudo cargar rutas.json (status: ${res ? res.status : 'network error'})`);
-        }
-
-        if (resPrev && resPrev.ok) {
-          const prevData: unknown = await resPrev.json();
-          const prevMapped = (Array.isArray(prevData) ? prevData : [])
+        const previousData = datasets.get('routes_previous');
+        if (Array.isArray(previousData)) {
+          const prevMapped = previousData
             .map(normalizeEmpleadoRuta)
             .filter((emp): emp is EmpleadoRuta => emp !== null);
           setRawPrevData(prevMapped);
           setHasComparison(true);
         }
 
-        if (resInfo && resInfo.ok) {
-          const infoData = await resInfo.json();
-          if (infoData.fecha) {
-            setLastUpdated(infoData.fecha);
-          }
+        const infoData = datasets.get('routes_info');
+        if (infoData && typeof infoData === 'object' && 'fecha' in infoData && typeof infoData.fecha === 'string') {
+          setLastUpdated(infoData.fecha);
         }
       } catch (err: any) {
-        if (err.name === 'AbortError') return;
-        setErrorMsg(err.message || 'Error al cargar los archivos de rutas');
+        if (controller.signal.aborted) return;
+        setErrorMsg(err.message || 'Error al cargar las rutas');
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) setLoading(false);
       }
     }
 

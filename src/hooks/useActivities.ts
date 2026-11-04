@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
+import { getActivityProofPath, signActivityProofUrl, signActivityProofUrls } from '@/lib/activityProofUrls';
 import {
   Activity,
   ActivityProof,
@@ -146,6 +147,7 @@ export function useActivities() {
 
   const uploadProof = async (activityId: string, file: File) => {
     if (!profile) return null;
+    let uploadedPath: string | null = null;
     try {
       const fileExt = file.name.split('.').pop();
       const fileName = `${activityId}/${crypto.randomUUID()}.${fileExt}`;
@@ -155,10 +157,12 @@ export function useActivities() {
         .upload(fileName, file);
         
       if (uploadError) throw uploadError;
+      uploadedPath = fileName;
       
       const { data: publicUrlData } = supabase.storage
         .from('activity-proofs')
         .getPublicUrl(fileName);
+      const signedUrl = await signActivityProofUrl(publicUrlData.publicUrl);
         
       const { data, error } = await supabase.from('activity_proofs').insert({
         activity_id: activityId,
@@ -168,9 +172,11 @@ export function useActivities() {
       }).select(ACTIVITY_PROOF_SELECT).single();
       
       if (error) throw error;
+      uploadedPath = null;
       toast.success({ title: english ? 'Proof uploaded' : 'Prueba subida exitosamente' });
-      return data as ActivityProof;
+      return { ...data, file_url: signedUrl } as ActivityProof;
     } catch (err: any) {
+      if (uploadedPath) await supabase.storage.from('activity-proofs').remove([uploadedPath]);
       toast.error({ title: english ? 'Could not upload proof' : 'Error al subir prueba', description: err.message });
       return null;
     }
@@ -184,7 +190,8 @@ export function useActivities() {
         .order('created_at', { ascending: false });
         
       if (error) throw error;
-      return data as any[];
+      const signedUrls = await signActivityProofUrls((data ?? []).map((proof) => proof.file_url));
+      return (data ?? []).map((proof, index) => ({ ...proof, file_url: signedUrls[index] })) as ActivityProof[];
     } catch (err: any) {
       toast.error({ title: english ? 'Could not load proof' : 'Error al cargar pruebas', description: err.message });
       return [];
@@ -193,12 +200,10 @@ export function useActivities() {
   
   const deleteProof = async (proofId: string, fileUrl: string) => {
       try {
-        const urlObj = new URL(fileUrl);
-        const pathParts = urlObj.pathname.split('/activity-proofs/');
-        if (pathParts.length > 1) {
-            const filePath = pathParts[1];
-            await supabase.storage.from('activity-proofs').remove([filePath]);
-        }
+        const filePath = getActivityProofPath(fileUrl);
+        if (!filePath) throw new Error('La URL de la prueba no es válida.');
+        const { error: removeError } = await supabase.storage.from('activity-proofs').remove([filePath]);
+        if (removeError) throw removeError;
         
         const { error } = await supabase.from('activity_proofs').delete().eq('id', proofId);
         if (error) throw error;

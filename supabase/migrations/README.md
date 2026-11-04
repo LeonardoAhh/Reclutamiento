@@ -51,6 +51,8 @@ supabase db push
 
 ## RLS
 
+Los datos privados de rutas y tabulador y las correcciones de acceso anteriores están en las migraciones `068_private_app_datasets.sql` a `071_disable_candidate_notes_client_access.sql`. Sigue [private-data-remediation.md](../operations/private-data-remediation.md) para importar los datos antes del despliegue y aplicar después el cambio del bucket de imágenes de actividades.
+
 El catálogo administrable del equipo se incorpora en `055_recruiter_directory.sql`; los ajustes posteriores se aplican mediante `056_recruiter_directory_access.sql` sin volver a ejecutar 055. Su orden de despliegue, controles de acceso y reversión compatible están documentados en [recruiter-directory.md](../operations/recruiter-directory.md).
 
 `057_archive_recruiter_members.sql` añade el retiro de integrantes inactivos sin cuenta vinculada. Se aplica después de 056 y conserva los registros, alias y auditoría.
