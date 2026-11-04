@@ -477,17 +477,11 @@
   --feature-result-card-min: 34rem;
   --feature-maintenance-card-max-inline-size: var(--modal-inline-size-sm);
 
-  /* Ancho legible mínimo para cards de asignación antes de reflujo automático. */
-  --feature-vacancy-assignment-card-min-inline-size: 18rem;
+  /* Ancho máximo compacto de una única tarjeta de vacante desde tablet. */
+  --feature-vacancy-assignment-card-max-inline-size: 22rem;
 
-  /* Geometría responsive de responsabilidades y sus referencias visuales. */
-  --feature-responsibility-card-min-inline-size: var(--feature-vacancy-assignment-card-min-inline-size);
-  --feature-activity-card-min-inline-size: var(--feature-vacancy-assignment-card-min-inline-size);
+  /* Geometría responsive de las tarjetas de asignación. */
   --feature-assignment-description-max-lines: 2;
-  --feature-assignment-grid-max-inline-size: calc(
-    4 * var(--feature-vacancy-assignment-card-min-inline-size) + 3 * var(--spacing-md) + 2 * var(--design-spacing-sm) +
-      2 * var(--border-width)
-  );
   --feature-activity-filter-min-inline-size: 8.5rem;
   --search-field-min-inline-size: 18rem;
 

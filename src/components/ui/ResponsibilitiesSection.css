@@ -23,6 +23,10 @@
   letter-spacing: var(--type-heading-sm-tracking);
 }
 
+.responsibilities-section__subtitle {
+  margin: 0;
+}
+
 .responsibilities-section__panel {
   display: flex;
   min-inline-size: 0;
@@ -32,17 +36,24 @@
 
 .responsibilities-section__grid {
   display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
   align-items: start;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--spacing-md);
 }
 
-@media (min-width: 768px) {
-  .responsibilities-section__grid { grid-template-columns: repeat(2, minmax(0, var(--feature-responsibility-card-min-inline-size))); }
+@media (width >= 768px) {
+  .responsibilities-section__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
-@media (min-width: 1080px) {
-  .responsibilities-section__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (width >= 1080px) {
+  .responsibilities-section__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 .responsibilities-section__empty {
@@ -117,8 +128,13 @@
   border-block-start: var(--border-width) solid var(--color-hairline);
 }
 
-.responsibility-detail__assignment > span { color: var(--color-mute); }
-.responsibility-detail__assignment .assignment-meta { margin: 0; }
+.responsibility-detail__assignment > span {
+  color: var(--color-mute);
+}
+
+.responsibility-detail__assignment .assignment-meta {
+  margin: 0;
+}
 
 .responsibility-detail__edit {
   display: inline-flex;
@@ -146,6 +162,10 @@
   gap: var(--design-spacing-xxs);
 }
 
-.responsibility-detail__delete { color: var(--color-error-text); }
+.responsibility-detail__delete {
+  color: var(--color-error-text);
+}
 
-.responsibility-detail__edit:hover { background: var(--color-surface-soft); }
+.responsibility-detail__edit:hover {
+  background: var(--color-surface-soft);
+}

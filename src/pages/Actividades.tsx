@@ -19,7 +19,6 @@ import {
   Activity,
   ActivityProof,
   ActivityStatus,
-  ACTIVITY_STATUS_LABEL,
   AssignableActivityType,
 } from "@/lib/types";
 import { useTeamDirectory } from '@/features/team/TeamProvider';
@@ -173,28 +172,25 @@ export function Actividades() {
     ],
     [reclutadores, en],
   );
-  const { positions } = usePositions();
+  const { positions, configurablePositions } = usePositions();
 
   const areasOptions = useMemo(
-    () =>
-      Array.from(new Set(positions.map((p) => p.area))).sort((a, b) =>
-        a.localeCompare(b, "es"),
-      ),
-    [positions],
+    () => Array.from(new Set(configurablePositions.map((p) => p.area))).sort((a, b) => a.localeCompare(b, 'es')),
+    [configurablePositions],
   );
 
   const seccionesOptions = useMemo(() => {
-    let base = positions;
+    let base = configurablePositions;
     if (vacanteArea) {
       base = base.filter((p) => p.area === vacanteArea);
     }
     return Array.from(new Set(base.map((p) => p.seccion).filter(Boolean))).sort(
       (a, b) => a.localeCompare(b, "es"),
     );
-  }, [positions, vacanteArea]);
+  }, [configurablePositions, vacanteArea]);
 
   const puestosOptions = useMemo(() => {
-    let base = positions;
+    let base = configurablePositions;
     if (vacanteArea) {
       base = base.filter((p) => p.area === vacanteArea);
     }
@@ -204,7 +200,7 @@ export function Actividades() {
     return Array.from(new Set(base.map((p) => p.puesto))).sort((a, b) =>
       a.localeCompare(b, "es"),
     );
-  }, [positions, vacanteArea, vacanteSeccion]);
+  }, [configurablePositions, vacanteArea, vacanteSeccion]);
 
   const vacantesManuales = useMemo(() => {
     const list = activities.filter((a) => a.tipo === "vacante");

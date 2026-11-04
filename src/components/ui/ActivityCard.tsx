@@ -1,8 +1,6 @@
-import { BadgeCheck, CircleGauge, Clock3, type LucideIcon } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { AssignmentMeta } from '@/components/ui/AssignmentMeta';
+import { AssignmentCard } from '@/components/ui/AssignmentCard';
 import { Badge } from '@/components/ui/Badge';
-import './ActivityCard.css';
 
 type ActivityCardStatus = 'pendiente' | 'en_proceso' | 'completada';
 
@@ -21,22 +19,10 @@ export interface ActivityCardProps {
   onClick: () => void;
 }
 
-const STATUS_LABEL: Record<ActivityCardStatus, string> = {
-  pendiente: 'Pendiente',
-  en_proceso: 'En proceso',
-  completada: 'Completada',
-};
-
-const STATUS_ICONS: Record<ActivityCardStatus, LucideIcon> = {
-  pendiente: Clock3,
-  en_proceso: CircleGauge,
-  completada: BadgeCheck,
-};
-
-const BADGE_STATE: Record<ActivityCardStatus, string> = {
-  pendiente: 'pending',
-  en_proceso: 'in_progress',
-  completada: 'completed',
+const STATUS_LABEL: Record<ActivityCardStatus, { es: string; en: string; state: string }> = {
+  pendiente: { es: 'Pendiente', en: 'Pending', state: 'pending' },
+  en_proceso: { es: 'En proceso', en: 'In progress', state: 'in_progress' },
+  completada: { es: 'Completada', en: 'Completed', state: 'completed' },
 };
 
 export function ActivityCard({
@@ -44,59 +30,26 @@ export function ActivityCard({
   description,
   status,
   assignee,
-  referenceImage,
   isNew = false,
   currentUserId,
   onClick,
 }: ActivityCardProps) {
   const { language } = useLanguage();
-  const en = language === 'en';
-  const normalizedDescription = description?.trim();
-  const StatusIcon = STATUS_ICONS[status];
+  const statusCopy = STATUS_LABEL[status];
 
   return (
-    <article
-      className="card activity-card"
-      role="listitem"
-      data-status={status}
-      data-has-image={Boolean(referenceImage)}
-    >
-      <button
-        type="button"
-        className="activity-card__open"
-        onClick={onClick}
-        aria-label={`${en ? 'View' : 'Consultar'} ${title}`}
-      />
-      {referenceImage && <img className="activity-card__cover" src={referenceImage} alt="" loading="lazy" />}
-      <div className="activity-card__content">
-        <header className="activity-card__header">
-          <div className="activity-card__heading">
-            <div className="activity-card__title-row">
-              <div className="activity-card__meta-row">
-                <div className="activity-card__badges">
-                  {isNew && (
-                    <Badge size="compact" className="activity-card__new" data-state="new">
-                      {en ? 'New' : 'Nueva'}
-                    </Badge>
-                  )}
-                  <Badge size="compact" className="activity-card__status" data-state={BADGE_STATE[status]}>
-                    <StatusIcon size="var(--icon-size-sm)" aria-hidden="true" />
-                    {en
-                      ? { pendiente: 'Pending', en_proceso: 'In progress', completada: 'Completed' }[status]
-                      : STATUS_LABEL[status]}
-                  </Badge>
-                </div>
-                <AssignmentMeta assignee={assignee} currentUserId={currentUserId} appearance="compact" />
-              </div>
-              <h3 className="activity-card__title">{title}</h3>
-            </div>
-          </div>
-        </header>
-
-        <p className={`activity-card__description${normalizedDescription ? '' : ' activity-card__description--muted'}`}>
-          {normalizedDescription || (en ? 'No description' : 'Sin descripción')}
-        </p>
-      </div>
-    </article>
+    <AssignmentCard
+      title={title}
+      summary={description?.trim() || undefined}
+      assignee={assignee}
+      currentUserId={currentUserId}
+      isNew={isNew}
+      status={
+        <Badge size="compact" data-state={statusCopy.state}>
+          {statusCopy[language]}
+        </Badge>
+      }
+      onOpen={onClick}
+    />
   );
 }

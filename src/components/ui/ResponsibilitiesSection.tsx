@@ -1,10 +1,10 @@
-import { ListRestart, Plus } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
-import type { Activity } from "@/lib/types";
-import { Pagination } from "@/components/ui/Pagination";
-import { ResponsabilidadCard } from "@/components/ui/ResponsabilidadCard";
-import { getResponsibilityContent } from "@/components/ui/responsibilityContent";
-import "./ResponsibilitiesSection.css";
+import { ListRestart, Plus } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
+import type { Activity } from '@/lib/types';
+import { Pagination } from '@/components/ui/Pagination';
+import { ResponsabilidadCard } from '@/components/ui/ResponsabilidadCard';
+import { getResponsibilityContent } from '@/components/ui/responsibilityContent';
+import './ResponsibilitiesSection.css';
 
 interface ResponsibilitiesPagination {
   currentPage: number;
@@ -43,30 +43,30 @@ export interface ResponsibilitiesSectionProps {
 }
 
 const RESPONSIBILITIES_COPY: AssignmentSectionCopy = {
-  headingId: "responsibilities-heading",
-  panelId: "responsabilidades-panel",
-  title: "Responsabilidades",
-  singular: "responsabilidad",
-  plural: "responsabilidades",
-  description: "De manera recurrente, sin seguimiento de evidencias.",
-  emptyTitle: "Sin responsabilidades",
+  headingId: 'responsibilities-heading',
+  panelId: 'responsabilidades-panel',
+  title: 'Responsabilidades',
+  singular: 'responsabilidad',
+  plural: 'responsabilidades',
+  description: 'De manera recurrente, sin seguimiento de evidencias.',
+  emptyTitle: 'Sin responsabilidades',
   adminEmptyDescription: 'Crea una actividad tipo "Responsabilidad" para asignarla.',
-  assigneeEmptyDescription: "Aún no tienes responsabilidades asignadas.",
-  listLabel: "Responsabilidades",
-  paginationLabel: "Paginación de responsabilidades",
+  assigneeEmptyDescription: 'Aún no tienes responsabilidades asignadas.',
+  listLabel: 'Responsabilidades',
+  paginationLabel: 'Paginación de responsabilidades',
 };
 
 const RESPONSIBILITIES_COPY_EN: AssignmentSectionCopy = {
   ...RESPONSIBILITIES_COPY,
-  title: "Responsibilities",
-  singular: "responsibility",
-  plural: "responsibilities",
-  description: "Recurring work without evidence tracking.",
-  emptyTitle: "No responsibilities",
+  title: 'Responsibilities',
+  singular: 'responsibility',
+  plural: 'responsibilities',
+  description: 'Recurring work without evidence tracking.',
+  emptyTitle: 'No responsibilities',
   adminEmptyDescription: 'Create a "Responsibility" activity to assign it.',
-  assigneeEmptyDescription: "You have no assigned responsibilities yet.",
-  listLabel: "Responsibilities",
-  paginationLabel: "Responsibility pages",
+  assigneeEmptyDescription: 'You have no assigned responsibilities yet.',
+  listLabel: 'Responsibilities',
+  paginationLabel: 'Responsibility pages',
 };
 
 interface ActivityWithAssignee extends Activity {
@@ -88,33 +88,29 @@ export function ResponsibilitiesSection({
   copy: suppliedCopy,
 }: ResponsibilitiesSectionProps) {
   const { language } = useLanguage();
-  const copy = suppliedCopy ?? (language === "en" ? RESPONSIBILITIES_COPY_EN : RESPONSIBILITIES_COPY);
+  const copy = suppliedCopy ?? (language === 'en' ? RESPONSIBILITIES_COPY_EN : RESPONSIBILITIES_COPY);
 
   return (
-    <section
-      className="responsibilities-section"
-      aria-labelledby={copy.headingId}
-    >
+    <section className="responsibilities-section" aria-labelledby={copy.headingId}>
       <header className="responsibilities-section__header">
-        <h2
-          id={copy.headingId}
-          className="responsibilities-section__title"
-        >
-          {copy.title}
-        </h2>
+        <div className="responsibilities-section__heading">
+          <h2 id={copy.headingId} className="responsibilities-section__title">
+            {copy.title}
+          </h2>
+          <p className="responsibilities-section__subtitle type-body-sm text-muted">
+            {language === 'en' ? 'Recurring' : 'Recurrentes'}
+          </p>
+        </div>
 
         {isAdmin && (
           <button type="button" className="btn-primary btn-sm activities-create-action" onClick={onCreate}>
             <Plus size="var(--icon-size-sm)" aria-hidden="true" />
-            <span>{language === "en" ? "Create" : "Crear"}</span>
+            <span>{language === 'en' ? 'Create' : 'Crear'}</span>
           </button>
         )}
       </header>
 
-      <div
-        id={copy.panelId}
-        className="responsibilities-section__panel"
-      >
+      <div id={copy.panelId} className="responsibilities-section__panel">
         {responsibilities.length === 0 ? (
           <div className="responsibilities-section__empty">
             <ListRestart
@@ -122,32 +118,22 @@ export function ResponsibilitiesSection({
               className="responsibilities-section__empty-icon"
               aria-hidden="true"
             />
-            <p className="responsibilities-section__empty-title">
-              {copy.emptyTitle}
-            </p>
+            <p className="responsibilities-section__empty-title">{copy.emptyTitle}</p>
             <p className="responsibilities-section__empty-description">
-              {isAdmin
-                ? copy.adminEmptyDescription
-                : copy.assigneeEmptyDescription}
+              {isAdmin ? copy.adminEmptyDescription : copy.assigneeEmptyDescription}
             </p>
           </div>
         ) : (
           <div className="assignment-results">
-            <div
-              className="responsibilities-section__grid"
-              role="list"
-              aria-label={copy.listLabel}
-            >
+            <ul className="responsibilities-section__grid" aria-label={copy.listLabel}>
               {pageItems.map((activity) => {
                 const content = getResponsibilityContent(activity);
                 const activityWithAssignee = activity as ActivityWithAssignee;
                 const assignee = activity.asignado_a
                   ? {
                       id: activity.asignado_a,
-                      display_name:
-                        activityWithAssignee.asignado_a_profile?.display_name,
-                      username:
-                        activityWithAssignee.asignado_a_profile?.username,
+                      display_name: activityWithAssignee.asignado_a_profile?.display_name,
+                      username: activityWithAssignee.asignado_a_profile?.username,
                     }
                   : undefined;
 
@@ -164,7 +150,7 @@ export function ResponsibilitiesSection({
                   />
                 );
               })}
-            </div>
+            </ul>
 
             <Pagination
               currentPage={pagination.currentPage}
