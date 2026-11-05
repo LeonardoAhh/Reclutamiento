@@ -37,7 +37,7 @@
 .rh__label {
   margin: 0;
   font-size: var(--type-caption-up-size);
-  font-weight: 500;
+  font-weight: var(--type-body-sm-strong-weight);
   letter-spacing: var(--type-caption-up-tracking);
   text-transform: uppercase;
   color: var(--color-muted);
@@ -57,8 +57,8 @@
 .rh__welcome {
   margin: 0;
   font-size: var(--type-display-xl-size);
-  font-weight: 700;
-  line-height: 1.05;
+  font-weight: var(--type-display-xl-weight);
+  line-height: var(--type-display-xl-line);
   letter-spacing: -0.02em;
   color: var(--color-ink);
 }
@@ -66,9 +66,9 @@
 .rh__name {
   display: inline-block;
   border: 1.5px solid var(--color-ink);
-  border-radius: 4px;
+  border-radius: var(--rounded-xs);
   padding: 0 10px;
-  font-weight: 400;
+  font-weight: var(--type-body-md-weight);
   vertical-align: middle;
   position: relative;
   top: -3px;
@@ -114,10 +114,10 @@
 
 .rh__num {
   font-size: var(--type-caption-up-size);
-  font-weight: 500;
+  font-weight: var(--type-body-sm-strong-weight);
   letter-spacing: var(--type-caption-up-tracking);
   color: var(--color-muted);
-  line-height: 1;
+  line-height: var(--type-caption-up-line);
 }
 
 .rh__icon-ring {
@@ -173,7 +173,7 @@
   flex: 1;
   height: 1px;
   background: var(--color-hairline);
-  border-radius: 1px;
+  border-radius: var(--border-width);
   overflow: hidden;
 }
 
@@ -181,7 +181,7 @@
   height: 100%;
   width: 100%;
   background: var(--color-ink);
-  border-radius: 1px;
+  border-radius: var(--border-width);
   transform: scaleX(0);
   transform-origin: left;
   animation: rh-fill-in 0.6s 1.4s ease forwards;
@@ -195,7 +195,7 @@
 
 .rh__progress-label {
   font-size: var(--type-caption-up-size);
-  font-weight: 500;
+  font-weight: var(--type-body-sm-strong-weight);
   letter-spacing: var(--type-caption-up-tracking);
   text-transform: uppercase;
   color: var(--color-muted);
@@ -217,8 +217,8 @@
   }
 
   .rh__icon-ring {
-    width: 38px;
-    height: 38px;
+    width: var(--icon-size-xxl);
+    height: var(--icon-size-xxl);
   }
 
 }

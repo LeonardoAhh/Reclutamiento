@@ -126,7 +126,7 @@
   color: var(--color-ink);
   font-family: var(--font-body);
   font-size: max(var(--type-body-md-size), var(--editable-text-min-size, var(--type-body-md-size)));
-  line-height: 1.4;
+  line-height: var(--type-body-md-line);
   transition: border-color var(--transition-fast),
     background var(--transition-fast), box-shadow var(--transition-fast);
 }
@@ -311,7 +311,7 @@
   gap: var(--spacing-sm);
   font-family: var(--font-display);
   font-size: var(--type-body-md-size, 14px);
-  font-weight: 600;
+  font-weight: var(--type-body-strong-weight);
   color: var(--color-ink);
   word-break: break-all;
 }

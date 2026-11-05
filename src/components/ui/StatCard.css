@@ -28,7 +28,7 @@
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-body-sm-weight);
   color: var(--color-body);
-  line-height: 1.3;
+  line-height: var(--type-body-sm-line);
 }
 
 .stat-card--dark .stat-card__label {

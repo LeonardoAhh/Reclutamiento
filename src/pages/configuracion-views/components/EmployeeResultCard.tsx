@@ -92,12 +92,12 @@ export function EmployeeResultCard({
         <div className="config-card__avatar" aria-hidden="true">
           <MorphingIcon icon={IdCard} size="var(--icon-size-control)" aria-hidden="true" />
         </div>
-        <h3
+        <h2
           id={employeeTitleId}
           className="config-card__employee-title type-body-strong text-muted"
         >
           {copy.number} {employeeNumber}
-        </h3>
+        </h2>
         {(employee.isBaja || employee.is_starlite || faltaBadge !== null) && (
           <span className="config-card__header-badges">
             {employee.isBaja && <Badge variant="error-solid">{copy.leaver}</Badge>}
@@ -115,12 +115,12 @@ export function EmployeeResultCard({
           aria-labelledby={`details-${resultId}`}
         >
           <div className="config-card__details-heading">
-            <h4
+            <h3
               id={`details-${resultId}`}
               className={`config-card__section-title type-body-strong text-muted${isCompactPreview ? ' sr-only' : ''}`}
             >
               {copy.laborInformation}
-            </h4>
+            </h3>
             {!isCompact && (
               <button
                 type="button"

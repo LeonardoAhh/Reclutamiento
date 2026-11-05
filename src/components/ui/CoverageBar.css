@@ -9,7 +9,7 @@
 
 .coverage-bar__label {
   font-size: var(--type-caption-md-size);
-  font-weight: 600;
+  font-weight: var(--type-body-strong-weight);
   font-family: var(--font-body);
   min-width: 42px;
   text-align: right;

@@ -546,8 +546,8 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 40px;
-  height: 40px;
+  width: var(--icon-size-xxl);
+  height: var(--icon-size-xxl);
   border-radius: var(--rounded-md);
   background: var(--color-primary-tint);
   color: var(--color-primary-text);

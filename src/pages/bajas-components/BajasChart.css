@@ -74,7 +74,7 @@
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  gap: 3px;
+  gap: var(--design-spacing-xxs);
   min-height: 0;
 }
 
@@ -87,7 +87,7 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding-top: 2px;
+  padding-top: var(--design-spacing-xxs);
   min-height: 2px;
 }
 
@@ -107,7 +107,7 @@
   position: absolute;
   top: -18px;
   font-size: var(--type-caption-sm-size, 11px);
-  font-weight: 600;
+  font-weight: var(--type-body-strong-weight);
   color: var(--color-body);
   white-space: nowrap;
 }
@@ -124,7 +124,7 @@
 .bajas-chart__x-label {
   font-size: var(--type-caption-md-size);
   color: var(--color-muted);
-  font-weight: 500;
+  font-weight: var(--type-body-sm-strong-weight);
 }
 
 @media (max-width: 768px) {

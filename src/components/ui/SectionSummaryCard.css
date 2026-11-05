@@ -131,7 +131,7 @@ button.section-summary-card:hover {
   align-items: center;
   gap: var(--design-spacing-xxs);
   padding: 0 var(--spacing-xs);
-  height: 26px;
+  min-height: var(--icon-size-lg);
   border-radius: var(--rounded-xs);
   font-size: var(--type-body-strong-size);
   font-weight: var(--type-body-strong-weight);

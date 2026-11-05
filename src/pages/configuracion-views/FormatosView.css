@@ -863,7 +863,7 @@
   .weekly-doc__body-copy p,
   .weekly-doc__contract-statement {
     font-size: var(--type-caption-up-size);
-    line-height: 1.35;
+    line-height: var(--type-body-md-line);
   }
 
   .weekly-doc__acknowledgement {
@@ -877,7 +877,7 @@
     height: 7mm;
     padding: 1.2mm;
     font-size: calc(var(--type-caption-up-size) * 0.72);
-    line-height: 1.15;
+    line-height: var(--type-caption-up-line);
   }
 
   .weekly-doc__page--credential-continuation .weekly-doc__table {
@@ -908,7 +908,7 @@
   .weekly-doc__company-copy {
     gap: 2mm;
     font-size: var(--type-caption-up-size);
-    line-height: 1.25;
+    line-height: var(--type-caption-up-line);
   }
 
   .weekly-doc__contract-statement {

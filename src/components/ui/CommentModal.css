@@ -53,7 +53,7 @@
 .comment-item__text {
   font-size: var(--type-caption-md-size);
   color: var(--color-body);
-  line-height: 1.5;
+  line-height: var(--type-body-md-line);
   word-break: break-word;
 }
 

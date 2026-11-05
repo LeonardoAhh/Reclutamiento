@@ -15,7 +15,7 @@
   justify-content: space-between;
   gap: var(--spacing-md);
   margin-bottom: var(--spacing-md);
-  min-height: 32px;
+  min-height: var(--design-spacing-xl);
   flex-wrap: wrap;
 }
 

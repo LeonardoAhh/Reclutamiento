@@ -12,7 +12,7 @@
   align-items: center;
   gap: var(--design-spacing-xxs);
   font-size: var(--type-caption-md-size);
-  font-weight: 500;
+  font-weight: var(--type-body-sm-strong-weight);
   padding: var(--design-spacing-xxs) var(--spacing-md);
   border-radius: var(--rounded-pill);
 }

@@ -67,8 +67,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 22px;
-  height: 22px;
+  min-width: var(--icon-size-lg);
+  min-height: var(--icon-size-lg);
   padding: 0 var(--spacing-xs);
   border-radius: var(--rounded-xs);
   background: var(--color-surface-soft);
@@ -76,7 +76,7 @@
   font-size: var(--type-caption-sm-size);
   font-weight: var(--type-body-strong-weight);
   color: var(--color-muted);
-  line-height: 1;
+  line-height: var(--type-caption-sm-line);
 }
 
 .ras__header-actions {

@@ -33,7 +33,7 @@
 
 .purge-employees-modal__warning-title {
   margin: 0 0 var(--design-spacing-xxs);
-  font-weight: 600;
+  font-weight: var(--type-body-strong-weight);
 }
 
 .purge-employees-modal__warning-sub {
@@ -50,8 +50,8 @@
   background: var(--color-surface);
   border: var(--border-width) solid var(--color-hairline);
   padding: 1px 6px;
-  border-radius: 4px;
-  font-size: 0.9em;
+  border-radius: var(--rounded-xs);
+  font-size: var(--type-caption-sm-size);
 }
 
 /* ── Pasos forzados ────────────────────────────────────────── */
@@ -100,11 +100,11 @@
   justify-content: center;
   width: var(--icon-size-lg);
   height: var(--icon-size-lg);
-  border-radius: 50%;
+  border-radius: var(--rounded-xs);
   background: var(--color-surface);
   border: var(--border-width) solid var(--color-hairline);
   font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: var(--type-body-strong-weight);
   font-size: var(--type-caption-sm-size);
   color: var(--color-ink);
   flex-shrink: 0;
@@ -117,7 +117,7 @@
 }
 
 .purge-employees-modal__step-title {
-  font-weight: 600;
+  font-weight: var(--type-body-strong-weight);
   color: var(--color-ink);
 }
 
@@ -182,7 +182,7 @@
   border: 1px solid var(--color-danger);
   background: var(--color-danger);
   color: var(--color-on-error);
-  font-weight: 600;
+  font-weight: var(--type-body-strong-weight);
   cursor: pointer;
   transition: background var(--transition-base), opacity var(--transition-base);
 }

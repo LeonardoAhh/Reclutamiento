@@ -10,7 +10,7 @@
 .turnos-updater__preview-modal {
   position: fixed;
   inset: 0;
-  z-index: 9999;
+  z-index: var(--layer-modal);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -104,7 +104,7 @@
 }
 
 .turnos-updater__turno-new {
-  font-weight: 600;
+  font-weight: var(--type-body-strong-weight);
   color: var(--color-primary-text) !important;
 }
 
