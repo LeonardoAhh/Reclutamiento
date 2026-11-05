@@ -15,8 +15,8 @@
 .product-tour__spotlight {
   position: fixed;
   z-index: var(--layer-tooltip);
-  outline: var(--border-width) solid var(--color-primary-border);
-  outline-offset: var(--design-spacing-xxs);
+  box-sizing: border-box;
+  border: var(--focus-ring-width) solid var(--color-focus);
   pointer-events: none;
 }
 

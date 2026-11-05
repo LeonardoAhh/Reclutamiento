@@ -5,7 +5,50 @@ export interface TargetBounds {
   left: number;
   width: number;
   height: number;
-  radius: number;
+  cornerRadii: {
+    topLeft: number;
+    topRight: number;
+    bottomRight: number;
+    bottomLeft: number;
+  };
+  spotlightPadding: number;
+}
+
+let cachedGeometryTokens: {
+  key: string;
+  spotlightPadding: number;
+  controlRadius: number;
+} | null = null;
+
+function getTourGeometryTokens() {
+  const rootStyles = getComputedStyle(document.documentElement);
+  const key = [
+    rootStyles.fontSize,
+    rootStyles.getPropertyValue('--design-spacing-xxs'),
+    rootStyles.getPropertyValue('--radius-control'),
+  ].join('|');
+  if (cachedGeometryTokens?.key === key) return cachedGeometryTokens;
+
+  const probe = document.createElement('span');
+  probe.style.cssText = [
+    'display:block',
+    'position:fixed',
+    'visibility:hidden',
+    'pointer-events:none',
+    'inline-size:var(--design-spacing-xxs)',
+    'block-size:var(--design-spacing-xxs)',
+    'border-radius:var(--radius-control)',
+  ].join(';');
+  document.body.append(probe);
+  const probeStyles = getComputedStyle(probe);
+  const geometryTokens = {
+    key,
+    spotlightPadding: probe.getBoundingClientRect().width,
+    controlRadius: Number.parseFloat(probeStyles.borderTopLeftRadius),
+  };
+  probe.remove();
+  cachedGeometryTokens = geometryTokens;
+  return geometryTokens;
 }
 
 export function waitForTarget(selector: string, signal: AbortSignal): Promise<HTMLElement | null> {
@@ -41,9 +84,27 @@ export function measureTourTarget(target: HTMLElement | null): TargetBounds | nu
   if (!target) return null;
   const rect = target.getBoundingClientRect();
   const styles = getComputedStyle(target);
-  const targetRadius = Number.parseFloat(styles.borderTopLeftRadius);
-  const controlRadius = Number.parseFloat(styles.getPropertyValue('--radius-control'));
-  const radius = Number.isFinite(targetRadius) && targetRadius > 0 ? targetRadius : controlRadius;
+  const geometryTokens = getTourGeometryTokens();
+  const cornerRadii = {
+    topLeft: Number.parseFloat(styles.borderTopLeftRadius),
+    topRight: Number.parseFloat(styles.borderTopRightRadius),
+    bottomRight: Number.parseFloat(styles.borderBottomRightRadius),
+    bottomLeft: Number.parseFloat(styles.borderBottomLeftRadius),
+  };
+  const hasCornerRadius = Object.values(cornerRadii).some((radius) => radius > 0);
+  const resolveRadius = (radius: number) => {
+    const resolvedRadius = hasCornerRadius ? radius : geometryTokens.controlRadius;
+    return Number.isFinite(resolvedRadius)
+      ? Math.min(resolvedRadius, rect.width / 2, rect.height / 2)
+      : 0;
+  };
+  const resolvedCornerRadii = {
+    topLeft: resolveRadius(cornerRadii.topLeft),
+    topRight: resolveRadius(cornerRadii.topRight),
+    bottomRight: resolveRadius(cornerRadii.bottomRight),
+    bottomLeft: resolveRadius(cornerRadii.bottomLeft),
+  };
+
   return {
     top: rect.top,
     right: rect.right,
@@ -51,6 +112,7 @@ export function measureTourTarget(target: HTMLElement | null): TargetBounds | nu
     left: rect.left,
     width: rect.width,
     height: rect.height,
-    radius: Number.isFinite(radius) ? Math.min(radius, rect.width / 2, rect.height / 2) : 0,
+    cornerRadii: resolvedCornerRadii,
+    spotlightPadding: geometryTokens.spotlightPadding,
   };
 }
