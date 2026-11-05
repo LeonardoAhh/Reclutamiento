@@ -8,7 +8,7 @@ import { ACTIVIDADES_PATH } from "./navigation";
 
 const SESSION_NOTICE_ID = "pending-activities";
 
-export function SessionNotice() {
+export function SessionNotice({ onInitialNoticeResolved }: { onInitialNoticeResolved: () => void }) {
   const { profile } = useAuth();
   const { language } = useLanguage();
   const { pathname } = useLocation();
@@ -21,6 +21,7 @@ export function SessionNotice() {
       setTaskCount(0);
       toast.dismiss(SESSION_NOTICE_ID);
       sessionStorage.setItem("notified_activities", "true");
+      onInitialNoticeResolved();
       return;
     }
 
@@ -44,17 +45,29 @@ export function SessionNotice() {
           query = query.or(`asignado_a.eq.${profile.id},asignado_a.is.null`);
         }
 
-        const { count } = await query;
+        const { count, error } = await query;
         if (!active) return;
 
+        if (error) {
+          console.error(error);
+          onInitialNoticeResolved();
+          return;
+        }
         if (count && count > 0) {
           setTaskCount(count);
         } else {
           sessionStorage.setItem("notified_activities", "true");
+          onInitialNoticeResolved();
         }
       };
 
-      checkTasks();
+      void checkTasks().catch((error: unknown) => {
+        if (!active) return;
+        console.error(error);
+        onInitialNoticeResolved();
+      });
+    } else {
+      onInitialNoticeResolved();
     }
 
     // 2. Soporte en tiempo real para nuevas asignaciones
@@ -88,7 +101,7 @@ export function SessionNotice() {
       active = false;
       supabase.removeChannel(channel);
     };
-  }, [profile, viewingActivities]);
+  }, [onInitialNoticeResolved, profile, viewingActivities]);
 
   useEffect(() => {
     if (viewingActivities || taskCount <= 0) return;
@@ -100,7 +113,8 @@ export function SessionNotice() {
         : `${taskCount} ${taskCount === 1 ? 'actividad pendiente' : 'actividades pendientes'}`,
     });
     sessionStorage.setItem("notified_activities", "true");
-  }, [taskCount, viewingActivities, language]);
+    onInitialNoticeResolved();
+  }, [onInitialNoticeResolved, taskCount, viewingActivities, language]);
 
   return null;
 }

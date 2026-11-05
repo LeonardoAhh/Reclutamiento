@@ -26,6 +26,8 @@ import { CANDIDATE_METRICS_PATH } from '@/pages/candidate-metrics/navigation';
 import { bindSoundInteractions } from '@/lib/sound';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSidebarCollapsed } from './useSidebarCollapsed';
+import { ProductTour } from '@/components/ui/ProductTour';
+import { useProductTourController } from '@/features/onboarding/useProductTourController';
 import './AppShell.css';
 
 const PAGE_TITLES: Readonly<Record<string, string>> = {
@@ -41,9 +43,11 @@ const PAGE_TITLES: Readonly<Record<string, string>> = {
  *  - Desktop (>=1080px): Sidebar fijo y header dentro del workspace.
  *  - Tablet/movil (<1080px): Header superior + Sidebar deslizable.
  */
-export function AppShell({ children }: { children: ReactNode }) {
+export function AppShell(props: { children: ReactNode; startupOverlaysReady?: boolean }) {
+  const { children, startupOverlaysReady = true } = props;
   const { language } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [sessionNoticeReady, setSessionNoticeReady] = useState(false);
   const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
   const appShellRef = useRef<HTMLDivElement>(null);
   const sidebarRef = useRef<HTMLElement>(null);
@@ -63,6 +67,8 @@ export function AppShell({ children }: { children: ReactNode }) {
   const isMobileMenuOpen = mobileMenuOpen && !isDesktop;
   const location = useLocation();
 
+  const resolveSessionNotice = useCallback(() => setSessionNoticeReady(true), []);
+
   const setDrawerProgress = useCallback((progress: number, measuredSidebarWidth?: number) => {
     const shell = appShellRef.current;
     const sidebar = sidebarRef.current;
@@ -79,6 +85,19 @@ export function AppShell({ children }: { children: ReactNode }) {
     shell.style.setProperty('--sidebar-offset', `${width * nextProgress}px`);
     shell.style.setProperty('--sidebar-corner-radius', `${workspaceRadiusRef.current * nextProgress}px`);
   }, []);
+  const {
+    profile,
+    accountMenuOpen,
+    tourReplayRequest,
+    tourStepIndex,
+    setTourStepIndex,
+    handleAccountMenuOpenChange,
+    replayProductTour,
+    openAccountMenuForTour,
+    closeAccountMenuForTour,
+    navigateToAccountForTour,
+    prepareAccountTourTarget,
+  } = useProductTourController({ isDesktop, setDrawerProgress, setMobileMenuOpen });
 
   const pageTitle = useMemo(() => {
     if (location.pathname === getConfiguracionHref('analisis')) {
@@ -234,7 +253,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       onPointerUp={finishPointerGesture}
       onPointerCancel={(event) => finishPointerGesture(event, true)}
     >
-      <SessionNotice />
+      <SessionNotice onInitialNoticeResolved={resolveSessionNotice} />
       <Sidebar
         mobileMenuOpen={isMobileMenuOpen}
         onCloseMobileMenu={closeMobileMenu}
@@ -243,6 +262,10 @@ export function AppShell({ children }: { children: ReactNode }) {
         isDesktop={isDesktop}
         sidebarRef={sidebarRef}
         onRestoreMobileFocus={restoreMobileMenuFocus}
+        accountMenuOpen={accountMenuOpen}
+        onAccountMenuOpenChange={handleAccountMenuOpenChange}
+        onReplayTour={replayProductTour}
+        tourActive={tourStepIndex !== null}
       />
       {isMobileMenuOpen && (
         <button
@@ -271,6 +294,19 @@ export function AppShell({ children }: { children: ReactNode }) {
           </RouteErrorBoundary>
         </div>
       </div>
+      {profile && (
+        <ProductTour
+          profileId={profile.id}
+          showRecognition={profile.role === 'reclutador'}
+          startupOverlaysReady={startupOverlaysReady && sessionNoticeReady}
+          replayRequest={tourReplayRequest}
+          onStepChange={setTourStepIndex}
+          onOpenAccountMenu={openAccountMenuForTour}
+          onCloseAccountMenu={closeAccountMenuForTour}
+          onPrepareAccountTarget={prepareAccountTourTarget}
+          onNavigateToAccount={navigateToAccountForTour}
+        />
+      )}
     </div>
   );
 }

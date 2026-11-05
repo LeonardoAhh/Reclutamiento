@@ -117,11 +117,7 @@ export function MissingPositionsPage({ onBack, coverage }: MissingPositionsPageP
           <p className="missing-positions-page__empty">{t('Excelente, no hay puestos con falta de cobertura.')}</p>
         ) : (
           <section className="missing-positions-page__section">
-            <section
-              className="missing-positions-page__table-container"
-              tabIndex={0}
-              aria-label={t('Tabla de puestos faltantes')}
-            >
+            <section className="missing-positions-page__table-container" aria-label={t('Tabla de puestos faltantes')}>
               <table className="missing-positions-page__table data-table data-table--cards">
                 <caption className="sr-only">{t('Tabla de puestos faltantes')}</caption>
                 <colgroup>
@@ -150,7 +146,11 @@ export function MissingPositionsPage({ onBack, coverage }: MissingPositionsPageP
                     >
                       <Tooltip content={t('Starlite')}>
                         <div className="missing-positions-page__starlite-label">
-                          <Star size={12} className="missing-positions-page__starlite-icon" aria-hidden="true" />
+                          <Star
+                            size="var(--icon-size-xs)"
+                            className="missing-positions-page__starlite-icon"
+                            aria-hidden="true"
+                          />
                           Starlite
                         </div>
                       </Tooltip>
@@ -168,16 +168,7 @@ export function MissingPositionsPage({ onBack, coverage }: MissingPositionsPageP
                     const isDismissed = dismissedKeys.has(rowKey);
 
                     return (
-                      <tr
-                        key={rowKey}
-                        className={isDismissed ? 'is-dismissed' : ''}
-                        onClick={() => toggleDismiss(rowKey)}
-                        title={
-                          isDismissed
-                            ? t('Click para incluir de nuevo en el conteo')
-                            : t('Click para excluir del conteo')
-                        }
-                      >
+                      <tr key={rowKey} className={isDismissed ? 'is-dismissed' : ''}>
                         <td>
                           <button
                             type="button"

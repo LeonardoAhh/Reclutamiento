@@ -37,6 +37,9 @@
   display: grid;
   gap: var(--design-spacing-sm);
   min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .future-hires-modal__card {
@@ -114,7 +117,7 @@
   gap: var(--design-spacing-xs);
 }
 
-@media (max-width: 600px) {
+@media (width < 768px) {
   .future-hires-modal__action {
     width: 100%;
   }

@@ -1,4 +1,4 @@
-import { Activity, CircleCheckBig } from 'lucide-react';
+import { Activity } from 'lucide-react';
 import { Modal } from './Modal';
 import { FormSheet } from './FormSheet';
 import { ExpandableSection } from './ExpandableSection';
@@ -64,11 +64,7 @@ export function CandidatesInProcessModal({
             <div className="candidates-in-process-modal__puesto-header">
               <span className="candidates-in-process-modal__puesto-name">
                 {g.puesto}
-                {g.isStarlite && (
-                  <span style={{ marginLeft: '6px', verticalAlign: 'middle' }}>
-                    <StarliteBadge compact />
-                  </span>
-                )}
+                {g.isStarlite && <StarliteBadge compact />}
               </span>
             </div>
             <div className="candidates-in-process-modal__puesto-badges">
@@ -97,7 +93,7 @@ export function CandidatesInProcessModal({
       isOpen={isOpen}
       onClose={onClose}
       className="candidates-in-process-modal"
-      icon={<Activity size={20} aria-hidden="true" />}
+      icon={<Activity size="var(--icon-size-md)" aria-hidden="true" />}
       title={t("Procesos por cerrar")}
       size="sm"
     >

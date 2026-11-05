@@ -16,7 +16,7 @@
   padding-inline: max(var(--design-spacing-sm), var(--safe-area-left))
     max(var(--design-spacing-sm), var(--safe-area-right));
   color: var(--color-navigation-rail-text);
-  background: var(--workspace-canvas);
+  background: var(--color-sidebar-surface, var(--workspace-canvas));
 }
 
 .sidebar__top {

@@ -230,7 +230,6 @@
 
 .public-careers__panel-card--accent {
   background: var(--color-link-soft);
-  border-color: rgba(0, 102, 204, 0.15);
 }
 
 .public-careers__panel-card svg {
@@ -568,10 +567,6 @@
   .public-careers__nav,
   .public-careers__actions {
     grid-column: 1;
-  }
-
-  .public-careers__nav,
-  .public-careers__actions {
     width: 100%;
   }
 

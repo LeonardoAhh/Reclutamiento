@@ -1,86 +1,125 @@
-import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
+import { useId, useRef, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import { ChevronRight, KeyRound } from 'lucide-react';
 import type { AccountCopy } from '@/pages/account-translations';
+import { AccountPaletteView } from './AccountPaletteView';
+import { AccountPreferencesSection } from './AccountPreferencesSection';
 import { PasswordChangeForm } from './PasswordChangeForm';
 
-/** Ajustes y contraseña comparten dos vistas con navegación lateral. */
-export function AccountPasswordSection({ copy, children, actionsTarget }: {
+export type AccountSettingsView = 'settings' | 'password' | 'palette';
+
+/** Ajustes, contraseña y paleta comparten navegación entre vistas. */
+export function AccountPasswordSection({
+  copy,
+  actionsTarget,
+  view,
+  onViewChange,
+}: {
   copy: AccountCopy;
-  children: ReactNode;
   actionsTarget: HTMLElement | null;
+  view: AccountSettingsView;
+  onViewChange: (view: AccountSettingsView) => void;
 }) {
   const id = useId();
   const panelId = `${id}-panel`;
-  const [open, setOpen] = useState(false);
+  const palettePanelId = `${id}-palette`;
   const [focusReady, setFocusReady] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
-  const restoreFocus = useRef(false);
+  const paletteTriggerRef = useRef<HTMLButtonElement>(null);
+  const restoreFocus = useRef<HTMLButtonElement | null>(null);
   const reduce = useReducedMotion();
 
   function completeTransition() {
-    if (open) setFocusReady(true);
+    if (view !== 'settings') setFocusReady(true);
     else if (restoreFocus.current) {
-      restoreFocus.current = false;
-      toggleRef.current?.focus({ preventScroll: true });
+      restoreFocus.current.focus({ preventScroll: true });
+      restoreFocus.current = null;
     }
   }
 
-  useEffect(() => {
-    if (reduce) completeTransition();
-  }, [open, reduce]);
+  const openDetail = (nextView: Exclude<AccountSettingsView, 'settings'>) => {
+    setFocusReady(Boolean(reduce));
+    onViewChange(nextView);
+  };
 
-  const toggle = (
-    <button
-      ref={toggleRef}
-      type="button"
-      className="account-setting-row"
-      data-cuelume-open=""
-      aria-expanded={open}
-      aria-controls={panelId}
-      onClick={() => { setFocusReady(false); setOpen(true); }}
-    >
-      <KeyRound size="var(--icon-size-sm)" aria-hidden="true" />
-      <span className="account-setting-row__label">{copy.password}</span>
-      <ChevronRight size="var(--icon-size-sm)" aria-hidden="true" />
-    </button>
-  );
+  const closeDetail = (trigger: HTMLButtonElement | null) => {
+    if (reduce) requestAnimationFrame(() => trigger?.focus({ preventScroll: true }));
+    else restoreFocus.current = trigger;
+    setFocusReady(false);
+    onViewChange('settings');
+  };
 
   return (
-    <div className="account-password t-page-slide" data-page={open ? '2' : '1'}>
+    <div
+      className="account-password t-page-slide"
+      data-page={view === 'settings' ? '1' : view === 'password' ? '2' : '3'}
+    >
       <div
         className="t-page account-password__settings"
         data-page-id="1"
-        inert={open}
-        aria-hidden={open}
+        inert={view !== 'settings'}
+        aria-hidden={view !== 'settings'}
         onTransitionEnd={(event) => {
-          if (!open && event.target === event.currentTarget && event.propertyName === 'opacity') completeTransition();
+          if (view === 'settings' && event.target === event.currentTarget && event.propertyName === 'opacity')
+            completeTransition();
         }}
       >
-        {toggle}
-        {children}
+        <button
+          ref={toggleRef}
+          type="button"
+          className="account-setting-row"
+          data-cuelume-open=""
+          aria-expanded={view === 'password'}
+          aria-controls={panelId}
+          onClick={() => openDetail('password')}
+        >
+          <KeyRound size="var(--icon-size-sm)" aria-hidden="true" />
+          <span className="account-setting-row__label">{copy.password}</span>
+          <ChevronRight size="var(--icon-size-sm)" aria-hidden="true" />
+        </button>
+        <AccountPreferencesSection
+          copy={copy}
+          paletteOpen={view === 'palette'}
+          palettePanelId={palettePanelId}
+          paletteTriggerRef={paletteTriggerRef}
+          onOpenPalette={() => openDetail('palette')}
+        />
       </div>
       <div
         id={panelId}
         className="t-page account-password__detail"
         data-page-id="2"
-        inert={!open}
-        aria-hidden={!open}
+        inert={view !== 'password'}
+        aria-hidden={view !== 'password'}
         onTransitionEnd={(event) => {
-          if (open && event.target === event.currentTarget && event.propertyName === 'opacity') completeTransition();
+          if (view === 'password' && event.target === event.currentTarget && event.propertyName === 'opacity')
+            completeTransition();
         }}
       >
-        <h3 className="account-setting-row__label">{copy.password}</h3>
         <PasswordChangeForm
-          actionsTarget={open ? actionsTarget : null}
-          focusOnMount={focusReady}
+          actionsTarget={view === 'password' ? actionsTarget : null}
+          focusOnMount={view === 'password' && focusReady}
           cancelLabel={copy.cancel}
           submitLabel={copy.changePassword}
-          onCancel={() => {
-            restoreFocus.current = true;
-            setFocusReady(false);
-            setOpen(false);
-          }}
+          onCancel={() => closeDetail(toggleRef.current)}
+        />
+      </div>
+      <div
+        id={palettePanelId}
+        className="t-page account-password__detail"
+        data-page-id="3"
+        inert={view !== 'palette'}
+        aria-hidden={view !== 'palette'}
+        onTransitionEnd={(event) => {
+          if (view === 'palette' && event.target === event.currentTarget && event.propertyName === 'opacity')
+            completeTransition();
+        }}
+      >
+        <AccountPaletteView
+          copy={copy}
+          actionsTarget={view === 'palette' ? actionsTarget : null}
+          focusReady={view === 'palette' && focusReady}
+          onBack={() => closeDetail(paletteTriggerRef.current)}
         />
       </div>
     </div>

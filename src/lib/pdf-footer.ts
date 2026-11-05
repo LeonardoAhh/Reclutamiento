@@ -26,6 +26,13 @@ export function addReportFooter(
     const margin = opts?.margin ?? 14
     const bottom = opts?.bottom ?? 8
     const fontSize = opts?.fontSize ?? 8
+    const documentStyles = window.getComputedStyle(document.documentElement)
+    const footerColor = documentStyles.getPropertyValue("--color-document-muted").trim()
+    const documentInk = documentStyles.getPropertyValue("--color-document-ink").trim()
+
+    if (!footerColor || !documentInk) {
+        throw new Error("Faltan tokens de color para el pie de página del PDF.")
+    }
 
     const docAny = doc as unknown as {
         internal: {
@@ -51,7 +58,7 @@ export function addReportFooter(
         doc.setPage(i)
         doc.setFont("helvetica", "normal")
         doc.setFontSize(fontSize)
-        doc.setTextColor(120, 120, 120)
+        doc.setTextColor(footerColor)
         doc.text(left, margin, pageHeight - bottom, { align: "left" })
         doc.text(right, pageWidth - margin, pageHeight - bottom, { align: "right" })
     }
@@ -59,5 +66,5 @@ export function addReportFooter(
     // Restore previous state.
     doc.setFont(prevFont.fontName || "helvetica", prevFont.fontStyle || "normal")
     doc.setFontSize(prevFontSize || 10)
-    doc.setTextColor(prevColor || "#000000")
+    doc.setTextColor(prevColor || documentInk)
 }

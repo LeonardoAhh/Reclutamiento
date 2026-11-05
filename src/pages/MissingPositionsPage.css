@@ -12,9 +12,10 @@
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-sm);
+  min-block-size: var(--touch-target-min);
   padding: 0;
   border: 0;
-  border-radius: var(--rounded-xs);
+  border-radius: var(--radius-control);
   background: transparent;
   color: inherit;
   font: inherit;
@@ -80,7 +81,7 @@
   padding: 0;
   margin: -1px;
   overflow: hidden;
-  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
   white-space: nowrap;
 }
 
@@ -94,26 +95,12 @@
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-lg);
   background: var(--color-surface-card);
-  cursor: pointer;
-  transition:
-    opacity var(--transition-fast),
-    filter var(--transition-fast);
-}
-
-.missing-positions-page__table tbody tr:hover td,
-.missing-positions-page__table tbody tr.is-dismissed td {
-  background: transparent;
+  cursor: default;
 }
 
 .missing-positions-page__table tbody tr.is-dismissed {
-  border-color: transparent;
-  opacity: 0.3;
-  filter: blur(1.5px);
-}
-
-.missing-positions-page__table tbody tr.is-dismissed:hover {
-  opacity: 0.45;
-  filter: blur(0.5px);
+  border-color: var(--color-hairline-strong);
+  background: var(--color-canvas-soft);
 }
 
 .missing-positions-page__table tbody td {
@@ -148,7 +135,7 @@
   text-align: center;
 }
 
-@media (max-width: 767px) {
+@media (width < 768px) {
   .missing-positions-page__table tbody td {
     padding: 0;
     border: 0;
@@ -189,6 +176,10 @@
   line-height: var(--type-body-strong-line);
   text-transform: uppercase;
   font-family: var(--font-body);
+}
+
+.missing-positions-page__row-toggle[aria-pressed='true'] .missing-positions-page__puesto-name {
+  text-decoration: line-through;
 }
 
 .missing-positions-page__puesto-section {
@@ -250,7 +241,7 @@
 }
 
 .missing-positions-page__starlite-icon {
-  fill: currentColor;
+  fill: currentcolor;
 }
 
 .missing-positions-page__starlite-label {
@@ -260,7 +251,7 @@
   gap: var(--design-spacing-xxs);
 }
 
-@media (min-width: 768px) {
+@media (width >= 768px) {
   .missing-positions-page__table-container {
     overflow-x: auto;
     border: var(--border-width) solid var(--color-hairline);
@@ -292,7 +283,7 @@
     block-size: auto;
     margin: 0;
     overflow: visible;
-    clip: auto;
+    clip-path: none;
     white-space: normal;
   }
 

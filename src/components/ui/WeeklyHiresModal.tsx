@@ -212,7 +212,7 @@ export function WeeklyHiresModal({
       isOpen={isOpen}
       onClose={onClose}
       className="weekly-hires-modal"
-      icon={<UsersRound size={20} aria-hidden="true" />}
+      icon={<UsersRound size="var(--icon-size-md)" aria-hidden="true" />}
       title={`${t('Ingresos')} · ${t('Semanas')} ${previousRange.week} ${en ? 'and' : 'y'} ${range.week}`}
       size="sm"
     >
@@ -269,11 +269,7 @@ export function WeeklyHiresModal({
                       <li key={`${g.puesto}-${g.isStarlite}-${idx}`} className="weekly-hires-modal__puesto-item">
                         <span className="weekly-hires-modal__puesto-name">
                           {g.puesto}
-                          {g.isStarlite && (
-                            <span style={{ marginLeft: '6px', verticalAlign: 'middle' }}>
-                              <StarliteBadge compact />
-                            </span>
-                          )}
+                          {g.isStarlite && <StarliteBadge compact />}
                         </span>
                         <span className="weekly-hires-modal__puesto-count">{g.count}</span>
                       </li>
@@ -311,11 +307,7 @@ export function WeeklyHiresModal({
                       <li key={`${g.puesto}-${g.isStarlite}-${idx}`} className="weekly-hires-modal__puesto-item">
                         <span className="weekly-hires-modal__puesto-name">
                           {g.puesto}
-                          {g.isStarlite && (
-                            <span style={{ marginLeft: '6px', verticalAlign: 'middle' }}>
-                              <StarliteBadge compact />
-                            </span>
-                          )}
+                          {g.isStarlite && <StarliteBadge compact />}
                         </span>
                         <span className="weekly-hires-modal__puesto-count">{g.count}</span>
                       </li>

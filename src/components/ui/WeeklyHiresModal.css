@@ -53,15 +53,15 @@
 }
 
 .weekly-hires-modal__big-number--bajas {
-  color: var(--color-error);
+  color: var(--color-error-text);
 }
 
 .weekly-hires-modal__big-number--positive {
-  color: var(--color-success);
+  color: var(--color-success-text);
 }
 
 .weekly-hires-modal__big-number--negative {
-  color: var(--color-error);
+  color: var(--color-error-text);
 }
 
 .weekly-hires-modal__big-label {
@@ -122,7 +122,7 @@
 }
 
 .weekly-hires-modal__week-stat-value--bajas {
-  color: var(--color-error);
+  color: var(--color-error-text);
 }
 
 /* ── Delta (cambio vs semana anterior) ── */
@@ -137,12 +137,12 @@
 }
 
 .weekly-hires-modal__delta--up {
-  color: var(--color-success);
+  color: var(--color-success-text);
   background: var(--color-success-tint);
 }
 
 .weekly-hires-modal__delta--down {
-  color: var(--color-error);
+  color: var(--color-error-text);
   background: var(--color-error-tint);
 }
 
@@ -177,7 +177,7 @@
   gap: var(--spacing-xs);
 }
 
-@media (min-width: 640px) {
+@media (width >= 768px) {
   .weekly-hires-modal__puesto-list {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -200,6 +200,10 @@
 }
 
 .weekly-hires-modal__puesto-name {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--design-spacing-xs);
   font-size: var(--type-body-strong-size);
   font-weight: var(--type-body-strong-weight);
   color: var(--color-ink);
@@ -381,12 +385,6 @@
   margin-bottom: var(--spacing-sm);
 }
 
-.weekly-hires-modal__future-hint {
-  font-size: var(--type-body-sm-size);
-  color: var(--color-muted);
-  margin: 0;
-}
-
 /* ── Future hires hint ── */
 .weekly-hires-modal__future-hint {
   margin: 0 0 var(--spacing-md);
@@ -403,7 +401,7 @@
 }
 
 /* ── Mobile adjustments ── */
-@media (max-width: 640px) {
+@media (width < 768px) {
   .weekly-hires-modal__summary {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--spacing-xs);
@@ -428,7 +426,6 @@
   .weekly-hires-modal__table-wrap {
     max-height: 300px;
   }
-
 }
 
 /* ── Scrollbar styling ── */

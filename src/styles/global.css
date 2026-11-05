@@ -5,22 +5,23 @@
    ======================================== */
 
 @font-face {
-  font-family: 'IBM Plex Sans';
+  font-family: 'Plus Jakarta Sans';
   font-style: normal;
-  font-weight: 100 700;
+  font-weight: 200 800;
   font-display: swap;
-  src: url('/fonts/ibm-plex-sans-variable-roman.woff2') format('woff2');
+  src: url('/fonts/plus-jakarta-sans-variable-roman.ttf') format('truetype');
 }
 
 @font-face {
-  font-family: 'IBM Plex Sans';
+  font-family: 'Plus Jakarta Sans';
   font-style: italic;
-  font-weight: 100 700;
+  font-weight: 200 800;
   font-display: swap;
-  src: url('/fonts/ibm-plex-sans-variable-italic.woff2') format('woff2');
+  src: url('/fonts/plus-jakarta-sans-variable-italic.ttf') format('truetype');
 }
 
-:root {
+:root,
+[data-palette-preview][data-color-palette] {
   /* ── Brand & Accent ───────────────────────────────────────────── */
   --color-primary: #2563eb;
   --color-primary-border: var(--color-primary-text);
@@ -92,8 +93,8 @@
   --color-muted-soft: var(--color-faint);
   --color-on-primary: #fff;
   --color-on-neutral: var(--color-on-primary);
-  --color-on-error: var(--color-on-primary);
-  --color-on-success: var(--color-on-primary);
+  --color-on-error: #171717;
+  --color-on-success: var(--color-ink);
   --color-on-warning: var(--color-ink);
   --color-on-dark-hover: var(--color-hairline);
   --color-shadow-rgb: 27 29 32;
@@ -112,14 +113,14 @@
 
   /* ── Semantic ───────────────────────────────────────────────── */
   --color-success: #10b981;
-  --color-success-text: #047857;
+  --color-success-text: var(--color-success-text-enhanced);
   --color-success-subtle: #ecfdf5;
   --color-warning: #f59e0b;
-  --color-warning-text: #92400e;
+  --color-warning-text: var(--color-warning-text-enhanced);
   --color-warning-subtle: #fffbeb;
   --color-error: #ef4444;
   --color-error-deep: #b91c1c;
-  --color-error-text: var(--color-error-deep);
+  --color-error-text: var(--color-error-text-enhanced);
   --color-error-subtle: #fef2f2;
   --color-success-text-enhanced: #064e3b;
   --color-warning-text-enhanced: #78350f;
@@ -183,7 +184,7 @@
 
   /* La interfaz usa la familia variable local en ambos temas. */
   --font-display: var(--font-body);
-  --font-body: 'IBM Plex Sans', -apple-system, system-ui, 'Segoe UI', helvetica, arial, sans-serif;
+  --font-body: 'Plus Jakarta Sans', -apple-system, system-ui, 'Segoe UI', helvetica, arial, sans-serif;
   --font-code: 'Geist Mono', 'JetBrains Mono', ui-monospace, 'SF Mono', menlo, monaco, consolas, monospace;
   --type-display-xl-size: 3rem;
   --type-display-xl-weight: 600;
@@ -515,6 +516,9 @@
 
   /* Ancho medio para menús de filtros con opciones cortas. */
   --menu-inline-size-md: calc(var(--menu-min-inline-size) + var(--design-spacing-3xl));
+
+  /* Ancho legible del recorrido guiado sin forzar saltos en sus mensajes breves. */
+  --tour-popover-inline-size: 18rem;
   --pipeline-table-date-inline-size: 7.5rem;
   --pagination-label-min-inline-size: 5.625rem;
   --pipeline-search-results-max-block-size: 25rem;
@@ -682,7 +686,8 @@
 }
 
 /* Tema oscuro neutro: los tokens de documento conservan su salida clara. */
-:root[data-color-scheme='dark'] {
+:root[data-color-scheme='dark'],
+[data-palette-preview][data-color-scheme='dark'] {
   color-scheme: dark;
 
   /* Estos alias se redeclaran: los valores derivados se resuelven antes de heredarse. */
@@ -730,20 +735,20 @@
   --color-surface-hover: var(--color-surface-strong);
   --color-success: #83c9a3;
   --color-success-rgb: 131 201 163;
-  --color-success-text: var(--color-success);
+  --color-success-text: var(--color-success-text-enhanced);
   --color-success-subtle: #24332c;
   --color-warning: #e2b76f;
   --color-warning-rgb: 226 183 111;
-  --color-warning-text: var(--color-warning);
+  --color-warning-text: var(--color-warning-text-enhanced);
   --color-warning-subtle: #332f25;
   --color-error: #f28b82;
   --color-error-rgb: 242 139 130;
   --color-error-deep: var(--color-error);
-  --color-error-text: var(--color-error);
+  --color-error-text: var(--color-error-text-enhanced);
   --color-error-subtle: #35292a;
-  --color-success-text-enhanced: #a7f3d0;
-  --color-warning-text-enhanced: #fde68a;
-  --color-error-text-enhanced: #fecaca;
+  --color-success-text-enhanced: #d1fae5;
+  --color-warning-text-enhanced: #fff0b3;
+  --color-error-text-enhanced: #ffe6e6;
 
   /* Alias de indicadores y series existentes, sin añadir acentos a la navegación. */
   --color-violet: #c0a6e0;
@@ -754,6 +759,306 @@
   --color-accent-teal-rgb: 131 198 193;
   --color-accent-green: var(--color-success);
   --color-accent-brown: var(--color-accent-orange);
+}
+
+/* Ocean Saas cambia solo colores; conserva geometría, tipografía y sombras del sistema. */
+:root[data-color-palette='ocean-saas'],
+[data-palette-preview][data-color-palette='ocean-saas'] {
+  --color-primary: oklch(50% 0.134 242.749deg);
+  --color-primary-rgb: 0 105 168;
+  --color-primary-text: var(--color-primary);
+  --color-primary-active: color-mix(in srgb, var(--color-primary) 85%, var(--color-ink));
+  --color-primary-pressed: color-mix(in srgb, var(--color-primary) 70%, var(--color-ink));
+  --color-link-deep: var(--color-primary-active);
+  --color-link-rgb: var(--color-primary-rgb);
+  --color-link-soft: var(--color-primary-tint);
+  --color-canvas-soft: oklch(98.5% 0 0deg);
+  --color-canvas-elevated: oklch(100% 0 0deg);
+  --color-sidebar-surface: var(--color-canvas);
+  --shell-floor: var(--color-sidebar-surface);
+  --color-surface-card: #fcfcfc;
+  --color-surface-strong: oklch(92% 0.004 286.32deg);
+  --color-surface-hover: var(--color-surface-strong);
+  --color-hairline: oklch(87% 0 0deg);
+  --color-ink: oklch(14.7% 0.004 49.25deg);
+  --color-ink-rgb: 12 10 9;
+  --color-mute: oklch(27.4% 0.006 286.033deg);
+  --color-primary-tint: oklch(92.8% 0.006 264.531deg);
+  --color-error: #c70000;
+  --color-error-rgb: 199 0 0;
+  --color-error-deep: var(--color-error);
+  --color-error-text: var(--color-error-text-enhanced);
+  --color-on-error: var(--color-canvas);
+}
+
+:root[data-color-palette='ocean-saas'][data-color-scheme='dark'],
+[data-palette-preview][data-color-palette='ocean-saas'][data-color-scheme='dark'] {
+  --color-primary: oklch(39.1% 0.09 240.876deg);
+  --color-primary-rgb: 2 74 112;
+  --color-primary-active: color-mix(in srgb, var(--color-primary) 85%, var(--color-primary-text));
+  --color-primary-pressed: color-mix(in srgb, var(--color-primary) 70%, var(--color-primary-text));
+  --color-primary-text: var(--color-primary-text-on-dark);
+  --color-link-deep: var(--color-on-dark);
+  --color-link-rgb: 191 219 254;
+  --color-canvas: oklch(20.5% 0 0deg);
+  --color-canvas-rgb: 23 23 23;
+  --color-canvas-soft: oklch(26.9% 0 0deg);
+  --color-canvas-elevated: oklch(26.9% 0 0deg);
+  --color-sidebar-surface: var(--color-canvas);
+  --color-surface-card: oklch(22.64% 0 0deg);
+  --color-surface-strong: oklch(43.9% 0 0deg);
+  --color-hairline: oklch(27.5% 0 0deg);
+  --color-ink: oklch(92.3% 0.003 48.717deg);
+  --color-ink-rgb: 231 229 228;
+  --color-mute: #c5c5c5;
+  --color-primary-tint: oklch(27.8% 0.033 256.848deg);
+  --color-error: #ff4d4d;
+  --color-error-rgb: 255 77 77;
+  --color-error-deep: var(--color-error);
+  --color-error-text: var(--color-error-text-enhanced);
+}
+
+/* Darkmatter Remix cambia colores; conserva geometría, tipografía y sombras del sistema. */
+:root[data-color-palette='darkmatter-remix'],
+[data-palette-preview][data-color-palette='darkmatter-remix'] {
+  --color-primary: #d87943;
+  --color-primary-rgb: 216 121 67;
+  --color-primary-text: #9a4b1f;
+  --color-primary-active: color-mix(in srgb, var(--color-primary) 85%, var(--color-surface-card));
+  --color-primary-pressed: color-mix(in srgb, var(--color-primary) 70%, var(--color-surface-card));
+  --color-on-primary: #111827;
+  --color-link-deep: #8d3b11;
+  --color-link-rgb: 154 75 31;
+  --color-link-soft: var(--color-primary-tint);
+  --color-canvas-soft: #f3f4f6;
+  --color-canvas-elevated: #fff;
+  --color-sidebar-surface: var(--color-canvas-soft);
+  --shell-floor: var(--color-sidebar-surface);
+  --color-surface-card: #fff;
+  --color-surface-strong: #eee;
+  --color-surface-hover: var(--color-surface-strong);
+  --color-hairline: #e5e7eb;
+  --color-ink: #111827;
+  --color-ink-rgb: 17 24 39;
+  --color-mute: #4b5563;
+  --color-primary-tint: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface-card));
+}
+
+:root[data-color-palette='darkmatter-remix'][data-color-scheme='dark'],
+[data-palette-preview][data-color-palette='darkmatter-remix'][data-color-scheme='dark'] {
+  --color-primary: #e78a53;
+  --color-primary-rgb: 231 138 83;
+  --color-primary-text: var(--color-primary);
+  --color-primary-active: color-mix(in srgb, var(--color-primary) 85%, var(--color-ink));
+  --color-primary-pressed: color-mix(in srgb, var(--color-primary) 70%, var(--color-ink));
+  --color-on-primary: #121113;
+  --color-link-deep: var(--color-ink);
+  --color-link-rgb: var(--color-primary-rgb);
+  --color-canvas: #121113;
+  --color-canvas-rgb: 18 17 19;
+  --color-canvas-soft: #222;
+  --color-sidebar-surface: var(--color-surface-card);
+  --color-canvas-elevated: var(--color-canvas);
+  --color-surface-card: #121212;
+  --color-surface-strong: #333;
+  --color-surface-hover: var(--color-surface-strong);
+  --color-hairline: #222;
+  --color-ink: #c1c1c1;
+  --color-ink-rgb: 193 193 193;
+  --color-mute: #a1a1a1;
+  --color-primary-tint: #333;
+}
+
+/* Chemp usa la misma geometría y tipografía del producto en claro y oscuro. */
+:root[data-color-palette='chemp'],
+[data-palette-preview][data-color-palette='chemp'] {
+  --color-primary: hsl(209deg 53% 30%);
+  --color-primary-rgb: 36 78 117;
+  --color-primary-text: var(--color-primary);
+  --color-primary-active: color-mix(in srgb, var(--color-primary) 85%, var(--color-ink));
+  --color-primary-pressed: color-mix(in srgb, var(--color-primary) 70%, var(--color-ink));
+  --color-on-primary: hsl(38deg 26% 92%);
+  --color-link-deep: var(--color-primary-pressed);
+  --color-link-rgb: var(--color-primary-rgb);
+  --color-link-soft: var(--color-primary-tint);
+  --color-canvas: hsl(38deg 26% 92%);
+  --color-canvas-rgb: 240 236 229;
+  --color-canvas-soft: hsl(38deg 30% 78%);
+  --color-canvas-elevated: var(--color-canvas);
+  --color-sidebar-surface: var(--color-canvas);
+  --shell-floor: var(--color-sidebar-surface);
+  --color-surface-card: hsl(40deg 30% 88%);
+  --color-surface-strong: var(--color-canvas-soft);
+  --color-surface-hover: var(--color-surface-strong);
+  --color-hairline: hsl(210deg 18% 7%);
+  --color-control-border: var(--color-hairline);
+  --color-ink: hsl(210deg 18% 7%);
+  --color-ink-rgb: 15 18 21;
+  --color-mute: hsl(210deg 12% 30%);
+  --color-primary-tint: var(--color-canvas-soft);
+  --color-focus: var(--color-primary);
+  --color-error: hsl(16deg 53% 35%);
+  --color-error-rgb: 137 67 42;
+  --color-error-deep: var(--color-error);
+  --color-error-text: var(--color-error-text-enhanced);
+  --color-on-error: var(--color-canvas);
+}
+
+:root[data-color-palette='chemp'][data-color-scheme='dark'],
+[data-palette-preview][data-color-palette='chemp'][data-color-scheme='dark'] {
+  --color-primary: hsl(209deg 53% 50%);
+  --color-primary-rgb: 60 130 195;
+  --color-primary-text: hsl(209deg 40% 65%);
+  --color-primary-active: color-mix(in srgb, var(--color-primary) 85%, var(--color-ink));
+  --color-primary-pressed: color-mix(in srgb, var(--color-primary) 70%, var(--color-ink));
+  --color-on-primary: hsl(210deg 18% 7%);
+  --color-link-deep: var(--color-ink);
+  --color-link-rgb: 130 167 201;
+  --color-canvas: hsl(210deg 18% 7%);
+  --color-canvas-rgb: 15 18 21;
+  --color-canvas-soft: hsl(210deg 12% 18%);
+  --color-canvas-elevated: var(--color-canvas);
+  --color-sidebar-surface: hsl(210deg 18% 9%);
+  --color-surface-card: hsl(210deg 16% 11%);
+  --color-surface-strong: var(--color-canvas-soft);
+  --color-surface-hover: var(--color-surface-strong);
+  --color-hairline: hsl(38deg 26% 80%);
+  --color-control-border: var(--color-hairline);
+  --color-ink: hsl(38deg 26% 92%);
+  --color-ink-rgb: 240 236 229;
+  --color-mute: hsl(38deg 26% 80%);
+  --color-primary-tint: var(--color-canvas-soft);
+  --color-focus: var(--color-primary);
+  --color-error: hsl(16deg 53% 50%);
+  --color-error-rgb: 195 96 60;
+  --color-error-deep: var(--color-error);
+  --color-error-text: var(--color-error-text-enhanced);
+}
+
+/* Claude Amber adapta únicamente los colores del sistema existente. */
+:root[data-color-palette='claude-amber'],
+[data-palette-preview][data-color-palette='claude-amber'] {
+  --color-primary: #c96442;
+  --color-primary-rgb: 201 100 66;
+  --color-primary-text: #a54424;
+  --color-primary-active: color-mix(in srgb, var(--color-primary) 85%, var(--color-surface-card));
+  --color-primary-pressed: color-mix(in srgb, var(--color-primary) 70%, var(--color-surface-card));
+  --color-on-primary: #141413;
+  --color-link-deep: var(--color-primary-text);
+  --color-link-rgb: 165 68 36;
+  --color-link-soft: var(--color-primary-tint);
+  --color-canvas: #faf9f5;
+  --color-canvas-rgb: 250 249 245;
+  --color-canvas-soft: #ede9de;
+  --color-canvas-elevated: #fff;
+  --color-sidebar-surface: #f5f4ee;
+  --shell-floor: var(--color-sidebar-surface);
+  --color-surface-card: #f5f4ef;
+  --color-surface-strong: #e9e6dc;
+  --color-surface-hover: var(--color-surface-strong);
+  --color-hairline: #dad9d4;
+  --color-ink: #3d3929;
+  --color-ink-rgb: 61 57 41;
+  --color-mute: #5e5d58;
+  --color-primary-tint: var(--color-surface-strong);
+  --color-focus: var(--color-primary);
+  --color-error: #b91c1c;
+  --color-error-rgb: 185 28 28;
+  --color-error-deep: var(--color-error);
+  --color-error-text: var(--color-error-text-enhanced);
+  --color-on-error: var(--color-canvas);
+}
+
+:root[data-color-palette='claude-amber'][data-color-scheme='dark'],
+[data-palette-preview][data-color-palette='claude-amber'][data-color-scheme='dark'] {
+  --color-primary: #d97757;
+  --color-primary-rgb: 217 119 87;
+  --color-primary-text: #ffb494;
+  --color-primary-active: color-mix(in srgb, var(--color-primary) 85%, var(--color-ink));
+  --color-primary-pressed: color-mix(in srgb, var(--color-primary) 70%, var(--color-ink));
+  --color-link-deep: var(--color-ink);
+  --color-link-rgb: 255 180 148;
+  --color-canvas: #262624;
+  --color-canvas-rgb: 38 38 36;
+  --color-canvas-soft: #1b1b19;
+  --color-canvas-elevated: #30302e;
+  --color-sidebar-surface: #1f1e1d;
+  --color-surface-card: #2c2c2b;
+  --color-surface-strong: #3e3e38;
+  --color-surface-hover: var(--color-surface-strong);
+  --color-hairline: #3e3e38;
+  --color-ink: #f1f1ef;
+  --color-ink-rgb: 241 241 239;
+  --color-mute: #b7b5a9;
+  --color-primary-tint: var(--color-surface-strong);
+  --color-focus: var(--color-ink);
+  --color-error: #ef4444;
+  --color-error-rgb: 239 68 68;
+  --color-error-deep: var(--color-error);
+  --color-error-text: var(--color-error-text-enhanced);
+  --color-on-error: #141413;
+}
+
+/* Supabase mantiene la geometría del proyecto y alterna sus verdes por modo. */
+:root[data-color-palette='supabase'],
+[data-palette-preview][data-color-palette='supabase'] {
+  --color-primary: #72e3ad;
+  --color-primary-rgb: 114 227 173;
+  --color-primary-text: #006239;
+  --color-primary-active: color-mix(in srgb, var(--color-primary) 85%, var(--color-surface-card));
+  --color-primary-pressed: color-mix(in srgb, var(--color-primary) 70%, var(--color-surface-card));
+  --color-on-primary: #1e2723;
+  --color-link-deep: var(--color-primary-text);
+  --color-link-rgb: 0 98 57;
+  --color-link-soft: var(--color-primary-tint);
+  --color-canvas: #fcfcfc;
+  --color-canvas-rgb: 252 252 252;
+  --color-canvas-soft: #ededed;
+  --color-canvas-elevated: var(--color-canvas);
+  --color-sidebar-surface: var(--color-canvas);
+  --shell-floor: var(--color-sidebar-surface);
+  --color-surface-card: var(--color-canvas);
+  --color-surface-strong: var(--color-canvas-soft);
+  --color-surface-hover: var(--color-surface-strong);
+  --color-hairline: #dfdfdf;
+  --color-ink: #171717;
+  --color-ink-rgb: 23 23 23;
+  --color-mute: #525252;
+  --color-primary-tint: var(--color-canvas-soft);
+  --color-focus: var(--color-primary-text);
+  --color-error: #ca3214;
+  --color-error-rgb: 202 50 20;
+  --color-error-deep: var(--color-error);
+  --color-error-text: var(--color-error-text-enhanced);
+  --color-on-error: var(--color-canvas);
+}
+
+:root[data-color-palette='supabase'][data-color-scheme='dark'],
+[data-palette-preview][data-color-palette='supabase'][data-color-scheme='dark'] {
+  --color-primary: #006239;
+  --color-primary-rgb: 0 98 57;
+  --color-primary-text: #4ade80;
+  --color-primary-active: color-mix(in srgb, var(--color-primary) 85%, var(--color-canvas));
+  --color-primary-pressed: color-mix(in srgb, var(--color-primary) 70%, var(--color-canvas));
+  --color-on-primary: #dde8e3;
+  --color-link-deep: var(--color-ink);
+  --color-link-rgb: 74 222 128;
+  --color-canvas: #121212;
+  --color-canvas-rgb: 18 18 18;
+  --color-canvas-soft: #1f1f1f;
+  --color-canvas-elevated: #242424;
+  --color-sidebar-surface: var(--color-canvas);
+  --color-surface-card: #171717;
+  --color-surface-strong: #313131;
+  --color-surface-hover: var(--color-surface-strong);
+  --color-hairline: #292929;
+  --color-ink: #e2e8f0;
+  --color-ink-rgb: 226 232 240;
+  --color-mute: #a2a2a2;
+  --color-primary-tint: var(--color-surface-strong);
+  --color-focus: var(--color-primary-text);
+  --color-error-subtle: #541c15;
+  --color-on-error: #fff;
 }
 
 /* ========================================

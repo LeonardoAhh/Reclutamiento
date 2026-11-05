@@ -26,7 +26,7 @@ export function OverviewWeekSwitcher({ week, rangeLabel, isCurrentWeek, onPrevWe
           onClick={onPrevWeek}
           aria-label={t('Semana anterior')}
         >
-          <ChevronLeft size={18} aria-hidden="true" />
+          <ChevronLeft size="var(--icon-size-sm)" aria-hidden="true" />
         </button>
         <p className="overview-week__label" aria-live="polite">
           <span className="sr-only">{`${t('Semana')} ${week} · ${rangeLabel}`}</span>
@@ -42,7 +42,7 @@ export function OverviewWeekSwitcher({ week, rangeLabel, isCurrentWeek, onPrevWe
           onClick={onNextWeek}
           aria-label={t('Semana siguiente')}
         >
-          <ChevronRight size={18} aria-hidden="true" />
+          <ChevronRight size="var(--icon-size-sm)" aria-hidden="true" />
         </button>
       </div>
 
@@ -54,7 +54,7 @@ export function OverviewWeekSwitcher({ week, rangeLabel, isCurrentWeek, onPrevWe
         onClick={onToday}
         disabled={isCurrentWeek}
       >
-        <CalendarDays size={18} aria-hidden="true" />
+        <CalendarDays size="var(--icon-size-sm)" aria-hidden="true" />
         <span className="overview-week__today-label">{t('Hoy')}</span>
       </button>
     </div>

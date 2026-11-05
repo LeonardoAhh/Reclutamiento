@@ -1,4 +1,4 @@
-import { lazy, Suspense, type ReactNode } from 'react';
+import { lazy, Suspense, useCallback, useState, type ReactNode } from 'react';
 import { Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom';
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 
@@ -59,6 +59,8 @@ const Login = lazy(() =>
 function ProtectedContent() {
   const { pathname } = useLocation();
   const { profile } = useAuth();
+  const [startupModalResolved, setStartupModalResolved] = useState(false);
+  const resolveStartupModal = useCallback(() => setStartupModalResolved(true), []);
   const normalizedPath = pathname.replace(/\/+$/, '');
   const recruiterRestrictedPath = pathname === ADMINISTRATION_PATH
     || normalizedPath === getConfiguracionHref('analisis')
@@ -72,7 +74,10 @@ function ProtectedContent() {
     <CandidatesProvider>
       <PositionsProvider>
         <MaintenanceGuard>
-          <TeamProvider><AppShell><Outlet /></AppShell><TopRecruiterModal /></TeamProvider>
+          <TeamProvider>
+            <AppShell startupOverlaysReady={startupModalResolved}><Outlet /></AppShell>
+            <TopRecruiterModal onStartupResolved={resolveStartupModal} />
+          </TeamProvider>
         </MaintenanceGuard>
       </PositionsProvider>
     </CandidatesProvider>

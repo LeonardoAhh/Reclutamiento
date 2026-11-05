@@ -70,7 +70,7 @@ export function watchTheme(onChange: () => void): () => void {
   const mo = new MutationObserver(onChange)
   mo.observe(document.documentElement, {
     attributes: true,
-    attributeFilter: ["class", "data-color-scheme", "style"],
+    attributeFilter: ["class", "data-color-scheme", "data-color-palette", "style"],
   })
   const mq = window.matchMedia("(prefers-color-scheme: dark)")
   mq.addEventListener("change", onChange)

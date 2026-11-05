@@ -241,7 +241,7 @@
 }
 
 .settings__banner--success {
-  background: var(--color-success-tint, rgb(var(--color-success-rgb) / 0.12));
+  background: var(--color-success-tint);
   border-color: var(--color-success-text);
   color: var(--color-success-text);
 }
@@ -390,4 +390,3 @@
     display: none;
   }
 }
-

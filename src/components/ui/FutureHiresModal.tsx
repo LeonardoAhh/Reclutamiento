@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
-import { UsersRound } from 'lucide-react';
-import { Copy } from 'lucide-react';
+import { Copy, UsersRound } from 'lucide-react';
 import { Modal } from './Modal';
 import { FormSheet } from './FormSheet';
 import { StarliteBadge } from './Badge';
@@ -145,12 +144,11 @@ export function FutureHiresModal({
 
   const renderHiresList = (hiresToRender: Employee[]) => (
     <div className="future-hires-modal__section">
-      <div className="future-hires-modal__list" role="list">
+      <ul className="future-hires-modal__list">
         {hiresToRender.map((employee) => (
-          <article
+          <li
             key={employee.num_empleado}
             className="future-hires-modal__card"
-            role="listitem"
           >
             <h3 className="future-hires-modal__position">
               <span>{employee.puesto}</span>
@@ -166,9 +164,9 @@ export function FutureHiresModal({
                 <dd>{formatShortDate(employee.fecha_ingreso, locale)}</dd>
               </div>
             </dl>
-          </article>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 
@@ -177,7 +175,7 @@ export function FutureHiresModal({
       isOpen={isOpen}
       onClose={onClose}
       title={t("Próximos ingresos")}
-      icon={<UsersRound size={20} />}
+      icon={<UsersRound size="var(--icon-size-md)" aria-hidden="true" />}
       size="sm"
       footerActions={
         <button

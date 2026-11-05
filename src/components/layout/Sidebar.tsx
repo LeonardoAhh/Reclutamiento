@@ -22,6 +22,10 @@ type SidebarProps = {
   isDesktop: boolean;
   sidebarRef: RefObject<HTMLElement | null>;
   onRestoreMobileFocus: () => void;
+  accountMenuOpen: boolean;
+  onAccountMenuOpenChange: (open: boolean) => void;
+  onReplayTour: () => void;
+  tourActive: boolean;
 };
 
 export function Sidebar({
@@ -32,6 +36,10 @@ export function Sidebar({
   isDesktop,
   sidebarRef,
   onRestoreMobileFocus,
+  accountMenuOpen,
+  onAccountMenuOpenChange,
+  onReplayTour,
+  tourActive,
 }: SidebarProps) {
   const { username, profile } = useAuth();
   const { members } = useTeamDirectory();
@@ -125,6 +133,10 @@ export function Sidebar({
           collapsed={collapsed}
           mobile={!isDesktop}
           quickActions={profile ? quickActions : undefined}
+          open={accountMenuOpen}
+          onOpenChange={onAccountMenuOpenChange}
+          onReplayTour={onReplayTour}
+          tourActive={tourActive}
         />
       </footer>
     </>

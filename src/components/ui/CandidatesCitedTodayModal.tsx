@@ -1,7 +1,7 @@
-import { CalendarCheck, CircleCheckBig } from 'lucide-react';
+import { CalendarCheck } from 'lucide-react';
 import { Modal } from './Modal';
 import { FormSheet } from './FormSheet';
-import { Badge, StarliteBadge, ReclutadorBadge } from './Badge';
+import { StarliteBadge, ReclutadorBadge } from './Badge';
 import { ExpandableSection } from './ExpandableSection';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import type { Candidate } from '@/lib/types';
@@ -76,7 +76,7 @@ export function CandidatesCitedTodayModal({
       isOpen={isOpen}
       onClose={onClose}
       className="candidates-cited-today-modal"
-      icon={<CalendarCheck size={20} aria-hidden="true" />}
+      icon={<CalendarCheck size="var(--icon-size-md)" aria-hidden="true" />}
       title={t("Detalle entrevistas")}
       size="sm"
     >

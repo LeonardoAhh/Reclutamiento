@@ -2,9 +2,8 @@ import { useEffect, useId, useState } from 'react';
 import { PageHeading } from '@/components/layout/PageHeading';
 import { MaintenanceControl } from '@/features/account/MaintenanceControl';
 import { TeamManagement } from '@/features/team/TeamManagement';
-import { AccountPasswordSection } from '@/features/account/AccountPasswordSection';
+import { AccountPasswordSection, type AccountSettingsView } from '@/features/account/AccountPasswordSection';
 import { AccountProfile } from '@/features/account/AccountProfile';
-import { AccountPreferencesSection } from '@/features/account/AccountPreferencesSection';
 import { RecognitionPreferences } from '@/features/account/RecognitionPreferences';
 import { AccountSection } from '@/features/account/AccountSection';
 import { useAuth } from '@/hooks/useAuth';
@@ -18,6 +17,7 @@ export function AccountPage() {
   const settingsId = useId();
   const administrationId = useId();
   const [passwordActionsTarget, setPasswordActionsTarget] = useState<HTMLDivElement | null>(null);
+  const [settingsView, setSettingsView] = useState<AccountSettingsView>('settings');
   const { profile, user, username, profileLoading, loading: authLoading } = useAuth();
   const { language } = useLanguage();
   const copy = accountCopy(language);
@@ -30,11 +30,10 @@ export function AccountPage() {
   if (!profile) return null;
 
   const displayName = toNaturalCase(profile.display_name || username, { preserveAcronyms: false });
-  const settingsSection = <AccountSection id={settingsId} title={copy.settings} className="account-settings"
+  const settingsTitle = settingsView === 'password' ? copy.password : settingsView === 'palette' ? copy.palette : copy.settings;
+  const settingsSection = <AccountSection id={settingsId} title={settingsTitle} className="account-settings"
     action={<div ref={setPasswordActionsTarget} className="account-password__header-actions" />}>
-    <AccountPasswordSection copy={copy} actionsTarget={passwordActionsTarget}>
-      <AccountPreferencesSection copy={copy} />
-    </AccountPasswordSection>
+    <AccountPasswordSection copy={copy} actionsTarget={passwordActionsTarget} view={settingsView} onViewChange={setSettingsView} />
   </AccountSection>;
 
   return (

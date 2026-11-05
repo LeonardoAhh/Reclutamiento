@@ -103,7 +103,7 @@ export default function BirthplaceMap({ onReady, onLoadFailed, onInteractionChan
     const themeObserver = new MutationObserver(updateChart);
     themeObserver.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ['data-color-scheme'],
+      attributeFilter: ['data-color-scheme', 'data-color-palette'],
     });
     motion.addEventListener('change', updateChart);
     scheme.addEventListener('change', updateChart);

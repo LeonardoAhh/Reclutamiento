@@ -3,10 +3,7 @@ import * as SelectPrimitive from '@radix-ui/react-select';
 import { ChevronDown, ChevronUp } from 'lucide';
 import { CircleCheckBig } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import {
-  FLOATING_SURFACE_COLLISION_PADDING,
-  FLOATING_SURFACE_SIDE_OFFSET,
-} from '@/lib/floatingSurface';
+import { FLOATING_SURFACE_COLLISION_PADDING, FLOATING_SURFACE_SIDE_OFFSET } from '@/lib/floatingSurface';
 import { playSound } from '@/lib/sound';
 import { cn } from '@/lib/utils-shadcn';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
@@ -19,11 +16,7 @@ export interface Option {
 
 type SelectAriaProps = Pick<
   AriaAttributes,
-  | 'aria-label'
-  | 'aria-labelledby'
-  | 'aria-describedby'
-  | 'aria-invalid'
-  | 'aria-required'
+  'aria-label' | 'aria-labelledby' | 'aria-describedby' | 'aria-invalid' | 'aria-required'
 >;
 
 interface CustomSelectProps extends SelectAriaProps {
@@ -75,18 +68,13 @@ export function CustomSelect({
         : options,
     [options, resolvedPlaceholder, showPlaceholderOption],
   );
-  const isRequired =
-    ariaProps['aria-required'] === true || ariaProps['aria-required'] === 'true';
+  const isRequired = ariaProps['aria-required'] === true || ariaProps['aria-required'] === 'true';
   const isRequiredPlaceholder = isRequired && value === '';
   const selectedItemValue =
-    !isRequiredPlaceholder && visibleOptions.some((option) => option.value === value)
-      ? getItemValue(value)
-      : undefined;
+    !isRequiredPlaceholder && visibleOptions.some((option) => option.value === value) ? getItemValue(value) : undefined;
 
   const handleValueChange = (itemValue: string) => {
-    const option = visibleOptions.find(
-      (candidate) => getItemValue(candidate.value) === itemValue,
-    );
+    const option = visibleOptions.find((candidate) => getItemValue(candidate.value) === itemValue);
 
     if (option) {
       if (option.value !== value) playSound('select');
@@ -114,23 +102,14 @@ export function CustomSelect({
           {...ariaProps}
         >
           {customTrigger ? (
-            <SelectPrimitive.Value className="custom-select-value">
-              {customTrigger}
-            </SelectPrimitive.Value>
+            <SelectPrimitive.Value className="custom-select-value">{customTrigger}</SelectPrimitive.Value>
           ) : (
-            <SelectPrimitive.Value
-              className="custom-select-value"
-              placeholder={resolvedPlaceholder}
-            />
+            <SelectPrimitive.Value className="custom-select-value" placeholder={resolvedPlaceholder} />
           )}
 
           {!customTrigger && (
             <SelectPrimitive.Icon asChild>
-              <MorphingIcon
-                icon={isOpen ? ChevronUp : ChevronDown}
-                aria-hidden="true"
-                className="custom-select-icon"
-              />
+              <MorphingIcon icon={isOpen ? ChevronUp : ChevronDown} aria-hidden="true" className="custom-select-icon" />
             </SelectPrimitive.Icon>
           )}
         </SelectPrimitive.Trigger>
@@ -161,11 +140,7 @@ export function CustomSelect({
                   </SelectPrimitive.Item>
                 ))
               ) : (
-                <SelectPrimitive.Item
-                  className="custom-select-no-results"
-                  value={EMPTY_STATE_ITEM_VALUE}
-                  disabled
-                >
+                <SelectPrimitive.Item className="custom-select-no-results" value={EMPTY_STATE_ITEM_VALUE} disabled>
                   <SelectPrimitive.ItemText>
                     {language === 'en' ? 'No options' : 'Sin opciones'}
                   </SelectPrimitive.ItemText>

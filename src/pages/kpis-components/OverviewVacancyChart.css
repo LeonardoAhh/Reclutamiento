@@ -79,7 +79,7 @@
   display: none;
 }
 
-@media (width >= 640px) {
+@media (width >= 768px) {
   .overview-chart {
     padding: var(--design-spacing-lg);
   }
@@ -108,8 +108,8 @@
 
 .overview-chart__legend {
   display: flex;
-  flex-wrap: nowrap;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  justify-content: flex-start;
   gap: var(--design-spacing-xxs);
   min-inline-size: 0;
   margin: 0;
@@ -136,7 +136,7 @@
   block-size: var(--design-spacing-sm);
 }
 
-@media (width >= 640px) {
+@media (width >= 768px) {
   .overview-chart__legend {
     justify-content: flex-start;
     gap: var(--design-spacing-md);

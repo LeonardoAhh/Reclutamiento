@@ -87,7 +87,7 @@
   display: none;
 }
 
-@media (width >= 640px) {
+@media (width >= 768px) {
   .overview-week {
     gap: var(--design-spacing-sm);
   }

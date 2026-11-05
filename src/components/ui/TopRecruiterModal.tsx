@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { CalendarCheck2, Medal, Target, TrendingUp } from 'lucide-react';
 import { differenceInCalendarWeeks, parseISO, startOfISOWeek } from 'date-fns';
 import { useAuth } from '@/hooks/useAuth';
@@ -19,10 +19,11 @@ function recruiterName(value: string | null, members: readonly TeamMember[]) {
   return findTeamMember(members, value)?.short_name ?? name;
 }
 
-export function TopRecruiterModal() {
+export function TopRecruiterModal({ onStartupResolved }: { onStartupResolved: () => void }) {
   const { members } = useTeamDirectory();
   const { profile } = useAuth();
   const { visible: transitionVisible } = useLoader();
+  const startupPromptShownRef = useRef(false);
   const [isOpen, setIsOpen] = useState(false);
   const [topRecruiter, setTopRecruiter] = useState<{name: string, total: number} | null>(null);
   const [currentUserStats, setCurrentUserStats] = useState<{name: string, total: number, isTop: boolean, isTie?: boolean, previousTotal: number, consistent: boolean} | null>(null);
@@ -31,13 +32,19 @@ export function TopRecruiterModal() {
   const { monthlyGoal, weeklyGoal } = getRecruitmentGoals(new Date());
 
   useEffect(() => {
-    if (transitionVisible) return;
-    if (!profile || profile.role !== 'reclutador') return;
-    if (!shouldShowRecognition(profile.id)) return;
+    if (transitionVisible || startupPromptShownRef.current) return;
+    if (!profile) return;
+    if (profile.role !== 'reclutador' || !shouldShowRecognition(profile.id)) {
+      onStartupResolved();
+      return;
+    }
     let cancelled = false;
 
     const currentMember = members.find(member => member.profile_id === profile.id && member.active);
-    if (!currentMember) return;
+    if (!currentMember) {
+      onStartupResolved();
+      return;
+    }
 
     const fetchStats = async () => {
       const currentMonth = new Date().getMonth(); // 0-11
@@ -60,7 +67,10 @@ export function TopRecruiterModal() {
       const allRecords = records.filter(record => record.fecha_ingreso && parseISO(record.fecha_ingreso) >= monthStart);
       const previousRecords = records.filter(record => record.fecha_ingreso && parseISO(record.fecha_ingreso) < monthStart);
       
-      if (allRecords.length === 0) return;
+      if (allRecords.length === 0) {
+        onStartupResolved();
+        return;
+      }
 
       const recruiterTotals: Record<string, number> = {};
       allRecords.forEach(record => {
@@ -123,16 +133,24 @@ export function TopRecruiterModal() {
       const consistent = qualifyingWeeks.some((week, index) => index > 0
         && differenceInCalendarWeeks(week, qualifyingWeeks[index - 1], { weekStartsOn: 1 }) === 1);
 
-      if (cancelled || !shouldShowRecognition(profile.id)) return;
+      if (cancelled) return;
+      if (!shouldShowRecognition(profile.id)) {
+        onStartupResolved();
+        return;
+      }
       setTopRecruiter(actualTopRecruiter);
       setCurrentUserStats({ name: currentUserName, total: currentUserTotal, isTop, isTie, previousTotal, consistent });
+      startupPromptShownRef.current = true;
       setIsOpen(true);
       markRecognitionShown(profile.id);
     };
 
-    fetchStats().catch(console.error);
+    fetchStats().catch((error: unknown) => {
+      console.error(error);
+      if (!cancelled) onStartupResolved();
+    });
     return () => { cancelled = true; };
-  }, [profile, transitionVisible, weeklyGoal, members]);
+  }, [onStartupResolved, profile, transitionVisible, weeklyGoal, members]);
 
   const getContextualMessage = (progress: number, isTop: boolean) => {
     if (isTop) return "Sigue así.";
@@ -151,6 +169,7 @@ export function TopRecruiterModal() {
   const remainingToGoal = Math.max(monthlyGoal - currentUserStats.total, 0);
   const weeklyGoalCopy = weeklyGoal ? ` · Semana: ${weeklyGoal}` : '';
   const improvement = currentUserStats.total - currentUserStats.previousTotal;
+  const closeModal = () => setIsOpen(false);
   const milestones = [
     ...(remainingToGoal === 0 ? [{ id: 'goal', Icon: Target, title: 'Meta alcanzada', detail: `${currentUserStats.total} de ${monthlyGoal} ingresos.` }] : []),
     ...(currentUserStats.consistent ? [{ id: 'consistency', Icon: CalendarCheck2, title: 'Constancia semanal', detail: 'Meta semanal en dos semanas seguidas.' }] : []),
@@ -160,7 +179,8 @@ export function TopRecruiterModal() {
   return (
     <Modal
       isOpen={isOpen}
-      onClose={() => setIsOpen(false)}
+      onClose={closeModal}
+      onCloseAutoFocus={onStartupResolved}
       className="top-recruiter-modal"
       size="xs"
       icon={isTop
@@ -171,7 +191,7 @@ export function TopRecruiterModal() {
         <button
           type="button"
           className="btn-primary"
-          onClick={() => setIsOpen(false)}
+          onClick={closeModal}
         >
           Listo
         </button>
