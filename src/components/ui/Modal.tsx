@@ -149,7 +149,10 @@ export function Modal({
               </DialogPrimitive.Close>
             )}
           </header>
-          <div className="modal-scroll-region">{children}</div>
+          {/* oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Scrollable content must be keyboard reachable. */}
+          <section className="modal-scroll-region" aria-labelledby={titleId} tabIndex={0}>
+            {children}
+          </section>
           {footerActions && (
             <footer className="modal-footer">{footerActions}</footer>
           )}

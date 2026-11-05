@@ -74,10 +74,10 @@
 .metrics-recruiter-progress {
   inline-size: 100%;
   block-size: var(--design-spacing-xxs);
+  grid-column: 1 / -1;
   border: 0;
   border-radius: var(--rounded-pill);
   overflow: hidden;
-  accent-color: var(--color-primary);
 }
 
 .metrics-recruiter-progress::-webkit-progress-bar { background: var(--color-hairline); }
@@ -118,10 +118,6 @@
   flex: 0 0 auto;
   align-self: center;
   margin: 0 0 0 auto;
-}
-
-.metrics-recruiter-progress {
-  grid-column: 1 / -1;
 }
 
 .indicadores-section.metrics-retention {
@@ -200,7 +196,7 @@
   color: var(--color-error-text);
 }
 
-@media (min-width: 768px) {
+@media (width >= 768px) {
   .indicadores-view > .metrics-toolbar {
     flex-direction: row;
     align-items: center;
@@ -255,7 +251,7 @@
   .metrics-retention-overview__global small { color: var(--color-muted); }
 }
 
-@media (min-width: 1080px) {
+@media (width >= 1080px) {
   .indicadores-view {
     grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
   }
@@ -309,13 +305,13 @@
     display: contents;
   }
 
-  .metrics-retention-overview__global > span strong {
-    order: 0;
-  }
-
   .metrics-retention-overview__global > strong {
     order: 1;
     font-size: var(--type-heading-md-size);
+  }
+
+  .metrics-retention-overview__global > span strong {
+    order: 0;
   }
 
   .metrics-retention-overview__global small {

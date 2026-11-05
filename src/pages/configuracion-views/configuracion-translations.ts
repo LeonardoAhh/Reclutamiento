@@ -199,7 +199,7 @@ const copy = {
     routes: {
       title: "Rutas",
       scanner: "Escáner",
-      overCapacity: "Sobrecupo",
+      overCapacity: "Saturado",
       match: "coincidencia",
       matches: "coincidencias",
       shift: "Turno",
@@ -499,7 +499,7 @@ const copy = {
     routes: {
       title: "Routes",
       scanner: "Scanner",
-      overCapacity: "Over capacity",
+      overCapacity: "Excess",
       match: "match",
       matches: "matches",
       shift: "Shift",

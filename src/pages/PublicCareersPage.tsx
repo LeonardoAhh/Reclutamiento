@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { useLanguage, type Language } from '@/contexts/LanguageContext';
 import { ONBOARDING_DOCUMENT_CONFIG } from '@/lib/constants';
 import { Badge } from '@/components/ui/Badge';
+import { SkipLink } from '@/components/ui/SkipLink';
 import './PublicCareersPage.css';
 
 const companyName = ONBOARDING_DOCUMENT_CONFIG.companyName;
@@ -241,29 +242,32 @@ function PublicHeader({ language, setLanguage }: { language: Language; setLangua
   const t = copy[language];
 
   return (
-    <header className="public-careers__header">
-      <div className="public-careers__brand" aria-label={`${companyName} home`}>
-        <span className="public-careers__brand-mark">V</span>
-        <span>{companyName}</span>
-      </div>
-      <nav className="public-careers__nav" aria-label="Main navigation">
-        <Link to="/">{t.navHome}</Link>
-        <Link to="/vacantes">{t.navJobs}</Link>
-      </nav>
-      <div className="public-careers__actions">
-        <button
-          type="button"
-          className="public-careers__language-toggle"
-          onClick={() => setLanguage(language === 'es' ? 'en' : 'es')}
-          aria-label={t.toggleLabel}
-        >
-          {language === 'es' ? 'EN' : 'ES'}
-        </button>
-        <Link className="button button--primary" to="/vacantes">
-          {t.ctaPrimary}
-        </Link>
-      </div>
-    </header>
+    <>
+      <SkipLink targetId="public-careers-main" />
+      <header className="public-careers__header">
+        <div className="public-careers__brand" aria-label={`${companyName} home`}>
+          <span className="public-careers__brand-mark">V</span>
+          <span>{companyName}</span>
+        </div>
+        <nav className="public-careers__nav" aria-label="Main navigation">
+          <Link to="/">{t.navHome}</Link>
+          <Link to="/vacantes">{t.navJobs}</Link>
+        </nav>
+        <div className="public-careers__actions">
+          <button
+            type="button"
+            className="public-careers__language-toggle"
+            onClick={() => setLanguage(language === 'es' ? 'en' : 'es')}
+            aria-label={t.toggleLabel}
+          >
+            {language === 'es' ? 'EN' : 'ES'}
+          </button>
+          <Link className="button button--primary" to="/vacantes">
+            {t.ctaPrimary}
+          </Link>
+        </div>
+      </header>
+    </>
   );
 }
 
@@ -275,7 +279,7 @@ export function PublicLandingPage() {
     <div className="public-careers">
       <div className="public-careers__page-shell">
         <PublicHeader language={language} setLanguage={setLanguage} />
-        <main>
+        <main id="public-careers-main" tabIndex={-1}>
           <section className="public-careers__hero" aria-labelledby="public-hero-title">
             <div className="public-careers__hero-copy">
               <p className="public-careers__eyebrow">{t.heroEyebrow}</p>
@@ -351,7 +355,7 @@ export function PublicJobsPage() {
     <div className="public-careers">
       <div className="public-careers__page-shell public-careers__page-shell--tight">
         <PublicHeader language={language} setLanguage={setLanguage} />
-        <main className="public-careers__jobs-page">
+        <main className="public-careers__jobs-page" id="public-careers-main" tabIndex={-1}>
           <section className="public-careers__jobs-hero">
             <div>
               <p className="public-careers__eyebrow">{t.heroEyebrow}</p>

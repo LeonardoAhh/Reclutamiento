@@ -27,6 +27,7 @@ import { bindSoundInteractions } from '@/lib/sound';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSidebarCollapsed } from './useSidebarCollapsed';
 import { ProductTour } from '@/components/ui/ProductTour';
+import { SkipLink } from '@/components/ui/SkipLink';
 import { useProductTourController } from '@/features/onboarding/useProductTourController';
 import './AppShell.css';
 
@@ -254,6 +255,7 @@ export function AppShell(props: { children: ReactNode; startupOverlaysReady?: bo
       onPointerCancel={(event) => finishPointerGesture(event, true)}
     >
       <SessionNotice onInitialNoticeResolved={resolveSessionNotice} />
+      <SkipLink targetId="app-shell-main" />
       <Sidebar
         mobileMenuOpen={isMobileMenuOpen}
         onCloseMobileMenu={closeMobileMenu}
@@ -287,7 +289,7 @@ export function AppShell(props: { children: ReactNode; startupOverlaysReady?: bo
           mobileMenuButtonRef={mobileMenuButtonRef}
           language={language}
         />
-        <div className="app-shell__main">
+        <div className="app-shell__main" id="app-shell-main" tabIndex={-1}>
           {/* La carga de código de una página no desmonta el shell ni muestra el splash. */}
           <RouteErrorBoundary key={location.pathname}>
             <Suspense fallback={<RouteLoadingFallback />}>{children}</Suspense>

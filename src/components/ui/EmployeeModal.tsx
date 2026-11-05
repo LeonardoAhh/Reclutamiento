@@ -2,11 +2,9 @@ import { useEffect, useId, useMemo, useState } from "react";
 import {
   UserRoundPlus,
   Trash2,
-  Calendar,
-  UserCheck,
   CircleAlert,
+  Save,
 } from "lucide-react";
-import { Save } from "lucide-react";
 import { toast } from "@/lib/notify";
 import type { Employee } from "@/lib/types";
 import type { AutoVacancy } from "@/lib/autoVacancies";
@@ -21,7 +19,6 @@ import { useTeamDirectory } from '@/features/team/TeamProvider';
 import { recruiterOptions } from '@/features/team/types';
 import { localTodayIso } from "@/lib/dates";
 import { Tooltip } from "./Tooltip";
-import { supabase } from "@/lib/supabase";
 import { Modal } from "./Modal";
 import { FormSheet } from "./FormSheet";
 import { FormWizard } from "./FormWizard";
@@ -318,7 +315,7 @@ export function EmployeeModal({
         toast.success({ title: t("¡Baja registrada!") });
         onClose();
       }
-    } catch (err) {
+    } catch {
       const message = t("Error inesperado.");
       setErrorMsg(message);
       toast.error({ title: message });
@@ -346,8 +343,10 @@ export function EmployeeModal({
           placeholder={t("Ej. 1234")}
           autoComplete="off"
           className={touchedAdd.num_empleado && errorsAdd.num_empleado ? 'input-error' : ''}
+          aria-invalid={Boolean(touchedAdd.num_empleado && errorsAdd.num_empleado)}
+          aria-describedby={touchedAdd.num_empleado && errorsAdd.num_empleado ? 'emp-num-error' : undefined}
         />
-        {touchedAdd.num_empleado && errorsAdd.num_empleado && <span className="form-error-text">{errorsAdd.num_empleado}</span>}
+        {touchedAdd.num_empleado && errorsAdd.num_empleado && <span id="emp-num-error" className="form-error-text">{errorsAdd.num_empleado}</span>}
       </div>
       <div className="form-group">
         <label htmlFor="emp-name">{t('Nombre Completo')} <span className="text-error">*</span></label>
@@ -366,8 +365,10 @@ export function EmployeeModal({
           placeholder={t("APELLIDOS NOMBRE")}
           autoComplete="off"
           className={touchedAdd.nombre && errorsAdd.nombre ? 'input-error' : ''}
+          aria-invalid={Boolean(touchedAdd.nombre && errorsAdd.nombre)}
+          aria-describedby={touchedAdd.nombre && errorsAdd.nombre ? 'emp-name-error' : undefined}
         />
-        {touchedAdd.nombre && errorsAdd.nombre && <span className="form-error-text">{errorsAdd.nombre}</span>}
+        {touchedAdd.nombre && errorsAdd.nombre && <span id="emp-name-error" className="form-error-text">{errorsAdd.nombre}</span>}
         {!errorsAdd.nombre && isNameDuplicate && mode === 'add' && (
           <span className="form-warning-text">
             <CircleAlert size={12} /> {t('Ya existe alguien con este nombre. Verifica que sea un homónimo.')}
@@ -410,8 +411,10 @@ export function EmployeeModal({
             }}
             options={areas.map((a) => ({ value: a, label: toNaturalCase(a) }))}
             placeholder={t("Seleccione área…")}
+            aria-invalid={Boolean(touchedAdd.area && errorsAdd.area)}
+            aria-describedby={touchedAdd.area && errorsAdd.area ? 'emp-area-error' : undefined}
           />
-          {touchedAdd.area && errorsAdd.area && <span className="form-error-text">{errorsAdd.area}</span>}
+          {touchedAdd.area && errorsAdd.area && <span id="emp-area-error" className="form-error-text">{errorsAdd.area}</span>}
         </div>
         <div className="form-group">
           <label htmlFor="emp-seccion">{t('Sección')} <span className="text-error">*</span></label>
@@ -425,8 +428,10 @@ export function EmployeeModal({
             options={sectionsForArea.map((s) => ({ value: s, label: toNaturalCase(s) }))}
             placeholder={t("Seleccione sección…")}
             disabled={!form.area}
+            aria-invalid={Boolean(touchedAdd.seccion && errorsAdd.seccion)}
+            aria-describedby={touchedAdd.seccion && errorsAdd.seccion ? 'emp-seccion-error' : undefined}
           />
-          {touchedAdd.seccion && errorsAdd.seccion && <span className="form-error-text">{errorsAdd.seccion}</span>}
+          {touchedAdd.seccion && errorsAdd.seccion && <span id="emp-seccion-error" className="form-error-text">{errorsAdd.seccion}</span>}
         </div>
         <>
           <div className="form-group">
@@ -441,8 +446,10 @@ export function EmployeeModal({
               options={puestosForSection.map((p) => ({ value: p, label: toNaturalCase(p) }))}
               placeholder={t("Seleccione puesto…")}
               disabled={!form.seccion}
+              aria-invalid={Boolean(touchedAdd.puesto && errorsAdd.puesto)}
+              aria-describedby={touchedAdd.puesto && errorsAdd.puesto ? 'emp-puesto-error' : undefined}
             />
-            {touchedAdd.puesto && errorsAdd.puesto && <span className="form-error-text">{errorsAdd.puesto}</span>}
+            {touchedAdd.puesto && errorsAdd.puesto && <span id="emp-puesto-error" className="form-error-text">{errorsAdd.puesto}</span>}
           </div>
           <div className="form-group">
             <label htmlFor="emp-turno">{t('Turno')} <span className="text-error">*</span></label>
@@ -461,9 +468,10 @@ export function EmployeeModal({
                 { value: "Mixto", label: t("Mixto") },
               ]}
               placeholder={t("Seleccionar...")}
-              aria-invalid={touchedAdd.turno && !!errorsAdd.turno}
+              aria-invalid={Boolean(touchedAdd.turno && errorsAdd.turno)}
+              aria-describedby={touchedAdd.turno && errorsAdd.turno ? 'emp-turno-error' : undefined}
             />
-            {touchedAdd.turno && errorsAdd.turno && <span className="form-error-text">{errorsAdd.turno}</span>}
+            {touchedAdd.turno && errorsAdd.turno && <span id="emp-turno-error" className="form-error-text">{errorsAdd.turno}</span>}
           </div>
           {starliteField}
         </>
@@ -478,8 +486,10 @@ export function EmployeeModal({
               if (!touchedAdd.fecha_ingreso) setTouchedAdd(t => ({ ...t, fecha_ingreso: true }));
             }}
             className={touchedAdd.fecha_ingreso && errorsAdd.fecha_ingreso ? 'input-error' : ''}
+            aria-invalid={Boolean(touchedAdd.fecha_ingreso && errorsAdd.fecha_ingreso)}
+            aria-describedby={touchedAdd.fecha_ingreso && errorsAdd.fecha_ingreso ? 'emp-fecha-error' : undefined}
           />
-          {touchedAdd.fecha_ingreso && errorsAdd.fecha_ingreso && <span className="form-error-text">{errorsAdd.fecha_ingreso}</span>}
+          {touchedAdd.fecha_ingreso && errorsAdd.fecha_ingreso && <span id="emp-fecha-error" className="form-error-text">{errorsAdd.fecha_ingreso}</span>}
         </div>
       </>
     );
@@ -549,9 +559,10 @@ export function EmployeeModal({
               { value: "Mixto", label: t("Mixto") },
             ]}
             placeholder={t("Turno...")}
-            aria-invalid={touchedAdd.turno && !!errorsAdd.turno}
+            aria-invalid={Boolean(touchedAdd.turno && errorsAdd.turno)}
+            aria-describedby={touchedAdd.turno && errorsAdd.turno ? 'emp-turno-error' : undefined}
           />
-          {touchedAdd.turno && errorsAdd.turno && <span className="form-error-text">{errorsAdd.turno}</span>}
+          {touchedAdd.turno && errorsAdd.turno && <span id="emp-turno-error" className="form-error-text">{errorsAdd.turno}</span>}
         </div>
         {starliteField}
       </>
@@ -566,8 +577,10 @@ export function EmployeeModal({
             if (!touchedAdd.fecha_ingreso) setTouchedAdd(t => ({ ...t, fecha_ingreso: true }));
           }}
           className={touchedAdd.fecha_ingreso && errorsAdd.fecha_ingreso ? 'input-error' : ''}
+          aria-invalid={Boolean(touchedAdd.fecha_ingreso && errorsAdd.fecha_ingreso)}
+          aria-describedby={touchedAdd.fecha_ingreso && errorsAdd.fecha_ingreso ? 'emp-vac-fecha-error' : undefined}
         />
-        {touchedAdd.fecha_ingreso && errorsAdd.fecha_ingreso && <span className="form-error-text">{errorsAdd.fecha_ingreso}</span>}
+        {touchedAdd.fecha_ingreso && errorsAdd.fecha_ingreso && <span id="emp-vac-fecha-error" className="form-error-text">{errorsAdd.fecha_ingreso}</span>}
       </div>
     </>
   ) : null;
@@ -585,9 +598,10 @@ export function EmployeeModal({
           }}
           placeholder={t("Seleccionar...")}
           options={recruiterOptions(members, employee?.reclutador, true)}
-          aria-invalid={touchedAdd.reclutador && !!errorsAdd.reclutador}
+          aria-invalid={Boolean(touchedAdd.reclutador && errorsAdd.reclutador)}
+          aria-describedby={touchedAdd.reclutador && errorsAdd.reclutador ? 'emp-reclutador-error' : undefined}
         />
-        {touchedAdd.reclutador && errorsAdd.reclutador && <span className="form-error-text">{errorsAdd.reclutador}</span>}
+        {touchedAdd.reclutador && errorsAdd.reclutador && <span id="emp-reclutador-error" className="form-error-text">{errorsAdd.reclutador}</span>}
       </div>
     </>
   );
@@ -624,8 +638,10 @@ export function EmployeeModal({
               if (!touchedDelete.fecha_baja) setTouchedDelete(t => ({ ...t, fecha_baja: true }));
             }}
             className={touchedDelete.fecha_baja && errorsDelete.fecha_baja ? 'input-error' : ''}
+            aria-invalid={Boolean(touchedDelete.fecha_baja && errorsDelete.fecha_baja)}
+            aria-describedby={touchedDelete.fecha_baja && errorsDelete.fecha_baja ? 'baja-fecha-error' : undefined}
           />
-          {touchedDelete.fecha_baja && errorsDelete.fecha_baja && <span className="form-error-text">{errorsDelete.fecha_baja}</span>}
+          {touchedDelete.fecha_baja && errorsDelete.fecha_baja && <span id="baja-fecha-error" className="form-error-text">{errorsDelete.fecha_baja}</span>}
         </div>
         <div className="form-group">
           <label htmlFor="baja-tipo">{t('Tipo de Baja')} <span className="text-error">*</span></label>
@@ -646,8 +662,10 @@ export function EmployeeModal({
               { value: "Termino de Contrato", label: t("Termino de Contrato") },
               { value: "Solo Inducción", label: t("Solo Inducción") },
             ]}
+            aria-invalid={Boolean(touchedDelete.tipo_baja && errorsDelete.tipo_baja)}
+            aria-describedby={touchedDelete.tipo_baja && errorsDelete.tipo_baja ? 'baja-tipo-error' : undefined}
           />
-          {touchedDelete.tipo_baja && errorsDelete.tipo_baja && <span className="form-error-text">{errorsDelete.tipo_baja}</span>}
+          {touchedDelete.tipo_baja && errorsDelete.tipo_baja && <span id="baja-tipo-error" className="form-error-text">{errorsDelete.tipo_baja}</span>}
         </div>
         <div className="form-group form-group--span-2">
           <label htmlFor="baja-motivo">{t('Descripción')} <span className="text-error">*</span></label>
@@ -662,8 +680,10 @@ export function EmployeeModal({
             }}
             autoComplete="off"
             className={touchedDelete.motivo_baja && errorsDelete.motivo_baja ? 'input-error' : ''}
+            aria-invalid={Boolean(touchedDelete.motivo_baja && errorsDelete.motivo_baja)}
+            aria-describedby={touchedDelete.motivo_baja && errorsDelete.motivo_baja ? 'baja-motivo-error' : undefined}
           />
-          {touchedDelete.motivo_baja && errorsDelete.motivo_baja && <span className="form-error-text">{errorsDelete.motivo_baja}</span>}
+          {touchedDelete.motivo_baja && errorsDelete.motivo_baja && <span id="baja-motivo-error" className="form-error-text">{errorsDelete.motivo_baja}</span>}
         </div>
       </div>
     </div>

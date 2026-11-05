@@ -1,8 +1,8 @@
-import { useRef, type RefObject } from "react";
+import { useId, useRef, type RefObject } from "react";
 import { ArrowLeft } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import type { ModalProps } from "./Modal";
-import { Sheet, SheetBody, SheetContent, SheetFooter, SheetHeader, SheetTitle } from "./Sheet";
+import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle } from "./Sheet";
 import { cn } from "@/lib/utils-shadcn";
 import "./FormSheet.css";
 
@@ -16,6 +16,8 @@ export function FormSheet({
 }: FormSheetProps) {
   const triggerRef = useRef<HTMLElement | null>(null);
   const { language } = useLanguage();
+  const generatedTitleId = useId();
+  const titleId = labelledById ?? generatedTitleId;
 
   return (
     <Sheet open={isOpen} onOpenChange={open => { if (!open) onClose(); }}>
@@ -24,7 +26,7 @@ export function FormSheet({
         size={size}
         className={cn("form-sheet", className)}
         aria-describedby={undefined}
-        {...(labelledById ? { "aria-labelledby": labelledById } : {})}
+        aria-labelledby={titleId}
         onOpenAutoFocus={() => {
           triggerRef.current = document.activeElement instanceof HTMLElement
             ? document.activeElement : null;
@@ -49,11 +51,14 @@ export function FormSheet({
                 <ArrowLeft aria-hidden="true" />
               </button>
             ) : icon}
-            <SheetTitle>{labelledById ? <span id={labelledById}>{title}</span> : title}</SheetTitle>
+            <SheetTitle><span id={titleId}>{title}</span></SheetTitle>
           </div>
           {headerActions}
         </SheetHeader>
-        <SheetBody className="modal-scroll-region">{children}</SheetBody>
+        {/* oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Scrollable content must be keyboard reachable. */}
+        <section className="sheet-body modal-scroll-region" aria-labelledby={titleId} tabIndex={0}>
+          {children}
+        </section>
         {footerActions && <SheetFooter>{footerActions}</SheetFooter>}
       </SheetContent>
     </Sheet>
