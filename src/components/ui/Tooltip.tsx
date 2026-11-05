@@ -24,7 +24,7 @@ export interface ChartTooltipEntry {
 
 /** Superficie visual compartida por tooltips Radix y contenido de gráficos. */
 export function TooltipSurface({ variant = 'default', className = '', children, ...props }: TooltipSurfaceProps) {
-  const classes = ['tooltip-surface', variant === 'chart' && 'tooltip-surface--chart', className]
+  const classes = ['tooltip-surface', 'surface-inverted', variant === 'chart' && 'tooltip-surface--chart', className]
     .filter(Boolean)
     .join(' ');
   return (
@@ -43,7 +43,7 @@ export function Tooltip({ content, children, side = 'top', delayMs, open, onOpen
           side={side}
           sideOffset={FLOATING_SURFACE_SIDE_OFFSET}
           collisionPadding={FLOATING_SURFACE_COLLISION_PADDING}
-          className="tooltip-surface tooltip-content"
+          className="tooltip-surface tooltip-content surface-inverted"
         >
           {content}
           <TooltipPrimitive.Arrow className="tooltip-arrow" />

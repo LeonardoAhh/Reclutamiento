@@ -21,7 +21,7 @@
 }
 
 /* Móvil/tablet: apilado en una columna */
-@media (max-width: 900px) {
+@media (width <= 1079px) {
   .reporte-layout {
     gap: var(--spacing-lg);
   }
@@ -174,13 +174,13 @@
   align-items: start;
 }
 
-@media (min-width: 480px) {
+@media (width >= 768px) {
   .ras__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-@media (min-width: 768px) {
+@media (width >= 1080px) {
   .ras__grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }

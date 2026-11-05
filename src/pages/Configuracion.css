@@ -52,7 +52,7 @@
   }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1080px) {
   .config-page__header-container {
     flex-direction: row;
     align-items: center;
@@ -303,7 +303,7 @@
   }
 }
 
-@media (min-width: 768px) and (max-width: 1023px) {
+@media (768px <= width < 1080px) {
   .analisis-view .config-results-controls__filters {
     flex-wrap: nowrap;
     overflow-x: auto;
@@ -344,7 +344,7 @@
   }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1080px) {
   .config-results-controls {
     grid-template-columns: minmax(0, 1fr) max-content;
     align-items: end;
@@ -524,7 +524,7 @@
   }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1080px) {
   .config-results--compact {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -619,7 +619,7 @@
   }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1080px) {
   .config-card__body:not(.config-card__body--preview) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -741,7 +741,7 @@
   max-width: 100%;
 }
 
-@media (min-width: 600px) {
+@media (width >= 768px) {
   .config-calendar-month-field {
     width: auto;
     min-width: var(--feature-calendar-column-min);
@@ -1035,7 +1035,7 @@
   width: 100%;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1080px) {
   .config-main {
     padding-block-end: var(--design-spacing-xxl);
   }
@@ -1634,7 +1634,7 @@
     background var(--transition-fast);
 }
 
-@media (max-width: 639px) {
+@media (width <= 767px) {
   .analisis-overview .config-page__toolbar,
   .analisis-hero {
     flex-basis: 100%;
@@ -1855,7 +1855,7 @@
   background: var(--color-document-paper);
 }
 
-@media (min-width: 640px) {
+@media (width >= 768px) {
   .documentos-toolbar {
     flex-direction: row;
     align-items: center;
@@ -1905,7 +1905,7 @@
   min-inline-size: 0;
 }
 
-@media (max-width: 639px) {
+@media (width <= 767px) {
   .tabulador-header {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas:

@@ -8,7 +8,7 @@
 }
 
 /* ── Mobile adjustments ── */
-@media (width <= 640px) {
+@media (width <= 767px) {
   .candidate-modal .form-grid {
     grid-template-columns: 1fr;
   }
@@ -58,6 +58,12 @@
   gap: var(--design-spacing-md);
   min-inline-size: 0;
   align-items: start;
+}
+
+@media (width >= 768px) {
+  .candidate-modal__paired-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (width >= 1080px) {

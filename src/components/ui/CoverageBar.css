@@ -50,3 +50,13 @@
     transform: translateX(100%);
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .coverage-bar__fill {
+    transition: none;
+  }
+
+  .coverage-bar__fill::after {
+    display: none;
+  }
+}

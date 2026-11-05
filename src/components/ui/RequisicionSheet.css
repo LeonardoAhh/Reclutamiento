@@ -26,7 +26,7 @@
   margin-left: var(--design-spacing-xxs);
 }
 
-@media (max-width: 640px) {
+@media (width <= 767px) {
   .modal-header-actions .requisicion-sheet__btn-label {
     display: none;
   }
@@ -160,7 +160,7 @@
   gap: var(--spacing-sm) var(--spacing-md);
 }
 
-@media (max-width: 720px) {
+@media (width <= 767px) {
   .requisicion-doc__grid {
     grid-template-columns: 1fr;
   }
@@ -171,7 +171,7 @@
   }
 }
 
-@media (min-width: 721px) {
+@media (width >= 768px) {
   .requisicion-doc__field[data-span="2"] {
     grid-column: span 2;
   }
@@ -387,7 +387,7 @@
   margin-top: var(--spacing-md);
 }
 
-@media (max-width: 720px) {
+@media (width <= 767px) {
   .requisicion-doc__signatures {
     grid-template-columns: 1fr;
   }

@@ -91,7 +91,7 @@
   gap: var(--spacing-md);
 }
 
-@media (max-width: 640px) {
+@media (width <= 767px) {
   .reporte-employee-detail__meta-grid {
     grid-template-columns: 1fr;
   }
@@ -127,7 +127,7 @@
 }
 
 /* Hide non-essential toolbar dividers on very small screens */
-@media (max-width: 519px) {
+@media (width <= 767px) {
   .reporte-divider-v {
     display: none;
   }
@@ -332,4 +332,3 @@
 .reporte-iconbtn:hover {
   background: var(--color-surface-soft);
 }
-

@@ -76,6 +76,10 @@
     overflow: clip auto;
     overscroll-behavior: contain;
   }
+
+  body:has(.sheet-content[data-state='open']) .app-shell__main {
+    overflow: hidden;
+  }
 }
 
 @media (width >= 1080px) {

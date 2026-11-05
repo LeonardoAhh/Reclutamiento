@@ -13,7 +13,7 @@
   gap: var(--spacing-lg);
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1080px) {
   .bajas__grid {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);

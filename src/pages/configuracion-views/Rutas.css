@@ -32,7 +32,7 @@
    data-route-view on the layout wrapper.
 ═══════════════════════════════════════════════════════════ */
 
-@media (width <= 768px) {
+@media (width < 768px) {
   .rutas-layout[data-route-view='list'] .rutas-detail-pane {
     display: none;
   }
@@ -70,7 +70,7 @@
   height: var(--spacing-lg);
 }
 
-@media (width <= 768px) {
+@media (width < 768px) {
   .rutas-back-btn {
     margin-bottom: var(--spacing-md);
   }
@@ -410,7 +410,7 @@
 }
 
 /* Reduce section padding on mobile */
-@media (width <= 768px) {
+@media (width < 768px) {
   .ruta-section,
   .ruta-search-results {
     padding: var(--spacing-sm) var(--spacing-md);
@@ -525,7 +525,7 @@
   letter-spacing: var(--type-body-md-tracking);
 }
 
-@media (width >= 600px) {
+@media (width >= 768px) {
   .ruta-search-results__list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }

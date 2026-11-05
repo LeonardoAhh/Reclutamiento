@@ -206,7 +206,7 @@
   border-left-color: var(--color-error);
 }
 
-@media (width <= 600px) {
+@media (width <= 767px) {
   .pipeline__recruiter-stats {
     grid-template-columns: 1fr;
   }
@@ -634,7 +634,7 @@
   margin-top: var(--design-spacing-sm);
 }
 
-@media (width <= 600px) {
+@media (width <= 767px) {
   .pipeline__empty {
     padding: var(--design-spacing-lg) var(--design-spacing-sm);
   }
@@ -1110,7 +1110,7 @@
   white-space: nowrap;
 }
 
-@media (width <= 600px) {
+@media (width <= 767px) {
   .pipeline__icon-btn {
     width: var(--control-height);
     height: var(--control-height);

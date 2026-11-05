@@ -28,8 +28,6 @@
 }
 
 .tooltip-content {
-  --color-body-strong: var(--color-on-dark);
-
   z-index: var(--layer-tooltip);
   animation: tooltip-fade-in var(--transition-fast);
   white-space: normal;
@@ -137,7 +135,7 @@
 }
 
 .trend-tooltip__title--danger {
-  color: var(--color-warning-text);
+  color: var(--color-on-dark);
 }
 
 .trend-tooltip__list {

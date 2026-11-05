@@ -302,14 +302,14 @@
   justify-content: center;
 }
 
-@media (min-width: 900px) {
+@media (width >= 1080px) {
   .reporte-hero__workspace {
     grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
     align-items: stretch;
   }
 }
 
-/* Steps horizontales (móvil: apilados; desktop: en fila) */
+/* Steps horizontales (móvil: apilados; tablet y desktop: en fila) */
 .reporte-hero__steps {
   display: grid;
   grid-template-columns: 1fr;
@@ -320,7 +320,7 @@
   margin: 0;
 }
 
-@media (min-width: 640px) {
+@media (width >= 768px) {
   .reporte-hero__steps {
     grid-template-columns: repeat(3, 1fr);
     gap: var(--spacing-lg);
@@ -341,7 +341,7 @@
     transform var(--transition-fast);
 }
 
-@media (min-width: 640px) {
+@media (width >= 768px) {
   .reporte-hero__step {
     flex-direction: column;
     align-items: flex-start;
@@ -454,8 +454,8 @@
   padding: 0;
 }
 
-/* Ocultar el toggle Ocultar en móvil (no aplica cuando el layout es apilado) */
-@media (max-width: 900px) {
+/* Ocultar el toggle cuando el layout permanece apilado en móvil/tablet. */
+@media (width <= 1079px) {
   .reporte-panel-toggle {
     display: none;
   }
@@ -631,8 +631,8 @@
   letter-spacing: var(--type-caption-up-tracking);
 }
 
-/* Móvil: mantener 3 columnas si caben, sino stack */
-@media (max-width: 420px) {
+/* Móvil: apilar los datos; tablet y desktop conservan las columnas. */
+@media (width <= 767px) {
   .reporte-preview__stats {
     grid-template-columns: 1fr;
   }

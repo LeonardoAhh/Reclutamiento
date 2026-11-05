@@ -5,19 +5,19 @@
    ======================================== */
 
 @font-face {
-  font-family: 'Plus Jakarta Sans';
+  font-family: 'Mona Sans';
   font-style: normal;
-  font-weight: 200 800;
+  font-weight: 200 900;
   font-display: swap;
-  src: url('/fonts/plus-jakarta-sans-variable-roman.ttf') format('truetype');
+  src: url('/fonts/mona-sans-variable-roman.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: 'Plus Jakarta Sans';
+  font-family: 'Mona Sans';
   font-style: italic;
-  font-weight: 200 800;
+  font-weight: 200 900;
   font-display: swap;
-  src: url('/fonts/plus-jakarta-sans-variable-italic.ttf') format('truetype');
+  src: url('/fonts/mona-sans-variable-italic.woff2') format('woff2');
 }
 
 :root,
@@ -185,7 +185,7 @@
 
   /* La interfaz usa la familia variable local en ambos temas. */
   --font-display: var(--font-body);
-  --font-body: 'Plus Jakarta Sans', -apple-system, system-ui, 'Segoe UI', helvetica, arial, sans-serif;
+  --font-body: 'Mona Sans', -apple-system, system-ui, 'Segoe UI', helvetica, arial, sans-serif;
   --font-code: 'Geist Mono', 'JetBrains Mono', ui-monospace, 'SF Mono', menlo, monaco, consolas, monospace;
   --type-display-xl-size: 3rem;
   --type-display-xl-weight: 600;
@@ -1987,7 +1987,7 @@ code:not(pre code) {
   justify-content: center;
   width: var(--touch-target-min);
   height: var(--touch-target-min);
-  border-radius: var(--rounded-full);
+  border-radius: var(--radius-control);
   background: var(--color-surface);
   border: var(--border-width) solid var(--color-control-border);
   color: var(--color-ink);
@@ -2015,7 +2015,7 @@ code:not(pre code) {
   min-block-size: var(--touch-target-min);
   padding: 0;
   border: 0;
-  border-radius: var(--rounded-full);
+  border-radius: var(--radius-control);
   background: transparent;
   color: var(--color-ink);
   cursor: pointer;
@@ -2050,7 +2050,7 @@ code:not(pre code) {
   min-width: var(--action-count-size);
   min-height: var(--action-count-size);
   padding: 0 var(--design-spacing-xxs);
-  border-radius: var(--rounded-full);
+  border-radius: var(--rounded-xs);
   background: var(--color-primary);
   color: var(--color-on-primary);
   font-size: var(--type-caption-up-size);
@@ -2080,16 +2080,26 @@ code:not(pre code) {
 }
 
 /* Card inverted — isla oscura (KPI hero, featured) */
-.card--dark {
-  background: var(--color-surface-dark);
-  border-color: transparent;
-  color: var(--color-on-dark);
-
+.surface-inverted,
+.card--dark,
+.stat-card--dark {
+  --color-ink: var(--color-on-dark);
+  --color-body: var(--color-on-dark);
+  --color-body-strong: var(--color-on-dark);
+  --color-mute: var(--color-on-dark-soft);
+  --color-muted: var(--color-on-dark-soft);
+  --color-faint: var(--color-on-dark-soft);
   --color-focus: var(--color-focus-on-inverted);
   --color-primary-text: var(--color-primary-text-on-dark);
   --color-primary-border: var(--color-primary-text-on-dark);
   --color-link: var(--color-primary-text-on-dark);
   --color-link-deep: var(--color-primary-text-on-dark);
+}
+
+.card--dark {
+  background: var(--color-surface-dark);
+  border-color: transparent;
+  color: var(--color-on-dark);
 }
 
 .card--dark h1,
@@ -2359,7 +2369,7 @@ code:not(pre code) {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--rounded-full);
+  border-radius: var(--radius-control);
   color: var(--color-ink);
   border: 0;
   padding: 0;
@@ -2780,6 +2790,11 @@ label > input.sr-only:focus-visible,
 @media (prefers-reduced-motion: reduce) {
   .spin {
     animation: none;
+  }
+
+  .toggle-switch__slider,
+  .toggle-switch__slider::before {
+    transition: none;
   }
 }
 

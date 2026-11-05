@@ -93,7 +93,7 @@
   inline-size: 100%;
 }
 
-@media (min-width: 480px) {
+@media (width >= 768px) {
   .maintenance-actions {
     flex-direction: row;
     justify-content: center;

@@ -16,12 +16,13 @@
 
 .stat-card:hover {
   border-color: var(--color-hairline-strong);
-  background: var(--color-surface-soft);
+  background: var(--color-surface-hover);
 }
 
 .stat-card--dark {
   background: var(--color-surface-dark);
   border-color: var(--color-surface-dark);
+  color: var(--color-on-dark);
 }
 
 .stat-card__label {
@@ -58,4 +59,3 @@
 .stat-card--dark .stat-card__subtitle {
   color: var(--color-on-dark-soft);
 }
-

@@ -4,7 +4,7 @@
    Mobile-first:
      base (320px+)  → hero + controls stack vertical, departments en 1 col
      768px+         → hero/controls en row
-     1024px+        → departments en 2 col grid
+     1080px+        → departments en 4 col grid
    ───────────────────────────────────────────────────────────────────────── */
 
 .plantilla-layout {
@@ -497,7 +497,7 @@
 }
 
 /* ── Mobile L / phone landscape (≥ 480px) ───────────────────────────── */
-@media (min-width: 480px) {
+@media (width >= 768px) {
   .dashboard__report-btn-label {
     /* En pantalla más amplia el label vuelve a mostrarse. */
     display: inline;
@@ -552,8 +552,8 @@
   }
 }
 
-/* ── Tablet landscape / Desktop (≥ 1024px) ──────────────────────────── */
-@media (min-width: 1024px) {
+/* ── Desktop (≥ 1080px) ─────────────────────────────────────────────── */
+@media (min-width: 1080px) {
   .dashboard__hero,
   .dashboard__controls {
     width: 100%;
@@ -575,7 +575,7 @@
 }
 
 /* ── Mobile-only header tweak (PWA bottom-bar leaves space) ─────────── */
-@media (max-width: 480px) {
+@media (width <= 767px) {
   .dashboard__report-btn-label {
     display: none;
   }

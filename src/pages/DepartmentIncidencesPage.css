@@ -436,9 +436,7 @@
   .department-incidences-page__history-legend {
     display: none;
   }
-}
 
-@media (width < 375px) {
   .department-incidences-page__table :is(th, td) {
     padding-inline: var(--design-spacing-xxs);
   }

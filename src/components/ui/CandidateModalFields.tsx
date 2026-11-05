@@ -133,51 +133,53 @@ export function CandidatePositionFields({
 
   return (
     <>
-      <div className="form-group">
-        <label htmlFor="cand-area">
-          {en ? 'Area' : 'Área'} <span className="text-error">*</span>
-          {restrictToOpen && noOpenPositions && (
-            <span className="candidate-modal__hint" role="note">
-              <span className="candidate-modal__hint--warning">
-                {en ? 'No open vacancies' : 'Sin vacantes abiertas'}
+      <div className="candidate-modal__field-row candidate-modal__paired-row">
+        <div className="form-group">
+          <label htmlFor="cand-area">
+            {en ? 'Area' : 'Área'} <span className="text-error">*</span>
+            {restrictToOpen && noOpenPositions && (
+              <span className="candidate-modal__hint" role="note">
+                <span className="candidate-modal__hint--warning">
+                  {en ? 'No open vacancies' : 'Sin vacantes abiertas'}
+                </span>
               </span>
-            </span>
-          )}
-        </label>
-        <CustomSelect
-          id="cand-area"
-          value={form.area}
-          onChange={(value) => {
-            playSound('select');
-            setForm({ ...form, area: value, seccion: '', puesto: '' });
-            setTouched({ ...touched, area: true, seccion: false, puesto: false });
-          }}
-          options={areas.map((area) => ({ value: area, label: toNaturalCase(area) }))}
-          placeholder={en ? 'Select…' : 'Seleccionar…'}
-          disabled={(isEdit && !isAdmin) || noOpenPositions}
-          aria-invalid={touched.area && !!errors.area}
-        />
-        {touched.area && errors.area && <span className="form-error-text">{errors.area}</span>}
-      </div>
+            )}
+          </label>
+          <CustomSelect
+            id="cand-area"
+            value={form.area}
+            onChange={(value) => {
+              playSound('select');
+              setForm({ ...form, area: value, seccion: '', puesto: '' });
+              setTouched({ ...touched, area: true, seccion: false, puesto: false });
+            }}
+            options={areas.map((area) => ({ value: area, label: toNaturalCase(area) }))}
+            placeholder={en ? 'Select…' : 'Seleccionar…'}
+            disabled={(isEdit && !isAdmin) || noOpenPositions}
+            aria-invalid={touched.area && !!errors.area}
+          />
+          {touched.area && errors.area && <span className="form-error-text">{errors.area}</span>}
+        </div>
 
-      <div className="form-group">
-        <label htmlFor="cand-seccion">
-          {en ? 'Section' : 'Sección'} <span className="text-error">*</span>
-        </label>
-        <CustomSelect
-          id="cand-seccion"
-          value={form.seccion}
-          onChange={(value) => {
-            playSound('select');
-            setForm({ ...form, seccion: value, puesto: '' });
-            setTouched({ ...touched, seccion: true, puesto: false });
-          }}
-          options={sectionsForArea.map((section) => ({ value: section, label: toNaturalCase(section) }))}
-          placeholder={en ? 'Select…' : 'Seleccionar…'}
-          disabled={!form.area || (isEdit && !isAdmin)}
-          aria-invalid={touched.seccion && !!errors.seccion}
-        />
-        {touched.seccion && errors.seccion && <span className="form-error-text">{errors.seccion}</span>}
+        <div className="form-group">
+          <label htmlFor="cand-seccion">
+            {en ? 'Section' : 'Sección'} <span className="text-error">*</span>
+          </label>
+          <CustomSelect
+            id="cand-seccion"
+            value={form.seccion}
+            onChange={(value) => {
+              playSound('select');
+              setForm({ ...form, seccion: value, puesto: '' });
+              setTouched({ ...touched, seccion: true, puesto: false });
+            }}
+            options={sectionsForArea.map((section) => ({ value: section, label: toNaturalCase(section) }))}
+            placeholder={en ? 'Select…' : 'Seleccionar…'}
+            disabled={!form.area || (isEdit && !isAdmin)}
+            aria-invalid={touched.seccion && !!errors.seccion}
+          />
+          {touched.seccion && errors.seccion && <span className="form-error-text">{errors.seccion}</span>}
+        </div>
       </div>
 
       <div className="form-group">

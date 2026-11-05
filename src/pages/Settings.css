@@ -44,7 +44,7 @@
   align-items: start;
 }
 
-@media (max-width: 880px) {
+@media (width <= 1079px) {
   .settings__grid {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -364,7 +364,7 @@
 }
 
 /* ── Responsive ──────────────────────────────────────────────────── */
-@media (max-width: 600px) {
+@media (width <= 767px) {
   .settings {
     gap: var(--spacing-lg);
     padding-block-end: var(--spacing-lg);
@@ -385,7 +385,7 @@
   }
 }
 
-@media (max-width: 420px) {
+@media (width <= 767px) {
   .settings__refresh span {
     display: none;
   }

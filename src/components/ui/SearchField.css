@@ -56,7 +56,7 @@
 }
 
 .search-field__clear:hover {
-  background: var(--color-surface-soft);
+  background: var(--color-surface-hover);
   color: var(--color-ink);
 }
 

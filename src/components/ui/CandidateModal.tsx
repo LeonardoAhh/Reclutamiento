@@ -145,7 +145,11 @@ export function CandidateModal({
     setTouched,
     touched,
   };
-  const fieldsContacto = <CandidateContactFields {...fieldProps} />;
+  const fieldsContacto = (
+    <div className="candidate-modal__field-row candidate-modal__paired-row">
+      <CandidateContactFields {...fieldProps} />
+    </div>
+  );
   const fieldsPosicion = <CandidatePositionFields {...fieldProps} />;
   const fieldsProceso = <CandidateProcessFields {...fieldProps} />;
 

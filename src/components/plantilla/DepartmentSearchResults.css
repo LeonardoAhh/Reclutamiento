@@ -158,7 +158,7 @@
   gap: var(--design-spacing-xs);
 }
 
-@media (min-width: 48rem) {
+@media (width >= 768px) {
   .department-search-results__header {
     flex-direction: row;
     align-items: end;

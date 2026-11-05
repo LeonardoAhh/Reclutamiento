@@ -127,7 +127,7 @@
   font-weight: var(--type-body-sm-strong-weight);
 }
 
-@media (max-width: 768px) {
+@media (width < 768px) {
   .bajas-chart {
     height: 210px;
     overflow-x: auto;

@@ -203,7 +203,7 @@
 }
 
 /* ── Responsive ───────────────────────────────────────────── */
-@media (max-width: 640px) {
+@media (width <= 767px) {
   .rh {
     padding: var(--spacing-xl) var(--spacing-md);
   }
@@ -221,9 +221,6 @@
     height: var(--icon-size-xxl);
   }
 
-}
-
-@media (max-width: 420px) {
   .rh__pipeline {
     flex-wrap: wrap;
     justify-content: center;

@@ -221,19 +221,6 @@
   letter-spacing: var(--type-body-md-tracking);
 }
 
-@media (768px <= width < 1080px) {
-  .reporte-head__grid :is(.reporte-saved__trigger--labeled, .reporte-head__departure-action) {
-    min-inline-size: var(--touch-target-min);
-    min-block-size: var(--touch-target-min);
-    padding-inline: 0;
-    justify-content: center;
-  }
-
-  .reporte-head__grid :is(.reporte-saved__trigger-label, .reporte-head__departure-label) {
-    display: none;
-  }
-}
-
 @media (width <= 767px) {
   .reporte-head__grid {
     display: grid;

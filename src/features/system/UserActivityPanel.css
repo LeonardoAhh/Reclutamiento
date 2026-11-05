@@ -126,7 +126,7 @@
   margin: 0;
 }
 
-@media (min-width: 600px) {
+@media (width >= 768px) {
   .user-activity-panel__list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }

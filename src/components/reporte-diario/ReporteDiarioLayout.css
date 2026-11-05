@@ -240,7 +240,7 @@ button.reporte-card:hover,
   gap: var(--spacing-md);
 }
 
-@media (width >= 640px) {
+@media (width >= 768px) {
   .reporte-grid-2 {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -250,7 +250,7 @@ button.reporte-card:hover,
   }
 }
 
-@media (width >= 1024px) {
+@media (width >= 1080px) {
   .reporte-grid-4 {
     grid-template-columns: repeat(4, 1fr);
   }

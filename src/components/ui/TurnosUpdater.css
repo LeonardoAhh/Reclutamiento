@@ -120,7 +120,7 @@
 }
 
 /* ── Responsive ──────────────────────────────────────────────────────── */
-@media (width <= 640px) {
+@media (width <= 767px) {
   .turnos-updater__preview-content {
     width: 95%;
     max-height: 90vh;
