@@ -34,11 +34,11 @@ button.kpi-card--interactive {
 }
 
 .kpi-card--warning .kpi-card__icon-box {
-  color: var(--color-warning);
+  color: var(--color-warning-text);
 }
 
 .kpi-card--destructive .kpi-card__icon-box {
-  color: var(--color-error);
+  color: var(--color-error-text);
 }
 
 .kpi-card__content {
@@ -93,7 +93,7 @@ button.kpi-card--interactive {
 }
 
 .kpi-card--destructive .kpi-card__value {
-  color: var(--color-error);
+  color: var(--color-error-text);
 }
 
 .kpi-card__sub {

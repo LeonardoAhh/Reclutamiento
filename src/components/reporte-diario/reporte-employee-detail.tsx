@@ -110,9 +110,9 @@ interface KpiCardsProps {
 }
 
 const KPI_CONFIG = [
-  { label: 'Asistencias', englishLabel: 'Attendance', key: 'asistencias' as const, tone: 'var(--color-success)' },
-  { label: 'Incidencias', englishLabel: 'Incidents', key: 'incidencias' as const, tone: 'var(--color-error)' },
-  { label: 'Descansos', englishLabel: 'Rest days', key: 'descansos' as const, tone: 'var(--color-accent-teal)' },
+  { label: 'Asistencias', englishLabel: 'Attendance', key: 'asistencias' as const, tone: 'var(--color-success-text)' },
+  { label: 'Incidencias', englishLabel: 'Incidents', key: 'incidencias' as const, tone: 'var(--color-error-text)' },
+  { label: 'Descansos', englishLabel: 'Rest days', key: 'descansos' as const, tone: 'var(--color-body)' },
 ] as const;
 
 function KpiCards({ stats }: KpiCardsProps) {

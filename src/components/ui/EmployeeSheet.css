@@ -44,7 +44,7 @@
   gap: var(--spacing-xs);
   margin-top: var(--spacing-sm);
   font-size: var(--type-body-sm-size);
-  color: var(--color-warning);
+  color: var(--color-warning-text);
 }
 
 /* ── Delete confirmation ── */
@@ -66,7 +66,7 @@
   justify-content: center;
   border-radius: var(--rounded-full);
   background: var(--color-error-tint);
-  color: var(--color-error);
+  color: var(--color-error-text);
   margin-bottom: var(--spacing-xs);
 }
 

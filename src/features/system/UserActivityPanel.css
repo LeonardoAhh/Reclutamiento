@@ -95,7 +95,7 @@
 }
 
 .user-activity-panel__status--online {
-  color: var(--color-success);
+  color: var(--color-success-text);
 }
 
 .user-activity-panel__status-icon {

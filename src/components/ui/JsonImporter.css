@@ -19,10 +19,10 @@
 
 .json-importer__status--success {
   background: var(--color-success-tint);
-  color: var(--color-success);
+  color: var(--color-success-text);
 }
 
 .json-importer__status--error {
   background: var(--color-error-tint);
-  color: var(--color-error);
+  color: var(--color-error-text);
 }

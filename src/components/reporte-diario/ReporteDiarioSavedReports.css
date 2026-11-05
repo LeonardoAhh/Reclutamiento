@@ -261,7 +261,7 @@
 }
 
 .reporte-saved__count-value--high {
-  color: var(--color-warning);
+  color: var(--color-warning-text);
 }
 
 .reporte-saved__count-label {
@@ -297,7 +297,7 @@
 }
 
 .reporte-saved__delete:hover:not(:disabled) {
-  color: var(--color-error);
+  color: var(--color-error-text);
   background: var(--color-error-tint);
 }
 

@@ -195,7 +195,7 @@
 
 /* Variantes por tipo de estado */
 .pipeline__recruiter-stat--citados {
-  border-left-color: var(--color-accent-amber);
+  border-left-color: var(--color-warning-text);
 }
 
 .pipeline__recruiter-stat--contratados {
@@ -613,7 +613,7 @@
 
 .pipeline__empty-state--error .animated-empty-state__icon,
 .pipeline__empty-state--error .animated-empty-state__title {
-  color: var(--color-error);
+  color: var(--color-error-text);
 }
 
 .pipeline__error-message {
@@ -796,7 +796,7 @@
 }
 
 .pipeline__icon-btn--danger:hover {
-  color: var(--color-error);
+  color: var(--color-error-text);
   border-color: var(--color-error);
 }
 

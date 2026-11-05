@@ -137,7 +137,7 @@
 }
 
 .trend-tooltip__title--danger {
-  color: var(--color-warning);
+  color: var(--color-warning-text);
 }
 
 .trend-tooltip__list {

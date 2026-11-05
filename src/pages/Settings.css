@@ -359,7 +359,7 @@
 .settings__item-error {
   margin: 0;
   grid-column: 1 / -1;
-  color: var(--color-error);
+  color: var(--color-error-text);
   font-size: var(--type-caption-md-size, 12px);
 }
 

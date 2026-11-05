@@ -76,7 +76,7 @@ The optional dark theme extends the same semantic tokens using the supplied char
 - The browser preference is stored under `reclutamiento_color_scheme`; it is independent of account data and authentication. Sistema follows operating-system changes; other selections override them. Changes synchronize across tabs.
 - `public/theme.js` restores the preference on `html[data-color-scheme]` before the global stylesheet loads. `useTheme` subscribes to this single controller; portals inherit the same tokens.
 - If storage is unavailable, the selected theme still applies for the current visit and the selector explains that it cannot be saved.
-- The browser theme-color is read from `--color-canvas`. The existing PWA manifest remains unchanged.
+- The browser theme-color follows the computed canvas background and is serialized to RGB for mobile browser chrome. The iOS standalone status-bar style follows the resolved light or dark mode for icon contrast. The existing PWA manifest remains a static fallback.
 
 ### Paletas seleccionables
 
@@ -221,7 +221,7 @@ All buttons, including icon-only buttons, are rectangles with soft 10px corners.
 
 ## Components
 
-**`product-tour`** — recorrido guiado de cuenta: el panel usa `--tour-popover-inline-size` (18rem) como ancho máximo y reduce su ancho con el viewport. El recorte del fondo y el contorno de foco comparten el radio medido del elemento resaltado, con el radio de control como respaldo cuando no tiene uno propio. La cabecera, descripción y pie emplean los roles tipográficos existentes; los botones conservan objetivos táctiles de 44px y el texto breve evita saltos a escala normal sin bloquear el zoom.
+**`product-tour`** — recorrido guiado de cuenta: el panel usa `--tour-popover-inline-size` (18rem) como ancho máximo y reduce su ancho con el viewport. El recorte del fondo y el contorno de foco comparten el radio medido del elemento resaltado, con el radio de control como respaldo cuando no tiene uno propio. La cabecera, descripción y pie emplean los roles tipográficos existentes y padding compacto de la escala; los botones conservan objetivos táctiles de 44px. El panel mantiene altura natural sin scroll interno y el posicionador elige el lado con espacio disponible. El texto breve evita saltos a escala normal sin bloquear el zoom.
 
 > No hover states are documented. Each spec covers Default and (where extracted) pressed/active states. Variants live as separate `components:` entries.
 

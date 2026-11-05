@@ -132,7 +132,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-error);
+  color: var(--color-error-text);
 }
 
 .delete-warning__title {
@@ -144,7 +144,7 @@
 
 .delete-warning__name {
   font-weight: var(--type-body-strong-weight);
-  color: var(--color-error);
+  color: var(--color-error-text);
 }
 
 
@@ -182,7 +182,7 @@
 }
 
 .form-notice--warning svg {
-  color: var(--color-warning);
+  color: var(--color-warning-text);
 }
 
 .form-notice--info {
@@ -196,7 +196,7 @@
 }
 
 .form-notice--success svg {
-  color: var(--color-success);
+  color: var(--color-success-text);
 }
 
 /* ── Form hint ── */

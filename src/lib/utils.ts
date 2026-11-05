@@ -7,7 +7,6 @@ import type {
   PositionComment,
 } from './types';
 import { PLANTILLA_AUTORIZADA } from './constants';
-import { localTodayIso } from './dates';
 
 /**
  * Transform raw JSON employee data to normalized DB format
@@ -185,10 +184,9 @@ export function calculatePositionCoverage(
   employees: Employee[],
   comments: PositionComment[],
   positions: AuthorizedPosition[] = PLANTILLA_AUTORIZADA,
-  asOfDate?: string
+  _asOfDate?: string
 ): PositionCoverage[] {
   const allUniqueEmployees = dedupeEmployees(employees);
-  const targetDate = asOfDate || localTodayIso();
   
   // Se quitó la restricción de fecha_ingreso; todos los empleados registrados se cuentan como REAL.
   const uniqueEmployees = allUniqueEmployees;
@@ -329,10 +327,10 @@ export function calculateDepartmentCoverage(
  * Get coverage color based on percentage — uses design tokens
  */
 export function getCoverageColor(percentage: number): string {
-  if (percentage >= 100) return 'var(--color-success)';
-  if (percentage >= 75) return 'var(--color-accent-teal)';
-  if (percentage >= 50) return 'var(--color-accent-amber)';
-  return 'var(--color-error)';
+  if (percentage >= 100) return 'var(--color-success-text)';
+  if (percentage >= 75) return 'var(--color-primary-text)';
+  if (percentage >= 50) return 'var(--color-warning-text)';
+  return 'var(--color-error-text)';
 }
 
 /**

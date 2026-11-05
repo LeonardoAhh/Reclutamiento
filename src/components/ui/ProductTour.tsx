@@ -295,6 +295,7 @@ export function ProductTour({
     <>
       <ProductTourOverlay bounds={targetBounds} />
       <ProductTourPopover
+        key={`${stepIndex}-${targetBounds ? 'target' : 'waiting'}`}
         step={step}
         stepIndex={stepIndex}
         stepCount={steps.length}

@@ -211,7 +211,7 @@
   cursor: pointer;
 }
 .recruiter-metrics__copy-btn.is-copied {
-  color: var(--color-success);
+  color: var(--color-success-text);
 }
 .recruiter-metrics__table-actions {
   display: flex;
@@ -237,7 +237,7 @@
 }
 .candidate-metrics__error {
   margin-block-end: var(--design-spacing-md);
-  color: var(--color-error);
+  color: var(--color-error-text);
 }
 @media (min-width: 768px) {
   .candidate-metrics__recruiters,

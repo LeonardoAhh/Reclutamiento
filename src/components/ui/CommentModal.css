@@ -45,7 +45,7 @@
   text-transform: uppercase;
 }
 
-.comment-item__type[data-type="proceso_activo"] { color: var(--color-accent-amber); }
+.comment-item__type[data-type="proceso_activo"] { color: var(--color-warning-text); }
 .comment-item__type[data-type="entrevista"]      { color: var(--color-accent-teal); }
 .comment-item__type[data-type="entrega_documentos"] { color: var(--color-primary-text); }
 .comment-item__type[data-type="otro"]            { color: var(--color-muted); }

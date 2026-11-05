@@ -21,8 +21,8 @@
   height: var(--icon-size-control);
   padding: 0 var(--spacing-xs);
   border-radius: var(--rounded-xs);
-  background: color-mix(in srgb, var(--color-accent-amber) 18%, var(--color-canvas));
-  color: var(--color-accent-amber);
+  background: var(--color-warning-subtle);
+  color: var(--color-warning-text);
   font-family: var(--font-body);
   font-size: var(--type-caption-up-size);
   font-weight: var(--type-caption-up-weight);
@@ -287,7 +287,7 @@
 
 /* ── Refactored classes from AreaDetailView.tsx inline styles ── */
 .vacancy-highlight {
-  color: var(--color-error);
+  color: var(--color-error-text);
   font-weight: var(--type-body-strong-weight);
   font-family: var(--font-body);
   font-size: var(--type-body-strong-size);

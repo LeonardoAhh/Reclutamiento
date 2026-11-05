@@ -72,7 +72,7 @@
   align-items: center;
   justify-content: center;
   background: var(--color-success-tint);
-  color: var(--color-success);
+  color: var(--color-success-text);
 }
 
 .hire-candidate-modal .delete-warning__title {

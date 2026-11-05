@@ -106,11 +106,11 @@
 }
 
 .kpi-hero-legend-marker--vacantesPlantilla {
-  color: var(--color-error);
+  color: var(--color-error-text);
 }
 
 .kpi-hero-legend-marker--vacantesBackup {
-  color: var(--color-accent-amber);
+  color: var(--color-warning-text);
 }
 
 .kpi-hero-legend-marker--vacantesStarlite {
@@ -208,7 +208,7 @@
 
 .kpi-hero-critical {
   text-align: right;
-  color: var(--color-error);
+  color: var(--color-error-text);
 }
 
 .kpi-hero-critical__label {
@@ -331,7 +331,7 @@
 }
 
 .kpi-hero-day-card--critical .kpi-hero-day-card__coverage {
-  color: var(--color-error);
+  color: var(--color-error-text);
 }
 
 .kpi-hero-day-card__vacancies {
@@ -344,7 +344,7 @@
 }
 
 .kpi-hero-day-card__vacancies--high {
-  color: var(--color-accent-amber);
+  color: var(--color-warning-text);
 }
 
 .kpi-hero-footer-label {

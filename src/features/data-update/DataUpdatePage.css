@@ -1292,12 +1292,12 @@
 }
 
 .data-update-admin-card__action--danger {
-  color: var(--color-error);
+  color: var(--color-error-text);
 }
 
 .data-update-admin-card__action--danger:hover:not(:disabled) {
   background: var(--color-error-tint);
-  color: var(--color-error);
+  color: var(--color-error-text);
 }
 
 .data-update-admin-card__action svg {

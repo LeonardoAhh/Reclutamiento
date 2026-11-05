@@ -486,7 +486,7 @@
   height: var(--spacing-lg);
   border-radius: var(--rounded-xs);
   background: var(--color-vacancy-chip-bg);
-  color: var(--color-error);
+  color: var(--color-error-text);
   font-weight: 600;
   font-size: var(--type-caption-md-size);
   font-variant-numeric: tabular-nums;

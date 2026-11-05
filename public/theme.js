@@ -38,9 +38,29 @@
   let snapshot;
 
   function syncBrowserColor() {
-    const canvas = window.getComputedStyle(root).getPropertyValue('--color-canvas').trim();
+    const background = window.getComputedStyle(root).backgroundColor;
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (canvas && meta) meta.setAttribute('content', canvas);
+    if (background && meta) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 1;
+      canvas.height = 1;
+      const context = canvas.getContext('2d');
+      if (context) {
+        try {
+          context.fillStyle = background;
+          context.fillRect(0, 0, 1, 1);
+          const channels = context.getImageData(0, 0, 1, 1).data;
+          const hex = Array.from(channels.slice(0, 3), (channel) => channel.toString(16).padStart(2, '0')).join('');
+          meta.setAttribute('content', `#${hex}`);
+        } catch {
+          meta.setAttribute('content', background);
+        }
+      } else {
+        meta.setAttribute('content', background);
+      }
+    }
+    const statusBar = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+    if (statusBar) statusBar.setAttribute('content', snapshot.resolvedTheme === 'dark' ? 'black' : 'default');
   }
 
   function apply(preference, palette) {

@@ -124,5 +124,5 @@
 
 .attachment-card__remove:hover {
   background: var(--color-error-tint);
-  color: var(--color-error);
+  color: var(--color-error-text);
 }

@@ -1,7 +1,7 @@
 /* IncapacidadModal — toggle + fecha opcional de regreso */
 
 .incapacidad-modal__icon {
-  color: var(--color-accent-amber);
+  color: var(--color-warning-text);
 }
 
 .incapacidad-modal .incapacidad-modal__icon {

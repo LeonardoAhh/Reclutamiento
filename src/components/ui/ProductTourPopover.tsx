@@ -3,6 +3,7 @@ import * as PopoverPrimitive from '@radix-ui/react-popover';
 import { X } from 'lucide-react';
 import { Popover, PopoverAnchor, PopoverContent } from '@/components/ui/Popover';
 import type { ProductTourStep } from '@/features/onboarding/productTourSteps';
+import { useIsMobile } from '@/hooks/useIsMobile';
 import type { AccountCopy } from '@/pages/account-translations';
 import './ProductTour.css';
 
@@ -32,6 +33,8 @@ export function ProductTourPopover({
   onNext,
 }: ProductTourPopoverProps) {
   const id = useId();
+  const isMobile = useIsMobile();
+  const isTargetStep = step.side !== 'center';
 
   return (
     <Popover open>
@@ -44,7 +47,8 @@ export function ProductTourPopover({
         aria-labelledby={`${id}-title`}
         aria-describedby={`${id}-description`}
         data-tour-centered={step.side === 'center' || undefined}
-        side={step.side === 'right' ? 'right' : 'bottom'}
+        align={isMobile && isTargetStep ? 'start' : 'center'}
+        side={isMobile && step.side === 'right' ? 'top' : step.side === 'right' ? 'right' : 'bottom'}
         sideOffset={step.side === 'center' ? 0 : undefined}
         onOpenAutoFocus={(event) => event.preventDefault()}
         onCloseAutoFocus={(event) => event.preventDefault()}

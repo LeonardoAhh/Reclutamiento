@@ -267,7 +267,7 @@
 
 .reporte-errors__group-heading span {
   flex-shrink: 0;
-  color: var(--color-error);
+  color: var(--color-error-text);
   font-weight: var(--type-body-strong-weight);
   font-family: var(--font-body);
   font-size: var(--type-body-strong-size);

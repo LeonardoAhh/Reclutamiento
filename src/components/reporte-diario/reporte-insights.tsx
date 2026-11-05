@@ -52,7 +52,7 @@ const STYLES = {
     },
     triggerIconAlert: {
         background: "var(--color-warning-tint)",
-        color: "var(--color-warning)",
+        color: "var(--color-warning-text)",
     },
     triggerIconNormal: {
         background: "var(--color-primary-tint)",
@@ -92,12 +92,12 @@ const STYLES = {
         danger: {
             background: "var(--color-error-tint)",
             borderColor: "var(--color-error)",
-            color: "var(--color-error)",
+            color: "var(--color-error-text)",
         },
         warning: {
             background: "var(--color-warning-tint)",
             borderColor: "var(--color-warning)",
-            color: "var(--color-warning)",
+            color: "var(--color-warning-text)",
         },
     },
     insightIcon: {
@@ -115,7 +115,7 @@ const STYLES = {
         gap: "var(--spacing-md)",
         background: "var(--color-success-tint)",
         border: "1px solid var(--color-success)",
-        color: "var(--color-success)",
+        color: "var(--color-success-text)",
         padding: "var(--spacing-md)",
         borderRadius: "var(--rounded-lg)",
     },

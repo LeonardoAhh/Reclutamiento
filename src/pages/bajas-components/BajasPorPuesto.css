@@ -100,7 +100,7 @@
 }
 
 .bajas-por-puesto__val--success {
-  color: var(--color-success);
+  color: var(--color-success-text);
 }
 
 .bajas-por-puesto__pct {

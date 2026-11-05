@@ -1665,7 +1665,7 @@
 }
 
 .analisis-hero__card--error[aria-pressed='false'] .analisis-hero__card-count {
-  color: var(--color-error);
+  color: var(--color-error-text);
 }
 
 .analisis-hero__card-header {
@@ -1811,7 +1811,7 @@
 .config-search-error,
 .config-incidence-error {
   margin: 0;
-  color: var(--color-error);
+  color: var(--color-error-text);
 }
 
 .config-incidence-loading {

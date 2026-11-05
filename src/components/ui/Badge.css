@@ -53,7 +53,7 @@
 
 .badge--error-solid {
   background: var(--color-error-deep);
-  color: var(--color-on-error);
+  color: var(--color-on-error-deep);
 }
 
 .badge--compact {
