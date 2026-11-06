@@ -62,6 +62,7 @@ export function AnalysisEmployeeDetail({
   const { language } = useLanguage();
   const configurationCopy = getConfiguracionCopy(language);
   const copy = configurationCopy.analysis;
+  const incidenceLabels: Readonly<Record<string, string>> = copy.incidenceLabels;
   const indicatorCopy = configurationCopy.indicators;
   const locale = language === 'en' ? 'en-US' : 'es-MX';
   const employeeName = employee.nombre.trim() ? displayValue(employee.nombre) : copy.noInformation;
@@ -100,7 +101,7 @@ export function AnalysisEmployeeDetail({
       const codes = incidentCodesByDate.get(dateKey) ?? [];
       const incidenceDetails = codes.map((code) => {
         const sourceLabel = INCIDENCIA_LABELS[code] ?? code;
-        const label = copy.incidenceLabels[sourceLabel] ?? sourceLabel;
+        const label = incidenceLabels[sourceLabel] ?? sourceLabel;
         return { code, label };
       });
       const dateLabel = day.date.toLocaleDateString(locale, {
@@ -137,7 +138,7 @@ export function AnalysisEmployeeDetail({
         </CalendarDay>
       );
     },
-    [copy.incidenceLabels, incidentCodesByDate, locale],
+    [incidenceLabels, incidentCodesByDate, locale],
   );
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => employeeNameButtonRef.current?.focus());
