@@ -3,9 +3,6 @@
    .sidebar por herencia de custom properties). */
 .app-shell {
   --app-sidebar-width: var(--feature-navigation-rail-inline-size);
-
-  min-block-size: 100dvh;
-  overflow-x: clip;
 }
 
 .app-shell[data-sidebar-collapsed='true'] {
@@ -31,10 +28,9 @@
   position: absolute;
   z-index: -1;
   inset: 0;
-  border: var(--border-width) solid var(--workspace-border-color);
   border-radius: inherit;
   background: var(--shell-workspace-surface);
-  box-shadow: var(--workspace-shadow);
+  box-shadow: var(--app-workspace-shadow);
   content: '';
   opacity: var(--sidebar-progress, 0);
   pointer-events: none;
@@ -101,9 +97,8 @@
     margin-inline-start: calc(var(--app-sidebar-width) + var(--design-spacing-md));
     overflow: hidden;
     background: var(--workspace-surface);
-    border: var(--border-width) solid var(--workspace-border-color);
     border-radius: var(--workspace-radius);
-    box-shadow: var(--workspace-shadow);
+    box-shadow: var(--app-workspace-shadow);
     transform: none;
 
     /* Acompaña el mismo pliegue que la barra lateral. */
