@@ -54,12 +54,6 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     puesto: "JEFE DE ALMACÉN",
     plantilla_autorizada: 1,
   },
-  /*{
-    area: "ALMACÉN",
-    seccion: "ALMACÉN",
-    puesto: "CHOFER",
-    plantilla_autorizada: 1,
-  },*/
   {
     area: "ALMACÉN",
     seccion: "ALMACÉN",
@@ -113,10 +107,10 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     area: "CALIDAD",
     seccion: "A. CALIDAD 2DO. TURNO",
     puesto: "OPERADOR DE ACABADOS GP-12",
-    plantilla_autorizada: 20,
+    plantilla_autorizada: 22,
     bono: true,
     bono_monto: 619,
-    backup: 0,
+    backup: 2,
   },
   {
     area: "CALIDAD",
@@ -150,26 +144,20 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
   {
     area: "CALIDAD",
     seccion: "CALIDAD ADMTVO",
+    puesto: "SUPERVISOR DE TAMPOGRAFÍA",
+    plantilla_autorizada: 1,
+  },
+  {
+    area: "CALIDAD",
+    seccion: "CALIDAD ADMTVO",
     puesto: "INGENIERO DE CALIDAD PROCESOS A",
-    plantilla_autorizada: 1,
-  },
-  {
-    area: "CALIDAD",
-    seccion: "A. CALIDAD 1ER TURNO",
-    puesto: "TÉCNICO DE TAMPOGRAFIA",
-    plantilla_autorizada: 1,
-  },
-  {
-    area: "CALIDAD",
-    seccion: "A. CALIDAD 2DO. TURNO",
-    puesto: "TÉCNICO DE TAMPOGRAFIA",
     plantilla_autorizada: 1,
   },
   {
     area: "CALIDAD",
     seccion: "CALIDAD ADMTVO",
     puesto: "INSPECTOR DE CALIDAD",
-    plantilla_autorizada: 16,
+    plantilla_autorizada: 15,
     backup: 4,
   },
   {
@@ -204,12 +192,6 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     area: "LOGISTICA",
     seccion: "LOGISTICA",
     puesto: "JEFE DE LOGISTICA",
-    plantilla_autorizada: 1,
-  },
-  {
-    area: "LOGISTICA",
-    seccion: "LOGISTICA",
-    puesto: "SUPERVISOR DE LOGISTICA",
     plantilla_autorizada: 1,
   },
 
@@ -252,7 +234,7 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     area: "MANTENIMIENTO",
     seccion: "MANTENIMIENTO",
     puesto: "AUXILIAR DE MANTENIMIENTO",
-    plantilla_autorizada: 2,
+    plantilla_autorizada: 3,
     bono: true,
     bono_monto: 619,
   },
@@ -280,7 +262,7 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     area: "TALLER DE MOLDES",
     seccion: "MOLDES",
     puesto: "TÉCNICO DE MOLDES",
-    plantilla_autorizada: 13,
+    plantilla_autorizada: 11,
     bono: true,
     bono_monto: 345,
   },
@@ -625,13 +607,13 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     area: "PROYECTOS",
     seccion: "PROYECTOS",
     puesto: "INGENIERO DE PROYECTOS",
-    plantilla_autorizada: 4,
+    plantilla_autorizada: 3,
   },
   {
     area: "PROYECTOS",
     seccion: "PROYECTOS",
     puesto: "AUXILIAR DE PROYECTOS",
-    plantilla_autorizada: 1,
+    plantilla_autorizada: 2,
   },
 
   // ── RECURSOS HUMANOS ──

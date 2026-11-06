@@ -95,7 +95,6 @@ function DayCell({
         "reporte-cal__cell",
         active ? "reporte-cal__cell--active" : "",
         !hasData ? "reporte-cal__cell--empty" : "",
-        !active && heat !== "none" ? `reporte-cal__cell--${heat}` : "",
     ]
         .filter(Boolean)
         .join(" ");
@@ -128,9 +127,16 @@ function DayCell({
                     <span className="sr-only">{copy("Incidencias", "Incidents")}:</span>
                     {count > 0 ? (
                         <Badge
-                            variant="neutral"
+                            variant={
+                                heat === "crit"
+                                    ? "error"
+                                    : heat === "warn"
+                                      ? "warning"
+                                      : heat === "ok"
+                                        ? "success"
+                                        : "neutral"
+                            }
                             size="compact"
-                            className="reporte-cal__count-badge"
                             title={severityLabel ?? undefined}
                         >
                             <span className="reporte-cal__count">{count}</span>

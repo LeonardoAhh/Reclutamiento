@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 import { format, getISOWeek } from 'date-fns';
 import { enUS, es } from 'date-fns/locale';
-import { INCIDENT_TABS, SECTION_CONFIGS, VISIBLE_SECTIONS } from './constants';
-import { isIncidence, isIncidentTab } from './helpers';
-import type { AreaStaffSummary, EmployeeRef, IncidentTab, ReporteRow } from './types';
+import { SECTION_CONFIGS, VISIBLE_SECTIONS } from './constants';
+import { isIncidence } from './helpers';
+import type { AreaStaffSummary, ReporteRow } from './types';
 
 interface ReportDayDetailsInput {
   selectedRows: ReporteRow[];
@@ -17,35 +17,6 @@ interface ReportDayDetailsInput {
 }
 
 export function useReportDayDetails({ selectedRows, selectedDay, selectedArea, currentMonth, en, dayHeaders, dayAusentismoPct, daySummaries }: ReportDayDetailsInput) {
-  const emptyIncident = () =>
-    INCIDENT_TABS.reduce(
-      (acc, c) => ({ ...acc, [c]: [] as EmployeeRef[] }),
-      {} as Record<IncidentTab, EmployeeRef[]>,
-    );
-
-  const selectedDayIncidentSummary = useMemo(() => {
-    const base = emptyIncident();
-    if (!selectedDay) return base;
-    const result = selectedRows.reduce((acc, row, idx) => {
-      const code = row.days[selectedDay];
-      if (!isIncidence(code) || !isIncidentTab(code!)) return acc;
-      acc[code].push({
-        key: `${code}||${row.departamento}||${row.area}||${row.turno || "-"}||${row.numero_empleado}||${idx}`,
-        numero_empleado: row.numero_empleado,
-        nombre: row.nombre,
-        departamento: row.departamento,
-        area: row.area,
-        puesto: row.puesto,
-        turno: row.turno || "-",
-      });
-      return acc;
-    }, base);
-    for (const tab of INCIDENT_TABS) {
-      result[tab].sort((a, b) => a.area.localeCompare(b.area));
-    }
-    return result;
-  }, [selectedRows, selectedDay]);
-
   const selectedDayAreaSummary = useMemo<AreaStaffSummary[]>(() => {
     if (!selectedDay)
       return SECTION_CONFIGS.filter((sec) =>
@@ -158,20 +129,6 @@ export function useReportDayDetails({ selectedRows, selectedDay, selectedArea, c
       }));
   }, [selectedRows, selectedDay, selectedArea]);
 
-  const selectedDayCounts = useMemo(() => {
-    const base = INCIDENT_TABS.reduce(
-      (acc, c) => ({ ...acc, [c]: 0 }),
-      {} as Record<IncidentTab, number>,
-    );
-    if (!selectedDay) return base;
-    return selectedRows.reduce((acc, row) => {
-      const code = row.days[selectedDay];
-      if (!isIncidence(code) || !isIncidentTab(code!)) return acc;
-      acc[code] = (acc[code] || 0) + 1;
-      return acc;
-    }, base);
-  }, [selectedRows, selectedDay]);
-
   const daysWithData = useMemo(() => {
     return dayHeaders.filter(
       (day) =>
@@ -225,5 +182,5 @@ export function useReportDayDetails({ selectedRows, selectedDay, selectedArea, c
     }
   }, [selectedDay, currentMonth, en]);
 
-  return { selectedDayIncidentSummary, selectedDayAreaSummary, selectedAreaDetailRows, selectedDayCounts, prevDay, nextDay, selectedDateHeading };
+  return { selectedDayAreaSummary, selectedAreaDetailRows, prevDay, nextDay, selectedDateHeading };
 }

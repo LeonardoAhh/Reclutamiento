@@ -1,12 +1,8 @@
-import { MEXICO_HOLIDAY_RULES, NON_INCIDENT_CODES, INCIDENT_TABS } from "./constants"
-import type { ReporteRow, IncidentTab } from "./types"
+import { MEXICO_HOLIDAY_RULES, NON_INCIDENT_CODES } from "./constants"
+import type { ReporteRow } from "./types"
 
 export function isIncidence(code: string | undefined): boolean {
     return !!code && !NON_INCIDENT_CODES.has(code)
-}
-
-export function isIncidentTab(code: string): code is IncidentTab {
-    return (INCIDENT_TABS as readonly string[]).includes(code)
 }
 
 export function getNthWeekdayOfMonth(year: number, month: number, weekday: number, occurrence: number) {

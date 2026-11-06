@@ -9,7 +9,7 @@ import {
   HOME_PATH,
   TEAM_PATH,
 } from '@/components/layout/navigation';
-import { DEPARTMENT_INCIDENCES_PATH, REPORT_COMPARISON_PATH } from '@/components/reporte-diario/navigation';
+import { REPORT_COMPARISON_PATH } from '@/components/reporte-diario/navigation';
 import { CANDIDATE_METRICS_PATH } from '@/pages/candidate-metrics/navigation';
 import { LEAVE_REQUESTS_PATH } from '@/features/leave/requests';
 
@@ -47,7 +47,6 @@ export const Pipeline = lazyWithPreload(() => import('@/pages/Pipeline').then(({
 export const Bajas = lazyWithPreload(() => import('@/pages/Bajas').then(({ Bajas }) => ({ default: Bajas })));
 export const KpisPage = lazyWithPreload(() => import('@/pages/KpisPage').then(({ KpisPage }) => ({ default: KpisPage })));
 export const ReportComparisonPage = lazyWithPreload(() => import('@/pages/ReportComparisonPage').then(({ ReportComparisonPage }) => ({ default: ReportComparisonPage })));
-export const DepartmentIncidencesPage = lazyWithPreload(() => import('@/pages/DepartmentIncidencesPage').then(({ DepartmentIncidencesPage }) => ({ default: DepartmentIncidencesPage })));
 export const ReporteDiario = lazyWithPreload(() => import('@/pages/ReporteDiario').then(({ ReporteDiario }) => ({ default: ReporteDiario })));
 export const MotivosBaja = lazyWithPreload(() => import('@/pages/MotivosBaja').then(({ MotivosBaja }) => ({ default: MotivosBaja })));
 export const Configuracion = lazyWithPreload(() => import('@/pages/Configuracion').then(({ Configuracion }) => ({ default: Configuracion })));
@@ -100,7 +99,6 @@ const ROUTE_PAGES: readonly RoutePage[] = [
   { matches: exact('/overview'), page: KpisPage, bones: pageBones('resumen-page') },
   { matches: exact(PLANTILLA_PATH), page: Dashboard, bones: pageBones('plantilla-page') },
   { matches: exact(CANDIDATE_METRICS_PATH), page: CandidateMetricsPage },
-  { matches: exact(DEPARTMENT_INCIDENCES_PATH), page: DepartmentIncidencesPage },
   { matches: exact(CANDIDATES_PATH), page: Pipeline, bones: pageBones('candidatos-page') },
   { matches: exact('/employee-turnover'), page: Bajas, bones: pageBones('bajas-page') },
   { matches: exact(REPORT_COMPARISON_PATH), page: ReportComparisonPage },

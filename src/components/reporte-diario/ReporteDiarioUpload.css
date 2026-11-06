@@ -431,29 +431,6 @@
   min-width: 0;
 }
 
-.reporte-status-banner--file {
-  min-height: var(--control-min-block-size);
-  padding: 0 var(--control-padding-x);
-  background: var(--color-surface);
-  color: var(--color-ink);
-  border-color: var(--color-control-border);
-  font-size: var(--type-button-md-size);
-  font-weight: var(--type-button-md-weight);
-  font-family: var(--font-body);
-  line-height: var(--type-button-md-line);
-  letter-spacing: var(--type-button-md-tracking);
-}
-
-.reporte-status-banner--file .text-primary {
-  color: inherit;
-}
-
-.reporte-status-banner--file .reporte-iconbtn {
-  min-inline-size: var(--touch-target-min);
-  min-block-size: var(--touch-target-min);
-  padding: 0;
-}
-
 /* Ocultar el toggle cuando el layout permanece apilado en móvil/tablet. */
 @media (width <= 1079px) {
   .reporte-panel-toggle {
@@ -492,10 +469,6 @@
 .reporte-errors__content {
   flex: 1;
   min-width: 0;
-}
-
-.reporte-card__title--capitalize {
-  text-transform: capitalize;
 }
 
 /* ── Motion: respeto a prefers-reduced-motion ─────────────────────── */

@@ -94,30 +94,12 @@
    HEADER CON DATOS — Flex layout para fluidez de los banners/botones
    ============================================================================ */
 
-.reporte-incidents__empty--padded,
-.reporte-incidents__detail-list {
+.reporte-incidents__empty--padded {
   padding: var(--spacing-lg);
 }
 
 .reporte-saved__title--uppercase {
   text-transform: uppercase;
-}
-
-.reporte-head__grid-text {
-  min-width: 0;
-  overflow-wrap: anywhere;
-}
-
-@media (width >= 768px) {
-  .reporte-head__grid > .reporte-status-banner--file {
-    overflow: hidden;
-  }
-
-  .reporte-head__grid-text {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
 }
 
 /* Valor numérico protagonista (ej. "543") */
@@ -129,10 +111,6 @@
 }
 
 /* Los dialogs (Comparison, Guardados) en el grid ya no forzan 100% de width */
-.reporte-head__grid .reporte-saved__trigger--labeled {
-  width: auto;
-}
-
 .reporte-employee-detail-modal {
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
@@ -224,40 +202,25 @@
 @media (width <= 767px) {
   .reporte-head__grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr) var(--touch-target-min);
     align-items: stretch;
     gap: var(--spacing-sm);
   }
 
-  .reporte-head__grid > .reporte-status-banner--file {
+  .reporte-month-picker {
     grid-column: 1 / -1;
-  }
-
-  .reporte-head__grid :is(.reporte-saved__trigger--labeled, .reporte-head__departure-action) {
     inline-size: 100%;
-    min-inline-size: 0;
-    justify-content: center;
-    white-space: nowrap;
-  }
-
-  .reporte-head__grid :is(.reporte-saved__trigger-label, .reporte-head__departure-label) {
-    min-inline-size: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 
   .reporte-head__grid > .reporte-head__save-action {
+    grid-column: 1;
     min-inline-size: 0;
     grid-template-columns: minmax(0, 1fr);
   }
-}
 
-@media (width < 375px) {
-  .reporte-head__grid :is(.reporte-saved__trigger--labeled, .reporte-head__departure-action) {
-    padding-inline: 0;
-  }
-
-  .reporte-head__grid :is(.reporte-saved__trigger-label, .reporte-head__departure-label) {
-    display: none;
+  .reporte-head__grid > .reporte-head__clear-button {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: center;
   }
 }

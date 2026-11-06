@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PageHeading } from '@/components/layout/PageHeading';
 import { Link, useMatch, useNavigate } from "react-router-dom";
 import { ReportDayPage } from "@/pages/ReportDayPage";
-import { getReportDayPath, REPORT_DAY_PATTERN } from "./navigation";
+import { getReportDayPath, REPORT_DAY_PATTERN, REPORTS_PATH } from "./navigation";
 import { getConfiguracionHref } from "@/lib/configuracionNavigation";
 import "./ReporteDiario.css";
 import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
@@ -13,11 +13,11 @@ import {
   Archive,
   BarChart3,
   CalendarDays,
+  ChevronLeft,
   ChevronRight,
   ChartSpline,
-  FileBraces,
+  Eraser,
   FileUp,
-  X,
 } from "lucide-react";
 import {
   PanelLeftClose,
@@ -36,7 +36,6 @@ import {
   getMexicoHolidayLabels,
 } from "./helpers";
 import type {
-  IncidentTab,
   ReporteRow,
 } from "./types";
 
@@ -62,7 +61,7 @@ const SAVE_SUCCESS_DURATION_MS = 1500;
 
 export default function ReporteDiarioContent() {
   useEffect(() => bindSoundInteractions(document), []);
-  const { en, copy, month } = useReportLocale();
+  const { en, copy, month, shortMonth } = useReportLocale();
   const departureLinkLabel = copy("Motivos de baja", "Reasons");
   const departureAccessibleLabel = copy("Motivos de baja", "Reasons for leaving");
   const [rows, setRows] = useState<ReporteRow[]>([]);
@@ -71,9 +70,6 @@ export default function ReporteDiarioContent() {
   const [empDetailOpen, setEmpDetailOpen] = useState(false);
   const [departamentoFilter, setDepartamentoFilter] = useState("");
   const [turnoFilter, setTurnoFilter] = useState("");
-  const [selectedIncidentTab, setSelectedIncidentTab] = useState<
-    IncidentTab | ""
-  >("");
   const dayRoute = useMatch(REPORT_DAY_PATTERN);
   const navigate = useNavigate();
   const [calendarDay, setCalendarDay] = useState("");
@@ -91,7 +87,6 @@ export default function ReporteDiarioContent() {
   }, [validDayRoute, routeDay, routeMonth]);
   const [selectedArea, setSelectedArea] = useState<string | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
-  const [fileName, setFileName] = useState("");
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const saveSuccessTimerRef = useRef<number | null>(null);
@@ -117,6 +112,7 @@ export default function ReporteDiarioContent() {
     fetchByMes,
     saveReport,
     deleteReport,
+    loading: reportLoading,
   } = useReporteDiario();
 
   const [savedSummaries, setSavedSummaries] = useState<ReporteDiarioSummary[]>(
@@ -141,7 +137,6 @@ export default function ReporteDiarioContent() {
       if (errs.length === 0 && parsed.length > 0) {
         setRows(parsed);
         setSelectedMes(parsed[0]?.mes ?? "");
-        setFileName("Autoguardado");
       }
     } catch {
       // La caché es una mejora progresiva; el reporte funciona sin ella.
@@ -220,8 +215,7 @@ export default function ReporteDiarioContent() {
     }, {});
   }, [dayHeaders, selectedRows]);
 
-  const { selectedDayIncidentSummary, selectedDayAreaSummary, selectedAreaDetailRows,
-    selectedDayCounts, prevDay, nextDay, selectedDateHeading } = useReportDayDetails({
+  const { selectedDayAreaSummary, selectedAreaDetailRows, prevDay, nextDay, selectedDateHeading } = useReportDayDetails({
       selectedRows, selectedDay, selectedArea, currentMonth, en,
       dayHeaders, dayAusentismoPct, daySummaries,
     });
@@ -248,7 +242,6 @@ export default function ReporteDiarioContent() {
   const processReportContent = useCallback(
     async (
       readContent: () => string | Promise<string>,
-      sourceName: string,
       initialStep: Exclude<ReportProcessStep, null>,
       errorTitle: string,
     ) => {
@@ -279,7 +272,6 @@ export default function ReporteDiarioContent() {
 
         setRows(parsed);
         setSelectedMes(parsed[0]?.mes ?? "");
-        setFileName(sourceName);
         playSound('ready');
         try {
           sessionStorage.setItem("reporteDiarioCache", JSON.stringify(json));
@@ -315,7 +307,6 @@ export default function ReporteDiarioContent() {
 
       await processReportContent(
         () => file.text(),
-        file.name,
         "reading",
         en ? "Corrupt file" : "Archivo corrupto",
       );
@@ -327,7 +318,6 @@ export default function ReporteDiarioContent() {
     async (content: string) => {
       await processReportContent(
         () => content,
-        en ? "Pasted content" : "Contenido pegado",
         "validating",
         en ? "Invalid JSON content" : "Contenido JSON inválido",
       );
@@ -379,18 +369,27 @@ export default function ReporteDiarioContent() {
     }
   }, []);
 
-  const handleClearFile = useCallback(() => {
+  const handleClearReport = useCallback(() => {
     playSound('close');
     setRows([]);
-    setFileName("");
+    setSelectedMes("");
+    setSelectedArea(null);
+    setCalendarDay("");
+    setSelectedEmployee("");
+    setEmpDetailOpen(false);
+    setDepartamentoFilter("");
+    setTurnoFilter("");
     setErrors([]);
+    setSaveError(null);
+    setSaveSuccess(false);
     try {
       window.sessionStorage.removeItem("reporteDiarioCache");
     } catch {
-      // La limpieza visual no depende de que sessionStorage esté disponible.
+      // The report remains cleared for this view if session storage is unavailable.
     }
+    navigate(REPORTS_PATH);
     toast.info({ title: en ? "Report view cleared" : "Vista de datos limpiada" });
-  }, [en]);
+  }, [en, navigate]);
 
   const computeKpis = useCallback(
     (reportRows: ReporteRow[], dayH: string[]) => {
@@ -498,7 +497,15 @@ export default function ReporteDiarioContent() {
   const handleLoadFromDb = useCallback(
     async (mes: string) => {
       const record = await fetchByMes(mes);
-      if (!record) { playSound('error'); return; }
+      if (!record) {
+        playSound('error');
+        toast.error({
+          title: en
+            ? "Could not load the report for this month"
+            : "No se pudo cargar el reporte de este mes",
+        });
+        return;
+      }
       const { rows: parsed, errors: errs } = parseReporteJSON(
         record.data as unknown[],
       );
@@ -507,14 +514,54 @@ export default function ReporteDiarioContent() {
         setErrors(errs);
         return;
       }
-      setRows(parsed);
+      const loadedMonths = new Set(parsed.map((row) => row.mes));
+      setRows((currentRows) => [
+        ...currentRows.filter((row) => !loadedMonths.has(row.mes)),
+        ...parsed,
+      ]);
       setSelectedMes(mes);
-      setFileName(mes);
+      setCalendarDay("");
       setErrors([]);
       playSound('ready');
       // panel is always visible; no collapse
     },
-    [fetchByMes],
+    [fetchByMes, en],
+  );
+
+  const availableMonths = useMemo(
+    () =>
+      Array.from(
+        new Set([
+          ...months,
+          ...savedSummaries.map((summary) => summary.mes),
+          currentMonth,
+        ].filter(Boolean)),
+      ).sort(),
+    [months, savedSummaries, currentMonth],
+  );
+  const currentMonthIndex = availableMonths.indexOf(currentMonth);
+
+  const handleMonthNavigation = useCallback(
+    (direction: -1 | 1) => {
+      const nextMonth = availableMonths[currentMonthIndex + direction];
+      if (!nextMonth || reportLoading || dbSaving) return;
+
+      setCalendarDay("");
+      if (months.includes(nextMonth)) {
+        setSelectedMes(nextMonth);
+        return;
+      }
+
+      void handleLoadFromDb(nextMonth);
+    },
+    [
+      availableMonths,
+      currentMonthIndex,
+      reportLoading,
+      dbSaving,
+      months,
+      handleLoadFromDb,
+    ],
   );
 
   const { dayReportLoading, retryDayReport } = useReportDayRouteLoading({
@@ -555,13 +602,6 @@ export default function ReporteDiarioContent() {
         setSelectedArea(area);
       }}
       detailRows={selectedAreaDetailRows}
-      selectedTab={selectedIncidentTab}
-      onSelectTab={tab => {
-        playSound(tab ? 'select' : 'close');
-        setSelectedIncidentTab(tab);
-      }}
-      dayCounts={selectedDayCounts}
-      incidentSummary={selectedDayIncidentSummary}
     />;
   }
 
@@ -766,53 +806,56 @@ export default function ReporteDiarioContent() {
       )}
       <header className="reporte-header__top">
         <PageHeading id="reporte-page-title" className="app-page-title">
-          {copy("Reporte Diario", "Daily Report")}
+          <span className="reporte-page-title--desktop">{copy("Reporte Diario", "Daily Report")}</span>
+          <span className="reporte-page-title--mobile">
+            {hasData ? month(currentMonth) : copy("Reporte Diario", "Daily Report")}
+          </span>
         </PageHeading>
 
         <div
           className="reporte-head__grid"
           aria-label={copy("Información del reporte cargado", "Loaded report information")}
         >
-          {fileName && !processStep && (
-            <div
-              className="reporte-status-banner reporte-status-banner--file"
-              data-testid="reporte-filename"
-            >
-              <FileBraces size="var(--icon-size-sm)" className="text-primary" aria-hidden="true" />
-              <span className="reporte-head__grid-text">{fileName === "Autoguardado" ? copy("Autoguardado", "Autosaved") : fileName === selectedMes ? month(fileName) : fileName}</span>
-              <button
-                type="button"
-                onClick={handleClearFile}
-                title={copy("Limpiar archivo actual", "Clear current file")}
-                aria-label={copy("Limpiar archivo actual", "Clear current file")}
-                className="reporte-iconbtn"
-                data-testid="clear-file-btn"
-              >
-                <X size="var(--icon-size-sm)" aria-hidden="true" />
-              </button>
+          {hasData && (
+            <div className="reporte-head__month-group">
+              <span className="reporte-head__month">{month(currentMonth)}</span>
+              <span className="reporte-head__month-subtitle">
+                {copy("Resumen de asistencia e incidencias", "Attendance and incident summary")}
+              </span>
             </div>
           )}
-
-          {savedSummaries.length >= 2 && (
-            <ReporteComparison
-              triggerVariant="labeled"
-            />
-          )}
-          {savedSummaries.length > 0 && (
-            <ReportesGuardadosDialog
-              savedSummaries={savedSummaries}
-              dbSaving={dbSaving}
-              onLoad={handleLoadFromDb}
-              onDelete={handleDeleteFromDb}
-              formatMes={month}
-              triggerVariant="labeled"
-            />
-          )}
-
-          <Link className="btn-secondary reporte-head__departure-action" to="/departure-reasons" data-cuelume-navigate="" aria-label={departureAccessibleLabel} title={departureAccessibleLabel}>
-            <BarChart3 size="var(--icon-size-sm)" aria-hidden="true" />
-            <span className="reporte-head__departure-label">{departureLinkLabel}</span>
-          </Link>
+          <div
+            className="reporte-month-picker"
+            role="group"
+            aria-label={copy("Navegar por reportes mensuales", "Navigate monthly reports")}
+          >
+            <button
+              type="button"
+              className="reporte-month-picker__button"
+              onClick={() => handleMonthNavigation(-1)}
+              disabled={currentMonthIndex <= 0 || reportLoading || dbSaving}
+              aria-label={copy("Mes anterior", "Previous month")}
+            >
+              <ChevronLeft size="var(--icon-size-sm)" aria-hidden="true" />
+            </button>
+            <span className="reporte-month-picker__label" aria-live="polite" aria-atomic="true">
+              {shortMonth(currentMonth)}
+            </span>
+            <button
+              type="button"
+              className="reporte-month-picker__button"
+              onClick={() => handleMonthNavigation(1)}
+              disabled={
+                currentMonthIndex < 0 ||
+                currentMonthIndex >= availableMonths.length - 1 ||
+                reportLoading ||
+                dbSaving
+              }
+              aria-label={copy("Mes siguiente", "Next month")}
+            >
+              <ChevronRight size="var(--icon-size-sm)" aria-hidden="true" />
+            </button>
+          </div>
 
           {hasData && (
             <div className="reporte-head__save-action">
@@ -841,6 +884,18 @@ export default function ReporteDiarioContent() {
                 </p>
               )}
             </div>
+          )}
+          {hasData && (
+            <button
+              type="button"
+              className="btn-ghost reporte-head__clear-button"
+              onClick={handleClearReport}
+              disabled={dbSaving || reportLoading}
+              aria-label={copy("Limpiar reporte cargado", "Clear loaded report")}
+              data-testid="clear-report-btn"
+            >
+              <Eraser size="var(--icon-size-md)" aria-hidden="true" />
+            </button>
           )}
         </div>
       </header>
@@ -887,29 +942,15 @@ export default function ReporteDiarioContent() {
               }}
             >
               {currentMonth && rows.length > 0 && (
-                <motion.div
-                  variants={{
-                    hidden: { opacity: 0, y: reduceMotion ? 0 : 12 },
-                    visible: {
-                      opacity: 1,
-                      y: 0,
-                      transition: {
-                        duration: reduceMotion ? 0 : 0.35,
-                        ease: [0.16, 1, 0.3, 1],
-                      },
-                    },
-                  }}
-                >
-                  <ReporteKpiDashboard
-                    selectedRows={selectedRows.filter(
-                      (r) =>
-                        VISIBLE_SECTIONS.has(r.departamento) ||
-                        VISIBLE_SECTIONS.has(r.area),
-                    )}
-                    dayHeaders={dayHeaders}
-                    currentMonth={currentMonth}
-                  />
-                </motion.div>
+                <ReporteKpiDashboard
+                  selectedRows={selectedRows.filter(
+                    (r) =>
+                      VISIBLE_SECTIONS.has(r.departamento) ||
+                      VISIBLE_SECTIONS.has(r.area),
+                  )}
+                  dayHeaders={dayHeaders}
+                  currentMonth={currentMonth}
+                />
               )}
 
               {currentMonth && rows.length > 0 && (
@@ -924,16 +965,6 @@ export default function ReporteDiarioContent() {
                     },
                   }}
                 >
-                  <div className="reporte-card__header">
-                    <div className="reporte-flex-between">
-                      <div>
-                        <h2 className="reporte-card__title reporte-card__title--capitalize">
-                          {month(currentMonth)}
-                        </h2>
-                      </div>
-                    </div>
-                  </div>
-
                   <div className="reporte-card__content">
                     <ReporteCalendar
                       calendarCells={calendarCells}

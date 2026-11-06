@@ -43,6 +43,14 @@ export function useReportLocale() {
       if (!year || !month || month < 1 || month > 12) return yearMonth;
       return new Intl.DateTimeFormat("en-US", { month: "long", year: "numeric" }).format(new Date(year, month - 1, 1));
     },
+    shortMonth: (yearMonth: string) => {
+      const [year, month] = yearMonth.split("-").map(Number);
+      if (!year || !month || month < 1 || month > 12) return yearMonth;
+      return new Intl.DateTimeFormat(en ? "en-US" : "es-MX", {
+        month: "short",
+        year: "numeric",
+      }).format(new Date(year, month - 1, 1));
+    },
     incident: (code: string) => en
       ? ENGLISH_INCIDENCES[code] ?? code
       : INCIDENCIA_LABELS[code] ?? code,

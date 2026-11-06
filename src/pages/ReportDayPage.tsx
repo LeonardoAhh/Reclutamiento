@@ -4,10 +4,9 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton';
 import ReporteAreaSummary from '@/components/reporte-diario/reporte-area-summary';
-import ReporteIncidentTabs from '@/components/reporte-diario/reporte-incident-tabs';
 import { useReportLocale } from '@/components/reporte-diario/useReportLocale';
 import { getReportDayPath } from '@/components/reporte-diario/navigation';
-import type { AreaDetailRow, AreaStaffSummary, EmployeeRef, IncidentTab } from '@/components/reporte-diario/types';
+import type { AreaDetailRow, AreaStaffSummary } from '@/components/reporte-diario/types';
 import './ReportDayPage.css';
 
 interface ReportDayPageProps {
@@ -24,10 +23,6 @@ interface ReportDayPageProps {
   selectedArea: string | null;
   onSelectArea: (area: string | null) => void;
   detailRows: AreaDetailRow[];
-  selectedTab: IncidentTab | '';
-  onSelectTab: (tab: IncidentTab | '') => void;
-  dayCounts: Record<IncidentTab, number>;
-  incidentSummary: Record<IncidentTab, EmployeeRef[]>;
 }
 
 export function ReportDayPage(props: ReportDayPageProps) {
@@ -78,10 +73,6 @@ export function ReportDayPage(props: ReportDayPageProps) {
             </div>
             <ReporteAreaSummary areas={props.areas} selectedArea={props.selectedArea} onSelectArea={props.onSelectArea} detailRows={props.detailRows} />
           </div>
-          <section className="report-day-page__section" aria-labelledby="report-day-incidents-title">
-            <h2 id="report-day-incidents-title" className="report-day-page__section-title">{copy('Incidencias', 'Incidents')}</h2>
-            <ReporteIncidentTabs selectedTab={props.selectedTab} onSelectTab={props.onSelectTab} dayCounts={props.dayCounts} incidentSummary={props.incidentSummary} />
-          </section>
         </div>
       )}
     </div>

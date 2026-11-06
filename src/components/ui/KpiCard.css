@@ -7,14 +7,8 @@
   padding: var(--spacing-md);
   background: var(--color-surface-card);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
-  box-shadow: var(--shadow-sm);
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
-}
-
-.kpi-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-xs);
 }
 
 button.kpi-card--interactive {

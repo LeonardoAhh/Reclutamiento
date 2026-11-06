@@ -68,6 +68,15 @@
   margin-top: var(--spacing-sm);
 }
 
+.reporte-head__month-group,
+.reporte-page-title--mobile {
+  display: none;
+}
+
+#app-header-title .reporte-page-title--mobile {
+  display: none;
+}
+
 /* Ensure other controls keep their intrinsic size */
 .reporte-head__grid > * {
   flex: 0 0 auto;
@@ -76,9 +85,76 @@
   justify-content: flex-start;
 }
 
-.reporte-head__grid > .reporte-status-banner--file {
+.reporte-head__grid > .reporte-head__month-group {
+  align-content: center;
+  gap: var(--design-spacing-xxs);
+  margin-inline-end: auto;
+}
+
+.reporte-head__month {
+  font-family: var(--font-body);
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  line-height: var(--type-heading-md-line);
+  letter-spacing: var(--type-heading-md-tracking);
+  color: var(--color-ink);
+}
+
+.reporte-head__month-subtitle {
+  color: var(--color-body);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
+}
+
+.reporte-month-picker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
   flex: 0 1 auto;
+  min-width: 0;
+  border: var(--border-width) solid var(--color-control-border);
   border-radius: var(--radius-control);
+  background: var(--color-canvas-elevated);
+  color: var(--color-ink);
+}
+
+.reporte-month-picker__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 var(--touch-target-min);
+  min-inline-size: var(--touch-target-min);
+  min-block-size: var(--touch-target-min);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.reporte-month-picker__button:hover:not(:disabled) {
+  background: var(--color-surface-soft);
+}
+
+.reporte-month-picker__button:disabled {
+  color: var(--color-muted);
+  cursor: not-allowed;
+}
+
+.reporte-month-picker__label {
+  min-width: 0;
+  padding-inline: var(--design-spacing-xxs);
+  font-family: var(--font-body);
+  font-size: var(--type-button-md-size);
+  font-weight: var(--type-button-md-weight);
+  line-height: var(--type-button-md-line);
+  letter-spacing: var(--type-button-md-tracking);
+  text-transform: capitalize;
+  white-space: nowrap;
 }
 
 .reporte-head__save-action {
@@ -96,9 +172,33 @@
   inline-size: 100%;
 }
 
+.reporte-head__clear-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 var(--touch-target-min);
+  inline-size: var(--touch-target-min);
+  padding-inline: 0;
+  color: var(--color-body);
+}
+
 @media (width >= 768px) {
   .reporte-head__grid {
     margin-top: 0;
+  }
+
+  .reporte-head__month-group {
+    display: grid;
+  }
+}
+
+@media (width < 768px) {
+  #app-header-title .reporte-page-title--desktop {
+    display: none;
+  }
+
+  #app-header-title .reporte-page-title--mobile {
+    display: inline;
   }
 }
 
@@ -181,10 +281,6 @@ button.reporte-card:hover,
   flex-direction: column;
   gap: var(--spacing-xs);
   border-bottom: 1px solid var(--color-hairline-soft);
-}
-
-.reporte-card--calendar .reporte-card__header {
-  border-block-end-color: var(--color-hairline-strong);
 }
 
 @media (width >= 768px) {

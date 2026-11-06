@@ -1,13 +1,11 @@
 import { useMemo, useState } from 'react';
-import { ChevronDown, ChevronRight } from 'lucide';
 import type { AreaDetailRow, AreaStaffSummary } from './types';
 import { useReportLocale } from './useReportLocale';
 import { PLANTILLA_AUTORIZADA } from '@/lib/constants';
 import { Modal } from '@/components/ui/Modal';
-import { Tooltip } from '@/components/ui/Tooltip';
-import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import { SectionSummaryCard } from '@/components/ui/SectionSummaryCard';
-import { Badge, type BadgeVariant } from '@/components/ui/Badge';
+import { useIsMobile } from '@/hooks/useIsMobile';
+import { ReporteAreaDetailList } from './ReporteAreaDetailList';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
@@ -78,154 +76,12 @@ function getAreaCardProps(area: AreaStaffSummary, en: boolean) {
   };
 }
 
-// ─── IncidenceBadge ────────────────────────────────────────────────────────────
-
-const INC_TONE: Record<string, 'error' | 'warn' | 'info'> = {
-  F: 'error',
-  S: 'error',
-  I: 'error',
-  FJ: 'warn',
-  P: 'warn',
-  PH: 'warn',
-  CT: 'warn',
-  TXT: 'warn',
-  V: 'info',
-};
-
-function IncidenceBadge({ code }: { code: string }) {
-  const { incident } = useReportLocale();
-  const tone = INC_TONE[code] ?? 'warn';
-  const variant: BadgeVariant = tone === 'error' ? 'error' : tone === 'warn' ? 'warning' : 'neutral';
-  return (
-    <Badge size="compact" variant={variant}>
-      {incident(code)}
-    </Badge>
-  );
-}
-
-// ─── DetailList ────────────────────────────────────────────────────────────────
-
-function DetailList({ rows }: { rows: AreaDetailRow[] }) {
-  const { copy } = useReportLocale();
-  const [expanded, setExpanded] = useState<Set<string>>(new Set());
-
-  const toggle = (key: string) =>
-    setExpanded((prev) => {
-      const next = new Set(prev);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
-      return next;
-    });
-
-  if (rows.length === 0)
-    return (
-      <div className="reporte-incidents__empty reporte-incidents__empty--padded">
-        <p>{copy('No hay ausencias registradas.', 'No absences recorded.')}</p>
-      </div>
-    );
-
-  return (
-    <div className="reporte-incidents__detail-list">
-      {/* Desktop: tabla */}
-      <div className="reporte-incidents__table-wrap">
-        <table className="reporte-incidents__table data-table">
-          <caption className="sr-only">{copy('Detalle de ausencias por empleado', 'Absences by employee')}</caption>
-          <thead>
-            <tr>
-              <th scope="col">{copy('Empleado', 'Employee')}</th>
-              <th scope="col">{copy('Puesto', 'Position')}</th>
-              <th scope="col">{copy('Turno', 'Shift')}</th>
-              <th scope="col">{copy('Incidencia', 'Incident')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row) => {
-              // En México, la "categoría" suele ser la letra final (A, B, C...)
-              const puestoLimpio = row.puesto ? row.puesto.replace(/\s+[A-Z]$/i, '').trim() : '-';
-              return (
-                <tr key={row.key}>
-                  <td className="reporte-incidents__td-num">
-                    <Tooltip content={row.nombre || copy('Sin nombre', 'No name')} side="right">
-                      <span>{row.numero_empleado}</span>
-                    </Tooltip>
-                  </td>
-                  <td>{puestoLimpio}</td>
-                  <td>
-                    <Badge size="compact" variant="neutral">
-                      {row.turno}
-                    </Badge>
-                  </td>
-                  <td>
-                    <IncidenceBadge code={row.tipo_incidencia} />
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Mobile: cards colapsables */}
-      <ul
-        className="reporte-incidents__cards"
-        aria-label={copy('Detalle de ausencias por empleado', 'Absences by employee')}
-      >
-        {rows.map((row) => {
-          const isOpen = expanded.has(row.key);
-          const detailId = `area-detail-${row.key}`;
-          const puestoLimpio = row.puesto ? row.puesto.replace(/\s+[A-Z]$/i, '').trim() : '-';
-          return (
-            <li key={row.key} className="reporte-incidents__card">
-              <button
-                type="button"
-                className="reporte-incidents__card-summary"
-                aria-expanded={isOpen}
-                aria-controls={detailId}
-                onClick={() => toggle(row.key)}
-                data-testid={`area-detail-card-${row.key}`}
-              >
-                <span className="reporte-incidents__card-main">
-                  <span className="reporte-incidents__card-name">{row.nombre}</span>
-                  <span className="reporte-incidents__card-tags">
-                    <IncidenceBadge code={row.tipo_incidencia} />
-                  </span>
-                </span>
-                <Badge size="compact" variant="neutral">
-                  T{row.turno}
-                </Badge>
-                <MorphingIcon
-                  icon={isOpen ? ChevronDown : ChevronRight}
-                  size={18}
-                  className="reporte-incidents__chevron"
-                  aria-hidden="true"
-                />
-              </button>
-
-              {isOpen && (
-                <div id={detailId} className="reporte-incidents__card-detail">
-                  <span className="reporte-incidents__detail-label">{copy('Empleado', 'Employee')}</span>
-                  <span className="reporte-incidents__detail-value">{row.numero_empleado}</span>
-                  {row.puesto && (
-                    <>
-                      <span className="reporte-incidents__detail-label">{copy('Puesto', 'Position')}</span>
-                      <span className="reporte-incidents__detail-value">{puestoLimpio}</span>
-                    </>
-                  )}
-                </div>
-              )}
-            </li>
-          );
-        })}
-      </ul>
-    </div>
-  );
-}
-
 // ─── Main Component ────────────────────────────────────────────────────────────
 
 export default function ReporteAreaSummary({ areas, selectedArea, onSelectArea, detailRows }: ReporteAreaSummaryProps) {
   const { en, copy } = useReportLocale();
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const isMobile = useIsMobile();
 
   // Mapa seccion → área padre derivado de PLANTILLA_AUTORIZADA
   const sectionAreaMap = useMemo(() => {
@@ -335,18 +191,18 @@ export default function ReporteAreaSummary({ areas, selectedArea, onSelectArea, 
         )}
       </div>
 
-      {/* Modal de detalle de ausencias */}
       <Modal
-        className="report-dialog"
+        className="report-dialog report-area-detail-sheet"
         isOpen={isDetailOpen && selectedArea !== null}
         onClose={() => {
           setIsDetailOpen(false);
           onSelectArea(null);
         }}
         title={selectedArea || copy('Detalle de sección', 'Section details')}
-        size="lg"
+        size="md"
+        presentation={isMobile ? 'modal' : 'sheet'}
       >
-        <DetailList rows={detailRows} />
+        <ReporteAreaDetailList rows={detailRows} />
       </Modal>
     </section>
   );

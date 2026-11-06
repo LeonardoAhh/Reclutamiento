@@ -115,7 +115,7 @@ export default function ReporteKpiDashboard({
             value: kpis.totalEmpleados,
             valueSize: "compact" as const,
             sub: `${copy("en", "in")} ${month(currentMonth)}`,
-            icon: <UsersRound size={18} />,
+            icon: <UsersRound size="var(--icon-size-sm)" />,
             tone: "default" as KpiTone,
         },
         {
@@ -123,21 +123,21 @@ export default function ReporteKpiDashboard({
             value: kpis.totalIncidencias,
             valueSize: "compact" as const,
             sub: `${copy("en", "in")} ${month(currentMonth)}`,
-            icon: <BadgeAlert size={18} />,
+            icon: <BadgeAlert size="var(--icon-size-sm)" />,
             tone: (kpis.totalIncidencias > 0 ? "warning" : "default") as KpiTone,
         },
         {
             label: copy("Día con más incidencias", "Day with most incidents"),
             value: getWorstDayLabel(kpis.worstDay, currentMonth, en),
             valueSize: "compact" as const,
-            icon: <CalendarX2 size={18} />,
+            icon: <CalendarX2 size="var(--icon-size-sm)" />,
             tone: getTone(kpis.worstDayCount, { warning: 1, destructive: 6 }),
         },
         {
             label: copy("Área con más incidencias", "Area with most incidents"),
             value: kpis.worstArea || "—",
             valueSize: "compact" as const,
-            icon: <Building2 size={18} />,
+            icon: <Building2 size="var(--icon-size-sm)" />,
             tone: getTone(kpis.worstAreaCount, { warning: 1, destructive: 11 }),
         },
     ];
