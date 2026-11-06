@@ -82,7 +82,7 @@
 
 @media (width >= 1080px) {
   .pipeline__toolbar {
-    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
     gap: var(--design-spacing-md);
   }
@@ -362,21 +362,11 @@
     flex: 0 0 auto;
   }
 
-  .pipeline__search-container {
-    flex: 1 1 0;
-  }
-
   .pipeline__hero-actions :is(.btn-primary, .btn-secondary) {
     flex: 0 0 auto;
     white-space: nowrap;
     overflow-wrap: normal;
   }
-}
-
-.pipeline__search-container {
-  flex: 1 1 var(--modal-inline-size-xs);
-  min-width: 0;
-  position: relative;
 }
 
 @media (width <= 767px) {
@@ -385,8 +375,7 @@
     align-items: stretch;
   }
 
-  .pipeline__search-container {
-    flex: 1 1 auto;
+  .pipeline__search {
     width: 100%;
   }
 }
@@ -396,8 +385,9 @@
   width: 100%;
 }
 
-.pipeline__search-field {
-  inline-size: 100%;
+.pipeline__search--header {
+  width: fit-content;
+  max-inline-size: 100%;
 }
 
 /* ── Búsqueda Dropdown ── */
@@ -556,12 +546,6 @@
 @media (width <= 767px) {
   .pipeline__controls {
     gap: var(--design-spacing-xs);
-  }
-
-  /* Fila 1: la búsqueda ocupa toda la línea */
-  .pipeline__search-container {
-    flex: 1 1 100%;
-    order: 1;
   }
 
   .pipeline__config-btn {
@@ -1134,17 +1118,6 @@
 
 /* ── Desktop Overrides ── */
 @media (width >= 1080px) {
-  .pipeline__report-btn {
-    inline-size: var(--touch-target-min);
-    justify-content: center;
-    padding-inline: 0;
-  }
-
-  .pipeline__report-btn > span:not(.action-state-content),
-  .pipeline__report-label {
-    display: none;
-  }
-
   .pipeline__results {
     padding: 0;
     overflow: hidden;

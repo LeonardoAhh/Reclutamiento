@@ -27,6 +27,17 @@ interface MxDateParts {
   second: number;
 }
 
+const mxDateFormatter = new Intl.DateTimeFormat('en-US', {
+  timeZone: TZ_MX,
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+  hourCycle: 'h23',
+});
+
 /**
  * Devuelve las partes calendáricas de `date` evaluadas en TZ MX,
  * independientemente del TZ del visor o del servidor.
@@ -35,17 +46,7 @@ function mxDateParts(date: Date): MxDateParts {
   if (Number.isNaN(date.getTime())) {
     return { year: 0, month: 0, day: 0, hour: 0, minute: 0, second: 0 };
   }
-  const fmt = new Intl.DateTimeFormat('en-US', {
-    timeZone: TZ_MX,
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hourCycle: 'h23',
-  });
-  const parts = fmt.formatToParts(date);
+  const parts = mxDateFormatter.formatToParts(date);
   const get = (type: string) =>
     Number(parts.find((p) => p.type === type)?.value ?? '0');
   return {

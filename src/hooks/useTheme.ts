@@ -1,7 +1,13 @@
 import { useSyncExternalStore } from 'react';
 
 export type ThemePreference = 'light' | 'dark' | 'system';
-export type ThemePalette = 'original' | 'ocean-saas' | 'darkmatter-remix' | 'chemp' | 'claude-amber' | 'supabase';
+export type ThemePalette =
+  | 'original'
+  | 'ocean-saas'
+  | 'darkmatter-remix'
+  | 'sea-glass'
+  | 'claude-amber'
+  | 'supabase';
 
 interface ThemeSnapshot {
   preference: ThemePreference;

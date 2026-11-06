@@ -16,10 +16,10 @@
 }
 
 .overview-chart__header {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) var(--touch-target-min);
+  display: flex;
+  flex-direction: column;
   align-items: flex-start;
-  gap: var(--design-spacing-xs);
+  gap: var(--design-spacing-md);
   min-inline-size: 0;
 }
 
@@ -37,73 +37,16 @@
   letter-spacing: var(--type-body-strong-tracking);
 }
 
-.overview-chart__subtitle {
-  margin: var(--design-spacing-xxs) 0 0;
-  color: var(--color-muted);
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-  overflow-wrap: anywhere;
-}
-
-.overview-chart__action {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  inline-size: var(--touch-target-min);
-  min-block-size: var(--touch-target-min);
-  padding: 0;
-  border: var(--border-width) solid var(--color-control-border);
-  border-radius: var(--radius-control);
-  background: var(--color-surface-card);
-  color: var(--color-ink);
-  font-family: var(--font-body);
-  font-size: var(--type-button-size);
-  font-weight: var(--type-button-weight);
-  line-height: var(--type-button-line);
-  letter-spacing: var(--type-button-tracking);
-  cursor: pointer;
-  transition:
-    background-color var(--transition-fast),
-    border-color var(--transition-fast);
-}
-
-.overview-chart__action-icon {
-  inline-size: var(--icon-size-md);
-  block-size: var(--icon-size-md);
-}
-
-.overview-chart__action-label {
-  display: none;
-}
-
 @media (width >= 768px) {
   .overview-chart {
     padding: var(--design-spacing-lg);
   }
 
   .overview-chart__header {
-    display: flex;
+    flex-direction: row;
+    align-items: center;
     justify-content: space-between;
-    gap: var(--design-spacing-md);
   }
-
-  .overview-chart__action {
-    gap: var(--design-spacing-xs);
-    inline-size: auto;
-    padding-inline: var(--design-spacing-md);
-  }
-
-  .overview-chart__action-label {
-    display: inline;
-  }
-}
-
-.overview-chart__action:hover {
-  border-color: var(--color-hairline-strong);
-  background: var(--color-surface-soft);
 }
 
 .overview-chart__legend {
@@ -138,7 +81,7 @@
 
 @media (width >= 768px) {
   .overview-chart__legend {
-    justify-content: flex-start;
+    justify-content: flex-end;
     gap: var(--design-spacing-md);
   }
 
@@ -228,10 +171,4 @@
   line-height: var(--type-body-md-line);
   letter-spacing: var(--type-body-md-tracking);
   text-align: center;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .overview-chart__action {
-    transition: none;
-  }
 }

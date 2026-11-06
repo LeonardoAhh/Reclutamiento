@@ -5,61 +5,41 @@ import {
   useState,
   type KeyboardEvent as ReactKeyboardEvent,
 } from 'react';
-import { PageHeading } from '@/components/layout/PageHeading';
+import { PageHeaderAccessory, PageHeading } from '@/components/layout/PageHeading';
 
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { usePagination } from '@/hooks/usePagination';
+import { useIsMobile } from '@/hooks/useIsMobile';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import {
   useReporteDiario,
   type ReporteDiarioRecord,
 } from '@/hooks/useReporteDiario';
 import { useBajas } from '@/hooks/useBajas';
-import {
-  Building2,
-  ChevronDown,
-  CircleCheckBig,
-  Clock3,
-  LayoutGrid,
-  List,
-  RotateCcw,
-  UserRoundCheck,
-  UserRoundMinus,
-  UsersRound,
-} from 'lucide-react';
+import { RotateCcw } from 'lucide-react';
 import { Search as SearchData } from 'lucide';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import { SearchField } from '@/components/ui/SearchField';
 import { ButtonUtility } from '@/components/ui/ButtonUtility';
-import { CustomSelect } from '@/components/ui/CustomSelect';
 import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
-import { Pagination } from '@/components/ui/Pagination';
-import { AnalysisFilterPanel } from './components/AnalysisFilterPanel';
-import { EmployeeResultCard } from './components/EmployeeResultCard';
+import { AnalysisResultsFilters } from './components/AnalysisResultsFilters';
+import { AnalysisResultsPanel } from './components/AnalysisResultsPanel';
 import { getConfiguracionCopy } from './configuracion-translations';
 import {
-  getEmployeeResultId,
+  ALL_FILTER_VALUE,
   normalizeFilterValue,
   normalizeSearchText,
   matchesSearchTokens,
   uniqueFilterValues,
-  isNuevoIngreso,
-  isEmpleadoPlanta,
-  hasExcesoFaltas,
-  getRecentFaltaDates,
   type EmployeeSearchResult,
-  type SearchViewMode,
+  type SearchStatusFilter,
 } from './analisis-helpers';
 import '../Configuracion.css';
 
-type SearchStatusFilter = 'all' | 'active' | 'inactive';
-type RiskFilter = 'all' | 'nuevos_ingresos' | 'riesgo_baja' | 'faltas_planta';
-
-const ALL_FILTER_VALUE = 'all';
-
 export function AnalisisView() {
   const { language } = useLanguage();
+  const isMobile = useIsMobile();
   const copy = getConfiguracionCopy(language).analysis;
   const { loading: authLoading } = useAuth();
   const {
@@ -69,16 +49,19 @@ export function AnalisisView() {
   } = useSupabaseData();
 
   const { bajas, loading: bajasLoading } = useBajas();
-  const { fetchSummaries, fetchByMesList } = useReporteDiario();
+  const {
+    fetchSummaries,
+    fetchByMesList,
+    error: reportsError,
+  } = useReporteDiario();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<SearchStatusFilter>('all');
+  const [statusFilter, setStatusFilter] =
+    useState<SearchStatusFilter>(ALL_FILTER_VALUE);
   const [departmentFilter, setDepartmentFilter] = useState(ALL_FILTER_VALUE);
   const [shiftFilter, setShiftFilter] = useState(ALL_FILTER_VALUE);
-  const [riskFilter, setRiskFilter] = useState<RiskFilter>('all');
-  const [viewMode, setViewMode] = useState<SearchViewMode>('compact');
-  const [expandedResultId, setExpandedResultId] = useState<string | null>(null);
+  const [isEmployeeDetailOpen, setIsEmployeeDetailOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const [allReports, setAllReports] = useState<ReporteDiarioRecord[]>([]);
@@ -136,7 +119,7 @@ export function AnalisisView() {
 
   // 3. Aplicar filtros secundarios
   const filteredEmployees = useMemo(() => {
-    const result = textMatches.filter((employee) => {
+    return textMatches.filter((employee) => {
       if (statusFilter === 'active' && employee.isBaja) return false;
       if (statusFilter === 'inactive' && !employee.isBaja) return false;
       if (
@@ -147,53 +130,12 @@ export function AnalisisView() {
         shiftFilter !== ALL_FILTER_VALUE &&
         normalizeFilterValue(employee.turno ?? '') !== shiftFilter
       ) return false;
-      if (riskFilter === 'nuevos_ingresos' && (employee.isBaja || !isNuevoIngreso(employee.fecha_ingreso))) return false;
-      if (
-        riskFilter === 'riesgo_baja' &&
-        (employee.isBaja || !reportsFetched || !isNuevoIngreso(employee.fecha_ingreso) || !hasExcesoFaltas(employee.num_empleado, allReports))
-      ) {
-        return false;
-      }
-      if (
-        riskFilter === 'faltas_planta' &&
-        (employee.isBaja || !reportsFetched || !isEmpleadoPlanta(employee.fecha_ingreso) || !hasExcesoFaltas(employee.num_empleado, allReports))
-      ) {
-        return false;
-      }
       return true;
     });
-
-    if (riskFilter !== 'all') {
-      const absenceCounts = (riskFilter === 'riesgo_baja' || riskFilter === 'faltas_planta')
-        ? new Map(
-            result.map((employee) => [
-              employee.num_empleado,
-              getRecentFaltaDates(employee.num_empleado, allReports).length,
-            ]),
-          )
-        : null;
-
-      result.sort((a, b) => {
-        const dateA = a.fecha_ingreso || '';
-        const dateB = b.fecha_ingreso || '';
-        if (dateA !== dateB) return dateA.localeCompare(dateB);
-
-        if (absenceCounts) {
-          const absenceDifference =
-            (absenceCounts.get(b.num_empleado) ?? 0) -
-            (absenceCounts.get(a.num_empleado) ?? 0);
-          if (absenceDifference !== 0) return absenceDifference;
-        }
-
-        return a.nombre.localeCompare(b.nombre);
-      });
-    }
-
-    return result;
-  }, [textMatches, statusFilter, departmentFilter, shiftFilter, riskFilter, reportsFetched, allReports]);
+  }, [textMatches, statusFilter, departmentFilter, shiftFilter]);
 
   // 4. Paginación
-  const employeePagination = usePagination(filteredEmployees, 12);
+  const employeePagination = usePagination(filteredEmployees, 7);
 
   useEffect(() => {
     employeePagination.goToPage(1);
@@ -202,7 +144,6 @@ export function AnalisisView() {
     statusFilter,
     departmentFilter,
     shiftFilter,
-    riskFilter,
     employeePagination.goToPage,
   ]);
 
@@ -214,18 +155,16 @@ export function AnalisisView() {
   );
 
   const hasActiveFilters =
-    statusFilter !== 'all' ||
+    statusFilter !== ALL_FILTER_VALUE ||
     departmentFilter !== ALL_FILTER_VALUE ||
-    shiftFilter !== ALL_FILTER_VALUE ||
-    riskFilter !== 'all';
-    
-  const isSingleResult = filteredEmployees.length === 1 && searchQuery.length > 2;
-  const canUseCompactView = filteredEmployees.length > 1;
+    shiftFilter !== ALL_FILTER_VALUE;
+  const shouldLoadReports =
+    (searchQuery.length > 0 || hasActiveFilters) && filteredEmployees.length > 0;
 
   // Removemos el useEffect que reseteaba los filtros para permitir buscar DENTRO de un filtro.
 
   useEffect(() => {
-    if (reportsFetched) return;
+    if (reportsFetched || !shouldLoadReports) return;
 
     let active = true;
     const loadReports = async () => {
@@ -248,12 +187,7 @@ export function AnalisisView() {
     return () => {
       active = false;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fetchSummaries, fetchByMesList]);
-
-  useEffect(() => {
-    if (!canUseCompactView && viewMode === 'compact') setViewMode('detail');
-  }, [canUseCompactView, viewMode]);
+  }, [fetchSummaries, fetchByMesList, reportsFetched, shouldLoadReports]);
 
   useEffect(() => {
     const focusSearch = (event: KeyboardEvent) => {
@@ -267,24 +201,6 @@ export function AnalisisView() {
     return () => window.removeEventListener('keydown', focusSearch);
   }, []);
 
-  const metrics = useMemo(() => {
-    let nuevosIngresos = 0;
-    let riesgoBaja = 0;
-    let faltasPlanta = 0;
-    
-    for (const emp of employees) {
-      const nuevo = isNuevoIngreso(emp.fecha_ingreso);
-      if (nuevo) nuevosIngresos++;
-      if (nuevo && reportsFetched && hasExcesoFaltas(emp.num_empleado, allReports)) {
-        riesgoBaja++;
-      }
-      if (!nuevo && reportsFetched && hasExcesoFaltas(emp.num_empleado, allReports)) {
-        faltasPlanta++;
-      }
-    }
-    return { nuevosIngresos, riesgoBaja, faltasPlanta };
-  }, [employees, allReports, reportsFetched]);
-
   const handleClearSearch = () => {
     setSearchTerm('');
     searchInputRef.current?.focus();
@@ -296,20 +212,33 @@ export function AnalisisView() {
     handleClearSearch();
   };
 
+  const searchField = (
+    <SearchField
+      id="config-search-input"
+      className={`search-field--intrinsic${isMobile ? '' : ' search-field--header'}`}
+      ref={searchInputRef}
+      label={copy.searchLabel}
+      value={searchTerm}
+      onChange={(event) => setSearchTerm(event.target.value)}
+      onKeyDown={handleSearchKeyDown}
+      onClear={handleClearSearch}
+      placeholder={copy.searchPlaceholder}
+      autoComplete="off"
+      enterKeyHint="search"
+      aria-keyshortcuts="Control+K Meta+K"
+      aria-controls="config-search-results"
+    />
+  );
+  const searchRegion = (
+    <div role="search" aria-label={copy.searchRegion}>
+      {searchField}
+    </div>
+  );
+
   const handleClearFilters = () => {
-    setStatusFilter('all');
+    setStatusFilter(ALL_FILTER_VALUE);
     setDepartmentFilter(ALL_FILTER_VALUE);
     setShiftFilter(ALL_FILTER_VALUE);
-    setRiskFilter('all');
-  };
-
-  const handleViewModeChange = (mode: SearchViewMode) => {
-    setViewMode(mode);
-    if (mode === 'detail') setExpandedResultId(null);
-  };
-
-  const handleToggleCompactResult = (resultId: string) => {
-    setExpandedResultId((current) => current === resultId ? null : resultId);
   };
 
   return (
@@ -319,340 +248,88 @@ export function AnalisisView() {
       loadingLabel={copy.loading}
     >
       <section className="analisis-view config-page" aria-labelledby="analisis-title">
-          <PageHeading id="analisis-title" className="config-page__title app-page-title">
-            {copy.title}
-          </PageHeading>
-      {employeesError && (
-        <p className="config-search-error type-body-md mt-sm" role="alert">
-          {copy.loadError}
-        </p>
-      )}
+        <PageHeading id="analisis-title" className="config-page__title app-page-title">
+          {copy.title}
+        </PageHeading>
+        {!isMobile && <PageHeaderAccessory>{searchRegion}</PageHeaderAccessory>}
+        {employeesError && (
+          <p className="config-search-error type-body-md mt-sm" role="alert">
+            {copy.loadError}
+          </p>
+        )}
 
-      <div className="analisis-overview">
-        <section
-          className="config-page__toolbar"
-          role="search"
-          aria-label={copy.searchRegion}
-        >
-          <div className="config-search-field">
-            <SearchField
-              id="config-search-input"
-              className="search-field--intrinsic"
-              ref={searchInputRef}
-              label={copy.searchLabel}
-              value={searchTerm}
-              onChange={(event) => setSearchTerm(event.target.value)}
-              onKeyDown={handleSearchKeyDown}
-              onClear={handleClearSearch}
-              placeholder={copy.searchPlaceholder}
-              autoComplete="off"
-              enterKeyHint="search"
-              aria-keyshortcuts="Control+K Meta+K"
-              aria-controls="config-search-results"
-            />
-          </div>
-        </section>
-
-        <section className="analisis-hero" aria-label={copy.riskIndicators}>
-          <button
-            type="button"
-            className="analisis-hero__card"
-            data-cuelume-select=""
-            onClick={() => setRiskFilter(r => r === 'nuevos_ingresos' ? 'all' : 'nuevos_ingresos')}
-            aria-pressed={riskFilter === 'nuevos_ingresos'}
-            aria-controls="config-search-results"
-            aria-label={`${copy.newHiresAria}: ${metrics.nuevosIngresos}`}
-          >
-            <span className="analisis-hero__card-header">
-              <span className="analisis-hero__card-title">{copy.newHires}</span>
-              <span className="analisis-hero__card-count">{metrics.nuevosIngresos}</span>
-              <CircleCheckBig className="analisis-hero__card-check" size="var(--icon-size-sm)" aria-hidden="true" />
-            </span>
-          </button>
-
-          <button
-            type="button"
-            className="analisis-hero__card analisis-hero__card--risk"
-            onClick={() => setRiskFilter(r => r === 'riesgo_baja' ? 'all' : 'riesgo_baja')}
-            aria-pressed={riskFilter === 'riesgo_baja'}
-            aria-controls="config-search-results"
-            aria-label={`${copy.renewalRiskAria}: ${metrics.riesgoBaja}`}
-          >
-            <span className="analisis-hero__card-header">
-              <span className="analisis-hero__card-title">{copy.renewalRisk}</span>
-              <span
-                className="analisis-hero__card-count"
-                aria-busy={reportsLoading}
-                aria-live="polite"
-              >
-                {metrics.riesgoBaja}
-              </span>
-              <CircleCheckBig className="analisis-hero__card-check" size="var(--icon-size-sm)" aria-hidden="true" />
-            </span>
-          </button>
-
-          <button
-            type="button"
-            className="analisis-hero__card analisis-hero__card--error"
-            onClick={() => setRiskFilter(r => r === 'faltas_planta' ? 'all' : 'faltas_planta')}
-            aria-pressed={riskFilter === 'faltas_planta'}
-            aria-controls="config-search-results"
-            aria-label={`${copy.recentAbsencesAria}: ${metrics.faltasPlanta}`}
-          >
-            <span className="analisis-hero__card-header">
-              <span className="analisis-hero__card-title">{copy.employeesWithAbsences}</span>
-              <span
-                className="analisis-hero__card-count"
-                aria-busy={reportsLoading}
-                aria-live="polite"
-              >
-                {metrics.faltasPlanta}
-              </span>
-              <CircleCheckBig className="analisis-hero__card-check" size="var(--icon-size-sm)" aria-hidden="true" />
-            </span>
-          </button>
-        </section>
-
-      </div>
-
-      {reportsLoading && (
-        <span className="sr-only" role="status" aria-live="polite">
-          {copy.updatingRisk}
-        </span>
-      )}
-
-      <section
-        id="config-search-results"
-        aria-label={copy.results}
-      >
-
-        <section
-          className="config-results-controls"
-          aria-label={copy.filtersAndView}
-        >
-          <AnalysisFilterPanel
-            count={Number(statusFilter !== 'all') + Number(departmentFilter !== ALL_FILTER_VALUE) + Number(shiftFilter !== ALL_FILTER_VALUE) + Number(riskFilter !== 'all')}
-            label={copy.filters}
-            doneLabel={copy.done}
-          >
-          <div className="config-results-controls__filters">
-            <fieldset className="config-filter-group">
-              <legend className="config-filter-label type-caption-up text-muted">
-                {copy.status}
-              </legend>
-              <div className="config-segmented-control">
-                {([
-                  ['all', copy.all, UsersRound],
-                  ['active', copy.active, UserRoundCheck],
-                  ['inactive', copy.leavers, UserRoundMinus],
-                ] as const).map(([value, label, Icon]) => (
-                  <button
-                    key={value}
-                    type="button"
-                    className={`config-segmented-control__button${
-                      statusFilter === value ? ' is-active' : ''
-                    }`}
-                    data-cuelume-select=""
-                    onClick={() => setStatusFilter(value)}
-                    aria-pressed={statusFilter === value}
-                  >
-                    <Icon size="var(--icon-size-sm)" aria-hidden="true" />
-                    {label}
-                  </button>
-                ))}
-              </div>
-            </fieldset>
-
-            {canUseCompactView && (
-              <div className="config-filter-field analisis-view-control">
-                <span className="config-filter-label type-caption-up text-muted">
-                  {copy.view}
-                </span>
-                <div
-                  className="config-view-switch"
-                  role="group"
-                  aria-label={copy.resultView}
-                >
-                  <button
-                    type="button"
-                    className={`config-view-switch__button${
-                      viewMode === 'detail' ? ' is-active' : ''
-                    }`}
-                    aria-label={copy.detailed}
-                    title={copy.detailed}
-                    data-cuelume-select=""
-                    onClick={() => handleViewModeChange('detail')}
-                    aria-pressed={viewMode === 'detail'}
-                  >
-                    <List aria-hidden="true" />
-                    <span className="analisis-view-control__text">{copy.detailed}</span>
-                  </button>
-                  <button
-                    type="button"
-                    className={`config-view-switch__button${
-                      viewMode === 'compact' ? ' is-active' : ''
-                    }`}
-                    aria-label={copy.compact}
-                    title={copy.compact}
-                    onClick={() => handleViewModeChange('compact')}
-                    aria-pressed={viewMode === 'compact'}
-                  >
-                    <LayoutGrid aria-hidden="true" />
-                    <span className="analisis-view-control__text">{copy.compact}</span>
-                  </button>
-                </div>
-              </div>
-            )}
-
-            <div className="config-filter-field analisis-select-filter analisis-select-filter--department">
-              <CustomSelect
-                value={departmentFilter}
-                aria-label={`${copy.department}: ${selectedDepartmentLabel}`}
-                title={`${copy.department}: ${selectedDepartmentLabel}`}
-                onChange={setDepartmentFilter}
-                options={[
-                  { value: ALL_FILTER_VALUE, label: copy.all },
-                  ...departmentOptions,
-                ]}
-                showPlaceholderOption={false}
-                triggerAppearance="control"
-                customTrigger={
-                  <span className="analisis-select-filter__trigger">
-                    <Building2 size="var(--icon-size-sm)" aria-hidden="true" />
-                    <span className="analisis-select-filter__name">{copy.department}</span>
-                    <span className="analisis-select-filter__value">
-                      {selectedDepartmentLabel}
-                    </span>
-                    <ChevronDown size="var(--icon-size-sm)" aria-hidden="true" />
-                  </span>
-                }
-              />
-            </div>
-
-            <div className="config-filter-field analisis-select-filter analisis-select-filter--shift">
-              <CustomSelect
-                value={shiftFilter}
-                aria-label={`${copy.shift}: ${selectedShiftLabel}`}
-                title={`${copy.shift}: ${selectedShiftLabel}`}
-                onChange={setShiftFilter}
-                options={[
-                  { value: ALL_FILTER_VALUE, label: copy.all },
-                  ...shiftOptions,
-                ]}
-                showPlaceholderOption={false}
-                triggerAppearance="control"
-                customTrigger={
-                  <span className="analisis-select-filter__trigger">
-                    <Clock3 size="var(--icon-size-sm)" aria-hidden="true" />
-                    <span className="analisis-select-filter__name">{copy.shift}</span>
-                    <span className="analisis-select-filter__value">
-                      {selectedShiftLabel}
-                    </span>
-                    <ChevronDown size="var(--icon-size-sm)" aria-hidden="true" />
-                  </span>
-                }
-              />
-            </div>
-
-            {hasActiveFilters && (
-              <button
-                type="button"
-                className="btn-ghost config-filter-reset"
-                data-cuelume-select=""
-                onClick={handleClearFilters}
-              >
-                {copy.clear}
-              </button>
-            )}
-          </div>
-          </AnalysisFilterPanel>
-        </section>
-
-        {searchQuery.length === 0 && !hasActiveFilters ? (
-          <div className="animated-empty-state analisis-view__empty">
-            <div className="animated-empty-state__icon">
-              <MorphingIcon icon={SearchData} aria-hidden="true" />
-            </div>
-            <div className="animated-empty-state__title">
-              {copy.initialTitle}
-            </div>
-            <p className="animated-empty-state__subtitle">
-              {copy.initialDescription}
-            </p>
-          </div>
-        ) : filteredEmployees.length > 0 ? (
-          <div className="config-results-wrapper">
-            <p
-              className="config-results__count type-body-md text-muted"
-              aria-live="polite"
-            >
-              {copy.resultRange} {firstVisibleResult}–{lastVisibleResult} {copy.of}{' '}
-              {employeePagination.totalItems}{' '}
-              {employeePagination.totalItems === 1 ? copy.employee : copy.employees}
-            </p>
-
-            <div className="config-results-panel">
-              <div
-                className={`config-results${viewMode === 'compact' ? ' config-results--compact' : ''}`}
-              >
-                {employeePagination.pageItems.map((employee) => {
-                  const resultId = getEmployeeResultId(employee);
-
-                  return (
-                    <EmployeeResultCard
-                      key={resultId}
-                      employee={employee}
-                      resultId={resultId}
-                      viewMode={viewMode}
-                      isRiskFilter={riskFilter === 'riesgo_baja' || riskFilter === 'faltas_planta'}
-                      isExpanded={expandedResultId === resultId}
-                      autoExpand={isSingleResult}
-                      reports={allReports}
-                      reportsLoading={reportsLoading}
-                      onToggle={() => handleToggleCompactResult(resultId)}
-                    />
-                  );
-                })}
-              </div>
-
-              <Pagination
-                currentPage={employeePagination.currentPage}
-                totalPages={employeePagination.totalPages}
-                onPageChange={employeePagination.goToPage}
-                onPrev={employeePagination.prevPage}
-                onNext={employeePagination.nextPage}
-                canGoPrev={employeePagination.canGoPrev}
-                canGoNext={employeePagination.canGoNext}
-                ariaLabel={copy.pagination}
-                hideOnSinglePage
-              />
-            </div>
-          </div>
-        ) : (
-          <div className="config-empty" role="status">
-            <MorphingIcon
-              icon={SearchData}
-              size="var(--icon-size-xxl)"
-              className="text-muted-soft config-empty__icon"
-              aria-hidden="true"
-            />
-            <p className="type-body-md text-muted config-empty__copy">
-              {hasActiveFilters
-                ? copy.noFilterMatches
-                : `${copy.noSearchResults} “${searchQuery}”.`}
-            </p>
-            {hasActiveFilters && (
-              <ButtonUtility
-                type="button"
-                icon={<RotateCcw aria-hidden="true" />}
-                onClick={handleClearFilters}
-              >
-                {copy.clearFilters}
-              </ButtonUtility>
-            )}
+        {isMobile && (
+          <div className="analisis-overview">
+            <section className="config-page__toolbar">
+              <div className="config-search-field">{searchRegion}</div>
+            </section>
           </div>
         )}
-      </section>
+
+        <section id="config-search-results" aria-label={copy.results}>
+          {!isEmployeeDetailOpen && (
+            <section className="config-results-controls" aria-label={copy.filtersAndResults}>
+              <AnalysisResultsFilters
+                statusFilter={statusFilter}
+                departmentFilter={departmentFilter}
+                shiftFilter={shiftFilter}
+                departmentOptions={departmentOptions}
+                shiftOptions={shiftOptions}
+                selectedDepartmentLabel={selectedDepartmentLabel}
+                selectedShiftLabel={selectedShiftLabel}
+                hasActiveFilters={hasActiveFilters}
+                copy={copy}
+                onStatusFilterChange={setStatusFilter}
+                onDepartmentFilterChange={setDepartmentFilter}
+                onShiftFilterChange={setShiftFilter}
+                onClearFilters={handleClearFilters}
+              />
+            </section>
+          )}
+
+          {searchQuery.length === 0 && !hasActiveFilters ? (
+            <div className="animated-empty-state analisis-view__empty">
+              <div className="animated-empty-state__icon">
+                <MorphingIcon icon={SearchData} aria-hidden="true" />
+              </div>
+              <div className="animated-empty-state__title">{copy.initialTitle}</div>
+              <p className="animated-empty-state__subtitle">{copy.initialDescription}</p>
+            </div>
+          ) : filteredEmployees.length > 0 ? (
+            <div className="config-results-wrapper">
+              <AnalysisResultsPanel
+                pagination={employeePagination}
+                reports={allReports}
+                reportsLoading={reportsLoading}
+                reportsFetched={reportsFetched}
+                reportsError={Boolean(reportsError)}
+                onRetryReports={() => setReportsFetched(false)}
+                paginationLabel={copy.pagination}
+                resultCount={`${copy.resultRange} ${firstVisibleResult}–${lastVisibleResult} ${copy.of} ${employeePagination.totalItems} ${
+                  employeePagination.totalItems === 1 ? copy.employee : copy.employees
+                }`}
+                onDetailViewChange={setIsEmployeeDetailOpen}
+              />
+            </div>
+          ) : (
+            <div className="config-empty" role="status">
+              <MorphingIcon
+                icon={SearchData}
+                size="var(--icon-size-xxl)"
+                className="text-muted-soft config-empty__icon"
+                aria-hidden="true"
+              />
+              <p className="type-body-md text-muted config-empty__copy">
+                {hasActiveFilters ? copy.noFilterMatches : `${copy.noSearchResults} “${searchQuery}”.`}
+              </p>
+              {hasActiveFilters && (
+                <ButtonUtility type="button" icon={<RotateCcw aria-hidden="true" />} onClick={handleClearFilters}>
+                  {copy.clearFilters}
+                </ButtonUtility>
+              )}
+            </div>
+          )}
+        </section>
       </section>
     </BoneyardSkeleton>
   );

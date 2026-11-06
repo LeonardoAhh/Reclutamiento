@@ -17,7 +17,6 @@ import {
   ChevronRight,
   ChartSpline,
   Eraser,
-  FileUp,
 } from "lucide-react";
 import {
   PanelLeftClose,
@@ -45,10 +44,7 @@ import ReporteComparison from "./reporte-comparison";
 import ReporteEmployeeDetail from "./reporte-employee-detail";
 import ReportesGuardadosDialog from "./reportes-guardados-dialog";
 import { ReporteFormatErrors } from "./ReporteFormatErrors";
-import {
-  ReporteUploadPanel,
-  type ReportProcessStep,
-} from "./ReporteUploadPanel";
+import { ReporteUploadPanel } from "./ReporteUploadPanel";
 
 import { useReporteDiario } from "@/hooks/useReporteDiario";
 import type { ReporteDiarioSummary } from "@/hooks/useReporteDiario";
@@ -87,23 +83,15 @@ export default function ReporteDiarioContent() {
   }, [validDayRoute, routeDay, routeMonth]);
   const [selectedArea, setSelectedArea] = useState<string | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
-  const [isDragging, setIsDragging] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isProcessingReport, setIsProcessingReport] = useState(false);
   const saveSuccessTimerRef = useRef<number | null>(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const reduceMotion = useReducedMotion();
 
   const enterFromBelow = reduceMotion ? false : { opacity: 0, y: 8 };
-  const enterFromRight = reduceMotion ? false : { opacity: 0, x: 24 };
   const enterFromLeft = reduceMotion ? false : { opacity: 0, x: -24 };
-  const overlayPanelInitial = reduceMotion
-    ? false
-    : { opacity: 0, scale: 0.96, y: 12 };
-  const exitToRight = reduceMotion ? undefined : { opacity: 0, x: 24 };
   const exitToLeft = reduceMotion ? undefined : { opacity: 0, x: -24 };
-
-  const [processStep, setProcessStep] = useState<ReportProcessStep>(null);
 
   const {
     saving: dbSaving,
@@ -240,21 +228,14 @@ export default function ReporteDiarioContent() {
   );
 
   const processReportContent = useCallback(
-    async (
-      readContent: () => string | Promise<string>,
-      initialStep: Exclude<ReportProcessStep, null>,
-      errorTitle: string,
-    ) => {
-      if (processStep) return;
+    async (content: string) => {
+      if (isProcessingReport) return;
 
       setErrors([]);
-      setProcessStep(initialStep);
+      setIsProcessingReport(true);
 
       try {
-        const text = await readContent();
-        setProcessStep("validating");
-
-        const json: unknown = JSON.parse(text);
+        const json: unknown = JSON.parse(content);
         if (!Array.isArray(json)) {
           playSound('error');
           setErrors([
@@ -262,7 +243,9 @@ export default function ReporteDiarioContent() {
           ]);
           return;
         }
-        const { rows: parsed, errors: errs } = parseReporteJSON(json);
+        const { rows: parsed, errors: errs } = parseReporteJSON(json, {
+          rejectDuplicates: true,
+        });
 
         if (errs.length > 0) {
           playSound('error');
@@ -286,88 +269,12 @@ export default function ReporteDiarioContent() {
         playSound('error');
         const msg = `${en ? "Error checking the report" : "Error al revisar el reporte"}: ${err instanceof Error ? err.message : String(err)}`;
         setErrors([msg]);
-        toast.error({ title: errorTitle });
       } finally {
-        setProcessStep(null);
+        setIsProcessingReport(false);
       }
     },
-    [processStep, en],
+    [isProcessingReport, en],
   );
-
-  const processFile = useCallback(
-    async (file: File) => {
-      if (
-        file.type !== "application/json" &&
-        !file.name.toLowerCase().endsWith(".json")
-      ) {
-        playSound('error');
-        toast.error({ title: en ? "Invalid file format" : "Formato de archivo inválido" });
-        return;
-      }
-
-      await processReportContent(
-        () => file.text(),
-        "reading",
-        en ? "Corrupt file" : "Archivo corrupto",
-      );
-    },
-    [processReportContent, en],
-  );
-
-  const processPastedJson = useCallback(
-    async (content: string) => {
-      await processReportContent(
-        () => content,
-        "validating",
-        en ? "Invalid JSON content" : "Contenido JSON inválido",
-      );
-    },
-    [processReportContent, en],
-  );
-
-  const handleFileChange = useCallback(
-    async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const input = e.currentTarget;
-      const file = input.files?.[0];
-      if (!file) return;
-      try {
-        await processFile(file);
-      } finally {
-        input.value = "";
-      }
-    },
-    [processFile],
-  );
-
-  const handleDrop = useCallback(
-    async (e: React.DragEvent) => {
-      e.preventDefault();
-      setIsDragging(false);
-      const file = e.dataTransfer.files[0];
-      if (!file) return;
-      await processFile(file);
-    },
-    [processFile],
-  );
-
-  const handleDragOver = useCallback(
-    (e: React.DragEvent) => {
-      e.preventDefault();
-      if (!isDragging) setIsDragging(true);
-    },
-    [isDragging],
-  );
-
-  const handleDragLeave = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    // Solo quitamos isDragging si salimos del documento principal
-    if (
-      e.relatedTarget === null ||
-      (e.relatedTarget as HTMLElement).nodeName === "HTML"
-    ) {
-      setIsDragging(false);
-    }
-  }, []);
 
   const handleClearReport = useCallback(() => {
     playSound('close');
@@ -582,7 +489,7 @@ export default function ReporteDiarioContent() {
   );
 
   const hasData = rows.length > 0 && Boolean(currentMonth);
-  const recentSummaries = savedSummaries.slice(0, 3);
+  const recentSummaries = savedSummaries.slice(0, 4);
 
   if (dayRoute) {
     return <ReportDayPage
@@ -614,16 +521,6 @@ export default function ReporteDiarioContent() {
         loadingLabel={copy("Cargando reportes de asistencia…", "Loading attendance reports…")}
       >
         <div className="reporte-container">
-        <input
-          ref={fileInputRef}
-          className="reporte-file-input"
-          type="file"
-          accept="application/json"
-          onChange={handleFileChange}
-          tabIndex={-1}
-          aria-hidden="true"
-        />
-
         <motion.section
           className="reporte-hero"
           initial={enterFromBelow}
@@ -640,158 +537,125 @@ export default function ReporteDiarioContent() {
 
           <div className="reporte-hero__workspace">
             <ReporteUploadPanel
-              processStep={processStep}
-              isDragging={isDragging}
-              onSelectFile={() => fileInputRef.current?.click()}
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-              onSubmitJson={processPastedJson}
+              isProcessing={isProcessingReport}
+              errors={errors}
+              onDismissErrors={() => setErrors([])}
+              onSubmitJson={processReportContent}
             />
 
-            <section
-              className="reporte-hero__panel reporte-hero__panel--recent"
-              aria-labelledby="reporte-recent-title"
-            >
-              <header className="reporte-hero__panel-header">
-                <span className="reporte-hero__panel-icon" aria-hidden="true">
-                  <Archive size="1em" />
-                </span>
-                <div className="reporte-hero__panel-copy">
-                  <h2 id="reporte-recent-title">{copy("Reportes recientes", "Recent reports")}</h2>
-                  <p>{copy("Consulta o compara reportes guardados.", "View or compare saved reports.")}</p>
-                </div>
-              </header>
+            <div className="reporte-hero__panels">
+              <section
+                className="reporte-hero__panel reporte-hero__panel--recent"
+                aria-labelledby="reporte-recent-title"
+              >
+                <header className="reporte-hero__panel-header">
+                  <div className="reporte-hero__panel-copy">
+                    <h2 id="reporte-recent-title">{copy("Reportes recientes", "Recent reports")}</h2>
+                    <p>{copy("Consulta reportes guardados.", "View saved reports.")}</p>
+                  </div>
+                </header>
 
-              {recentSummaries.length > 0 ? (
-                <ul className="reporte-hero__recent-list">
-                  {recentSummaries.map((summary) => (
-                    <li key={summary.id}>
-                      <button
-                        type="button"
-                        className="reporte-hero__recent-item"
-                        data-cuelume-open=""
-                        onClick={() => void handleLoadFromDb(summary.mes)}
-                        aria-label={`${copy("Abrir reporte de", "Open report for")} ${month(summary.mes)}`}
-                      >
-                        <span
-                          className="reporte-hero__recent-icon"
-                          aria-hidden="true"
+                {recentSummaries.length > 0 ? (
+                  <ul className="reporte-hero__recent-list">
+                    {recentSummaries.map((summary) => (
+                      <li key={summary.id}>
+                        <button
+                          type="button"
+                          className="reporte-hero__recent-item"
+                          data-cuelume-open=""
+                          onClick={() => void handleLoadFromDb(summary.mes)}
+                          aria-label={`${copy("Abrir reporte de", "Open report for")} ${month(summary.mes)}`}
                         >
-                          <CalendarDays size="1em" />
-                        </span>
-                        <span className="reporte-hero__recent-copy">
-                          <span className="reporte-hero__recent-title">
-                            {month(summary.mes)}
+                          <span
+                            className="reporte-hero__recent-icon"
+                            aria-hidden="true"
+                          >
+                            <CalendarDays size="1em" />
                           </span>
-                          <span className="reporte-hero__recent-meta">
-                            {summary.total_incidencias === 1
-                              ? copy("1 incidencia", "1 incident")
-                              : `${summary.total_incidencias} ${copy("incidencias", "incidents")}`}
+                          <span className="reporte-hero__recent-copy">
+                            <span className="reporte-hero__recent-title">
+                              {month(summary.mes)}
+                            </span>
+                            <span className="reporte-hero__recent-meta">
+                              {summary.total_incidencias === 1
+                                ? copy("1 incidencia", "1 incident")
+                                : `${summary.total_incidencias} ${copy("incidencias", "incidents")}`}
+                            </span>
                           </span>
-                        </span>
-                        <ChevronRight size="1em" aria-hidden="true" />
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <div className="reporte-hero__recent-empty">
-                  <Archive size="1em" aria-hidden="true" />
-                  <p>{copy("No hay reportes guardados.", "No saved reports.")}</p>
-                  <span>{copy("Cuando guardes uno, aparecerá aquí.", "Saved reports will appear here.")}</span>
-                </div>
-              )}
-
-              <div className="reporte-hero__recent-actions">
-                <div className="reporte-hero__report-links">
-                  <Link
-                    className="btn-secondary reporte-hero__recent-link"
-                    to="/departure-reasons"
-                    data-cuelume-navigate=""
-                    aria-label={departureAccessibleLabel}
-                  >
-                    <BarChart3 size="var(--icon-size-sm)" aria-hidden="true" />
-                    {departureLinkLabel}
-                  </Link>
-                  <Link
-                    className="btn-secondary reporte-hero__recent-link"
-                    to={getConfiguracionHref("analisis")}
-                    data-cuelume-navigate=""
-                  >
-                    <ChartSpline size="var(--icon-size-sm)" aria-hidden="true" />
-                    {copy("Análisis", "Analysis")}
-                  </Link>
-                </div>
-                {savedSummaries.length > 0 && (
-                  <>
-                    <ReportesGuardadosDialog
-                      savedSummaries={savedSummaries}
-                      dbSaving={dbSaving}
-                      onLoad={handleLoadFromDb}
-                      onDelete={handleDeleteFromDb}
-                      formatMes={month}
-                      triggerVariant="labeled"
-                      triggerLabel={copy("Ver todos", "View all")}
-                    />
-                    {savedSummaries.length >= 2 && (
-                      <ReporteComparison
-                        triggerVariant="labeled"
-                      />
-                    )}
-                  </>
+                          <ChevronRight size="1em" aria-hidden="true" />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div className="reporte-hero__recent-empty">
+                    <Archive size="1em" aria-hidden="true" />
+                    <p>{copy("No hay reportes guardados.", "No saved reports.")}</p>
+                    <span>{copy("Cuando guardes uno, aparecerá aquí.", "Saved reports will appear here.")}</span>
+                  </div>
                 )}
-              </div>
-            </section>
+              </section>
+
+              <section
+                className="reporte-hero__panel reporte-hero__panel--actions"
+                aria-labelledby="reporte-tools-title"
+              >
+                <header className="reporte-hero__panel-header">
+                  <div className="reporte-hero__panel-copy">
+                    <h2 id="reporte-tools-title">{copy("Herramientas de reportes", "Report tools")}</h2>
+                    <p>
+                      {copy(
+                        "Reportes y análisis.",
+                        "Reports and analysis.",
+                      )}
+                    </p>
+                  </div>
+                </header>
+                <nav
+                  className="reporte-hero__recent-actions"
+                  aria-label={copy("Acciones de reportes", "Report actions")}
+                >
+                  <div className="reporte-hero__report-links">
+                    <Link
+                      className="btn-secondary reporte-hero__recent-link"
+                      to="/departure-reasons"
+                      data-cuelume-navigate=""
+                      aria-label={departureAccessibleLabel}
+                    >
+                      <BarChart3 size="var(--icon-size-sm)" aria-hidden="true" />
+                      {departureLinkLabel}
+                    </Link>
+                    <Link
+                      className="btn-secondary reporte-hero__recent-link"
+                      to={getConfiguracionHref("analisis")}
+                      data-cuelume-navigate=""
+                    >
+                      <ChartSpline size="var(--icon-size-sm)" aria-hidden="true" />
+                      {copy("Análisis", "Analysis")}
+                    </Link>
+                  </div>
+                  {savedSummaries.length > 0 && (
+                    <>
+                      <ReportesGuardadosDialog
+                        savedSummaries={savedSummaries}
+                        dbSaving={dbSaving}
+                        onLoad={handleLoadFromDb}
+                        onDelete={handleDeleteFromDb}
+                        formatMes={month}
+                        triggerVariant="labeled"
+                        triggerLabel={copy("Reportes", "Reports")}
+                      />
+                      {savedSummaries.length >= 2 && (
+                        <ReporteComparison triggerVariant="labeled" />
+                      )}
+                    </>
+                  )}
+                </nav>
+              </section>
+            </div>
           </div>
         </motion.section>
 
-        {errors.length > 0 && (
-          <ReporteFormatErrors
-            errors={errors}
-            onDismiss={() => setErrors([])}
-          />
-        )}
-
-
-
-        <AnimatePresence>
-          {isDragging && (
-            <motion.div
-              initial={reduceMotion ? false : { opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={reduceMotion ? undefined : { opacity: 0 }}
-              className="reporte-drag"
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-              role="status"
-              aria-live="assertive"
-              aria-label={copy("Suelta el archivo para cargar el reporte", "Drop the file to load the report")}
-            >
-              <motion.div
-                initial={overlayPanelInitial}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={
-                  reduceMotion ? undefined : { opacity: 0, scale: 0.96, y: 12 }
-                }
-                className="reporte-drag__inner"
-              >
-                <FileUp
-                  size="1em"
-                  className="reporte-overlay__icon-primary reporte-drag__icon"
-                  aria-hidden="true"
-                />
-                <h2 className="reporte-overlay__title">
-                  {copy("Suelta el archivo aquí", "Drop the file here")}
-                </h2>
-                <p className="reporte-subtitle">
-                  {copy("Detecta automáticamente el mes y valida el formato.", "The month is detected and the format checked automatically.")}
-                </p>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
         </div>
       </BoneyardSkeleton>
     );
@@ -901,16 +765,6 @@ export default function ReporteDiarioContent() {
       </header>
 
       <div className="reporte-layout">
-        <input
-          ref={fileInputRef}
-          className="reporte-file-input"
-          type="file"
-          accept="application/json"
-          onChange={handleFileChange}
-          tabIndex={-1}
-          aria-hidden="true"
-        />
-
         {/* ── PANEL IZQUIERDO: búsqueda y acciones (controles movidos arriba) ───────── */}
         <aside className="reporte-panel">
           {/* Controles movidos arriba; aside no longer contains the search */}

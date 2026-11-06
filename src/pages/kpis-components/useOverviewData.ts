@@ -12,12 +12,11 @@ import {
   isoWeekOf,
   localTodayIso,
 } from "@/lib/dates";
-import { calculateWorkforceProjection } from "@/lib/workforceProjection";
 import type { Baja, Candidate, Employee } from "@/lib/types";
 
 /**
  * Datos derivados de /overview. Conserva los cálculos existentes de la vista:
- * semanas ISO, ingresos, bajas, pipeline, cobertura y proyección de plantilla.
+ * semanas ISO, ingresos, bajas, pipeline y cobertura.
  */
 export function useOverviewData() {
   const { language } = useLanguage();
@@ -142,13 +141,7 @@ export function useOverviewData() {
     return calculatePositionCoverage(employees, comments, positions);
   }, [employees, comments, positions]);
 
-  /* ── Proyección Estratégica ───────────────────────────────── */
   const todayIso = useMemo(() => localTodayIso(), []);
-
-  const projectionTotals = useMemo(
-    () => calculateWorkforceProjection(employees, positions, todayIso, dismissedKeys),
-    [employees, positions, todayIso, dismissedKeys],
-  );
 
   return {
     loading,
@@ -157,7 +150,6 @@ export function useOverviewData() {
     positions,
     dismissedKeys,
     currentPositionCoverage,
-    projectionTotals,
     weekOffset,
     setWeekOffset,
     currentWeek,

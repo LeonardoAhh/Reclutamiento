@@ -1,0 +1,286 @@
+/* ── Mobile L / phone landscape (≥ 480px) ───────────────────────────── */
+@media (width >= 768px) {
+  .dashboard-sidebar__utility-label--wide {
+    display: inline;
+  }
+}
+
+/* ── Tablet portrait (≥ 768px) ──────────────────────────────────────── */
+@media (width >= 768px) {
+  .dashboard__hero {
+    padding-block: var(--spacing-xl);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .dashboard__hero-actions {
+    width: auto;
+    flex-shrink: 0;
+  }
+
+  .dashboard__hero-actions > *,
+  .dashboard__hero-actions .json-importer {
+    flex: 0 0 auto;
+  }
+
+  .dashboard__controls {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .dashboard__filter,
+  .dashboard__filter-select {
+    width: auto;
+  }
+
+  .dept-card__header {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .dept-card__header-right {
+    width: auto;
+    min-width: auto;
+  }
+
+  .dept-card__table th,
+  .dept-card__table td {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .dashboard__departments {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--spacing-lg);
+  }
+}
+
+/* ── Desktop (≥ 1080px) ─────────────────────────────────────────────── */
+@media (width >= 1080px) {
+  .dashboard__hero,
+  .dashboard__controls {
+    width: 100%;
+  }
+
+  .dashboard__departments {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--spacing-lg);
+    justify-items: stretch;
+  }
+
+  .dept-card {
+    min-width: 0;
+  }
+
+  .cell-puesto {
+    min-width: 200px;
+  }
+}
+
+/* ── Mobile-only header tweak (PWA bottom-bar leaves space) ─────────── */
+@media (width <= 767px) {
+  .dashboard-sidebar__utility-label--wide {
+    display: none;
+  }
+}
+
+/* ── Refactored classes from Dashboard.tsx inline styles ── */
+.dashboard-sidebar__header {
+  margin-bottom: var(--spacing-md);
+}
+
+.dashboard-sidebar__header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.dashboard-sidebar__title-group {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  color: var(--color-ink);
+}
+
+.dashboard__hero-actions {
+  display: flex;
+  gap: var(--spacing-xs);
+  width: auto;
+  flex-wrap: nowrap;
+}
+
+.dashboard-sidebar__search {
+  display: flex;
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+
+.dashboard-sidebar__search-wrapper {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  max-inline-size: var(--search-field-compact-max-inline-size);
+}
+
+.dashboard-sidebar__search-field {
+  inline-size: 100%;
+}
+
+.dashboard-sidebar__utilities {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+  min-inline-size: 0;
+  gap: var(--design-spacing-xs);
+}
+
+.dashboard-sidebar__utilities--admin {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.dashboard-sidebar__utility-group {
+  display: contents;
+}
+
+.dashboard-sidebar__starlite-filter {
+  grid-column: 1;
+  grid-row: 2;
+  justify-self: stretch;
+  inline-size: 100%;
+  min-inline-size: 0;
+  flex: 0 1 auto;
+}
+
+.dashboard-sidebar__project-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--design-spacing-xs);
+}
+
+.dashboard-sidebar__project-chevron {
+  inline-size: var(--icon-size-sm);
+  block-size: var(--icon-size-sm);
+  flex: 0 0 auto;
+}
+
+.dashboard-sidebar__create-button {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  inline-size: 100%;
+}
+
+.dashboard-sidebar__mobile-icon-control {
+  grid-row: 2;
+  inline-size: 100%;
+  justify-content: center;
+}
+
+.dashboard-sidebar__report-action {
+  grid-column: 2;
+}
+
+.dashboard-sidebar__settings-action {
+  grid-column: 3;
+}
+
+.dashboard__hero-actions > * {
+  flex: 0 0 auto;
+  min-inline-size: var(--touch-target-min);
+}
+
+.dashboard__content-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  width: 100%;
+  padding-block-end: var(--spacing-lg);
+}
+
+/* ── Sidebar Internal Overrides ───────────────────────────────── */
+
+.dashboard-sidebar__hero {
+  padding-block: 0;
+}
+
+.dashboard-sidebar__hero-content {
+  flex-direction: column;
+  width: 100%;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: var(--spacing-md);
+}
+
+@media (width <= 767px) {
+  .dashboard__hero-actions {
+    display: contents;
+  }
+}
+
+@media (width >= 768px) {
+  .dashboard__content-area {
+    padding-block-end: var(--spacing-xxl);
+  }
+
+  .dashboard-sidebar__hero-content {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .dashboard-sidebar__utilities,
+  .dashboard-sidebar__utilities--admin {
+    display: flex;
+    flex: 1 1 auto;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+  }
+
+  .dashboard-sidebar__utility-group {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: var(--design-spacing-xs);
+  }
+
+  .dashboard-sidebar__utility-group--admin {
+    justify-content: flex-end;
+  }
+
+  .dashboard-sidebar__starlite-filter {
+    grid-column: auto;
+    grid-row: auto;
+    justify-self: auto;
+    inline-size: fit-content;
+    width: fit-content;
+    flex: 0 0 auto;
+  }
+
+  .dashboard-sidebar__create-button,
+  .dashboard-sidebar__mobile-icon-control {
+    grid-column: auto;
+    grid-row: auto;
+    inline-size: auto;
+  }
+
+  .dashboard-sidebar__project-trigger {
+    justify-content: space-between;
+  }
+}
+
+.dashboard__empty h2 {
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.plantilla-layout .btn-primary,
+.plantilla-layout .btn-secondary {
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}

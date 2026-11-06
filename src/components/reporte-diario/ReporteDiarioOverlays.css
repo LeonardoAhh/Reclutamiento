@@ -15,29 +15,6 @@
   }
 }
 
-/* ============================================================================
-   Utilidades: elementos con color primary usados por overlays / drag.
-   Reemplazan los estilos inline anteriores.
-   ============================================================================ */
-
-.reporte-overlay__icon-primary {
-  color: var(--color-primary-text);
-}
-
-.reporte-drag__inner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--spacing-sm);
-  pointer-events: none;
-}
-
-.reporte-drag__icon {
-  width: var(--design-spacing-xxl);
-  height: var(--design-spacing-xxl);
-  margin-bottom: var(--spacing-lg);
-}
-
 /* Variant "labeled" del trigger — usado en el hero y en el grid */
 .reporte-saved__trigger--labeled {
   display: inline-flex;

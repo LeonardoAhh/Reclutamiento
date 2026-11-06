@@ -1,5 +1,4 @@
 import { useId, useMemo } from 'react';
-import { ClipboardList } from 'lucide-react';
 import {
   CartesianGrid,
   Line,
@@ -14,9 +13,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { TooltipSurface, type ChartTooltipEntry } from '@/components/ui/Tooltip';
 import type { IsoWeekRange } from '@/lib/dates';
 import type { AuthorizedPosition, Baja, Employee } from '@/lib/types';
-import type { CoverageKey } from '@/lib/workforceProjection';
 import { workforceText } from '@/pages/workforce-translations';
-import { coverageCategoryLabel } from './overview-categories';
 import { buildVacancySeries, type VacancySeriesPoint } from './overview-vacancy-series';
 import './OverviewVacancyChart.css';
 
@@ -44,13 +41,11 @@ const SERIES = [
 interface Props {
   week: IsoWeekRange;
   rangeLabel: string;
-  resultKey: CoverageKey;
   employees: readonly Employee[];
   bajas: readonly Baja[];
   positions: AuthorizedPosition[];
   dismissedKeys: ReadonlySet<string>;
   locale: string;
-  onOpenMissingPositions: () => void;
 }
 
 interface DotProps {
@@ -125,13 +120,11 @@ function formatAxisValue(value: number): string {
 export function OverviewVacancyChart({
   week,
   rangeLabel,
-  resultKey,
   employees,
   bajas,
   positions,
   dismissedKeys,
   locale,
-  onOpenMissingPositions,
 }: Props) {
   const { language } = useLanguage();
   const t = (text: string) => workforceText(language, text);
@@ -160,36 +153,21 @@ export function OverviewVacancyChart({
           <h2 id={titleId} className="overview-chart__title">
             {t('Vacantes por día')}
           </h2>
-          <p className="overview-chart__subtitle">
-            {t('Resultado')}: {t(coverageCategoryLabel(resultKey))} · {rangeLabel}
-          </p>
         </div>
-
-        <button
-          data-cuelume-tap=""
-          type="button"
-          className="overview-chart__action"
-          aria-label={t('Ver vacantes pendientes')}
-          onClick={onOpenMissingPositions}
-        >
-          <ClipboardList className="overview-chart__action-icon" aria-hidden="true" />
-          <span className="overview-chart__action-label">{t('Ver vacantes pendientes')}</span>
-        </button>
+        <ul className="overview-chart__legend" aria-label={t('Series de vacantes')}>
+          {SERIES.map((series) => (
+            <li key={series.key}>
+              <SeriesMarker dataKey={series.key} />
+              {t(series.label)}
+            </li>
+          ))}
+        </ul>
       </header>
 
       <p id={descriptionId} className="sr-only">
         {t('Semana')} {week.week} · {rangeLabel}. {t('Series de vacantes')}:{' '}
         {SERIES.map((series) => t(series.label)).join(', ')}.
       </p>
-
-      <ul className="overview-chart__legend" aria-label={t('Series de vacantes')}>
-        {SERIES.map((series) => (
-          <li key={series.key}>
-            <SeriesMarker dataKey={series.key} />
-            {t(series.label)}
-          </li>
-        ))}
-      </ul>
 
       {isEmpty ? (
         <p className="overview-chart__empty">{t('Sin datos para mostrar')}</p>

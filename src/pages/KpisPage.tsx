@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { ClipboardList } from 'lucide-react';
 import { PageHeading } from '@/components/layout/PageHeading';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { workforceText } from '@/pages/workforce-translations';
@@ -9,7 +10,6 @@ import { CandidatesCitedTodayModal } from '@/components/ui/CandidatesCitedTodayM
 import { MissingPositionsPage } from '@/pages/MissingPositionsPage';
 import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
 import { formatDayMonth } from '@/lib/dates';
-import { pickEmphasizedCoverage } from '@/lib/workforceProjection';
 import { OverviewWeekSwitcher } from './kpis-components/OverviewWeekSwitcher';
 import { OverviewKpiCard } from './kpis-components/OverviewKpiCard';
 import { OverviewVacancyChart } from './kpis-components/OverviewVacancyChart';
@@ -32,7 +32,6 @@ export function KpisPage() {
     positions,
     dismissedKeys,
     currentPositionCoverage,
-    projectionTotals,
     weekOffset,
     setWeekOffset,
     currentWeek,
@@ -65,8 +64,6 @@ export function KpisPage() {
     wasMissingPositionsPageOpenRef.current = missingPositionsPageOpen;
   }, [missingPositionsPageOpen]);
 
-  const emphasizedCoverage = pickEmphasizedCoverage(projectionTotals.current);
-
   if (missingPositionsPageOpen) {
     return (
       <BoneyardSkeleton name="resumen-page" loading={loading} loadingLabel={t('Cargando resumen…')}>
@@ -83,14 +80,26 @@ export function KpisPage() {
         </PageHeading>
 
         <div className="kpis-page__overview">
-          <OverviewWeekSwitcher
-            week={currentWeek.week}
-            rangeLabel={currentWeekLabel}
-            isCurrentWeek={weekOffset === 0}
-            onPrevWeek={() => setWeekOffset((prev) => prev - 1)}
-            onNextWeek={() => setWeekOffset((prev) => prev + 1)}
-            onToday={() => setWeekOffset(0)}
-          />
+          <div className="kpis-page__toolbar">
+            <OverviewWeekSwitcher
+              week={currentWeek.week}
+              rangeLabel={currentWeekLabel}
+              isCurrentWeek={weekOffset === 0}
+              onPrevWeek={() => setWeekOffset((prev) => prev - 1)}
+              onNextWeek={() => setWeekOffset((prev) => prev + 1)}
+              onToday={() => setWeekOffset(0)}
+            />
+            <button
+              data-cuelume-tap=""
+              type="button"
+              className="kpis-page__vacancies-action"
+              aria-label={t('Vacantes')}
+              onClick={() => setMissingPositionsPageOpen(true)}
+            >
+              <ClipboardList className="kpis-page__vacancies-action-icon" aria-hidden="true" />
+              <span className="kpis-page__vacancies-action-label">{t('Vacantes')}</span>
+            </button>
+          </div>
 
           <section className="kpis-page__kpis" aria-label={t('KPIs consolidados')}>
             <OverviewKpiCard
@@ -119,13 +128,11 @@ export function KpisPage() {
           <OverviewVacancyChart
             week={currentWeek}
             rangeLabel={currentWeekLabel}
-            resultKey={emphasizedCoverage}
             locale={en ? 'en-US' : 'es-MX'}
             employees={employees}
             bajas={bajas}
             positions={positions}
             dismissedKeys={dismissedKeys}
-            onOpenMissingPositions={() => setMissingPositionsPageOpen(true)}
           />
         </div>
 

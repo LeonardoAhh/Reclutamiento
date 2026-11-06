@@ -80,6 +80,10 @@ export function ReporteFormatErrors({
     if (message === "mes inválido, use YYYY-MM") return "invalid month; use YYYY-MM";
     if (message === "no es un objeto válido") return "is not a valid object";
     if (message === "El contenido JSON debe contener una lista de registros.") return "The JSON content must contain a list of records.";
+    const duplicateMatch = message.match(/^registro duplicado; coincide con fila (\d+)$/);
+    if (duplicateMatch) return `duplicate record; matches row ${duplicateMatch[1]}`;
+    const conflictMatch = message.match(/^conflicto en día (\d+) con fila (\d+)$/);
+    if (conflictMatch) return `conflict on day ${conflictMatch[1]} with row ${conflictMatch[2]}`;
     if (message.startsWith("falta ")) {
       const field = message.slice(6);
       return `missing ${({ numero_empleado: "employee number", nombre: "name", departamento: "department", "área": "area" } as Record<string, string>)[field] ?? field}`;

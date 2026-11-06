@@ -1,9 +1,10 @@
 import { useState, useMemo } from 'react';
 import { PageHeading } from '@/components/layout/PageHeading';
 import { CircleAlert, UsersRound } from 'lucide-react';
-import { Badge, StarliteBadge, type BadgeVariant } from '@/components/ui/Badge';
+import { Badge, StarliteBadge } from '@/components/ui/Badge';
 import { SearchField } from '@/components/ui/SearchField';
 import { INCIDENCIA_LABELS } from '@/components/reporte-diario/constants';
+import { getIncidenceBadgeVariant } from '@/components/reporte-diario/helpers';
 import './Asistencia.css';
 
 interface AsistenciaRecord {
@@ -14,28 +15,6 @@ interface AsistenciaRecord {
   tipo: string;
   puesto: string;
   proyecto?: string;
-}
-
-function getVariantForIncidencia(tipo: string): BadgeVariant {
-  switch (tipo) {
-    case 'A':
-      return 'success';
-    case 'F':
-      return 'error';
-    case 'FJ':
-      return 'warning';
-    case 'P':
-    case 'PH':
-      return 'warning';
-    case 'I':
-      return 'error';
-    case 'CT':
-    case 'V':
-    case 'TXT':
-      return 'warning';
-    default:
-      return 'neutral';
-  }
 }
 
 export function Asistencia() {
@@ -349,7 +328,7 @@ export function Asistencia() {
                       )}
                     </td>
                     <td data-label="Tipo" className="asistencia-table__type">
-                      <Badge variant={getVariantForIncidencia(item.tipo)}>
+                      <Badge variant={getIncidenceBadgeVariant(item.tipo)}>
                         {INCIDENCIA_LABELS[item.tipo] || item.tipo || '-'}
                       </Badge>
                     </td>

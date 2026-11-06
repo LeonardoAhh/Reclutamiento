@@ -78,8 +78,11 @@ function StatusIconBadge({
   return iconOnly ? <Tooltip content={label}>{badge}</Tooltip> : badge;
 }
 
-export function StarliteBadge({ compact = false }: { compact?: boolean } = {}) {
-  return <StatusIconBadge kind="starlite" label="Starlite" icon={Star} iconOnly={compact} />;
+export function StarliteBadge({
+  compact = false,
+  label = 'Starlite',
+}: { compact?: boolean; label?: string } = {}) {
+  return <StatusIconBadge kind="starlite" label={label} icon={Star} iconOnly={compact} />;
 }
 
 export function VinoplasticBadge() {
@@ -119,6 +122,7 @@ export type { ReclutadorBadgeProps } from './ReclutadorBadge';
 interface StatusBadgeProps {
   iconOnly?: boolean;
   className?: string;
+  label?: string;
 }
 
 export function PlantillaBadge({ iconOnly = false, className = '' }: StatusBadgeProps) {
@@ -153,11 +157,15 @@ export function AreaStatusBadge({ type, count }: AreaStatusBadgeProps) {
   );
 }
 
-export function IncapacidadBadge({ iconOnly = false, className = '' }: StatusBadgeProps) {
+export function IncapacidadBadge({
+  iconOnly = false,
+  className = '',
+  label = 'Incapacidad',
+}: StatusBadgeProps) {
   return (
     <StatusIconBadge
       kind="incapacidad"
-      label="Incapacidad"
+      label={label}
       icon={HeartPulse}
       iconOnly={iconOnly}
       className={className}
@@ -166,11 +174,15 @@ export function IncapacidadBadge({ iconOnly = false, className = '' }: StatusBad
   );
 }
 
-export function ProximoIngresoBadge({ iconOnly = false, className = '' }: StatusBadgeProps) {
+export function ProximoIngresoBadge({
+  iconOnly = false,
+  className = '',
+  label = 'Próximo ingreso',
+}: StatusBadgeProps) {
   return (
     <StatusIconBadge
       kind="proximo-ingreso"
-      label="Próximo ingreso"
+      label={label}
       icon={CalendarClock}
       iconOnly={iconOnly}
       className={className}

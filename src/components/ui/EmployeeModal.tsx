@@ -1,4 +1,4 @@
-import { useEffect, useId, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import {
   UserRoundPlus,
   Trash2,
@@ -176,6 +176,12 @@ export function EmployeeModal({
     }));
   }, [vacancyOptions]);
 
+  const vacancyOptionsRef = useRef(vacancyOptions);
+
+  useEffect(() => {
+    vacancyOptionsRef.current = vacancyOptions;
+  }, [vacancyOptions]);
+
   useEffect(() => {
     if (!isOpen) return;
     setErrorMsg(null);
@@ -206,14 +212,14 @@ export function EmployeeModal({
       });
     } else {
       // En modo 'add', pre-llenar con la primera vacante disponible
-      if (vacancyOptions.length > 0) {
-        const vacancy = vacancyOptions[0];
+      const initialVacancy = vacancyOptionsRef.current[0];
+      if (initialVacancy) {
         setForm({
           num_empleado: "",
           nombre: "",
-          area: vacancy.area,
-          seccion: vacancy.seccion,
-          puesto: vacancy.puesto,
+          area: initialVacancy.area,
+          seccion: initialVacancy.seccion,
+          puesto: initialVacancy.puesto,
           categoria: "N/A",
           turno: "1",
           fecha_ingreso: localTodayIso(),
@@ -226,7 +232,7 @@ export function EmployeeModal({
         setForm(emptyForm());
       }
     }
-  }, [isOpen, mode, employee, vacancyOptions]);
+  }, [isOpen, mode, employee]);
 
   useEffect(() => {
     if (errorMsg) setErrorMsg(null);

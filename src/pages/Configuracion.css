@@ -120,15 +120,6 @@
   min-width: 0;
 }
 
-.config-results-controls__heading-content {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  height: var(--control-height);
-}
-
-.config-results-controls__heading-content svg,
-.config-view-switch svg,
 .config-filter-empty svg {
   width: var(--spacing-lg);
   height: var(--spacing-lg);
@@ -174,11 +165,6 @@
   flex: 0 0 auto;
 }
 
-.analisis-select-filter__name {
-  flex: 0 0 auto;
-  white-space: nowrap;
-}
-
 .analisis-select-filter__value {
   flex: 1 1 auto;
   min-inline-size: 0;
@@ -189,6 +175,48 @@
   white-space: nowrap;
 }
 
+.analisis-select-filter .custom-select-trigger--unstyled {
+  padding-inline: var(--spacing-sm);
+  border: 0;
+  border-block-end: var(--border-width) solid transparent;
+  border-radius: var(--radius-control) var(--radius-control) 0 0;
+  background: transparent;
+}
+
+.analisis-select-filter .custom-select-trigger--unstyled:hover,
+.analisis-select-filter .custom-select-trigger--unstyled:focus-visible {
+  border: 0;
+  border-block-end: var(--border-width) solid transparent;
+  background: transparent;
+}
+
+.analisis-select-filter .custom-select-trigger--unstyled:hover:not(:focus-visible) {
+  color: var(--color-ink);
+}
+
+.analisis-select-filter .custom-select-trigger--unstyled:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: 0;
+}
+
+.analisis-select-filter
+  .custom-select-container.is-active
+  .custom-select-trigger:hover:not(:focus-visible) {
+  color: var(--color-primary-text);
+}
+
+.analisis-select-filter .custom-select-container.is-active .custom-select-trigger {
+  color: var(--color-primary-text);
+  border-block-end-color: var(--color-primary-border);
+}
+
+@media (forced-colors: active) {
+  .analisis-select-filter .custom-select-container.is-active .custom-select-trigger {
+    color: Highlight;
+    border-block-end-color: Highlight;
+  }
+}
+
 .config-filter-label {
   display: flex;
   align-items: center;
@@ -196,8 +224,7 @@
   padding: 0;
 }
 
-.config-segmented-control,
-.config-view-switch {
+.config-segmented-control {
   display: grid;
   min-block-size: var(--touch-target-min);
   align-items: stretch;
@@ -211,12 +238,7 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.config-view-switch {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.config-segmented-control__button,
-.config-view-switch__button {
+.config-segmented-control__button {
   min-width: 0;
   min-block-size: var(--touch-target-min);
   display: inline-flex;
@@ -244,31 +266,26 @@
   flex-shrink: 0;
 }
 
-.config-segmented-control__button.is-active,
-.config-view-switch__button.is-active {
+.config-segmented-control__button.is-active {
   color: var(--color-primary-text);
   border-block-end-color: var(--color-primary-border);
 }
 
-.config-segmented-control__button:hover,
-.config-view-switch__button:hover {
+.config-segmented-control__button:hover {
   color: var(--color-ink);
 }
 
-.config-segmented-control__button.is-active:hover,
-.config-view-switch__button.is-active:hover {
+.config-segmented-control__button.is-active:hover {
   color: var(--color-primary-text);
 }
 
-.config-segmented-control__button:focus-visible,
-.config-view-switch__button:focus-visible {
+.config-segmented-control__button:focus-visible {
   outline: var(--focus-ring-width) solid var(--color-focus);
   outline-offset: 0;
 }
 
 @media (forced-colors: active) {
-  .config-segmented-control__button.is-active,
-  .config-view-switch__button.is-active {
+  .config-segmented-control__button.is-active {
     color: Highlight;
     border-block-end-color: Highlight;
   }
@@ -311,7 +328,6 @@
   }
 
   .analisis-view .config-filter-group,
-  .analisis-view .analisis-view-control,
   .analisis-view .analisis-select-filter,
   .analisis-view .config-filter-reset {
     flex: 0 0 auto;
@@ -332,11 +348,6 @@
 
   .analisis-view .analisis-select-filter__trigger {
     justify-content: center;
-  }
-
-  .analisis-view .analisis-select-filter__name,
-  .analisis-view .analisis-select-filter__value {
-    display: none;
   }
 
   .analisis-view .analisis-select-filter .custom-select-trigger {
@@ -363,11 +374,6 @@
     min-width: 0;
   }
 
-  .config-view-switch {
-    width: max-content;
-    align-self: flex-end;
-  }
-
   .analisis-view .config-segmented-control {
     width: max-content;
     grid-template-columns: repeat(3, max-content);
@@ -377,118 +383,389 @@
 
 .config-results-panel {
   min-inline-size: 0;
-  padding: var(--design-spacing-xs);
+  overflow: hidden;
+  padding: 0;
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
   background: var(--color-surface-card);
 }
 
-.config-results__count {
-  margin: 0 0 var(--spacing-md);
-  overflow-wrap: anywhere;
+.analisis-results-table-wrap {
+  min-inline-size: 0;
 }
 
-.config-results {
+.analisis-results-table {
+  inline-size: 100%;
+  table-layout: fixed;
+}
+
+.analisis-results-table__column--number {
+  width: 8%;
+}
+
+.analisis-results-table__column--name {
+  width: 19%;
+}
+
+.analisis-results-table__column--position {
+  width: 22%;
+}
+
+.analisis-results-table__column--hire-date {
+  width: 16%;
+}
+
+.analisis-results-table__column--incidents {
+  width: 35%;
+}
+
+.analisis-results-table__tablet-label,
+.analisis-results-table__tablet-identity {
+  display: none;
+}
+
+.analisis-results-table__name-column {
+  min-inline-size: 0;
+}
+
+.analisis-results-table__row {
+  cursor: pointer;
+}
+
+.analisis-results-table__row:hover {
+  background-color: var(--color-surface-soft);
+}
+
+.analisis-results-table__detail-trigger {
+  display: block;
+  inline-size: 100%;
+  min-block-size: var(--touch-target-min);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.analysis-employee-detail {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
-  min-width: 0;
-  width: 100%;
+  gap: var(--design-spacing-md);
+  padding-block-end: var(--design-spacing-md);
 }
 
-.config-card {
-  container-type: inline-size;
-  container-name: config-card;
-  min-width: 0;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-  padding: var(--spacing-md);
-  background: var(--color-surface);
-  border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
-}
-
-@media (min-width: 768px) {
-  .config-card {
-    padding: var(--spacing-lg);
-  }
-}
-
-.config-card__header {
+.analysis-employee-detail__header {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--spacing-sm);
+  justify-content: space-between;
+  gap: var(--design-spacing-xs) var(--design-spacing-md);
+  padding-block-start: var(--design-spacing-md);
+  padding-inline: var(--design-spacing-md);
 }
 
-.config-card__avatar {
-  flex: 0 0 var(--spacing-xxl);
-  width: var(--spacing-xxl);
-  height: var(--spacing-xxl);
-  display: grid;
-  place-items: center;
-  border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--radius-control);
-  background: var(--color-surface-soft);
-  color: var(--color-ink);
-  font-size: var(--type-heading-md-size);
-}
-
-.config-card__employee-title {
+.analysis-employee-detail__title {
   flex: 1 1 auto;
-  min-width: 0;
+  min-inline-size: 0;
   margin: 0;
   overflow-wrap: anywhere;
 }
 
-.config-card__status {
-  flex-wrap: wrap;
-  gap: var(--spacing-xs);
+.analysis-employee-detail__title .analysis-employee-detail__name-back {
+  font: inherit;
+  text-align: start;
+  text-decoration: none;
 }
 
-@media (min-width: 768px) {
-  .config-card__header {
-    gap: var(--spacing-md);
+.analysis-employee-calendar__period {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: var(--design-spacing-xs);
+  margin-inline-start: auto;
+}
+
+.analysis-employee-calendar__period time {
+  white-space: nowrap;
+}
+
+.analysis-employee-calendar__period .btn-icon,
+.analysis-employee-calendar__period .btn-icon:hover:not(:disabled) {
+  border: 0;
+  background: transparent;
+}
+
+@media (width <= 767px) {
+  .analysis-employee-detail__header {
+    flex-wrap: nowrap;
+    align-items: flex-start;
+  }
+
+  .analysis-employee-detail__title {
+    flex: 1 1 0;
+  }
+
+  .analysis-employee-calendar__period {
+    margin-inline-start: 0;
   }
 }
 
-.config-results--compact {
+.analysis-employee-detail__fields {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
+  gap: 0 var(--design-spacing-lg);
+  margin: 0;
+  padding-inline: var(--design-spacing-md);
 }
 
-.config-card--compact {
-  position: relative;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-md);
+.analysis-employee-detail__field {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--design-spacing-xs);
+  padding-block: var(--design-spacing-sm);
+  border-bottom: var(--border-width) solid var(--color-hairline);
 }
 
-.config-card__card-toggle {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+.analysis-employee-detail__field dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.analysis-employee-calendar {
+  display: grid;
+  inline-size: 100%;
+  align-self: stretch;
+  min-inline-size: 0;
+  gap: var(--design-spacing-xs);
+  padding-inline: var(--design-spacing-md);
+}
+
+.analysis-employee-calendar__grid.rdp-root {
+  inline-size: 100%;
+  max-inline-size: none;
   padding: 0;
-  border: 0;
-  border-radius: inherit;
-  background: transparent;
-  cursor: pointer;
+  --rdp-day-height: auto;
+  --rdp-day-width: auto;
 }
 
-.config-card__header-badges {
+.analysis-employee-calendar__grid .rdp-months,
+.analysis-employee-calendar__grid .rdp-month {
+  display: block;
+  inline-size: 100%;
+  max-inline-size: none;
+}
+
+.analysis-employee-calendar__grid .rdp-month_caption,
+.analysis-employee-calendar__grid .rdp-nav {
+  display: none;
+}
+
+.analysis-employee-calendar__grid .rdp-month_grid {
+  inline-size: 100%;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: var(--design-spacing-xxs);
+}
+
+.analysis-employee-calendar__grid .rdp-month_grid th {
+  padding-block: var(--design-spacing-xs);
+  text-align: start;
+}
+
+.analysis-employee-calendar__grid .rdp-day {
+  inline-size: auto;
+  block-size: auto;
+  padding: 0;
+  vertical-align: top;
+}
+
+.analysis-employee-calendar__day-content {
+  box-sizing: border-box;
+  display: flex;
+  inline-size: 100%;
+  min-block-size: calc(var(--touch-target-min) + var(--design-spacing-lg));
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--design-spacing-xxs);
+  padding: var(--design-spacing-xs);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--radius-field);
+  background: var(--color-surface-card);
+  text-align: start;
+}
+
+.analysis-employee-calendar__day-number {
+  display: block;
+  font-variant-numeric: tabular-nums;
+  text-align: start;
+}
+
+.analysis-employee-calendar__code {
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  min-block-size: 0;
+  padding-inline: var(--design-spacing-xxs);
+}
+
+@media (width >= 768px) {
+  .analysis-employee-detail__fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.analisis-results-table :where(th, td) {
+  overflow-wrap: anywhere;
+}
+
+.analisis-results-table__incidents {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: var(--spacing-xs);
-  margin-inline-start: auto;
-  min-width: 0;
+  align-items: center;
+  gap: var(--design-spacing-xxs);
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-.config-card--compact.is-expanded .config-card__body {
-  padding-top: var(--spacing-md);
-  border-top: var(--border-width) solid var(--color-hairline-soft);
+.analisis-results-table__incident-skeleton {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  gap: var(--design-spacing-xxs);
+}
+
+.analisis-results-table__incident-skeleton .loading-skeleton__bone {
+  inline-size: var(--design-spacing-xl);
+  block-size: var(--design-spacing-xs);
+  border-radius: var(--rounded-xs);
+}
+
+.analisis-results-table__incidents li {
+  display: inline-flex;
+  align-items: center;
+  min-inline-size: 0;
+}
+
+.analisis-results-table__incident-chip {
+  min-block-size: auto;
+  padding-inline: var(--design-spacing-xxs);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (hover: none) {
+  .analisis-results-table__incident-chip {
+    min-block-size: var(--touch-target-min);
+  }
+}
+
+.config-results__count {
+  margin: 0 0 var(--design-spacing-sm);
+  overflow-wrap: anywhere;
+}
+
+@media (width <= 767px) {
+  .analisis-results-table,
+  .analisis-results-table tbody {
+    display: block;
+  }
+
+  .analisis-results-table__head {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .analisis-results-table tbody tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .analisis-results-table tbody :where(th, td) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    align-items: start;
+    gap: var(--design-spacing-xs);
+  }
+
+  .analisis-results-table tbody [data-label]::before {
+    content: attr(data-label);
+    color: var(--color-muted);
+    font-family: var(--font-body);
+    font-size: var(--type-caption-up-size);
+    font-weight: var(--type-caption-up-weight);
+    line-height: var(--type-caption-up-line);
+    letter-spacing: var(--type-caption-up-tracking);
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (width >= 768px) and (width <= 1079px) {
+  .analisis-results-table__column--number {
+    width: 40%;
+  }
+
+  .analisis-results-table__column--name {
+    width: 0;
+    display: none;
+  }
+
+  .analisis-results-table__column--position {
+    width: 16%;
+  }
+
+  .analisis-results-table__column--hire-date {
+    width: 16%;
+  }
+
+  .analisis-results-table__column--incidents {
+    width: 28%;
+  }
+
+  .analisis-results-table__tablet-label,
+  .analisis-results-table__tablet-identity {
+    display: inline;
+  }
+
+  .analisis-results-table__desktop-label,
+  .analisis-results-table__number,
+  .analisis-results-table__name-column {
+    display: none;
+  }
+
+  .analisis-results-table thead th {
+    white-space: normal;
+    overflow-wrap: normal;
+  }
+
+  .analisis-results-table tbody :where(th, td),
+  .analisis-results-table__incidents {
+    white-space: nowrap;
+  }
+
+  .analisis-results-table tbody :where(th, td) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .analisis-results-table__incidents-cell {
+    overflow: visible;
+    text-overflow: clip;
+  }
+
+  .analisis-results-table__incidents {
+    flex-wrap: nowrap;
+  }
 }
 
 .config-filter-empty {
@@ -512,260 +789,6 @@
 
 .config-filter-empty > svg {
   color: var(--color-muted-soft);
-}
-
-@media (min-width: 768px) {
-  .config-results--compact {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .config-card--compact.is-expanded {
-    grid-column: 1 / -1;
-  }
-}
-
-@media (min-width: 1080px) {
-  .config-results--compact {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-.config-card__body {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--spacing-lg);
-  align-items: start;
-}
-
-.config-card__calendar,
-.config-card__details {
-  min-width: 0;
-}
-
-.config-card--compact .config-card__calendar {
-  position: relative;
-}
-
-.config-card__details {
-  padding: var(--spacing-md);
-  border: var(--border-width) solid var(--color-hairline-soft);
-  border-radius: var(--rounded-lg);
-  background: var(--color-surface-soft);
-}
-
-.config-card__section-title {
-  margin: 0;
-}
-
-.config-card__details-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--spacing-md);
-  flex-wrap: wrap;
-}
-
-.config-card__details-toggle {
-  min-height: var(--touch-target-min);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-xs);
-  padding-inline: var(--spacing-sm);
-  color: var(--color-muted);
-  background: var(--color-surface);
-  border: var(--border-width) solid var(--color-control-border);
-  border-radius: var(--radius-control);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  font-family: var(--font-body);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-}
-
-.config-card__details-toggle svg {
-  width: var(--spacing-lg);
-  height: var(--spacing-lg);
-}
-
-/* ── Propiedades estilo Notion ────────────────────────────────── */
-
-.config-card__properties {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 0 var(--spacing-xl);
-  margin: var(--spacing-md) 0 0;
-}
-
-.config-card__properties--collapsible {
-  display: none;
-}
-
-.config-card__properties--collapsible.is-expanded {
-  display: grid;
-}
-
-@media (min-width: 768px) {
-  .config-card__details-toggle {
-    display: none;
-  }
-
-  .config-card__properties--collapsible {
-    display: grid;
-  }
-
-  .config-card__properties {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (min-width: 1080px) {
-  .config-card__body:not(.config-card__body--preview) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-.notion-prop {
-  min-width: 0;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  align-content: start;
-  gap: var(--design-spacing-xxs) var(--spacing-md);
-  padding-block: var(--spacing-sm);
-  border-bottom: 1px solid var(--color-hairline-soft);
-}
-
-.notion-prop:last-child {
-  padding-bottom: 0;
-  border-bottom: 0;
-}
-
-.notion-prop--wide {
-  grid-column: 1 / -1;
-}
-
-.notion-prop__label {
-  margin: 0;
-  color: var(--color-muted);
-}
-
-.notion-prop__value {
-  min-width: 0;
-  display: flex;
-  align-items: center;
-  margin: 0;
-  overflow-wrap: anywhere;
-}
-
-.config-card__body--preview .config-card__details {
-  padding: 0;
-  border: 0;
-  background: var(--color-surface);
-}
-
-.config-card__body--preview .config-card__identity-properties {
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--design-spacing-xxs) var(--spacing-md);
-  margin-top: 0;
-}
-
-.config-card__body--preview .notion-prop {
-  padding: 0;
-  border: 0;
-}
-
-/* ── Sección de calendario ────────────────────────────────────── */
-
-.config-card__calendar-section {
-  min-width: 0;
-  padding: var(--spacing-sm);
-  border: var(--border-width) solid var(--color-hairline-soft);
-  border-radius: var(--rounded-lg);
-  background: var(--color-surface-soft);
-}
-
-@media (min-width: 768px) {
-  .config-card__calendar-section {
-    padding: var(--spacing-lg);
-  }
-}
-
-.config-calendar-header-actions {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-md);
-}
-
-.config-calendar-heading {
-  min-width: 0;
-}
-
-.config-calendar-summary {
-  margin: var(--spacing-xs) 0 0;
-}
-
-.config-calendar-month-field {
-  width: 100%;
-}
-
-.config-calendar-month-nav {
-  display: grid;
-  grid-template-columns: var(--touch-target-min) minmax(0, 1fr) var(--touch-target-min);
-  align-items: center;
-  gap: var(--spacing-xs);
-  width: 100%;
-  min-width: 0;
-}
-
-.config-calendar-month-nav__button {
-  flex: 0 0 auto;
-  border: 0;
-  background: transparent;
-}
-
-.config-calendar-month-nav__button:hover:not(:disabled) {
-  background: transparent;
-}
-
-.config-calendar-month-nav__button:disabled,
-.config-calendar-month-nav__button:disabled:hover {
-  color: var(--color-muted-soft);
-  background: transparent;
-  cursor: not-allowed;
-}
-
-.config-calendar-header-actions > :last-child {
-  max-width: 100%;
-}
-
-@media (width >= 768px) {
-  .config-calendar-month-field {
-    width: auto;
-    min-width: var(--feature-calendar-column-min);
-  }
-
-  .config-calendar-header-actions > :last-child {
-    margin-left: auto;
-  }
-}
-
-.config-calendar-layout {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-lg);
-}
-
-.config-calendar-grid-container {
-  width: 100%;
-  min-width: 0;
-  align-self: start;
-}
-
-.config-calendar-grid-container--spaced {
-  margin-top: var(--spacing-md);
 }
 
 /* ── Estados vacío / inicial ──────────────────────────────────── */
@@ -813,194 +836,6 @@
 .config-initial-state__copy {
   max-width: 400px;
   margin: 0;
-}
-
-/* ── Calendario ──────────────────────────────────────────────── */
-.config-calendar-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-  width: 100%;
-  max-width: var(--feature-calendar-surface-max);
-  margin-inline: auto;
-  min-width: 0;
-  padding: var(--spacing-md);
-  background: var(--color-surface);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-md);
-}
-
-.config-calendar-header,
-.config-calendar {
-  display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: var(--spacing-xs);
-}
-
-.config-calendar-header {
-  margin-bottom: var(--design-spacing-xxs);
-}
-
-.config-calendar-header__abbr {
-  color: var(--color-muted-soft);
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  text-align: center;
-  text-decoration: none;
-  cursor: default;
-  font-family: var(--font-body);
-  line-height: var(--type-caption-up-line);
-  letter-spacing: var(--type-caption-up-tracking);
-}
-
-.config-calendar {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.config-calendar__day {
-  min-width: 0;
-  min-height: var(--control-height);
-  aspect-ratio: 1;
-  display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
-  align-items: center;
-  justify-items: center;
-  padding: var(--spacing-xs);
-  color: var(--color-ink);
-  border: 1px solid transparent;
-  border-radius: var(--rounded-sm);
-  background: var(--color-canvas-soft);
-  font-variant-numeric: tabular-nums;
-}
-
-.config-calendar__day-number {
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  font-family: var(--font-body);
-  letter-spacing: var(--type-body-md-tracking);
-}
-
-.config-calendar__day-code {
-  max-width: 100%;
-  color: inherit;
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  line-height: var(--type-caption-up-line);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-family: var(--font-body);
-  letter-spacing: var(--type-caption-up-tracking);
-}
-
-.config-calendar__day--blank {
-  background: transparent;
-  pointer-events: none;
-}
-
-.config-calendar__day--attendance {
-  background: var(--color-success-text);
-  border-color: var(--color-success-text);
-  color: var(--color-on-success);
-}
-
-.config-calendar__day--incident {
-  background: var(--color-error);
-  border-color: var(--color-error);
-  color: var(--color-on-error);
-}
-
-.config-calendar__day--rest {
-  background: var(--color-muted);
-  border-color: var(--color-muted);
-  color: var(--color-on-neutral);
-}
-
-.config-calendar__day--empty .config-calendar__day-code {
-  color: var(--color-muted-soft);
-}
-
-.config-calendar-legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-sm) var(--spacing-md);
-  margin-top: var(--spacing-xs);
-  padding-top: var(--spacing-sm);
-  border-top: 1px solid var(--color-hairline-soft);
-}
-
-.config-calendar-legend__item {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  color: var(--color-muted);
-  font-size: var(--type-body-md-size);
-  font-family: var(--font-body);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-}
-
-.config-calendar-legend__swatch {
-  width: var(--spacing-md);
-  height: var(--spacing-md);
-  flex-shrink: 0;
-  display: inline-block;
-  border: 1px solid transparent;
-  border-radius: var(--rounded-xs);
-}
-
-.config-calendar-legend__swatch--attendance {
-  background: var(--color-success-text);
-  border-color: var(--color-success-text);
-}
-
-.config-calendar-legend__swatch--incident {
-  background: var(--color-error);
-  border-color: var(--color-error);
-}
-
-.config-calendar-legend__swatch--rest {
-  background: var(--color-muted);
-  border-color: var(--color-muted);
-}
-
-.config-calendar-empty {
-  margin: 0;
-  padding: var(--spacing-lg);
-  text-align: center;
-  background: var(--color-surface);
-  border: 1px dashed var(--color-hairline-strong);
-  border-radius: var(--rounded-md);
-}
-
-.config-calendar-skeleton {
-  display: grid;
-  gap: var(--design-spacing-xxs);
-}
-
-.config-calendar-skeleton__weekdays,
-.config-calendar-skeleton__days {
-  display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: var(--spacing-xs);
-}
-
-.config-calendar-skeleton__weekday {
-  inline-size: 56%;
-  block-size: var(--type-caption-sm-size);
-  justify-self: center;
-  border-radius: var(--rounded-sm);
-}
-
-.config-calendar-skeleton__day {
-  min-inline-size: 0;
-  min-block-size: var(--control-height);
-  aspect-ratio: 1;
-  border-radius: var(--rounded-sm);
 }
 
 /* Configuración: contenido en el contenedor global */
@@ -1609,125 +1444,14 @@
   min-inline-size: 0;
 }
 
-.analisis-hero {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--spacing-sm);
-  min-inline-size: 0;
-}
-
-.analisis-hero__card {
-  display: flex;
-  align-items: center;
-  min-width: 0;
-  min-height: var(--touch-target-min);
-  text-align: left;
-  padding: var(--control-padding-y) var(--control-padding-x);
-  border-radius: var(--radius-card);
-  border: var(--border-width) solid var(--color-hairline);
-  background: var(--color-surface);
-  color: var(--color-ink);
-  cursor: pointer;
-  transition:
-    border-color var(--transition-fast),
-    background var(--transition-fast);
-}
-
 @media (width <= 767px) {
-  .analisis-overview .config-page__toolbar,
-  .analisis-hero {
+  .analisis-overview .config-page__toolbar {
     flex-basis: 100%;
   }
 
   .analisis-overview .search-field {
     inline-size: auto;
   }
-
-  .analisis-hero__card {
-    flex: 1 1 auto;
-  }
-}
-
-.analisis-hero__card[aria-pressed='false']:hover {
-  border-color: var(--color-hairline-strong);
-  background: var(--color-surface-soft);
-}
-
-.analisis-hero__card[aria-pressed='true'] {
-  border-color: var(--color-primary-border);
-  background: var(--color-primary);
-  color: var(--color-on-primary);
-}
-
-.analisis-hero__card--risk[aria-pressed='false'] .analisis-hero__card-count {
-  color: var(--color-warning-text);
-}
-
-.analisis-hero__card--error[aria-pressed='false'] .analisis-hero__card-count {
-  color: var(--color-error-text);
-}
-
-.analisis-hero__card-header {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto;
-  align-items: center;
-  gap: var(--spacing-sm);
-  width: 100%;
-  min-width: 0;
-}
-
-.analisis-hero__card-title {
-  font-family: var(--font-body);
-  font-size: var(--type-body-strong-size);
-  font-weight: var(--type-body-strong-weight);
-  line-height: var(--type-body-strong-line);
-  letter-spacing: var(--type-body-strong-tracking);
-  overflow-wrap: anywhere;
-}
-
-.analisis-hero__card-count {
-  font-family: var(--font-body);
-  font-size: var(--type-body-strong-size);
-  font-weight: var(--type-body-strong-weight);
-  line-height: var(--type-body-strong-line);
-  letter-spacing: var(--type-body-strong-tracking);
-  font-variant-numeric: tabular-nums;
-}
-
-.analisis-hero__card-check {
-  visibility: hidden;
-}
-
-.analisis-hero__card[aria-pressed='true'] .analisis-hero__card-check {
-  visibility: visible;
-}
-
-.analisis-hero__card-count--loading {
-  width: var(--icon-size-lg);
-  height: var(--icon-size-lg);
-  border-radius: var(--rounded-sm);
-  background: var(--color-hairline-soft);
-  animation: pulse 1.5s infinite ease-in-out;
-}
-
-@keyframes pulse {
-  0% {
-    opacity: 0.6;
-  }
-  50% {
-    opacity: 0.2;
-  }
-  100% {
-    opacity: 0.6;
-  }
-}
-
-.analisis-hero__card-desc {
-  font-family: var(--font-body);
-  font-size: var(--type-caption-sm-size);
-  color: var(--color-muted);
-  margin: 0;
 }
 
 .analisis-view {
@@ -1751,8 +1475,7 @@
   gap: var(--spacing-xs);
 }
 
-.analisis-view .config-filter-group,
-.analisis-view .analisis-view-control {
+.analisis-view .config-filter-group {
   flex: 0 1 auto;
 }
 
@@ -1772,6 +1495,7 @@
   flex: 0 0 auto;
   width: auto;
   min-height: var(--touch-target-min);
+  min-inline-size: var(--touch-target-min);
   align-self: flex-end;
   color: var(--color-muted);
 }
@@ -1808,16 +1532,15 @@
   margin-top: 0;
 }
 
-.config-search-error,
-.config-incidence-error {
+.config-search-error {
   margin: 0;
   color: var(--color-error-text);
 }
 
-.config-incidence-loading {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
+.config-incidence-error {
+  margin: 0;
+  padding: var(--design-spacing-sm) var(--design-spacing-md);
+  color: var(--color-error-text);
 }
 
 @media (min-width: 768px) {
@@ -2176,7 +1899,6 @@
 }
 
 .analisis-filter-panel .config-filter-group,
-.analisis-filter-panel .analisis-view-control,
 .analisis-filter-panel .analisis-select-filter {
   flex: 0 0 auto;
   width: 100%;
@@ -2203,7 +1925,4 @@
     display: none;
   }
 
-  .analisis-filter-panel .config-view-switch {
-    width: 100%;
-  }
 }

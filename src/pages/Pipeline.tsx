@@ -78,7 +78,7 @@ export function Pipeline() {
     return 'activos';
   });
   const [currentPage, setCurrentPage] = useState(1);
-  const ITEMS_PER_PAGE = 15;
+  const ITEMS_PER_PAGE = 11;
   const [modalMode, setModalMode] = useState<ModalMode>(null);
   const [selected, setSelected] = useState<Candidate | null>(null);
   const [quickProfile, setQuickProfile] = useState<Candidate | null>(null);
@@ -280,6 +280,7 @@ export function Pipeline() {
           <PipelineToolbar
             counts={groupCounts}
             isAdmin={isAdmin}
+            isMobile={isMobile}
             language={language}
             onAdd={openAdd}
             onChangeGroup={(value) => {

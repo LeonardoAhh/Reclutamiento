@@ -9,9 +9,13 @@
     value === 'original' ||
     value === 'ocean-saas' ||
     value === 'darkmatter-remix' ||
-    value === 'chemp' ||
+    value === 'sea-glass' ||
     value === 'claude-amber' ||
     value === 'supabase';
+
+  function normalizePalette(value) {
+    return value === 'chemp' ? 'sea-glass' : value;
+  }
 
   function readPreference() {
     try {
@@ -25,7 +29,8 @@
   function readPalette() {
     try {
       const saved = window.localStorage.getItem(paletteStorageKey);
-      return { palette: isPalette(saved) ? saved : 'original', storageError: false };
+      const palette = normalizePalette(saved);
+      return { palette: isPalette(palette) ? palette : 'original', storageError: false };
     } catch {
       return { palette: 'original', storageError: true };
     }

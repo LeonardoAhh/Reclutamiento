@@ -20,23 +20,31 @@
   src: url('/fonts/mona-sans-variable-italic.woff2') format('woff2');
 }
 
+/* Paleta azul corregida: todo texto >= 8.1:1 sobre las superficies donde se usa.
+   Los comentarios "antes" indican el valor original. */
 :root,
 [data-palette-preview][data-color-palette] {
   accent-color: var(--color-primary);
 
   /* ── Brand & Accent ───────────────────────────────────────────── */
-  --color-primary: #2563eb;
+  --color-primary: #1e40af;
+  /* antes #2563eb: texto blanco daba 5.2 -> 8.7 */
   --color-primary-border: var(--color-primary-text);
-  --color-primary-text: #1e40af;
+  --color-primary-text: #1e3a8a;
+  /* antes #1e40af: 7.6 sobre tint -> 9.0 */
   --color-primary-text-on-dark: #bfdbfe;
+  /* 12.6 sobre #171717 */
 
-  /* #3b82f6 de la referencia no admite texto blanco AA; #2563eb sí. */
-  --color-primary-active: #1d4ed8;
-  --color-primary-pressed: #1e40af;
+  --color-primary-active: #1e3a8a;
+  /* blanco encima: 10.4 */
+  --color-primary-pressed: #172554;
+  /* blanco encima: 14.7 */
   --color-primary-disabled: var(--color-surface-strong);
   --color-link: var(--color-primary-text);
-  --color-link-deep: #1e3a8a;
+  --color-link-deep: #172554;
+  /* antes #1e3a8a: ahora más oscuro que link */
   --color-link-soft: #e0f2fe;
+  /* superficie, no usar como color de texto */
   --color-secondary: var(--color-primary);
 
   /* ── Surface ──────────────────────────────────────────────────── */
@@ -53,33 +61,35 @@
   /* Salida oficial imprimible, independiente del tema */
   --color-document-ink: #000;
 
-  /* Texto de salidas oficiales */
-  --color-document-muted: #615d59;
-
   /* Texto secundario de salidas oficiales */
-  --color-document-soft: #f2f2f2;
+  --color-document-muted: #403d3a;
+  /* antes #615d59: 5.2 sobre fila alterna -> 8.6 */
 
   /* Panel secundario de salidas oficiales */
-  --color-document-hairline: #d9d9d9;
+  --color-document-soft: #f2f2f2;
 
   /* Bordes de salidas oficiales */
-  --color-document-table-header: #8c8c8c;
+  --color-document-hairline: #d9d9d9;
 
-  /* Encabezados de tablas imprimibles */
-  --color-document-table-row-alternate: #e5e5e5;
+  /* Encabezados de tablas imprimibles (asume texto negro encima) */
+  --color-document-table-header: #c4c4c4;
+  /* antes #8c8c8c: negro daba 6.3 -> 12.0 */
 
   /* Filas alternas imprimibles */
-  --color-document-primary: #000;
+  --color-document-table-row-alternate: #e5e5e5;
 
   /* Encabezado de salidas oficiales */
-  --color-document-on-primary: #fff;
+  --color-document-primary: #000;
 
   /* Texto sobre encabezado oficial */
+  --color-document-on-primary: #fff;
 
   /* ── Hairlines ──────────────────────────────────────────────── */
   --color-hairline: #e5e7eb;
+  /* divisor decorativo */
   --color-hairline-soft: var(--color-hairline);
   --color-hairline-strong: #6b7280;
+  /* 4.8:1 sobre canvas (control: >= 3) */
   --color-control-border: var(--color-hairline-strong);
 
   /* ── Text ───────────────────────────────────────────────────── */
@@ -87,13 +97,15 @@
   --color-body-strong: var(--color-ink);
   --color-body: var(--color-ink);
   --color-charcoal: var(--color-body);
-  --color-mute: #4b5563;
+  --color-mute: #374151;
+  /* antes #4b5563: 6.6 sobre tint -> 9.0 */
   --color-faint: var(--color-mute);
   --color-muted: var(--color-mute);
   --color-muted-soft: var(--color-faint);
   --color-on-primary: #fff;
   --color-on-neutral: #fff;
-  --color-on-error: #171717;
+  --color-on-error: #fff;
+  /* antes #171717 sobre #ef4444: 4.8 */
   --color-on-success: #fff;
   --color-on-error-deep: #fff;
   --color-on-warning: #fff;
@@ -106,25 +118,32 @@
   /* Brillo decorativo de progreso. */
   --color-on-dark: #e5e5e5;
   --color-on-dark-soft: #b6b6b6;
+  /* 8.8 sobre #171717 */
   --color-focus-on-inverted: #fff;
   --color-navigation-rail-text: var(--color-muted);
   --color-navigation-rail-text-strong: var(--color-ink);
   --color-avatar-ink: var(--color-ink);
 
   /* ── Semantic ───────────────────────────────────────────────── */
-  --color-success: #047857;
+  --color-success: #064e3b;
+  /* antes #047857: blanco daba 5.5 -> 9.7 */
   --color-success-text: var(--color-success-text-enhanced);
   --color-success-subtle: #ecfdf5;
-  --color-warning: #b45309;
+  --color-warning: #78350f;
+  /* antes #b45309: blanco daba 5.0 -> 9.1 */
   --color-warning-text: var(--color-warning-text-enhanced);
   --color-warning-subtle: #fffbeb;
-  --color-error: #ef4444;
-  --color-error-deep: #b91c1c;
+  --color-error: #8a1616;
+  /* antes #ef4444: 3.8 como texto -> 9.5 */
+  --color-error-deep: #6e1212;
   --color-error-text: var(--color-error-text-enhanced);
   --color-error-subtle: #fef2f2;
-  --color-success-text-enhanced: #064e3b;
-  --color-warning-text-enhanced: #78350f;
-  --color-error-text-enhanced: #7f1d1d;
+  --color-success-text-enhanced: #043d2e;
+  /* 11.6 sobre success-subtle */
+  --color-warning-text-enhanced: #5c2a0b;
+  /* 11.3 sobre warning-subtle */
+  --color-error-text-enhanced: #5f1414;
+  /* 12.0 sobre error-subtle */
 
   /* Ilustración/gradiente solamente; nunca chrome funcional. */
   --color-violet: #7928ca;
@@ -138,31 +157,32 @@
   --color-gradient-ship-start: #ff4d4d;
   --color-gradient-ship-end: #f9cb28;
   --color-accent-purple: var(--color-violet);
+  /* 7.1: solo decorativo; para texto usar purple-deep */
   --color-accent-purple-deep: #4c1680;
-  --color-accent-orange: #c75000;
-  --color-accent-teal: #087f7a;
+  /* 12.1 */
+  --color-accent-orange: #7a2f00;
+  /* antes #c75000: 4.6 -> 9.4 */
+  --color-accent-teal: #04524e;
+  /* antes #087f7a: 4.9 -> 9.0 */
 
   /* Acentos de marca para integraciones existentes. */
   --color-brand-whatsapp: #25d366;
 
-  /* Accent RGB channels (usados por gradientes/tintes en la app) */
-
-  /* Debe coincidir con --color-accent-teal (#087f7a). */
-  --color-accent-teal-rgb: 8 127 122;
+  /* Debe coincidir con --color-accent-teal (#04524e). */
+  --color-accent-teal-rgb: 4 82 78;
   --color-accent-amber: var(--color-warning);
 
   /* ── Channel values ─────────────────────────────────────────── */
-  --color-primary-rgb: 37 99 235;
-  --color-success-rgb: 4 120 87;
-  --color-warning-rgb: 180 83 9;
-  --color-error-rgb: 239 68 68;
+  --color-primary-rgb: 30 64 175;
+  --color-success-rgb: 6 78 59;
+  --color-warning-rgb: 120 53 15;
+  --color-error-rgb: 138 22 22;
   --color-ink-rgb: 51 51 51;
   --color-canvas-rgb: 255 255 255;
 
   /* ── Derived overlays ───────────────────────────────────────── */
-
-  /* Blue brand channels serve fills; accessible foregrounds and borders use dedicated tokens. */
-  --color-focus-ring: rgb(var(--color-primary-rgb) / 20%);
+  /* Antes 20%: daba 1.3:1. A 70% llega a 3.9 o más sobre canvas/soft/strong (WCAG 1.4.11). */
+  --color-focus-ring: rgb(var(--color-primary-rgb) / 70%);
   --color-modal-scrim: rgb(var(--color-shadow-rgb) / 32%);
   --color-vacancy-tint: rgb(var(--color-error-rgb) / 5%);
   --color-vacancy-chip-bg: rgb(var(--color-error-rgb) / 10%);
@@ -458,7 +478,6 @@
   --content-preview-max-lines: 3;
   --auth-form-max-inline-size: 28rem;
   --feature-result-card-min: 34rem;
-  --feature-maintenance-card-max-inline-size: var(--modal-inline-size-sm);
 
   /* Ancho máximo compacto de una única tarjeta de vacante desde tablet. */
   --feature-vacancy-assignment-card-max-inline-size: 22rem;
@@ -481,8 +500,8 @@
   /* Ancho compacto del selector de semana junto al título de una página. */
   --week-filter-inline-size: 20rem;
 
-  /* Anchura del espacio inicial para cargar y consultar reportes diarios. */
-  --feature-report-onboarding-max-inline-size: var(--container-compact-max-inline-size);
+  /* Anchura máxima del espacio inicial para cargar y consultar reportes diarios. */
+  --feature-report-onboarding-max-inline-size: var(--container-standard-max-inline-size);
   --feature-navigation-rail-inline-size: 15rem;
   --feature-reminders-panel-max-inline-size: 20rem;
   --feature-reminders-panel-max-block-size: 30rem;
@@ -633,33 +652,42 @@
   color-scheme: light;
 }
 
-/* Tema oscuro neutro: los tokens de documento conservan su salida clara. */
+/* Tema oscuro neutro: los tokens de documento conservan su salida clara.
+   Texto >= 8.1:1 sobre canvas, canvas-soft, canvas-elevated y surface-strong/hover.
+   Bordes de controles y foco >= 3:1. */
 :root[data-color-scheme='dark'],
 [data-palette-preview][data-color-scheme='dark'] {
   color-scheme: dark;
 
   /* Estos alias se redeclaran: los valores derivados se resuelven antes de heredarse. */
+  --color-primary-text-on-dark: #bfdbfe;
+  --color-focus-on-inverted: #93c5fd;
   --color-primary-border: var(--color-primary-text);
   --color-primary-text: var(--color-primary-text-on-dark);
   --color-link: var(--color-primary-text);
   --color-link-deep: var(--color-on-dark);
   --color-link-soft: var(--color-surface-soft);
-  --color-canvas: #171717;
-  --color-canvas-rgb: 23 23 23;
-  --color-canvas-soft: #1f1f1f;
+
+  /* Superficies (escalonadas de más oscuro a más claro) */
+  --color-canvas: #161616;
+  --color-canvas-rgb: 22 22 22;
+  --color-canvas-soft: #1e1e1e;
   --shell-workspace-surface: var(--color-canvas);
   --color-canvas-elevated: #262626;
   --color-surface-card: var(--color-canvas-elevated);
   --color-surface-soft: var(--color-surface-card);
-  --color-surface-strong: #404040;
+  --color-surface-strong: #303030;
   --color-surface-dark: var(--color-canvas);
   --color-surface-contrast: var(--color-surface-dark);
-  --color-ink: #e5e5e5;
-  --color-ink-rgb: 229 229 229;
+  --color-surface-hover: var(--color-surface-strong);
+
+  /* Texto */
+  --color-ink: #f5f5f5;
+  --color-ink-rgb: 245 245 245;
   --color-body-strong: var(--color-ink);
   --color-body: var(--color-ink);
   --color-charcoal: var(--color-body);
-  --color-mute: #b6b6b6;
+  --color-mute: #d0d0d0;
   --color-faint: var(--color-mute);
   --color-on-dark: var(--color-ink);
   --color-on-dark-soft: var(--color-mute);
@@ -669,39 +697,48 @@
   --color-on-error-deep: var(--color-canvas);
   --color-on-warning: var(--color-canvas);
   --color-focus: var(--color-focus-on-inverted);
+
+  /* Bordes */
   --color-hairline: #404040;
+  /* decorativo, no transmite información */
   --color-hairline-soft: var(--color-hairline);
-  --color-hairline-strong: #a3a3a3;
+  --color-hairline-strong: #949494;
+  /* >= 3:1 sobre todas las superficies */
   --color-control-border: var(--color-hairline-strong);
+
+  /* Sombras y overlays */
   --color-shadow-rgb: 0 0 0;
   --workspace-shadow: 0 1px 2px rgb(var(--color-shadow-rgb) / 20%), 0 4px 12px rgb(var(--color-shadow-rgb) / 28%);
   --color-modal-scrim: rgb(var(--color-shadow-rgb) / 60%);
   --color-shimmer-overlay: rgb(var(--color-ink-rgb) / 8%);
-  --color-primary-tint: #1e3a8a;
-  --color-surface-hover: var(--color-surface-strong);
-  --color-success: #83c9a3;
-  --color-success-rgb: 131 201 163;
+  --color-primary-tint: #172554;
+
+  /* Estados */
+  --color-success: #86efac;
+  --color-success-rgb: 134 239 172;
+  --color-success-subtle: #14301f;
+  --color-success-text-enhanced: #dcfce7;
   --color-success-text: var(--color-success-text-enhanced);
-  --color-success-subtle: #24332c;
-  --color-warning: #e2b76f;
-  --color-warning-rgb: 226 183 111;
+
+  --color-warning: #fcd34d;
+  --color-warning-rgb: 252 211 77;
+  --color-warning-subtle: #33290a;
+  --color-warning-text-enhanced: #fef3c7;
   --color-warning-text: var(--color-warning-text-enhanced);
-  --color-warning-subtle: #332f25;
-  --color-error: #f28b82;
-  --color-error-rgb: 242 139 130;
+
+  --color-error: #ffbdb6;
+  --color-error-rgb: 255 189 182;
   --color-error-deep: var(--color-error);
+  --color-error-subtle: #3a1816;
+  --color-error-text-enhanced: #ffe4e1;
   --color-error-text: var(--color-error-text-enhanced);
-  --color-error-subtle: #35292a;
-  --color-success-text-enhanced: #d1fae5;
-  --color-warning-text-enhanced: #fff0b3;
-  --color-error-text-enhanced: #ffe6e6;
 
   /* Alias de indicadores y series existentes, sin añadir acentos a la navegación. */
-  --color-violet: #c0a6e0;
+  --color-violet: #d8c4f5;
   --color-accent-purple-deep: var(--color-violet);
-  --color-accent-orange: #e0aa78;
-  --color-accent-teal: #83c6c1;
-  --color-accent-teal-rgb: 131 198 193;
+  --color-accent-orange: #ffc08a;
+  --color-accent-teal: #8fe0d8;
+  --color-accent-teal-rgb: 143 224 216;
 }
 
 /* Ocean Saas cambia solo colores; conserva geometría, tipografía y sombras del sistema. */
@@ -810,189 +847,254 @@
   }
 }
 
-/* Darkmatter Remix cambia colores; conserva geometría, tipografía y sombras del sistema. */
+/* Gold Void conserva geometría, tipografía y sombras del sistema. */
 :root[data-color-palette='darkmatter-remix'],
 [data-palette-preview][data-color-palette='darkmatter-remix'] {
-  --color-primary: #d87943;
-  --color-primary-rgb: 216 121 67;
-  --color-primary-text: #9a4b1f;
-  --color-primary-active: color-mix(in srgb, var(--color-primary) 85%, var(--color-surface-card));
-  --color-primary-pressed: color-mix(in srgb, var(--color-primary) 70%, var(--color-surface-card));
-  --color-on-primary: #111827;
-  --color-link-deep: #8d3b11;
+  --color-primary: hsl(42deg 80% 18%);
+  --color-primary-rgb: 83 61 9;
+  --color-primary-text: hsl(42deg 80% 16%);
+  --color-primary-active: color-mix(in srgb, var(--color-primary) 85%, var(--color-ink));
+  --color-primary-pressed: color-mix(in srgb, var(--color-primary) 70%, var(--color-ink));
+  --color-on-primary: var(--color-canvas);
+  --color-link-deep: var(--color-primary-text);
   --color-link-soft: var(--color-primary-tint);
-  --color-canvas-soft: #f3f4f6;
-  --color-canvas-elevated: #fff;
+  --color-canvas: hsl(45deg 40% 97%);
+  --color-canvas-rgb: 250 249 244;
+  --color-canvas-soft: hsl(45deg 25% 93%);
+  --color-canvas-elevated: hsl(0deg 0% 100%);
   --color-sidebar-surface: var(--color-canvas-soft);
   --shell-floor: var(--color-sidebar-surface);
-  --color-surface-card: #fff;
-  --color-surface-strong: #eee;
+  --color-surface-card: hsl(0deg 0% 100%);
+  --color-surface-strong: hsl(45deg 25% 90%);
   --color-surface-hover: var(--color-surface-strong);
-  --color-hairline: #e5e7eb;
-  --color-ink: #111827;
-  --color-ink-rgb: 17 24 39;
-  --color-mute: #4b5563;
-  --color-primary-tint: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface-card));
+  --color-hairline: color-mix(in srgb, var(--color-ink) 12%, var(--color-canvas));
+  --color-hairline-strong: color-mix(in srgb, var(--color-ink) 55%, var(--color-surface-card));
+  --color-control-border: var(--color-hairline-strong);
+  --color-ink: hsl(30deg 15% 6%);
+  --color-ink-rgb: 18 15 13;
+  --color-mute: hsl(40deg 8% 22%);
+  --color-primary-tint: color-mix(in srgb, var(--color-primary) 14%, var(--color-surface-card));
+  --color-error: hsl(0deg 82% 26%);
+  --color-error-rgb: 121 12 12;
+  --color-error-deep: var(--color-error);
+  --color-error-text: hsl(0deg 82% 24%);
+  --color-on-error: var(--color-canvas);
 }
 
 :root[data-color-palette='darkmatter-remix'][data-color-scheme='dark'],
 [data-palette-preview][data-color-palette='darkmatter-remix'][data-color-scheme='dark'] {
-  --color-primary: #e78a53;
-  --color-primary-rgb: 231 138 83;
-  --color-primary-text: var(--color-primary);
+  --color-primary: hsl(45deg 68% 50%);
+  --color-primary-rgb: 214 171 41;
+  --color-primary-text: hsl(45deg 68% 52%);
   --color-primary-active: color-mix(in srgb, var(--color-primary) 85%, var(--color-ink));
   --color-primary-pressed: color-mix(in srgb, var(--color-primary) 70%, var(--color-ink));
-  --color-on-primary: #121113;
+  --color-on-primary: var(--color-canvas);
   --color-link-deep: var(--color-ink);
-  --color-canvas: #121113;
-  --color-canvas-rgb: 18 17 19;
-  --color-canvas-soft: #222;
+  --color-canvas: hsl(0deg 0% 2%);
+  --color-canvas-rgb: 5 5 5;
+  --color-canvas-soft: hsl(0deg 0% 8%);
   --color-sidebar-surface: var(--color-surface-card);
-  --color-canvas-elevated: var(--color-canvas);
-  --color-surface-card: #121212;
-  --color-surface-strong: #333;
+  --color-canvas-elevated: hsl(0deg 0% 4%);
+  --color-surface-card: hsl(0deg 0% 4%);
+  --color-surface-strong: hsl(0deg 0% 10%);
   --color-surface-hover: var(--color-surface-strong);
-  --color-hairline: #222;
-  --color-ink: #c1c1c1;
-  --color-ink-rgb: 193 193 193;
-  --color-mute: #a1a1a1;
-  --color-primary-tint: #333;
-}
-
-/* Chemp usa la misma geometría y tipografía del producto en claro y oscuro. */
-:root[data-color-palette='chemp'],
-[data-palette-preview][data-color-palette='chemp'] {
-  --color-primary: hsl(209deg 53% 30%);
-  --color-primary-rgb: 36 78 117;
-  --color-primary-text: var(--color-primary);
-  --color-primary-active: color-mix(in srgb, var(--color-primary) 85%, var(--color-ink));
-  --color-primary-pressed: color-mix(in srgb, var(--color-primary) 70%, var(--color-ink));
-  --color-on-primary: hsl(38deg 26% 92%);
-  --color-link-deep: var(--color-primary-pressed);
-  --color-link-soft: var(--color-primary-tint);
-  --color-canvas: hsl(38deg 26% 92%);
-  --color-canvas-rgb: 240 236 229;
-  --color-canvas-soft: hsl(38deg 30% 78%);
-  --color-canvas-elevated: var(--color-canvas);
-  --color-sidebar-surface: var(--color-canvas);
-  --shell-floor: var(--color-sidebar-surface);
-  --color-surface-card: hsl(40deg 30% 88%);
-  --color-surface-strong: var(--color-canvas-soft);
-  --color-surface-hover: var(--color-surface-strong);
-  --color-hairline: hsl(210deg 18% 7%);
-  --color-control-border: var(--color-hairline);
-  --color-ink: hsl(210deg 18% 7%);
-  --color-ink-rgb: 15 18 21;
-  --color-mute: hsl(210deg 12% 30%);
-  --color-primary-tint: var(--color-canvas-soft);
-  --color-error: hsl(16deg 53% 35%);
-  --color-error-rgb: 137 67 42;
+  --color-hairline: color-mix(in srgb, var(--color-ink) 10%, var(--color-canvas));
+  --color-hairline-strong: color-mix(in srgb, var(--color-ink) 40%, var(--color-surface-card));
+  --color-control-border: var(--color-hairline-strong);
+  --color-ink: hsl(45deg 40% 97%);
+  --color-ink-rgb: 250 249 244;
+  --color-mute: hsl(0deg 0% 70%);
+  --color-primary-tint: color-mix(in srgb, var(--color-primary) 12%, var(--color-canvas));
+  --color-error: hsl(0deg 85% 76%);
+  --color-error-rgb: 246 142 142;
   --color-error-deep: var(--color-error);
   --color-error-text: var(--color-error-text-enhanced);
   --color-on-error: var(--color-canvas);
 }
 
-:root[data-color-palette='chemp'][data-color-scheme='dark'],
-[data-palette-preview][data-color-palette='chemp'][data-color-scheme='dark'] {
-  --color-primary: hsl(209deg 53% 50%);
-  --color-primary-rgb: 60 130 195;
-  --color-primary-text: hsl(209deg 40% 65%);
-  --color-primary-active: color-mix(in srgb, var(--color-primary) 85%, var(--color-ink));
-  --color-primary-pressed: color-mix(in srgb, var(--color-primary) 70%, var(--color-ink));
-  --color-on-primary: hsl(210deg 18% 7%);
-  --color-link-deep: var(--color-ink);
-  --color-canvas: hsl(210deg 18% 7%);
-  --color-canvas-rgb: 15 18 21;
-  --color-canvas-soft: hsl(210deg 12% 18%);
-  --color-canvas-elevated: var(--color-canvas);
-  --color-sidebar-surface: hsl(210deg 18% 9%);
-  --color-surface-card: hsl(210deg 16% 11%);
-  --color-surface-strong: var(--color-canvas-soft);
+/* Sea Glass cambia colores, sin alterar la geometría ni la tipografía del producto. */
+:root[data-color-palette='sea-glass'],
+[data-palette-preview][data-color-palette='sea-glass'] {
+  --color-primary: #2b4630;
+  --color-primary-rgb: 43 70 48;
+  --color-primary-text: #263b2b;
+  --color-primary-active: #243e2a;
+  --color-primary-pressed: #1c2f2a;
+  --color-on-primary: #fff;
+  --color-link-deep: var(--color-primary-text);
+  --color-link-soft: #d1edd1;
+  --color-canvas: #f8fafc;
+  --color-canvas-rgb: 248 250 252;
+  --color-canvas-soft: #f3f4f6;
+  --color-canvas-elevated: #fff;
+  --color-sidebar-surface: #f3f4f6;
+  --shell-floor: var(--color-sidebar-surface);
+  --color-surface-card: #fff;
+  --color-surface-strong: #e5e7eb;
   --color-surface-hover: var(--color-surface-strong);
-  --color-hairline: hsl(38deg 26% 80%);
+  --color-hairline: #64766a;
+  --color-hairline-strong: var(--color-hairline);
   --color-control-border: var(--color-hairline);
-  --color-ink: hsl(38deg 26% 92%);
-  --color-ink-rgb: 240 236 229;
-  --color-mute: hsl(38deg 26% 80%);
-  --color-primary-tint: var(--color-canvas-soft);
-  --color-error: hsl(16deg 53% 50%);
-  --color-error-rgb: 195 96 60;
+  --color-ink: #16222a;
+  --color-ink-rgb: 22 34 42;
+  --color-mute: #2f3e36;
+  --color-primary-tint: #d1edd1;
+  --color-error: #8f1d06;
+  --color-error-rgb: 143 29 6;
   --color-error-deep: var(--color-error);
-  --color-error-text: var(--color-error-text-enhanced);
+  --color-error-text: #72180d;
+  --color-on-error: #fff;
 }
 
-/* Claude Amber adapta únicamente los colores del sistema existente. */
+/* Sea Glass · oscuro. Superficies neutras casi negras (estilo Vercel/Notion),
+   un solo acento aguamarina. Texto >= 8.1:1 sobre todas las superficies;
+   bordes de controles >= 3:1. */
+:root[data-color-palette='sea-glass'][data-color-scheme='dark'],
+[data-palette-preview][data-color-palette='sea-glass'][data-color-scheme='dark'] {
+  /* Acento */
+  --color-primary: #3ddcc7;
+  --color-primary-rgb: 61 220 199;
+  --color-primary-text: #7ff0df;
+  --color-primary-active: #5eead4;
+  --color-primary-pressed: #99f6e4;
+  --color-on-primary: #04201b;
+  --color-link-deep: var(--color-ink);
+  --color-link-soft: #0e2a27;
+  --color-primary-tint: #0b2522;
+
+  /* Superficies neutras */
+  --color-canvas: #0a0a0a;
+  --color-canvas-rgb: 10 10 10;
+  --color-canvas-soft: #111111;
+  --color-canvas-elevated: #171717;
+  --color-sidebar-surface: #0f0f0f;
+  --shell-floor: var(--color-sidebar-surface);
+  --color-surface-card: #171717;
+  --color-surface-strong: #262626;
+  --color-surface-hover: #262626;
+
+  /* Bordes: hairline sutil (decorativo), el fuerte es para controles */
+  --color-hairline: #2e2e2e;
+  --color-hairline-strong: #8f8f8f;
+  --color-control-border: var(--color-hairline-strong);
+
+  /* Texto */
+  --color-ink: #ededed;
+  --color-ink-rgb: 237 237 237;
+  --color-mute: #c8c8c8;
+
+  /* Error */
+  --color-error: #ffb1aa;
+  --color-error-rgb: 255 177 170;
+  --color-error-deep: var(--color-error);
+  --color-error-text: #ffd9d5;
+  --color-on-error: #1a0504;
+}
+
+/* Claude Amber adapta únicamente los colores del sistema existente.
+   Texto >= 8.1:1 sobre canvas, soft, elevated, sidebar, card, strong/hover y tint.
+   Bordes de controles >= 3:1. */
 :root[data-color-palette='claude-amber'],
 [data-palette-preview][data-color-palette='claude-amber'] {
-  --color-primary: #c96442;
-  --color-primary-rgb: 201 100 66;
-  --color-primary-text: #a54424;
-  --color-primary-active: color-mix(in srgb, var(--color-primary) 85%, var(--color-surface-card));
-  --color-primary-pressed: color-mix(in srgb, var(--color-primary) 70%, var(--color-surface-card));
-  --color-on-primary: #141413;
+  /* Acento: terracota oscuro para que el texto blanco del botón llegue a 8.1:1 */
+  --color-primary: #863519;
+  --color-primary-rgb: 134 53 25;
+  --color-primary-text: #6a2812;
+  /* Hover/pressed oscurecen (antes aclaraban hacia la superficie y parecían deshabilitados) */
+  --color-primary-active: color-mix(in srgb, var(--color-primary) 85%, var(--color-ink));
+  --color-primary-pressed: color-mix(in srgb, var(--color-primary) 70%, var(--color-ink));
+  --color-on-primary: #ffffff;
   --color-link-deep: var(--color-primary-text);
   --color-link-soft: var(--color-primary-tint);
+  --color-primary-tint: #f6e7dc;
+
+  /* Superficies */
   --color-canvas: #faf9f5;
   --color-canvas-rgb: 250 249 245;
   --color-canvas-soft: #ede9de;
-  --color-canvas-elevated: #fff;
+  --color-canvas-elevated: #ffffff;
   --color-sidebar-surface: #f5f4ee;
   --shell-floor: var(--color-sidebar-surface);
   --color-surface-card: #f5f4ef;
-  --color-surface-strong: #e9e6dc;
+  --color-surface-strong: #ebe8de;
   --color-surface-hover: var(--color-surface-strong);
+
+  /* Bordes: hairline decorativo; el fuerte sirve a controles (>= 3:1) */
   --color-hairline: #dad9d4;
+  --color-hairline-strong: #716f66;
+  --color-control-border: var(--color-hairline-strong);
+
+  /* Texto */
   --color-ink: #3d3929;
   --color-ink-rgb: 61 57 41;
-  --color-mute: #5e5d58;
-  --color-primary-tint: var(--color-surface-strong);
-  --color-error: #b91c1c;
-  --color-error-rgb: 185 28 28;
+  --color-mute: #424039;
+
+  /* Error */
+  --color-error: #7a1717;
+  --color-error-rgb: 122 23 23;
   --color-error-deep: var(--color-error);
-  --color-error-text: var(--color-error-text-enhanced);
+  --color-error-text: #6b1414;
   --color-on-error: var(--color-canvas);
+  --color-on-error-deep: var(--color-on-error);
 }
 
 :root[data-color-palette='claude-amber'][data-color-scheme='dark'],
 [data-palette-preview][data-color-palette='claude-amber'][data-color-scheme='dark'] {
-  --color-on-error-deep: var(--color-on-error);
-  --color-primary: #d97757;
-  --color-primary-rgb: 217 119 87;
-  --color-primary-text: #ffb494;
+  /* Acento: coral más claro para que el texto oscuro del botón llegue a 8.1:1 */
+  --color-primary: #ec9a76;
+  --color-primary-rgb: 236 154 118;
+  --color-primary-text: #ffd0b9;
   --color-primary-active: color-mix(in srgb, var(--color-primary) 85%, var(--color-ink));
   --color-primary-pressed: color-mix(in srgb, var(--color-primary) 70%, var(--color-ink));
+  --color-on-primary: #141413;
   --color-link-deep: var(--color-ink);
+  --color-link-soft: var(--color-primary-tint);
+  --color-primary-tint: #3a2b23;
+
+  /* Superficies (de menos a más elevadas) */
   --color-canvas: #262624;
   --color-canvas-rgb: 38 38 36;
   --color-canvas-soft: #1b1b19;
   --color-canvas-elevated: #30302e;
   --color-sidebar-surface: #1f1e1d;
+  --shell-floor: var(--color-sidebar-surface);
   --color-surface-card: #2c2c2b;
-  --color-surface-strong: #3e3e38;
+  --color-surface-strong: #363633;
   --color-surface-hover: var(--color-surface-strong);
-  --color-hairline: #3e3e38;
+
+  /* Bordes: el hairline ya no coincide con surface-strong (antes se volvía invisible) */
+  --color-hairline: #484741;
+  --color-hairline-strong: #8e8c82;
+  --color-control-border: var(--color-hairline-strong);
+
+  /* Texto */
   --color-ink: #f1f1ef;
   --color-ink-rgb: 241 241 239;
-  --color-mute: #b7b5a9;
-  --color-primary-tint: var(--color-surface-strong);
-  --color-error: #ef4444;
-  --color-error-rgb: 239 68 68;
+  --color-mute: #dad8ce;
+
+  /* Error */
+  --color-error: #ffc8c2;
+  --color-error-rgb: 255 200 194;
   --color-error-deep: var(--color-error);
-  --color-error-text: var(--color-error-text-enhanced);
+  --color-error-text: #ffd9d5;
   --color-on-error: #141413;
+  --color-on-error-deep: var(--color-on-error);
 }
 
-/* Supabase mantiene la geometría del proyecto y alterna sus verdes por modo. */
+/* Supabase mantiene la geometría del proyecto y alterna sus verdes por modo.
+   Corregido: texto >= 8.1:1 sobre todas las superficies donde se usa. */
 :root[data-color-palette='supabase'],
 [data-palette-preview][data-color-palette='supabase'] {
   --color-primary: #72e3ad;
   --color-primary-rgb: 114 227 173;
-  --color-primary-text: #006239;
+  --color-primary-text: #004d2c;
+  /* antes #006239 (7.3) -> 9.8 / 8.6 sobre soft */
   --color-primary-active: color-mix(in srgb, var(--color-primary) 85%, var(--color-surface-card));
   --color-primary-pressed: color-mix(in srgb, var(--color-primary) 70%, var(--color-surface-card));
   --color-on-primary: #1e2723;
   --color-link-deep: var(--color-primary-text);
   --color-link-soft: var(--color-primary-tint);
+  /* ojo: es una superficie (#ededed); no usar como color de texto */
   --color-canvas: #fcfcfc;
   --color-canvas-rgb: 252 252 252;
   --color-canvas-soft: #ededed;
@@ -1003,26 +1105,38 @@
   --color-surface-strong: var(--color-canvas-soft);
   --color-surface-hover: var(--color-surface-strong);
   --color-hairline: #dfdfdf;
+  /* divisor decorativo */
   --color-ink: #171717;
   --color-ink-rgb: 23 23 23;
-  --color-mute: #525252;
+  --color-mute: #3a3a3a;
+  /* antes #525252 (6.7 sobre soft) -> 9.7 */
   --color-primary-tint: var(--color-canvas-soft);
-  --color-error: #ca3214;
-  --color-error-rgb: 202 50 20;
+  --color-error: #7f1c05;
+  /* antes #ca3214 (5.2) -> 9.9 */
+  --color-error-rgb: 127 28 5;
   --color-error-deep: var(--color-error);
+  --color-error-text-enhanced: var(--color-error);
+  /* faltaba definirlo */
   --color-error-text: var(--color-error-text-enhanced);
+  --color-error-subtle: #fdeeea;
+  /* faltaba en claro */
   --color-on-error: var(--color-canvas);
+  --color-on-error-deep: var(--color-on-error);
+  /* faltaba en claro */
 }
 
 :root[data-color-palette='supabase'][data-color-scheme='dark'],
 [data-palette-preview][data-color-palette='supabase'][data-color-scheme='dark'] {
   --color-on-error-deep: var(--color-on-error);
-  --color-primary: #006239;
-  --color-primary-rgb: 0 98 57;
-  --color-primary-text: #4ade80;
+  --color-primary: #00492a;
+  /* antes #006239: texto encima daba 6.0 */
+  --color-primary-rgb: 0 73 42;
+  --color-primary-text: #6ff0a0;
+  /* antes #4ade80 (7.5 sobre strong) -> 9.1 */
   --color-primary-active: color-mix(in srgb, var(--color-primary) 85%, var(--color-canvas));
   --color-primary-pressed: color-mix(in srgb, var(--color-primary) 70%, var(--color-canvas));
-  --color-on-primary: #dde8e3;
+  --color-on-primary: #eaf4ef;
+  /* antes #dde8e3 -> 9.4 */
   --color-link-deep: var(--color-ink);
   --color-canvas: #121212;
   --color-canvas-rgb: 18 18 18;
@@ -1033,15 +1147,26 @@
   --color-surface-strong: #313131;
   --color-surface-hover: var(--color-surface-strong);
   --color-hairline: #292929;
+  /* divisor decorativo */
   --color-ink: #e2e8f0;
   --color-ink-rgb: 226 232 240;
-  --color-mute: #a2a2a2;
+  --color-mute: #d0d0d0;
+  /* antes #a2a2a2 (5.1 sobre strong) -> 8.4 */
   --color-primary-tint: var(--color-surface-strong);
-  --color-error-subtle: #541c15;
-  --color-on-error: #fff;
+  /* En oscuro el error heredaba el rojo del claro (3.5:1). Ahora se redefine: */
+  --color-error: #ffa690;
+  --color-error-rgb: 255 166 144;
+  --color-error-deep: var(--color-error);
+  --color-error-text-enhanced: var(--color-error);
+  --color-error-text: var(--color-error-text-enhanced);
+  --color-error-subtle: #3a1410;
+  /* antes #541c15: el texto error daba 2.6 */
+  --color-on-error: #1a0a07;
+  /* antes #fff sobre #ca3214 (5.3) -> 10.2 */
 }
 
 @media (prefers-contrast: more) {
+
   :root[data-color-palette][data-color-scheme],
   [data-palette-preview][data-color-palette][data-color-scheme] {
     --color-hairline: var(--color-mute);
@@ -1118,6 +1243,7 @@ video {
 
 /* Preferencia de accesibilidad: prevalece sobre animaciones de las features. */
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
@@ -1206,6 +1332,7 @@ select {
 
 /* WebKit en iOS amplía al enfocar campos con texto menor que body-lg. */
 @supports (-webkit-touch-callout: none) {
+
   :where(input:not([type='checkbox'],
       [type='radio'],
       [type='file'],
@@ -2488,6 +2615,7 @@ code:not(pre code) {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .modal-content[data-state],
   .modal-overlay[data-state] {
     animation: none;
@@ -2581,6 +2709,7 @@ code:not(pre code) {
 
 /* Decoración en bucle: se detiene por completo con movimiento reducido. */
 @media (prefers-reduced-motion: reduce) {
+
   .animated-empty-state,
   .animated-empty-state__icon svg {
     animation: none;
@@ -2795,6 +2924,7 @@ label>input.sr-only:focus-visible,
 }
 
 @media (forced-colors: active) {
+
   :focus-visible:not( :where([data-focus-ring] > input,
       [data-focus-ring] > textarea,
       label > input.sr-only,

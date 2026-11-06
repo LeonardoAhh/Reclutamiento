@@ -172,25 +172,6 @@
   letter-spacing: var(--type-body-strong-tracking);
 }
 
-/* ── Global drag overlay ──────────────────────────────────────────────────── */
-
-.reporte-drag {
-  position: fixed;
-  inset: 0;
-  z-index: var(--layer-modal);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-xs);
-  text-align: center;
-  margin: var(--spacing-md);
-  padding: var(--spacing-lg);
-  background: var(--color-surface-soft);
-  border: 2px dashed var(--color-primary-border);
-  border-radius: var(--rounded-xl, var(--rounded-lg));
-}
-
 /* ── Errors list ──────────────────────────────────────────────────────────── */
 
 .reporte-errors {

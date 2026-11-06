@@ -1,19 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { PageHeading } from '@/components/layout/PageHeading';
-import { motion, AnimatePresence } from "framer-motion";
 import { useLocation, useNavigate } from "react-router-dom";
-import {
-  Copy,
-  SlidersHorizontal,
-  UserRoundPlus as UserPlusIcon,
-  UsersRound,
-} from "lucide-react";
-import { Search as SearchData } from "lucide";
-import { MorphingIcon } from "@/components/ui/MorphingIcon";
-import { SearchField } from "@/components/ui/SearchField";
-import { CustomSelect } from "@/components/ui/CustomSelect";
-import { DepartmentSearchResults } from "@/components/plantilla/DepartmentSearchResults";
-import { DepartmentCard } from "@/components/plantilla/DepartmentCard";
+import { WorkforceWorkspaceContent } from "@/components/plantilla/WorkforceWorkspaceContent";
 import { PositionSettingsWizard } from "@/components/ui/PositionSettingsWizard";
 import { EmployeeModal } from "@/components/ui/EmployeeModal";
 import { EditEmployeeModal } from "@/components/ui/EditEmployeeModal";
@@ -29,10 +17,7 @@ import {
 import { localTodayIso } from "@/lib/dates";
 import { calculateWorkforceProjectionsByArea } from "@/lib/workforceProjection";
 import { useDismissedPositions } from "@/hooks/useDismissedPositions";
-import {
-  computeAutoVacancies,
-  filterUnreservedVacancies,
-} from "@/lib/autoVacancies";
+import { computeAutoVacancies } from "@/lib/autoVacancies";
 import { useSupabaseData } from "@/hooks/useSupabaseData";
 import { useVacancyRequests } from "@/hooks/useVacancyRequests";
 import { useCandidates } from "@/hooks/useCandidates";
@@ -46,7 +31,7 @@ import { copyTextToClipboard } from "@/lib/whatsappReport";
 import { toast } from "@/lib/notify";
 import { getSidebarCreateAction } from "@/lib/sidebarActionNavigation";
 import type { Employee } from "@/lib/types";
-import "./Dashboard.css";
+import "./DashboardStyles";
 
 export function Dashboard() {
   const { language } = useLanguage();
@@ -91,12 +76,8 @@ export function Dashboard() {
   // Vacantes abiertas no reservadas: se necesitan solo al dar de alta.
   const openVacancies = useMemo(() => {
     if (empModalMode !== "add") return [];
-    return filterUnreservedVacancies(
-      computeAutoVacancies(bajas, employees, positions).filter(
-        (v) => v.status === "abierta",
-      ),
-      employees,
-      positions,
+    return computeAutoVacancies(bajas, employees, positions).filter(
+      (v) => v.status === "abierta",
     );
   }, [empModalMode, bajas, employees, positions]);
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(
@@ -317,201 +298,50 @@ export function Dashboard() {
         className="plantilla-main"
         aria-label={t("Contenido principal")}
       >
-        <AnimatePresence initial={false} mode="wait">
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="dashboard__content-area"
-          >
-            {activeTab === "general" && (
-              <>
-                <header className="dashboard__hero dashboard-sidebar__hero">
-                  <div className="dashboard__hero-content dashboard-sidebar__hero-content">
-                    <div
-                      className="dashboard-sidebar__search"
-                      role="search"
-                      aria-label={t("Buscar en la plantilla")}
-                    >
-                      <div className="dashboard-sidebar__search-wrapper">
-                        <SearchField
-                          id="search-input"
-                          className="dashboard-sidebar__search-field"
-                          label={t("Buscar en la plantilla")}
-                          placeholder={t("Buscar")}
-                          value={searchTerm}
-                          onChange={(event) => setSearchTerm(event.target.value)}
-                          onClear={() => setSearchTerm("")}
-                          autoComplete="off"
-                          aria-controls="dashboard-departments"
-                        />
-                      </div>
-                    </div>
-                    <div className="dashboard-sidebar__utilities">
-                      <CustomSelect
-                        id="workforce-project-filter"
-                        className="dashboard-sidebar__starlite-filter"
-                        aria-label={t("Filtrar por proyecto")}
-                        value={showOnlyStarlite ? "starlite" : "all"}
-                        options={[
-                          { value: "all", label: t("Proyectos") },
-                          { value: "starlite", label: "Starlite" },
-                        ]}
-                        showPlaceholderOption={false}
-                        onChange={(value) => setShowOnlyStarlite(value === "starlite")}
-                      />
-                      <div className="dashboard__hero-actions">
-                        <button
-                          type="button"
-                          className="btn-primary"
-                          data-cuelume-open=""
-                          onClick={() => {
-                            setSelectedEmployee(null);
-                            setEmpModalMode("add");
-                          }}
-                          aria-label={t("Nuevo empleado")}
-                        >
-                          <UserPlusIcon size={16} aria-hidden="true" />
-                          <span className="dashboard__report-btn-label">
-                            {t("Nuevo")}
-                          </span>
-                        </button>
-                        {isAdmin && <button
-                          type="button"
-                          className="btn-secondary dashboard__report-btn"
-                          data-cuelume-tap=""
-                          onClick={() => void handleCopyVacancyReport()}
-                          aria-label={t("Reporte")}
-                          disabled={isInitialWorkforceLoad}
-                        >
-                          <Copy size={16} aria-hidden="true" />
-                          <span className="dashboard__report-btn-label">
-                            {t("Reporte")}
-                          </span>
-                        </button>}
-                        {isAdmin && (
-                          <button
-                            type="button"
-                            className="btn-secondary dashboard__report-btn"
-                            data-cuelume-open=""
-                            onClick={() => setPositionSettingsOpen(true)}
-                            title={t("Configurar plantilla, backup y Starlite")}
-                            aria-label={t("Configurar plantilla, backup y Starlite")}
-                            aria-haspopup="dialog"
-                          >
-                            <SlidersHorizontal size={16} aria-hidden="true" />
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </header>
-                <section
-                  className="dashboard__departments"
-                  id="dashboard-departments"
-                >
-                  {filteredDepts.length === 0 && employees.length === 0 && (
-                    <div className="dashboard__empty" id="dashboard-empty">
-                      <UsersRound size={48} strokeWidth={2.5} />
-                      <h2>{t("Sin datos cargados")}</h2>
-                      <p>
-                        {t("Importa un archivo JSON o crea un empleado para comenzar.")}
-                      </p>
-                    </div>
-                  )}
-
-                  {employees.length > 0 && normalizedSearchTerm.length === 1 && (
-                    <p className="dashboard__search-hint" role="status">
-                      {t("Escribe al menos 2 caracteres para buscar.")}
-                    </p>
-                  )}
-
-                  {(hasSearchQuery || showOnlyStarlite) && matchingEmployees.length > 0 && (
-                    <DepartmentSearchResults
-                      employees={matchingEmployees}
-                      singleColumnOnDesktop={hasSearchQuery}
-                      onEdit={openEditFor}
-                      onPromote={openPromoteFor}
-                      onIncapacidad={setIncapacidadTarget}
-                      onDelete={openDeleteFor}
-                    />
-                  )}
-
-                  {hasSearchQuery && !showOnlyStarlite && filteredDepts.length > 0 && (
-                    <header className="dashboard__department-match-heading">
-                      <h2>{t("Departamentos y puestos")}</h2>
-                      <span>
-                        {filteredDepts.length}{' '}
-                        {t(filteredDepts.length === 1 ? 'coincidencia' : 'coincidencias')}
-                      </span>
-                    </header>
-                  )}
-
-                  {(hasSearchQuery || showOnlyStarlite) && !hasSearchResults && employees.length > 0 && (
-                    <div className="dashboard__empty" id="dashboard-no-results">
-                      <MorphingIcon
-                        icon={SearchData}
-                        size={48}
-                        strokeWidth={2.5}
-                      />
-                      <h2>{t("Sin resultados")}</h2>
-                      <p>{showOnlyStarlite && !hasSearchQuery
-                        ? t("No hay empleados del proyecto Starlite.")
-                        : t("No se encontraron coincidencias para tu búsqueda.")}</p>
-                      <button
-                        type="button"
-                        className="btn-secondary"
-                        onClick={() => {
-                          setSearchTerm("");
-                          setShowOnlyStarlite(false);
-                        }}
-                      >
-                        {t(showOnlyStarlite ? "Limpiar filtros" : "Limpiar búsqueda")}
-                      </button>
-                    </div>
-                  )}
-
-                  {!hasSearchQuery && !showOnlyStarlite &&
-                    filteredDepts.length === 0 &&
-                    employees.length > 0 && (
-                      <div className="dashboard__empty" id="dashboard-no-results">
-                        <MorphingIcon
-                          icon={SearchData}
-                          size={48}
-                          strokeWidth={2.5}
-                        />
-                        <h2>{t("Sin resultados")}</h2>
-                        <p>{t("No hay departamentos que coincidan con el filtro.")}</p>
-                      </div>
-                    )}
-
-                  {filteredDepts.map((dept) => (
-                    <DepartmentCard
-                      key={dept.area}
-                      area={dept.area}
-                      projection={departmentProjections.get(dept.area)}
-                      onOpen={() => setDepartmentSelection({ area: dept.area, navigationKey: location.key })}
-                      incapacidadCount={incapacidadPorArea.get(dept.area) ?? 0}
-                    />
-                  ))}
-                </section>
-              </>
-            )}
-            {activeTab !== "general" && (
+        <WorkforceWorkspaceContent
+          activeTab={activeTab}
+          areaDetail={
+            activeTab !== "general" ? (
               <AreaDetailView
                 dept={filteredDepts.find((d) => d.area === activeTab) ?? null}
                 comments={comments}
                 candidates={candidates}
                 onBack={() => setDepartmentSelection(null)}
-                incapacidadPorSeccion={
-                  incapacidadPorAreaSeccion.get(activeTab) ?? null
-                }
+                incapacidadPorSeccion={incapacidadPorAreaSeccion.get(activeTab) ?? null}
               />
-            )}
-          </motion.div>
-        </AnimatePresence>
+            ) : null
+          }
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+          onSearchClear={() => setSearchTerm("")}
+          showOnlyStarlite={showOnlyStarlite}
+          isAdmin={isAdmin}
+          isInitialWorkforceLoad={isInitialWorkforceLoad}
+          employees={employees}
+          matchingEmployees={matchingEmployees}
+          normalizedSearchTerm={normalizedSearchTerm}
+          hasSearchQuery={hasSearchQuery}
+          hasSearchResults={hasSearchResults}
+          filteredDepartments={filteredDepts}
+          departmentProjections={departmentProjections}
+          incapacityByArea={incapacidadPorArea}
+          onProjectFilterChange={(value) => setShowOnlyStarlite(value === "starlite")}
+          onCreateEmployee={() => {
+            setSelectedEmployee(null);
+            setEmpModalMode("add");
+          }}
+          onCopyVacancyReport={handleCopyVacancyReport}
+          onOpenPositionSettings={() => setPositionSettingsOpen(true)}
+          onClearSearchAndFilter={() => {
+            setSearchTerm("");
+            setShowOnlyStarlite(false);
+          }}
+          onEditEmployee={openEditFor}
+          onPromoteEmployee={openPromoteFor}
+          onUpdateIncapacity={setIncapacidadTarget}
+          onDeleteEmployee={openDeleteFor}
+          onOpenDepartment={(area) => setDepartmentSelection({ area, navigationKey: location.key })}
+        />
 
         {/* ── Incapacidad Modal ── */}
         <IncapacidadModal

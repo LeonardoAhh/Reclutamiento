@@ -1,0 +1,374 @@
+/* ── Department Cards (grid) ── */
+.dashboard__departments {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--spacing-md);
+  align-items: stretch;
+  padding-bottom: var(--spacing-xxl);
+}
+
+.dashboard__search-hint,
+.dashboard__department-match-heading,
+.dashboard__empty {
+  grid-column: 1 / -1;
+}
+
+.dashboard__search-hint {
+  margin: 0;
+  padding: var(--design-spacing-sm) var(--design-spacing-md);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface);
+  color: var(--color-muted);
+  font-size: var(--type-body-md-size);
+  font-family: var(--font-body);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.dashboard__department-match-heading {
+  display: flex;
+  min-inline-size: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--design-spacing-sm);
+}
+
+.dashboard__department-match-heading h2 {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.dashboard__department-match-heading span {
+  flex: 0 0 auto;
+  color: var(--color-muted);
+  font-size: var(--type-body-md-size);
+  font-family: var(--font-body);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.dept-card {
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  overflow: hidden;
+  transition:
+    border-color var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.dept-card:hover,
+.dept-card:focus-within {
+  background: var(--color-surface-soft);
+}
+
+.dept-card__header {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  width: 100%;
+  padding: var(--spacing-md, 16px) var(--spacing-md, 16px) 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  color: var(--color-ink);
+  min-height: auto;
+}
+
+.dept-card__header:hover {
+  background: transparent;
+}
+
+.dept-card__header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs, 8px);
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.dept-card__title {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+  color: var(--color-ink);
+  text-transform: uppercase;
+  margin-right: 4px;
+}
+
+.dept-card__meta {
+  display: flex;
+  gap: var(--spacing-xs);
+  flex-wrap: wrap;
+}
+
+.dept-card__header-right {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.dept-card__hero {
+  display: none;
+}
+
+.dept-card__hero-img {
+  display: none;
+}
+
+.dept-card__hero-overlay {
+  display: none;
+}
+
+.dept-card__hero-copy {
+  display: none;
+}
+
+.dept-card__hero-top {
+  display: none;
+}
+
+.dept-card__hero-badges {
+  display: none;
+}
+
+.dept-card__button {
+  width: 100%;
+  height: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+}
+
+.dept-card__body {
+  padding: var(--spacing-sm, 12px) var(--spacing-md, 16px) var(--spacing-md, 16px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  flex: 1;
+}
+
+.dept-card__coverage {
+  width: 100%;
+  min-width: 0;
+  gap: var(--spacing-xs);
+}
+
+.dept-card__coverage-heading {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--spacing-xs);
+  color: var(--color-body);
+}
+
+.dept-card__coverage-heading strong {
+  color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.dept-card__coverage-note {
+  color: var(--color-body);
+  overflow-wrap: anywhere;
+}
+
+.dept-card__status-icon {
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
+}
+
+.dept-card__coverage-bar {
+  width: 100%;
+  height: var(--spacing-xs);
+  appearance: none;
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--rounded-full);
+  background: var(--color-hairline);
+  color: var(--color-primary-text);
+}
+
+.dept-card__coverage-bar::-webkit-progress-bar {
+  background: var(--color-hairline);
+}
+
+.dept-card__coverage-bar::-webkit-progress-value {
+  background: var(--color-primary);
+}
+
+.dept-card__coverage-bar::-moz-progress-bar {
+  background: var(--color-primary);
+}
+
+.dept-card__coverage-bar--complete::-webkit-progress-value {
+  background: var(--color-success);
+}
+
+.dept-card__coverage-bar--complete::-moz-progress-bar {
+  background: var(--color-success);
+}
+
+.dept-card__headcount {
+  font-family: var(--font-body);
+  font-size: var(--type-body-lg-size, 16px);
+  font-weight: var(--type-heading-sm-weight);
+  color: var(--color-ink);
+  letter-spacing: -0.01em;
+}
+
+.dept-card__bottom {
+  display: none;
+}
+
+/* Alert state: cuando el depto tiene vacantes o urgentes pendientes,
+   el border-left se oscurece para indicar urgencia */
+.dept-card--alert {
+  background: var(--color-surface-card);
+}
+
+.dept-card--alert:hover {
+  background: var(--color-surface-soft);
+}
+
+/* ── Department Table (compartido con AreaDetailModal) ── */
+.dept-card__table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.dept-card__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body);
+  font-size: var(--type-caption-md-size);
+}
+
+.dept-card__table thead {
+  background: var(--color-surface-card);
+}
+
+.dept-card__table th {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
+  color: var(--color-muted);
+  text-align: left;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.dept-card__table td {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  color: var(--color-body);
+  border-bottom: 1px solid var(--color-hairline-soft);
+  vertical-align: middle;
+}
+
+.dept-card__table tr:last-child td {
+  border-bottom: none;
+}
+
+.dept-card__table tr.row--has-vacancy {
+  background: var(--color-vacancy-tint);
+}
+
+.dept-card__table tr.row--urgent {
+  box-shadow: inset 3px 0 0 0 var(--color-error);
+}
+
+.text-center {
+  text-align: center;
+}
+
+.font-strong {
+  font-weight: var(--type-body-strong-weight);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.cell-puesto {
+  font-weight: var(--type-body-md-weight);
+  color: var(--color-body-strong);
+  min-width: 140px;
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.cell-puesto__inner {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.cell-puesto__name {
+  line-height: var(--type-body-strong-line);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.cell-puesto__flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--design-spacing-xxs);
+}
+
+.cell-backup-hint {
+  color: var(--color-accent-teal);
+  font-weight: var(--type-body-strong-weight);
+  font-size: var(--type-caption-md-size);
+  cursor: help;
+}
+
+.cell-seccion {
+  color: var(--color-muted);
+  font-size: var(--type-caption-md-size);
+}
+
+.vacancy-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--spacing-lg);
+  height: var(--spacing-lg);
+  border-radius: var(--rounded-xs);
+  background: var(--color-vacancy-chip-bg);
+  color: var(--color-error-text);
+  font-weight: var(--type-body-strong-weight);
+  font-size: var(--type-caption-md-size);
+  font-variant-numeric: tabular-nums;
+}
+
+.no-vacancy {
+  color: var(--color-muted-soft);
+}

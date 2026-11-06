@@ -95,6 +95,24 @@ export function useActivities() {
 
   const createActivity = async (titulo: string, descripcion: string, asignado_a: string | null, tipo: ActivityType = 'unica', reference_image: string | null = null) => {
     if (!profile) return null;
+    const typeCopy: Record<ActivityType, { created: string; failed: string }> = {
+      unica: {
+        created: english ? 'Activity created' : 'Actividad creada',
+        failed: english ? 'Could not create the activity' : 'No se pudo crear la actividad',
+      },
+      rutinaria: {
+        created: english ? 'Responsibility created' : 'Responsabilidad creada',
+        failed: english ? 'Could not create the responsibility' : 'No se pudo crear la responsabilidad',
+      },
+      vacante: {
+        created: english ? 'Vacancy created' : 'Vacante creada',
+        failed: english ? 'Could not create the vacancy' : 'No se pudo crear la vacante',
+      },
+      soporte: {
+        created: english ? 'Support task created' : 'Tarea de apoyo creada',
+        failed: english ? 'Could not create the support task' : 'No se pudo crear la tarea de apoyo',
+      },
+    };
     try {
       const { data, error } = await supabase
         .from('activities')
@@ -118,10 +136,10 @@ export function useActivities() {
           ...current.filter((activity) => activity.id !== saved.id),
         ])
       );
-      toast.success({ title: english ? 'Activity assigned' : 'Actividad asignada' });
+      toast.success({ title: typeCopy[tipo].created });
       return saved;
     } catch (err: any) {
-      toast.error({ title: english ? 'Could not assign the activity' : 'Error al asignar', description: err.message });
+      toast.error({ title: typeCopy[tipo].failed, description: err.message });
       return null;
     }
   };

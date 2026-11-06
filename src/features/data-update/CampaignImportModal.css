@@ -1,0 +1,22 @@
+.data-update-dialog .data-update-import__participant-list {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.data-update-dialog .data-update-import__participant {
+  min-inline-size: 0;
+}
+
+.data-update-dialog .data-update-import__participant input {
+  flex: 0 0 auto;
+}
+
+.data-update-dialog .data-update-import__participant > span:first-of-type {
+  min-inline-size: 0;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+.data-update-dialog .data-update-import__participant > span:last-of-type {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}

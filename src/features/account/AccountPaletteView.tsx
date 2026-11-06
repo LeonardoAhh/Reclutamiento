@@ -11,8 +11,8 @@ export function getAccountPaletteOptions(copy: AccountCopy, language: Language) 
   const options: { value: ThemePalette; label: string }[] = [
     { value: 'original', label: copy.originalPalette },
     { value: 'ocean-saas', label: copy.oceanPalette },
-    { value: 'darkmatter-remix', label: copy.darkmatterPalette },
-    { value: 'chemp', label: copy.chempPalette },
+    { value: 'darkmatter-remix', label: copy.goldVoidPalette },
+    { value: 'sea-glass', label: copy.seaGlassPalette },
     { value: 'claude-amber', label: copy.claudeAmberPalette },
     { value: 'supabase', label: copy.supabasePalette },
   ];

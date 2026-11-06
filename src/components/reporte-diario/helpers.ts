@@ -5,6 +5,27 @@ export function isIncidence(code: string | undefined): boolean {
     return !!code && !NON_INCIDENT_CODES.has(code)
 }
 
+export type IncidenceBadgeVariant = "success" | "error" | "warning" | "neutral"
+
+export function getIncidenceBadgeVariant(code: string): IncidenceBadgeVariant {
+    switch (code) {
+        case "A":
+            return "success"
+        case "F":
+        case "I":
+            return "error"
+        case "FJ":
+        case "P":
+        case "PH":
+        case "CT":
+        case "V":
+        case "TXT":
+            return "warning"
+        default:
+            return "neutral"
+    }
+}
+
 export function getNthWeekdayOfMonth(year: number, month: number, weekday: number, occurrence: number) {
     const date = new Date(year, month, 1)
     let count = 0
@@ -55,13 +76,16 @@ function normalizeString(value: unknown) {
     return value.trim()
 }
 
-export function parseReporteJSON(raw: unknown[]): { rows: ReporteRow[]; errors: string[] } {
+export function parseReporteJSON(
+    raw: unknown[],
+    options: { rejectDuplicates?: boolean } = {},
+): { rows: ReporteRow[]; errors: string[] } {
     const rows: ReporteRow[] = []
     const errors: string[] = []
-    // Deduplica filas repetidas: algunos exports (Excel/SAP) emiten cada empleado
-    // 2+ veces. Clave por empleado+área+turno; si se repite, fusionamos los días
-    // (rellenando los vacíos) en lugar de contar al empleado dos veces.
-    const seen = new Map<string, ReporteRow>()
+    const seen = new Map<
+        string,
+        { row: ReporteRow; index: number; daySources: Map<string, number> }
+    >()
 
     raw.forEach((item, index) => {
         if (typeof item !== "object" || item === null) {
@@ -111,15 +135,34 @@ export function parseReporteJSON(raw: unknown[]): { rows: ReporteRow[]; errors: 
         const dedupeKey = `${numero_empleado}||${area}||${turno}`
         const existing = seen.get(dedupeKey)
         if (existing) {
-            // Fusiona días: rellena los que estén vacíos en la fila ya vista.
+            if (options.rejectDuplicates) {
+                errors.push(
+                    `Fila ${index + 1}: registro duplicado; coincide con fila ${existing.index + 1}`,
+                )
+                for (const [day, value] of Object.entries(days)) {
+                    const existingValue = existing.row.days[day]
+                    const sourceIndex = existing.daySources.get(day) ?? existing.index
+                    if (value && existingValue && value !== existingValue) {
+                        errors.push(
+                            `Fila ${index + 1}: conflicto en día ${day} con fila ${sourceIndex + 1}`,
+                        )
+                    }
+                    if (value && !existingValue) existing.daySources.set(day, index)
+                }
+            }
+
             for (const [k, v] of Object.entries(days)) {
-                if (v && !existing.days[k]) existing.days[k] = v
+                if (v && !existing.row.days[k]) existing.row.days[k] = v
             }
             return
         }
 
         const newRow: ReporteRow = { mes, numero_empleado, nombre, departamento, area, puesto, turno, days }
-        seen.set(dedupeKey, newRow)
+        const daySources = new Map<string, number>()
+        for (const [day, value] of Object.entries(days)) {
+            if (value) daySources.set(day, index)
+        }
+        seen.set(dedupeKey, { row: newRow, index, daySources })
         rows.push(newRow)
     })
 

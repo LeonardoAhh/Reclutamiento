@@ -7,6 +7,7 @@ import { createDataUpdateCampaign, dataUpdateError } from "./api";
 import { useDataUpdateText } from "./translations";
 import { parseDataUpdateImport } from "./validation";
 import type { DataUpdateImportResult, DataUpdateProfileOption } from "./types";
+import "./CampaignImportModal.css";
 
 interface CampaignImportModalProps {
   isOpen: boolean;

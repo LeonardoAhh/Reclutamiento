@@ -327,8 +327,8 @@
 
 /* ============================================================================
    CALENDAR — mobile-first 7-column grid that always fits the viewport.
-   Columns use minmax(0, 1fr) so they shrink; sizing scales up by breakpoint.
-   Severity colors apply to date numbers and incident counts only.
+   Columns use minmax(0, 1fr) so they shrink. Severity colors apply to incident
+   counts; date numbers stay neutral except on the selected day.
    ============================================================================ */
 
 .reporte-cal {
@@ -344,19 +344,9 @@
 }
 
 .reporte-cal__weekdays {
-  margin-bottom: var(--spacing-xs);
-  padding-block-end: var(--spacing-xs);
+  margin-bottom: var(--design-spacing-xs);
+  padding-block-end: var(--design-spacing-xs);
   border-block-end: var(--border-width) solid var(--color-hairline-strong);
-}
-
-@media (width >= 768px) {
-  .reporte-cal__weekdays,
-  .reporte-cal__grid {
-    gap: var(--spacing-xs);
-  }
-  .reporte-cal__weekdays {
-    margin-bottom: var(--spacing-sm);
-  }
 }
 
 .reporte-cal__weekday {
@@ -386,10 +376,10 @@
   display: flex;
   flex-direction: column;
   gap: var(--design-spacing-xxs);
-  border: var(--border-width) solid var(--color-control-border);
-  border-radius: var(--radius-control);
-  padding: var(--spacing-xs);
-  min-height: calc(var(--touch-target-min) + var(--design-spacing-xs));
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--radius-field);
+  padding: var(--design-spacing-xs);
+  min-block-size: calc(var(--touch-target-min) + var(--design-spacing-lg));
   text-align: left;
   background: var(--color-surface-card);
   color: var(--color-ink);
@@ -397,20 +387,6 @@
   transition:
     background-color var(--transition-fast),
     border-color var(--transition-fast);
-}
-
-@media (width >= 768px) {
-  .reporte-cal__cell {
-    padding: var(--spacing-sm);
-    min-height: calc(var(--touch-target-min) + var(--design-spacing-md));
-    gap: var(--spacing-xs);
-  }
-}
-
-@media (min-width: 768px) {
-  .reporte-cal__cell {
-    min-height: calc(var(--touch-target-min) + var(--design-spacing-lg));
-  }
 }
 
 .reporte-cal__cell--empty {
@@ -450,10 +426,10 @@
 
 .reporte-cal__daynum {
   font-family: var(--font-body);
-  font-weight: var(--type-body-strong-weight);
-  font-size: var(--type-body-strong-size);
-  line-height: var(--type-body-strong-line);
-  letter-spacing: var(--type-body-strong-tracking);
+  font-weight: var(--type-body-md-weight);
+  font-size: var(--type-body-md-size);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .reporte-cal__count {

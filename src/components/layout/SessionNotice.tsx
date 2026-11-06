@@ -4,21 +4,76 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/lib/notify";
 import { useLanguage } from "@/contexts/LanguageContext";
+import type { ActivityType } from "@/lib/types";
 import { ACTIVIDADES_PATH } from "./navigation";
 
 const SESSION_NOTICE_ID = "pending-activities";
+
+type PendingActivityCounts = {
+  vacancy: number;
+  activity: number;
+  responsibility: number;
+};
+
+const EMPTY_PENDING_COUNTS: PendingActivityCounts = {
+  vacancy: 0,
+  activity: 0,
+  responsibility: 0,
+};
+
+function getPendingActivityCategory(type: ActivityType | null | undefined): keyof PendingActivityCounts {
+  if (type === 'vacante') return 'vacancy';
+  if (type === 'rutinaria') return 'responsibility';
+  return 'activity';
+}
+
+function countPendingActivities(
+  rows: readonly { tipo: ActivityType | null }[],
+): PendingActivityCounts {
+  return rows.reduce<PendingActivityCounts>((counts, row) => {
+    counts[getPendingActivityCategory(row.tipo)] += 1;
+    return counts;
+  }, { ...EMPTY_PENDING_COUNTS });
+}
+
+function formatPendingActivityNotice(counts: PendingActivityCounts, english: boolean): string {
+  const entries = [
+    {
+      count: counts.vacancy,
+      spanish: counts.vacancy === 1 ? 'vacante pendiente' : 'vacantes pendientes',
+      english: counts.vacancy === 1 ? 'pending vacancy' : 'pending vacancies',
+    },
+    {
+      count: counts.activity,
+      spanish: counts.activity === 1 ? 'actividad pendiente' : 'actividades pendientes',
+      english: counts.activity === 1 ? 'pending activity' : 'pending activities',
+    },
+    {
+      count: counts.responsibility,
+      spanish: counts.responsibility === 1 ? 'responsabilidad pendiente' : 'responsabilidades pendientes',
+      english: counts.responsibility === 1 ? 'pending responsibility' : 'pending responsibilities',
+    },
+  ];
+
+  return entries
+    .filter(({ count }) => count > 0)
+    .map(({ count, spanish, english: englishLabel }) =>
+      `${count} ${english ? englishLabel : spanish}`,
+    )
+    .join(' · ');
+}
 
 export function SessionNotice({ onInitialNoticeResolved }: { onInitialNoticeResolved: () => void }) {
   const { profile } = useAuth();
   const { language } = useLanguage();
   const { pathname } = useLocation();
   const viewingActivities = pathname === ACTIVIDADES_PATH;
-  const [taskCount, setTaskCount] = useState(0);
+  const [pendingCounts, setPendingCounts] = useState(EMPTY_PENDING_COUNTS);
 
   useEffect(() => {
     if (!profile) return;
     if (viewingActivities) {
-      setTaskCount(0);
+      setPendingCounts(EMPTY_PENDING_COUNTS);
       toast.dismiss(SESSION_NOTICE_ID);
       sessionStorage.setItem("notified_activities", "true");
       onInitialNoticeResolved();
@@ -32,7 +87,7 @@ export function SessionNotice({ onInitialNoticeResolved }: { onInitialNoticeReso
       const checkTasks = async () => {
         let query = supabase
           .from("activities")
-          .select("id", { count: "exact", head: true })
+          .select("tipo")
           .eq("estado", "pendiente");
 
         // Solo notificar si se crearon actividades DESPUÉS de la última vez que revisó
@@ -45,7 +100,7 @@ export function SessionNotice({ onInitialNoticeResolved }: { onInitialNoticeReso
           query = query.or(`asignado_a.eq.${profile.id},asignado_a.is.null`);
         }
 
-        const { count, error } = await query;
+        const { data, error } = await query;
         if (!active) return;
 
         if (error) {
@@ -53,8 +108,11 @@ export function SessionNotice({ onInitialNoticeResolved }: { onInitialNoticeReso
           onInitialNoticeResolved();
           return;
         }
-        if (count && count > 0) {
-          setTaskCount(count);
+        const counts = countPendingActivities(
+          (data ?? []) as Array<{ tipo: ActivityType | null }>,
+        );
+        if (counts.vacancy + counts.activity + counts.responsibility > 0) {
+          setPendingCounts(counts);
         } else {
           sessionStorage.setItem("notified_activities", "true");
           onInitialNoticeResolved();
@@ -78,7 +136,11 @@ export function SessionNotice({ onInitialNoticeResolved }: { onInitialNoticeReso
         { event: "INSERT", schema: "public", table: "activities" },
         (payload) => {
           if (!active) return;
-          const newAct = payload.new as any;
+          const newAct = payload.new as {
+            asignado_a?: string | null;
+            estado?: string;
+            tipo?: ActivityType | null;
+          };
 
           if (profile.role === "reclutador") {
             // Si la actividad no es para el reclutador ni es para todo el equipo, ignoramos
@@ -91,7 +153,11 @@ export function SessionNotice({ onInitialNoticeResolved }: { onInitialNoticeReso
           }
 
           if (newAct.estado === "pendiente") {
-            setTaskCount((prev) => prev + 1);
+            const category = getPendingActivityCategory(newAct.tipo);
+            setPendingCounts((previous) => ({
+              ...previous,
+              [category]: previous[category] + 1,
+            }));
           }
         },
       )
@@ -104,17 +170,16 @@ export function SessionNotice({ onInitialNoticeResolved }: { onInitialNoticeReso
   }, [onInitialNoticeResolved, profile, viewingActivities]);
 
   useEffect(() => {
+    const taskCount = pendingCounts.vacancy + pendingCounts.activity + pendingCounts.responsibility;
     if (viewingActivities || taskCount <= 0) return;
 
     toast.info({
       id: SESSION_NOTICE_ID,
-      title: language === 'en'
-        ? `${taskCount} pending ${taskCount === 1 ? 'activity' : 'activities'}`
-        : `${taskCount} ${taskCount === 1 ? 'actividad pendiente' : 'actividades pendientes'}`,
+      title: formatPendingActivityNotice(pendingCounts, language === 'en'),
     });
     sessionStorage.setItem("notified_activities", "true");
     onInitialNoticeResolved();
-  }, [onInitialNoticeResolved, taskCount, viewingActivities, language]);
+  }, [onInitialNoticeResolved, pendingCounts, viewingActivities, language]);
 
   return null;
 }

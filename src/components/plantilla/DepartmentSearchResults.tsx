@@ -1,4 +1,3 @@
-import { IncapacidadBadge, ProximoIngresoBadge, StarliteBadge } from '@/components/ui/Badge';
 import { EmployeeRowActions } from '@/components/ui/EmployeeRowActions';
 import { localTodayIso } from '@/lib/dates';
 import type { Employee } from '@/lib/types';
@@ -9,7 +8,6 @@ import './DepartmentSearchResults.css';
 
 interface DepartmentSearchResultsProps {
   employees: Employee[];
-  singleColumnOnDesktop?: boolean;
   onEdit: (employee: Employee) => void;
   onPromote: (employee: Employee) => void;
   onIncapacidad: (employee: Employee) => void;
@@ -55,7 +53,6 @@ function getSectionLabel(section: string, area: string): string {
 
 export function DepartmentSearchResults({
   employees,
-  singleColumnOnDesktop = false,
   onEdit,
   onPromote,
   onIncapacidad,
@@ -79,64 +76,77 @@ export function DepartmentSearchResults({
         </p>
       </header>
 
-      <div
-        className={`department-search-results__grid${singleColumnOnDesktop ? ' department-search-results__grid--single-column' : ''}`}
-      >
+      <table className="department-search-table data-table data-table--cards">
+        <caption className="sr-only">{t('Resultados')}</caption>
+        <colgroup>
+          <col className="department-search-table__column--number" />
+          <col className="department-search-table__column--name" />
+          <col className="department-search-table__column--position" />
+          <col className="department-search-table__column--section" />
+          <col className="department-search-table__column--actions" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th scope="col">{t('No. empleado')}</th>
+            <th scope="col">{t('Empleado')}</th>
+            <th scope="col">{t('Puesto')}</th>
+            <th scope="col">{t('Sección')}</th>
+            <th scope="col">
+              <span className="sr-only">{t('Acciones')}</span>
+            </th>
+          </tr>
+        </thead>
         {groups.map((group) => (
-          <section className="department-search-group" key={group.area}>
-            <header className="department-search-group__header">
-              <h3>{group.area}</h3>
-              <span
-                className="department-search-group__count"
-                aria-label={`${group.employees.length} ${t(group.employees.length === 1 ? 'empleado' : 'empleados')} ${language === 'en' ? 'in' : 'en'} ${group.area}`}
+          <tbody key={group.area}>
+            <tr className="department-search-table__group-row">
+              <th scope="rowgroup" colSpan={5}>
+                <div className="department-search-table__group-heading">
+                  <span>{group.area}</span>
+                  <span
+                    className="department-search-table__group-count"
+                    aria-label={`${group.employees.length} ${t(group.employees.length === 1 ? 'empleado' : 'empleados')}`}
+                  >
+                    {group.employees.length}
+                  </span>
+                </div>
+              </th>
+            </tr>
+            {group.employees.map((employee) => (
+              <tr
+                className="department-search-table__employee-row"
+                key={employee.id ?? employee.num_empleado}
               >
-                {group.employees.length}
-              </span>
-            </header>
-
-            <ul className="department-search-group__list">
-              {group.employees.map((employee) => (
-                <li
-                  className="department-search-result"
-                  key={employee.id ?? employee.num_empleado}
+                <th
+                  className="department-search-table__employee-number"
+                  scope="row"
+                  data-label={t('No. empleado')}
                 >
-                  <div className="department-search-result__content">
-                    <div className="department-search-result__header">
-                      <strong className="department-search-result__name">
-                        {employee.nombre}
-                      </strong>
-                      {(employee.en_incapacidad ||
-                        employee.is_starlite ||
-                        String(employee.fecha_ingreso).localeCompare(today) > 0) && (
-                        <div className="department-search-result__statuses">
-                          {employee.en_incapacidad && <IncapacidadBadge iconOnly />}
-                          {employee.is_starlite && <StarliteBadge compact />}
-                          {String(employee.fecha_ingreso).localeCompare(today) > 0 && (
-                            <ProximoIngresoBadge iconOnly />
-                          )}
-                        </div>
-                      )}
-                    </div>
-                    <p className="department-search-result__metadata">
-                      {[`#${employee.num_empleado}`, employee.puesto, getSectionLabel(employee.seccion, group.area)]
-                        .filter(Boolean)
-                        .join(' · ')}
-                    </p>
-                  </div>
-
+                  <span>#{employee.num_empleado}</span>
+                </th>
+                <td className="department-search-table__employee-name" data-label={t('Empleado')}>
+                  <strong>{employee.nombre}</strong>
+                </td>
+                <td className="department-search-table__employee-position" data-label={t('Puesto')}>
+                  <span>{employee.puesto}</span>
+                </td>
+                <td className="department-search-table__employee-section" data-label={t('Sección')}>
+                  <span>{getSectionLabel(employee.seccion, group.area)}</span>
+                </td>
+                <td className="department-search-table__actions" data-label={t('Acciones')}>
                   <EmployeeRowActions
                     employee={employee}
+                    isUpcomingHire={String(employee.fecha_ingreso).localeCompare(today) > 0}
                     onEdit={onEdit}
                     onPromote={onPromote}
                     onIncapacidad={onIncapacidad}
                     onDelete={onDelete}
                   />
-                </li>
-              ))}
-            </ul>
-          </section>
+                </td>
+              </tr>
+            ))}
+          </tbody>
         ))}
-      </div>
+      </table>
     </section>
   );
 }

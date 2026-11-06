@@ -19,8 +19,11 @@
   font-family: var(--font-body);
   font-size: var(--type-heading-md-size);
   font-weight: var(--font-bold);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
+  /* CORRECCIÓN: antes usaba el interlineado y el tracking de body con un
+     tamaño de heading. Ahora usa los de heading, con fallback a body si el
+     token de heading no existe en el sistema de diseño. */
+  line-height: var(--type-heading-md-line, var(--type-body-md-line));
+  letter-spacing: var(--type-heading-md-tracking, var(--type-body-md-tracking));
 }
 
 .home-page__quick-links {
@@ -56,7 +59,19 @@
 
 .home-page__quick-link:hover {
   border-color: var(--color-hairline-strong);
-  background: transparent;
+  color: var(--color-ink);
+}
+
+/* CORRECCIÓN: antes solo había :hover, así que un usuario de teclado no veía
+   dónde estaba el foco. Si el reset global quita el outline, esto lo devuelve. */
+.home-page__quick-link:focus-visible {
+  outline: 2px solid var(--color-focus, var(--color-ink));
+  outline-offset: 2px;
+  border-color: var(--color-hairline-strong);
+  color: var(--color-ink);
+}
+
+.home-page__quick-link:active {
   color: var(--color-ink);
 }
 
@@ -65,29 +80,19 @@
   height: var(--icon-size-md);
 }
 
-.home-page__stage,
-.home-page__reduced-scenes {
-  display: grid;
-  min-inline-size: 0;
-  gap: var(--design-spacing-sm);
-}
-
-.home-page__scene {
-  min-inline-size: 0;
-}
-
-.home-page__map-error {
-  margin: 0;
-  color: var(--color-error-text);
-  font: var(--type-body-md-weight) var(--type-body-md-size)/var(--type-body-md-line) var(--font-body);
-  letter-spacing: var(--type-body-md-tracking);
-}
-
-.home-page__reduced-scenes {
-  gap: var(--design-spacing-xl);
-}
-
 @media (max-width: 767px) {
+
+  /* CORRECCIÓN: la fila superior puede envolverse en móvil, para que un
+     saludo largo no aplaste los enlaces. */
+  .home-page__top-row {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .home-page__greeting {
+    flex: 1 1 12rem;
+  }
+
   .home-page__quick-link {
     width: var(--touch-target-min);
     padding-inline: 0;
