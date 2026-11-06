@@ -3,7 +3,6 @@ import { Day as CalendarDay, type DayProps } from '@daypicker/react';
 import { enUS, es } from 'date-fns/locale';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Calendar } from '@/components/ui/Calendar';
-import { BackButton } from '@/components/ui/BackButton';
 import { Badge } from '@/components/ui/Badge';
 import { ButtonUtility } from '@/components/ui/ButtonUtility';
 import { INCIDENCIA_LABELS } from '@/components/reporte-diario/constants';
@@ -150,16 +149,18 @@ export function AnalysisEmployeeDetail({
       <header className="analysis-employee-detail__header">
         <h2
           id="analysis-employee-detail-title"
-          className="analysis-employee-detail__title type-body-strong"
+          className="analysis-employee-detail__title type-heading-sm"
           aria-label={employeeName}
         >
-          <BackButton
+          <button
             ref={employeeNameButtonRef}
-            className="analysis-employee-detail__name-back"
+            type="button"
+            className="btn-text analysis-employee-detail__name-back"
             onClick={onBack}
             aria-label={`${copy.backToResults}: ${employeeName}`}
-            label={employeeName}
-          />
+          >
+            {employeeName}
+          </button>
         </h2>
         {reportsReady && (
           <div className="analysis-employee-calendar__period" role="group" aria-label={copy.calendarTitle}>

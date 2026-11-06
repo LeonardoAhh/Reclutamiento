@@ -343,6 +343,8 @@ const englishCopy: ReadonlyMap<string, string> = new Map([
   ["NO", "NO"],
   ["SI", "YES"],
   ["Colaborador", "Employee"],
+  ["Acciones", "Actions"],
+  ["Responsable de", "Assignee for"],
   ["Pendiente", "Pending"],
   ["en el turno", "in shift"],
   ["Área: ", "Department: "],

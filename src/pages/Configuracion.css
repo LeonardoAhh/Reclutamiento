@@ -476,7 +476,6 @@
 .analysis-employee-detail__title .analysis-employee-detail__name-back {
   font: inherit;
   text-align: start;
-  text-decoration: none;
 }
 
 .analysis-employee-calendar__period {
@@ -653,6 +652,10 @@
 .analisis-results-table__incident-chip {
   min-block-size: auto;
   padding-inline: var(--design-spacing-xxs);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
   font-variant-numeric: tabular-nums;
 }
 
@@ -692,13 +695,45 @@
 
   .analisis-results-table tbody :where(th, td) {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    grid-template-columns: minmax(0, 1fr);
     align-items: start;
     gap: var(--design-spacing-xs);
+    min-inline-size: 0;
+  }
+
+  .analisis-results-table__detail-trigger {
+    grid-column: 1;
+    place-self: start;
+    min-block-size: 0;
+    block-size: auto;
+    padding-block: 0;
+    text-align: start;
+  }
+
+  .analisis-results-table__number {
+    display: block;
+    line-height: inherit;
+  }
+
+  .analisis-results-table tbody .analisis-results-table__name-column {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .analisis-results-table__name-value {
+    grid-column: 1;
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .analisis-results-table tbody .analisis-results-table__incidents-cell {
+    grid-column: 1 / -1;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .analisis-results-table tbody [data-label]::before {
     content: attr(data-label);
+    grid-column: 1;
     color: var(--color-muted);
     font-family: var(--font-body);
     font-size: var(--type-caption-up-size);

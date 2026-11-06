@@ -35,7 +35,7 @@ export default defineConfig({
         short_name: 'Reclutamiento',
         description:
           'Control de plantilla, vacantes y pipeline de candidatos.',
-        theme_color: '#f6f5f4',
+        theme_color: '#fff',
         background_color: '#f6f5f4',
         display: 'standalone',
         display_override: ['standalone', 'minimal-ui', 'browser'],

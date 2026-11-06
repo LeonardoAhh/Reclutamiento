@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { PageHeading } from '@/components/layout/PageHeading';
+import { PageHeaderAccessory, PageHeading } from '@/components/layout/PageHeading';
 import { TabsRoot, TabsList, TabsTrigger, TabsContent } from '@/components/ui/Tabs';
-import { ChartNoAxesCombined, Download, FilePlus2, MessageCircle, RefreshCw, Trash2, UserRoundCheck } from "lucide-react";
+import { ChartNoAxesCombined, FilePlus2, FileSpreadsheet, Trash2, UserRoundCheck } from "lucide-react";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { Pagination } from "@/components/ui/Pagination";
@@ -10,7 +10,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { useDataUpdateText } from "./translations";
 import { useTeamDirectory } from '@/features/team/TeamProvider';
 import { usePagination } from "@/hooks/usePagination";
-import { splitCandidateName } from "@/lib/names";
 import { toast } from "@/lib/notify";
 import { normalizeString } from "@/lib/utils";
 import {
@@ -18,17 +17,20 @@ import {
   deleteDataUpdateCampaign,
   getDataUpdateCampaignDetail,
   listDataUpdateCampaigns,
+  listCampaignDataUpdateIncidents,
   listDataUpdateIncidents,
+  listDataUpdateAudit,
   listEligibleDataUpdateProfiles,
 } from "./api";
 import { CampaignImportModal } from "./CampaignImportModal";
-import { compareDataUpdateRecords, DATA_UPDATE_PAGE_SIZE, DATA_UPDATE_PHONE_COUNTRY_CODE } from "./constants";
+import { compareDataUpdateRecords, DATA_UPDATE_PAGE_SIZE } from "./constants";
 import { DataUpdateAdminPanel } from "./DataUpdateAdminPanel";
-import { DataUpdateWorkFilters } from "./DataUpdateWorkFilters";
-import { DataUpdateStatus } from "./DataUpdateStatus";
+import { DataUpdateCompletedResults } from "./DataUpdateCompletedResults";
 import { DataUpdateLockerPanel } from "./DataUpdateLockerPanel";
 import { DataUpdateProgressPage } from "./DataUpdateProgressPage";
 import { DataUpdateWizard } from "./DataUpdateWizard";
+import { DataUpdateWorkResults, type DataUpdateWorkGroup } from "./DataUpdateWorkResults";
+import { exportDataUpdateCampaign } from "./exportExcel";
 import type {
   DataUpdateCampaign,
   DataUpdateCampaignDetail,
@@ -37,44 +39,6 @@ import type {
   DataUpdateRecord,
 } from "./types";
 import "./DataUpdatePage.css";
-
-function downloadContact(record: DataUpdateRecord, phone: string) {
-  const fullName = record.identity.name.trim();
-  const nameParts = fullName.split(/\s+/);
-  // El separador compartido agrupa partículas iniciales; este apellido compuesto lleva la partícula en medio.
-  const compoundSurnameIndex = nameParts.findIndex((part, index) =>
-    index < 2 && part.toUpperCase() === "MONTES"
-      && nameParts[index + 1]?.toUpperCase() === "DE"
-      && nameParts[index + 2]?.toUpperCase() === "OCA",
-  );
-  const givenNames = compoundSurnameIndex >= 0
-    ? nameParts.slice(4).join(" ")
-    : splitCandidateName(fullName).nombres;
-  const name = [record.identity.employeeNumber.trim(), givenNames || fullName]
-    .filter(Boolean)
-    .join(" ")
-    .replace(/\\/g, "\\\\")
-    .replace(/\r\n|\r|\n/g, "\\n")
-    .replace(/;/g, "\\;")
-    .replace(/,/g, "\\,");
-  const contact = [
-    "BEGIN:VCARD",
-    "VERSION:3.0",
-    `N:;${name};;;`,
-    `FN:${name}`,
-    `TEL;TYPE=CELL:+${DATA_UPDATE_PHONE_COUNTRY_CODE}${phone}`,
-    "END:VCARD",
-    "",
-  ].join("\r\n");
-  const url = URL.createObjectURL(new Blob([contact], { type: "text/vcard;charset=utf-8" }));
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = `contacto-${record.identity.employeeNumber.replace(/[^a-zA-Z0-9_-]/g, "") || record.id}.vcf`;
-  document.body.append(link);
-  link.click();
-  link.remove();
-  window.setTimeout(() => URL.revokeObjectURL(url), 0);
-}
 
 function useOnlineStatus() {
   const [online, setOnline] = useState(() => navigator.onLine);
@@ -96,20 +60,9 @@ function campaignOptionLabel(campaign: DataUpdateCampaign): string {
   return name.endsWith(year) ? name : `${name} · ${year}`;
 }
 
-interface DataUpdateWorkGroup {
-  key: string;
-  area: string;
-  isCompleted: boolean;
-  records: DataUpdateRecord[];
-}
-
 function workGroupKey(record: DataUpdateRecord): string {
   const completionGroup = record.status === "completado" ? "completed" : "active";
   return [completionGroup, record.identity.area.trim() || "Sin área"].join("\u0000");
-}
-
-function workGroupId(key: string): string {
-  return `data-update-work-group-${encodeURIComponent(key)}`;
 }
 
 function groupWorkRecords(records: DataUpdateRecord[]): DataUpdateWorkGroup[] {
@@ -154,10 +107,6 @@ export function DataUpdatePage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [showOnlyPendingWork, setShowOnlyPendingWork] = useState(false);
-  const [completedSearchTerm, setCompletedSearchTerm] = useState("");
-  const [selectedWorkGroup, setSelectedWorkGroup] = useState("");
-  const [pendingWorkGroupFocus, setPendingWorkGroupFocus] = useState<string | null>(null);
   const [activeView, setActiveView] = useState("work");
 
   useEffect(() => {
@@ -257,7 +206,6 @@ export function DataUpdatePage() {
     const terms = normalizeString(searchTerm).split(/\s+/).filter(Boolean);
     return myRecords
       .filter((record) => {
-        if (showOnlyPendingWork && record.status === "completado") return false;
         if (terms.length === 0) return true;
         const searchableText = normalizeString([
           record.identity.employeeNumber,
@@ -273,32 +221,11 @@ export function DataUpdatePage() {
         Number(left.status === "completado") - Number(right.status === "completado")
         || compareDataUpdateRecords(left, right)
       ));
-  }, [myRecords, searchTerm, showOnlyPendingWork]);
-  const visibleWorkGroups = useMemo(
-    () => groupWorkRecords(visibleMyRecords),
-    [visibleMyRecords],
-  );
-  const filteredWorkRecords = useMemo(
-    () => selectedWorkGroup
-      ? visibleMyRecords.filter((record) => workGroupKey(record) === selectedWorkGroup)
-      : visibleMyRecords,
-    [selectedWorkGroup, visibleMyRecords],
-  );
-  const recordPagination = usePagination(filteredWorkRecords, DATA_UPDATE_PAGE_SIZE);
+  }, [myRecords, searchTerm]);
+  const recordPagination = usePagination(visibleMyRecords, DATA_UPDATE_PAGE_SIZE);
   const pageWorkGroups = useMemo(
     () => groupWorkRecords(recordPagination.pageItems),
     [recordPagination.pageItems],
-  );
-  const workGroupOptions = useMemo(
-    () => visibleWorkGroups.map((group) => {
-      const area = (group.area === "Sin área" ? t("Sin área") : group.area).toLocaleLowerCase("es-MX");
-      const label = area.charAt(0).toLocaleUpperCase("es-MX") + area.slice(1);
-      return {
-        value: group.key,
-        label: group.isCompleted ? `${t("Completados")} · ${label}` : label,
-      };
-    }),
-    [visibleWorkGroups, t],
   );
   const myCompletedCount = myRecords.filter(
     (record) => record.status === "completado",
@@ -308,7 +235,7 @@ export function DataUpdatePage() {
     [detail],
   );
   const visibleCompletedRecords = useMemo(() => {
-    const terms = normalizeString(completedSearchTerm).split(/\s+/).filter(Boolean);
+    const terms = normalizeString(searchTerm).split(/\s+/).filter(Boolean);
     if (terms.length === 0) return completedRecords;
     return completedRecords.filter((record) => {
       const searchableText = normalizeString([
@@ -319,26 +246,45 @@ export function DataUpdatePage() {
       ].join(" "));
       return terms.every((term) => searchableText.includes(term));
     });
-  }, [completedRecords, completedSearchTerm]);
+  }, [completedRecords, searchTerm]);
   const completedPagination = usePagination(visibleCompletedRecords, DATA_UPDATE_PAGE_SIZE);
   const totalVisibleCount = detail?.records.length ?? 0;
   const selectedCampaign = campaigns.find((campaign) => campaign.id === selectedCampaignId) ?? null;
+  const activeSearchLabel = activeView === "work"
+    ? t("Buscar en mi trabajo")
+    : activeView === "locker"
+      ? t("Buscar lockers")
+      : activeView === "completed"
+        ? t("Buscar completados")
+        : t("Buscar en administración");
+  const activeSearchCount = activeView === "work"
+    ? myRecords.length
+    : activeView === "completed"
+      ? completedRecords.length
+      : detail?.records.length ?? 0;
 
-  useEffect(() => {
-    if (!pendingWorkGroupFocus) return;
-    const frame = window.requestAnimationFrame(() => {
-      const group = document.getElementById(workGroupId(pendingWorkGroupFocus));
-      group?.scrollIntoView({ block: "start" });
-      group?.focus({ preventScroll: true });
-      setPendingWorkGroupFocus(null);
-    });
-    return () => window.cancelAnimationFrame(frame);
-  }, [pendingWorkGroupFocus, recordPagination.currentPage]);
+  const changeSearchTerm = (value: string) => {
+    setSearchTerm(value);
+    if (activeView === "work") recordPagination.goToPage(1);
+    if (activeView === "completed") completedPagination.goToPage(1);
+  };
 
-  const goToWorkGroup = (groupKey: string) => {
-    setSelectedWorkGroup(groupKey);
-    recordPagination.goToPage(1);
-    setPendingWorkGroupFocus(groupKey || null);
+  const exportCampaign = async () => {
+    if (!detail || busy) return;
+    setBusy(true);
+    try {
+      const recordIds = detail.records.map((record) => record.id);
+      const [audit, campaignIncidents] = await Promise.all([
+        listDataUpdateAudit(recordIds),
+        listCampaignDataUpdateIncidents(recordIds),
+      ]);
+      await exportDataUpdateCampaign({ detail, audit, incidents: campaignIncidents });
+      toast.success({ title: t("Excel generado") });
+    } catch (caught) {
+      toast.error({ title: t(dataUpdateError(caught)) });
+    } finally {
+      setBusy(false);
+    }
   };
 
   const openRecord = async (record: DataUpdateRecord) => {
@@ -378,6 +324,7 @@ export function DataUpdatePage() {
   const newCampaignButton = (
     <button type="button" className="btn-primary data-update-campaign-action--new" data-cuelume-open="" onClick={() => setImportOpen(true)} disabled={!online}>
       <FilePlus2 aria-hidden="true" />
+      <span className="data-update-campaign-action__label">{t("Nueva campaña")}</span>
     </button>
   );
 
@@ -427,6 +374,36 @@ export function DataUpdatePage() {
   return (
     <main className="data-update-page container" aria-labelledby="data-update-title">
       <PageHeading id="data-update-title" className="app-page-title">{t("Actualización de datos")}</PageHeading>
+      {detail && activeSearchCount > 0 && (
+        <PageHeaderAccessory>
+          <search aria-label={activeSearchLabel}>
+            <div className="data-update-search--header">
+              <SearchField
+                id="data-update-active-search"
+                className="search-field--intrinsic search-field--header"
+                label={activeSearchLabel}
+                placeholder={t("Buscar")}
+                value={searchTerm}
+                onChange={(event) => changeSearchTerm(event.target.value)}
+                onClear={() => changeSearchTerm("")}
+                onKeyDown={(event) => {
+                  if (event.key === "Escape" && searchTerm) changeSearchTerm("");
+                }}
+                aria-controls={
+                  activeView === "work"
+                    ? "data-update-record-list"
+                    : activeView === "locker"
+                      ? "data-update-locker-list"
+                      : activeView === "completed"
+                        ? "data-update-completed-list"
+                        : "data-update-admin-list"
+                }
+                autoComplete="off"
+              />
+            </div>
+          </search>
+        </PageHeaderAccessory>
+      )}
       {isAdmin && campaigns.length === 0 && (
         <header className="page-header data-update-page__header">
           <div className="page-header__actions">
@@ -451,9 +428,7 @@ export function DataUpdatePage() {
                 onChange={(campaignId) => {
                   setProgressOpen(false);
                   setSelectedCampaignId(campaignId);
-                  setSearchTerm("");
-                  setCompletedSearchTerm("");
-                  setSelectedWorkGroup("");
+                  changeSearchTerm("");
                   recordPagination.goToPage(1);
                   completedPagination.goToPage(1);
                 }}
@@ -464,15 +439,24 @@ export function DataUpdatePage() {
             {isAdmin && (
             <div className={`data-update-campaign-actions${isAdmin ? ' data-update-campaign-actions--admin' : ''}`}>
               {isAdmin && newCampaignButton}
-              <button type="button" className="btn-secondary" data-cuelume-tap="" onClick={() => void loadDetail()} disabled={!online || loading || busy} aria-label={t("Actualizar", "Refresh")}>
-                <RefreshCw aria-hidden="true" />
-                <span className="data-update-campaign-action__label">{t("Actualizar", "Refresh")}</span>
-              </button>
+              {isAdmin && activeView === "admin" && detail && (
+                <button
+                  type="button"
+                  className="btn-secondary data-update-campaign-action--export"
+                  onClick={() => void exportCampaign()}
+                  disabled={busy || detail.records.length === 0}
+                  aria-label={t("Exportar campaña a Excel")}
+                  title={t("Exportar campaña a Excel")}
+                >
+                  <FileSpreadsheet aria-hidden="true" />
+                  <span className="data-update-campaign-action__label">{t("Excel")}</span>
+                </button>
+              )}
               {isAdmin && (
                 <button
                   ref={progressTriggerRef}
                   type="button"
-                  className="btn-danger"
+                  className="btn-danger data-update-campaign-action--delete"
                   onClick={() => {
                     setDeleteError(null);
                     setCampaignPendingDelete(selectedCampaign);
@@ -533,9 +517,7 @@ export function DataUpdatePage() {
       ) : detail ? (
         <>
           <TabsRoot className="data-update-tabs" value={activeView} onValueChange={setActiveView}>
-            <TabsList variant="underline"
-              aria-label={t("Vistas de actualización de datos")}
-            >
+            <TabsList variant="underline" aria-label={t("Vistas de actualización de datos")}>
               <TabsTrigger className="data-update-tabs__trigger" data-cuelume-select="" value="work">
                 {t("Mi trabajo")}
               </TabsTrigger>
@@ -555,103 +537,20 @@ export function DataUpdatePage() {
             <TabsContent className="data-update-tabs__content" value="work">
               <section className="data-update-queue" aria-labelledby="data-update-queue-title">
                 <h2 id="data-update-queue-title" className="sr-only">{t("Mi trabajo")}</h2>
-                {myRecords.length > 0 && (
-                  <DataUpdateWorkFilters
-                    area={selectedWorkGroup}
-                    areaOptions={workGroupOptions}
-                    pending={showOnlyPendingWork}
-                    onAreaChange={goToWorkGroup}
-                    onPendingChange={(pending) => {
-                      setShowOnlyPendingWork(pending);
-                      setSelectedWorkGroup("");
-                      recordPagination.goToPage(1);
-                    }}
-                    onClear={() => {
-                      setShowOnlyPendingWork(false);
-                      setSelectedWorkGroup("");
-                      recordPagination.goToPage(1);
-                    }}
-                  >
-                    <SearchField
-                      id="data-update-record-search"
-                      className="data-update-queue__search"
-                      label={t("Buscar en mi trabajo")}
-                      placeholder={t("Buscar")}
-                      value={searchTerm}
-                      onChange={(event) => {
-                        setSearchTerm(event.target.value);
-                        recordPagination.goToPage(1);
-                      }}
-                      onClear={() => {
-                        setSearchTerm("");
-                        recordPagination.goToPage(1);
-                      }}
-                      onKeyDown={(event) => {
-                        if (event.key === "Escape" && searchTerm) {
-                          setSearchTerm("");
-                          recordPagination.goToPage(1);
-                        }
-                      }}
-                      aria-controls="data-update-record-list"
-                      autoComplete="off"
-                    />
-                  </DataUpdateWorkFilters>
-                )}
                 {myRecords.length === 0 ? (
                   <p className="data-update-message">{t("No tienes registros asignados en esta campaña.")}</p>
                 ) : visibleMyRecords.length === 0 ? (
                   <div id="data-update-record-list" className="data-update-search-empty" role="status">
-                    <p>{searchTerm.trim()
-                      ? t(`No hay coincidencias para “${searchTerm.trim()}”.`)
-                      : t("No hay registros pendientes o en proceso.")}</p>
-                    <button type="button" className="btn-secondary" onClick={() => {
-                      setSearchTerm("");
-                      setShowOnlyPendingWork(false);
-                      setSelectedWorkGroup("");
-                      recordPagination.goToPage(1);
-                    }}>
-                      {t("Limpiar filtros")}
-                    </button>
+                    <p>{t(`No hay coincidencias para “${searchTerm.trim()}”.`)}</p>
                   </div>
                 ) : (
-                  <div className="data-update-results-panel">
-                    <div id="data-update-record-list" className="data-update-record-grid">
-                      {pageWorkGroups.flatMap((group) =>
-                        group.records.map((record, index) => (
-                          <article
-                            key={record.id}
-                            id={index === 0 ? workGroupId(group.key) : undefined}
-                            className={`card data-update-record-card${index === 0 ? " data-update-work-card__group-start" : ""}`}
-                            aria-describedby={index === 0 ? `${workGroupId(group.key)}-label` : undefined}
-                            tabIndex={index === 0 ? -1 : undefined}
-                          >
-                            {index === 0 && (
-                              <span id={`${workGroupId(group.key)}-label`} className="sr-only">
-                                {group.isCompleted ? t("Completados") : t("Área")}: {group.area === "Sin área" ? t("Sin área") : group.area}
-                              </span>
-                            )}
-                            <div>
-                              <div className="data-update-work-card__name-row">
-                                <span className="data-update-work-card__identity type-body-md text-muted">
-                                  <span>{record.identity.employeeNumber}</span>
-                                  {record.identity.shift && <span>{t("Turno: ")}{record.identity.shift}</span>}
-                                </span>
-                                <DataUpdateStatus status={record.status} />
-                              </div>
-                              <h3>{record.identity.name}</h3>
-                            </div>
-                            <button
-                              type="button"
-                              className={`data-update-work-card__action${record.status === "completado" ? " btn-secondary" : " btn-primary"}`}
-                              data-cuelume-open="" onClick={() => void openRecord(record)}
-                              disabled={!online || busy || record.status === "completado"}
-                            >
-                              {t(record.status === "pendiente" ? "Comenzar" : record.status === "en_proceso" ? "Continuar" : "Completado")}
-                            </button>
-                          </article>
-                        )),
-                      )}
-                    </div>
+                  <div id="data-update-record-list" className="data-update-results-panel">
+                    <DataUpdateWorkResults
+                      groups={pageWorkGroups}
+                      online={online}
+                      busy={busy}
+                      onOpenRecord={(record) => void openRecord(record)}
+                    />
                     {recordPagination.totalPages > 1 && (
                       <Pagination
                         currentPage={recordPagination.currentPage}
@@ -672,6 +571,8 @@ export function DataUpdatePage() {
             <TabsContent className="data-update-tabs__content" value="locker">
               <DataUpdateLockerPanel
                 records={detail.records}
+                searchTerm={searchTerm}
+                onSearchChange={changeSearchTerm}
                 canEdit={canAccess}
                 onRecordUpdated={updateDetailRecord}
               />
@@ -680,80 +581,20 @@ export function DataUpdatePage() {
             <TabsContent className="data-update-tabs__content" value="completed">
               <section className="data-update-queue" aria-labelledby="data-update-completed-title">
                 <h2 id="data-update-completed-title" className="sr-only">{t("Completados")}</h2>
-                  {completedRecords.length > 0 && (
-                    <SearchField
-                      id="data-update-completed-search"
-                      className="data-update-queue__search"
-                      label={t("Buscar completados")}
-                      placeholder={t("Buscar")}
-                      value={completedSearchTerm}
-                      onChange={(event) => {
-                        setCompletedSearchTerm(event.target.value);
-                        completedPagination.goToPage(1);
-                      }}
-                      onClear={() => setCompletedSearchTerm("")}
-                      aria-controls="data-update-completed-list"
-                      autoComplete="off"
-                    />
-                  )}
                 {completedRecords.length === 0 ? (
                   <p className="data-update-message">{t("Aún no hay registros completados en esta campaña.")}</p>
                 ) : (
                   <>
                     {visibleCompletedRecords.length === 0 ? (
                       <div id="data-update-completed-list" className="data-update-search-empty" role="status">
-                        <p>{t(`No hay coincidencias para “${completedSearchTerm.trim()}”.`)}</p>
-                        <button type="button" className="btn-secondary" onClick={() => setCompletedSearchTerm("")}>
+                        <p>{t(`No hay coincidencias para “${searchTerm.trim()}”.`)}</p>
+                        <button type="button" className="btn-secondary" onClick={() => changeSearchTerm("")}>
                           {t("Limpiar búsqueda")}
                         </button>
                       </div>
                     ) : (
-                      <div className="data-update-results-panel">
-                        <div id="data-update-completed-list" className="data-update-record-grid">
-                          {completedPagination.pageItems.map((record) => {
-                            const phone = record.data.mobilePhone.trim();
-                            const hasPhone = /^\d{10}$/.test(phone);
-                            return (
-                              <article key={record.id} className="card data-update-record-card data-update-completed-card">
-                                <div>
-                                  <span className="type-body-md text-muted">{record.identity.employeeNumber}</span>
-                                  <h3>{record.identity.name}</h3>
-                                </div>
-                                <dl className="data-update-completed-card__details">
-                                  <div><dt>{t("Departamento")}</dt><dd>{record.identity.area || t("Sin departamento")}</dd></div>
-                                  <div><dt>{t("Turno")}</dt><dd>{record.identity.shift || t("Sin turno")}</dd></div>
-                                </dl>
-                                <div className="data-update-completed-card__actions">
-                                  {hasPhone ? (
-                                    <>
-                                      <a
-                                        className="btn-secondary data-update-completed-card__icon-action"
-                                        href={`https://wa.me/${DATA_UPDATE_PHONE_COUNTRY_CODE}${phone}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        aria-label={t(`Abrir WhatsApp de ${record.identity.name} en una pestaña nueva`)}
-                                        title={t("Abrir WhatsApp")}
-                                      >
-                                        <MessageCircle aria-hidden="true" />
-                                      </a>
-                                      <button
-                                        type="button"
-                                        className="btn-secondary data-update-completed-card__icon-action"
-                                        onClick={() => downloadContact(record, phone)}
-                                        aria-label={t(`Descargar contacto de ${record.identity.name}`)}
-                                        title={t("Descargar contacto")}
-                                      >
-                                        <Download aria-hidden="true" />
-                                      </button>
-                                    </>
-                                  ) : (
-                                    <span className="text-muted">{t("Sin teléfono válido")}</span>
-                                  )}
-                                </div>
-                              </article>
-                            );
-                          })}
-                        </div>
+                      <div id="data-update-completed-list" className="data-update-results-panel">
+                        <DataUpdateCompletedResults records={completedPagination.pageItems} />
                         {completedPagination.totalPages > 1 && (
                           <Pagination
                             currentPage={completedPagination.currentPage}
@@ -778,6 +619,8 @@ export function DataUpdatePage() {
                 <DataUpdateAdminPanel
                   detail={detail}
                   profiles={profiles}
+                  searchTerm={searchTerm}
+                  onSearchChange={changeSearchTerm}
                   busy={busy}
                   online={online}
                   onBusyChange={setBusy}

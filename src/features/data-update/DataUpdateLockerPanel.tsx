@@ -1,18 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-import { EllipsisVertical, PencilLine } from "lucide-react";
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { Modal } from "@/components/ui/Modal";
 import { Pagination } from "@/components/ui/Pagination";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/Popover";
-import { SearchField } from "@/components/ui/SearchField";
 import { usePagination } from "@/hooks/usePagination";
 import { toast } from "@/lib/notify";
 import { normalizeString } from "@/lib/utils";
 import { assignDataUpdateLocker, dataUpdateError } from "./api";
+import { DataUpdateLockerResults } from "./DataUpdateLockerResults";
 import { useDataUpdateText } from "./translations";
 import {
   compareDataUpdateEmployeeNumbers,
@@ -24,6 +18,8 @@ import type { DataUpdateLockerArea, DataUpdateRecord } from "./types";
 
 interface DataUpdateLockerPanelProps {
   records: DataUpdateRecord[];
+  searchTerm: string;
+  onSearchChange: (value: string) => void;
   canEdit: boolean;
   onRecordUpdated: (record: DataUpdateRecord) => void;
 }
@@ -40,9 +36,8 @@ function getLockerError(locker: string, alreadyAssigned: boolean): string | null
   return null;
 }
 
-export function DataUpdateLockerPanel({ records, canEdit, onRecordUpdated }: DataUpdateLockerPanelProps) {
+export function DataUpdateLockerPanel({ records, searchTerm, onSearchChange, canEdit, onRecordUpdated }: DataUpdateLockerPanelProps) {
   const t = useDataUpdateText();
-  const [searchTerm, setSearchTerm] = useState("");
   const [selectedRecord, setSelectedRecord] = useState<DataUpdateRecord | null>(null);
   const [lockerArea, setLockerArea] = useState<DataUpdateLockerArea | "">("");
   const [locker, setLocker] = useState("");
@@ -128,81 +123,21 @@ export function DataUpdateLockerPanel({ records, canEdit, onRecordUpdated }: Dat
   return (
     <section className="data-update-lockers" aria-labelledby="data-update-lockers-title">
       <h2 id="data-update-lockers-title" className="sr-only">{t("Locker")}</h2>
-        {records.length > 0 && (
-          <SearchField
-            id="data-update-locker-search"
-            className="data-update-queue__search"
-            label={t("Buscar lockers")}
-            placeholder={t("Buscar")}
-            value={searchTerm}
-            onChange={(event) => setSearchTerm(event.target.value)}
-            onClear={() => setSearchTerm("")}
-            onKeyDown={(event) => {
-              if (event.key === "Escape" && searchTerm) setSearchTerm("");
-            }}
-            aria-controls="data-update-locker-list"
-            autoComplete="off"
-          />
-        )}
 
       {records.length === 0 ? (
         <p className="data-update-message">{t("No hay registros disponibles en esta campaña.")}</p>
       ) : visibleRecords.length === 0 ? (
         <div id="data-update-locker-list" className="data-update-search-empty" role="status">
           <p>{t(`No hay coincidencias para “${searchTerm.trim()}”.`)}</p>
-          <button data-cuelume-tap="" type="button" className="btn-secondary" onClick={() => setSearchTerm("")}>{t("Limpiar búsqueda")}</button>
+          <button data-cuelume-tap="" type="button" className="btn-secondary" onClick={() => onSearchChange("")}>{t("Limpiar búsqueda")}</button>
         </div>
       ) : (
-        <div className="data-update-results-panel">
-          <div id="data-update-locker-list" className="data-update-record-grid">
-            {pagination.pageItems.map((record) => (
-              <article key={record.id} className="card data-update-record-card data-update-locker-card">
-                <div className="data-update-admin-card__header">
-                  <div className="data-update-admin-card__identity">
-                    <span className="type-body-md text-muted">{record.identity.employeeNumber}</span>
-                    <h3>{record.identity.name}</h3>
-                  </div>
-                  {canEdit && (
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <button
-                          type="button"
-                          className="dropdown-menu-trigger"
-                          aria-label={`${t("Acciones de")} ${record.identity.name}`}
-                        >
-                          <EllipsisVertical aria-hidden="true" />
-                        </button>
-                      </PopoverTrigger>
-                      <PopoverContent align="end" className="data-update-admin-card__popover">
-                        <button data-cuelume-tap=""
-                          type="button"
-                          className="data-update-admin-card__action"
-                          onClick={() => openEditor(record)}
-                        >
-                          <PencilLine aria-hidden="true" />
-                          <span>{t("Editar")}</span>
-                        </button>
-                      </PopoverContent>
-                    </Popover>
-                  )}
-                </div>
-                <dl className="data-update-locker-card__details">
-                  <div>
-                    <dt>{t("Turno")}</dt>
-                    <dd>{record.identity.shift || "—"}</dd>
-                  </div>
-                  <div>
-                    <dt>{t("Área de locker")}</dt>
-                    <dd>{record.lockerArea ? t(record.lockerArea) : t("Sin asignar")}</dd>
-                  </div>
-                  <div>
-                    <dt>{t("Locker")}</dt>
-                    <dd>{record.data.locker.trim() || t("Sin asignar")}</dd>
-                  </div>
-                </dl>
-              </article>
-            ))}
-          </div>
+        <div id="data-update-locker-list" className="data-update-results-panel">
+          <DataUpdateLockerResults
+            records={pagination.pageItems}
+            canEdit={canEdit}
+            onEdit={openEditor}
+          />
           {pagination.totalPages > 1 && (
             <Pagination
               currentPage={pagination.currentPage}

@@ -118,7 +118,9 @@ export function AnalysisResultsTable({
                     </button>
                   </th>
                   <td className="analisis-results-table__name-column" data-label={copy.employeeName}>
-                    {getLocalizedValue(employee.nombre)}
+                    <span className="analisis-results-table__name-value">
+                      {getLocalizedValue(employee.nombre)}
+                    </span>
                   </td>
                   <td data-label={copy.position}>{getLocalizedValue(employee.puesto)}</td>
                   <td data-label={copy.hireDate}>

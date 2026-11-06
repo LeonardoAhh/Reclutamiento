@@ -65,7 +65,12 @@
       }
     }
     const statusBar = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
-    if (statusBar) statusBar.setAttribute('content', snapshot.resolvedTheme === 'dark' ? 'black' : 'default');
+    if (statusBar) {
+      statusBar.setAttribute(
+        'content',
+        snapshot.resolvedTheme === 'dark' ? 'black-translucent' : 'default',
+      );
+    }
   }
 
   function apply(preference, palette) {
