@@ -269,18 +269,8 @@
   position: relative;
 }
 
-.account-password__settings > .account-appearance {
-  position: relative;
-}
-
-.account-password__settings > .account-appearance::before {
-  position: absolute;
-  inset-block-start: 0;
-  inset-inline: 0;
-  block-size: var(--border-width);
-  background: var(--color-hairline);
-  content: "";
-  pointer-events: none;
+.account-password__settings > .account-setting-row {
+  border-block-end: var(--border-width) solid var(--color-hairline);
 }
 
 .account-password__detail {

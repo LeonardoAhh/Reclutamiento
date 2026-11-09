@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "mona sans",
+        "createdAt": "2026-11-09T20:16:52.189Z",
+        "reason": "Fuente de interfaz confirmada explícitamente por el usuario; desing.md la establece para toda la aplicación."
+      }
+    ]
+  }
+}

@@ -7,6 +7,7 @@ import { CustomSelect } from "@/components/ui/CustomSelect";
 import { Pagination } from "@/components/ui/Pagination";
 import { SearchField } from "@/components/ui/SearchField";
 import { useAuth } from "@/hooks/useAuth";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useDataUpdateText } from "./translations";
 import { useTeamDirectory } from '@/features/team/TeamProvider';
 import { usePagination } from "@/hooks/usePagination";
@@ -88,6 +89,7 @@ export function DataUpdatePage() {
   const { members } = useTeamDirectory();
   const { profile, user } = useAuth();
   const online = useOnlineStatus();
+  const showHeaderSearch = useMediaQuery('(min-width: 768px)');
   const isAdmin = profile?.role === "admin";
   const canAccess = isAdmin || profile?.role === "reclutador";
   const [campaigns, setCampaigns] = useState<DataUpdateCampaign[]>([]);
@@ -269,6 +271,31 @@ export function DataUpdatePage() {
     if (activeView === "completed") completedPagination.goToPage(1);
   };
 
+  const searchControl = (
+    <SearchField
+      id="data-update-active-search"
+      className={showHeaderSearch ? 'search-field--intrinsic search-field--header' : undefined}
+      label={activeSearchLabel}
+      placeholder={t("Buscar")}
+      value={searchTerm}
+      onChange={(event) => changeSearchTerm(event.target.value)}
+      onClear={() => changeSearchTerm("")}
+      onKeyDown={(event) => {
+        if (event.key === "Escape" && searchTerm) changeSearchTerm("");
+      }}
+      aria-controls={
+        activeView === "work"
+          ? "data-update-record-list"
+          : activeView === "locker"
+            ? "data-update-locker-list"
+            : activeView === "completed"
+              ? "data-update-completed-list"
+              : "data-update-admin-list"
+      }
+      autoComplete="off"
+    />
+  );
+
   const exportCampaign = async () => {
     if (!detail || busy) return;
     setBusy(true);
@@ -374,32 +401,11 @@ export function DataUpdatePage() {
   return (
     <main className="data-update-page container" aria-labelledby="data-update-title">
       <PageHeading id="data-update-title" className="app-page-title">{t("Actualización de datos")}</PageHeading>
-      {detail && activeSearchCount > 0 && (
+      {detail && activeSearchCount > 0 && showHeaderSearch && (
         <PageHeaderAccessory>
           <search aria-label={activeSearchLabel}>
             <div className="data-update-search--header">
-              <SearchField
-                id="data-update-active-search"
-                className="search-field--intrinsic search-field--header"
-                label={activeSearchLabel}
-                placeholder={t("Buscar")}
-                value={searchTerm}
-                onChange={(event) => changeSearchTerm(event.target.value)}
-                onClear={() => changeSearchTerm("")}
-                onKeyDown={(event) => {
-                  if (event.key === "Escape" && searchTerm) changeSearchTerm("");
-                }}
-                aria-controls={
-                  activeView === "work"
-                    ? "data-update-record-list"
-                    : activeView === "locker"
-                      ? "data-update-locker-list"
-                      : activeView === "completed"
-                        ? "data-update-completed-list"
-                        : "data-update-admin-list"
-                }
-                autoComplete="off"
-              />
+              {searchControl}
             </div>
           </search>
         </PageHeaderAccessory>
@@ -516,6 +522,11 @@ export function DataUpdatePage() {
         </section>
       ) : detail ? (
         <>
+          {activeSearchCount > 0 && !showHeaderSearch && (
+            <search className="data-update-search--mobile" aria-label={activeSearchLabel}>
+              {searchControl}
+            </search>
+          )}
           <TabsRoot className="data-update-tabs" value={activeView} onValueChange={setActiveView}>
             <TabsList variant="underline" aria-label={t("Vistas de actualización de datos")}>
               <TabsTrigger className="data-update-tabs__trigger" data-cuelume-select="" value="work">
