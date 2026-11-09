@@ -17,6 +17,7 @@
   min-inline-size: 0;
   background: var(--workspace-canvas);
   border-radius: var(--sidebar-corner-radius, 0);
+  box-shadow: var(--workspace-shadow);
   transform: translateX(var(--sidebar-offset, 0));
   touch-action: pan-y;
   transition:
@@ -30,7 +31,6 @@
   inset: 0;
   border-radius: inherit;
   background: var(--shell-workspace-surface);
-  box-shadow: var(--app-workspace-shadow);
   content: '';
   opacity: var(--sidebar-progress, 0);
   pointer-events: none;
@@ -63,7 +63,7 @@
     display: flex;
     min-block-size: 0;
     flex-direction: column;
-    overflow: hidden;
+    overflow: clip;
   }
 
   .app-shell__main {
@@ -95,10 +95,10 @@
     min-block-size: 0;
     flex-direction: column;
     margin-inline-start: calc(var(--app-sidebar-width) + var(--design-spacing-md));
-    overflow: hidden;
+    overflow: clip;
     background: var(--workspace-surface);
+    border: var(--border-width) solid var(--workspace-border-color);
     border-radius: var(--workspace-radius);
-    box-shadow: var(--app-workspace-shadow);
     transform: none;
 
     /* Acompaña el mismo pliegue que la barra lateral. */

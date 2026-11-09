@@ -1,10 +1,10 @@
-import { useEffect, useId, useState } from "react";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { useEffect, useId, useState } from 'react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { playSound } from '@/lib/sound';
 import { useLanguage } from '@/contexts/LanguageContext';
-import "./Pagination.css";
+import './Pagination.css';
 
-interface PaginationProps {
+export interface PaginationProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
@@ -34,9 +34,7 @@ export function Pagination({
   const inputId = useId();
   const totalId = useId();
   const safeTotalPages = Number.isSafeInteger(totalPages) ? Math.max(1, totalPages) : 1;
-  const safeCurrentPage = Number.isSafeInteger(currentPage)
-    ? Math.min(safeTotalPages, Math.max(1, currentPage))
-    : 1;
+  const safeCurrentPage = Number.isSafeInteger(currentPage) ? Math.min(safeTotalPages, Math.max(1, currentPage)) : 1;
   const [draftPage, setDraftPage] = useState(String(safeCurrentPage));
 
   useEffect(() => {
@@ -45,9 +43,10 @@ export function Pagination({
 
   const commitPage = () => {
     const parsed = Number(draftPage);
-    const target = draftPage !== '' && Number.isSafeInteger(parsed)
-      ? Math.min(safeTotalPages, Math.max(1, parsed))
-      : safeCurrentPage;
+    const target =
+      draftPage !== '' && Number.isSafeInteger(parsed)
+        ? Math.min(safeTotalPages, Math.max(1, parsed))
+        : safeCurrentPage;
     setDraftPage(String(target));
     if (target !== safeCurrentPage) {
       playSound('navigate');
@@ -81,7 +80,9 @@ export function Pagination({
       </button>
 
       <span className="pagination__text">
-        <label htmlFor={inputId}>{en ? 'Page' : 'P\u00e1gina'}</label>
+        <label className="sr-only" htmlFor={inputId}>
+          {en ? 'Page' : 'P\u00e1gina'}
+        </label>
         <input
           id={inputId}
           className="pagination__input"
@@ -105,7 +106,9 @@ export function Pagination({
             }
           }}
         />
-        <span id={totalId}>{en ? 'of' : 'de'} {safeTotalPages}</span>
+        <span id={totalId}>
+          {en ? 'of' : 'de'} {safeTotalPages}
+        </span>
       </span>
       <span className="sr-only" aria-live="polite" aria-atomic="true">
         {en ? 'Page' : 'P\u00e1gina'} {safeCurrentPage} {en ? 'of' : 'de'} {safeTotalPages}

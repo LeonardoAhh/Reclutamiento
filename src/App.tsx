@@ -32,6 +32,7 @@ import { DEPARTURE_REASONS_PATH, REPORT_COMPARISON_PATH, REPORT_DAY_ROUTE, REPOR
 import { CANDIDATE_METRICS_PATH } from '@/pages/candidate-metrics/navigation';
 import { LEAVE_REQUESTS_PATH } from '@/features/leave/requests';
 import { ACTIVITY_IMAGE_ROUTE } from '@/pages/activityImageNavigation';
+import { REPORT_SGI_PATH } from '@/pages/report-sgi/navigation';
 import { useLanguage } from '@/contexts/LanguageContext';
 import {
   AccountPage,
@@ -49,6 +50,7 @@ import {
   Pipeline,
   ReportComparisonPage,
   ReporteDiario,
+  ReportSgiPage,
 } from '@/lib/routePages';
 
 const Login = lazy(() =>
@@ -180,6 +182,8 @@ function App() {
                 <Route path={ROUTE_DAY_EMPLOYEES_PATH} element={<RutaDayEmployeesPage />} />
                 <Route path={ROUTE_SCANNER_PATH} element={<RouteScannerPage />} />
                 <Route path={REPORT_COMPARISON_PATH} element={<ReportComparisonPage />} />
+                <Route path={REPORT_SGI_PATH} element={<WithSupabaseData resources={EMPLOYEE_DATA}><ReportSgiPage /></WithSupabaseData>} />
+                <Route path="/report-sgi" element={<Navigate to={REPORT_SGI_PATH} replace />} />
                 <Route path={REPORTS_PATH} element={<ReporteDiario />}>
                   <Route path={REPORT_DAY_ROUTE} element={null} />
                 </Route>

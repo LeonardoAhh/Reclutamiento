@@ -124,7 +124,24 @@ export function computeMonthlyComparison(
   bajas: Baja[],
   empleados: Employee[],
   year: number,
-  filters?: { area?: string; puesto?: string }
+  filters?: {
+    area?: string;
+    puesto?: string;
+    /**
+     * Predicado adicional sobre (área, puesto). Se usa, por ejemplo, para
+     * limitar el cálculo a los puestos de la plantilla autorizada.
+     */
+    positionFilter?: (area: string, puesto: string) => boolean;
+    /** Puesto de ingreso que cubre una baja; conserva el puesto original de la baja. */
+    coveragePosition?: (baja: Baja) => string;
+    /**
+     * Inicio del periodo `YYYY-MM-DD`. Por defecto se conserva el corte
+     * histórico del 1 de mayo: `${year}-05-01`.
+     */
+    periodStart?: string;
+    /** Incluye hires posteriores al año seleccionado solo para matching de cobertura. */
+    includeFutureHiresForCoverage?: boolean;
+  }
 ): {
   months: MonthlyRow[];
   byPuesto: PuestoBreakdownRow[];
@@ -139,8 +156,11 @@ export function computeMonthlyComparison(
   };
 } {
   const yearStr = String(year);
-  // Solo consideramos de mayo (05) en adelante
-  const monthList = monthsOfYear(year).filter(m => m >= `${yearStr}-05`);
+  // Por defecto solo consideramos de mayo (05) en adelante; un periodo
+  // explícito (p. ej. el trimestre) mueve el corte sin alterar el default.
+  const periodStart = filters?.periodStart ?? `${yearStr}-05-01`;
+  const periodStartMonth = periodStart.slice(0, 7);
+  const monthList = monthsOfYear(year).filter(m => m >= periodStartMonth);
 
   // El filtro de puesto se compara **normalizado** (sin categoría final),
   // así una selección de "OPERADOR DE MÁQUINA" agrupa A/B/C/D.
@@ -148,18 +168,21 @@ export function computeMonthlyComparison(
   const matchesFilters = (area: string, puesto: string) => {
     if (filters?.area && area !== filters.area) return false;
     if (puestoFilterNorm && normalizePuesto(puesto) !== puestoFilterNorm) return false;
+    if (filters?.positionFilter && !filters.positionFilter(area, puesto)) return false;
     return true;
   };
 
   // Normaliza ingresos desde empleados activos: usa fecha_ingreso como ISO.
   // Guardamos también `puestoNorm` (sin categoría final) para el matching.
   const ingresosCandidates: IngresoCandidate[] = [];
+  const ingresosPeriodo: IngresoCandidate[] = [];
   for (const e of empleados) {
     const iso = parseDdMmYyyy(e.fecha_ingreso) ?? e.fecha_ingreso;
-    if (!iso || !iso.startsWith(yearStr) || iso < `${yearStr}-05-01` || !matchesFilters(e.area, e.puesto)) {
+    if (!iso || iso < periodStart || !matchesFilters(e.area, e.puesto)) {
       continue;
     }
-    ingresosCandidates.push({
+    const enAnioSeleccionado = iso.startsWith(yearStr);
+    const hire = {
       fecha: iso,
       puesto: e.puesto,
       puestoNorm: normalizePuesto(e.puesto),
@@ -167,14 +190,20 @@ export function computeMonthlyComparison(
       nombre: e.nombre,
       num_empleado: e.num_empleado,
       used: false,
-    });
+    };
+    if (enAnioSeleccionado) {
+      ingresosPeriodo.push(hire);
+      ingresosCandidates.push(hire);
+    } else if (filters?.includeFutureHiresForCoverage && iso > `${yearStr}-12-31`) {
+      ingresosCandidates.push(hire);
+    }
   }
   // Ordenados ascendente por fecha para matching estable.
   ingresosCandidates.sort((a, b) => (a.fecha < b.fecha ? -1 : a.fecha > b.fecha ? 1 : 0));
 
   // Bajas del año (filtradas), también ordenadas asc por fecha_baja.
   const bajasYear = bajas
-    .filter((b) => b.fecha_baja.startsWith(yearStr) && b.fecha_baja >= `${yearStr}-05-01` && matchesFilters(b.area, b.puesto))
+    .filter((b) => b.fecha_baja.startsWith(yearStr) && b.fecha_baja >= periodStart && matchesFilters(b.area, b.puesto))
     .slice()
     .sort((a, b) => (a.fecha_baja < b.fecha_baja ? -1 : a.fecha_baja > b.fecha_baja ? 1 : 0));
 
@@ -209,7 +238,7 @@ export function computeMonthlyComparison(
       };
     }
 
-    const puestoNormB = normalizePuesto(b.puesto);
+    const puestoNormB = normalizePuesto(filters?.coveragePosition?.(b) ?? b.puesto);
     let bestIdx = -1;
     let bestDelta = Number.POSITIVE_INFINITY;
     for (let i = 0; i < ingresosCandidates.length; i++) {
@@ -257,7 +286,7 @@ export function computeMonthlyComparison(
       soloInduccion: 0,
     });
   }
-  for (const c of ingresosCandidates) {
+  for (const c of ingresosPeriodo) {
     const row = monthMap.get(monthKey(c.fecha));
     if (row) row.ingresos += 1;
   }
@@ -293,7 +322,7 @@ export function computeMonthlyComparison(
     puestoMap.set(k, fresh);
     return fresh;
   };
-  for (const c of ingresosCandidates) {
+  for (const c of ingresosPeriodo) {
     getOrCreate(c.area, c.puesto).ingresos += 1;
   }
   for (const b of bajasConCobertura) {
@@ -311,7 +340,7 @@ export function computeMonthlyComparison(
     (b) => !b.soloInduccion && b.cubiertaEn10d
   ).length;
   const totalSolo = bajasConCobertura.length - totalBajas;
-  const totalIngresos = ingresosCandidates.length;
+  const totalIngresos = ingresosPeriodo.length;
 
   return {
     months: monthList.map((m) => monthMap.get(m)!),

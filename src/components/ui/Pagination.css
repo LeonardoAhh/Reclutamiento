@@ -3,7 +3,7 @@
   align-items: center;
   justify-content: center;
   gap: var(--design-spacing-xxs);
-  padding: var(--design-spacing-xs) 0;
+  padding: var(--design-spacing-xxs) 0;
   inline-size: 100%;
 }
 
@@ -11,7 +11,7 @@
   position: sticky;
   inset-block-end: 0;
   z-index: var(--layer-sticky-navigation);
-  padding-block-end: calc(var(--design-spacing-xs) + var(--safe-area-bottom));
+  padding-block-end: calc(var(--design-spacing-xxs) + var(--safe-area-bottom));
   border-block-start: var(--border-width) solid var(--color-hairline);
   background: var(--color-surface-card);
 }
@@ -29,6 +29,7 @@
   font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
   letter-spacing: var(--type-body-md-tracking);
+  font-variant-numeric: tabular-nums;
 }
 
 .pagination__input {
@@ -36,9 +37,10 @@
   min-inline-size: var(--touch-target-min);
   block-size: var(--touch-target-min);
   padding-inline: var(--design-spacing-xxs);
-  border: var(--border-width) solid var(--color-control-border);
-  border-radius: var(--radius-field);
-  background: var(--color-canvas-elevated);
+  border: 0;
+  border-block-end: var(--border-width) solid var(--color-control-border);
+  border-radius: 0;
+  background: transparent;
   color: var(--color-ink);
   text-align: center;
   font-family: var(--font-body);
@@ -46,4 +48,9 @@
   font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
   letter-spacing: var(--type-body-md-tracking);
+}
+
+.pagination__input:focus-visible {
+  border-block-end: var(--focus-ring-width) solid var(--color-focus);
+  outline: none;
 }

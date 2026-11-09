@@ -19,7 +19,7 @@ export function LoginStory({ username, language }: LoginStoryProps) {
     <div className="login-story">
       {isDesktop && (
         <>
-          <LiveOrb size={160} />
+          <LiveOrb size="calc(var(--design-spacing-section) + var(--design-spacing-4xl))" />
           <div className="login-story__copy">
             <p className="login-story__greeting">{greeting}</p>
             <p className="login-story__welcome">{copy.storyWelcome}</p>

@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { PageHeading } from '@/components/layout/PageHeading';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, CalendarDays, Check, ChevronLeft, ChevronRight, Info, LoaderCircle, Trash2 } from 'lucide-react';
+import { ArrowLeft, CalendarDays, Check, Info, LoaderCircle, Trash2 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage, type Language } from '@/contexts/LanguageContext';
 import { useTeamDirectory } from '@/features/team/TeamProvider';
@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/Badge';
 import { StatusPage } from '@/components/ui/StatusPage';
 import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
 import { Tooltip } from '@/components/ui/Tooltip';
+import { Pagination } from '@/components/ui/Pagination';
 import { isBoneyardBuild } from '@/lib/boneyard';
 import { formatDateTimeMx, formatReadableDate } from '@/lib/dates';
 import { toast } from '@/lib/notify';
@@ -54,11 +55,7 @@ const copy = {
     confirm: 'Confirmar',
     approveRequest: 'Autorizar solicitud',
     deleteRequest: 'Eliminar solicitud',
-    previous: 'Anterior',
-    next: 'Siguiente',
     pages: 'Páginas de solicitudes',
-    page: 'Página',
-    of: 'de',
     approving: 'Autorizando…',
     deleting: 'Eliminando…',
     approved: 'Solicitud autorizada',
@@ -86,11 +83,7 @@ const copy = {
     confirm: 'Confirm',
     approveRequest: 'Approve request',
     deleteRequest: 'Delete request',
-    previous: 'Previous',
-    next: 'Next',
     pages: 'Request pages',
-    page: 'Page',
-    of: 'of',
     approving: 'Approving…',
     deleting: 'Deleting…',
     approved: 'Request approved',
@@ -456,35 +449,18 @@ export function LeaveRequestsPage() {
           )}
         </section>
         {!showSkeleton && !changingPage && rows.length > 0 && total > LEAVE_PAGE_SIZE && (
-          <nav className="leave-requests-page__pagination" aria-label={t.pages}>
-            <button
-              type="button"
-              className="btn-secondary"
-              disabled={loading || page === 0}
-              onClick={() => {
-                playSound('navigate', { direction: 'back' });
-                setReviewAction(null);
-                setPage((value) => value - 1);
-              }}
-            >
-              <ChevronLeft aria-hidden="true" /> {t.previous}
-            </button>
-            <span className="type-body-md" role="status">
-              {t.page} {page + 1} {t.of} {Math.ceil(total / LEAVE_PAGE_SIZE)}
-            </span>
-            <button
-              type="button"
-              className="btn-secondary"
-              disabled={loading || (page + 1) * LEAVE_PAGE_SIZE >= total}
-              onClick={() => {
-                playSound('navigate');
-                setReviewAction(null);
-                setPage((value) => value + 1);
-              }}
-            >
-              {t.next} <ChevronRight aria-hidden="true" />
-            </button>
-          </nav>
+          <Pagination
+            currentPage={page + 1}
+            totalPages={Math.ceil(total / LEAVE_PAGE_SIZE)}
+            onPageChange={(target) => {
+              setReviewAction(null);
+              setPage(target - 1);
+            }}
+            canGoPrev={!loading && page > 0}
+            canGoNext={!loading && (page + 1) * LEAVE_PAGE_SIZE < total}
+            ariaLabel={t.pages}
+            sticky
+          />
         )}
       </main>
     </BoneyardSkeleton>

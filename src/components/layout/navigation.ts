@@ -2,6 +2,7 @@ import {
   ChartNoAxesCombined,
   Contact,
   Database,
+  FileChartColumnIncreasing,
   FilePenLine,
   House,
   ListTodo,
@@ -13,6 +14,7 @@ import {
 import { PLANTILLA_PATH } from '@/lib/plantillaNavigation';
 import { getConfiguracionHref } from '@/lib/configuracionNavigation';
 import { REPORTS_PATH } from '@/components/reporte-diario/navigation';
+import { REPORT_SGI_LABEL, REPORT_SGI_PATH } from '@/pages/report-sgi/navigation';
 import type { Language } from '@/contexts/LanguageContext';
 
 export type NavigationRole = 'admin' | 'reclutador';
@@ -66,6 +68,7 @@ const NAV_SECTIONS: ReadonlyArray<NavSection> = [
     label: 'Seguimiento',
     items: [
       { to: REPORTS_PATH, label: 'Reporte Diario', icon: NotebookText, roles: ['admin'] },
+      { to: REPORT_SGI_PATH, label: REPORT_SGI_LABEL, icon: FileChartColumnIncreasing },
       { to: getConfiguracionHref('rutas'), label: 'Rutas', icon: Route },
     ],
   },
@@ -80,6 +83,7 @@ const ENGLISH_NAV_LABELS: Readonly<Record<string, string>> = {
   'Detalle del día': 'Day details',
   'Comparativa mensual': 'Monthly comparison',
   'Métricas y KPIs': 'Metrics and KPIs',
+  'Analisis T3': 'Q3 Analysis',
   Rotación: 'Turnover',
   'Motivos de baja': 'Reasons for leaving',
   'Actualización de datos': 'Data update',

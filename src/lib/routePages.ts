@@ -47,6 +47,7 @@ export const Pipeline = lazyWithPreload(() => import('@/pages/Pipeline').then(({
 export const Bajas = lazyWithPreload(() => import('@/pages/Bajas').then(({ Bajas }) => ({ default: Bajas })));
 export const KpisPage = lazyWithPreload(() => import('@/pages/KpisPage').then(({ KpisPage }) => ({ default: KpisPage })));
 export const ReportComparisonPage = lazyWithPreload(() => import('@/pages/ReportComparisonPage').then(({ ReportComparisonPage }) => ({ default: ReportComparisonPage })));
+export const ReportSgiPage = lazyWithPreload(() => import('@/pages/ReportSgiPage').then(({ ReportSgiPage }) => ({ default: ReportSgiPage })));
 export const ReporteDiario = lazyWithPreload(() => import('@/pages/ReporteDiario').then(({ ReporteDiario }) => ({ default: ReporteDiario })));
 export const MotivosBaja = lazyWithPreload(() => import('@/pages/MotivosBaja').then(({ MotivosBaja }) => ({ default: MotivosBaja })));
 export const Configuracion = lazyWithPreload(() => import('@/pages/Configuracion').then(({ Configuracion }) => ({ default: Configuracion })));

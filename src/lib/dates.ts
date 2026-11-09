@@ -69,6 +69,53 @@ export function localTodayIso(): string {
   return `${year}-${pad2(month)}-${pad2(day)}`;
 }
 
+export interface CalendarQuarter {
+  year: number;
+  /** Trimestre calendario 1–4. */
+  quarter: number;
+  /** Primer día del trimestre (`YYYY-MM-DD`). */
+  start: string;
+  /** Último día del trimestre (`YYYY-MM-DD`). */
+  end: string;
+}
+
+/**
+ * Trimestre calendario completo inmediatamente anterior a `todayIso`.
+ * Con la fecha por defecto (hoy en TZ MX), el 9 nov 2026 devuelve
+ * `{ year: 2026, quarter: 3, start: '2026-07-01', end: '2026-09-30' }`.
+ */
+export function lastCompletedQuarter(todayIso: string = localTodayIso()): CalendarQuarter {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(todayIso).trim());
+  const parsedDate = match ? new Date(`${match[0]}T12:00:00Z`) : null;
+  if (
+    !match ||
+    !parsedDate ||
+    Number.isNaN(parsedDate.getTime()) ||
+    parsedDate.toISOString().slice(0, 10) !== match[0]
+  ) {
+    throw new Error(`Fecha inválida para calcular el trimestre: ${todayIso}`);
+  }
+
+  const currentYear = Number(match[1]);
+  const currentMonth = Number(match[2]);
+  const currentQuarter = Math.ceil(currentMonth / 3);
+  const quarter = currentQuarter === 1 ? 4 : currentQuarter - 1;
+  const year = currentQuarter === 1 ? currentYear - 1 : currentYear;
+  const startMonth = (quarter - 1) * 3 + 1;
+  const endMonth = quarter * 3;
+  const lastDayDate = new Date(`${year}-${pad2(endMonth)}-01T00:00:00Z`);
+  lastDayDate.setUTCMonth(lastDayDate.getUTCMonth() + 1);
+  lastDayDate.setUTCDate(0);
+  const lastDay = lastDayDate.getUTCDate();
+
+  return {
+    year,
+    quarter,
+    start: `${year}-${pad2(startMonth)}-01`,
+    end: `${year}-${pad2(endMonth)}-${pad2(lastDay)}`,
+  };
+}
+
 /**
  * Suma o resta días a una fecha ISO `YYYY-MM-DD` y devuelve el resultado
  * como `YYYY-MM-DD` en TZ MX. Si la fecha de entrada es inválida, devuelve null.

@@ -23,6 +23,7 @@ import { RouteErrorBoundary } from '@/components/ui/RouteErrorBoundary';
 import { DotGrid } from '@/components/ui/DotGrid';
 import { REPORT_COMPARISON_PATH, REPORT_DAY_PATTERN } from '@/components/reporte-diario/navigation';
 import { CANDIDATE_METRICS_PATH } from '@/pages/candidate-metrics/navigation';
+import { REPORT_SGI_LABEL, REPORT_SGI_PATH } from '@/pages/report-sgi/navigation';
 import { bindSoundInteractions } from '@/lib/sound';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSidebarCollapsed } from './useSidebarCollapsed';
@@ -37,6 +38,7 @@ const PAGE_TITLES: Readonly<Record<string, string>> = {
   '/departure-reasons': 'Motivos de baja',
   [DATA_UPDATE_PATH]: 'Actualización de datos',
   [ACCOUNT_PATH]: 'Cuenta',
+  [REPORT_SGI_PATH]: REPORT_SGI_LABEL,
 };
 
 /**

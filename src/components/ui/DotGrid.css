@@ -3,11 +3,10 @@
   z-index: -1;
   inset: 0;
   border-radius: inherit;
-  background-image: radial-gradient(
-    circle,
-    var(--color-workspace-dot) var(--workspace-dot-size),
-    transparent var(--workspace-dot-size)
-  );
-  background-size: var(--workspace-dot-spacing) var(--workspace-dot-spacing);
+  background-image:
+    linear-gradient(to right, var(--color-workspace-pattern) var(--border-width), transparent var(--border-width)),
+    linear-gradient(to bottom, var(--color-workspace-pattern) var(--border-width), transparent var(--border-width));
+  background-size: var(--workspace-grid-spacing) var(--workspace-grid-spacing);
+  mask-image: radial-gradient(ellipse at center, var(--color-on-neutral), transparent);
   pointer-events: none;
 }

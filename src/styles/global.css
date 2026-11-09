@@ -634,10 +634,8 @@
   --workspace-border-color: var(--color-hairline);
   --workspace-radius: var(--rounded-md);
   --workspace-shadow: var(--shadow-sm);
-  --app-workspace-shadow: 0 1px 2px rgb(var(--color-shadow-rgb) / 7%), 0 8px 24px rgb(var(--color-shadow-rgb) / 12%);
-  --color-workspace-dot: color-mix(in srgb, var(--color-mute) 14%, transparent);
-  --workspace-dot-size: var(--border-width);
-  --workspace-dot-spacing: var(--design-spacing-lg);
+  --color-workspace-pattern: color-mix(in srgb, var(--color-mute) 14%, transparent);
+  --workspace-grid-spacing: var(--design-spacing-xxl);
   --header-height: var(--design-spacing-3xl);
 
   /* Barra móvil: touch target + aire vertical de la escala (56px). */
@@ -710,7 +708,6 @@
   /* Sombras y overlays */
   --color-shadow-rgb: 0 0 0;
   --workspace-shadow: 0 1px 2px rgb(var(--color-shadow-rgb) / 20%), 0 4px 12px rgb(var(--color-shadow-rgb) / 28%);
-  --app-workspace-shadow: 0 1px 2px rgb(var(--color-shadow-rgb) / 22%), 0 8px 24px rgb(var(--color-shadow-rgb) / 32%);
   --color-modal-scrim: rgb(var(--color-shadow-rgb) / 60%);
   --color-shimmer-overlay: rgb(var(--color-ink-rgb) / 8%);
   --color-primary-tint: #172554;

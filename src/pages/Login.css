@@ -57,11 +57,6 @@
     padding: var(--design-spacing-3xl);
   }
 
-  .login__card {
-    background: var(--color-surface-card);
-    box-shadow: var(--shadow-xs);
-  }
-
   .login-story {
     grid-column: 1;
     grid-row: 1;
@@ -172,9 +167,6 @@
 .login__card {
   inline-size: 100%;
   min-inline-size: 0;
-  background: var(--color-surface);
-  border: none;
-  border-radius: var(--rounded-lg);
   padding: var(--design-spacing-lg);
   display: flex;
   flex-direction: column;
