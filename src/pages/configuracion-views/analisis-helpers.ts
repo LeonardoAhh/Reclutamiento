@@ -130,6 +130,48 @@ export function getEmployeeIncidents(employeeNumber: string, reports: ReporteDia
   return incidents.sort((first, second) => second.date.localeCompare(first.date));
 }
 
+export function getEmployeeRecordedNonIncidentDays(
+  employeeNumber: string,
+  monthKey: string,
+  reports: ReporteDiarioRecord[],
+): Map<string, string> {
+  const recordedDays = new Map<string, string>();
+  const normalizedEmployeeNumber = normalizeEmployeeNumber(employeeNumber);
+  const monthMatch = /^(\d{4})-(\d{2})$/.exec(monthKey);
+  if (!monthMatch) return recordedDays;
+
+  const year = Number(monthMatch[1]);
+  const month = Number(monthMatch[2]);
+  if (month < 1 || month > 12) return recordedDays;
+
+  for (const report of reports) {
+    if (report.mes !== monthKey || !Array.isArray(report.data)) continue;
+
+    const employeeRow = report.data.find(
+      (candidate): candidate is EmployeeReportRow =>
+        isEmployeeReportRow(candidate) &&
+        normalizeEmployeeNumber(candidate.numero_empleado) === normalizedEmployeeNumber,
+    );
+    if (!employeeRow) continue;
+
+    for (const [day, value] of Object.entries(employeeRow.days)) {
+      if (!/^\d{2}$/.test(day) || typeof value !== 'string') continue;
+      const code = value.trim();
+      if (code !== 'A' && code !== 'X' && code !== 'D' && code !== 'DF') continue;
+
+      const dayNumber = Number(day);
+      const date = new Date(Date.UTC(year, month - 1, dayNumber));
+      if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 || date.getUTCDate() !== dayNumber) {
+        continue;
+      }
+
+      recordedDays.set(`${monthKey}-${day}`, code);
+    }
+  }
+
+  return recordedDays;
+}
+
 export function getRecentEmployeeIncidents(employeeNumber: string, reports: ReporteDiarioRecord[]): EmployeeIncident[] {
   return getEmployeeIncidents(employeeNumber, reports).slice(0, 7);
 }

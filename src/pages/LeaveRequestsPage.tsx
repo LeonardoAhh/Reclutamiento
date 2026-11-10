@@ -12,6 +12,7 @@ import { StatusPage } from '@/components/ui/StatusPage';
 import { BoneyardSkeleton } from '@/components/ui/BoneyardSkeleton';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { Pagination } from '@/components/ui/Pagination';
+import { LeaveRequestTableMenu, type LeaveRequestActionKind } from '@/features/leave/LeaveRequestTableMenu';
 import { isBoneyardBuild } from '@/lib/boneyard';
 import { formatDateTimeMx, formatReadableDate } from '@/lib/dates';
 import { toast } from '@/lib/notify';
@@ -141,20 +142,29 @@ export function LeaveRequestsPage() {
   const [loadedPage, setLoadedPage] = useState<number | null>(null);
   const [error, setError] = useState('');
   const [reviewAction, setReviewAction] = useState<{
-    kind: 'approve' | 'reject' | 'delete';
+    kind: LeaveRequestActionKind;
     request: LeaveRequest;
   } | null>(null);
   const [actionBusy, setActionBusy] = useState(false);
   const actionBusyRef = useRef(false);
 
-  function openReview(kind: 'approve' | 'reject' | 'delete', request: LeaveRequest) {
+  function openReview(kind: LeaveRequestActionKind, request: LeaveRequest) {
     playSound(kind === 'approve' ? 'open' : 'warning');
     setReviewAction({ kind, request });
   }
 
-  function cancelReview(kind: 'approve' | 'reject' | 'delete', requestId: string) {
+  function cancelReview(kind: LeaveRequestActionKind, requestId: string) {
     if (actionBusyRef.current) return;
     setReviewAction((current) => (current?.kind === kind && current.request.id === requestId ? null : current));
+  }
+
+  function selectReviewAction(kind: LeaveRequestActionKind, request: LeaveRequest) {
+    if (reviewAction?.kind === kind && reviewAction.request.id === request.id) {
+      playSound('tap');
+      void completeReviewAction();
+    } else {
+      openReview(kind, request);
+    }
   }
 
   useEffect(() => {
@@ -221,7 +231,7 @@ export function LeaveRequestsPage() {
     }
   }
 
-  function requestActions(request: LeaveRequest, card: boolean) {
+  function requestActions(request: LeaveRequest) {
     const requester = toNaturalCase(request.requesterName, { preserveAcronyms: false });
     const confirmingApprove = reviewAction?.kind === 'approve' && reviewAction.request.id === request.id;
     const confirmingReject = reviewAction?.kind === 'reject' && reviewAction.request.id === request.id;
@@ -232,16 +242,13 @@ export function LeaveRequestsPage() {
         {canApproveLeaveRequest(profile, request) && !confirmingDelete && !confirmingReject && (
           <button
             type="button"
-            className={`${card ? 'btn-secondary leave-requests-page__card-action' : 'btn-icon'} leave-requests-page__action-approve${confirmingApprove ? ' leave-requests-page__action-confirm' : ''}`}
+            className={`btn-secondary leave-requests-page__action-button leave-requests-page__action-approve${confirmingApprove ? ' leave-requests-page__action-confirm' : ''}`}
             disabled={actionBusy || loading}
             aria-busy={actionBusy && confirmingApprove}
             aria-label={`${actionBusy && confirmingApprove ? t.approving : confirmingApprove ? `${t.confirm} ${t.approve.toLowerCase()}` : t.approveRequest}: ${requester}, ${period}`}
             title={confirmingApprove ? `${t.confirm} ${t.approve.toLowerCase()}` : t.approveRequest}
             onClick={() => {
-              if (confirmingApprove) {
-                playSound('tap');
-                void completeReviewAction();
-              } else openReview('approve', request);
+              selectReviewAction('approve', request);
             }}
             onBlur={() => cancelReview('approve', request.id)}
             onKeyDown={(event) => {
@@ -258,7 +265,7 @@ export function LeaveRequestsPage() {
             ) : (
               <>
                 <Check aria-hidden="true" />
-                {card && <span>{t.approve}</span>}
+                <span>{t.approve}</span>
               </>
             )}
           </button>
@@ -266,16 +273,13 @@ export function LeaveRequestsPage() {
         {canApproveLeaveRequest(profile, request) && !confirmingDelete && !confirmingApprove && (
           <button
             type="button"
-            className={`${card ? 'btn-secondary leave-requests-page__card-action' : 'btn-icon btn-icon--danger'} leave-requests-page__action-reject${confirmingReject ? ' leave-requests-page__action-confirm' : ''}`}
+            className={`btn-secondary leave-requests-page__action-button leave-requests-page__action-reject${confirmingReject ? ' leave-requests-page__action-confirm' : ''}`}
             disabled={actionBusy || loading}
             aria-busy={actionBusy && confirmingReject}
             aria-label={`${actionBusy && confirmingReject ? t.rejecting : confirmingReject ? `${t.confirm} ${t.reject.toLowerCase()}` : t.rejectRequest}: ${requester}, ${period}`}
             title={confirmingReject ? `${t.confirm} ${t.reject.toLowerCase()}` : t.rejectRequest}
             onClick={() => {
-              if (confirmingReject) {
-                playSound('tap');
-                void completeReviewAction();
-              } else openReview('reject', request);
+              selectReviewAction('reject', request);
             }}
             onBlur={() => cancelReview('reject', request.id)}
             onKeyDown={(event) => {
@@ -292,7 +296,7 @@ export function LeaveRequestsPage() {
             ) : (
               <>
                 <X aria-hidden="true" />
-                {card && <span>{t.reject}</span>}
+                <span>{t.reject}</span>
               </>
             )}
           </button>
@@ -300,16 +304,13 @@ export function LeaveRequestsPage() {
         {canDeleteLeaveRequest(profile, request) && !confirmingApprove && !confirmingReject && (
           <button
             type="button"
-            className={`${card ? 'btn-secondary leave-requests-page__card-action' : 'btn-icon btn-icon--danger'} leave-requests-page__action-delete${confirmingDelete ? ' leave-requests-page__action-confirm' : ''}`}
+            className={`btn-secondary leave-requests-page__action-button leave-requests-page__action-delete${confirmingDelete ? ' leave-requests-page__action-confirm' : ''}`}
             disabled={actionBusy || loading}
             aria-busy={actionBusy && confirmingDelete}
             aria-label={`${actionBusy && confirmingDelete ? t.deleting : confirmingDelete ? `${t.confirm} ${t.delete.toLowerCase()}` : t.deleteRequest}: ${requester}, ${period}`}
             title={confirmingDelete ? `${t.confirm} ${t.delete.toLowerCase()}` : t.deleteRequest}
             onClick={() => {
-              if (confirmingDelete) {
-                playSound('tap');
-                void completeReviewAction();
-              } else openReview('delete', request);
+              selectReviewAction('delete', request);
             }}
             onBlur={() => cancelReview('delete', request.id)}
             onKeyDown={(event) => {
@@ -326,7 +327,7 @@ export function LeaveRequestsPage() {
             ) : (
               <>
                 <Trash2 aria-hidden="true" />
-                {card && <span>{t.delete}</span>}
+                <span>{t.delete}</span>
               </>
             )}
           </button>
@@ -402,7 +403,9 @@ export function LeaveRequestsPage() {
                           <th scope="col">{t.dates}</th>
                           <th scope="col">{t.requested}</th>
                           <th scope="col">{t.status}</th>
-                          <th scope="col">{t.actions}</th>
+                          <th scope="col" className="leave-requests-page__actions-heading">
+                            {t.actions}
+                          </th>
                         </tr>
                       </thead>
                       <tbody>
@@ -422,6 +425,7 @@ export function LeaveRequestsPage() {
                               <div className="leave-requests-page__status">
                                 <Badge
                                   className="leave-requests-page__status-badge"
+                                  size="compact"
                                   variant={
                                     row.status === 'approved'
                                       ? 'success'
@@ -447,7 +451,21 @@ export function LeaveRequestsPage() {
                               </div>
                             </td>
                             <td className="leave-requests-page__row-actions">
-                              <div className="leave-requests-page__actions">{requestActions(row, false)}</div>
+                              {(canApproveLeaveRequest(profile, row) || canDeleteLeaveRequest(profile, row)) && (
+                                <LeaveRequestTableMenu
+                                  requester={toNaturalCase(row.requesterName, { preserveAcronyms: false })}
+                                  labels={t}
+                                  canApprove={canApproveLeaveRequest(profile, row)}
+                                  canDelete={canDeleteLeaveRequest(profile, row)}
+                                  confirmingKind={reviewAction?.request.id === row.id ? reviewAction.kind : null}
+                                  busy={actionBusy && reviewAction?.request.id === row.id}
+                                  disabled={actionBusy || loading}
+                                  onAction={(kind) => selectReviewAction(kind, row)}
+                                  onClose={() => {
+                                    if (!actionBusyRef.current) setReviewAction(null);
+                                  }}
+                                />
+                              )}
                             </td>
                           </tr>
                         ))}
@@ -478,20 +496,18 @@ export function LeaveRequestsPage() {
                               </div>
                               <span className="leave-requests-page__card-type">{typeLabel(row, language)}</span>
                             </header>
-                            <div className="leave-requests-page__card-period">
-                              <div>
-                                <span className="leave-requests-page__card-label">{t.start}</span>
-                                <time dateTime={row.startDate}>{date(row.startDate)}</time>
-                              </div>
-                              <div>
-                                <span className="leave-requests-page__card-label">{t.end}</span>
-                                <time dateTime={row.endDate}>{date(row.endDate)}</time>
-                              </div>
-                            </div>
+                            <p className="leave-requests-page__card-period">
+                              <span className="sr-only">{t.start}: </span>
+                              <time dateTime={row.startDate}>{date(row.startDate)}</time>
+                              <span aria-hidden="true">–</span>
+                              <span className="sr-only">{t.end}: </span>
+                              <time dateTime={row.endDate}>{date(row.endDate)}</time>
+                            </p>
                             <div className="leave-requests-page__card-details">
                               <div className="leave-requests-page__card-state">
                                 <Badge
                                   className="leave-requests-page__status-badge"
+                                  size="compact"
                                   variant={
                                     row.status === 'approved'
                                       ? 'success'
@@ -509,7 +525,7 @@ export function LeaveRequestsPage() {
                               </div>
                             </div>
                             {(canApproveLeaveRequest(profile, row) || canDeleteLeaveRequest(profile, row)) && (
-                              <footer className="leave-requests-page__card-footer">{requestActions(row, true)}</footer>
+                              <footer className="leave-requests-page__card-footer">{requestActions(row)}</footer>
                             )}
                           </article>
                         </li>

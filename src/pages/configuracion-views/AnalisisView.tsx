@@ -31,6 +31,7 @@ import {
   normalizeFilterValue,
   normalizeSearchText,
   matchesSearchTokens,
+  getRecentEmployeeIncidents,
   uniqueFilterValues,
   type EmployeeSearchResult,
   type SearchStatusFilter,
@@ -135,7 +136,21 @@ export function AnalisisView() {
   }, [textMatches, statusFilter, departmentFilter, shiftFilter]);
 
   // 4. Paginación
-  const employeePagination = usePagination(filteredEmployees, 7);
+  const orderedEmployees = useMemo(() => {
+    const hasIncidents = new Map(
+      filteredEmployees.map(
+        (employee) => [employee, getRecentEmployeeIncidents(employee.num_empleado, allReports).length > 0] as const,
+      ),
+    );
+
+    return [...filteredEmployees].sort(
+      (first, second) =>
+        Number(hasIncidents.get(second)) - Number(hasIncidents.get(first)) ||
+        second.num_empleado.localeCompare(first.num_empleado, 'es', { numeric: true }),
+    );
+  }, [allReports, filteredEmployees]);
+
+  const employeePagination = usePagination(orderedEmployees, 7);
 
   useEffect(() => {
     employeePagination.goToPage(1);

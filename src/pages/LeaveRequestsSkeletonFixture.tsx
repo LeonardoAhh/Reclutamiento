@@ -9,7 +9,11 @@ export function LeaveRequestsSkeletonFixture() {
             <thead>
               <tr>
                 {['Solicitante', 'Tipo', 'Fechas', 'Solicitada el', 'Estado', 'Acciones'].map((column) => (
-                  <th key={column} scope="col">
+                  <th
+                    key={column}
+                    scope="col"
+                    className={column === 'Acciones' ? 'leave-requests-page__actions-heading' : undefined}
+                  >
                     {column}
                   </th>
                 ))}
@@ -24,11 +28,7 @@ export function LeaveRequestsSkeletonFixture() {
                     </td>
                   ))}
                   <td className="leave-requests-page__row-actions">
-                    <div className="leave-requests-page__actions">
-                      <span className="leave-requests-page__skeleton-action" />
-                      <span className="leave-requests-page__skeleton-action" />
-                      <span className="leave-requests-page__skeleton-action" />
-                    </div>
+                    <span className="leave-requests-page__skeleton-action" />
                   </td>
                 </tr>
               ))}
@@ -47,12 +47,8 @@ export function LeaveRequestsSkeletonFixture() {
                 <span className="leave-requests-page__skeleton-line leave-requests-page__skeleton-line--short" />
               </div>
               <div className="leave-requests-page__card-period">
-                {['Inicio', 'Fin'].map((period) => (
-                  <div key={period}>
-                    <span className="leave-requests-page__skeleton-line leave-requests-page__skeleton-line--short" />
-                    <span className="leave-requests-page__skeleton-line" />
-                  </div>
-                ))}
+                <span className="leave-requests-page__skeleton-line leave-requests-page__skeleton-line--short" />
+                <span className="leave-requests-page__skeleton-line leave-requests-page__skeleton-line--short" />
               </div>
               <div className="leave-requests-page__card-details">
                 <div className="leave-requests-page__card-state">

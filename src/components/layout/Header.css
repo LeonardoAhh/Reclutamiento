@@ -99,7 +99,6 @@
   min-inline-size: var(--icon-size-md);
   min-block-size: var(--icon-size-md);
   padding: 0 var(--design-spacing-xxs);
-  border-color: var(--color-hairline);
   font-family: var(--font-body);
   font-size: var(--type-caption-xs-size);
   font-weight: var(--type-caption-xs-weight);

@@ -4,8 +4,8 @@
 }
 
 .employee-row-actions__statuses {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  justify-items: start;
   gap: var(--design-spacing-xxs);
   padding-inline: var(--design-spacing-xs);
 }

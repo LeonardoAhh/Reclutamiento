@@ -65,6 +65,10 @@ const copy = {
       retryIncidents: 'Reintentar',
       noInformation: 'Sin información',
       incidenceLabels: {
+        Asistencia: 'Asistencia',
+        Descanso: 'Descanso',
+        'Día festivo': 'Día festivo',
+        'Sin incidencia': 'Sin incidencia',
         'Falta injustificada': 'Falta injustificada',
         'Faltas just.': 'Faltas just.',
         Sanción: 'Sanción',
@@ -318,6 +322,10 @@ const copy = {
       retryIncidents: 'Retry',
       noInformation: 'No information',
       incidenceLabels: {
+        Asistencia: 'Attendance',
+        Descanso: 'Rest day',
+        'Día festivo': 'Public holiday',
+        'Sin incidencia': 'No incident',
         'Falta injustificada': 'Unexcused absence',
         'Faltas just.': 'Unexcused absences',
         Sanción: 'Penalty',

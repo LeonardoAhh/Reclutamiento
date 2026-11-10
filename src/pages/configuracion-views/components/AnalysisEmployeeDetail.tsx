@@ -9,7 +9,12 @@ import { INCIDENCIA_LABELS } from '@/components/reporte-diario/constants';
 import { getIncidenceBadgeVariant } from '@/components/reporte-diario/helpers';
 import type { ReporteDiarioRecord } from '@/hooks/useReporteDiario';
 import { formatShortDate, parseDdMmYyyy } from '@/lib/dates';
-import { displayValue, getEmployeeIncidents, type EmployeeSearchResult } from '../analisis-helpers';
+import {
+  displayValue,
+  getEmployeeIncidents,
+  getEmployeeRecordedNonIncidentDays,
+  type EmployeeSearchResult,
+} from '../analisis-helpers';
 import { getConfiguracionCopy } from '../configuracion-translations';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -84,6 +89,11 @@ export function AnalysisEmployeeDetail({
     [employee.num_empleado, reports],
   );
   const monthKey = `${month.getFullYear()}-${String(month.getMonth() + 1).padStart(2, '0')}`;
+  const [todayKey] = useState(() => getDateKey(new Date()));
+  const recordedNonIncidentDays = useMemo(
+    () => getEmployeeRecordedNonIncidentDays(employee.num_empleado, monthKey, reports),
+    [employee.num_empleado, monthKey, reports],
+  );
   const incidentCodesByDate = useMemo(() => {
     const codesByDate = new Map<string, string[]>();
     for (const incident of incidents) {
@@ -94,10 +104,26 @@ export function AnalysisEmployeeDetail({
     }
     return codesByDate;
   }, [incidents, monthKey]);
+  const incidentLegend = useMemo(() => {
+    const codes = new Set(Array.from(incidentCodesByDate.values()).flat());
+    return Array.from(codes, (code) => {
+      const sourceLabel = INCIDENCIA_LABELS[code] ?? code;
+      return { code, label: incidenceLabels[sourceLabel] ?? sourceLabel };
+    }).sort((first, second) => first.code.localeCompare(second.code));
+  }, [incidenceLabels, incidentCodesByDate]);
+  const hasVisibleRecordedDay = Array.from(recordedNonIncidentDays.keys()).some(
+    (dateKey) => dateKey <= todayKey && !incidentCodesByDate.has(dateKey),
+  );
+  const recordedLegendLabel = incidenceLabels['Sin incidencia'] ?? 'Sin incidencia';
   const IncidentDayCell = useCallback(
     function IncidentDay({ day, modifiers, children, ...cellProps }: DayProps) {
       const dateKey = getDateKey(day.date);
       const codes = incidentCodesByDate.get(dateKey) ?? [];
+      const recordedCode = codes.length === 0 && dateKey <= todayKey ? recordedNonIncidentDays.get(dateKey) : undefined;
+      const recordedSourceLabel = recordedCode ? INCIDENCIA_LABELS[recordedCode] : undefined;
+      const recordedLabel = recordedSourceLabel
+        ? (incidenceLabels[recordedSourceLabel] ?? recordedSourceLabel)
+        : undefined;
       const incidenceDetails = codes.map((code) => {
         const sourceLabel = INCIDENCIA_LABELS[code] ?? code;
         const label = incidenceLabels[sourceLabel] ?? sourceLabel;
@@ -118,26 +144,32 @@ export function AnalysisEmployeeDetail({
           aria-label={[
             dateLabel,
             ...incidenceDetails.map(({ label, code }) => `${label} (${code})`),
+            ...(recordedLabel ? [recordedLabel] : []),
           ].join(', ')}
         >
-          <span className="analysis-employee-calendar__day-content">
+          <span
+            className={`analysis-employee-calendar__day-content${recordedLabel ? ' analysis-employee-calendar__day-content--recorded' : ''}`}
+            title={recordedLabel}
+          >
             <span className="analysis-employee-calendar__day-number type-body-md">{children}</span>
+            {recordedLabel && <span className="analysis-employee-calendar__recorded-marker" aria-hidden="true" />}
             {incidenceDetails.map(({ code, label }) => (
               <Badge
                 key={code}
                 variant={getIncidenceBadgeVariant(code)}
                 size="compact"
                 className="analysis-employee-calendar__code"
+                title={label}
                 aria-hidden="true"
               >
-                {label}
+                {code}
               </Badge>
             ))}
           </span>
         </CalendarDay>
       );
     },
-    [incidenceLabels, incidentCodesByDate, locale],
+    [incidenceLabels, incidentCodesByDate, locale, recordedNonIncidentDays, todayKey],
   );
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => employeeNameButtonRef.current?.focus());
@@ -228,14 +260,35 @@ export function AnalysisEmployeeDetail({
             {copy.loadingIncidents}
           </p>
         ) : (
-          <Calendar
-            className="analysis-employee-calendar__grid"
-            month={month}
-            onMonthChange={setMonth}
-            locale={language === 'en' ? enUS : es}
-            showOutsideDays={false}
-            components={{ Day: IncidentDayCell }}
-          />
+          <>
+            <Calendar
+              className="analysis-employee-calendar__grid"
+              month={month}
+              onMonthChange={setMonth}
+              locale={language === 'en' ? enUS : es}
+              showOutsideDays={false}
+              components={{ Day: IncidentDayCell }}
+            />
+            {(incidentLegend.length > 0 || hasVisibleRecordedDay) && (
+              <dl className="analysis-employee-calendar__legend type-body-md">
+                {hasVisibleRecordedDay && (
+                  <div className="analysis-employee-calendar__legend-item">
+                    <dt>
+                      <span className="analysis-employee-calendar__recorded-marker" aria-hidden="true" />
+                      <span className="sr-only">{recordedLegendLabel}</span>
+                    </dt>
+                    <dd>{recordedLegendLabel}</dd>
+                  </div>
+                )}
+                {incidentLegend.map(({ code, label }) => (
+                  <div className="analysis-employee-calendar__legend-item" key={code}>
+                    <dt className="type-caption-up">{code}</dt>
+                    <dd>{label}</dd>
+                  </div>
+                ))}
+              </dl>
+            )}
+          </>
         )}
       </section>
     </section>
