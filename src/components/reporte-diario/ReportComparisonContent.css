@@ -59,7 +59,7 @@
   font-weight: var(--type-caption-up-weight);
   line-height: var(--type-caption-up-line);
   letter-spacing: var(--type-caption-up-tracking);
-  color: var(--color-body);
+  color: var(--color-ink);
 }
 .reporte-cmp__quarter-value {
   font-family: var(--font-body);
@@ -119,7 +119,7 @@
   letter-spacing: var(--type-body-strong-tracking);
 }
 .reporte-cmp__muted {
-  color: var(--color-body);
+  color: var(--color-ink);
 }
 .reporte-cmp__trend {
   display: inline-flex;
@@ -143,7 +143,7 @@
   color: var(--color-success-text);
 }
 .reporte-cmp__trend--muted {
-  color: var(--color-body);
+  color: var(--color-ink);
 }
 @media (min-width: 768px) {
   .reporte-cmp__quarters {

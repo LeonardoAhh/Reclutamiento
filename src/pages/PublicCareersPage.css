@@ -22,7 +22,7 @@
   padding: var(--design-spacing-sm) var(--design-spacing-md);
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-lg);
-  background: rgb(var(--color-canvas-rgb) / 0.9);
+  background: color-mix(in srgb, var(--color-canvas) 90%, transparent);
   backdrop-filter: blur(8px);
   box-shadow: var(--shadow-xs);
 }
@@ -62,7 +62,7 @@
 
 .public-careers__nav {
   gap: var(--design-spacing-md);
-  color: var(--color-body);
+  color: var(--color-ink);
 }
 
 .public-careers__nav a {
@@ -199,7 +199,7 @@
 .public-careers__job-card p,
 .public-careers__empty-state p {
   margin: 0;
-  color: var(--color-body);
+  color: var(--color-ink);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
@@ -229,7 +229,7 @@
 }
 
 .public-careers__panel-card--accent {
-  background: var(--color-link-soft);
+  background: var(--color-primary-tint);
 }
 
 .public-careers__panel-card svg {
@@ -337,12 +337,12 @@
 
 .public-careers__value-item p {
   margin: 0;
-  color: var(--color-body);
+  color: var(--color-ink);
 }
 
 .public-careers__checklist {
   padding-left: var(--design-spacing-lg);
-  color: var(--color-body);
+  color: var(--color-ink);
 }
 
 .public-careers__jobs-page {
@@ -390,7 +390,7 @@
 }
 
 .public-careers__search input::placeholder {
-  color: var(--color-faint);
+  color: var(--color-mute);
 }
 
 .public-careers__search input:focus {
@@ -405,7 +405,7 @@
 .public-careers__chip {
   border: var(--border-width) solid var(--color-control-border);
   background: transparent;
-  color: var(--color-body);
+  color: var(--color-ink);
   padding: 0 var(--design-spacing-sm);
   cursor: pointer;
 }
@@ -460,7 +460,7 @@
 .public-careers__job-meta {
   flex-wrap: wrap;
   gap: var(--design-spacing-sm);
-  color: var(--color-body);
+  color: var(--color-ink);
   font-size: var(--type-body-sm-size);
 }
 

@@ -32,7 +32,7 @@
   --rdp-weekday-padding: var(--design-spacing-xs) 0;
   --rdp-dropdown-gap: var(--design-spacing-xs);
   --rdp-months-gap: var(--design-spacing-lg);
-  color: var(--color-body);
+  color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
@@ -53,7 +53,7 @@
 }
 
 .rdp-weekday {
-  color: var(--color-muted);
+  color: var(--color-mute);
   opacity: 1;
   font-family: var(--font-body);
   font-size: var(--type-caption-up-size);

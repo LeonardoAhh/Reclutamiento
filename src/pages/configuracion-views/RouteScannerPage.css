@@ -88,7 +88,7 @@
 }
 
 .route-scanner-page__card .route-scanner-page__eyebrow {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-caption-up-size);
   font-weight: var(--type-caption-up-weight);
   line-height: var(--type-caption-up-line);
@@ -97,7 +97,7 @@
 }
 
 .route-scanner-page__intro {
-  color: var(--color-body);
+  color: var(--color-ink);
 }
 
 .route-scanner-page__preview {
@@ -109,8 +109,8 @@
   overflow: hidden;
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-md);
-  background: var(--color-surface-soft);
-  color: var(--color-muted);
+  background: var(--color-surface-card);
+  color: var(--color-mute);
 }
 
 .route-scanner-page__preview[hidden],
@@ -188,7 +188,7 @@
   padding-inline: var(--spacing-md);
   border: var(--border-width) solid var(--color-control-border);
   border-radius: var(--rounded-sm);
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
   color: var(--color-ink);
   font: inherit;
   font-size: max(var(--type-body-md-size), var(--editable-text-min-size, var(--type-body-md-size)));
@@ -216,7 +216,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--spacing-xs);
-  color: var(--color-body);
+  color: var(--color-ink);
   overflow-wrap: anywhere;
 }
 
@@ -230,6 +230,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--spacing-xs);
-  color: var(--color-muted);
+  color: var(--color-mute);
   overflow-wrap: anywhere;
 }

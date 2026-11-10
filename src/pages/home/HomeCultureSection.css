@@ -18,7 +18,7 @@
 
 .home-culture__eyebrow {
   margin: 0;
-  color: var(--color-muted);
+  color: var(--color-mute);
   font: var(--type-caption-up-weight) var(--type-caption-up-size)/var(--type-caption-up-line) var(--font-body);
   letter-spacing: var(--type-caption-up-tracking);
 }
@@ -34,7 +34,7 @@
 .home-culture__introduction,
 .home-culture__pillar p {
   margin: 0;
-  color: var(--color-body);
+  color: var(--color-ink);
   font: var(--type-body-lg-weight) var(--type-body-lg-size)/var(--type-body-lg-line) var(--font-body);
   letter-spacing: var(--type-body-lg-tracking);
 }

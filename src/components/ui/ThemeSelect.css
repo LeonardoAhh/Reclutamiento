@@ -17,12 +17,12 @@
 .theme-select__chevron {
   inline-size: var(--icon-size-sm);
   block-size: var(--icon-size-sm);
-  color: var(--color-muted);
+  color: var(--color-mute);
 }
 
 .theme-select__notice {
   margin: 0;
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-caption-sm-size);
   font-weight: var(--type-caption-sm-weight);

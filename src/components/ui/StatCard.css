@@ -28,7 +28,7 @@
 .stat-card__label {
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-body-sm-weight);
-  color: var(--color-body);
+  color: var(--color-ink);
   line-height: var(--type-body-sm-line);
 }
 
@@ -53,7 +53,7 @@
 .stat-card__subtitle {
   font-size: var(--type-caption-sm-size);
   font-weight: var(--type-caption-sm-weight);
-  color: var(--color-body);
+  color: var(--color-ink);
 }
 
 .stat-card--dark .stat-card__subtitle {

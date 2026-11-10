@@ -29,7 +29,7 @@
 
 .bajas-por-puesto__meta {
   font-size: var(--type-body-sm-size);
-  color: var(--color-muted);
+  color: var(--color-mute);
 }
 
 .bajas-por-puesto__table-container {
@@ -90,7 +90,7 @@
   font-weight: var(--type-caption-sm-weight);
   line-height: var(--type-caption-sm-line);
   letter-spacing: var(--type-caption-sm-tracking);
-  color: var(--color-muted);
+  color: var(--color-mute);
 }
 
 .bajas-por-puesto__val {
@@ -112,19 +112,19 @@
   font-size: var(--type-caption-sm-size);
   line-height: var(--type-caption-sm-line);
   letter-spacing: var(--type-caption-sm-tracking);
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-weight: var(--type-caption-sm-weight);
 }
 
 .bajas-por-puesto__muted {
-  color: var(--color-muted-soft);
+  color: var(--color-mute);
   font-size: var(--type-body-sm-size);
 }
 
 .bajas-por-puesto__empty {
   padding: var(--spacing-xl);
   text-align: center;
-  color: var(--color-muted);
+  color: var(--color-mute);
   border: 1px dashed var(--color-hairline);
   border-radius: var(--rounded-md);
   margin-block: var(--spacing-sm);
@@ -176,7 +176,7 @@
     display: block;
     content: attr(data-label);
     margin-block-end: var(--design-spacing-xxs);
-    color: var(--color-muted);
+    color: var(--color-mute);
     font-family: var(--font-body);
     font-size: var(--type-caption-up-size);
     font-weight: var(--type-caption-up-weight);

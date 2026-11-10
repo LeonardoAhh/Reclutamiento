@@ -110,7 +110,7 @@
 
 .data-update-progress-page__section-header p {
   margin: 0;
-  color: var(--color-body);
+  color: var(--color-ink);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
@@ -360,7 +360,7 @@
 
 .data-update-completed-table__no-phone {
   margin: 0;
-  color: var(--color-muted);
+  color: var(--color-mute);
 }
 
 .data-update-campaign-actions--admin > .data-update-progress-trigger {
@@ -397,7 +397,7 @@
 }
 
 .data-update-summary dt {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-caption-up-size);
   font-weight: var(--type-caption-up-weight);
   line-height: var(--type-caption-up-line);
@@ -428,7 +428,7 @@
   align-items: baseline;
   justify-content: space-between;
   gap: var(--design-spacing-sm);
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-caption-up-size);
   font-weight: var(--type-caption-up-weight);
   line-height: var(--type-caption-up-line);
@@ -474,7 +474,7 @@
 
 .data-update-summary-progress p {
   margin: 0;
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
@@ -555,7 +555,7 @@
 .data-update-identity-list > label {
   min-width: 0;
   padding: var(--design-spacing-sm);
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
 }
 
 .data-update-completed-card {
@@ -574,7 +574,7 @@
 }
 
 .data-update-completed-card__details dt {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-caption-up-size);
   font-weight: var(--type-caption-up-weight);
   line-height: var(--type-caption-up-line);
@@ -620,7 +620,7 @@
 .data-update-review dl > div {
   min-width: 0;
   padding: var(--design-spacing-sm);
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
 }
 
 .data-update-completed-card > div:first-child {
@@ -628,7 +628,7 @@
 }
 
 .data-update-locker-card__details dt {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-caption-up-size);
   font-weight: var(--type-caption-up-weight);
@@ -806,7 +806,7 @@
 }
 
 .data-update-save-state {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-body-md-size);
   line-height: var(--type-body-md-line);
   font-family: var(--font-body);
@@ -881,7 +881,7 @@
   gap: var(--design-spacing-xs);
   padding-inline: var(--design-spacing-sm);
   color: var(--color-ink);
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
   border: var(--border-width) solid var(--color-control-border);
   border-radius: var(--rounded-xs);
   cursor: pointer;
@@ -963,7 +963,7 @@
   flex-direction: column;
   gap: var(--design-spacing-sm);
   padding: var(--design-spacing-sm);
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
   border-radius: var(--rounded-xs);
 }
 
@@ -1026,7 +1026,7 @@
 
 .data-update-identity-list dt,
 .data-update-review dt {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-caption-up-size);
   font-weight: var(--type-caption-up-weight);
   line-height: var(--type-caption-up-line);
@@ -1145,7 +1145,7 @@
 }
 
 .data-update-identity-field__label {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-caption-up-size);
   font-weight: var(--type-caption-up-weight);
   line-height: var(--type-caption-up-line);
@@ -1218,7 +1218,7 @@
   min-width: 0;
   flex-direction: column;
   padding: var(--design-spacing-xs);
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
   border-radius: var(--rounded-xs);
 }
 
@@ -1280,7 +1280,7 @@
 .data-update-import__file {
   align-items: flex-start;
   padding: var(--design-spacing-md);
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-lg);
 }
@@ -1310,7 +1310,7 @@
 
 .data-update-import__participant {
   padding-inline: var(--design-spacing-sm);
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
   border-radius: var(--rounded-xs);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
@@ -1367,7 +1367,7 @@
 }
 
 .data-update-page .form-help {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
@@ -1455,7 +1455,7 @@
   padding-inline: var(--spacing-sm);
   border-radius: var(--rounded-sm);
   width: 100%;
-  color: var(--color-body);
+  color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
@@ -1470,7 +1470,7 @@
 }
 
 .data-update-admin-card__action:hover:not(:disabled) {
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
   color: var(--color-ink);
 }
 
@@ -1479,7 +1479,7 @@
 }
 
 .data-update-admin-card__action--danger:hover:not(:disabled) {
-  background: var(--color-error-tint);
+  background: var(--color-error-subtle);
   color: var(--color-error-text);
 }
 
@@ -1718,7 +1718,7 @@
 }
 
 .data-update-binary-field__options label:hover {
-  border-color: var(--color-charcoal);
+  border-color: var(--color-ink);
 }
 
 .data-update-binary-field[aria-invalid='true'] .data-update-binary-field__options label {

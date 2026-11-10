@@ -1,5 +1,5 @@
 .home-page__leave-policy {
-  color: var(--color-body);
+  color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
@@ -380,7 +380,7 @@
 }
 
 .home-page__leave-header-clear:is(:hover, :focus-visible):not(:disabled) {
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
 }
 
 .home-page__leave-header-clear:disabled {

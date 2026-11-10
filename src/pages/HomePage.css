@@ -15,7 +15,7 @@
 .home-page__greeting {
   min-width: 0;
   margin: 0;
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-heading-md-size);
   font-weight: var(--font-bold);
@@ -45,7 +45,7 @@
   border: var(--border-width) dotted var(--color-control-border);
   border-radius: var(--radius-control);
   background: transparent;
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-button-md-size);
   font-weight: var(--type-button-md-weight);

@@ -54,7 +54,7 @@
   align-items: center;
   justify-content: center;
   padding: var(--spacing-xl);
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
@@ -205,7 +205,7 @@
 }
 
 .area-detail-modal__card-metric-separator {
-  color: var(--color-muted-soft);
+  color: var(--color-mute);
   font-weight: var(--type-body-md-weight);
   margin-inline: var(--design-spacing-xxs);
   font-family: var(--font-body);
@@ -217,7 +217,7 @@
 .area-detail-modal__card-metric-label {
   font-size: var(--type-caption-up-size);
   line-height: var(--type-caption-up-line);
-  color: var(--color-muted);
+  color: var(--color-mute);
   text-transform: uppercase;
   letter-spacing: var(--type-caption-up-tracking);
   font-family: var(--font-body);

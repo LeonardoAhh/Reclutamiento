@@ -64,7 +64,7 @@
 
 .vacancy-assignment-group__count {
   flex: 0 0 auto;
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
@@ -148,12 +148,12 @@
   border: var(--border-width) solid transparent;
   border-radius: var(--radius-control);
   background: transparent;
-  color: var(--color-body);
+  color: var(--color-ink);
   cursor: pointer;
 }
 
 .vacancy-assignment-card__menu-trigger:hover {
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
   color: var(--color-ink);
 }
 
@@ -203,12 +203,12 @@
 
 .vacancy-assignment-section__empty-icon {
   margin-block-end: var(--spacing-md);
-  color: var(--color-muted-soft);
+  color: var(--color-mute);
 }
 
 .vacancy-assignment-section__empty-title {
   margin: 0 0 var(--design-spacing-xxs);
-  color: var(--color-charcoal);
+  color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--type-body-strong-size);
   font-weight: var(--type-body-strong-weight);
@@ -219,7 +219,7 @@
 .vacancy-assignment-section__empty-description {
   max-inline-size: var(--content-reading-max-inline-size);
   margin: 0;
-  color: var(--color-muted);
+  color: var(--color-mute);
   overflow-wrap: anywhere;
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);

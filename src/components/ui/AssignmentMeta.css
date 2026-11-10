@@ -37,5 +37,5 @@
 
 .assignment-meta__badge svg {
   flex: 0 0 auto;
-  color: var(--color-muted);
+  color: var(--color-mute);
 }

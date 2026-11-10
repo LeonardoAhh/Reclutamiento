@@ -12,7 +12,7 @@
   justify-content: space-between;
   gap: var(--spacing-md);
   padding: var(--spacing-sm) 0;
-  border-bottom: 1px solid var(--color-hairline-soft);
+  border-bottom: 1px solid var(--color-hairline);
 }
 
 .candidates-cited-today-modal__list > .candidates-cited-today-modal__item:last-child {
@@ -38,7 +38,7 @@
 
 .candidates-cited-today-modal__puesto {
   font-size: var(--type-body-md-size);
-  color: var(--color-muted);
+  color: var(--color-mute);
   line-height: var(--type-body-md-line);
   text-transform: uppercase;
   font-family: var(--font-body);
@@ -53,7 +53,7 @@
 }
 
 .candidates-cited-today-modal__empty {
-  color: var(--color-muted);
+  color: var(--color-mute);
 }
 
 .candidates-cited-today-modal__area + .candidates-cited-today-modal__area {
@@ -74,7 +74,7 @@
 }
 
 .candidates-cited-today-modal__area-count {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-weight: var(--type-body-md-weight);
   font-size: var(--type-body-md-size);
   font-family: var(--font-body);

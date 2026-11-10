@@ -267,9 +267,9 @@ export function MotivosBaja() {
                   interval={isMobile ? 0 : undefined}
                   tickLine={false}
                   axisLine={false}
-                  tick={{ fill: 'var(--color-muted)' }}
+                  tick={{ fill: 'var(--color-mute)' }}
                 />
-                <YAxis allowDecimals={false} domain={[0, (dataMax: number) => Math.max(1, Math.ceil(dataMax * 1.15))]} tickLine={false} axisLine={false} tick={{ fill: 'var(--color-muted)' }} width="auto" />
+                <YAxis allowDecimals={false} domain={[0, (dataMax: number) => Math.max(1, Math.ceil(dataMax * 1.15))]} tickLine={false} axisLine={false} tick={{ fill: 'var(--color-mute)' }} width="auto" />
                 <Tooltip content={<MonthlyTrendTooltip />} />
                 {monthlyRows.length > 1 && <Legend />}
                 {monthlyRows.length > 1 && (
@@ -277,7 +277,7 @@ export function MotivosBaja() {
                     type="linear"
                     dataKey="trend"
                     name={copy.trend}
-                    stroke="var(--color-muted)"
+                    stroke="var(--color-mute)"
                     strokeWidth="var(--chart-line-width)"
                     strokeDasharray="var(--chart-dash-short)"
                     dot={false}
@@ -292,7 +292,7 @@ export function MotivosBaja() {
                   stroke="var(--color-primary)"
                   strokeWidth="var(--chart-line-width)"
                   strokeLinecap="round"
-                  dot={{ fill: 'var(--color-surface)', stroke: 'var(--color-primary)' }}
+                  dot={{ fill: 'var(--color-canvas-elevated)', stroke: 'var(--color-primary)' }}
                   isAnimationActive={false}
                 >
                   <LabelList

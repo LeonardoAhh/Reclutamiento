@@ -8,10 +8,10 @@
   width: var(--feature-avatar-size);
   height: var(--feature-avatar-size);
 
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
   border: var(--border-width) solid var(--color-hairline-strong);
   border-radius: var(--rounded-full);
-  color: var(--color-avatar-ink);
+  color: var(--color-ink);
   font-family: var(--font-display);
   font-size: var(--feature-avatar-initials-size);
   font-weight: var(--font-bold);

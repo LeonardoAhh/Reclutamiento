@@ -38,7 +38,7 @@
 .missing-positions-page__empty {
   margin: 0;
   padding-block: var(--spacing-xl);
-  color: var(--color-body);
+  color: var(--color-ink);
   font-size: var(--type-body-md-size);
   text-align: center;
   font-family: var(--font-body);
@@ -113,7 +113,7 @@
 
 .missing-positions-page__table tbody td[data-label]::before {
   display: block;
-  color: var(--color-body);
+  color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--type-caption-up-size);
   font-weight: var(--type-caption-up-weight);
@@ -183,7 +183,7 @@
 }
 
 .missing-positions-page__puesto-section {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
   letter-spacing: var(--type-body-md-tracking);
@@ -205,7 +205,7 @@
 .missing-positions-page__prox-breakdown {
   display: block;
   margin-block-start: var(--design-spacing-xxs);
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-body-md-size);
   font-family: var(--font-body);
   font-weight: var(--type-body-md-weight);
@@ -237,7 +237,7 @@
 }
 
 .missing-positions-page__count-empty {
-  color: var(--color-muted-soft);
+  color: var(--color-mute);
 }
 
 .missing-positions-page__starlite-icon {
@@ -341,7 +341,7 @@
   }
 
   .missing-positions-page__table tbody tr:hover td {
-    background: var(--color-surface-soft);
+    background: var(--color-surface-card);
   }
 
   .missing-positions-page__table tbody tr.is-dismissed td {

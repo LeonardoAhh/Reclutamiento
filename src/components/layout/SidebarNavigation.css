@@ -18,7 +18,7 @@
   font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
   letter-spacing: var(--type-body-md-tracking);
-  color: var(--color-body);
+  color: var(--color-ink);
   text-decoration: none;
   border: var(--border-width) solid transparent;
   position: relative;
@@ -33,8 +33,8 @@
 }
 
 .sidebar__item:hover {
-  color: var(--color-navigation-rail-text-strong);
-  background: var(--color-surface-soft);
+  color: var(--color-ink);
+  background: var(--color-surface-card);
 }
 
 .sidebar__item--active,
@@ -51,7 +51,7 @@
 
 /* Pressed: retroalimentación sutil dentro de la escala de superficies neutras. */
 .sidebar__item:active:not(.sidebar__item--active) {
-  color: var(--color-navigation-rail-text-strong);
+  color: var(--color-ink);
   background: var(--color-surface-strong);
 }
 
@@ -64,7 +64,7 @@
 
 .sidebar__item-icon {
   flex-shrink: 0;
-  color: var(--color-navigation-rail-text);
+  color: var(--color-mute);
   transition: color var(--transition-fast);
   width: var(--icon-size-md);
   height: var(--icon-size-md);
@@ -75,7 +75,7 @@
 }
 
 .sidebar__item:hover .sidebar__item-icon {
-  color: var(--color-navigation-rail-text-strong);
+  color: var(--color-ink);
 }
 
 .sidebar__item--active:hover .sidebar__item-icon {

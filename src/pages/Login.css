@@ -91,7 +91,7 @@
 
 .login-story__welcome {
   margin: 0;
-  color: var(--color-body);
+  color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
@@ -139,7 +139,7 @@
   inline-size: max-content;
   max-inline-size: calc(100vw - var(--container-padding) - var(--container-padding));
   margin: 0;
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
@@ -225,7 +225,7 @@
 }
 
 .login__input::placeholder {
-  color: var(--color-muted);
+  color: var(--color-mute);
 }
 
 .login__input--padded-r {
@@ -234,12 +234,12 @@
 
 .login__input[aria-invalid="true"] {
   border-color: var(--color-error);
-  background: var(--color-error-tint);
+  background: var(--color-error-subtle);
 }
 
 .login__input:disabled {
-  color: var(--color-muted);
-  background: var(--color-surface-soft);
+  color: var(--color-mute);
+  background: var(--color-surface-card);
   cursor: not-allowed;
 }
 
@@ -255,13 +255,13 @@
   background: transparent;
   border: none;
   border-radius: var(--rounded-sm);
-  color: var(--color-muted);
+  color: var(--color-mute);
   cursor: pointer;
   transition: color var(--transition-fast), background var(--transition-fast);
 }
 
 .login__visibility:disabled {
-  color: var(--color-muted);
+  color: var(--color-mute);
   cursor: not-allowed;
 }
 
@@ -331,7 +331,7 @@
 
 .login__footer-text {
   margin: 0;
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-body-sm-weight);
@@ -348,7 +348,7 @@
 
   .login__visibility:not(:disabled):hover {
     color: var(--color-ink);
-    background: var(--color-surface-soft);
+    background: var(--color-surface-card);
   }
 }
 
@@ -366,7 +366,7 @@
   align-items: center;
   gap: var(--design-spacing-xs);
   margin: 0;
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-body-sm-weight);

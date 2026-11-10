@@ -43,7 +43,7 @@
   font-weight: var(--type-body-strong-weight);
   line-height: var(--type-body-strong-line);
   letter-spacing: var(--type-body-strong-tracking);
-  color: var(--color-muted);
+  color: var(--color-mute);
 }
 
 .ruta-day-page__route-name-full {
@@ -158,7 +158,7 @@
 }
 
 .ruta-day-page__mobile-label {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-caption-up-size);
   font-weight: var(--type-caption-up-weight);
@@ -203,7 +203,7 @@
   }
 
   .ruta-day-page__skeleton-row + .ruta-day-page__skeleton-row {
-    border-block-start: var(--border-width) solid var(--color-hairline-soft);
+    border-block-start: var(--border-width) solid var(--color-hairline);
   }
 
   .ruta-day-page__table tbody tr {

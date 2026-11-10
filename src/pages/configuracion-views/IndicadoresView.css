@@ -11,7 +11,7 @@
   flex-direction: column;
   gap: var(--design-spacing-sm);
   padding-block: var(--design-spacing-sm);
-  border-block: var(--border-width) solid var(--color-hairline-soft);
+  border-block: var(--border-width) solid var(--color-hairline);
 }
 
 .metrics-toolbar .indicadores-section__heading-label {
@@ -228,7 +228,7 @@
   .metrics-retention-overview .indicadores-kpi-card {
     padding: var(--design-spacing-sm) 0;
     border: 0;
-    border-bottom: var(--border-width) solid var(--color-hairline-soft);
+    border-bottom: var(--border-width) solid var(--color-hairline);
     border-radius: 0;
   }
 
@@ -248,7 +248,7 @@
     gap: var(--design-spacing-xxs);
   }
 
-  .metrics-retention-overview__global small { color: var(--color-muted); }
+  .metrics-retention-overview__global small { color: var(--color-mute); }
 }
 
 @media (width >= 1080px) {
@@ -291,7 +291,7 @@
 
   .metrics-retention-overview .indicadores-kpi-card + .indicadores-kpi-card,
   .metrics-retention-overview__global {
-    border-inline-start: var(--border-width) solid var(--color-hairline-soft);
+    border-inline-start: var(--border-width) solid var(--color-hairline);
   }
 
   .metrics-retention-overview__global {

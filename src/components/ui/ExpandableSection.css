@@ -51,7 +51,7 @@
 
 .expandable-section__icon {
   flex-shrink: 0;
-  color: var(--color-muted);
+  color: var(--color-mute);
 }
 
 /* ── Content (área que se expande/colapsa) ── */
@@ -75,8 +75,8 @@
 
 /* ── Variantes ── */
 .expandable-section--card {
-  background: var(--color-surface-soft);
-  border-color: var(--color-hairline-soft);
+  background: var(--color-surface-card);
+  border-color: var(--color-hairline);
 }
 
 .expandable-section--list {

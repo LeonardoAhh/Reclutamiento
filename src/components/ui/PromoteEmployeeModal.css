@@ -15,11 +15,11 @@
   padding: var(--design-spacing-sm);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-md);
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
 }
 
 .promote-current__label {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-caption-up-size);
   font-weight: var(--type-caption-up-weight);
   line-height: var(--type-caption-up-line);
@@ -44,7 +44,7 @@
 }
 
 .promote-current__meta {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
@@ -59,7 +59,7 @@
   padding: var(--design-spacing-xxs);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-md);
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
 }
 
 .promote-mode__option {
@@ -73,7 +73,7 @@
   border: 0;
   border-radius: var(--rounded-sm);
   background: transparent;
-  color: var(--color-body);
+  color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
@@ -84,7 +84,7 @@
 }
 
 .promote-mode__option:hover {
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
   color: var(--color-ink);
 }
 
@@ -100,7 +100,7 @@
 }
 
 .promote-form__optional {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
   letter-spacing: var(--type-body-md-tracking);
@@ -112,7 +112,7 @@
 .promote-hint {
   grid-column: 1 / -1;
   margin: 0;
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);

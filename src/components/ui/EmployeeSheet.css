@@ -65,7 +65,7 @@
   align-items: center;
   justify-content: center;
   border-radius: var(--rounded-full);
-  background: var(--color-error-tint);
+  background: var(--color-error-subtle);
   color: var(--color-error-text);
   margin-bottom: var(--spacing-xs);
 }
@@ -87,7 +87,7 @@
   flex-direction: column;
   gap: var(--design-spacing-xxs);
   padding: var(--spacing-sm) var(--spacing-md);
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-md);
   margin-top: var(--spacing-sm);
@@ -103,7 +103,7 @@
 }
 
 .delete-warning__meta-row dt {
-  color: var(--color-muted);
+  color: var(--color-mute);
   text-transform: uppercase;
   font-family: var(--font-body);
   font-size: var(--type-caption-up-size);
@@ -118,7 +118,7 @@
 }
 
 .delete-warning__sub {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-caption-md-size);
   margin-top: var(--spacing-xs);
 }
@@ -126,10 +126,10 @@
 /* Helper hint inside the Contratar modal (HireCandidateModal). */
 .hire-hint {
   font-size: var(--type-caption-md-size);
-  color: var(--color-muted);
+  color: var(--color-mute);
   line-height: var(--type-body-md-line);
   padding: var(--spacing-sm) var(--spacing-md);
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-md);
   margin-top: var(--spacing-sm);

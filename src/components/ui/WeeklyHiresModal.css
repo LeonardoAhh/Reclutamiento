@@ -31,7 +31,7 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--spacing-sm);
   padding: var(--spacing-md);
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-lg);
 }
@@ -66,7 +66,7 @@
 
 .weekly-hires-modal__big-label {
   font-size: var(--type-caption-up-size);
-  color: var(--color-muted);
+  color: var(--color-mute);
   text-align: center;
   margin: 0;
   font-family: var(--font-body);
@@ -104,7 +104,7 @@
   font-weight: var(--type-caption-up-weight);
   text-transform: uppercase;
   letter-spacing: var(--type-caption-up-tracking);
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   line-height: var(--type-caption-up-line);
 }
@@ -138,17 +138,17 @@
 
 .weekly-hires-modal__delta--up {
   color: var(--color-success-text);
-  background: var(--color-success-tint);
+  background: var(--color-success-subtle);
 }
 
 .weekly-hires-modal__delta--down {
   color: var(--color-error-text);
-  background: var(--color-error-tint);
+  background: var(--color-error-subtle);
 }
 
 .weekly-hires-modal__delta--neutral {
-  color: var(--color-muted);
-  background: var(--color-surface-cream-strong);
+  color: var(--color-mute);
+  background: var(--color-surface-card);
 }
 
 /* ── Puestos list ── */
@@ -327,14 +327,14 @@
 
 .weekly-hires-modal__mobile-nombres {
   font-weight: var(--font-regular);
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-caption-md-size);
 }
 
 .weekly-hires-modal__mobile-date {
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
   letter-spacing: var(--type-body-md-tracking);
@@ -357,7 +357,7 @@
 
 .weekly-hires-modal__mobile-seccion {
   font-size: var(--type-body-md-size);
-  color: var(--color-muted);
+  color: var(--color-mute);
   text-transform: uppercase;
   line-height: var(--type-body-md-line);
   font-family: var(--font-body);
@@ -370,7 +370,7 @@
 .weekly-hires-modal__cell-mono {
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
-  color: var(--color-muted);
+  color: var(--color-mute);
   white-space: nowrap;
   font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
@@ -389,7 +389,7 @@
 .weekly-hires-modal__future-hint {
   margin: 0 0 var(--spacing-md);
   font-size: var(--type-body-sm-size);
-  color: var(--color-muted);
+  color: var(--color-mute);
   line-height: var(--type-body-sm-line);
 }
 
@@ -397,7 +397,7 @@
   padding: var(--spacing-xl);
   text-align: center;
   font-size: var(--type-body-md-size);
-  color: var(--color-muted);
+  color: var(--color-mute);
 }
 
 /* ── Mobile adjustments ── */
@@ -435,7 +435,7 @@
 }
 
 .weekly-hires-modal__table-wrap::-webkit-scrollbar-track {
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
   border-radius: var(--rounded-sm);
 }
 
@@ -445,7 +445,7 @@
 }
 
 .weekly-hires-modal__table-wrap::-webkit-scrollbar-thumb:hover {
-  background: var(--color-muted);
+  background: var(--color-mute);
 }
 
 .weekly-hires-modal .expandable-section__title {

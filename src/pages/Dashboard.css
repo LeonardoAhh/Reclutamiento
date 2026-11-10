@@ -85,7 +85,7 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
-  color: var(--color-muted);
+  color: var(--color-mute);
   width: 100%;
 }
 
@@ -108,15 +108,15 @@
   gap: var(--spacing-md);
   padding: var(--spacing-xxl) var(--spacing-xl);
   text-align: center;
-  color: var(--color-muted);
+  color: var(--color-mute);
 }
 
 .dashboard__empty h3 {
   font-family: var(--font-display);
-  color: var(--color-muted);
+  color: var(--color-mute);
 }
 
 .dashboard__empty p {
-  color: var(--color-muted);
+  color: var(--color-mute);
   max-width: 360px;
 }

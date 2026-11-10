@@ -29,7 +29,7 @@
 
 .sidebar__account-trigger:hover,
 .sidebar__account-trigger[data-state='open'] {
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
 }
 
 .sidebar__account-trigger .ui-avatar {
@@ -60,7 +60,7 @@
 }
 
 .sidebar__account-role {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-body-sm-weight);
   line-height: var(--type-body-sm-line);
@@ -72,7 +72,7 @@
   inline-size: var(--icon-size-sm);
   block-size: var(--icon-size-sm);
   margin-inline-start: auto;
-  color: var(--color-muted);
+  color: var(--color-mute);
 }
 
 .dropdown-menu-content.sidebar__account-menu {
@@ -90,7 +90,7 @@
   margin-inline-start: auto;
   inline-size: var(--icon-size-sm);
   block-size: var(--icon-size-sm);
-  color: var(--color-muted);
+  color: var(--color-mute);
 }
 
 .dropdown-menu-content.sidebar__theme-menu {
@@ -111,7 +111,7 @@
   gap: var(--design-spacing-xs);
   padding-inline: var(--design-spacing-xs);
   border-radius: var(--radius-control);
-  color: var(--color-body);
+  color: var(--color-ink);
   cursor: pointer;
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
@@ -121,12 +121,12 @@
 }
 
 .sidebar__theme-option[data-highlighted] {
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
   color: var(--color-ink);
 }
 
 .sidebar__theme-option[data-state='checked'] {
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
   color: var(--color-ink);
   font-weight: var(--type-body-strong-weight);
 }
@@ -139,7 +139,7 @@
 
 .sidebar__theme-notice {
   padding-inline: var(--design-spacing-xs);
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-caption-sm-size);
   font-weight: var(--type-caption-sm-weight);

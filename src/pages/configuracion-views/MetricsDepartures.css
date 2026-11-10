@@ -55,7 +55,7 @@
 
 .metrics-departures__card-heading span,
 .metrics-departures__card p {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font: var(--type-body-md-weight) var(--type-body-md-size) / var(--type-body-md-line) var(--font-body);
 }
 

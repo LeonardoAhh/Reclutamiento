@@ -23,7 +23,7 @@
   inline-size: min(var(--sheet-available-inline-size, 100%), var(--sheet-inline-size));
   min-inline-size: 0;
   background: var(--color-canvas-elevated);
-  color: var(--color-body);
+  color: var(--color-ink);
   border-inline-start: var(--border-width) solid var(--color-hairline);
   box-shadow: var(--shadow-sm);
   font-family: var(--font-body);
@@ -111,7 +111,7 @@
 
 .sheet-description {
   margin: 0;
-  color: var(--color-body);
+  color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);

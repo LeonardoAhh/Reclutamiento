@@ -9,7 +9,7 @@
   padding: var(--spacing-sm);
   border: var(--border-width) solid var(--color-control-border);
   border-radius: var(--radius-media);
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
   color: var(--color-ink);
   text-align: start;
   cursor: pointer;
@@ -20,7 +20,7 @@
 
 .reference-attachment:hover {
   border-color: var(--color-control-border);
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
 }
 
 .reference-attachment__preview {
@@ -31,7 +31,7 @@
   justify-content: center;
   overflow: hidden;
   border-radius: var(--rounded-sm);
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
 }
 
 .reference-attachment__image {
@@ -62,7 +62,7 @@
 }
 
 .reference-attachment__description {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
@@ -72,5 +72,5 @@
 
 .reference-attachment__icon {
   flex-shrink: 0;
-  color: var(--color-muted);
+  color: var(--color-mute);
 }

@@ -29,7 +29,7 @@
   gap: var(--design-spacing-xxs);
   padding: var(--design-spacing-xs) var(--design-spacing-sm);
   border-radius: var(--rounded-md);
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
   border: var(--border-width) solid var(--color-hairline);
 }
 

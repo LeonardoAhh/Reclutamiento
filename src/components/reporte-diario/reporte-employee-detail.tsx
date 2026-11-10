@@ -28,7 +28,7 @@ const STYLES = {
     gap: 'var(--spacing-sm)',
   },
   employeeId: {
-    color: 'var(--color-muted)',
+    color: 'var(--color-mute)',
   },
   kpiGrid: {
     display: 'grid',
@@ -39,13 +39,13 @@ const STYLES = {
   kpiCard: {
     borderRadius: 'var(--rounded-lg)',
     border: '1px solid var(--color-hairline)',
-    background: 'var(--color-surface-soft)',
+    background: 'var(--color-surface-card)',
     padding: 'var(--spacing-sm)',
     textAlign: 'center' as const,
   },
   kpiLabel: {
     textTransform: 'uppercase' as const,
-    color: 'var(--color-muted)',
+    color: 'var(--color-mute)',
     margin: 0,
   },
   kpiValue: {
@@ -55,7 +55,7 @@ const STYLES = {
     marginTop: 'var(--spacing-lg)',
   },
   incidentLabel: {
-    color: 'var(--color-muted)',
+    color: 'var(--color-mute)',
     textTransform: 'uppercase' as const,
     marginBottom: 'var(--spacing-sm)',
   },
@@ -112,7 +112,7 @@ interface KpiCardsProps {
 const KPI_CONFIG = [
   { label: 'Asistencias', englishLabel: 'Attendance', key: 'asistencias' as const, tone: 'var(--color-success-text)' },
   { label: 'Incidencias', englishLabel: 'Incidents', key: 'incidencias' as const, tone: 'var(--color-error-text)' },
-  { label: 'Descansos', englishLabel: 'Rest days', key: 'descansos' as const, tone: 'var(--color-body)' },
+  { label: 'Descansos', englishLabel: 'Rest days', key: 'descansos' as const, tone: 'var(--color-ink)' },
 ] as const;
 
 function KpiCards({ stats }: KpiCardsProps) {
@@ -121,7 +121,7 @@ function KpiCards({ stats }: KpiCardsProps) {
     <div style={STYLES.kpiGrid}>
       {KPI_CONFIG.map(({ label, englishLabel, key, tone }) => {
         const value = stats[key];
-        const valueColor = key === 'incidencias' && value === 0 ? 'var(--color-muted)' : tone;
+        const valueColor = key === 'incidencias' && value === 0 ? 'var(--color-mute)' : tone;
 
         return (
           <div key={label} style={STYLES.kpiCard}>

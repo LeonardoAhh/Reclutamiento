@@ -15,6 +15,7 @@ import {
   type LeaveRequest,
 } from './requests';
 import { LeaveNotificationRow } from './LeaveNotificationRow';
+import { LeaveRequestActions, type LeaveReviewKind } from './LeaveRequestActions';
 import { formatNotificationPeriod } from './formatNotificationPeriod';
 
 interface LeaveRequestHistoryProps {
@@ -36,22 +37,17 @@ export function LeaveRequestHistory({
   onPageChange,
   onReviewed,
 }: LeaveRequestHistoryProps) {
-  const [confirmingAction, setConfirmingAction] = useState<{ id: string; kind: 'approve' | 'reject' } | null>(null);
-  const [busyId, setBusyId] = useState<string | null>(null);
+  const [busyAction, setBusyAction] = useState<{ id: string; kind: LeaveReviewKind } | null>(null);
   const actionBusyRef = useRef(false);
   const english = language === 'en';
   const dateLocale = english ? 'en-US' : 'es-MX';
   const totalPages = Math.max(1, Math.ceil(total / LEAVE_PAGE_SIZE));
 
-  async function review(request: LeaveRequest, kind: 'approve' | 'reject') {
+  async function review(request: LeaveRequest, kind: LeaveReviewKind) {
     if (actionBusyRef.current) return;
-    if (confirmingAction?.id !== request.id || confirmingAction.kind !== kind) {
-      setConfirmingAction({ id: request.id, kind });
-      return;
-    }
 
     actionBusyRef.current = true;
-    setBusyId(request.id);
+    setBusyAction({ id: request.id, kind });
     try {
       if (kind === 'approve') await approveLeaveRequest(request.id);
       else await rejectLeaveRequest(request.id);
@@ -66,7 +62,6 @@ export function LeaveRequestHistory({
               ? 'Request rejected'
               : 'Solicitud rechazada',
       });
-      setConfirmingAction(null);
       onReviewed();
     } catch (cause) {
       playSound('error');
@@ -74,7 +69,7 @@ export function LeaveRequestHistory({
       toast.error({ title: leaveErrorText(message, language) });
     } finally {
       actionBusyRef.current = false;
-      setBusyId(null);
+      setBusyAction(null);
     }
   }
 
@@ -85,7 +80,6 @@ export function LeaveRequestHistory({
         aria-label={english ? 'Leave request history' : 'Historial de solicitudes'}
       >
         {requests.map((request) => {
-          const busy = busyId === request.id;
           const decision =
             request.status === 'approved'
               ? {
@@ -115,72 +109,13 @@ export function LeaveRequestHistory({
               subtitle={period}
               trailing={
                 canApproveLeaveRequest(profile, request) ? (
-                  <div className="leave-approval-notifications__actions">
-                    {(confirmingAction?.id === request.id
-                      ? [confirmingAction.kind]
-                      : (['approve', 'reject'] as const)
-                    ).map((kind) => {
-                      const confirming = confirmingAction?.id === request.id && confirmingAction.kind === kind;
-                      const label =
-                        kind === 'approve' ? (english ? 'Approve' : 'Autorizar') : english ? 'Reject' : 'Rechazar';
-                      const confirmLabel =
-                        kind === 'approve'
-                          ? english
-                            ? 'Confirm approval'
-                            : 'Confirmar autorización'
-                          : english
-                            ? 'Confirm rejection'
-                            : 'Confirmar rechazo';
-                      const busyLabel =
-                        kind === 'approve'
-                          ? english
-                            ? 'Approving'
-                            : 'Autorizando'
-                          : english
-                            ? 'Rejecting'
-                            : 'Rechazando';
-
-                      return (
-                        <button
-                          key={kind}
-                          type="button"
-                          className="btn-secondary btn-sm leave-approval-notifications__action"
-                          disabled={busyId !== null}
-                          aria-busy={busy && confirming}
-                          aria-label={`${busy && confirming ? busyLabel : confirming ? confirmLabel : label}: ${request.requesterName}, ${period}`}
-                          onClick={() => {
-                            if (confirming) playSound('tap');
-                            void review(request, kind);
-                          }}
-                          onBlur={() => {
-                            if (confirmingAction?.id === request.id && confirmingAction.kind === kind && !busyId) {
-                              setConfirmingAction(null);
-                            }
-                          }}
-                          onKeyDown={(event) => {
-                            if (event.key === 'Escape') {
-                              event.preventDefault();
-                              setConfirmingAction(null);
-                            }
-                          }}
-                        >
-                          {busy && confirming
-                            ? kind === 'approve'
-                              ? english
-                                ? 'Approving…'
-                                : 'Autorizando…'
-                              : english
-                                ? 'Rejecting…'
-                                : 'Rechazando…'
-                            : confirming
-                              ? english
-                                ? 'Confirm'
-                                : 'Confirmar'
-                              : label}
-                        </button>
-                      );
-                    })}
-                  </div>
+                  <LeaveRequestActions
+                    subject={`${request.requesterName}, ${period}`}
+                    language={language}
+                    busyKind={busyAction?.id === request.id ? busyAction.kind : null}
+                    disabled={busyAction !== null}
+                    onReview={(kind) => void review(request, kind)}
+                  />
                 ) : (
                   <span className="leave-approval-notifications__decision">
                     <DecisionIcon aria-hidden="true" />

@@ -27,7 +27,7 @@ const SERIES = [
   {
     key: 'backup',
     label: 'Backup',
-    color: 'var(--color-accent-amber)',
+    color: 'var(--color-warning)',
     dash: 'var(--chart-dash-short)',
   },
   {
@@ -191,7 +191,7 @@ export function OverviewVacancyChart({
                 tickLine={false}
                 dy={8}
                 tick={{
-                  fill: 'var(--color-muted)',
+                  fill: 'var(--color-mute)',
                   className: 'overview-chart__axis',
                 }}
               />
@@ -202,14 +202,14 @@ export function OverviewVacancyChart({
                 allowDecimals={false}
                 tickFormatter={formatAxisValue}
                 tick={{
-                  fill: 'var(--color-muted)',
+                  fill: 'var(--color-mute)',
                   className: 'overview-chart__axis',
                 }}
               />
               <Tooltip
                 content={<CustomTooltip />}
                 cursor={{
-                  stroke: 'var(--color-muted)',
+                  stroke: 'var(--color-mute)',
                   strokeDasharray: 'var(--chart-dash-short)',
                 }}
               />
@@ -223,8 +223,8 @@ export function OverviewVacancyChart({
                   strokeWidth="var(--chart-line-width)"
                   strokeDasharray={series.dash}
                   strokeLinecap="round"
-                  dot={<SeriesDot fill="var(--color-surface)" stroke={series.color} />}
-                  activeDot={<SeriesDot active fill={series.color} stroke="var(--color-surface)" />}
+                  dot={<SeriesDot fill="var(--color-canvas-elevated)" stroke={series.color} />}
+                  activeDot={<SeriesDot active fill={series.color} stroke="var(--color-canvas-elevated)" />}
                   isAnimationActive={false}
                 />
               ))}

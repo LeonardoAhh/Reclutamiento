@@ -29,7 +29,7 @@
 
 .form-wizard__step-count {
   text-transform: uppercase;
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-caption-up-size);
   font-weight: var(--type-caption-up-weight);
@@ -55,7 +55,7 @@
   flex: 1 1 0;
   height: 4px;
   border-radius: var(--rounded-pill);
-  background: var(--color-surface-cream-strong);
+  background: var(--color-surface-card);
   transition: background var(--transition-base);
 }
 
@@ -121,7 +121,7 @@
   padding-left: max(var(--spacing-lg), var(--safe-area-left));
   padding-right: max(var(--spacing-lg), var(--safe-area-right));
   padding-bottom: calc(var(--spacing-md) + var(--safe-area-bottom));
-  border-top: 1px solid var(--color-hairline-soft);
+  border-top: 1px solid var(--color-hairline);
   background: var(--color-canvas);
 }
 

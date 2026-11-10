@@ -48,7 +48,7 @@ button.kpi-card--interactive {
   line-height: var(--type-caption-up-line);
   letter-spacing: var(--type-caption-up-tracking);
   text-transform: uppercase;
-  color: var(--color-muted);
+  color: var(--color-mute);
 }
 
 .kpi-card__value-row {
@@ -94,5 +94,5 @@ button.kpi-card--interactive {
   margin: 0;
   font-size: var(--type-caption-sm-size);
   line-height: var(--type-caption-sm-line);
-  color: var(--color-muted);
+  color: var(--color-mute);
 }

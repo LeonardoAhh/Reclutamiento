@@ -16,8 +16,8 @@
 .future-hires-modal__empty {
   padding: var(--design-spacing-xl);
   text-align: center;
-  color: var(--color-muted);
-  background: var(--color-surface);
+  color: var(--color-mute);
+  background: var(--color-canvas-elevated);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--radius-card);
   font-size: var(--type-body-md-size);
@@ -89,7 +89,7 @@
 }
 
 .future-hires-modal__detail dt {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-caption-up-size);
   font-weight: var(--type-caption-up-weight);
@@ -101,7 +101,7 @@
 .future-hires-modal__detail dd {
   min-width: 0;
   margin: 0;
-  color: var(--color-body);
+  color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);

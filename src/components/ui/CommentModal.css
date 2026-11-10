@@ -15,7 +15,7 @@
   line-height: var(--type-caption-up-line);
   letter-spacing: var(--type-caption-up-tracking);
   text-transform: uppercase;
-  color: var(--color-muted-soft);
+  color: var(--color-mute);
   margin-bottom: var(--design-spacing-xxs);
 }
 
@@ -24,7 +24,7 @@
   flex-direction: column;
   gap: var(--design-spacing-xxs);
   padding: var(--spacing-sm) var(--spacing-md);
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
   border-radius: var(--rounded-md);
   border: var(--border-width) solid var(--color-hairline);
 }
@@ -48,24 +48,24 @@
 .comment-item__type[data-type="proceso_activo"] { color: var(--color-warning-text); }
 .comment-item__type[data-type="entrevista"]      { color: var(--color-accent-teal); }
 .comment-item__type[data-type="entrega_documentos"] { color: var(--color-primary-text); }
-.comment-item__type[data-type="otro"]            { color: var(--color-muted); }
+.comment-item__type[data-type="otro"]            { color: var(--color-mute); }
 
 .comment-item__text {
   font-size: var(--type-caption-md-size);
-  color: var(--color-body);
+  color: var(--color-ink);
   line-height: var(--type-body-md-line);
   word-break: break-word;
 }
 
 .comment-item__date {
   font-size: var(--type-caption-md-size);
-  color: var(--color-muted-soft);
+  color: var(--color-mute);
   white-space: nowrap;
 }
 
 .comment-empty {
   font-size: var(--type-caption-md-size);
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-style: italic;
 }
 
@@ -85,7 +85,7 @@
 
 .char-counter {
   font-size: var(--type-caption-md-size);
-  color: var(--color-muted-soft);
+  color: var(--color-mute);
   text-align: right;
 }
 

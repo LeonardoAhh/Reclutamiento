@@ -28,7 +28,7 @@ button.section-summary-card:hover {
 
 .section-summary-card--selected {
   border-color: var(--color-primary-border);
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
 }
 
 .section-summary-card__header {
@@ -70,7 +70,7 @@ button.section-summary-card:hover {
   justify-content: space-between;
   margin-top: var(--design-spacing-xxs);
   padding-top: var(--design-spacing-xxs);
-  border-top: var(--border-width) solid var(--color-hairline-soft);
+  border-top: var(--border-width) solid var(--color-hairline);
   gap: var(--design-spacing-xxs);
 }
 
@@ -142,7 +142,7 @@ button.section-summary-card:hover {
 }
 
 .section-summary-card__trend--critical {
-  color: var(--color-error-text-enhanced);
+  color: var(--color-error-text);
   background: var(--color-error-subtle);
 }
 

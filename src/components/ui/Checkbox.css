@@ -41,7 +41,7 @@
   height: var(--icon-size-md);
   border: var(--border-width) solid var(--color-control-border);
   border-radius: var(--rounded-xs);
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
   color: transparent;
   pointer-events: none;
   transition:

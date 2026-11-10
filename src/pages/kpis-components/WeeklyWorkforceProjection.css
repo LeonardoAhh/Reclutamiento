@@ -5,7 +5,7 @@
   min-width: 0;
   padding: var(--spacing-md);
   margin-bottom: var(--spacing-xl);
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-lg);
   font-family: var(--font-body);

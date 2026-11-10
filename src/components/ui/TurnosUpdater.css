@@ -59,14 +59,14 @@
 .turnos-updater__preview-subtitle {
   margin: var(--design-spacing-xxs) 0 0;
   font-size: var(--type-body-md-size);
-  color: var(--color-muted);
+  color: var(--color-mute);
 }
 
 .turnos-updater__close-btn {
   flex-shrink: 0;
   background: none;
   border: none;
-  color: var(--color-muted);
+  color: var(--color-mute);
   cursor: pointer;
   padding: var(--design-spacing-xxs);
   border-radius: var(--rounded-sm);
@@ -74,7 +74,7 @@
 }
 
 .turnos-updater__close-btn:hover {
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
   color: var(--color-ink);
 }
 
@@ -87,7 +87,7 @@
 
 .turnos-updater__empty {
   text-align: center;
-  color: var(--color-muted);
+  color: var(--color-mute);
   padding: var(--spacing-xl);
   font-size: var(--type-body-md-size);
 }
@@ -99,7 +99,7 @@
 }
 
 .turnos-updater__turno-old {
-  color: var(--color-muted) !important;
+  color: var(--color-mute) !important;
   font-style: italic;
 }
 
@@ -116,7 +116,7 @@
   gap: var(--spacing-sm);
   padding: var(--spacing-lg);
   border-top: 1px solid var(--color-hairline);
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
 }
 
 /* ── Responsive ──────────────────────────────────────────────────────── */
@@ -171,7 +171,7 @@
     display: block;
     content: attr(data-label);
     margin-block-end: var(--design-spacing-xxs);
-    color: var(--color-muted);
+    color: var(--color-mute);
     font-family: var(--font-body);
     font-size: var(--type-caption-up-size);
     font-weight: var(--type-caption-up-weight);

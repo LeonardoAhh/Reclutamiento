@@ -75,7 +75,7 @@
 }
 
 .reporte-incidents__td-num {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
@@ -111,7 +111,7 @@
 }
 
 .reporte-incidents__card-summary:hover {
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
 }
 
 .reporte-incidents__card-main {
@@ -135,7 +135,7 @@
 .reporte-incidents__card-sub {
   font-size: var(--type-body-md-size);
   line-height: var(--type-body-md-line);
-  color: var(--color-muted);
+  color: var(--color-mute);
   white-space: normal;
   overflow-wrap: anywhere;
   font-family: var(--font-body);
@@ -145,7 +145,7 @@
 
 .reporte-incidents__chevron {
   flex-shrink: 0;
-  color: var(--color-muted);
+  color: var(--color-mute);
 }
 
 .reporte-incidents__card-detail {
@@ -153,13 +153,13 @@
   grid-template-columns: auto 1fr;
   gap: var(--design-spacing-xxs) var(--design-spacing-sm);
   padding: var(--design-spacing-sm);
-  border-top: var(--border-width) solid var(--color-hairline-soft);
+  border-top: var(--border-width) solid var(--color-hairline);
 }
 
 .reporte-incidents__detail-label {
   font-size: var(--type-caption-up-size);
   line-height: var(--type-caption-up-line);
-  color: var(--color-muted);
+  color: var(--color-mute);
   text-transform: uppercase;
   letter-spacing: var(--type-caption-up-tracking);
   font-family: var(--font-body);
@@ -230,7 +230,7 @@
 }
 
 .reporte-area-detail__number {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-caption-sm-size);
   font-weight: var(--type-caption-sm-weight);
@@ -265,7 +265,7 @@
 }
 
 .reporte-area-detail__field dt {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-caption-up-size);
   font-weight: var(--type-caption-up-weight);
@@ -302,8 +302,8 @@
   padding: var(--spacing-xl) var(--spacing-lg);
   border: 1px dashed var(--color-hairline);
   border-radius: var(--rounded-lg);
-  background: var(--color-surface-soft);
-  color: var(--color-muted);
+  background: var(--color-surface-card);
+  color: var(--color-mute);
 }
 
 .reporte-incidents__empty p {
@@ -486,7 +486,7 @@
 }
 
 .reporte-cal__cell--active .reporte-cal__holiday {
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
   color: var(--color-ink);
 }
 

@@ -19,7 +19,7 @@
 
 .activity-reference-image span {
   padding: var(--design-spacing-sm);
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);

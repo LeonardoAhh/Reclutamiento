@@ -20,7 +20,7 @@
   padding: var(--spacing-lg);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--radius-card);
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
 }
 
 .user-activity-panel__name {
@@ -82,7 +82,7 @@
   align-items: center;
   justify-content: flex-start;
   gap: var(--design-spacing-xxs);
-  color: var(--color-muted);
+  color: var(--color-mute);
   white-space: normal;
 }
 
@@ -113,7 +113,7 @@
   margin: 0;
   padding: var(--spacing-lg);
   border-radius: var(--rounded-md);
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
   text-align: center;
 }
 

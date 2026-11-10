@@ -11,7 +11,7 @@
   font-weight: var(--type-body-sm-weight);
   line-height: var(--type-body-sm-line);
   letter-spacing: var(--type-body-sm-tracking);
-  color: var(--color-body);
+  color: var(--color-ink);
   flex-wrap: wrap;
 }
 
@@ -22,9 +22,9 @@
 }
 
 .bajas-banner--info {
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
   border-color: var(--color-hairline);
-  color: var(--color-muted);
+  color: var(--color-mute);
 }
 
 .bajas-banner__body {
@@ -57,7 +57,7 @@
 }
 
 .bajas-banner__action:hover:not(:disabled) {
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
 }
 
 .bajas-banner__action:disabled {

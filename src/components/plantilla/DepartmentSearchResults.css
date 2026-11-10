@@ -32,7 +32,7 @@
 }
 
 .department-search-results__summary {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
@@ -102,7 +102,7 @@
 }
 
 .department-search-table__group-row .department-search-table__group-count {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
   font-variant-numeric: tabular-nums;
@@ -125,7 +125,7 @@
 }
 
 .department-search-table__employee-row:hover {
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
 }
 
 .department-search-table__employee-row > th {
@@ -189,7 +189,7 @@
   .department-search-table__employee-row > :where(th, td)[data-label]::before {
     display: block;
     margin-block-end: var(--design-spacing-xxs);
-    color: var(--color-muted);
+    color: var(--color-mute);
     content: attr(data-label);
     font-family: var(--font-body);
     font-size: var(--type-caption-up-size);
@@ -206,7 +206,7 @@
   }
 
   .department-search-table__employee-number {
-    color: var(--color-muted);
+    color: var(--color-mute);
     font-family: var(--font-body);
     font-size: var(--type-body-sm-semibold-size);
     font-weight: var(--type-body-sm-semibold-weight);
@@ -233,7 +233,7 @@
   .department-search-table__employee-section[data-label]::before {
     grid-column: 1;
     margin: 0;
-    color: var(--color-muted);
+    color: var(--color-mute);
     font-family: var(--font-body);
     font-size: var(--type-body-md-size);
     font-weight: var(--type-body-md-weight);

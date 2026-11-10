@@ -26,7 +26,7 @@
 }
 
 .purge-employees-modal__warning-icon {
-  color: var(--color-danger);
+  color: var(--color-error);
   flex-shrink: 0;
   margin-top: 2px;
 }
@@ -38,7 +38,7 @@
 
 .purge-employees-modal__warning-sub {
   margin: 0;
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-body-sm-size);
 }
 
@@ -47,7 +47,7 @@
 .purge-employees-modal__step-confirm code,
 .purge-employees-modal__step-title code {
   font-family: var(--font-mono);
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
   border: var(--border-width) solid var(--color-hairline);
   padding: 1px 6px;
   border-radius: var(--rounded-xs);
@@ -101,7 +101,7 @@
   width: var(--icon-size-lg);
   height: var(--icon-size-lg);
   border-radius: var(--rounded-xs);
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
   border: var(--border-width) solid var(--color-hairline);
   font-family: var(--font-display);
   font-weight: var(--type-body-strong-weight);
@@ -123,7 +123,7 @@
 
 .purge-employees-modal__step-help {
   margin: 0 0 var(--spacing-xs);
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-body-sm-size);
 }
 
@@ -151,7 +151,7 @@
   padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: var(--rounded-xs);
   border: var(--border-width) solid var(--color-control-border);
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
   font-family: var(--font-mono);
   font-size: max(var(--type-body-md-size), var(--editable-text-min-size, var(--type-body-md-size)));
   letter-spacing: 0.05em;
@@ -160,7 +160,7 @@
 
 
 .purge-employees-modal__confirm-input:disabled {
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
   cursor: not-allowed;
 }
 
@@ -179,8 +179,8 @@
   gap: var(--spacing-xs);
   padding: var(--spacing-xs) var(--spacing-md);
   border-radius: var(--rounded-sm);
-  border: 1px solid var(--color-danger);
-  background: var(--color-danger);
+  border: 1px solid var(--color-error);
+  background: var(--color-error);
   color: var(--color-on-error);
   font-weight: var(--type-body-strong-weight);
   cursor: pointer;
@@ -188,7 +188,7 @@
 }
 
 .purge-employees-modal__danger-btn:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--color-danger) 85%, var(--color-ink));
+  background: color-mix(in srgb, var(--color-error) 85%, var(--color-ink));
 }
 
 .purge-employees-modal__danger-btn:disabled {
@@ -219,8 +219,8 @@
   margin: 0 0 var(--spacing-xs);
   padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: var(--rounded-sm);
-  background: color-mix(in srgb, var(--color-danger) 10%, transparent);
-  color: var(--color-danger);
+  background: color-mix(in srgb, var(--color-error) 10%, transparent);
+  color: var(--color-error);
   font-size: var(--type-body-sm-size);
 }
 
@@ -248,7 +248,7 @@
 
 .purge-employees-modal__success-msg {
   margin: 0;
-  color: var(--color-muted);
+  color: var(--color-mute);
   max-width: 36ch;
 }
 

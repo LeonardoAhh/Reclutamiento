@@ -7,7 +7,7 @@
   overscroll-behavior: contain;
   border-radius: var(--radius-menu);
   border: var(--border-width) solid var(--color-hairline);
-  background-color: var(--color-surface);
+  background-color: var(--color-canvas-elevated);
   padding: var(--spacing-md);
   color: var(--color-ink);
   box-shadow: var(--shadow-elevated);
@@ -39,7 +39,7 @@
 
 .popover-description {
   margin: 0;
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);

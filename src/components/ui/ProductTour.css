@@ -86,7 +86,7 @@
 .product-tour__description,
 .product-tour__storage-error {
   margin: 0;
-  color: var(--color-body);
+  color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
@@ -113,7 +113,7 @@
 
 .product-tour__count {
   flex: 0 0 auto;
-  color: var(--color-body);
+  color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-body-sm-weight);

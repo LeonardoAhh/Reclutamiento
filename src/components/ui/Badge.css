@@ -8,7 +8,7 @@
   padding: var(--design-spacing-xxs) var(--design-spacing-sm);
   border: var(--border-width) solid transparent;
   border-radius: var(--rounded-xs);
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
   color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--type-caption-up-size);
@@ -27,12 +27,12 @@
 }
 
 .badge--neutral {
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
   color: var(--color-ink);
 }
 
 .badge--neutral-solid {
-  background: var(--color-muted);
+  background: var(--color-mute);
   color: var(--color-on-neutral);
 }
 
@@ -75,7 +75,7 @@
 }
 
 .badge[data-state='new'] {
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
   color: var(--color-ink);
 }
 
@@ -110,7 +110,7 @@
 }
 
 .status-badge--proximo-ingreso .status-badge__icon {
-  color: var(--color-muted);
+  color: var(--color-mute);
 }
 
 .status-badge__dot {
@@ -118,7 +118,7 @@
   block-size: var(--design-spacing-xxs);
   border-radius: var(--rounded-full);
   flex: none;
-  background: var(--color-muted);
+  background: var(--color-mute);
 }
 
 .status-badge--proceso .status-badge__dot {
@@ -138,11 +138,11 @@
   block-size: var(--design-spacing-xxs);
   border-radius: var(--rounded-full);
   flex: none;
-  background: var(--color-muted);
+  background: var(--color-mute);
 }
 
 .role-badge[data-role='admin'] .role-badge__dot {
-  background: var(--color-accent-purple);
+  background: var(--color-violet);
 }
 
 .role-badge[data-role='reclutador'] .role-badge__dot {
@@ -163,7 +163,7 @@
 }
 
 .reclutador-badge--coordinador .reclutador-badge__icon {
-  color: var(--color-accent-purple);
+  color: var(--color-violet);
 }
 
 .reclutador-badge--person-daniela .reclutador-badge__icon {
@@ -187,5 +187,5 @@
 }
 
 .reclutador-badge__caret {
-  color: var(--color-muted);
+  color: var(--color-mute);
 }

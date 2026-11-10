@@ -29,7 +29,7 @@
   padding: var(--spacing-lg);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-lg);
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
   box-shadow: var(--shadow-card);
 }
 
@@ -49,7 +49,7 @@
   height: var(--control-height-lg);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-md);
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
   color: var(--color-ink);
   font-size: var(--icon-size-control);
 }
@@ -70,7 +70,7 @@
 
 .reporte-hero__panel-copy p {
   margin: var(--spacing-xs) 0 0;
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
@@ -97,7 +97,7 @@
   padding: var(--spacing-sm) var(--spacing-md);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-md);
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
   color: var(--color-ink);
   font-family: var(--font-body);
   text-align: left;
@@ -113,14 +113,14 @@
 
 .reporte-hero__recent-item:hover {
   border-color: var(--color-primary-border);
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
 }
 
 .reporte-hero__recent-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--icon-size-control);
 }
 
@@ -142,7 +142,7 @@
 }
 
 .reporte-hero__recent-meta {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
@@ -160,7 +160,7 @@
   padding: var(--spacing-xl) var(--spacing-md);
   border: var(--border-width) dashed var(--color-hairline);
   border-radius: var(--rounded-lg);
-  color: var(--color-muted);
+  color: var(--color-mute);
   text-align: center;
   font-size: var(--icon-size-xl);
 }

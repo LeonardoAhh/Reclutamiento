@@ -33,7 +33,7 @@
 }
 
 .attachment-card--interactive:hover {
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
   color: var(--color-primary-text);
 }
 
@@ -48,8 +48,8 @@
   overflow: hidden;
   border: 0;
   border-radius: var(--radius-media);
-  background: var(--color-surface-soft);
-  color: var(--color-muted);
+  background: var(--color-surface-card);
+  color: var(--color-mute);
 }
 
 .attachment-card__preview--interactive {
@@ -93,7 +93,7 @@
 
 .attachment-card__metadata {
   display: block;
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
@@ -112,7 +112,7 @@
   border: 0;
   border-radius: var(--rounded-full);
   background: transparent;
-  color: var(--color-muted);
+  color: var(--color-mute);
   cursor: pointer;
 }
 
@@ -123,6 +123,6 @@
 }
 
 .attachment-card__remove:hover {
-  background: var(--color-error-tint);
+  background: var(--color-error-subtle);
   color: var(--color-error-text);
 }

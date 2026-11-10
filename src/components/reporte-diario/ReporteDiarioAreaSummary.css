@@ -72,12 +72,12 @@
   min-height: var(--icon-size-lg);
   padding-inline: var(--design-spacing-xxs);
   border-radius: var(--rounded-xs);
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
   border: var(--border-width) solid var(--color-hairline);
   font-family: var(--font-body);
   font-size: var(--type-caption-sm-size);
   font-weight: var(--type-caption-sm-weight);
-  color: var(--color-muted);
+  color: var(--color-mute);
   line-height: var(--type-caption-sm-line);
   letter-spacing: var(--type-caption-sm-tracking);
 }
@@ -123,7 +123,7 @@
 }
 
 .ras__clear-btn:hover {
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
   color: var(--color-ink);
 }
 

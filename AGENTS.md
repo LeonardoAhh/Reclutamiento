@@ -273,19 +273,20 @@ La calidad del sistema de tokens es un requisito, no un extra.
 
 Los valores exactos de cada token (claro y oscuro) viven únicamente en `desing.md` y `src/styles/global.css`. Este apartado fija las reglas de uso.
 
-- `{colors.primary}` (azul #2563EB de la escala aprobada) es el único color estructural de acción: CTA principal, navegación seleccionada y logo.
+- `{colors.primary}` (azul #1E40AF de la escala aprobada) es el único color estructural de acción: CTA principal, navegación seleccionada y logo.
 - `{colors.link}` (azul accesible) se reserva exclusivamente para enlaces. No rellena filas de navegación ni botones.
 - El foco visible usa `{colors.focus}`: outline neutro de 2px, sin offset. Las superficies invertidas y `forced-colors` conservan sus colores de foco dedicados.
 - `{colors.canvas}` es el suelo continuo de página y workspace.
 - `{colors.canvas-soft}` agrupa regiones tranquilas.
 - `{colors.surface-card}` contiene cards y paneles de contenido.
 - `{colors.canvas-elevated}` se usa en inputs, menús, diálogos y superficies de detalle.
-- Texto: escalera deliberada `{colors.ink}` → `{colors.body}` → `{colors.mute}` → `{colors.faint}`. Nunca negro puro para texto de producto.
+- Texto: `{colors.ink}` para títulos y cuerpo, `{colors.mute}` para texto secundario. No existe un tercer escalón; añadir uno significa añadir un token con su propio contraste verificado, no un alias de un valor existente. Nunca negro puro para texto de producto.
 - Bordes: `{colors.hairline}` en cards y divisores; `{colors.control-border}` en inputs, selects, botones secundarios, checkboxes, switches e icon buttons.
 - Estados semánticos: el color base (`success`, `warning`, `error`) es para indicadores e iconos; el texto usa `success-text`, `warning-text` y `error-text`/`error-deep`.
+- Hover de superficies neutras: `{colors.surface-hover}` se deriva una sola vez de `{colors.surface-strong}` y debe distinguirse también de esa superficie. Hover y pressed de un relleno se alejan de su etiqueta, nunca al revés.
 - Los colores violeta, cian, rosa, magenta, gradientes y acentos de series son exclusivamente decorativos o de compatibilidad localizada.
 - Los colores decorativos no pueden estructurar navegación, formularios, tabs, filtros o botones.
-- No se debe introducir un segundo color estructural. El azul de fondo usa `--color-primary`; el texto azul sobre superficies usa `--color-primary-text`; las etiquetas sobre el primario usan `--color-on-primary` (#FFFFFF). La pareja aprobada de fondo y texto supera 4.5:1; conservar este contraste al ajustar estados.
+- No se debe introducir un segundo color estructural. El azul de fondo usa `--color-primary`; el texto azul sobre superficies usa `--color-primary-text`; las etiquetas sobre el primario usan `--color-on-primary` (#FFFFFF). La pareja aprobada de fondo y texto supera 8.1:1 en reposo, hover y pressed; conservar este contraste al ajustar estados.
 - Los tokens de documento (`document-*`) son independientes del tema y solo aplican a salidas imprimibles o exportadas.
 - El color nunca debe ser la única forma de comunicar estado.
 - Los estados semánticos deben ser puntuales, comprensibles y accesibles.

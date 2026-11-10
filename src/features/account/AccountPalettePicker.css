@@ -18,7 +18,7 @@
   padding: var(--design-spacing-xs);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--radius-control);
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
   color: var(--color-ink);
   cursor: pointer;
 }

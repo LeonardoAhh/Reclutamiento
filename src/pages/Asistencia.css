@@ -7,7 +7,7 @@
   align-items: center;
   gap: var(--spacing-xs);
   color: var(--color-error-text);
-  background-color: var(--color-error-tint);
+  background-color: var(--color-error-subtle);
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: var(--rounded-md);
 }
@@ -112,7 +112,7 @@
     display: block;
     content: attr(data-label);
     margin-block-end: var(--design-spacing-xxs);
-    color: var(--color-muted);
+    color: var(--color-mute);
     font-family: var(--font-body);
     font-size: var(--type-caption-up-size);
     font-weight: var(--type-caption-up-weight);

@@ -43,18 +43,14 @@
   --color-link: var(--color-primary-text);
   --color-link-deep: #172554;
   /* antes #1e3a8a: ahora más oscuro que link */
-  --color-link-soft: #e0f2fe;
-  /* superficie, no usar como color de texto */
-  --color-secondary: var(--color-primary);
 
   /* ── Surface ──────────────────────────────────────────────────── */
   --color-canvas: #fff;
   --color-canvas-soft: #f9fafb;
   --color-canvas-elevated: var(--color-canvas);
-  --color-surface: var(--color-canvas-elevated);
-  --color-surface-soft: var(--color-surface-card);
   --color-surface-card: var(--color-canvas);
   --color-surface-strong: #f3f4f6;
+  --color-sidebar-surface: var(--color-canvas);
   --color-surface-dark: #171717;
   --color-document-paper: #fff;
 
@@ -78,30 +74,18 @@
   /* Filas alternas imprimibles */
   --color-document-table-row-alternate: #e5e5e5;
 
-  /* Encabezado de salidas oficiales */
-  --color-document-primary: #000;
-
-  /* Texto sobre encabezado oficial */
-  --color-document-on-primary: #fff;
-
   /* ── Hairlines ──────────────────────────────────────────────── */
   --color-hairline: #e5e7eb;
   /* divisor decorativo */
-  --color-hairline-soft: var(--color-hairline);
   --color-hairline-strong: #6b7280;
   /* 4.8:1 sobre canvas (control: >= 3) */
   --color-control-border: var(--color-hairline-strong);
 
   /* ── Text ───────────────────────────────────────────────────── */
+  /* Escalera de texto: ink para títulos y cuerpo, mute para texto secundario. */
   --color-ink: #333;
-  --color-body-strong: var(--color-ink);
-  --color-body: var(--color-ink);
-  --color-charcoal: var(--color-body);
   --color-mute: #374151;
   /* antes #4b5563: 6.6 sobre tint -> 9.0 */
-  --color-faint: var(--color-mute);
-  --color-muted: var(--color-mute);
-  --color-muted-soft: var(--color-faint);
   --color-on-primary: #fff;
   --color-on-neutral: #fff;
   --color-on-error: #fff;
@@ -110,54 +94,40 @@
   --color-on-error-deep: #fff;
   --color-on-warning: #fff;
   --color-shadow-rgb: 27 29 32;
-  --color-scene-light: #fff;
 
-  /* Iluminación neutral de la escena decorativa (leído por WebGL: debe ser color literal). */
-  --color-shimmer-overlay: color-mix(in srgb, var(--color-scene-light) 30%, transparent);
-
-  /* Brillo decorativo de progreso. */
   --color-on-dark: #e5e5e5;
   --color-on-dark-soft: #b6b6b6;
   /* 8.8 sobre #171717 */
   --color-focus-on-inverted: #fff;
-  --color-navigation-rail-text: var(--color-muted);
-  --color-navigation-rail-text-strong: var(--color-ink);
-  --color-avatar-ink: var(--color-ink);
+
+  /* Superficie invertida de los bloques destacados (KPI hero). */
+  --color-surface-contrast: var(--color-ink);
+
+  /* Iluminación neutral de la escena decorativa y brillo de progreso. */
+  --color-scene-light: #fff;
+  --color-shimmer-overlay: color-mix(in srgb, var(--color-scene-light) 30%, transparent);
 
   /* ── Semantic ───────────────────────────────────────────────── */
   --color-success: #064e3b;
   /* antes #047857: blanco daba 5.5 -> 9.7 */
-  --color-success-text: var(--color-success-text-enhanced);
+  --color-success-text: #043d2e;
+  /* 11.6 sobre success-subtle */
   --color-success-subtle: #ecfdf5;
   --color-warning: #78350f;
   /* antes #b45309: blanco daba 5.0 -> 9.1 */
-  --color-warning-text: var(--color-warning-text-enhanced);
+  --color-warning-text: #5c2a0b;
+  /* 11.3 sobre warning-subtle */
   --color-warning-subtle: #fffbeb;
   --color-error: #8a1616;
   /* antes #ef4444: 3.8 como texto -> 9.5 */
   --color-error-deep: #6e1212;
-  --color-error-text: var(--color-error-text-enhanced);
-  --color-error-subtle: #fef2f2;
-  --color-success-text-enhanced: #043d2e;
-  /* 11.6 sobre success-subtle */
-  --color-warning-text-enhanced: #5c2a0b;
-  /* 11.3 sobre warning-subtle */
-  --color-error-text-enhanced: #5f1414;
+  --color-error-text: #5f1414;
   /* 12.0 sobre error-subtle */
+  --color-error-subtle: #fef2f2;
 
   /* Ilustración/gradiente solamente; nunca chrome funcional. */
-  --color-violet: #7928ca;
-  --color-cyan: #50e3c2;
-  --color-pink: #ff0080;
-  --color-magenta: #eb367f;
-  --color-gradient-develop-start: #007cf0;
-  --color-gradient-develop-end: #00dfd8;
-  --color-gradient-preview-start: #7928ca;
-  --color-gradient-preview-end: #ff0080;
-  --color-gradient-ship-start: #ff4d4d;
-  --color-gradient-ship-end: #f9cb28;
-  --color-accent-purple: var(--color-violet);
   /* 7.1: solo decorativo; para texto usar purple-deep */
+  --color-violet: #7928ca;
   --color-accent-purple-deep: #4c1680;
   /* 12.1 */
   --color-accent-orange: #7a2f00;
@@ -165,35 +135,18 @@
   --color-accent-teal: #04524e;
   /* antes #087f7a: 4.9 -> 9.0 */
 
-  /* Acentos de marca para integraciones existentes. */
-  --color-brand-whatsapp: #25d366;
-
-  /* Debe coincidir con --color-accent-teal (#04524e). */
-  --color-accent-teal-rgb: 4 82 78;
-  --color-accent-amber: var(--color-warning);
-
   /* ── Channel values ─────────────────────────────────────────── */
-  --color-primary-rgb: 30 64 175;
-  --color-success-rgb: 6 78 59;
-  --color-warning-rgb: 120 53 15;
   --color-error-rgb: 138 22 22;
-  --color-ink-rgb: 51 51 51;
-  --color-canvas-rgb: 255 255 255;
 
   /* ── Derived overlays ───────────────────────────────────────── */
-  /* Antes 20%: daba 1.3:1. A 70% llega a 3.9 o más sobre canvas/soft/strong (WCAG 1.4.11). */
-  --color-focus-ring: rgb(var(--color-primary-rgb) / 70%);
   --color-modal-scrim: rgb(var(--color-shadow-rgb) / 32%);
   --color-vacancy-tint: rgb(var(--color-error-rgb) / 5%);
   --color-vacancy-chip-bg: rgb(var(--color-error-rgb) / 10%);
-  --color-success-tint: var(--color-success-subtle);
-  --color-error-tint: var(--color-error-subtle);
-  --color-warning-tint: var(--color-warning-subtle);
   --color-primary-tint: #e0f2fe;
 
-  /* Hover de controles neutros: más marcado que surface-soft (= surface-card). */
-  --color-surface-hover: var(--color-surface-strong);
-  --color-header-glass: rgb(var(--color-canvas-rgb) / 92%);
+  /* Hover de controles neutros: se separa de surface-strong para que el estado
+     también se vea sobre esa superficie. Oscurece en claro y aclara en oscuro. */
+  --color-surface-hover: color-mix(in srgb, var(--color-surface-strong) 97%, var(--color-ink));
 
   /* La interfaz usa la familia variable local en ambos temas. */
   --font-display: var(--font-body);
@@ -227,9 +180,6 @@
 
   /* Marca de la navegación: jerarquía propia dentro del ancho del rail. */
   --type-brand-size: 24px;
-
-  /* desing.md {typography.brand}: 24px / 34px. */
-  --type-brand-line: calc(34 / 24);
 
   /* heading-sm — card titles */
   --type-heading-sm-size: 16px;
@@ -314,10 +264,6 @@
   --type-button-md-tracking: var(--type-button-tracking);
 
   /* code */
-  --type-code-md-size: 0.875rem;
-  --type-code-md-weight: 400;
-  --type-code-md-line: 1.43;
-  --type-code-md-tracking: 0;
   --type-code-sm-size: 0.875rem;
   --type-code-sm-weight: 400;
   --type-code-sm-line: 1.43;
@@ -375,7 +321,6 @@
   --icon-size-xl: 2rem;
   --icon-size-xxl: 2.5rem;
   --feature-avatar-size: var(--icon-size-xxl);
-  --feature-avatar-preview-size: 6rem;
   --feature-avatar-initials-size: var(--type-caption-md-size);
 
   /* ── Spacing legado — se conserva durante migración ───────────
@@ -385,7 +330,6 @@
      xxs y 2xl son alias obsoletos de la escala canónica: no usar en código nuevo. */
 
   /* Obsoleto: 2px no pertenece a la base de 4px. Alias al paso mínimo. */
-  --spacing-xxs: var(--spacing-xs);
   --spacing-xs: 4px;
   --spacing-sm: 8px;
   --spacing-md: 12px;
@@ -394,7 +338,6 @@
   --spacing-xxl: 32px;
 
   /* Obsoleto: 48px no pertenece a la escala. Alias a {spacing.2xl} (40px). */
-  --spacing-2xl: var(--design-spacing-xxl);
   --spacing-section: 96px;
 
   /* Escala canónica de desing.md para primitivas nuevas/migradas. */
@@ -427,11 +370,9 @@
   --radius-menu: var(--rounded-md);
 
   /* ── Shadows — hairline first, restrained elevation ───────────── */
-  --shadow-focus: 0 0 0 var(--focus-ring-width) var(--color-focus);
   --focus-ring-width: 2px;
 
   /* Softens the boundary between decorative media and card content. */
-  --blur-media-transition: 4px;
 
   /* ── Transitions ─────────────────────────────────────────────── */
   --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
@@ -458,8 +399,6 @@
   --page-fade-ease: var(--page-slide-ease);
   --scale-pressed: 0.98;
   --transition-progress: 1400ms ease-in-out;
-  --duration-brand-reveal: 1500ms;
-  --duration-loader-stagger-step: 150ms;
 
   /* ── Container ───────────────────────────────────────────────── */
   --container-standard-max-inline-size: 90rem;
@@ -475,7 +414,6 @@
   --content-min-inline-size: 17.5rem;
 
   /* Máximo de líneas para vistas previas de texto antes de revelar el contenido completo. */
-  --content-preview-max-lines: 3;
   --auth-form-max-inline-size: 28rem;
   --feature-result-card-min: 34rem;
 
@@ -484,7 +422,6 @@
 
   /* Geometría responsive de las tarjetas de asignación. */
   --feature-assignment-description-max-lines: 2;
-  --feature-activity-filter-min-inline-size: 8.5rem;
   --search-field-min-inline-size: 18rem;
 
   /* Ancho máximo de búsquedas compactas en encabezados de página. */
@@ -493,24 +430,17 @@
   --feature-reference-attachment-thumbnail-block-size: 4.5rem;
   --feature-image-viewer-max-block-size: 55dvh;
   --candidate-access-preview-max: 20rem;
-  --feature-calendar-column-min: 10rem;
   --feature-calendar-column-max: 13rem;
-  --feature-calendar-surface-max: 22rem;
 
   /* Ancho compacto del selector de semana junto al título de una página. */
-  --week-filter-inline-size: 20rem;
 
   /* Anchura máxima del espacio inicial para cargar y consultar reportes diarios. */
   --feature-report-onboarding-max-inline-size: var(--container-standard-max-inline-size);
   --feature-navigation-rail-inline-size: 14rem;
-  --feature-reminders-panel-max-inline-size: 20rem;
-  --feature-reminders-panel-max-block-size: 30rem;
 
   /* Altura legible para detalles extensos de validación antes de scroll interno. */
   --feature-validation-details-max-block-size: 12rem;
-  --document-preview-max: 48rem;
   --recordatorios-route-table-min: 64rem;
-  --system-update-content-max: 22rem;
   --system-update-panel-max: 28rem;
   --toast-max-inline-size: var(--system-update-panel-max);
   --menu-min-inline-size: 10rem;
@@ -521,9 +451,7 @@
   /* Ancho legible del recorrido guiado sin forzar saltos en sus mensajes breves. */
   --tour-popover-inline-size: 18rem;
   --pipeline-table-date-inline-size: 7.5rem;
-  --pagination-label-min-inline-size: 5.625rem;
   --pipeline-search-results-max-block-size: 25rem;
-  --feature-profile-binary-min: 18rem;
 
   /* Anchos semánticos del diálogo compartido. */
   --modal-inline-size-xs: 25rem;
@@ -536,11 +464,9 @@
 
   /* Interior compartido de header, cuerpo y acciones; crece en tablet. */
   --modal-content-padding: var(--design-spacing-md);
-  --system-update-progress-segment: 40%;
 
   /* Capas estructurales del shell; mantienen Header, overlay y Sidebar ordenados. */
   --layer-sticky-navigation: 800;
-  --layer-navigation-overlay: 899;
   --layer-navigation: 900;
   --layer-skip-link: 950;
   --layer-maintenance: 1000;
@@ -551,7 +477,6 @@
   --layer-tooltip: 1480;
   --layer-system-update: 1500;
   --layer-toast: var(--layer-system-update);
-  --layer-system-update-curtain: 1600;
   --tooltip-max-width: 17.5rem;
 
   /* Anchura mínima legible para las dos series de un tooltip de gráfico. */
@@ -581,8 +506,6 @@
   --type-caption-md-weight: 500;
   --type-caption-md-line: 1.4;
   --type-caption-md-tracking: 0;
-  --type-display-md-size: 1.875rem;
-  --type-display-md-weight: 600;
   --type-body-lg-size: 1rem;
   --type-body-lg-weight: 400;
   --type-body-lg-line: 1.5;
@@ -601,24 +524,16 @@
 
   /* Altura media reutilizable para gráficas de indicadores en paneles. */
   --chart-height-md: 18rem;
-  --chart-dash-long: 12px 4px;
   --chart-dash-short: 4px 4px;
   --chart-dash-dotted: 1px 4px;
   --space-lg: var(--spacing-lg);
-  --color-danger: var(--color-error);
-  --color-foreground: var(--color-body);
-  --color-primary-faint: var(--color-primary-tint);
-  --color-border: var(--color-hairline);
   --color-focus: var(--color-ink);
-  --color-surface-contrast: var(--color-ink);
-  --color-surface-cream-strong: var(--color-surface-soft);
 
   /* Level 0 = flat. Level 1 = whisper. Level 2 = floating surface. */
   --shadow-xs: 0 1px 1px rgb(var(--color-shadow-rgb) / 4%);
   --shadow-sm: 0 1px 2px rgb(var(--color-shadow-rgb) / 5%), 0 4px 12px rgb(var(--color-shadow-rgb) / 8%);
   --shadow-subtle: var(--shadow-sm);
   --shadow-card: var(--shadow-xs);
-  --shadow-md: var(--shadow-sm);
 
   /* desing.md solo define Level 1 (xs) y Level 2 (sm); los alias no crean niveles nuevos. */
   --shadow-prominent: var(--shadow-sm);
@@ -628,7 +543,6 @@
   /* Contrato estable del workspace; evita que una migración de primitivas
      desarme la superficie continua del shell y del login. */
   --workspace-canvas: var(--color-canvas);
-  --workspace-surface: var(--color-canvas);
   --shell-floor: var(--color-canvas-soft);
   --shell-workspace-surface: var(--color-canvas-elevated);
   --workspace-border-color: var(--color-hairline);
@@ -638,10 +552,7 @@
   --workspace-grid-spacing: var(--design-spacing-xxl);
   --header-height: var(--design-spacing-3xl);
 
-  /* Barra móvil: touch target + aire vertical de la escala (56px). */
   --mobile-nav-height: calc(var(--touch-target-min) + var(--design-spacing-sm));
-  --mobile-nav-content-space: calc(var(--mobile-nav-height) + var(--design-spacing-xxl));
-  --ease-apple: cubic-bezier(0.19, 1, 0.22, 1);
   --duration-skeleton: 1500ms;
   --opacity-disabled: 0.5;
   --opacity-skeleton-rest: 0.4;
@@ -658,36 +569,25 @@
 [data-palette-preview][data-color-scheme='dark'] {
   color-scheme: dark;
 
-  /* Estos alias se redeclaran: los valores derivados se resuelven antes de heredarse. */
   --color-primary-text-on-dark: #bfdbfe;
   --color-focus-on-inverted: #93c5fd;
-  --color-primary-border: var(--color-primary-text);
   --color-primary-text: var(--color-primary-text-on-dark);
-  --color-link: var(--color-primary-text);
   --color-link-deep: var(--color-on-dark);
-  --color-link-soft: var(--color-surface-soft);
 
   /* Superficies (escalonadas de más oscuro a más claro) */
   --color-canvas: #161616;
-  --color-canvas-rgb: 22 22 22;
   --color-canvas-soft: #1e1e1e;
   --shell-workspace-surface: var(--color-canvas);
   --color-canvas-elevated: #262626;
   --color-surface-card: var(--color-canvas-elevated);
-  --color-surface-soft: var(--color-surface-card);
   --color-surface-strong: #303030;
   --color-surface-dark: var(--color-canvas);
   --color-surface-contrast: var(--color-surface-dark);
-  --color-surface-hover: var(--color-surface-strong);
+  --color-shimmer-overlay: color-mix(in srgb, var(--color-ink) 8%, transparent);
 
   /* Texto */
   --color-ink: #f5f5f5;
-  --color-ink-rgb: 245 245 245;
-  --color-body-strong: var(--color-ink);
-  --color-body: var(--color-ink);
-  --color-charcoal: var(--color-body);
-  --color-mute: #d0d0d0;
-  --color-faint: var(--color-mute);
+  --color-mute: #d4d4d4;
   --color-on-dark: var(--color-ink);
   --color-on-dark-soft: var(--color-mute);
   --color-on-neutral: var(--color-canvas);
@@ -700,44 +600,35 @@
   /* Bordes */
   --color-hairline: #404040;
   /* decorativo, no transmite información */
-  --color-hairline-soft: var(--color-hairline);
   --color-hairline-strong: #949494;
   /* >= 3:1 sobre todas las superficies */
-  --color-control-border: var(--color-hairline-strong);
 
   /* Sombras y overlays */
   --color-shadow-rgb: 0 0 0;
   --workspace-shadow: 0 1px 2px rgb(var(--color-shadow-rgb) / 20%), 0 4px 12px rgb(var(--color-shadow-rgb) / 28%);
   --color-modal-scrim: rgb(var(--color-shadow-rgb) / 60%);
-  --color-shimmer-overlay: rgb(var(--color-ink-rgb) / 8%);
   --color-primary-tint: #172554;
 
   /* Estados */
   --color-success: #86efac;
-  --color-success-rgb: 134 239 172;
   --color-success-subtle: #14301f;
-  --color-success-text-enhanced: #dcfce7;
-  --color-success-text: var(--color-success-text-enhanced);
+  --color-success-text: #dcfce7;
 
   --color-warning: #fcd34d;
-  --color-warning-rgb: 252 211 77;
   --color-warning-subtle: #33290a;
-  --color-warning-text-enhanced: #fef3c7;
-  --color-warning-text: var(--color-warning-text-enhanced);
+  --color-warning-text: #fef3c7;
 
   --color-error: #ffbdb6;
   --color-error-rgb: 255 189 182;
   --color-error-deep: var(--color-error);
   --color-error-subtle: #3a1816;
-  --color-error-text-enhanced: #ffe4e1;
-  --color-error-text: var(--color-error-text-enhanced);
+  --color-error-text: #ffe4e1;
 
   /* Alias de indicadores y series existentes, sin añadir acentos a la navegación. */
   --color-violet: #d8c4f5;
   --color-accent-purple-deep: var(--color-violet);
   --color-accent-orange: #ffc08a;
   --color-accent-teal: #8fe0d8;
-  --color-accent-teal-rgb: 143 224 216;
 }
 
 /* Ocean Saas cambia solo colores; conserva geometría, tipografía y sombras del sistema. */
@@ -753,13 +644,16 @@
   /* light: oscurece en hover/active */
 
   /* Marca */
-  --color-primary: oklch(50% 0.134 var(--brand-hue));
-
-  /* ≈5.3:1 sobre blanco */
+  /* Etiqueta blanca y texto azul independiente >= 8.1:1 */
+  --color-primary: oklch(36% 0.134 var(--brand-hue));
   --color-on-primary: oklch(100% 0 0deg);
   --color-primary-text: var(--color-primary);
+
+  /* Hover y pressed se derivan del primario de cada modo con --state-step. */
+  --color-primary-active: oklch(from var(--color-primary) calc(l + var(--state-step) * 0.05) c h);
+  --color-primary-pressed: oklch(from var(--color-primary) calc(l + var(--state-step) * 0.09) c h);
+  --color-link-deep: var(--color-primary-active);
   --color-primary-tint: oklch(95% 0.03 var(--brand-hue));
-  --color-focus-ring: var(--color-primary);
 
   /* Superficies (una sola familia neutra, matiz de marca) */
   --color-canvas: oklch(100% 0 0deg);
@@ -767,31 +661,19 @@
   --color-canvas-elevated: oklch(100% 0 0deg);
   --color-surface-card: oklch(99% 0.002 var(--brand-hue));
   --color-surface-strong: oklch(94% 0.006 var(--brand-hue));
-  --color-surface-hover: oklch(96% 0.006 var(--brand-hue));
   --color-sidebar-surface: var(--color-canvas);
 
   /* Bordes */
   --color-hairline: oklch(90% 0.006 var(--brand-hue));
 
-  /* decorativo */
-
-  /* ≥3:1 */
-
   /* Texto */
   --color-ink: oklch(15% 0.01 var(--brand-hue));
-
-  /* ≈17:1 */
-  --color-mute: oklch(45% 0.012 var(--brand-hue));
-
-  /* ≈7:1 */
+  --color-mute: oklch(37% 0.012 var(--brand-hue));
 
   /* Estado */
-  --color-error: oklch(50% 0.21 29deg);
+  --color-error: oklch(34.5% 0.21 29deg);
   --color-on-error: oklch(100% 0 0deg);
   --color-error-text: var(--color-error);
-
-  /* Enlaces */
-  --color-link-soft: var(--color-primary-tint);
 }
 
 /* ───────── Dark ───────── */
@@ -803,74 +685,48 @@
 
   /* dark: aclara en hover/active */
 
-  --color-primary: oklch(39.1% 0.09 var(--brand-hue));
-
-  /* solo relleno */
-  --color-primary-text: oklch(80% 0.1 var(--brand-hue));
-
-  /* texto/iconos ≈9:1 */
+  /* Solo relleno: hover y pressed aclaran sin bajar de 8.1:1 con la etiqueta */
+  --color-primary: oklch(33% 0.09 var(--brand-hue));
+  --color-primary-text: oklch(89.5% 0.1 var(--brand-hue));
   --color-primary-tint: oklch(28% 0.04 var(--brand-hue));
-  --color-focus-ring: oklch(75% 0.12 var(--brand-hue));
 
-  /* ≥3:1 */
+  /* El relleno primario no sirve como texto en oscuro: el enlace en hover usa ink */
+  --color-link-deep: var(--color-ink);
 
   --color-canvas: oklch(20.5% 0.006 var(--brand-hue));
   --color-canvas-soft: oklch(24% 0.006 var(--brand-hue));
   --color-canvas-elevated: oklch(26.9% 0.006 var(--brand-hue));
   --color-surface-card: oklch(22.6% 0.006 var(--brand-hue));
   --color-surface-strong: oklch(33% 0.008 var(--brand-hue));
-  --color-surface-hover: oklch(30% 0.008 var(--brand-hue));
-  --color-hairline: oklch(33% 0.008 var(--brand-hue));
+
+  /* Distinto de surface-strong (33%) para que el divisor no desaparezca */
+  --color-hairline: oklch(40% 0.008 var(--brand-hue));
   --color-ink: oklch(94% 0.005 var(--brand-hue));
-  --color-mute: oklch(76% 0.01 var(--brand-hue));
-  --color-error: oklch(68% 0.21 25deg);
+  --color-mute: oklch(89% 0.01 var(--brand-hue));
+  --color-error: oklch(86% 0.21 25deg);
   --color-on-error: oklch(20% 0 0deg);
-}
-
-/* ───────── Derivados: una sola vez, compartidos ───────── */
-:root[data-color-palette],
-[data-palette-preview][data-color-palette] {
-  --color-primary-active: oklch(from var(--color-primary) calc(l + var(--state-step) * 0.05) c h);
-  --color-primary-pressed: oklch(from var(--color-primary) calc(l + var(--state-step) * 0.09) c h);
-  --color-primary-a10: oklch(from var(--color-primary) l c h / 10%);
-  --color-primary-a20: oklch(from var(--color-primary) l c h / 20%);
-  --color-link-deep: var(--color-primary-active);
-}
-
-/* Fallback sin JS */
-@media (prefers-color-scheme: dark) {
-  :root[data-color-palette='ocean-saas']:not([data-color-scheme]) {
-    color-scheme: dark;
-
-    /* repetir tokens dark, o generarlos con un preprocesador */
-  }
+  --color-error-text: oklch(93% 0.09 25deg);
 }
 
 /* Gold Void conserva geometría, tipografía y sombras del sistema. */
 :root[data-color-palette='darkmatter-remix'],
 [data-palette-preview][data-color-palette='darkmatter-remix'] {
   --color-primary: hsl(42deg 80% 18%);
-  --color-primary-rgb: 83 61 9;
   --color-primary-text: hsl(42deg 80% 16%);
   --color-primary-active: color-mix(in srgb, var(--color-primary) 85%, var(--color-ink));
   --color-primary-pressed: color-mix(in srgb, var(--color-primary) 70%, var(--color-ink));
   --color-on-primary: var(--color-canvas);
   --color-link-deep: var(--color-primary-text);
-  --color-link-soft: var(--color-primary-tint);
   --color-canvas: hsl(45deg 40% 97%);
-  --color-canvas-rgb: 250 249 244;
   --color-canvas-soft: hsl(45deg 25% 93%);
   --color-canvas-elevated: hsl(0deg 0% 100%);
   --color-sidebar-surface: var(--color-canvas-soft);
   --shell-floor: var(--color-sidebar-surface);
   --color-surface-card: hsl(0deg 0% 100%);
   --color-surface-strong: hsl(45deg 25% 90%);
-  --color-surface-hover: var(--color-surface-strong);
   --color-hairline: color-mix(in srgb, var(--color-ink) 12%, var(--color-canvas));
   --color-hairline-strong: color-mix(in srgb, var(--color-ink) 55%, var(--color-surface-card));
-  --color-control-border: var(--color-hairline-strong);
   --color-ink: hsl(30deg 15% 6%);
-  --color-ink-rgb: 18 15 13;
   --color-mute: hsl(40deg 8% 22%);
   --color-primary-tint: color-mix(in srgb, var(--color-primary) 14%, var(--color-surface-card));
   --color-error: hsl(0deg 82% 26%);
@@ -883,59 +739,49 @@
 :root[data-color-palette='darkmatter-remix'][data-color-scheme='dark'],
 [data-palette-preview][data-color-palette='darkmatter-remix'][data-color-scheme='dark'] {
   --color-primary: hsl(45deg 68% 50%);
-  --color-primary-rgb: 214 171 41;
-  --color-primary-text: hsl(45deg 68% 52%);
+  --color-primary-text: hsl(45deg 68% 55%);
   --color-primary-active: color-mix(in srgb, var(--color-primary) 85%, var(--color-ink));
   --color-primary-pressed: color-mix(in srgb, var(--color-primary) 70%, var(--color-ink));
-  --color-on-primary: var(--color-canvas);
   --color-link-deep: var(--color-ink);
   --color-canvas: hsl(0deg 0% 2%);
-  --color-canvas-rgb: 5 5 5;
   --color-canvas-soft: hsl(0deg 0% 8%);
   --color-sidebar-surface: var(--color-surface-card);
   --color-canvas-elevated: hsl(0deg 0% 4%);
   --color-surface-card: hsl(0deg 0% 4%);
   --color-surface-strong: hsl(0deg 0% 10%);
-  --color-surface-hover: var(--color-surface-strong);
-  --color-hairline: color-mix(in srgb, var(--color-ink) 10%, var(--color-canvas));
+  /* 18%: el divisor sigue visible sobre surface-strong (con 10% se fundía) */
+  --color-hairline: color-mix(in srgb, var(--color-ink) 18%, var(--color-canvas));
   --color-hairline-strong: color-mix(in srgb, var(--color-ink) 40%, var(--color-surface-card));
-  --color-control-border: var(--color-hairline-strong);
   --color-ink: hsl(45deg 40% 97%);
-  --color-ink-rgb: 250 249 244;
-  --color-mute: hsl(0deg 0% 70%);
+  --color-mute: hsl(0deg 0% 72%);
   --color-primary-tint: color-mix(in srgb, var(--color-primary) 12%, var(--color-canvas));
   --color-error: hsl(0deg 85% 76%);
   --color-error-rgb: 246 142 142;
-  --color-error-deep: var(--color-error);
-  --color-error-text: var(--color-error-text-enhanced);
-  --color-on-error: var(--color-canvas);
+
+  /* El rojo claro de esta paleta no sirve como texto en oscuro */
+  --color-error-text: #ffe4e1;
 }
 
 /* Sea Glass cambia colores, sin alterar la geometría ni la tipografía del producto. */
 :root[data-color-palette='sea-glass'],
 [data-palette-preview][data-color-palette='sea-glass'] {
   --color-primary: #2b4630;
-  --color-primary-rgb: 43 70 48;
   --color-primary-text: #263b2b;
   --color-primary-active: #243e2a;
   --color-primary-pressed: #1c2f2a;
   --color-on-primary: #fff;
   --color-link-deep: var(--color-primary-text);
-  --color-link-soft: #d1edd1;
   --color-canvas: #f8fafc;
-  --color-canvas-rgb: 248 250 252;
   --color-canvas-soft: #f3f4f6;
   --color-canvas-elevated: #fff;
   --color-sidebar-surface: #f3f4f6;
   --shell-floor: var(--color-sidebar-surface);
   --color-surface-card: #fff;
   --color-surface-strong: #e5e7eb;
-  --color-surface-hover: var(--color-surface-strong);
-  --color-hairline: #64766a;
-  --color-hairline-strong: var(--color-hairline);
-  --color-control-border: var(--color-hairline);
+  /* Divisor decorativo; el borde de control conserva el verde con >= 3:1 */
+  --color-hairline: #d6ddd8;
+  --color-hairline-strong: #64766a;
   --color-ink: #16222a;
-  --color-ink-rgb: 22 34 42;
   --color-mute: #2f3e36;
   --color-primary-tint: #d1edd1;
   --color-error: #8f1d06;
@@ -952,40 +798,32 @@
 [data-palette-preview][data-color-palette='sea-glass'][data-color-scheme='dark'] {
   /* Acento */
   --color-primary: #3ddcc7;
-  --color-primary-rgb: 61 220 199;
   --color-primary-text: #7ff0df;
   --color-primary-active: #5eead4;
   --color-primary-pressed: #99f6e4;
   --color-on-primary: #04201b;
   --color-link-deep: var(--color-ink);
-  --color-link-soft: #0e2a27;
   --color-primary-tint: #0b2522;
 
   /* Superficies neutras */
   --color-canvas: #0a0a0a;
-  --color-canvas-rgb: 10 10 10;
   --color-canvas-soft: #111111;
   --color-canvas-elevated: #171717;
   --color-sidebar-surface: #0f0f0f;
-  --shell-floor: var(--color-sidebar-surface);
   --color-surface-card: #171717;
   --color-surface-strong: #262626;
-  --color-surface-hover: #262626;
 
   /* Bordes: hairline sutil (decorativo), el fuerte es para controles */
   --color-hairline: #2e2e2e;
   --color-hairline-strong: #8f8f8f;
-  --color-control-border: var(--color-hairline-strong);
 
   /* Texto */
   --color-ink: #ededed;
-  --color-ink-rgb: 237 237 237;
   --color-mute: #c8c8c8;
 
   /* Error */
   --color-error: #ffb1aa;
   --color-error-rgb: 255 177 170;
-  --color-error-deep: var(--color-error);
   --color-error-text: #ffd9d5;
   --color-on-error: #1a0504;
 }
@@ -997,36 +835,30 @@
 [data-palette-preview][data-color-palette='claude-amber'] {
   /* Acento: terracota oscuro para que el texto blanco del botón llegue a 8.1:1 */
   --color-primary: #863519;
-  --color-primary-rgb: 134 53 25;
   --color-primary-text: #6a2812;
   /* Hover/pressed oscurecen (antes aclaraban hacia la superficie y parecían deshabilitados) */
   --color-primary-active: color-mix(in srgb, var(--color-primary) 85%, var(--color-ink));
   --color-primary-pressed: color-mix(in srgb, var(--color-primary) 70%, var(--color-ink));
   --color-on-primary: #ffffff;
   --color-link-deep: var(--color-primary-text);
-  --color-link-soft: var(--color-primary-tint);
   --color-primary-tint: #f6e7dc;
 
   /* Superficies */
   --color-canvas: #faf9f5;
-  --color-canvas-rgb: 250 249 245;
   --color-canvas-soft: #ede9de;
   --color-canvas-elevated: #ffffff;
   --color-sidebar-surface: #f5f4ee;
   --shell-floor: var(--color-sidebar-surface);
   --color-surface-card: #f5f4ef;
   --color-surface-strong: #ebe8de;
-  --color-surface-hover: var(--color-surface-strong);
 
   /* Bordes: hairline decorativo; el fuerte sirve a controles (>= 3:1) */
   --color-hairline: #dad9d4;
   --color-hairline-strong: #716f66;
-  --color-control-border: var(--color-hairline-strong);
 
   /* Texto */
   --color-ink: #3d3929;
-  --color-ink-rgb: 61 57 41;
-  --color-mute: #424039;
+  --color-mute: #413f38;
 
   /* Error */
   --color-error: #7a1717;
@@ -1041,43 +873,34 @@
 [data-palette-preview][data-color-palette='claude-amber'][data-color-scheme='dark'] {
   /* Acento: coral más claro para que el texto oscuro del botón llegue a 8.1:1 */
   --color-primary: #ec9a76;
-  --color-primary-rgb: 236 154 118;
-  --color-primary-text: #ffd0b9;
+  --color-primary-text: #ffd5be;
   --color-primary-active: color-mix(in srgb, var(--color-primary) 85%, var(--color-ink));
   --color-primary-pressed: color-mix(in srgb, var(--color-primary) 70%, var(--color-ink));
   --color-on-primary: #141413;
   --color-link-deep: var(--color-ink);
-  --color-link-soft: var(--color-primary-tint);
   --color-primary-tint: #3a2b23;
 
   /* Superficies (de menos a más elevadas) */
   --color-canvas: #262624;
-  --color-canvas-rgb: 38 38 36;
   --color-canvas-soft: #1b1b19;
   --color-canvas-elevated: #30302e;
   --color-sidebar-surface: #1f1e1d;
-  --shell-floor: var(--color-sidebar-surface);
   --color-surface-card: #2c2c2b;
   --color-surface-strong: #363633;
-  --color-surface-hover: var(--color-surface-strong);
 
   /* Bordes: el hairline ya no coincide con surface-strong (antes se volvía invisible) */
   --color-hairline: #484741;
   --color-hairline-strong: #8e8c82;
-  --color-control-border: var(--color-hairline-strong);
 
   /* Texto */
   --color-ink: #f1f1ef;
-  --color-ink-rgb: 241 241 239;
-  --color-mute: #dad8ce;
+  --color-mute: #dfddd3;
 
   /* Error */
   --color-error: #ffc8c2;
   --color-error-rgb: 255 200 194;
-  --color-error-deep: var(--color-error);
   --color-error-text: #ffd9d5;
   --color-on-error: #141413;
-  --color-on-error-deep: var(--color-on-error);
 }
 
 /* Supabase mantiene la geometría del proyecto y alterna sus verdes por modo.
@@ -1085,28 +908,20 @@
 :root[data-color-palette='supabase'],
 [data-palette-preview][data-color-palette='supabase'] {
   --color-primary: #72e3ad;
-  --color-primary-rgb: 114 227 173;
-  --color-primary-text: #004d2c;
-  /* antes #006239 (7.3) -> 9.8 / 8.6 sobre soft */
+  --color-primary-text: #004c2b;
+  /* Relleno claro con etiqueta oscura: hover y pressed aclaran para no comerse su contraste */
   --color-primary-active: color-mix(in srgb, var(--color-primary) 85%, var(--color-surface-card));
   --color-primary-pressed: color-mix(in srgb, var(--color-primary) 70%, var(--color-surface-card));
   --color-on-primary: #1e2723;
   --color-link-deep: var(--color-primary-text);
-  --color-link-soft: var(--color-primary-tint);
-  /* ojo: es una superficie (#ededed); no usar como color de texto */
   --color-canvas: #fcfcfc;
-  --color-canvas-rgb: 252 252 252;
   --color-canvas-soft: #ededed;
-  --color-canvas-elevated: var(--color-canvas);
   --color-sidebar-surface: var(--color-canvas);
   --shell-floor: var(--color-sidebar-surface);
-  --color-surface-card: var(--color-canvas);
   --color-surface-strong: var(--color-canvas-soft);
-  --color-surface-hover: var(--color-surface-strong);
   --color-hairline: #dfdfdf;
   /* divisor decorativo */
   --color-ink: #171717;
-  --color-ink-rgb: 23 23 23;
   --color-mute: #3a3a3a;
   /* antes #525252 (6.7 sobre soft) -> 9.7 */
   --color-primary-tint: var(--color-canvas-soft);
@@ -1114,9 +929,7 @@
   /* antes #ca3214 (5.2) -> 9.9 */
   --color-error-rgb: 127 28 5;
   --color-error-deep: var(--color-error);
-  --color-error-text-enhanced: var(--color-error);
-  /* faltaba definirlo */
-  --color-error-text: var(--color-error-text-enhanced);
+  --color-error-text: var(--color-error);
   --color-error-subtle: #fdeeea;
   /* faltaba en claro */
   --color-on-error: var(--color-canvas);
@@ -1126,38 +939,32 @@
 
 :root[data-color-palette='supabase'][data-color-scheme='dark'],
 [data-palette-preview][data-color-palette='supabase'][data-color-scheme='dark'] {
-  --color-on-error-deep: var(--color-on-error);
   --color-primary: #00492a;
   /* antes #006239: texto encima daba 6.0 */
-  --color-primary-rgb: 0 73 42;
   --color-primary-text: #6ff0a0;
   /* antes #4ade80 (7.5 sobre strong) -> 9.1 */
+  --color-on-primary: #eaf4ef;
+
+  /* Relleno oscuro con etiqueta clara: hover y pressed oscurecen */
   --color-primary-active: color-mix(in srgb, var(--color-primary) 85%, var(--color-canvas));
   --color-primary-pressed: color-mix(in srgb, var(--color-primary) 70%, var(--color-canvas));
-  --color-on-primary: #eaf4ef;
-  /* antes #dde8e3 -> 9.4 */
   --color-link-deep: var(--color-ink);
   --color-canvas: #121212;
-  --color-canvas-rgb: 18 18 18;
   --color-canvas-soft: #1f1f1f;
   --color-canvas-elevated: #242424;
-  --color-sidebar-surface: var(--color-canvas);
   --color-surface-card: #171717;
   --color-surface-strong: #313131;
-  --color-surface-hover: var(--color-surface-strong);
   --color-hairline: #292929;
   /* divisor decorativo */
   --color-ink: #e2e8f0;
-  --color-ink-rgb: 226 232 240;
-  --color-mute: #d0d0d0;
-  /* antes #a2a2a2 (5.1 sobre strong) -> 8.4 */
+  --color-mute: #d4d4d4;
   --color-primary-tint: var(--color-surface-strong);
   /* En oscuro el error heredaba el rojo del claro (3.5:1). Ahora se redefine: */
   --color-error: #ffa690;
+
+  /* Texto de error >= 8.1:1 sobre surface-strong, hover y tint */
+  --color-error-text: #ffc8b1;
   --color-error-rgb: 255 166 144;
-  --color-error-deep: var(--color-error);
-  --color-error-text-enhanced: var(--color-error);
-  --color-error-text: var(--color-error-text-enhanced);
   --color-error-subtle: #3a1410;
   /* antes #541c15: el texto error daba 2.6 */
   --color-on-error: #1a0a07;
@@ -1165,7 +972,6 @@
 }
 
 @media (prefers-contrast: more) {
-
   :root[data-color-palette][data-color-scheme],
   [data-palette-preview][data-color-palette][data-color-scheme] {
     --color-hairline: var(--color-mute);
@@ -1214,7 +1020,7 @@ body {
   font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
   letter-spacing: var(--type-body-md-tracking);
-  color: var(--color-body);
+  color: var(--color-ink);
   background-color: var(--color-canvas);
 
   /* stylelint-disable-next-line declaration-block-no-duplicate-properties -- Fallback para navegadores sin dvh. */
@@ -1242,7 +1048,6 @@ video {
 
 /* Preferencia de accesibilidad: prevalece sobre animaciones de las features. */
 @media (prefers-reduced-motion: reduce) {
-
   *,
   *::before,
   *::after {
@@ -1331,7 +1136,6 @@ select {
 
 /* WebKit en iOS amplía al enfocar campos con texto menor que body-lg. */
 @supports (-webkit-touch-callout: none) {
-
   :where(input:not([type='checkbox'],
       [type='radio'],
       [type='file'],
@@ -1356,7 +1160,7 @@ select {
 strong,
 b {
   font-weight: var(--type-body-strong-weight);
-  color: var(--color-body-strong);
+  color: var(--color-ink);
 }
 
 code,
@@ -1638,7 +1442,7 @@ code:not(pre code) {
   inline-size: 100%;
   border-collapse: collapse;
   background-color: var(--color-surface-card);
-  color: var(--color-body);
+  color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
@@ -1659,7 +1463,7 @@ code:not(pre code) {
 }
 
 :where(.data-table) :where(thead th) {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-caption-up-size);
   font-weight: var(--type-caption-up-weight);
@@ -1670,7 +1474,7 @@ code:not(pre code) {
 }
 
 :where(.data-table) :where(tbody th, tfoot th) {
-  color: var(--color-body);
+  color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--type-body-strong-size);
   font-weight: var(--type-body-strong-weight);
@@ -1710,23 +1514,23 @@ code:not(pre code) {
 }
 
 .text-body {
-  color: var(--color-body);
+  color: var(--color-ink);
 }
 
 .text-body-strong {
-  color: var(--color-body-strong);
+  color: var(--color-ink);
 }
 
 .text-charcoal {
-  color: var(--color-charcoal);
+  color: var(--color-ink);
 }
 
 .text-muted {
-  color: var(--color-muted);
+  color: var(--color-mute);
 }
 
 .text-muted-soft {
-  color: var(--color-muted-soft);
+  color: var(--color-mute);
 }
 
 .text-primary {
@@ -1798,7 +1602,7 @@ code:not(pre code) {
   font-family: var(--font-body);
   font-size: max(var(--type-body-md-size), var(--editable-text-min-size, var(--type-body-md-size)));
   color: var(--color-ink);
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
   transition:
     border-color var(--transition-fast),
     box-shadow var(--transition-fast);
@@ -1826,7 +1630,7 @@ code:not(pre code) {
 
 .form-group input::placeholder,
 .form-group textarea::placeholder {
-  color: var(--color-faint);
+  color: var(--color-mute);
   opacity: 1;
 }
 
@@ -1836,7 +1640,7 @@ code:not(pre code) {
   :user-invalid,
   .input-error,
   .input-success) {
-  border-color: var(--color-charcoal);
+  border-color: var(--color-ink);
 }
 
 :is(input, select, textarea):is([aria-invalid='true'], :user-invalid) {
@@ -1849,8 +1653,8 @@ code:not(pre code) {
 .form-group textarea:disabled {
   opacity: var(--opacity-disabled);
   cursor: not-allowed;
-  background: var(--color-surface-soft);
-  color: var(--color-muted);
+  background: var(--color-surface-card);
+  color: var(--color-mute);
 }
 
 .form-error {
@@ -1996,7 +1800,7 @@ code:not(pre code) {
 
 /* Secondary — elevated surface + hairline */
 .btn-secondary {
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
   color: var(--color-ink);
   border-color: var(--color-control-border);
   box-shadow: none;
@@ -2004,7 +1808,7 @@ code:not(pre code) {
 
 .btn-secondary:hover:not(:disabled) {
   background: var(--color-surface-hover);
-  border-color: var(--color-charcoal);
+  border-color: var(--color-ink);
 }
 
 .btn-secondary:active:not(:disabled) {
@@ -2040,7 +1844,7 @@ code:not(pre code) {
 /* Ghost — transparente, solo texto */
 .btn-ghost {
   background: transparent;
-  color: var(--color-charcoal);
+  color: var(--color-ink);
   border-color: transparent;
 }
 
@@ -2090,7 +1894,7 @@ code:not(pre code) {
   width: var(--touch-target-min);
   height: var(--touch-target-min);
   border-radius: var(--radius-control);
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
   border: var(--border-width) solid var(--color-control-border);
   color: var(--color-ink);
   cursor: pointer;
@@ -2134,7 +1938,7 @@ code:not(pre code) {
 }
 
 .step-nav-control:disabled {
-  color: var(--color-muted);
+  color: var(--color-mute);
   cursor: not-allowed;
 }
 
@@ -2179,7 +1983,7 @@ code:not(pre code) {
 
 .card--soft {
   background: var(--color-canvas-soft);
-  border-color: var(--color-hairline-soft);
+  border-color: var(--color-hairline);
 }
 
 /* Card inverted — isla oscura (KPI hero, featured) */
@@ -2187,11 +1991,7 @@ code:not(pre code) {
 .card--dark,
 .stat-card--dark {
   --color-ink: var(--color-on-dark);
-  --color-body: var(--color-on-dark);
-  --color-body-strong: var(--color-on-dark);
   --color-mute: var(--color-on-dark-soft);
-  --color-muted: var(--color-on-dark-soft);
-  --color-faint: var(--color-on-dark-soft);
   --color-focus: var(--color-focus-on-inverted);
   --color-primary-text: var(--color-primary-text-on-dark);
   --color-primary-border: var(--color-primary-text-on-dark);
@@ -2238,8 +2038,8 @@ code:not(pre code) {
   inset-block-end: 0;
   z-index: var(--layer-modal);
   box-sizing: border-box;
-  background: var(--color-surface);
-  color: var(--color-body);
+  background: var(--color-canvas-elevated);
+  color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
@@ -2514,7 +2314,7 @@ code:not(pre code) {
   border-top: var(--border-width) solid var(--color-hairline);
   flex-wrap: wrap;
   flex: 0 0 auto;
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
 }
 
 .modal-footer>.btn-primary,
@@ -2607,7 +2407,6 @@ code:not(pre code) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-
   .modal-content[data-state],
   .modal-overlay[data-state] {
     animation: none;
@@ -2645,7 +2444,7 @@ code:not(pre code) {
   justify-content: center;
   text-align: center;
   padding: var(--design-spacing-xxl) var(--design-spacing-lg);
-  color: var(--color-muted);
+  color: var(--color-mute);
   animation: fadeIn var(--transition-base);
 }
 
@@ -2676,7 +2475,7 @@ code:not(pre code) {
 
 .animated-empty-state__subtitle {
   font-size: var(--type-body-sm-size);
-  color: var(--color-muted);
+  color: var(--color-mute);
   max-width: min(100%, var(--empty-state-description-max-inline-size));
   overflow-wrap: anywhere;
   font-weight: var(--type-body-sm-weight);
@@ -2701,7 +2500,6 @@ code:not(pre code) {
 
 /* Decoración en bucle: se detiene por completo con movimiento reducido. */
 @media (prefers-reduced-motion: reduce) {
-
   .animated-empty-state,
   .animated-empty-state__icon svg {
     animation: none;
@@ -2835,7 +2633,7 @@ label>input.sr-only:focus-visible,
   font-weight: var(--type-caption-sm-weight);
   line-height: var(--type-caption-sm-line);
   letter-spacing: var(--type-caption-sm-tracking);
-  color: var(--color-foreground);
+  color: var(--color-ink);
 }
 
 .toggle-switch input[type='checkbox'] {
@@ -2866,7 +2664,7 @@ label>input.sr-only:focus-visible,
   width: var(--toggle-thumb-size);
   inset-inline-start: var(--toggle-thumb-inset);
   inset-block-end: var(--toggle-thumb-inset);
-  background-color: var(--color-surface);
+  background-color: var(--color-canvas-elevated);
   border-radius: var(--rounded-full);
   transition: transform var(--transition-fast);
   box-shadow: var(--shadow-sm);
@@ -2916,7 +2714,6 @@ label>input.sr-only:focus-visible,
 }
 
 @media (forced-colors: active) {
-
   :focus-visible:not( :where([data-focus-ring] > input,
       [data-focus-ring] > textarea,
       label > input.sr-only,

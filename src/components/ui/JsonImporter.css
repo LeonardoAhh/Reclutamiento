@@ -18,11 +18,11 @@
 }
 
 .json-importer__status--success {
-  background: var(--color-success-tint);
+  background: var(--color-success-subtle);
   color: var(--color-success-text);
 }
 
 .json-importer__status--error {
-  background: var(--color-error-tint);
+  background: var(--color-error-subtle);
   color: var(--color-error-text);
 }

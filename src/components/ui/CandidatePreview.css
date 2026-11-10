@@ -48,7 +48,7 @@
 
 .candidate-preview__identity-text p {
   margin: 0;
-  color: var(--color-muted);
+  color: var(--color-mute);
   font: var(--type-body-md-weight) var(--type-body-md-size)/var(--type-body-md-line) var(--font-body);
   overflow-wrap: anywhere;
 }
@@ -83,7 +83,7 @@
   align-items: center;
   gap: var(--design-spacing-xs);
   min-inline-size: 0;
-  color: var(--color-muted);
+  color: var(--color-mute);
   font: var(--type-caption-up-weight) var(--type-caption-up-size)/var(--type-caption-up-line) var(--font-body);
   letter-spacing: var(--type-caption-up-tracking);
   text-transform: uppercase;
@@ -109,7 +109,7 @@
   align-items: center;
   min-inline-size: 0;
   margin: 0;
-  color: var(--color-body-strong);
+  color: var(--color-ink);
   font: var(--type-body-md-weight) var(--type-body-md-size)/var(--type-body-md-line) var(--font-body);
   overflow-wrap: anywhere;
 }
@@ -140,5 +140,5 @@
 }
 
 .candidate-preview__delete {
-  color: var(--color-error-text-enhanced);
+  color: var(--color-error-text);
 }

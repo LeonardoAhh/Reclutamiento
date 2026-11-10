@@ -74,7 +74,7 @@
   overflow-wrap: anywhere;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: var(--feature-assignment-description-max-lines);
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);

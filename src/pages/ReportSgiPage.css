@@ -69,7 +69,7 @@
 .report-sgi__reference {
   align-self: flex-end;
   margin: 0;
-  color: var(--color-body);
+  color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--type-body-sm-semibold-size);
   font-weight: var(--type-body-sm-semibold-weight);
@@ -84,7 +84,7 @@
   align-items: center;
   gap: var(--design-spacing-xs);
   margin: 0;
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-body-sm-weight);
@@ -143,7 +143,7 @@
   border: var(--border-width) dashed var(--color-hairline);
   border-radius: var(--radius-card);
   background-color: var(--color-canvas-soft);
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-body-sm-weight);
@@ -181,7 +181,7 @@
 
 .report-sgi__person-id {
   display: block;
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-caption-sm-size);
   font-weight: var(--type-caption-sm-weight);
@@ -191,7 +191,7 @@
 }
 
 .report-sgi__puesto {
-  color: var(--color-body);
+  color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-body-sm-weight);
@@ -281,7 +281,7 @@
     display: block;
     content: attr(data-label);
     margin-block-end: var(--design-spacing-xxs);
-    color: var(--color-muted);
+    color: var(--color-mute);
     font-family: var(--font-body);
     font-size: var(--type-caption-up-size);
     font-weight: var(--type-caption-up-weight);

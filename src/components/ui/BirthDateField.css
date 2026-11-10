@@ -30,7 +30,7 @@
   min-height: var(--touch-target-min);
   padding-inline: var(--spacing-xs);
   color: var(--color-ink);
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
   border: var(--border-width) solid var(--color-control-border);
   border-radius: var(--rounded-xs);
 }

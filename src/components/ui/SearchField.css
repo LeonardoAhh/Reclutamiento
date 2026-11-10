@@ -5,8 +5,8 @@
   min-block-size: var(--control-min-block-size);
   border: var(--border-width) solid var(--color-control-border);
   border-radius: var(--radius-field);
-  background: var(--color-surface);
-  color: var(--color-muted);
+  background: var(--color-canvas-elevated);
+  color: var(--color-mute);
   transition: border-color var(--transition-fast);
 }
 
@@ -48,7 +48,7 @@
   border-start-end-radius: var(--rounded-md);
   border-end-end-radius: var(--rounded-md);
   background: transparent;
-  color: var(--color-muted);
+  color: var(--color-mute);
   cursor: pointer;
   transition:
     background-color var(--transition-fast),
@@ -88,12 +88,12 @@
 
 .search-field:has(.search-field__input:disabled) {
   border-color: var(--color-hairline);
-  background: var(--color-surface-soft);
-  color: var(--color-muted);
+  background: var(--color-surface-card);
+  color: var(--color-mute);
 }
 
 .search-field .search-field__input:disabled {
-  color: var(--color-muted);
+  color: var(--color-mute);
   cursor: not-allowed;
 }
 
@@ -103,7 +103,7 @@
 }
 
 .search-field:hover:not(:focus-within, :has(.search-field__input:disabled)) {
-  border-color: var(--color-charcoal);
+  border-color: var(--color-ink);
 }
 
 .search-field .search-field__input:hover,
@@ -113,7 +113,7 @@
 }
 
 .search-field .search-field__input::placeholder {
-  color: var(--color-muted);
+  color: var(--color-mute);
   opacity: 1;
 }
 

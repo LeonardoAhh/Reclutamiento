@@ -20,7 +20,7 @@
 
 .overview-kpi:hover {
   border-color: var(--color-hairline-strong);
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
 }
 
 .overview-kpi__header {
@@ -33,7 +33,7 @@
 }
 
 .overview-kpi__label {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-caption-up-size);
   font-weight: var(--type-caption-up-weight);
@@ -45,7 +45,7 @@
 
 .overview-kpi__corner-note {
   flex: 0 0 auto;
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-body-sm-weight);
@@ -68,7 +68,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--design-spacing-xxs);
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);

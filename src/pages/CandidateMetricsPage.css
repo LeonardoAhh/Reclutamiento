@@ -85,7 +85,7 @@
 .recruiter-metrics__card-total,
 .recruiter-metrics__stat-count,
 .recruiter-metrics__table-period {
-  color: var(--color-body);
+  color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
@@ -139,7 +139,7 @@
 }
 .recruiter-metrics__stat-label,
 .recruiter-metrics__card-efectividad {
-  color: var(--color-body);
+  color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--type-caption-up-size);
   font-weight: var(--type-caption-up-weight);
@@ -151,7 +151,7 @@
   block-size: var(--design-spacing-xs);
   border-radius: var(--rounded-full);
   overflow: hidden;
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
   margin-block-start: auto;
 }
 .recruiter-metrics__card-bar-segment {
@@ -162,13 +162,13 @@
   background: var(--color-success);
 }
 .recruiter-metrics__card-bar-segment--citados {
-  background: var(--color-body);
+  background: var(--color-ink);
 }
 .recruiter-metrics__card-bar-segment--rechazados {
   background: var(--color-error);
 }
 .recruiter-metrics__card-bar-segment--no-asistio {
-  background: var(--color-muted);
+  background: var(--color-mute);
 }
 .recruiter-metrics__table-wrap {
   min-inline-size: 0;
@@ -220,7 +220,7 @@
 }
 .recruiter-metrics__week-heading {
   text-align: center;
-  color: var(--color-body);
+  color: var(--color-ink);
   margin-block-end: var(--design-spacing-md);
   font-family: var(--font-body);
   font-size: var(--type-body-strong-size);

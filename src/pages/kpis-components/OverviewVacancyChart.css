@@ -7,7 +7,7 @@
   padding: var(--design-spacing-md);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--radius-card);
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
@@ -57,7 +57,7 @@
   min-inline-size: 0;
   margin: 0;
   padding: 0;
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
@@ -103,7 +103,7 @@
 
 .overview-chart__marker circle {
   r: var(--chart-point-radius);
-  fill: var(--color-surface);
+  fill: var(--color-canvas-elevated);
 }
 
 .overview-chart__marker--plantilla {
@@ -154,7 +154,7 @@
 }
 
 .overview-chart__swatch--backup {
-  background: var(--color-accent-amber);
+  background: var(--color-warning);
 }
 
 .overview-chart__swatch--starlite {
@@ -164,7 +164,7 @@
 .overview-chart__empty {
   margin: 0;
   padding-block: var(--design-spacing-xl);
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);

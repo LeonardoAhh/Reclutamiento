@@ -19,7 +19,7 @@
   inline-size: 100%;
   padding: var(--design-spacing-xxs);
   border-radius: var(--radius-control);
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
 }
 
 .ui-tabs__list[data-variant='underline'] {
@@ -55,7 +55,7 @@
   border: 0;
   border-radius: var(--radius-control);
   background: transparent;
-  color: var(--color-body);
+  color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
@@ -102,7 +102,7 @@
 
 .ui-tabs__trigger:disabled,
 .ui-tabs__trigger[data-disabled] {
-  color: var(--color-faint);
+  color: var(--color-mute);
   cursor: not-allowed;
 }
 

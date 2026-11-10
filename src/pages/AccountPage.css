@@ -42,7 +42,7 @@
   min-width: 0;
 }
 .account-card__title {
-  color: var(--color-body);
+  color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--type-caption-up-size);
   font-weight: var(--type-caption-up-weight);
@@ -51,7 +51,7 @@
   text-transform: uppercase;
 }
 .account-card__description,.account-row__description {
-  color: var(--color-body);
+  color: var(--color-ink);
   overflow-wrap: anywhere;
 }
 .account-card__description {
@@ -139,7 +139,7 @@
   overflow-wrap: anywhere;
 }
 .account-profile__email {
-  color: var(--color-body);
+  color: var(--color-ink);
   overflow-wrap: anywhere;
 }
 .account-profile__input {
@@ -185,7 +185,7 @@
   overflow-wrap: anywhere;
 }
 .account-setting-row__value {
-  color: var(--color-body);
+  color: var(--color-ink);
   text-align: end;
 }
 .account-appearance .theme-select {
@@ -443,7 +443,7 @@
   align-items: center;
   gap: var(--design-spacing-xs);
   min-block-size: var(--touch-target-min);
-  color: var(--color-body);
+  color: var(--color-ink);
   cursor: pointer;
 }
 @media (min-width:768px) {

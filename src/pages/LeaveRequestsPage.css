@@ -61,11 +61,11 @@
   padding: 0;
   border: 0;
   background: transparent;
-  color: var(--color-muted);
+  color: var(--color-mute);
 }
 
 .leave-requests-page__notice:hover:not(:disabled) {
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
   color: var(--color-ink);
 }
 
@@ -79,7 +79,7 @@
 .leave-requests-page__empty .animated-empty-state__icon {
   inline-size: var(--icon-size-xxl);
   block-size: var(--icon-size-xxl);
-  color: var(--color-muted);
+  color: var(--color-mute);
 }
 
 .leave-requests-page__empty .animated-empty-state__icon svg {
@@ -164,7 +164,7 @@
 
 .leave-requests-page__action-approve:hover:not(:disabled) {
   color: var(--color-success-text);
-  background: var(--color-success-tint);
+  background: var(--color-success-subtle);
 }
 
 .leave-requests-page__action-reject {
@@ -173,7 +173,7 @@
 
 .leave-requests-page__action-reject:hover:not(:disabled) {
   color: var(--color-error-text);
-  background: var(--color-error-tint);
+  background: var(--color-error-subtle);
 }
 
 .leave-requests-page__cards {
@@ -230,7 +230,7 @@
     border: var(--border-width) solid var(--color-hairline);
     border-radius: var(--rounded-lg);
     background: var(--color-surface-card);
-    color: var(--color-body);
+    color: var(--color-ink);
     font-family: var(--font-body);
     font-size: var(--type-body-md-size);
     font-weight: var(--type-body-md-weight);
@@ -272,7 +272,7 @@
   .leave-requests-page__card-type,
   .leave-requests-page__card-label,
   .leave-requests-page__card-requested {
-    color: var(--color-muted);
+    color: var(--color-mute);
   }
 
   .leave-requests-page__card-period {

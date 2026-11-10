@@ -35,7 +35,7 @@
 
 .formatos-page .btn-utility:disabled:hover,
 .formatos-page .btn-utility:disabled:active {
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
   border-color: var(--color-hairline);
   box-shadow: none;
   transform: none;
@@ -82,7 +82,7 @@
 
 .recordatorios-routes__subtitle {
   margin-top: var(--spacing-xs);
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-body-sm-size);
   line-height: var(--type-body-sm-line);
 }
@@ -109,7 +109,7 @@
   width: 100%;
   min-width: var(--recordatorios-route-table-min);
   padding: var(--spacing-sm);
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
 }
 
 .recordatorios-table {
@@ -218,7 +218,7 @@
     gap: var(--spacing-md);
     text-align: left;
     border: 0;
-    border-bottom: var(--border-width) solid var(--color-hairline-soft);
+    border-bottom: var(--border-width) solid var(--color-hairline);
   }
 
   .recordatorios-table td:last-child {
@@ -227,7 +227,7 @@
 
   .recordatorios-table td::before {
     content: attr(data-label);
-    color: var(--color-muted);
+    color: var(--color-mute);
     font-size: var(--type-caption-up-size);
     font-weight: var(--type-caption-up-weight);
     line-height: var(--type-caption-up-line);
@@ -374,7 +374,7 @@
   flex-direction: column;
   gap: var(--spacing-lg);
   padding: var(--spacing-lg);
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-lg);
 }
@@ -396,8 +396,8 @@
   display: grid;
   place-items: center;
   color: var(--color-ink);
-  background: var(--color-surface-soft);
-  border: 1px solid var(--color-hairline-soft);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-md);
 }
 
@@ -422,7 +422,7 @@
 
 .weekly-format-card__description {
   margin-top: var(--spacing-xs);
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-body-md-size);
   line-height: var(--type-body-md-line);
   overflow-wrap: anywhere;
@@ -443,7 +443,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--design-spacing-xxs);
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-body-md-size);
   font-family: var(--font-body);
   font-weight: var(--type-body-md-weight);
@@ -467,8 +467,8 @@
 .weekly-formats__empty {
   margin: 0;
   padding: var(--spacing-lg);
-  color: var(--color-muted);
-  background: var(--color-surface-soft);
+  color: var(--color-mute);
+  background: var(--color-surface-card);
   border: 1px dashed var(--color-hairline-strong);
   border-radius: var(--rounded-md);
   text-align: center;
@@ -529,7 +529,7 @@
   grid-template-columns: minmax(0, 1fr);
   gap: var(--design-spacing-xs);
   padding: var(--design-spacing-md);
-  border-bottom: var(--border-width) solid var(--color-hairline-soft);
+  border-bottom: var(--border-width) solid var(--color-hairline);
 }
 
 @media (min-width: 768px) {
@@ -556,7 +556,7 @@
 
 .weekly-review-modal__selector-header p {
   margin-top: var(--spacing-xs);
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-body-md-size);
   line-height: var(--type-body-md-line);
   font-family: var(--font-body);
@@ -574,7 +574,7 @@
 }
 
 .weekly-review-modal__select-all {
-  color: var(--color-charcoal);
+  color: var(--color-ink);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
   font-family: var(--font-body);
@@ -589,7 +589,7 @@
 }
 
 .weekly-review-modal__employee-list li {
-  border-bottom: var(--border-width) solid var(--color-hairline-soft);
+  border-bottom: var(--border-width) solid var(--color-hairline);
 }
 
 .weekly-review-modal__employee-list li:last-child {
@@ -602,7 +602,7 @@
 }
 
 .weekly-review-modal__employee:hover {
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
 }
 
 .weekly-review-modal__employee-copy {
@@ -627,7 +627,7 @@
 }
 
 .weekly-review-modal__employee-copy span {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-body-md-size);
   line-height: var(--type-body-md-line);
   font-family: var(--font-body);

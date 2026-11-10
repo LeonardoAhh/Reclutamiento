@@ -12,7 +12,7 @@
 .employee-bulk-update__help,
 .employee-bulk-update__number,
 .employee-bulk-update__unchanged {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-body-sm-weight);
   line-height: var(--type-body-sm-line);
@@ -45,7 +45,7 @@
   padding: var(--design-spacing-sm);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-md);
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
 }
 
 .employee-bulk-update__missing {
@@ -106,7 +106,7 @@
   .employee-bulk-update__table th,
   .employee-bulk-update__table td {
     padding: var(--design-spacing-xs) 0;
-    border-block-end: var(--border-width) solid var(--color-hairline-soft);
+    border-block-end: var(--border-width) solid var(--color-hairline);
     vertical-align: top;
   }
 
@@ -118,7 +118,7 @@
 
   .employee-bulk-update__table td::before {
     content: attr(data-label);
-    color: var(--color-muted);
+    color: var(--color-mute);
     font-size: var(--type-caption-up-size);
     font-weight: var(--type-caption-up-weight);
     line-height: var(--type-caption-up-line);
@@ -152,7 +152,7 @@
   flex: 0 0 var(--icon-size-sm);
   inline-size: var(--icon-size-sm);
   block-size: var(--icon-size-sm);
-  color: var(--color-muted);
+  color: var(--color-mute);
 }
 
 @media (min-width: 768px) {

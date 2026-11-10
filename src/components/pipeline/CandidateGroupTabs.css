@@ -23,7 +23,7 @@
   border: 0;
   border-bottom: var(--border-width) solid transparent;
   background: transparent;
-  color: var(--color-muted);
+  color: var(--color-mute);
   font: inherit;
   cursor: pointer;
 }
@@ -46,7 +46,7 @@
 .candidate-group-tabs__count {
   padding-inline: var(--spacing-xs);
   border-radius: var(--rounded-full);
-  background: var(--color-surface-soft);
-  color: var(--color-muted);
+  background: var(--color-surface-card);
+  color: var(--color-mute);
   font-size: var(--type-body-sm-size);
 }

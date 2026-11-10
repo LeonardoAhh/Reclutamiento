@@ -36,7 +36,7 @@
 
 .motivos-baja__panel-heading p,
 .motivos-baja__empty {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-body-md-size);
   line-height: var(--type-body-md-line);
   font-family: var(--font-body);
@@ -75,8 +75,8 @@
 }
 
 .motivos-baja__capture-trigger {
-  color: var(--color-muted);
-  border-color: var(--color-muted);
+  color: var(--color-mute);
+  border-color: var(--color-mute);
   border-style: dotted;
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
@@ -131,7 +131,7 @@
 }
 
 .motivos-baja__filter label {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-caption-up-size);
   font-weight: var(--type-caption-up-weight);
   line-height: var(--type-caption-up-line);
@@ -178,7 +178,7 @@
 }
 
 .motivos-baja__bar-count {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-body-md-size);
   line-height: var(--type-body-md-line);
   font-family: var(--font-body);
@@ -200,7 +200,7 @@
   height: var(--design-spacing-xs);
   overflow: hidden;
   border-radius: var(--rounded-full);
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
 }
 
 .motivos-baja__bar-track span {

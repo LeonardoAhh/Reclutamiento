@@ -14,7 +14,7 @@
   width: min(var(--feature-navigation-rail-inline-size), 100%);
   padding-block: var(--safe-area-top) calc(var(--design-spacing-sm) + var(--safe-area-bottom));
   padding-inline: max(var(--design-spacing-sm), var(--safe-area-left)) max(var(--design-spacing-sm), var(--safe-area-right));
-  color: var(--color-navigation-rail-text);
+  color: var(--color-mute);
   background: var(--color-sidebar-surface, var(--workspace-canvas));
 }
 
@@ -107,7 +107,7 @@ button.sidebar__desktop-toggle:hover {
 
 @media (hover: hover) {
   button.sidebar__close-btn:hover {
-    background-color: var(--color-surface-soft);
+    background-color: var(--color-surface-card);
   }
 }
 

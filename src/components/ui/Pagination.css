@@ -22,7 +22,7 @@
   justify-content: center;
   gap: var(--design-spacing-xxs);
   min-inline-size: 0;
-  color: var(--color-body);
+  color: var(--color-ink);
   white-space: nowrap;
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);

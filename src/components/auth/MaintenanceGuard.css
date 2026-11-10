@@ -62,7 +62,7 @@
 .maintenance-body {
   max-inline-size: var(--content-reading-max-inline-size);
   margin: 0;
-  color: var(--color-body);
+  color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
@@ -90,7 +90,7 @@
 .maintenance-status {
   min-block-size: 1lh;
   margin: 0;
-  color: var(--color-body);
+  color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);

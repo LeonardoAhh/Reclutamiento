@@ -101,7 +101,7 @@
 }
 
 .reporte-head__month-subtitle {
-  color: var(--color-body);
+  color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-body-sm-weight);
@@ -137,11 +137,11 @@
 }
 
 .reporte-month-picker__button:hover:not(:disabled) {
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
 }
 
 .reporte-month-picker__button:disabled {
-  color: var(--color-muted);
+  color: var(--color-mute);
   cursor: not-allowed;
 }
 
@@ -179,7 +179,7 @@
   flex: 0 0 var(--touch-target-min);
   inline-size: var(--touch-target-min);
   padding-inline: 0;
-  color: var(--color-body);
+  color: var(--color-ink);
 }
 
 @media (width >= 768px) {
@@ -203,7 +203,7 @@
 }
 
 .reporte-subtitle {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   line-height: var(--type-body-md-line);
@@ -272,7 +272,7 @@ button.reporte-card,
 button.reporte-card:hover,
 .reporte-card--interactive:hover {
   border-color: var(--color-hairline-strong);
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
 }
 
 .reporte-card__header {
@@ -280,7 +280,7 @@ button.reporte-card:hover,
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xs);
-  border-bottom: 1px solid var(--color-hairline-soft);
+  border-bottom: 1px solid var(--color-hairline);
 }
 
 @media (width >= 768px) {
@@ -304,7 +304,7 @@ button.reporte-card:hover,
 }
 
 .reporte-card__description {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   line-height: var(--type-body-md-line);
@@ -380,8 +380,8 @@ button.reporte-card:hover,
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   line-height: var(--type-body-md-line);
-  background: var(--color-surface-soft);
-  color: var(--color-charcoal);
+  background: var(--color-surface-card);
+  color: var(--color-ink);
   border: var(--border-width) solid var(--color-hairline);
   max-width: 100%;
   min-width: 0;
@@ -395,13 +395,13 @@ button.reporte-card:hover,
 }
 
 .reporte-status-banner.error {
-  background: var(--color-error-tint);
+  background: var(--color-error-subtle);
   color: var(--color-error-text);
   border-color: var(--color-error-text);
 }
 
 .reporte-status-banner--warn {
-  background: var(--color-warning-tint);
+  background: var(--color-warning-subtle);
   color: var(--color-warning-text);
   border-color: var(--color-warning-text);
   font-weight: var(--type-body-strong-weight);

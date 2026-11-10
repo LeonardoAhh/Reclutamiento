@@ -14,7 +14,7 @@
 
 .candidate-access-card__hint {
   margin: 0;
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
@@ -55,7 +55,7 @@
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-lg);
   background: var(--color-surface-card);
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);

@@ -107,7 +107,7 @@
 
 .rutas-list-panel__count {
   flex-shrink: 0;
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-body-md-size);
   line-height: var(--type-body-md-line);
   font-family: var(--font-body);
@@ -153,8 +153,8 @@
   grid-column: 1 / -1;
   margin: 0;
   padding: var(--spacing-lg);
-  color: var(--color-muted);
-  background: var(--color-surface);
+  color: var(--color-mute);
+  background: var(--color-canvas-elevated);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-md);
 }
@@ -169,7 +169,7 @@
   color: var(--color-error-text);
   border-radius: var(--rounded-md);
   border: var(--border-width) solid var(--color-error);
-  background: var(--color-error-tint);
+  background: var(--color-error-subtle);
 }
 
 .rutas-error p {
@@ -207,11 +207,11 @@
 }
 
 .ruta-card:hover {
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
 }
 
 .ruta-card--active {
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
   border-color: var(--color-primary-border);
 }
 
@@ -221,7 +221,7 @@
   place-items: center;
   inline-size: var(--control-height-sm);
   block-size: var(--control-height-sm);
-  color: var(--color-muted);
+  color: var(--color-mute);
   transition:
     background var(--transition-fast),
     color var(--transition-fast);
@@ -265,7 +265,7 @@
 .ruta-card__subtitle {
   display: block;
   min-inline-size: 0;
-  color: var(--color-body);
+  color: var(--color-ink);
   font-size: var(--type-body-md-size);
   line-height: var(--type-body-md-line);
   overflow-wrap: anywhere;
@@ -294,7 +294,7 @@
 
 .ruta-card__capacity-label {
   grid-column: 1 / -1;
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-caption-up-size);
   font-weight: var(--type-caption-up-weight);
@@ -365,7 +365,7 @@
   gap: var(--spacing-sm);
   padding: var(--spacing-xl);
   text-align: center;
-  color: var(--color-muted);
+  color: var(--color-mute);
   border: var(--border-width) dashed var(--color-hairline-strong);
   border-radius: var(--rounded-lg);
   min-height: var(--config-panel-min-height);
@@ -377,8 +377,8 @@
   justify-content: center;
   width: var(--touch-target-min);
   height: var(--touch-target-min);
-  color: var(--color-muted);
-  background: var(--color-surface-soft);
+  color: var(--color-mute);
+  background: var(--color-surface-card);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-md);
 }
@@ -442,7 +442,7 @@
 
 .ruta-search-results__count {
   flex-shrink: 0;
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-body-md-size);
   line-height: var(--type-body-md-line);
   font-family: var(--font-body);
@@ -462,9 +462,9 @@
 .ruta-search-result {
   min-width: 0;
   padding: var(--spacing-md);
-  border: var(--border-width) solid var(--color-hairline-soft);
+  border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-md);
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
 }
 
 .ruta-search-result__identity {
@@ -485,7 +485,7 @@
 }
 
 .ruta-search-result__identity span {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-body-md-size);
   line-height: var(--type-body-md-line);
   font-family: var(--font-body);
@@ -505,7 +505,7 @@
 }
 
 .ruta-search-result__details dt {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-caption-up-size);
   font-weight: var(--type-caption-up-weight);
   line-height: var(--type-caption-up-line);
@@ -561,13 +561,13 @@
   gap: var(--design-spacing-xs) var(--design-spacing-md);
   min-width: 0;
   padding: var(--design-spacing-sm) var(--design-spacing-md);
-  border: var(--border-width) solid var(--color-hairline-soft);
+  border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-md);
   background: var(--color-canvas-elevated);
 }
 
 .route-itinerary__number {
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-body-strong-size);
   font-weight: var(--type-body-strong-weight);
@@ -587,7 +587,7 @@
 }
 
 .route-itinerary__place p {
-  color: var(--color-body);
+  color: var(--color-ink);
 }
 
 .rutas-error p + p {
@@ -603,7 +603,7 @@
 }
 
 .route-itinerary__times dt {
-  color: var(--color-muted);
+  color: var(--color-mute);
 }
 
 .route-itinerary__times dd {
@@ -635,7 +635,7 @@
 
 .shift-bars__label {
   white-space: nowrap;
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-caption-up-size);
   font-family: var(--font-body);
   font-weight: var(--type-caption-up-weight);
@@ -726,12 +726,12 @@
 }
 
 .trend-flat {
-  color: var(--color-charcoal);
+  color: var(--color-ink);
 }
 
 .shift-bars__comparison-note {
   margin-top: var(--spacing-sm);
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-size: var(--type-body-md-size);
   line-height: var(--type-body-md-line);
   font-family: var(--font-body);
@@ -757,9 +757,9 @@
   min-width: 0;
   min-height: var(--touch-target-min);
   padding: var(--design-spacing-xs);
-  border: var(--border-width) solid var(--color-hairline-soft);
+  border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--radius-card);
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
   color: var(--color-ink);
   font-family: var(--font-body);
   text-align: left;
@@ -822,7 +822,7 @@
   font-weight: var(--type-caption-up-weight);
   letter-spacing: var(--type-caption-up-tracking);
   text-transform: uppercase;
-  color: var(--color-muted);
+  color: var(--color-mute);
   font-family: var(--font-body);
   line-height: var(--type-caption-up-line);
 }

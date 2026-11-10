@@ -69,12 +69,12 @@
 
 .responsibilities-section__empty-icon {
   margin-block-end: var(--spacing-md);
-  color: var(--color-muted-soft);
+  color: var(--color-mute);
 }
 
 .responsibilities-section__empty-title {
   margin: 0 0 var(--design-spacing-xxs);
-  color: var(--color-charcoal);
+  color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--type-body-strong-size);
   font-weight: var(--type-body-strong-weight);
@@ -85,7 +85,7 @@
 .responsibilities-section__empty-description {
   max-inline-size: var(--content-reading-max-inline-size);
   margin: 0;
-  color: var(--color-muted);
+  color: var(--color-mute);
   overflow-wrap: anywhere;
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
@@ -111,7 +111,7 @@
 
 .responsibility-detail__description {
   margin: 0;
-  color: var(--color-body);
+  color: var(--color-ink);
   overflow-wrap: anywhere;
 }
 
@@ -167,5 +167,5 @@
 }
 
 .responsibility-detail__edit:hover {
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
 }

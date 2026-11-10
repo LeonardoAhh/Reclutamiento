@@ -17,7 +17,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-muted);
+  color: var(--color-mute);
   transition: opacity var(--transition-base);
 }
 
@@ -46,7 +46,7 @@
 
 .lightbox-modal__message {
   margin: 0;
-  color: var(--color-body);
+  color: var(--color-ink);
   text-align: center;
 }
 

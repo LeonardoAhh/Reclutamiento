@@ -23,7 +23,7 @@
 }
 
 .vacancy-modal__exclusion-toggle:hover {
-  background: var(--color-surface-soft);
+  background: var(--color-surface-card);
 }
 
 .vacancy-modal__exclusion-toggle input[type="checkbox"] {
@@ -49,7 +49,7 @@
 .vacancy-modal__timeline {
   margin-top: var(--spacing-lg);
   padding: var(--spacing-lg);
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-lg);
 }
@@ -90,15 +90,14 @@
 .vacancy-modal__timeline-status {
   font-size: var(--type-caption-md-size);
   font-weight: var(--type-caption-md-weight);
-  color: var(--color-muted);
+  color: var(--color-mute);
   padding: 2px var(--spacing-xs);
-  background: var(--color-surface-cream-strong);
+  background: var(--color-surface-card);
   border-radius: var(--rounded-xs);
 }
 
 .vacancy-modal__timeline-status--to {
   font-weight: var(--type-body-strong-weight);
-  color: var(--color-ink);
   background: var(--color-primary);
   color: var(--color-on-primary);
 }
@@ -108,18 +107,18 @@
   align-items: center;
   gap: var(--spacing-xs);
   font-size: var(--type-caption-md-size);
-  color: var(--color-muted);
+  color: var(--color-mute);
 }
 
 .vacancy-modal__timeline-by {
-  color: var(--color-body);
+  color: var(--color-ink);
 }
 
 .vacancy-modal__timeline-reason {
   font-size: var(--type-body-sm-size);
-  color: var(--color-body);
+  color: var(--color-ink);
   padding-top: var(--spacing-xs);
-  border-top: 1px solid var(--color-hairline-soft);
+  border-top: 1px solid var(--color-hairline);
 }
 
 /* ── Mobile adjustments ── */

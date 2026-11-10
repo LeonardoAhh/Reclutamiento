@@ -117,7 +117,7 @@
   flex-direction: column;
   gap: var(--design-spacing-sm);
   padding: var(--design-spacing-sm);
-  background: var(--color-error-tint);
+  background: var(--color-error-subtle);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-lg);
 }
@@ -150,7 +150,7 @@
 
 .delete-warning__sub {
   font-size: var(--type-body-sm-size);
-  color: var(--color-muted);
+  color: var(--color-mute);
   line-height: var(--type-body-sm-line);
 }
 
@@ -178,21 +178,16 @@
 
 .form-notice--warning {
   color: var(--color-warning-text);
-  background: var(--color-warning-tint);
+  background: var(--color-warning-subtle);
 }
 
 .form-notice--warning svg {
   color: var(--color-warning-text);
 }
 
-.form-notice--info {
-  color: var(--color-ink);
-  background: var(--color-focus-ring);
-}
-
 .form-notice--success {
   color: var(--color-success-text);
-  background: var(--color-success-tint);
+  background: var(--color-success-subtle);
 }
 
 .form-notice--success svg {
@@ -203,12 +198,12 @@
 .form-hint {
   margin-top: var(--design-spacing-sm);
   padding: var(--design-spacing-sm);
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-md);
   font-size: var(--type-body-sm-size);
   line-height: var(--type-body-sm-line);
-  color: var(--color-body);
+  color: var(--color-ink);
 }
 
 .form-hint strong {

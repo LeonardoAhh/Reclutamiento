@@ -6,7 +6,7 @@
 
 /* Chip resaltado cuando hay muchas incidencias (>50). Semántico, no rojo puro. */
 .reporte-saved__count:has(.reporte-saved__count-value--high) {
-  background: var(--color-warning-tint);
+  background: var(--color-warning-subtle);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -25,7 +25,7 @@
   padding: var(--control-padding-y) var(--control-padding-x);
   border-radius: var(--radius-control);
   border: var(--border-width) solid var(--color-control-border);
-  background: var(--color-surface);
+  background: var(--color-canvas-elevated);
   color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--type-button-md-size);
