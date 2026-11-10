@@ -2,30 +2,19 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTeamDirectory } from '@/features/team/TeamProvider';
 import { recruiterOptions } from '@/features/team/types';
 import { Tooltip } from './Tooltip';
+import { Trash2, CircleAlert, History, ArrowRight, Save } from 'lucide-react';
 import {
-  ClipboardList,
-  PenLine,
-  Trash2,
-  CircleAlert,
-  History,
-  ArrowRight,
-  Info,
-  AlertTriangle,
-} from 'lucide-react';
-import { Save } from 'lucide-react';
-import type {
-  VacancyRequest,
-  VacancyStatus,
-  VacancyPriority,
-  VacancyStatusHistoryEntry,
-} from '@/lib/types';
-import {
+  type VacancyRequest,
+  type VacancyStatus,
+  type VacancyPriority,
+  type VacancyStatusHistoryEntry,
   VACANCY_STATUSES,
   VACANCY_STATUS_LABEL,
   VACANCY_PRIORITIES,
   VACANCY_PRIORITY_LABEL,
   VACANCY_EXCLUSION_REASONS,
   DEFAULT_VACANCY_SLA_DAYS,
+  CANDIDATE_SOURCES,
 } from '@/lib/types';
 import { usePositions } from '@/lib/positions';
 import { toNaturalCase } from '@/lib/utils';
@@ -42,7 +31,6 @@ import { CustomSelect } from './CustomSelect';
 import { toast } from '@/lib/notify';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { CANDIDATE_SOURCES } from '@/lib/types';
 import './VacancyModal.css';
 
 type Mode = 'add' | 'edit' | 'delete';
@@ -252,7 +240,7 @@ export function VacancyModal({
         toast.success({ title: english ? 'Vacancy saved' : 'Vacante guardada' });
         onClose();
       }
-    } catch (err) {
+    } catch {
       const message = english ? 'Unexpected error.' : 'Error inesperado.';
       setErrorMsg(message);
       toast.error({ title: message });
@@ -263,14 +251,6 @@ export function VacancyModal({
   const isAdd = mode === 'add';
   const isEdit = mode === 'edit';
   const isDelete = mode === 'delete';
-
-  const icon = isDelete ? (
-    <Trash2 size={20} className="color-error" aria-hidden="true" />
-  ) : isEdit ? (
-    <PenLine size={20} className="color-primary" aria-hidden="true" />
-  ) : (
-    <ClipboardList size={20} className="color-primary" aria-hidden="true" />
-  );
 
   const title = isDelete
     ? 'Eliminar vacante'
@@ -549,7 +529,6 @@ export function VacancyModal({
       <Modal
         isOpen={isOpen}
         onClose={onClose}
-        icon={icon}
         title={title}
         className="vacancy-modal modal-wizard-mobile"
       >
@@ -616,7 +595,6 @@ export function VacancyModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      icon={icon}
       title={title}
       className={`vacancy-modal${!isDelete ? ' vacancy-modal--wide' : ''}`}
       footerActions={footerActions}

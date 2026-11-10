@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { UsersRound } from 'lucide-react';
 import { Modal } from './Modal';
 import { FormSheet } from './FormSheet';
 import { ExpandableSection } from './ExpandableSection';
@@ -212,7 +211,7 @@ export function WeeklyHiresModal({
       isOpen={isOpen}
       onClose={onClose}
       className="weekly-hires-modal"
-      icon={<UsersRound size="var(--icon-size-md)" aria-hidden="true" />}
+
       title={`${t('Ingresos')} · ${t('Semanas')} ${previousRange.week} ${en ? 'and' : 'y'} ${range.week}`}
       size="sm"
     >

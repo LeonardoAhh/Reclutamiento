@@ -11,7 +11,7 @@ type FormSheetProps = ModalProps & {
 };
 
 export function FormSheet({
-  isOpen, onClose, onBack, className, icon, title, footerActions, headerActions, children,
+  isOpen, onClose, onBack, className, title, footerActions, headerActions, children,
   hideCloseButton = false, closeLabel, labelledById, returnFocusRef, onCloseAutoFocus, size = "sm",
 }: FormSheetProps) {
   const triggerRef = useRef<HTMLElement | null>(null);
@@ -50,7 +50,7 @@ export function FormSheet({
                 aria-label={language === "en" ? "Back" : "Regresar"}>
                 <ArrowLeft aria-hidden="true" />
               </button>
-            ) : icon}
+            ) : null}
             <SheetTitle><span id={titleId}>{title}</span></SheetTitle>
           </div>
           {headerActions}

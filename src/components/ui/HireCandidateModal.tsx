@@ -1,6 +1,6 @@
 import { useEffect, useId, useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { CircleAlert, CircleCheckBig, UserRoundPlus } from 'lucide-react';
+import { CircleAlert, CircleCheckBig } from 'lucide-react';
 import { LoaderCircle, UserRoundPlus as UserPlusIcon } from 'lucide';
 import { Modal } from './Modal';
 import { MorphingIcon } from './MorphingIcon';
@@ -132,7 +132,6 @@ export function HireCandidateModal({
       isOpen={isOpen}
       onClose={closeWithSound}
       className="employee-modal hire-candidate-modal"
-      icon={<UserRoundPlus size={20} className="color-primary" aria-hidden="true" />}
       title={`${en ? 'Hire' : 'Contratar a'} ${candidate.nombre}`}
       size="sm"
       footerActions={footerActions}

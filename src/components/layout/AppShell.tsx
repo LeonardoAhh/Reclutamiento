@@ -109,13 +109,11 @@ export function AppShell(props: { children: ReactNode; startupOverlaysReady?: bo
     if (matchPath(REPORT_DAY_PATTERN, location.pathname)) return localizeNavigationText(language, 'Detalle del día');
     if (location.pathname === REPORT_COMPARISON_PATH) return localizeNavigationText(language, 'Comparativa mensual');
     if (location.pathname === CANDIDATE_METRICS_PATH) return localizeNavigationText(language, 'Métricas y KPIs');
-    const currentNavItem = getLocalizedNavigation(language)
-      .flatMap((section) => section.items)
-      .find((item) => {
-        if (item.to === PLANTILLA_PATH) return isPlantillaPath(location.pathname);
-        if (item.end) return location.pathname === item.to;
-        return location.pathname.startsWith(item.to);
-      });
+    const currentNavItem = getLocalizedNavigation(language).find((item) => {
+      if (item.to === PLANTILLA_PATH) return isPlantillaPath(location.pathname);
+      if (item.end) return location.pathname === item.to;
+      return location.pathname.startsWith(item.to);
+    });
     const feature = FEATURES.find(({ id }) => getConfiguracionHref(id) === location.pathname);
     return localizeNavigationText(
       language,

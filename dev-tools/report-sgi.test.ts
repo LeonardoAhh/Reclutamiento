@@ -4,7 +4,7 @@ import { computeMonthlyComparison } from '../src/lib/bajas.ts';
 import { PLANTILLA_AUTORIZADA } from '../src/lib/constants.ts';
 import { lastCompletedQuarter } from '../src/lib/dates.ts';
 import type { AuthorizedPosition, Baja, Employee } from '../src/lib/types.ts';
-import { getLocalizedNavigation } from '../src/components/layout/navigation.ts';
+import { getLocalizedNavigation, HOME_PATH } from '../src/components/layout/navigation.ts';
 import { REPORT_SGI_PATH } from '../src/pages/report-sgi/navigation.ts';
 import { buildQuarterReports } from '../src/pages/report-sgi/quarterlyData.ts';
 
@@ -172,15 +172,22 @@ test('SGI staffing references follow the authorized first-shift positions', () =
   assert.deepEqual(reports.get('calidad')?.referenceStaffing, { authorized: 22, backup: 2 });
 });
 
-test('SGI report is available in Seguimiento and localized in the sidebar', () => {
+test('sidebar keeps Home first and alphabetizes the remaining localized links', () => {
   assert.equal(REPORT_SGI_PATH, '/analisis-t3');
   for (const [language, label] of [
     ['es', 'Analisis T3'],
     ['en', 'Q3 Analysis'],
   ] as const) {
-    const tracking = getLocalizedNavigation(language).find((section) => section.id === 'tracking');
-    assert.ok(tracking);
-    assert.equal(tracking.items.filter((item) => item.to === REPORT_SGI_PATH).length, 1);
-    assert.equal(tracking.items.find((item) => item.to === REPORT_SGI_PATH)?.label, label);
+    const items = getLocalizedNavigation(language);
+    const collator = new Intl.Collator(language, { sensitivity: 'base' });
+    const labels = items.slice(1).map((item) => item.label);
+
+    assert.equal(items[0]?.to, HOME_PATH);
+    assert.equal(items.filter((item) => item.to === REPORT_SGI_PATH).length, 1);
+    assert.equal(items.find((item) => item.to === REPORT_SGI_PATH)?.label, label);
+    assert.deepEqual(
+      labels,
+      [...labels].sort((first, second) => collator.compare(first, second)),
+    );
   }
 });

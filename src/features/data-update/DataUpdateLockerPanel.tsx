@@ -132,12 +132,14 @@ export function DataUpdateLockerPanel({ records, searchTerm, onSearchChange, can
           <button data-cuelume-tap="" type="button" className="btn-secondary" onClick={() => onSearchChange("")}>{t("Limpiar búsqueda")}</button>
         </div>
       ) : (
-        <div id="data-update-locker-list" className="data-update-results-panel">
-          <DataUpdateLockerResults
-            records={pagination.pageItems}
-            canEdit={canEdit}
-            onEdit={openEditor}
-          />
+        <>
+          <div id="data-update-locker-list" className="data-update-results-panel">
+            <DataUpdateLockerResults
+              records={pagination.pageItems}
+              canEdit={canEdit}
+              onEdit={openEditor}
+            />
+          </div>
           {pagination.totalPages > 1 && (
             <Pagination
               currentPage={pagination.currentPage}
@@ -150,7 +152,7 @@ export function DataUpdateLockerPanel({ records, searchTerm, onSearchChange, can
               ariaLabel={t("Paginación de lockers")}
             />
           )}
-        </div>
+        </>
       )}
 
       <Modal

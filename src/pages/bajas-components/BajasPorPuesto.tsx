@@ -96,19 +96,16 @@ export function BajasPorPuesto({ byPuesto, filterKey, pageSize = DEFAULT_PAGE_SI
             </table>
           </div>
 
-          <div className="bajas-por-puesto__pagination">
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={goToPage}
-              onPrev={prevPage}
-              onNext={nextPage}
-              canGoPrev={canGoPrev}
-              canGoNext={canGoNext}
-              ariaLabel="Paginación de puestos"
-              sticky
-            />
-          </div>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={goToPage}
+            onPrev={prevPage}
+            onNext={nextPage}
+            canGoPrev={canGoPrev}
+            canGoNext={canGoNext}
+            ariaLabel="Paginación de puestos"
+          />
         </>
       )}
     </section>

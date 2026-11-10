@@ -68,7 +68,7 @@ export function AnalysisResultsPanel({
           <p className="config-results__count type-body-md text-muted" aria-live="polite">
             {resultCount}
           </p>
-          <div className="config-results-panel">
+          <div className="config-results-list">
             <AnalysisResultsTable
               employees={pagination.pageItems}
               reports={reports}

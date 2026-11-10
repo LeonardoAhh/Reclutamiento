@@ -105,7 +105,6 @@ export function PurgeEmployeesModal({
       isOpen={isOpen}
       onClose={isPurging ? () => undefined : onClose}
       className="purge-employees-modal"
-      icon={<AlertOctagon size={20} aria-hidden="true" />}
       title="Borrar plantilla completa"
     >
       <div className="modal-body purge-employees-modal__body">

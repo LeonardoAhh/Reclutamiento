@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type RefObject } from 'react';
+import { useEffect, useRef, type RefObject } from 'react';
 import { useLocation } from 'react-router-dom';
 import { MorphMenuIcon } from '@/components/ui/MorphMenuIcon';
 import { FoldHorizontal, UnfoldHorizontal } from 'lucide-react';
@@ -8,7 +8,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { getLocalizedNavigation } from './navigation';
 import { SidebarBrand } from './SidebarBrand';
-import { SidebarGroup } from './SidebarGroup';
+import { SidebarItem } from './SidebarItem';
 import { SidebarAccountMenu } from './SidebarAccountMenu';
 import { SidebarQuickActions, type SidebarQuickActionsControls } from './SidebarQuickActions';
 import './Sidebar.css';
@@ -48,7 +48,6 @@ export function Sidebar({
   const previousPath = useRef(location.pathname);
   const wasMobileMenuOpen = useRef(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
-  const [brandRevealed, setBrandRevealed] = useState(false);
 
   useEffect(() => {
     if (previousPath.current === location.pathname) return;
@@ -94,7 +93,7 @@ export function Sidebar({
   const content = (quickActions: SidebarQuickActionsControls) => (
     <>
       <div className="sidebar__top">
-        <SidebarBrand animate={!brandRevealed} onReveal={() => setBrandRevealed(true)} />
+        <SidebarBrand />
         {isDesktop ? (
           <Tooltip content={collapseLabel} side="right">
             {desktopToggle}
@@ -113,16 +112,17 @@ export function Sidebar({
           </button>
         )}
       </div>
-      <nav className="sidebar__nav" id="sidebar-sections" aria-label={language === 'en' ? 'Sections' : 'Secciones'}>
-        {getLocalizedNavigation(language).map((section) => (
-          <SidebarGroup
-            key={section.id}
-            section={section}
-            role={profile?.role}
-            collapsed={collapsed}
-            onNavigate={onCloseMobileMenu}
-          />
-        ))}
+      <nav
+        className="sidebar__nav"
+        aria-label={language === 'en' ? 'Navigation links' : 'Enlaces de navegación'}
+      >
+        <ul className="sidebar__list">
+          {getLocalizedNavigation(language)
+            .filter((item) => !item.roles || (profile?.role && item.roles.includes(profile.role)))
+            .map((item) => (
+              <SidebarItem key={item.to} item={item} collapsed={collapsed} onNavigate={onCloseMobileMenu} />
+            ))}
+        </ul>
       </nav>
       <footer className="sidebar__footer">
         <SidebarAccountMenu
@@ -144,7 +144,7 @@ export function Sidebar({
 
   return (
     <SidebarQuickActions profile={profile} members={members}>
-      {(quickActions) =>
+      {(quickActions) => (
         <aside
           ref={sidebarRef}
           className="sidebar"
@@ -156,7 +156,7 @@ export function Sidebar({
         >
           {content(quickActions)}
         </aside>
-      }
+      )}
     </SidebarQuickActions>
   );
 }

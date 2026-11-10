@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { CircleCheckBig, FileText, Printer } from 'lucide-react';
+import { Printer } from 'lucide-react';
 import { Modal } from './Modal';
 import type {
   AuthorizedPosition,
@@ -143,7 +143,6 @@ export function RequisicionSheet({
         isOpen={isOpen}
         onClose={onClose}
         className="requisicion-sheet"
-        icon={<FileText size={20} aria-hidden="true" />}
         title="Requisición de Personal"
         footerActions={footerActions}
         size="lg"

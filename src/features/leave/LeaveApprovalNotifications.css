@@ -1,0 +1,292 @@
+.sheet-body.leave-approval-notifications__sheet-body {
+  gap: 0;
+  padding: 0;
+}
+
+.popover-content.leave-approval-notifications__mobile-popover {
+  display: flex;
+  flex-direction: column;
+  inline-size: min(
+    var(--modal-inline-size-sm),
+    var(--radix-popover-content-available-width),
+    calc(
+      100vw - max(var(--safe-area-left), var(--design-spacing-md)) -
+        max(var(--safe-area-right), var(--design-spacing-md))
+    )
+  );
+  max-block-size: min(
+    var(--radix-popover-content-available-height),
+    calc(
+      100dvh - max(var(--safe-area-top), var(--design-spacing-md)) -
+        max(var(--safe-area-bottom), var(--design-spacing-md))
+    )
+  );
+  overflow: hidden;
+  padding: 0;
+}
+
+.leave-approval-notifications__mobile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--design-spacing-sm);
+  flex: 0 0 auto;
+  min-inline-size: 0;
+  padding-inline: var(--design-spacing-sm);
+  border-block-end: var(--border-width) solid var(--color-hairline);
+}
+
+.leave-approval-notifications__mobile-title {
+  min-inline-size: 0;
+  margin: 0;
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+  letter-spacing: var(--type-heading-sm-tracking);
+  overflow-wrap: anywhere;
+}
+
+.leave-approval-notifications__mobile-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 var(--touch-target-min);
+  inline-size: var(--touch-target-min);
+  block-size: var(--touch-target-min);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--color-ink);
+  cursor: pointer;
+}
+
+.leave-approval-notifications__mobile-close svg {
+  inline-size: var(--icon-size-md);
+  block-size: var(--icon-size-md);
+}
+
+.leave-approval-notifications__mobile-close:hover {
+  background: var(--color-surface-hover);
+}
+
+.leave-approval-notifications__mobile-close:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.leave-approval-notifications__mobile-popover > .sheet-body.leave-approval-notifications__sheet-body {
+  flex: 1 1 auto;
+  min-block-size: 0;
+}
+
+.leave-approval-notifications__list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.leave-approval-notifications__item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--design-spacing-sm);
+  min-inline-size: 0;
+  padding: var(--design-spacing-sm) var(--design-spacing-md);
+  border-block-end: var(--border-width) solid var(--color-hairline);
+}
+
+.leave-approval-notifications__content {
+  display: grid;
+  min-inline-size: 0;
+}
+
+.leave-approval-notifications__title,
+.leave-approval-notifications__period,
+.leave-approval-notifications__state p {
+  margin: 0;
+}
+
+.leave-approval-notifications__title {
+  min-inline-size: 0;
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+  overflow-wrap: anywhere;
+}
+
+.leave-approval-notifications__period {
+  color: var(--color-body);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+  overflow-wrap: anywhere;
+}
+
+.leave-approval-notifications__state {
+  display: grid;
+  justify-items: start;
+  gap: var(--design-spacing-sm);
+  padding: var(--design-spacing-md);
+  color: var(--color-muted);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
+  overflow-wrap: anywhere;
+}
+
+.leave-approval-notifications__loading {
+  display: grid;
+}
+
+.leave-approval-notifications__loading-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--design-spacing-xl);
+  align-items: center;
+  gap: var(--design-spacing-sm);
+  min-inline-size: 0;
+  padding: var(--design-spacing-sm) var(--design-spacing-md);
+  border-block-end: var(--border-width) solid var(--color-hairline);
+}
+
+.leave-approval-notifications__loading-copy {
+  display: grid;
+  gap: var(--design-spacing-xs);
+  min-inline-size: 0;
+}
+
+.leave-approval-notifications__loading-line {
+  inline-size: 72%;
+  block-size: var(--design-spacing-xs);
+  border-radius: var(--rounded-xs);
+}
+
+.leave-approval-notifications__loading-line--short {
+  inline-size: 48%;
+}
+
+.leave-approval-notifications__loading-status {
+  inline-size: var(--design-spacing-xl);
+  block-size: var(--design-spacing-xl);
+  border-radius: var(--radius-control);
+}
+
+.leave-approval-notifications__decision {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--design-spacing-xxs);
+  min-inline-size: 0;
+  color: var(--color-body);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
+  text-align: end;
+}
+
+.leave-approval-notifications__decision svg {
+  inline-size: var(--icon-size-sm);
+  block-size: var(--icon-size-sm);
+  flex: 0 0 auto;
+}
+
+.leave-approval-notifications__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--design-spacing-xxs);
+  min-inline-size: 0;
+}
+
+.btn-secondary.leave-approval-notifications__action {
+  justify-self: start;
+  margin: 0;
+  color: var(--color-body);
+  background: transparent;
+  border-color: transparent;
+}
+
+.btn-secondary.leave-approval-notifications__action:hover:not(:disabled),
+.btn-secondary.leave-approval-notifications__action:active:not(:disabled) {
+  color: var(--color-ink);
+  background: transparent;
+  border-color: transparent;
+}
+
+.leave-approval-notifications__sheet-body > .pagination {
+  padding: var(--design-spacing-sm) var(--design-spacing-md);
+}
+
+.leave-approval-notifications__empty {
+  gap: var(--design-spacing-sm);
+  padding: var(--design-spacing-lg) var(--design-spacing-sm);
+}
+
+.leave-approval-notifications__mockup {
+  display: grid;
+  align-content: center;
+  gap: var(--design-spacing-sm);
+  inline-size: min(100%, var(--empty-state-description-max-inline-size));
+  aspect-ratio: 1.6;
+  padding: var(--design-spacing-md);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-card);
+  animation: float-empty var(--transition-decorative-float) infinite;
+}
+
+.leave-approval-notifications__mockup-top {
+  inline-size: 40%;
+  block-size: var(--design-spacing-xs);
+  border-radius: var(--radius-control);
+  background: var(--color-hairline);
+}
+
+.leave-approval-notifications__mockup-row {
+  display: grid;
+  grid-template-columns: var(--design-spacing-xs) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--design-spacing-xs);
+}
+
+.leave-approval-notifications__mockup-row > span:first-child {
+  inline-size: var(--design-spacing-xs);
+  block-size: var(--design-spacing-xs);
+  border-radius: var(--rounded-full);
+  background: var(--color-primary-tint);
+}
+
+.leave-approval-notifications__mockup-row .leave-approval-notifications__mockup-line {
+  inline-size: 78%;
+  block-size: var(--design-spacing-xxs);
+  border-radius: var(--radius-control);
+  background: var(--color-hairline);
+}
+
+.leave-approval-notifications__mockup-row .leave-approval-notifications__mockup-line--short {
+  inline-size: 54%;
+}
+
+.leave-approval-notifications__action:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: var(--focus-ring-offset);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .leave-approval-notifications__mockup {
+    animation: none;
+  }
+}

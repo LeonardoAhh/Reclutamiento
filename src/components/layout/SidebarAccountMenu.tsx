@@ -1,7 +1,15 @@
 import { Fragment, useRef } from 'react';
 import { Link, useMatch } from 'react-router-dom';
-import { BookOpenCheck, CalendarDays, CalendarPlus, CircleUserRound, UserRound } from 'lucide-react';
+import { ChevronsDown, ChevronsUp } from 'lucide';
+import {
+  BookOpenCheck,
+  CalendarDays,
+  CalendarPlus,
+  CircleUserRound,
+  UserRound,
+} from 'lucide-react';
 import { Avatar } from '@/components/ui/Avatar';
+import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import { Tooltip } from '@/components/ui/Tooltip';
 import {
   DropdownMenu,
@@ -84,6 +92,11 @@ export function SidebarAccountMenu({
           <span className="sidebar__account-name">{name}</span>
           {roleLabel && <span className="sidebar__account-role">{roleLabel}</span>}
         </span>
+        <MorphingIcon
+          icon={open ? ChevronsDown : ChevronsUp}
+          className="sidebar__account-chevron"
+          aria-hidden="true"
+        />
       </button>
     </DropdownMenuTrigger>
   );

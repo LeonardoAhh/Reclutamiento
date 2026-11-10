@@ -1,5 +1,5 @@
 import { useEffect, useId, useState } from 'react';
-import { CircleAlert, HeartPulse } from 'lucide-react';
+import { CircleAlert } from 'lucide-react';
 import { Modal } from './Modal';
 import { Checkbox } from './Checkbox';
 import type { Employee } from '@/lib/types';
@@ -92,12 +92,6 @@ export function IncapacidadModal({
       isOpen={isOpen}
       onClose={onClose}
       className="incapacidad-modal"
-      icon={
-        <HeartPulse
-          className="incapacidad-modal__icon"
-          aria-hidden="true"
-        />
-      }
       title={t("Marcar incapacidad")}
       size="xs"
       footerActions={footerActions}

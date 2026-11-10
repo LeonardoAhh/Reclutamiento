@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react';
-import { StickyNote } from 'lucide-react';
 import { LoaderCircle, MessageSquarePlus } from 'lucide';
 import { Modal } from './Modal';
 import { MorphingIcon } from './MorphingIcon';
@@ -73,7 +72,6 @@ export function CandidateNotesModal({
       isOpen={isOpen}
       onClose={onClose}
       className="candidate-notes-modal"
-      icon={<StickyNote size={20} className="color-primary" aria-hidden="true" />}
       title={candidate.nombre}
     >
       <div className="modal-comments-list">

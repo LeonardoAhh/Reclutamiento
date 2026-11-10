@@ -1,4 +1,3 @@
-import { Activity } from 'lucide-react';
 import { Modal } from './Modal';
 import { FormSheet } from './FormSheet';
 import { ExpandableSection } from './ExpandableSection';
@@ -93,7 +92,6 @@ export function CandidatesInProcessModal({
       isOpen={isOpen}
       onClose={onClose}
       className="candidates-in-process-modal"
-      icon={<Activity size="var(--icon-size-md)" aria-hidden="true" />}
       title={t("Procesos por cerrar")}
       size="sm"
     >

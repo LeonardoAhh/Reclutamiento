@@ -1,4 +1,3 @@
-import { BriefcaseBusiness } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getStarlitePositionDisplayName, isStarliteSection } from '@/lib/positionCatalog';
 import { toNaturalCase } from "@/lib/utils";
@@ -52,7 +51,6 @@ export function CreateVacancyModal({
       isOpen={isOpen}
       onClose={onClose}
       title={en ? "Assign vacancy" : "Asignar Vacante"}
-      icon={<BriefcaseBusiness size="var(--icon-size-md)" aria-hidden="true" />}
       size="sm"
       footerActions={
         <>

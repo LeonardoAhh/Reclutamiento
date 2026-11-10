@@ -390,8 +390,20 @@
   background: var(--color-surface-card);
 }
 
-.analisis-results-table-wrap {
+.config-results-list {
+  display: flex;
   min-inline-size: 0;
+  flex-direction: column;
+  gap: var(--design-spacing-md);
+}
+
+.analisis-results-table-wrap {
+  inline-size: 100%;
+  min-inline-size: 0;
+  overflow-x: auto;
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--radius-card);
+  background-color: var(--color-surface-card);
 }
 
 .analisis-results-table {

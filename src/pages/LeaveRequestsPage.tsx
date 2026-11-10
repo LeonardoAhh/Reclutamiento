@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { PageHeading } from '@/components/layout/PageHeading';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, CalendarDays, Check, Info, LoaderCircle, Trash2 } from 'lucide-react';
+import { ArrowLeft, CalendarDays, Check, Info, LoaderCircle, Trash2, X } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage, type Language } from '@/contexts/LanguageContext';
 import { useTeamDirectory } from '@/features/team/TeamProvider';
@@ -27,6 +27,7 @@ import {
   leaveStatusLabel,
   leaveTypeLabel,
   listLeaveRequests,
+  rejectLeaveRequest,
   LEAVE_PAGE_SIZE,
   type LeaveRequest,
 } from '@/features/leave/requests';
@@ -51,14 +52,18 @@ const copy = {
     start: 'Inicio',
     end: 'Fin',
     approve: 'Autorizar',
+    reject: 'Rechazar',
     delete: 'Eliminar',
     confirm: 'Confirmar',
     approveRequest: 'Autorizar solicitud',
+    rejectRequest: 'Rechazar solicitud',
     deleteRequest: 'Eliminar solicitud',
     pages: 'Páginas de solicitudes',
     approving: 'Autorizando…',
+    rejecting: 'Rechazando…',
     deleting: 'Eliminando…',
     approved: 'Solicitud autorizada',
+    rejected: 'Solicitud rechazada',
     deleted: 'Solicitud eliminada',
   },
   en: {
@@ -79,14 +84,18 @@ const copy = {
     start: 'Start',
     end: 'End',
     approve: 'Approve',
+    reject: 'Reject',
     delete: 'Delete',
     confirm: 'Confirm',
     approveRequest: 'Approve request',
+    rejectRequest: 'Reject request',
     deleteRequest: 'Delete request',
     pages: 'Request pages',
     approving: 'Approving…',
+    rejecting: 'Rejecting…',
     deleting: 'Deleting…',
     approved: 'Request approved',
+    rejected: 'Request rejected',
     deleted: 'Request deleted',
   },
 } as const;
@@ -98,13 +107,20 @@ function typeLabel(request: LeaveRequest, language: Language) {
 
 function statusLabel(request: LeaveRequest, language: Language) {
   if (language === 'es') return leaveStatusLabel(request.status);
-  return request.status === 'approved' ? 'Approved' : 'Pending';
+  if (request.status === 'approved') return 'Approved';
+  if (request.status === 'rejected') return 'Rejected';
+  return 'Pending';
 }
 
 function noticeLabel(request: LeaveRequest, language: Language) {
-  if (language === 'en')
-    return request.status === 'approved' ? 'Advance notice exception approved' : 'Advance notice exception required';
-  return request.status === 'approved' ? 'Excepción de anticipación autorizada' : 'Requiere excepción de anticipación';
+  if (language === 'en') {
+    if (request.status === 'approved') return 'Advance notice exception approved';
+    if (request.status === 'rejected') return 'Advance notice exception rejected';
+    return 'Advance notice exception required';
+  }
+  if (request.status === 'approved') return 'Excepción de anticipación autorizada';
+  if (request.status === 'rejected') return 'Excepción de anticipación rechazada';
+  return 'Requiere excepción de anticipación';
 }
 
 export function LeaveRequestsPage() {
@@ -124,16 +140,19 @@ export function LeaveRequestsPage() {
   const [loading, setLoading] = useState(true);
   const [loadedPage, setLoadedPage] = useState<number | null>(null);
   const [error, setError] = useState('');
-  const [reviewAction, setReviewAction] = useState<{ kind: 'approve' | 'delete'; request: LeaveRequest } | null>(null);
+  const [reviewAction, setReviewAction] = useState<{
+    kind: 'approve' | 'reject' | 'delete';
+    request: LeaveRequest;
+  } | null>(null);
   const [actionBusy, setActionBusy] = useState(false);
   const actionBusyRef = useRef(false);
 
-  function openReview(kind: 'approve' | 'delete', request: LeaveRequest) {
-    playSound(kind === 'delete' ? 'warning' : 'open');
+  function openReview(kind: 'approve' | 'reject' | 'delete', request: LeaveRequest) {
+    playSound(kind === 'approve' ? 'open' : 'warning');
     setReviewAction({ kind, request });
   }
 
-  function cancelReview(kind: 'approve' | 'delete', requestId: string) {
+  function cancelReview(kind: 'approve' | 'reject' | 'delete', requestId: string) {
     if (actionBusyRef.current) return;
     setReviewAction((current) => (current?.kind === kind && current.request.id === requestId ? null : current));
   }
@@ -171,17 +190,24 @@ export function LeaveRequestsPage() {
     setActionBusy(true);
     try {
       if (reviewAction.kind === 'approve') await approveLeaveRequest(reviewAction.request.id);
+      else if (reviewAction.kind === 'reject') await rejectLeaveRequest(reviewAction.request.id);
       else await deleteLeaveRequest(reviewAction.request.id);
-      if (reviewAction.kind === 'approve') {
+      if (reviewAction.kind === 'approve' || reviewAction.kind === 'reject') {
         setRows((current) =>
-          current.map((row) => (row.id === reviewAction.request.id ? { ...row, status: 'approved' } : row)),
+          current.map((row) =>
+            row.id === reviewAction.request.id
+              ? { ...row, status: reviewAction.kind === 'approve' ? 'approved' : 'rejected' }
+              : row,
+          ),
         );
       } else {
         setRows((current) => current.filter((row) => row.id !== reviewAction.request.id));
         setTotal((current) => Math.max(0, current - 1));
       }
       playSound('success');
-      toast.success({ title: reviewAction.kind === 'approve' ? t.approved : t.deleted });
+      toast.success({
+        title: reviewAction.kind === 'approve' ? t.approved : reviewAction.kind === 'reject' ? t.rejected : t.deleted,
+      });
       setReviewAction(null);
       setRevision((value) => value + 1);
     } catch (cause) {
@@ -198,11 +224,12 @@ export function LeaveRequestsPage() {
   function requestActions(request: LeaveRequest, card: boolean) {
     const requester = toNaturalCase(request.requesterName, { preserveAcronyms: false });
     const confirmingApprove = reviewAction?.kind === 'approve' && reviewAction.request.id === request.id;
+    const confirmingReject = reviewAction?.kind === 'reject' && reviewAction.request.id === request.id;
     const confirmingDelete = reviewAction?.kind === 'delete' && reviewAction.request.id === request.id;
     const period = `${date(request.startDate)} – ${date(request.endDate)}`;
     return (
       <>
-        {canApproveLeaveRequest(profile, request) && !confirmingDelete && (
+        {canApproveLeaveRequest(profile, request) && !confirmingDelete && !confirmingReject && (
           <button
             type="button"
             className={`${card ? 'btn-secondary leave-requests-page__card-action' : 'btn-icon'} leave-requests-page__action-approve${confirmingApprove ? ' leave-requests-page__action-confirm' : ''}`}
@@ -236,7 +263,41 @@ export function LeaveRequestsPage() {
             )}
           </button>
         )}
-        {canDeleteLeaveRequest(profile, request) && !confirmingApprove && (
+        {canApproveLeaveRequest(profile, request) && !confirmingDelete && !confirmingApprove && (
+          <button
+            type="button"
+            className={`${card ? 'btn-secondary leave-requests-page__card-action' : 'btn-icon btn-icon--danger'} leave-requests-page__action-reject${confirmingReject ? ' leave-requests-page__action-confirm' : ''}`}
+            disabled={actionBusy || loading}
+            aria-busy={actionBusy && confirmingReject}
+            aria-label={`${actionBusy && confirmingReject ? t.rejecting : confirmingReject ? `${t.confirm} ${t.reject.toLowerCase()}` : t.rejectRequest}: ${requester}, ${period}`}
+            title={confirmingReject ? `${t.confirm} ${t.reject.toLowerCase()}` : t.rejectRequest}
+            onClick={() => {
+              if (confirmingReject) {
+                playSound('tap');
+                void completeReviewAction();
+              } else openReview('reject', request);
+            }}
+            onBlur={() => cancelReview('reject', request.id)}
+            onKeyDown={(event) => {
+              if (event.key === 'Escape') {
+                event.preventDefault();
+                cancelReview('reject', request.id);
+              }
+            }}
+          >
+            {actionBusy && confirmingReject ? (
+              <LoaderCircle className="leave-requests-page__action-spinner" aria-hidden="true" />
+            ) : confirmingReject ? (
+              <span>{t.confirm}</span>
+            ) : (
+              <>
+                <X aria-hidden="true" />
+                {card && <span>{t.reject}</span>}
+              </>
+            )}
+          </button>
+        )}
+        {canDeleteLeaveRequest(profile, request) && !confirmingApprove && !confirmingReject && (
           <button
             type="button"
             className={`${card ? 'btn-secondary leave-requests-page__card-action' : 'btn-icon btn-icon--danger'} leave-requests-page__action-delete${confirmingDelete ? ' leave-requests-page__action-confirm' : ''}`}
@@ -361,7 +422,13 @@ export function LeaveRequestsPage() {
                               <div className="leave-requests-page__status">
                                 <Badge
                                   className="leave-requests-page__status-badge"
-                                  variant={row.status === 'approved' ? 'success' : 'warning'}
+                                  variant={
+                                    row.status === 'approved'
+                                      ? 'success'
+                                      : row.status === 'rejected'
+                                        ? 'error'
+                                        : 'warning'
+                                  }
                                 >
                                   {statusLabel(row, language)}
                                 </Badge>
@@ -425,7 +492,13 @@ export function LeaveRequestsPage() {
                               <div className="leave-requests-page__card-state">
                                 <Badge
                                   className="leave-requests-page__status-badge"
-                                  variant={row.status === 'approved' ? 'success' : 'warning'}
+                                  variant={
+                                    row.status === 'approved'
+                                      ? 'success'
+                                      : row.status === 'rejected'
+                                        ? 'error'
+                                        : 'warning'
+                                  }
                                 >
                                   {statusLabel(row, language)}
                                 </Badge>
@@ -459,7 +532,6 @@ export function LeaveRequestsPage() {
             canGoPrev={!loading && page > 0}
             canGoNext={!loading && (page + 1) * LEAVE_PAGE_SIZE < total}
             ariaLabel={t.pages}
-            sticky
           />
         )}
       </main>

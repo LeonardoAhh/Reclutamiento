@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { MessageSquare } from 'lucide-react';
 import { LoaderCircle, MessageSquarePlus } from 'lucide';
 import { COMMENT_TYPE_LABELS } from '@/lib/constants';
 import type { PositionComment } from '@/lib/types';
@@ -71,7 +70,6 @@ export function CommentModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      icon={<MessageSquare size={20} className="color-primary" aria-hidden="true" />}
       title={puesto || 'Comentario'}
     >
       {sorted.length > 0 && (

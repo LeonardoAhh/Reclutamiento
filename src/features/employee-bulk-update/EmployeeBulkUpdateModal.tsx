@@ -122,7 +122,6 @@ export function EmployeeBulkUpdateModal({ employees, onApply }: EmployeeBulkUpda
         isOpen={isOpen}
         onClose={close}
         title="Vista previa de actualización"
-        icon={<Upload aria-hidden="true" />}
         size="xl"
         className="employee-bulk-update"
         footerActions={

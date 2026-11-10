@@ -67,6 +67,14 @@
   letter-spacing: var(--type-body-sm-tracking);
 }
 
+.sidebar__account-chevron {
+  flex: 0 0 auto;
+  inline-size: var(--icon-size-sm);
+  block-size: var(--icon-size-sm);
+  margin-inline-start: auto;
+  color: var(--color-muted);
+}
+
 .dropdown-menu-content.sidebar__account-menu {
   inline-size: var(--menu-inline-size-md);
   max-inline-size: var(--radix-dropdown-menu-content-available-width);

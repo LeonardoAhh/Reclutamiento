@@ -3,10 +3,6 @@
    Alineado con desing.md (tokens semánticos, sin magic numbers, WCAG 2.2 AA)
    ========================================================================== */
 
-.cubrir-vacante-modal__icon {
-  color: var(--color-success-text);
-}
-
 .cubrir-vacante-modal__form {
   padding: var(--spacing-lg);
   display: flex;

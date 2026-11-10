@@ -106,6 +106,7 @@
 .pipeline__content {
   display: flex;
   flex-direction: column;
+  gap: var(--design-spacing-md);
   min-width: 0;
 }
 
@@ -813,16 +814,16 @@
    ───────────────────────────────────────────────────────────────────────── */
 .pipeline__results {
   min-inline-size: 0;
-  padding: var(--design-spacing-xs);
-  border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
-  background: var(--color-surface-card);
 }
 
 .pipeline__card-list {
   display: flex;
   flex-direction: column;
   gap: var(--design-spacing-xxs);
+  padding: var(--design-spacing-xs);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-card);
 }
 
 /* Tablet: dos columnas de tarjetas y la barra de acciones en una sola fila. */
@@ -1118,14 +1119,11 @@
 
 /* ── Desktop Overrides ── */
 @media (width >= 1080px) {
-  .pipeline__results {
-    padding: 0;
-    overflow: hidden;
-  }
-
   .pipeline__card-list {
     --pipeline-table-columns: minmax(0, 1.3fr) minmax(0, 1.15fr) minmax(0, 0.8fr) var(--pipeline-table-date-inline-size);
 
+    padding: 0;
+    overflow: hidden;
     gap: 0;
   }
 

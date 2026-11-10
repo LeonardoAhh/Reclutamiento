@@ -49,7 +49,6 @@ export function CandidatePreview({
       onClose={onClose}
       title={en ? 'Candidate' : 'Candidato'}
       size="sm"
-      icon={<UserRound aria-hidden="true" />}
       className="candidate-preview"
       overlayClassName="candidate-preview-overlay"
       presentation={isMobile ? 'modal' : 'sheet'}

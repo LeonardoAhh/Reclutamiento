@@ -158,19 +158,21 @@ export function DataUpdateAdminPanel({
           </button>
         </div>
       ) : (
-        <div id="data-update-admin-list" className="data-update-results-panel">
-          <DataUpdateAdminResults
-            records={pagination.pageItems}
-            profiles={participantProfiles}
-            busy={busy}
-            onOpenRecord={onOpenRecord}
-            onReopen={(recordId) => void reopen(recordId)}
-            onRequestDelete={(record) => {
-              setDeleteRecordError(null);
-              setPendingDeleteRecord(record);
-            }}
-            onReassign={(recordId, profileId) => void reassign(recordId, profileId)}
-          />
+        <>
+          <div id="data-update-admin-list" className="data-update-results-panel">
+            <DataUpdateAdminResults
+              records={pagination.pageItems}
+              profiles={participantProfiles}
+              busy={busy}
+              onOpenRecord={onOpenRecord}
+              onReopen={(recordId) => void reopen(recordId)}
+              onRequestDelete={(record) => {
+                setDeleteRecordError(null);
+                setPendingDeleteRecord(record);
+              }}
+              onReassign={(recordId, profileId) => void reassign(recordId, profileId)}
+            />
+          </div>
           {pagination.totalPages > 1 && (
             <Pagination
               currentPage={pagination.currentPage}
@@ -183,7 +185,7 @@ export function DataUpdateAdminPanel({
               ariaLabel={t("Paginación de administración de registros")}
             />
           )}
-        </div>
+        </>
       )}
 
       <ConfirmModal

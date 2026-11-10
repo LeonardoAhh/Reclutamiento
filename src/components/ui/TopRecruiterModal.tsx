@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { CalendarCheck2, Medal, Target, TrendingUp } from 'lucide-react';
+import { CalendarCheck2, Target, TrendingUp } from 'lucide-react';
 import { differenceInCalendarWeeks, parseISO, startOfISOWeek } from 'date-fns';
 import { useAuth } from '@/hooks/useAuth';
 import { useTeamDirectory } from '@/features/team/TeamProvider';
@@ -183,9 +183,6 @@ export function TopRecruiterModal({ onStartupResolved }: { onStartupResolved: ()
       onCloseAutoFocus={onStartupResolved}
       className="top-recruiter-modal"
       size="xs"
-      icon={isTop
-        ? <Medal aria-hidden="true" />
-        : <TrendingUp aria-hidden="true" />}
       title="Progreso mensual"
       footerActions={
         <button

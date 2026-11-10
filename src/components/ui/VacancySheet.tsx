@@ -2,20 +2,19 @@ import { useEffect, useId, useMemo, useState } from 'react';
 import { useTeamDirectory } from '@/features/team/TeamProvider';
 import { recruiterOptions } from '@/features/team/types';
 import { Tooltip } from './Tooltip';
-import { CircleAlert, ArrowRight, CircleCheckBig, ClipboardList, History, PenLine, Trash2 } from 'lucide-react';
-import type {
-  VacancyRequest,
-  VacancyStatus,
-  VacancyPriority,
-  VacancyStatusHistoryEntry,
-} from '@/lib/types';
+import { CircleAlert, ArrowRight, History } from 'lucide-react';
 import {
+  type VacancyRequest,
+  type VacancyStatus,
+  type VacancyPriority,
+  type VacancyStatusHistoryEntry,
   VACANCY_STATUSES,
   VACANCY_STATUS_LABEL,
   VACANCY_PRIORITIES,
   VACANCY_PRIORITY_LABEL,
   VACANCY_EXCLUSION_REASONS,
   DEFAULT_VACANCY_SLA_DAYS,
+  CANDIDATE_SOURCES,
 } from '@/lib/types';
 import { usePositions } from '@/lib/positions';
 import { toNaturalCase } from '@/lib/utils';
@@ -30,7 +29,6 @@ import { Modal } from './Modal';
 import { FormWizard } from './FormWizard';
 import { CustomSelect } from './CustomSelect';
 import { useIsMobile } from '@/hooks/useIsMobile';
-import { CANDIDATE_SOURCES } from '@/lib/types';
 
 type Mode = 'add' | 'edit' | 'delete';
 
@@ -238,14 +236,6 @@ export function VacancySheet({
   const isAdd = mode === 'add';
   const isEdit = mode === 'edit';
   const isDelete = mode === 'delete';
-
-  const icon = isDelete ? (
-    <Trash2 size={20} className="color-error" aria-hidden="true" />
-  ) : isEdit ? (
-    <PenLine size={20} className="color-primary" aria-hidden="true" />
-  ) : (
-    <ClipboardList size={20} className="color-primary" aria-hidden="true" />
-  );
 
   const title = isDelete
     ? 'Eliminar vacante'
@@ -549,7 +539,6 @@ export function VacancySheet({
       <Modal
         isOpen={isOpen}
         onClose={onClose}
-        icon={icon}
         title={title}
         className={`vacancy-sheet${!isDelete ? ' vacancy-sheet--wide' : ''}`}
         footerActions={footerActions}
@@ -599,7 +588,6 @@ export function VacancySheet({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      icon={icon}
       title={title}
       className={`vacancy-sheet${
         !isDelete ? ' modal-wizard-mobile' : ''

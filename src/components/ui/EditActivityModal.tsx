@@ -113,7 +113,6 @@ export function EditActivityModal({
       isOpen={isOpen}
       onClose={onClose}
       title={showingPreview ? previewActivity?.titulo : modalTitle}
-      icon={showingPreview ? undefined : <SquarePen size="var(--icon-size-md)" aria-hidden="true" />}
       size="sm"
       headerActions={showingPreview && isOpen && onDelete
         ? <InlineDeleteAction key={previewActivity?.id} onEdit={onStartEditing} onDelete={onDelete} />

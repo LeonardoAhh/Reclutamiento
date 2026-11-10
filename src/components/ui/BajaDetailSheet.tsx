@@ -1,4 +1,4 @@
-import { CircleAlert, CircleCheckBig, ClipboardList, FileText } from 'lucide-react';
+import { CircleAlert, CircleCheckBig, FileText } from 'lucide-react';
 import { Modal } from './Modal';
 import { Badge } from './Badge';
 import type { BajaWithCobertura } from '@/lib/bajas';
@@ -98,7 +98,6 @@ export function BajaDetailSheet({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      icon={<ClipboardList size={20} aria-hidden="true" />}
       title={baja.nombre}
       className="baja-detail-sheet"
       footerActions={footerActions}

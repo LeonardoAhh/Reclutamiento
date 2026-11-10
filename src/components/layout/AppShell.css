@@ -81,30 +81,25 @@
 @media (width >= 1080px) {
   .app-shell {
     block-size: 100dvh;
-    padding-block: var(--design-spacing-md);
-    padding-inline-end: max(var(--design-spacing-md), var(--safe-area-right));
     overflow: hidden;
-    background: var(--shell-floor);
+    background: var(--workspace-canvas);
   }
 
   .app-shell__workspace {
-    --workspace-surface: var(--shell-workspace-surface);
-
     display: flex;
     block-size: 100%;
     min-block-size: 0;
     flex-direction: column;
-    margin-inline-start: calc(var(--app-sidebar-width) + var(--design-spacing-md));
+    margin-inline-start: var(--app-sidebar-width);
     overflow: clip;
-    background: var(--workspace-surface);
-    border: var(--border-width) solid var(--workspace-border-color);
-    border-radius: var(--workspace-radius);
+    background: var(--workspace-canvas);
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
     transform: none;
 
     /* Acompaña el mismo pliegue que la barra lateral. */
-    transition:
-      margin-inline-start var(--transition-slow),
-      border-radius var(--transition-slow);
+    transition: margin-inline-start var(--transition-slow);
   }
 
   .app-shell__workspace::before {

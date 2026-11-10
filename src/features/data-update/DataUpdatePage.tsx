@@ -555,13 +555,15 @@ export function DataUpdatePage() {
                     <p>{t(`No hay coincidencias para “${searchTerm.trim()}”.`)}</p>
                   </div>
                 ) : (
-                  <div id="data-update-record-list" className="data-update-results-panel">
-                    <DataUpdateWorkResults
-                      groups={pageWorkGroups}
-                      online={online}
-                      busy={busy}
-                      onOpenRecord={(record) => void openRecord(record)}
-                    />
+                  <>
+                    <div id="data-update-record-list" className="data-update-results-panel">
+                      <DataUpdateWorkResults
+                        groups={pageWorkGroups}
+                        online={online}
+                        busy={busy}
+                        onOpenRecord={(record) => void openRecord(record)}
+                      />
+                    </div>
                     {recordPagination.totalPages > 1 && (
                       <Pagination
                         currentPage={recordPagination.currentPage}
@@ -574,7 +576,7 @@ export function DataUpdatePage() {
                         ariaLabel={t("Paginación de registros asignados")}
                       />
                     )}
-                  </div>
+                  </>
                 )}
               </section>
             </TabsContent>
@@ -604,8 +606,10 @@ export function DataUpdatePage() {
                         </button>
                       </div>
                     ) : (
-                      <div id="data-update-completed-list" className="data-update-results-panel">
-                        <DataUpdateCompletedResults records={completedPagination.pageItems} />
+                      <>
+                        <div id="data-update-completed-list" className="data-update-results-panel">
+                          <DataUpdateCompletedResults records={completedPagination.pageItems} />
+                        </div>
                         {completedPagination.totalPages > 1 && (
                           <Pagination
                             currentPage={completedPagination.currentPage}
@@ -618,7 +622,7 @@ export function DataUpdatePage() {
                             ariaLabel={t("Paginación de registros completados")}
                           />
                         )}
-                      </div>
+                      </>
                     )}
                   </>
                 )}

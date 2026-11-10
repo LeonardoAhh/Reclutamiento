@@ -1,5 +1,5 @@
 import { useId, useState } from 'react';
-import { CircleCheckBig, PenLine, Save, UserRoundPlus } from 'lucide-react';
+import { Save } from 'lucide-react';
 import type { Candidate } from '@/lib/types';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Modal } from './Modal';
@@ -104,14 +104,6 @@ export function CandidateModal({
     );
   }
 
-  const icon = accessCard ? (
-    <CircleCheckBig size={20} className="color-success" aria-hidden="true" />
-  ) : isEdit ? (
-    <PenLine size={20} className="color-primary" aria-hidden="true" />
-  ) : (
-    <UserRoundPlus size={20} className="color-primary" aria-hidden="true" />
-  );
-
   const title = accessCard
     ? en
       ? 'Interview pass'
@@ -183,7 +175,6 @@ export function CandidateModal({
         accessCard ? 'candidate-access-card-modal' : `candidate-modal${useWizard ? ' modal-wizard-mobile' : ''}`
       }
       size="sm"
-      icon={accessCard ? undefined : icon}
       title={title}
       footerActions={footerActions}
     >

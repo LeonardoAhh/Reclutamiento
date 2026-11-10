@@ -1,4 +1,4 @@
-import { ClipboardClock, Trash2, FileUp } from "lucide-react";
+import { Trash2, FileUp } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Modal } from "./Modal";
 import { CustomSelect } from "./CustomSelect";
@@ -55,7 +55,7 @@ export function TaskDetailsModal({
       isOpen={isOpen}
       onClose={onClose}
       title={activity?.titulo ?? (en ? "Task details" : "Detalles de Tarea")}
-      icon={<ClipboardClock size="var(--icon-size-md)" aria-hidden="true" />}
+
       size="sm"
       headerActions={isOpen && isAdmin && onDelete &&
         <InlineDeleteAction key={activity?.id} onEdit={onEdit} onDelete={onDelete} />}

@@ -1,15 +1,5 @@
 /* IncapacidadModal — toggle + fecha opcional de regreso */
 
-.incapacidad-modal__icon {
-  color: var(--color-warning-text);
-}
-
-.incapacidad-modal .incapacidad-modal__icon {
-  inline-size: var(--icon-size-control);
-  block-size: var(--icon-size-control);
-  color: currentColor;
-}
-
 .incapacidad-modal .modal-body {
   display: flex;
   flex-direction: column;

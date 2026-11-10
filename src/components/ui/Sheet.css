@@ -85,10 +85,9 @@
   gap: var(--design-spacing-sm);
   flex: 0 0 auto;
   min-inline-size: 0;
-  padding-block-start: max(var(--design-spacing-md), var(--sheet-padding-safe-area-top));
-  padding-block-end: var(--design-spacing-md);
-  padding-inline-start: max(var(--design-spacing-md), var(--sheet-padding-safe-area-left));
-  padding-inline-end: max(var(--design-spacing-md), var(--sheet-padding-safe-area-right));
+  padding-block: max(var(--design-spacing-xxs), var(--sheet-padding-safe-area-top)) var(--design-spacing-xxs);
+  padding-inline: max(var(--design-spacing-md), var(--sheet-padding-safe-area-left))
+    max(var(--design-spacing-md), var(--sheet-padding-safe-area-right));
   border-block-end: var(--border-width) solid var(--color-hairline);
 }
 
@@ -104,10 +103,10 @@
   margin: 0;
   color: var(--color-ink);
   font-family: var(--font-body);
-  font-size: var(--type-body-strong-size);
-  font-weight: var(--type-body-strong-weight);
-  line-height: var(--type-body-strong-line);
-  letter-spacing: var(--type-body-strong-tracking);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+  letter-spacing: var(--type-heading-sm-tracking);
 }
 
 .sheet-description {

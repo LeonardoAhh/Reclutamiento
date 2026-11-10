@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { CircleAlert, CircleCheckBig, SquarePen, PenLine } from 'lucide-react';
+import { CircleAlert } from 'lucide-react';
 import type { Employee } from '@/lib/types';
 import { usePositions } from '@/lib/positions';
 import { toNaturalCase } from '@/lib/utils';
@@ -143,15 +143,11 @@ export function EditEmployeeModal({
     }
   }
 
-  const icon = (
-    <PenLine size={20} className="color-primary" aria-hidden="true" />
-  );
   const title = t('Editar Empleado');
   return (
     <Dialog
       isOpen={isOpen}
       onClose={onClose}
-      icon={icon}
       title={title}
       className="edit-employee-modal"
       size="sm"

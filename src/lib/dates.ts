@@ -314,8 +314,8 @@ export function formatCompactDateRange(startInput: string, endInput: string, loc
   if (start.slice(0, 7) === end.slice(0, 7)) {
     return `${Number(start.slice(8))}–${formatReadableDate(end, locale)}`;
   }
-  const first = formatShortDate(start);
-  const last = formatShortDate(end);
+  const first = formatShortDate(start, locale);
+  const last = formatShortDate(end, locale);
   return start.slice(0, 4) === end.slice(0, 4)
     ? `${first.slice(0, 5)}–${last}`
     : `${first}–${last}`;

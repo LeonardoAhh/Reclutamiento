@@ -1,4 +1,4 @@
-import { ClipboardPenLine, X, ImagePlus } from "lucide-react";
+import { X, ImagePlus } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Modal } from "./Modal";
 import { CustomSelect } from "./CustomSelect";
@@ -86,7 +86,6 @@ export function CreateAssignmentModal({
       isOpen={isOpen}
       onClose={onClose}
       title={modalTitle}
-      icon={<ClipboardPenLine size="var(--icon-size-md)" aria-hidden="true" />}
       size="sm"
       footerActions={
         <>

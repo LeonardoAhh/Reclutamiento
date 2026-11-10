@@ -33,48 +33,50 @@ export function MotivosBajaRecords({ bajas, year, month, exitType }: MotivosBaja
 
   return (
     <>
-      <table className="motivos-baja__records data-table">
-        <caption className="sr-only">{copy.title}</caption>
-        <thead>
-          <tr>
-            <th
-              scope="col"
-              className="motivos-baja__records-employee"
-              aria-label={copy.employeeColumn}
-              aria-sort="descending"
-            >
-              {copy.employeeNumber}
-            </th>
-            <th scope="col" className="motivos-baja__records-type">
-              {copy.typeColumn}
-            </th>
-            <th scope="col" className="motivos-baja__records-reason">
-              {copy.reasonColumn}
-            </th>
-            <th scope="col" className="motivos-baja__records-detail">
-              {copy.detailColumn}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {pageItems.map((baja) => (
-            <tr key={baja.num_empleado}>
-              <td className="motivos-baja__records-number">{baja.num_empleado}</td>
-              <td className="motivos-baja__records-secondary">
-                {translateBajaCatalogLabel(toBajaSentenceCase(indicatorBajaType(baja.tipo_baja)), language)}
-              </td>
-              <td className="motivos-baja__records-reason-value">
-                {baja.motivo_baja_estandarizado?.trim()
-                  ? translateBajaCatalogLabel(toBajaSentenceCase(baja.motivo_baja_estandarizado), language)
-                  : copy.unclassified}
-              </td>
-              <td className="motivos-baja__records-secondary">
-                {baja.motivo_baja?.trim() ? toBajaSentenceCase(baja.motivo_baja) : copy.noDetail}
-              </td>
+      <div className="motivos-baja__records-wrap">
+        <table className="motivos-baja__records data-table">
+          <caption className="sr-only">{copy.title}</caption>
+          <thead>
+            <tr>
+              <th
+                scope="col"
+                className="motivos-baja__records-employee"
+                aria-label={copy.employeeColumn}
+                aria-sort="descending"
+              >
+                {copy.employeeNumber}
+              </th>
+              <th scope="col" className="motivos-baja__records-type">
+                {copy.typeColumn}
+              </th>
+              <th scope="col" className="motivos-baja__records-reason">
+                {copy.reasonColumn}
+              </th>
+              <th scope="col" className="motivos-baja__records-detail">
+                {copy.detailColumn}
+              </th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {pageItems.map((baja) => (
+              <tr key={baja.num_empleado}>
+                <td className="motivos-baja__records-number">{baja.num_empleado}</td>
+                <td className="motivos-baja__records-secondary">
+                  {translateBajaCatalogLabel(toBajaSentenceCase(indicatorBajaType(baja.tipo_baja)), language)}
+                </td>
+                <td className="motivos-baja__records-reason-value">
+                  {baja.motivo_baja_estandarizado?.trim()
+                    ? translateBajaCatalogLabel(toBajaSentenceCase(baja.motivo_baja_estandarizado), language)
+                    : copy.unclassified}
+                </td>
+                <td className="motivos-baja__records-secondary">
+                  {baja.motivo_baja?.trim() ? toBajaSentenceCase(baja.motivo_baja) : copy.noDetail}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       {totalPages > 1 && (
         <div className="motivos-baja__pagination">
           <Pagination

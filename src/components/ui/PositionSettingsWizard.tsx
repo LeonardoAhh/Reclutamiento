@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react';
-import { SlidersHorizontal } from 'lucide-react';
 import { Modal } from './Modal';
 import { FormSheet } from './FormSheet';
 import { useIsMobile } from '@/hooks/useIsMobile';
@@ -202,7 +201,6 @@ export function PositionSettingsWizard({ isOpen, onClose }: Props) {
     <Dialog
       isOpen={isOpen}
       onClose={handleClose}
-      icon={<SlidersHorizontal size={20} className="color-primary" aria-hidden="true" />}
       title={t("Configurar plantilla")}
       className="pos-settings-modal modal-wizard-mobile"
       size="sm"

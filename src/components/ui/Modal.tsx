@@ -8,6 +8,7 @@ import { ModalPresentationContext } from "./ModalPresentation";
 export interface ModalProps {
   isOpen: boolean;
   title: React.ReactNode;
+  /** @deprecated Modal and Sheet titles are text-only; this prop is ignored. */
   icon?: React.ReactNode;
   onClose: () => void;
   onBack?: () => void;
@@ -32,7 +33,6 @@ export interface ModalProps {
 export function Modal({
   isOpen,
   title,
-  icon,
   onClose,
   onBack,
   children,
@@ -65,7 +65,6 @@ export function Modal({
       <FormSheet
         isOpen={isOpen}
         title={title}
-        icon={icon}
         onClose={onClose}
         onBack={onBack}
         className={className}
@@ -126,9 +125,7 @@ export function Modal({
                 >
                   <ArrowLeft aria-hidden="true" />
                 </button>
-              ) : (
-                icon
-              )}
+              ) : null}
               <div className="modal-title__text">
                 <DialogPrimitive.Title asChild>
                   <h2 id={titleId}>{title}</h2>

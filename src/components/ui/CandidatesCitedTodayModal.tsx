@@ -1,4 +1,3 @@
-import { CalendarCheck } from 'lucide-react';
 import { Modal } from './Modal';
 import { FormSheet } from './FormSheet';
 import { StarliteBadge, ReclutadorBadge } from './Badge';
@@ -76,7 +75,6 @@ export function CandidatesCitedTodayModal({
       isOpen={isOpen}
       onClose={onClose}
       className="candidates-cited-today-modal"
-      icon={<CalendarCheck size="var(--icon-size-md)" aria-hidden="true" />}
       title={t("Detalle entrevistas")}
       size="sm"
     >

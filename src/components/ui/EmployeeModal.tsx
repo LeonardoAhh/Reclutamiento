@@ -1,6 +1,5 @@
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import {
-  UserRoundPlus,
   Trash2,
   CircleAlert,
   Save,
@@ -618,11 +617,6 @@ export function EmployeeModal({
     </p>
   ) : null;
 
-  const icon = isAdd ? (
-    <UserRoundPlus size={20} className="color-primary" aria-hidden="true" />
-  ) : (
-    <Trash2 size={20} className="color-error" aria-hidden="true" />
-  );
   const title = isAdd ? t("Nuevo Empleado") : t("Eliminar");
   const deleteContent = (
     <div className="employee-modal__delete">
@@ -747,7 +741,6 @@ export function EmployeeModal({
         isOpen={isOpen}
         onClose={onClose}
         className="employee-modal modal-wizard-mobile"
-        icon={icon}
         title={title}
         size="sm"
       >
@@ -799,7 +792,6 @@ export function EmployeeModal({
       isOpen={isOpen}
       onClose={onClose}
       className="employee-modal"
-      icon={icon}
       title={title}
       size="sm"
       footerActions={actionButtons}

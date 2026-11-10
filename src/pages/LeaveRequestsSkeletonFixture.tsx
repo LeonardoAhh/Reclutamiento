@@ -9,7 +9,9 @@ export function LeaveRequestsSkeletonFixture() {
             <thead>
               <tr>
                 {['Solicitante', 'Tipo', 'Fechas', 'Solicitada el', 'Estado', 'Acciones'].map((column) => (
-                  <th key={column} scope="col">{column}</th>
+                  <th key={column} scope="col">
+                    {column}
+                  </th>
                 ))}
               </tr>
             </thead>
@@ -23,6 +25,7 @@ export function LeaveRequestsSkeletonFixture() {
                   ))}
                   <td className="leave-requests-page__row-actions">
                     <div className="leave-requests-page__actions">
+                      <span className="leave-requests-page__skeleton-action" />
                       <span className="leave-requests-page__skeleton-action" />
                       <span className="leave-requests-page__skeleton-action" />
                     </div>
@@ -61,6 +64,7 @@ export function LeaveRequestsSkeletonFixture() {
                 </div>
               </div>
               <footer className="leave-requests-page__card-footer">
+                <span className="leave-requests-page__skeleton-action" />
                 <span className="leave-requests-page__skeleton-action" />
                 <span className="leave-requests-page__skeleton-action" />
               </footer>

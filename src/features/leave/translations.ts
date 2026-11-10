@@ -5,7 +5,8 @@ const ENGLISH_ERRORS: Record<string, string> = {
   'Selecciona las fechas de inicio y fin.': 'Select a start and end date.',
   'La fecha de inicio no puede ser anterior a hoy.': 'The start date cannot be in the past.',
   'La fecha final debe ser igual o posterior a la inicial.': 'The end date must be on or after the start date.',
-  'Estas fechas coinciden con otra solicitud de reclutamiento. Elige otro periodo.': 'These dates overlap another recruitment request. Choose another period.',
+  'Estas fechas coinciden con otra solicitud de reclutamiento. Elige otro periodo.':
+    'These dates overlap another recruitment request. Choose another period.',
   'Tu cuenta no tiene acceso para guardar solicitudes.': 'Your account does not have access to submit requests.',
   'No se pudo guardar. Revisa tu conexión y vuelve a intentar.': 'Could not save. Check your connection and try again.',
   'No se pudo confirmar el guardado. Vuelve a intentar.': 'Could not confirm the request was saved. Try again.',
@@ -13,13 +14,28 @@ const ENGLISH_ERRORS: Record<string, string> = {
   'No se pudieron cargar las solicitudes. Vuelve a intentar.': 'Could not load requests. Try again.',
   'No se pudieron cargar las solicitudes.': 'Could not load requests.',
   'No se pudo actualizar la solicitud.': 'Could not update the request.',
-  'No se pudo autorizar. Revisa tu conexión y vuelve a intentar.': 'Could not approve. Check your connection and try again.',
+  'No se pudo autorizar. Revisa tu conexión y vuelve a intentar.':
+    'Could not approve. Check your connection and try again.',
   'No se pudo confirmar la autorización. Vuelve a intentar.': 'Could not confirm approval. Try again.',
-  'Tu cuenta no tiene acceso para eliminar esta solicitud.': 'Your account does not have access to delete this request.',
-  'No se pudo eliminar. Revisa tu conexión y vuelve a intentar.': 'Could not delete. Check your connection and try again.',
+  'Solo un administrador puede autorizar solicitudes.': 'Only an administrator can approve requests.',
+  'Selecciona la solicitud que quieres autorizar.': 'Select the request to approve.',
+  'No se pudo rechazar. Revisa tu conexión y vuelve a intentar.':
+    'Could not reject. Check your connection and try again.',
+  'No se pudo confirmar el rechazo. Vuelve a intentar.': 'Could not confirm rejection. Try again.',
+  'Solo un administrador puede rechazar solicitudes.': 'Only an administrator can reject requests.',
+  'Selecciona la solicitud que quieres rechazar.': 'Select the request to reject.',
+  'No puedes rechazar tu propia solicitud.': 'You cannot reject your own request.',
+  'Solo se pueden rechazar solicitudes pendientes.': 'Only pending requests can be rejected.',
+  'La solicitud ya no esta disponible.': 'This request is no longer available.',
+  'No puedes autorizar tu propia solicitud.': 'You cannot approve your own request.',
+  'Solo se pueden autorizar solicitudes pendientes.': 'Only pending requests can be approved.',
+  'Tu cuenta no tiene acceso para eliminar esta solicitud.':
+    'Your account does not have access to delete this request.',
+  'No se pudo eliminar. Revisa tu conexión y vuelve a intentar.':
+    'Could not delete. Check your connection and try again.',
   'No se pudo confirmar la eliminación. Vuelve a intentar.': 'Could not confirm deletion. Try again.',
 };
 
 export function leaveErrorText(message: string, language: Language): string {
-  return language === 'en' ? ENGLISH_ERRORS[message] ?? message : message;
+  return language === 'en' ? (ENGLISH_ERRORS[message] ?? message) : message;
 }

@@ -110,8 +110,10 @@ export function PipelineResults({
   }
 
   return (
-    <div className="pipeline__results">
-      <PipelineTable rows={rows} isDesktop={isDesktop} language={language} onOpenCandidate={onOpenCandidate} />
+    <>
+      <div className="pipeline__results">
+        <PipelineTable rows={rows} isDesktop={isDesktop} language={language} onOpenCandidate={onOpenCandidate} />
+      </div>
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
@@ -120,6 +122,6 @@ export function PipelineResults({
         canGoNext={currentPage < totalPages}
         ariaLabel={en ? 'Candidate pages' : 'Paginación de candidatos'}
       />
-    </div>
+    </>
   );
 }

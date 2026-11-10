@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Copy, UsersRound } from 'lucide-react';
+import { Copy } from 'lucide-react';
 import { Modal } from './Modal';
 import { FormSheet } from './FormSheet';
 import { StarliteBadge } from './Badge';
@@ -175,7 +175,6 @@ export function FutureHiresModal({
       isOpen={isOpen}
       onClose={onClose}
       title={t("Próximos ingresos")}
-      icon={<UsersRound size="var(--icon-size-md)" aria-hidden="true" />}
       size="sm"
       footerActions={
         <button

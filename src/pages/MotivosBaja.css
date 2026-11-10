@@ -45,7 +45,7 @@
 }
 
 .motivos-baja__pagination {
-  margin-block-start: var(--design-spacing-sm);
+  margin-block-start: var(--design-spacing-md);
 }
 
 .motivos-baja__panel {
@@ -212,6 +212,15 @@
 
 .motivos-baja__records {
   table-layout: fixed;
+}
+
+.motivos-baja__records-wrap {
+  inline-size: 100%;
+  min-inline-size: 0;
+  overflow-x: auto;
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-card);
 }
 
 .motivos-baja__records-employee {

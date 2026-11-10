@@ -1,14 +1,9 @@
 import { useEffect, useId, useMemo, useState } from "react";
-import { CircleAlert, CircleCheckBig, Trash2, UserRoundPlus } from "lucide-react";
+import { CircleAlert } from "lucide-react";
 import type { Employee } from "@/lib/types";
 import { usePositions } from "@/lib/positions";
 import { toNaturalCase } from "@/lib/utils";
 import { localTodayIso } from "@/lib/dates";
-import {
-  TRANSPORTE_NA,
-  TRANSPORTE_PARADAS,
-  TRANSPORTE_RUTAS,
-} from "@/lib/transporte-routes";
 import { Modal } from "./Modal";
 import { FormWizard } from "./FormWizard";
 import { useIsMobile } from "@/hooks/useIsMobile";
@@ -299,11 +294,6 @@ export function EmployeeSheet({
     </p>
   ) : null;
 
-  const icon = isAdd ? (
-    <UserRoundPlus size={20} className="color-primary" aria-hidden="true" />
-  ) : (
-    <Trash2 size={20} className="color-error" aria-hidden="true" />
-  );
   const title = isAdd ? "Nuevo Empleado" : "Eliminar";
   const deleteContent = (
     <div className="delete-flow">
@@ -406,7 +396,6 @@ export function EmployeeSheet({
         isOpen={isOpen}
         onClose={onClose}
         className="employee-sheet employee-modal"
-        icon={icon}
         title={title}
         size={isAdd ? "md" : "sm"}
         footerActions={actionButtons}
@@ -435,7 +424,6 @@ export function EmployeeSheet({
       className={`employee-sheet employee-modal${
         isAdd ? " modal-wizard-mobile" : ""
       }`}
-      icon={icon}
       title={title}
       footerActions={!isAdd ? actionButtons : undefined}
     >

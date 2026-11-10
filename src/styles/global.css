@@ -502,7 +502,7 @@
 
   /* Anchura máxima del espacio inicial para cargar y consultar reportes diarios. */
   --feature-report-onboarding-max-inline-size: var(--container-standard-max-inline-size);
-  --feature-navigation-rail-inline-size: 15rem;
+  --feature-navigation-rail-inline-size: 14rem;
   --feature-reminders-panel-max-inline-size: 20rem;
   --feature-reminders-panel-max-block-size: 30rem;
 
@@ -2436,13 +2436,6 @@ code:not(pre code) {
   flex: 1 1 auto;
 }
 
-.modal-title>svg,
-.modal-title>[data-icon] {
-  flex-shrink: 0;
-  width: var(--icon-size-md);
-  height: var(--icon-size-md);
-}
-
 .modal-title__text {
   min-width: 0;
   flex: 1 1 auto;
@@ -2453,10 +2446,10 @@ code:not(pre code) {
   margin: 0;
   overflow-wrap: anywhere;
   font-family: var(--font-body);
-  font-size: var(--type-body-strong-size);
-  font-weight: var(--type-body-strong-weight);
-  line-height: var(--type-body-strong-line);
-  letter-spacing: var(--type-body-strong-tracking);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+  letter-spacing: var(--type-heading-sm-tracking);
 }
 
 .modal-close,

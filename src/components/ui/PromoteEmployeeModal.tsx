@@ -1,5 +1,5 @@
 import { useEffect, useId, useMemo, useState } from 'react';
-import { CircleArrowUp, CircleCheckBig, ListChecks, Plus } from 'lucide-react';
+import { ListChecks, Plus } from 'lucide-react';
 import type { Employee } from '@/lib/types';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { workforceText } from '@/pages/workforce-translations';
@@ -269,13 +269,6 @@ export function PromoteEmployeeModal({
       isOpen={isOpen}
       onClose={onClose}
       className="promote-modal"
-      icon={
-        <CircleArrowUp
-          size={18}
-          className="color-primary"
-          aria-hidden="true"
-        />
-      }
       title={t("Promover empleado")}
       size="sm"
       footerActions={footerActions}

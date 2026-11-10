@@ -211,11 +211,10 @@
 
 .data-update-results-panel {
   min-inline-size: 0;
-  padding: var(--design-spacing-xs);
-  border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--radius-card);
-  background: var(--color-surface-card);
-  overflow: hidden;
+}
+
+.data-update-results-panel + .pagination {
+  margin-block-start: var(--design-spacing-md);
 }
 
 .data-update-record-grid {
@@ -226,9 +225,12 @@
 
 .data-update-table-wrap {
   display: none;
+  inline-size: 100%;
   min-inline-size: 0;
-  overflow: hidden;
+  overflow-x: auto;
+  border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--radius-card);
+  background: var(--color-surface-card);
 }
 
 .data-update-desktop-table {

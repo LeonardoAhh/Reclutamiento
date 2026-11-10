@@ -123,13 +123,6 @@ export function CubrirVacanteModal({
       onClose={onClose}
       className="cubrir-vacante-modal"
       size="sm"
-      icon={
-        <CircleCheckBig
-          size={20}
-          className="cubrir-vacante-modal__icon"
-          aria-hidden="true"
-        />
-      }
       title={isMarcada ? 'Editar cobertura de vacante' : 'Marcar vacante como cubierta'}
       footerActions={footerActions}
     >
