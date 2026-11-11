@@ -1,6 +1,12 @@
 import { useEffect, useId, useRef, useState } from 'react';
-import { Clock, PowerOff, RotateCcw, Trash2, X } from 'lucide-react';
+import { Check, Clock, EllipsisVertical, Pencil, PowerOff, RotateCcw, Trash2, X } from 'lucide-react';
 import { Avatar } from '@/components/ui/Avatar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/DropdownMenu';
 import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton';
 import { useAuth, type Profile } from '@/hooks/useAuth';
 import { listProfiles } from '@/lib/users';
@@ -24,11 +30,13 @@ export function TeamManagement() {
   const { members, refresh } = useTeamDirectory();
   const id = useId();
   const addButtonRef = useRef<HTMLButtonElement>(null);
-  const confirmButtonRef = useRef<HTMLButtonElement>(null);
+  const confirmMenuItemRef = useRef<HTMLDivElement>(null);
   const [profiles, setProfiles] = useState<Profile[] | null>(null);
   const [onlineUsers, setOnlineUsers] = useState<Set<string>>(() => new Set());
   const [now, setNow] = useState(() => Date.now());
   const [adding, setAdding] = useState(false);
+  const [editing, setEditing] = useState<TeamMember | null>(null);
+  const [openActionsFor, setOpenActionsFor] = useState<string | null>(null);
   const [pending, setPending] = useState<PendingAction | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -59,7 +67,7 @@ export function TeamManagement() {
 
   useEffect(() => {
     if (!pending) return;
-    const frame = requestAnimationFrame(() => confirmButtonRef.current?.focus());
+    const frame = requestAnimationFrame(() => confirmMenuItemRef.current?.focus());
     return () => cancelAnimationFrame(frame);
   }, [pending]);
 
@@ -69,6 +77,7 @@ export function TeamManagement() {
     const current = members.find(row => row.id === member.id && !row.archived_at);
     if (!current || current.active !== member.active || current.profile_id === profile?.id || current.profile_role === 'admin' || (kind === 'remove' && current.active)) {
       setPending(null);
+      setOpenActionsFor(null);
       return;
     }
     setBusy(true); setError(''); setMessage('');
@@ -84,6 +93,7 @@ export function TeamManagement() {
         requestAnimationFrame(() => addButtonRef.current?.focus());
       }
       setPending(null);
+      setOpenActionsFor(null);
     } catch (cause) {
       setError(cause instanceof Error ? translateTeamMessage(cause.message, language) : kind === 'status' ? copy.statusFailure : copy.deleteFailure);
       await refresh().catch(() => { /* El proveedor conserva los datos y presenta el error. */ });
@@ -91,6 +101,8 @@ export function TeamManagement() {
   }
 
   const visibleMembers = members.filter(member => !member.archived_at);
+  const availableProfiles = profiles?.filter(row => !members.some(member =>
+    member.profile_id === row.id && member.id !== editing?.id)) ?? [];
   if (profile?.role !== 'admin') return null;
 
   return <section className="team-management" aria-labelledby={`${id}-title`} aria-busy={!profiles && !error}>
@@ -114,7 +126,7 @@ export function TeamManagement() {
         <span>{language === 'en' ? 'Member' : 'Integrante'}</span>
         <span>{language === 'en' ? 'Role' : 'Puesto'}</span>
         <span>{language === 'en' ? 'Status' : 'Estado'}</span>
-        <span className="sr-only">{language === 'en' ? 'Actions' : 'Acciones'}</span>
+        <span className="sr-only">{copy.actions}</span>
       </div>
       {visibleMembers.map(member => {
         const linked = profiles.find(row => row.id === member.profile_id);
@@ -137,23 +149,55 @@ export function TeamManagement() {
               {presence}
             </span>
             <div className="team-management__actions">
-              {canChange && <div className="team-management__action-group" onKeyDown={event => { if (event.key === 'Escape' && !busy) setPending(null); }} onBlur={event => { if (!busy && !event.currentTarget.contains(event.relatedTarget)) setPending(null); }}>
-                {isPending ? <>
-                  <button data-cuelume-tap="" ref={confirmButtonRef} type="button" className={`team-management__confirm${pending.kind === 'remove' ? ' team-management__confirm--danger' : ''}`} disabled={busy} aria-busy={busy} aria-label={`${copy.confirm} ${pending.kind === 'remove' ? copy.delete.toLowerCase() : (member.active ? copy.giveAccess : copy.reactivate).toLowerCase()} ${member.full_name}`} title={pending.kind === 'remove' ? member.profile_id ? copy.deleteLinkedDescription : copy.deleteUnlinkedDescription : member.active ? copy.deactivateDescription : copy.reactivateDescription} onClick={() => void confirmAction()}>
-                    {pending.kind === 'remove' ? <Trash2 size="var(--icon-size-sm)" aria-hidden="true" /> : member.active ? <PowerOff size="var(--icon-size-sm)" aria-hidden="true" /> : <RotateCcw size="var(--icon-size-sm)" aria-hidden="true" />}
-                    <span>{busy ? copy.saving : copy.confirm}</span>
+              <DropdownMenu
+                open={openActionsFor === member.id}
+                onOpenChange={open => {
+                  if (open) {
+                    setPending(current => current?.member.id === member.id ? current : null);
+                    setOpenActionsFor(member.id);
+                  } else {
+                    setOpenActionsFor(current => current === member.id ? null : current);
+                    if (!busy) setPending(current => current?.member.id === member.id ? null : current);
+                  }
+                }}
+              >
+                <DropdownMenuTrigger asChild>
+                  <button data-cuelume-tap="" type="button" disabled={busy} aria-label={`${copy.actions}: ${member.full_name}`}>
+                    <EllipsisVertical aria-hidden="true" />
                   </button>
-                  <button data-cuelume-tap="" type="button" className="team-management__action-icon" disabled={busy} aria-label={`${copy.cancel}: ${member.full_name}`} onClick={() => setPending(null)}><X size="var(--icon-size-sm)" aria-hidden="true" /></button>
-                </> : <>
-                  <button data-cuelume-tap="" type="button" className="team-management__action-icon" disabled={busy} aria-label={`${member.active ? copy.giveAccess : copy.reactivate}: ${member.full_name}`} onClick={() => setPending({ member, kind: 'status' })}>{member.active ? <PowerOff size="var(--icon-size-sm)" aria-hidden="true" /> : <RotateCcw size="var(--icon-size-sm)" aria-hidden="true" />}</button>
-                  {!member.active && <button data-cuelume-tap="" type="button" className="team-management__action-icon team-management__action-icon--danger" disabled={busy} aria-label={`${copy.delete}: ${member.full_name}`} onClick={() => setPending({ member, kind: 'remove' })}><Trash2 size="var(--icon-size-sm)" aria-hidden="true" /></button>}
-                </>}
-              </div>}
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" aria-label={`${copy.actions}: ${member.full_name}`}>
+                  {isPending ? <>
+                    <DropdownMenuItem ref={confirmMenuItemRef} disabled={busy} aria-label={`${copy.confirm} ${pending.kind === 'remove' ? copy.delete.toLowerCase() : (member.active ? copy.giveAccess : copy.reactivate).toLowerCase()}`} onSelect={event => { event.preventDefault(); void confirmAction(); }}>
+                      <Check aria-hidden="true" />
+                      <span>{copy.confirm}: {pending.kind === 'remove' ? copy.delete : member.active ? copy.giveAccess : copy.reactivate}</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem disabled={busy} onSelect={() => setPending(null)}>
+                      <X aria-hidden="true" />
+                      <span>{copy.cancel}</span>
+                    </DropdownMenuItem>
+                  </> : <>
+                    <DropdownMenuItem onSelect={() => { setPending(null); setEditing(member); }}>
+                      <Pencil aria-hidden="true" />
+                      <span>{copy.edit}</span>
+                    </DropdownMenuItem>
+                    {canChange && <DropdownMenuItem onSelect={event => { event.preventDefault(); setPending({ member, kind: 'status' }); }}>
+                      {member.active ? <PowerOff aria-hidden="true" /> : <RotateCcw aria-hidden="true" />}
+                      <span>{member.active ? copy.giveAccess : copy.reactivate}</span>
+                    </DropdownMenuItem>}
+                    {canChange && !member.active && <DropdownMenuItem variant="destructive" onSelect={event => { event.preventDefault(); setPending({ member, kind: 'remove' }); }}>
+                      <Trash2 aria-hidden="true" />
+                      <span>{copy.delete}</span>
+                    </DropdownMenuItem>}
+                  </>}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>;
       })}
     </div>}
-    {adding && profiles && <TeamMemberForm member={null} profiles={profiles.filter(row => !members.some(member => member.profile_id === row.id))} onClose={() => setAdding(false)} onSaved={refresh} />}
+    {adding && profiles && <TeamMemberForm member={null} profiles={availableProfiles} onClose={() => setAdding(false)} onSaved={refresh} />}
+    {editing && profiles && <TeamMemberForm member={editing} profiles={availableProfiles} onClose={() => setEditing(null)} onSaved={refresh} />}
   </section>;
 }
