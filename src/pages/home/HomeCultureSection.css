@@ -1,7 +1,7 @@
 .home-culture {
   display: grid;
   min-inline-size: 0;
-  gap: var(--design-spacing-xl);
+  gap: var(--design-spacing-lg);
   padding: var(--design-spacing-lg);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--radius-card);
@@ -13,7 +13,7 @@
 .home-culture__closing {
   display: grid;
   min-inline-size: 0;
-  gap: var(--design-spacing-sm);
+  gap: var(--design-spacing-xs);
 }
 
 .home-culture__eyebrow {
@@ -35,14 +35,14 @@
 .home-culture__pillar p {
   margin: 0;
   color: var(--color-ink);
-  font: var(--type-body-lg-weight) var(--type-body-lg-size)/var(--type-body-lg-line) var(--font-body);
-  letter-spacing: var(--type-body-lg-tracking);
+  font: var(--type-body-md-weight) var(--type-body-md-size)/var(--type-body-md-line) var(--font-body);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .home-culture__pillars {
   display: grid;
   min-inline-size: 0;
-  gap: var(--design-spacing-lg);
+  gap: var(--design-spacing-md);
 }
 
 .home-culture__pillar h3 {
@@ -53,7 +53,7 @@
 }
 
 .home-culture__closing {
-  padding-block-start: var(--design-spacing-lg);
+  padding-block-start: var(--design-spacing-md);
   border-block-start: var(--border-width) solid var(--color-hairline);
 }
 
@@ -65,13 +65,13 @@
   letter-spacing: var(--type-body-strong-tracking);
 }
 
-@media (min-width: 768px) {
-  .home-culture {
-    padding: var(--design-spacing-xl);
+@media (width >= 768px) {
+  .home-culture__pillars {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-@media (min-width: 1080px) {
+@media (width >= 1080px) {
   .home-culture__pillars {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
