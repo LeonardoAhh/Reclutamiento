@@ -1,7 +1,6 @@
 import { Check, CircleAlert, Info, LoaderCircle, TriangleAlert, X, type LucideIcon } from 'lucide-react';
 import { BrandMarkPath } from '@/components/ui/BrandMark';
-import { MorphingIcon } from '@/components/ui/MorphingIcon';
-import { useToastTitleReveal } from '@/components/ui/useToastTitleReveal';
+import { useTypewriterReveal } from '@/components/ui/useTypewriterReveal';
 import type { Language } from '@/contexts/LanguageContext';
 import { TOAST_CONFIG } from '@/lib/constants';
 import { toastStore, type ToastState, type ToastType } from '@/lib/notify';
@@ -27,7 +26,10 @@ export function ToastRow({ toast, language }: ToastRowProps) {
   const systemUpdate = toast.presentation === 'system-update';
   const StatusIcon = STATUS_ICONS[toast.type];
   const duration = toast.duration ?? TOAST_CONFIG.defaultDurationMs;
-  const visibleTitle = useToastTitleReveal(toast.title, duration, toast.type !== 'loading');
+  const visibleTitle = useTypewriterReveal(toast.title, {
+    durationMs: duration,
+    animated: toast.type !== 'loading',
+  });
 
   return (
     <li
@@ -49,26 +51,14 @@ export function ToastRow({ toast, language }: ToastRowProps) {
         <span className="app-toaster__title-visible" aria-hidden="true">{visibleTitle}</span>
         <span className="sr-only">{toast.title}</span>
       </span>
-      {toast.action ? (
-        <button
-          type="button"
-          className="app-toaster__control app-toaster__control--action"
-          aria-label={toast.action.label}
-          title={toast.action.label}
-          onClick={toast.action.onClick}
-        >
-          <MorphingIcon icon={toast.action.icon} size="var(--icon-size-sm)" aria-hidden="true" />
-        </button>
-      ) : (
-        <button
-          type="button"
-          className="app-toaster__control"
-          aria-label={language === 'en' ? 'Dismiss notification' : 'Cerrar notificación'}
-          onClick={() => toastStore.remove(toast.id)}
-        >
-          <X aria-hidden="true" />
-        </button>
-      )}
+      <button
+        type="button"
+        className="app-toaster__control"
+        aria-label={language === 'en' ? 'Dismiss notification' : 'Cerrar notificación'}
+        onClick={() => toastStore.remove(toast.id)}
+      >
+        <X aria-hidden="true" />
+      </button>
     </li>
   );
 }

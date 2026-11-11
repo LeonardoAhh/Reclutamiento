@@ -135,10 +135,6 @@
     color var(--transition-fast);
 }
 
-.app-toaster__control--action {
-  color: var(--color-ink);
-}
-
 .app-toaster__control:hover {
   background: var(--color-surface-hover);
   color: var(--color-ink);

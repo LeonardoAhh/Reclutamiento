@@ -722,7 +722,6 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
  */
 export const SYSTEM_UPDATE_BANNER_CONFIG = {
   availableTitle: "Actualización disponible",
-  actionLabel: "Actualizar",
   preparingLabel: "Preparando…",
   errorHint: "No se pudo actualizar. Prueba de nuevo.",
   retryLabel: "Reintentar",
@@ -739,7 +738,6 @@ export const SYSTEM_UPDATE_BANNER_CONFIG = {
 
 export const SYSTEM_UPDATE_BANNER_ENGLISH = {
   availableTitle: "Update available",
-  actionLabel: "Update",
   preparingLabel: "Preparing…",
   errorHint: "Could not update. Try again.",
   retryLabel: "Retry",
@@ -753,7 +751,6 @@ export const SYSTEM_UPDATE_BANNER_ENGLISH = {
 export const TYPEWRITER_INTERVAL_MS = 30;
 
 export const TOAST_CONFIG = {
-  maxVisible: 3,
   defaultDurationMs: 4000,
   typewriterIntervalMs: TYPEWRITER_INTERVAL_MS,
 } as const;

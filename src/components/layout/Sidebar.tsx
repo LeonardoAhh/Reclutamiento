@@ -11,6 +11,7 @@ import { SidebarBrand } from './SidebarBrand';
 import { SidebarItem } from './SidebarItem';
 import { SidebarAccountMenu } from './SidebarAccountMenu';
 import { SidebarQuickActions, type SidebarQuickActionsControls } from './SidebarQuickActions';
+import { SidebarUpdateButton } from './SidebarUpdateButton';
 import './Sidebar.css';
 import './SidebarNavigation.css';
 
@@ -124,6 +125,7 @@ export function Sidebar({
             ))}
         </ul>
       </nav>
+      <SidebarUpdateButton collapsed={collapsed} />
       <footer className="sidebar__footer">
         <SidebarAccountMenu
           username={username}

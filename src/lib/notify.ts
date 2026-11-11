@@ -1,23 +1,17 @@
 import { TOAST_CONFIG } from '@/lib/constants';
-import type { IconInput } from 'morphicons/react';
 
 export type ToastType = 'success' | 'error' | 'info' | 'warning' | 'loading';
 
-export interface ToastAction {
-  /** Nombre accesible del control; el aviso solo muestra su icono. */
-  label: string;
-  icon: IconInput;
-  onClick: () => void;
-}
-
+/**
+ * El aviso solo informa: un mensaje y su cierre. Lo que el usuario puede hacer
+ * vive en el control de la interfaz que lo ofrece, no dentro del aviso.
+ */
 export interface ToastOptions {
   /** Mensaje completo en una sola línea; el aviso no tiene segunda línea. */
   title: string;
   presentation?: 'system-update';
   duration?: number;
   id?: string | number;
-  action?: ToastAction;
-  pinned?: boolean;
 }
 
 export interface ToastState extends ToastOptions {
@@ -50,23 +44,13 @@ class ToastStore {
   add(type: ToastType, opts: ToastOptions) {
     const id = opts.id !== undefined ? String(opts.id) : crypto.randomUUID();
     const duration =
-      opts.duration ??
-      (type === 'loading' || opts.action ? Infinity : TOAST_CONFIG.defaultDurationMs);
+      opts.duration ?? (type === 'loading' ? Infinity : TOAST_CONFIG.defaultDurationMs);
 
     const newToast: ToastState = { ...opts, id, type, duration };
 
-    const nextToasts = [
-      ...this.toasts.filter((toast) => toast.pinned && toast.id !== id),
-      newToast,
-    ].slice(-TOAST_CONFIG.maxVisible);
-    for (const previous of this.toasts) {
-      if (!nextToasts.some((toast) => toast.id === previous.id)) {
-        this.clearTimer(previous.id);
-      }
-    }
-    this.clearTimer(id);
-    this.toasts = nextToasts;
-    
+    /* Solo vive un aviso: el nuevo sustituye al anterior y libera su temporizador. */
+    for (const previous of this.toasts) this.clearTimer(previous.id);
+    this.toasts = [newToast];
     this.notify();
 
     if (duration !== Infinity) {
