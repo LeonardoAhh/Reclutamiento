@@ -728,6 +728,9 @@ export const SYSTEM_UPDATE_BANNER_CONFIG = {
   registrationErrorTitle: "Sin actualizaciones",
   appliedTitle: "Actualización aplicada",
   noticeDurationMs: 4000,
+  /* Margen para que el worker en espera tome el control y recargue la página;
+     agotado, la recarga la fuerza el cliente. */
+  applyTimeoutMs: 8000,
   versionCheckIntervalMs: 5 * 60 * 1000,
   serviceWorkerCheckIntervalMs: 60 * 60 * 1000,
   serviceWorkerCheckMinGapMs: 60 * 1000,

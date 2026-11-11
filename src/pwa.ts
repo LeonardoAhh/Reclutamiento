@@ -93,7 +93,16 @@ export async function applyPWAUpdate(): Promise<void> {
     await activateUpdate();
   } catch {
     publish({ status: 'apply-error' });
+    return;
   }
+
+  /* Activar solo pide el relevo: la recarga llega cuando el worker en espera
+     toma el control. Si nadie lo toma —no había ninguno esperando o el relevo
+     se perdió— esa recarga no llegaría nunca y el control se quedaría
+     anunciando un trabajo detenido, así que la hacemos nosotros. */
+  window.setTimeout(() => {
+    if (snapshot.status === 'applying') window.location.reload();
+  }, SYSTEM_UPDATE_BANNER_CONFIG.applyTimeoutMs);
 }
 
 export function deferPWAUpdate(): void {
