@@ -46,8 +46,8 @@ const PAGE_TITLES: Readonly<Record<string, string>> = {
  *  - Desktop (>=1080px): Sidebar fijo y header dentro del workspace.
  *  - Tablet/movil (<1080px): Header superior + Sidebar deslizable.
  */
-export function AppShell(props: { children: ReactNode; startupOverlaysReady?: boolean }) {
-  const { children, startupOverlaysReady = true } = props;
+export function AppShell(props: { children: ReactNode }) {
+  const { children } = props;
   const { language } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [sessionNoticeReady, setSessionNoticeReady] = useState(false);
@@ -300,7 +300,7 @@ export function AppShell(props: { children: ReactNode; startupOverlaysReady?: bo
         <ProductTour
           profileId={profile.id}
           showRecognition={profile.role === 'reclutador'}
-          startupOverlaysReady={startupOverlaysReady && sessionNoticeReady}
+          startupOverlaysReady={sessionNoticeReady}
           replayRequest={tourReplayRequest}
           onStepChange={setTourStepIndex}
           onOpenAccountMenu={openAccountMenuForTour}

@@ -8,6 +8,8 @@ import { Tooltip } from '@/components/ui/Tooltip';
 import type { Language } from '@/contexts/LanguageContext';
 import { LeaveApprovalNotifications } from '@/features/leave/LeaveApprovalNotifications';
 import { useLeaveNotificationCount } from '@/features/leave/useLeaveNotificationCount';
+import { AdminRecruiterIndicators } from '@/features/recognition/AdminRecruiterIndicators';
+import { RecruiterMonthlyProgress } from '@/features/recognition/RecruiterMonthlyProgress';
 import { useAuth } from '@/hooks/useAuth';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { Sheet, SheetBody, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/Sheet';
@@ -87,12 +89,21 @@ export function Header({
     </button>
   );
   const notificationBody = (
-    <LeaveApprovalNotifications
-      open={notificationsOpen}
-      language={language}
-      refreshKey={notificationRefreshKey}
-      onDecisionsViewed={markDecisionsViewed}
-    />
+    <>
+      <RecruiterMonthlyProgress open={notificationsOpen} />
+      <AdminRecruiterIndicators open={notificationsOpen} language={language} refreshKey={notificationRefreshKey} />
+      <section className="leave-approval-notifications__group" aria-labelledby="header-notification-requests-title">
+        <h3 id="header-notification-requests-title" className="leave-approval-notifications__group-title">
+          {language === 'en' ? 'Requests' : 'Solicitudes'}
+        </h3>
+        <LeaveApprovalNotifications
+          open={notificationsOpen}
+          language={language}
+          refreshKey={notificationRefreshKey}
+          onDecisionsViewed={markDecisionsViewed}
+        />
+      </section>
+    </>
   );
 
   return (

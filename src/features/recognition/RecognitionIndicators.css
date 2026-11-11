@@ -1,0 +1,152 @@
+.recruiter-progress,
+.admin-recruiter-indicators {
+  display: grid;
+  gap: var(--design-spacing-xs);
+  padding: var(--design-spacing-sm) var(--design-spacing-md);
+  border-block-end: var(--border-width) solid var(--color-hairline);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
+}
+
+.recruiter-progress p,
+.recruiter-progress__heading h3,
+.admin-recruiter-indicators h3,
+.admin-recruiter-indicators p {
+  margin: 0;
+}
+
+.recruiter-progress__heading h3,
+.recruiter-progress__heading strong,
+.admin-recruiter-indicators h3,
+.admin-recruiter-indicators__name {
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.recruiter-progress__heading {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--design-spacing-xs);
+  min-inline-size: 0;
+}
+
+.recruiter-progress__heading strong {
+  font-variant-numeric: tabular-nums;
+}
+
+.recruiter-progress__visual {
+  min-inline-size: 0;
+}
+
+.recruiter-progress__details summary {
+  display: flex;
+  align-items: center;
+  min-block-size: var(--touch-target-min);
+  color: var(--color-body);
+  cursor: pointer;
+}
+
+.recruiter-progress__details summary:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+}
+
+.recruiter-progress__details summary svg {
+  inline-size: var(--icon-size-sm);
+  block-size: var(--icon-size-sm);
+  margin-inline-start: auto;
+}
+
+.recruiter-progress__details[open] summary svg {
+  transform: rotate(180deg);
+}
+
+.recruiter-progress__details ul {
+  display: grid;
+  gap: var(--design-spacing-xxs);
+  margin: 0;
+  padding-inline-start: var(--design-spacing-md);
+  color: var(--color-body);
+}
+
+.admin-recruiter-indicators__list {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.admin-recruiter-indicators__item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--design-spacing-sm);
+  min-inline-size: 0;
+  padding-block: var(--design-spacing-xs);
+  border-block-start: var(--border-width) solid var(--color-hairline);
+}
+
+.admin-recruiter-indicators__name {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-recruiter-indicators__progress {
+  min-inline-size: 0;
+}
+
+.recognition-progress__track {
+  position: relative;
+  display: block;
+  inline-size: 100%;
+  min-inline-size: 0;
+  block-size: var(--design-spacing-xs);
+  overflow: hidden;
+  border-radius: var(--rounded-xs);
+  background: var(--color-hairline);
+}
+
+.recognition-progress__track.loading-skeleton__bone {
+  background: var(--color-hairline-strong);
+}
+
+.recognition-progress__fill {
+  display: block;
+  block-size: 100%;
+  border-radius: inherit;
+  background: var(--color-primary-text);
+  transform-origin: left center;
+  animation: recognition-progress-fill var(--transition-progress) both;
+}
+
+@keyframes recognition-progress-fill {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .recognition-progress__fill {
+    animation: none;
+  }
+}
+
+.recruiter-progress__loading-line,
+.admin-recruiter-indicators__loading-line {
+  inline-size: 100%;
+  block-size: var(--design-spacing-sm);
+  border-radius: var(--rounded-xs);
+}

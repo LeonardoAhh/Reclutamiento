@@ -3,6 +3,18 @@
   padding: 0;
 }
 
+.leave-approval-notifications__group-title {
+  margin: 0;
+  padding: var(--design-spacing-sm) var(--design-spacing-md);
+  border-block-end: var(--border-width) solid var(--color-hairline);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
 .popover-content.leave-approval-notifications__mobile-popover {
   display: flex;
   flex-direction: column;

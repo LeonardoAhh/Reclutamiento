@@ -73,9 +73,9 @@ function EmptyNotifications({ language, admin }: { language: Language; admin: bo
           <span className="leave-approval-notifications__mockup-line leave-approval-notifications__mockup-line--short" />
         </div>
       </div>
-      <h2 className="animated-empty-state__title" id={id}>
+      <h4 className="animated-empty-state__title" id={id}>
         {title}
-      </h2>
+      </h4>
       <p className="animated-empty-state__subtitle">{description}</p>
     </section>
   );
