@@ -94,7 +94,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       expiredNotifiedRef.current = true;
       toast.error({
         title: english ? 'Account inactive' : 'Cuenta inactiva',
-        description: english ? 'Contact an administrator.' : 'Contacta al administrador.',
       });
     }
 

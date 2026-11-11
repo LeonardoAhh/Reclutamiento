@@ -190,7 +190,9 @@ export function dataUpdateError(error: unknown): string {
   if (message.includes("data_update_") || message.includes("Could not find")) {
     return "Actualización de datos aún no está habilitada. Aplica la migración 034.";
   }
-  return message || "No fue posible completar la operación.";
+  // El texto sin mapear viene del servidor: solo se registra.
+  if (message) console.warn("Data update request failed:", message);
+  return "No fue posible completar la operación.";
 }
 
 const RECORD_SELECT = `

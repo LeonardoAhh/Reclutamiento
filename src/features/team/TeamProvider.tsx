@@ -75,7 +75,6 @@ function AuthenticatedTeamProvider({ children }: { children: ReactNode }) {
       const currentLanguage = languageRef.current;
       toast.error({
         title: currentLanguage === 'en' ? 'Could not update the team' : 'No se pudo actualizar el equipo',
-        description: translateTeamMessage(error, currentLanguage),
       });
     }
   }, [error, members]);

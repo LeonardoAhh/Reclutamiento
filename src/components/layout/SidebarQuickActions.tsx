@@ -153,7 +153,6 @@ export function SidebarQuickActions({ profile, members, children }: SidebarQuick
     setLeaveStep("saved");
     toast.success({
       title: en ? "Request submitted" : "Solicitud enviada",
-      description: en ? "Your coordinator will review it." : "Tu coordinador la revisará.",
     });
     playSound('success');
   }

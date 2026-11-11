@@ -21,9 +21,9 @@ Both themes use canvas as the base page surface, canvas-soft for quiet grouping,
 ## Colors - Neutral and Blue
 
 ### Brand & Accent
-- Primary fill: `--color-primary` = #1E40AF in light and dark. It is the deepest blue of the supplied scale and the one that keeps a normal-size white label above 8.1:1.
-- Hover fill: `--color-primary-active` = #1E3A8A. Pressed fill: `--color-primary-pressed` = #172554. Both deepen the fill in either theme, because lightening it would eat the label's contrast.
-- Text on solid primary: `--color-on-primary` = #FFFFFF in both themes. Its contrast is 8.72:1 at rest, 10.37:1 on hover and 14.72:1 when pressed.
+- Primary fill: `--color-primary` = #2563EB in light and dark; channels = 37 99 235. This is the first supplied blue that supports normal-size white labels at AA.
+- Hover fill: `--color-primary-active` = #1D4ED8. Pressed fill: `--color-primary-pressed` = #1E40AF.
+- Text on solid primary: `--color-on-primary` = #FFFFFF in both themes. Its contrast is 5.17:1 normally, 6.70:1 on hover and 8.72:1 when pressed.
 - Standalone primary text and functional links: `--color-primary-text` / `--color-link` = #1E40AF in light and #BFDBFE in dark. Do not use the fill token as normal-size text on neutral surfaces.
 - Primary boundaries: `--color-primary-border` follows the accessible text variant. This keeps thin outlines distinguishable on stronger dark surfaces where the fill alone can fall below 3:1.
 - Link hover: #1E3A8A in light and the light foreground in dark. Keep the existing underline/interaction treatment.
@@ -34,33 +34,32 @@ Both themes use canvas as the base page surface, canvas-soft for quiet grouping,
 
 | Role | Light | Dark |
 |---|---|---|
-| Canvas | #FFFFFF | #161616 |
-| Quiet region | #F9FAFB | #1E1E1E |
+| Canvas | #FFFFFF | #171717 |
+| Quiet region | #F9FAFB | #1F1F1F |
 | Content card | #FFFFFF | #262626 |
 | Elevated field/overlay | #FFFFFF | #262626 |
-| Strong surface | #F3F4F6 | #303030 |
-| Neutral hover | strong mixed 3% toward ink | strong mixed 3% toward ink |
-| Headings | #333333 | #F5F5F5 |
-| Body | #333333 | #F5F5F5 |
-| Secondary text | #374151 | #D4D4D4 |
-| Placeholder | #374151 | #D4D4D4 |
+| Strong surface | #F3F4F6 | #404040 |
+| Headings | #333333 | #E5E5E5 |
+| Body | #333333 | #E5E5E5 |
+| Secondary text | #4B5563 | #B6B6B6 |
+| Placeholder | #4B5563 | #B6B6B6 |
 | Required control border | #6B7280 | #A3A3A3 |
 
-Hairlines are decorative separators and never share a value with `--color-surface-strong`; required boundaries use the control-border or primary-border tokens. Status meaning retains its labels/icons as well as color. Semantic status text uses `--color-success-text`, `--color-warning-text` and `--color-error-text`, and must maintain at least 8.1:1 against every applicable palette surface; verify light and dark modes independently. Official paper, ink and document headers keep their existing independent tokens.
+Hairlines are decorative separators; required boundaries use the control-border or primary-border tokens. Status meaning retains its labels/icons as well as color. Semantic status text uses the enhanced foreground tokens and must maintain at least 4.5:1 against every applicable palette surface; verify light and dark modes independently. Official paper, ink and document headers keep their existing independent tokens.
 
 ### Verified Primary Contrast
 
 | Pair | Ratio | Criterion |
 |---|---|---|
-| #FFFFFF label on #1E40AF | 8.72:1 | Rest, both themes |
-| #FFFFFF label on #1E3A8A | 10.37:1 | Hover |
-| #FFFFFF label on #172554 | 14.72:1 | Pressed |
+| #FFFFFF label on #2563EB | 5.17:1 | AA text, both themes |
+| #FFFFFF label on #1D4ED8 | 6.70:1 | Hover text |
+| #FFFFFF label on #1E40AF | 8.72:1 | Pressed text |
 | #333333 body on #FFFFFF | 12.63:1 | Light body |
-| #F5F5F5 body on #161616 | 16.56:1 | Dark body |
-| #1E40AF standalone text on #FFFFFF | 8.72:1 | Light standalone text |
-| #BFDBFE standalone text on #303030 | 9.09:1 | Dark standalone text |
+| #E5E5E5 body on #171717 | 14.23:1 | Dark body |
+| #1E40AF standalone text on #FFFFFF | 8.72:1 | Enhanced text contrast |
+| #BFDBFE standalone text on #404040 | 7.30:1 | Enhanced text contrast |
 
-Every text token clears 8.1:1 over canvas, canvas-soft, canvas-elevated, surface-card, surface-strong, the neutral hover surface and the primary tint, in all six palettes and both modes; control borders and focus clear 3:1 in the same matrix. This does not certify chart colors, decorative transparency or disabled-state opacity. Disabled controls retain their existing programmatic state and opacity treatment. Typography, spacing and reference radii stay unchanged.
+These opaque primary/body pairs meet AA for normal text; some exceed 7:1. This does not certify chart colors, decorative transparency or disabled-state opacity. Disabled controls retain their existing programmatic state and opacity treatment. Typography, spacing and reference radii stay unchanged.
 
 ### Decorative Compatibility
 Legacy gradient tokens remain available for existing illustrations. Application UI uses light and charcoal neutrals, blue actions and accessible blue text variants.
@@ -84,9 +83,8 @@ The optional dark theme extends the same semantic tokens using the supplied char
 - La paleta `Original` conserva los colores actuales. `Ocean Saas`, `Gold Void`, `Sea Glass`, `Claude Amber` y `Supabase` son opciones adicionales con variantes clara y oscura; el modo `Sistema` sigue el ajuste del dispositivo. La selección de paleta es independiente del modo y se guarda en `reclutamiento_color_palette` como `original`, `ocean-saas`, `darkmatter-remix`, `sea-glass`, `claude-amber` o `supabase`. El identificador guardado `darkmatter-remix` se conserva para mantener las preferencias existentes; `chemp` se normaliza a `sea-glass`.
 - `/account` muestra los selectores de modo y paleta apilados en móvil y en una fila de dos columnas desde tablet. El menú de cuenta de la sidebar solo ofrece los tres modos de apariencia. `public/theme.js` restaura `html[data-color-palette]` antes de cargar CSS y sincroniza los cambios entre pestañas.
 - En `/account`, Paleta abre una vista de detalle dentro de Ajustes, como Contraseña, y oculta las demás opciones mientras está abierta. La cabecera nombra la vista activa (`Ajustes`, `Contraseña` o `Paleta`) sin repetir ese título dentro del contenido. Las paletas se ordenan por nombre en el idioma activo. La vista usa una columna en móvil y dos desde tablet; cada opción muestra el nombre arriba, los colores de canvas, primario y tinta debajo y el indicador de selección a la derecha. La selección se aplica inmediatamente mediante controles de radio nativos, con foco visible y retorno al disparador al volver.
-- Los colores se definen solo en `src/styles/global.css`, en los bloques `data-color-palette` de cada paleta para claro y oscuro. Adaptan acción primaria, superficies, texto y bordes a las referencias proporcionadas. La sidebar conserva su diseño y utiliza `--color-sidebar-surface` y `--shell-floor` de la paleta y el modo activos; no conserva una superficie clara al cambiar a oscuro. `Gold Void` aplica la paleta oro y pergamino, con tipografía y geometría globales sin cambios; los textos principales y secundarios superan 8.1:1 sobre las superficies de la paleta, los bordes de control superan 3:1 y el foco conserva el token neutral global. `Sea Glass` aplica la propuesta de contraste corregida: textos principales y secundarios conservan al menos 8.1:1 en las superficies de cada modo, y bordes de controles superan 3:1 incluso sobre superficies elevadas; el foco visible conserva el token neutral global. En oscuro usa cian y superficies azul verdosas. `Claude Amber` utiliza superficies crema y ámbar, con texto oscuro sobre su primario claro y texto ámbar más claro en oscuro para mantener AA. `Supabase` usa verde claro con texto oscuro en claro y verde profundo con texto claro en oscuro; los enlaces y el foco usan verdes con contraste suficiente. `Ocean Saas` profundiza su azul y su texto secundario hasta superar 8.1:1 en ambos modos, al nivel del resto de paletas. Los colores de error permanecen semánticos. Conservan Mona Sans, escala tipográfica, espaciado, radios, sombras y tokens de documentos/exportación. Los colores de gráficas no se agregan hasta tener consumidores reales.
-- Estados por paleta: el hover neutro se deriva una sola vez en la base, `--color-surface-hover: color-mix(in srgb, var(--color-surface-strong) 97%, var(--color-ink))`, de modo que se distingue de canvas, canvas-soft, surface-card, canvas-elevated y también de surface-strong en ambos modos; ninguna paleta lo redefine. El hover y pressed del primario se alejan siempre de su etiqueta: con etiqueta clara el relleno oscurece y con etiqueta oscura aclara, y `--color-on-primary` conserva al menos 8.1:1 en los tres estados. En oscuro el enlace en hover (`--color-link-deep`) usa el texto principal, nunca el relleno primario. El texto de error supera 8.1:1 sobre todas las superficies y sobre su tinte. El hairline decorativo nunca coincide con `--color-surface-strong`: en `Sea Glass` claro el divisor es `#D6DDD8` y el verde `#64766A` queda reservado a `--color-hairline-strong`.
-- Un token de color existe una sola vez por significado: no hay alias con el mismo valor y la misma función. `--color-ink` cubre títulos y cuerpo, `--color-mute` el texto secundario, `--color-surface-card` las tarjetas y `--color-canvas-elevated` campos y superficies flotantes.
+- Los colores se definen solo en `src/styles/global.css`, en los bloques `data-color-palette` de cada paleta para claro y oscuro. Adaptan acción primaria, superficies, texto y bordes a las referencias proporcionadas. La sidebar conserva su diseño y utiliza `--color-sidebar-surface` y `--shell-floor` de la paleta y el modo activos; no conserva una superficie clara al cambiar a oscuro. `Gold Void` aplica la paleta oro y pergamino, con tipografía y geometría globales sin cambios; los textos principales y secundarios superan 8.1:1 sobre las superficies de la paleta, los bordes de control superan 3:1 y el foco conserva el token neutral global. `Sea Glass` aplica la propuesta de contraste corregida: textos principales y secundarios conservan al menos 8.1:1 en las superficies de cada modo, y bordes de controles superan 3:1 incluso sobre superficies elevadas; el foco visible conserva el token neutral global. En oscuro usa cian y superficies azul verdosas. `Claude Amber` utiliza superficies crema y ámbar, con texto oscuro sobre su primario claro y texto ámbar más claro en oscuro para mantener AA. `Supabase` usa verde claro con texto oscuro en claro y verde profundo con texto claro en oscuro; los enlaces y el foco usan verdes con contraste suficiente. Los colores de error permanecen semánticos. Conservan Mona Sans, escala tipográfica, espaciado, radios, sombras y tokens de documentos/exportación. Los colores de gráficas no se agregan hasta tener consumidores reales.
+- Estados por paleta: el hover neutro (`--color-surface-hover`) se distingue de canvas, canvas-soft, surface-card y canvas-elevated en ambos modos. El hover y pressed del primario se alejan de la superficie: oscurecen en claro y aclaran en oscuro, y la etiqueta `--color-on-primary` conserva al menos 4.5:1 en los tres estados. En la paleta original en oscuro usan #1D4ED8 y #2563EB. En oscuro el enlace en hover (`--color-link-deep`) usa el texto principal, nunca el relleno primario. El texto de error supera 4.5:1 sobre todas las superficies y sobre su tinte. El hairline decorativo nunca coincide con `--color-surface-strong`.
 - Las etiquetas blancas sobre el primario, el texto principal y el texto secundario sobre las superficies principales, así como el texto azul independiente, usan pares con contraste AA. La comprobación visual y con tecnología asistiva sigue siendo necesaria antes de certificar toda la interfaz.
 
 ### Dark Semantic Palette
@@ -109,8 +107,8 @@ Primary remains the sole structural action color in dark mode. The shared blue f
 Primary contrast pairs are verified above. Use dedicated foregrounds for neutral backgrounds and on-primary for filled controls; these values do not replace rendered-state verification.
 
 - `--color-on-neutral`, `--color-on-error`, `--color-on-success` and `--color-on-warning` describe text on solid status fills; `--color-on-dark` remains text on a dark surface.
+- `--color-on-dark-hover` describes the hover fill for a light action inside a dark surface.
 - `--color-shadow-rgb` keeps shadow channels separate from text, avoiding light halos when ink becomes light.
-- `--color-scene-light` provides theme-independent neutral illumination for the decorative scene, and `--color-shimmer-overlay` derives the progress sheen from it.
 - The shared brand SVG inherits currentColor. Raster photographs and existing illustrations retain their original colors.
 - Native control accents use `--color-primary`; authenticated and public careers shells provide a keyboard skip link. Increased-contrast preference strengthens hairlines with the muted text token.
 - `--layer-skip-link` keeps skip navigation above the sidebar and below modal overlays.
@@ -239,9 +237,12 @@ All buttons, including icon-only buttons, are rectangles with soft 10px corners.
 **`app-toast`** — global notification
 - The toast host sits at the top center within the global container at every width. Global container padding and safe areas remain respected. Only the newest notification is visible; a new transient replaces the previous transient instead of stacking. Pinned update notices remain available and return when a newer transient closes. A system-update notice stays beneath open modals and sheets so it cannot cover a form or its close control; ordinary action feedback retains the toast layer.
 - In `/activities`, creation feedback names the created item type. The post-login pending notice groups counts as vacancies, activities and responsibilities in the active language; support tasks and legacy records without a type are included with activities.
-- The surface uses `{colors.canvas-elevated}`, ink text, the existing hairline and floating shadow. Compact feedback forms one horizontal row with a semantic status icon, message and dismiss control; success uses a filled success-text circle with an on-success check. There is no `wave` robot or Undo action. System-update notices use the shared brand mark in a primary square beside the status text, without a repeated brand name. Available updates and retries show their update icon in place of dismiss; the applied notice keeps its dismiss control. Width is capped by the shared toast token and shrinks to fit narrow viewports; titles and descriptions stay on one line and truncate visually with an ellipsis, while their complete text remains available to assistive technology. Existing action labels may wrap. No elapsed time is shown without a real timestamp.
+- Every notice is one capsule of a single row: leading mark, message and one control. The surface uses `{colors.canvas-elevated}`, ink text, the existing hairline, the menu radius and the Level 2 shadow, with the shared 44px row height. There is no second line: a notice carries one message and nothing else, written in the application's own words. An error never repeats the message returned by the server or the database; the raw cause stays in the console. There is no `wave` robot, no Undo action and no elapsed time without a real timestamp.
+- The leading mark is a monochrome status icon in its semantic text color — check, alert circle, warning triangle, info circle or spinner — on the plain surface, without a filled badge. System-update notices replace it with the shared brand mark in a primary square with badge corners, without a repeated brand name.
+- The trailing control is always exactly one: the notice's own action when it has one, otherwise dismiss. Available updates and retries therefore show their update icon and no dismiss, while the applied, preparing and offline notices keep dismiss. Controls are transparent and borderless, keep their accessible name, the 44px touch target, the control radius and visible keyboard focus.
+- Width is capped by the shared toast token and shrinks to fit narrow viewports; the message stays on one line and truncates with an ellipsis, while its complete text remains available to assistive technology.
 - The title reveals progressively while its full space remains reserved to avoid layout shifts. Assistive technology receives the complete message immediately; reduced-motion preference shows the complete title without typing.
-- Toasts use complete Mona Sans roles: body-md (14px/400) for titles and body-sm (12px/400) for descriptions; action labels retain body-md (14px/400). The dismiss control sits at the right when present. Controls have transparent, borderless surfaces, accessible names, 44px touch targets and visible keyboard focus. `version.json` carries only `version`; the applied notice shows that version below its status. Pinned notices, durations, announcements, typing, safe areas, responsive layout and motion remain unchanged.
+- Toasts use one typographic role: Mona Sans body-md (14px/400) for the message. `version.json` carries only `version`; the applied notice carries that version inside its own message. Pinned notices, durations, announcements, typing, safe areas and responsive layout remain unchanged; the notice enters with a short slide from above the viewport edge and reduced motion removes it.
 
 ### Navigation
 
@@ -518,13 +519,13 @@ All buttons, including icon-only buttons, are rectangles with soft 10px corners.
 - Use 8px app controls, 12px cards, and full circles only for avatars or status dots; icon-only buttons use the control radius.
 - Define cards and inputs with a 1px hairline (`{colors.hairline}`) before any shadow — flat is the default.
 - Set display headings in Mona Sans with the existing weight and tight negative tracking; label technical sections with the technical eyebrow token.
-- Step the grey text ladder deliberately: `{colors.ink}` for headings and body, `{colors.mute}` for secondary text. There is no third step; adding one means adding a token with its own verified contrast, not an alias of an existing value.
+- Step the grey text ladder deliberately: `{colors.ink}` → `{colors.body}` → `{colors.mute}` → `{colors.faint}`.
 
 ### Don't
 - Don't fill large surfaces with accent colors; decorative tokens must not become application chrome.
 - Don't use pills for ordinary app buttons or inputs.
 - Don't pile on shadows — depth is a 1px hairline plus, at most, a finely-layered low-alpha shadow stack.
-- Don't set body copy in pure black (`#000000`) — headings and body use `{colors.ink}`.
+- Don't set body copy in pure black (`#000000`) — headings use `{colors.ink}` and body steps to `{colors.body}`.
 - Don't add decorative systems to application chrome; product surfaces follow the theme's neutral and semantic tokens.
 - Don't loosen the display tracking — large headings retain their tight negative letter-spacing.
 

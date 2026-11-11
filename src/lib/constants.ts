@@ -722,40 +722,32 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
  */
 export const SYSTEM_UPDATE_BANNER_CONFIG = {
   availableTitle: "Actualización disponible",
-  availableHint: "Guardá antes de actualizar.",
   actionLabel: "Actualizar",
   preparingLabel: "Preparando…",
   errorHint: "No se pudo actualizar. Prueba de nuevo.",
   retryLabel: "Reintentar",
   registrationErrorTitle: "Sin actualizaciones",
-  registrationErrorHint: "La app funciona, pero no se pudo buscar actualizaciones.",
   appliedTitle: "Actualización aplicada",
   noticeDurationMs: 4000,
   versionCheckIntervalMs: 5 * 60 * 1000,
   serviceWorkerCheckIntervalMs: 60 * 60 * 1000,
   serviceWorkerCheckMinGapMs: 60 * 1000,
   offlineTitle: "Sin conexión",
-  offlineHint: "Algunas funciones necesitan internet.",
   onlineTitle: "Conectado",
   offlineReadyTitle: "Interfaz disponible sin conexión",
-  offlineReadyHint: "Los datos y cambios requieren internet.",
 } as const;
 
 export const SYSTEM_UPDATE_BANNER_ENGLISH = {
   availableTitle: "Update available",
-  availableHint: "Save your work before updating.",
   actionLabel: "Update",
   preparingLabel: "Preparing…",
   errorHint: "Could not update. Try again.",
   retryLabel: "Retry",
   registrationErrorTitle: "No updates found",
-  registrationErrorHint: "The app is working, but updates could not be checked.",
   appliedTitle: "Update applied",
   offlineTitle: "You're offline",
-  offlineHint: "Some features require an internet connection.",
   onlineTitle: "You're back online",
   offlineReadyTitle: "App available offline",
-  offlineReadyHint: "Data and changes still require an internet connection.",
 } as const;
 
 export const TYPEWRITER_INTERVAL_MS = 30;

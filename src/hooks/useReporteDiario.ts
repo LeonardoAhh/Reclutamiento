@@ -165,8 +165,8 @@ export function useReporteDiario() {
             ensureReporteDiarioCacheOwner(ownerId)
             return await requestSummaries()
         } catch (err) {
-            const msg = describeSupabaseError(err)
-            setError(msg)
+            console.warn('Reporte diario request failed:', describeSupabaseError(err), err)
+            setError('No se pudieron cargar los datos. Revisa tu conexión y vuelve a intentar.')
             return []
         } finally {
             setLoading(false)
@@ -196,8 +196,8 @@ export function useReporteDiario() {
             }
             return report
         } catch (err) {
-            const msg = describeSupabaseError(err)
-            setError(msg)
+            console.warn('Reporte diario request failed:', describeSupabaseError(err), err)
+            setError('No se pudieron cargar los datos. Revisa tu conexión y vuelve a intentar.')
             return null
         } finally {
             setLoading(false)
@@ -213,8 +213,8 @@ export function useReporteDiario() {
             ensureReporteDiarioCacheOwner(ownerId)
             return await requestReportsByMonth(mesList)
         } catch (err) {
-            const msg = describeSupabaseError(err)
-            setError(msg)
+            console.warn('Reporte diario request failed:', describeSupabaseError(err), err)
+            setError('No se pudieron cargar los datos. Revisa tu conexión y vuelve a intentar.')
             return []
         } finally {
             setLoading(false)
@@ -242,10 +242,11 @@ export function useReporteDiario() {
             clearReporteDiarioCache()
             return { success: true }
         } catch (err) {
-            const msg = describeSupabaseError(err)
-            setError(msg)
+            const message = 'No se pudo guardar el reporte. Revisa tu conexión y vuelve a intentar.'
+            console.warn('Reporte diario save failed:', describeSupabaseError(err), err)
+            setError(message)
             toast.error({ title: language === 'en' ? 'Could not save the report' : 'No se pudo guardar el reporte' })
-            return { success: false, error: msg }
+            return { success: false, error: message }
         } finally {
             setSaving(false)
         }
@@ -265,7 +266,7 @@ export function useReporteDiario() {
             toast.success({ title: language === 'en' ? 'Report deleted' : 'Reporte eliminado' })
             return { success: true }
         } catch (err) {
-            const msg = describeSupabaseError(err)
+            console.warn('Reporte diario delete failed:', describeSupabaseError(err), err)
             return { success: false }
         } finally {
             setSaving(false)
@@ -294,8 +295,8 @@ export function useReporteDiario() {
             if (error) throw new Error(error.message)
             return (data ?? []) as ReporteDiarioSummary[]
         } catch (err) {
-            const msg = describeSupabaseError(err)
-            setError(msg)
+            console.warn('Reporte diario request failed:', describeSupabaseError(err), err)
+            setError('No se pudieron cargar los datos. Revisa tu conexión y vuelve a intentar.')
             return []
         } finally {
             setLoading(false)

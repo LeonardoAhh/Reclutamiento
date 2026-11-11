@@ -144,7 +144,7 @@ function useCandidatesStore() {
       } catch (err) {
         const msg = formatSupabaseError(err);
         console.warn('Supabase candidates fetch failed, using localStorage:', msg, err);
-        setError(msg);
+        setError('No se pudieron cargar los candidatos. Revisa tu conexión y vuelve a intentar.');
       } finally {
         if (!opts?.silent) setLoading(false);
       }
@@ -264,7 +264,7 @@ function useCandidatesStore() {
         setCandidates(previous);
         saveLocal(STORAGE_KEYS.candidates, previous);
         setSaveStatus('error');
-        return { ok: false, message: `No se pudo guardar en Supabase: ${message}` };
+        return { ok: false, message: 'No se pudo guardar. Revisa tu conexión y vuelve a intentar.' };
       }
     },
     [candidates, isConfigured]
@@ -306,7 +306,7 @@ function useCandidatesStore() {
         setCandidates(previous);
         saveLocal(STORAGE_KEYS.candidates, previous);
         setSaveStatus('error');
-        return { ok: false, message: `No se pudo guardar en Supabase: ${message}` };
+        return { ok: false, message: 'No se pudo guardar. Revisa tu conexión y vuelve a intentar.' };
       }
     },
     [candidates, isConfigured]
@@ -382,7 +382,7 @@ function useCandidatesStore() {
         setNotes(previousNotes);
         saveLocal(STORAGE_KEYS.candidateNotes, previousNotes);
         setSaveStatus('error');
-        return { ok: false, message: `No se pudo eliminar en Supabase: ${message}` };
+        return { ok: false, message: 'No se pudo eliminar. Revisa tu conexión y vuelve a intentar.' };
       }
     },
     [candidates, notes, isConfigured]
@@ -425,7 +425,7 @@ function useCandidatesStore() {
         setNotes(previousNotes);
         saveLocal(STORAGE_KEYS.candidateNotes, previousNotes);
         setSaveStatus('error');
-        return { ok: false, message: `No se pudo guardar la nota en Supabase: ${message}` };
+        return { ok: false, message: 'No se pudo guardar la nota. Revisa tu conexión y vuelve a intentar.' };
       }
     },
     [notes, isConfigured]

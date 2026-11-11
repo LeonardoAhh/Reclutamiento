@@ -16,7 +16,6 @@ export function AuthGuard({ children }: { children: ReactNode }) {
   if (!profile) return <StatusPage kind={navigator.onLine ? 'server' : 'offline'} standalone onRetry={() => window.location.reload()} onSignOut={() => {
     void signOut().catch(() => toast.error({
       title: language === 'en' ? 'Could not sign out' : 'No se pudo cerrar sesión',
-      description: language === 'en' ? 'Try again.' : 'Intenta de nuevo.',
     }));
   }} />;
   return <>{children}</>;

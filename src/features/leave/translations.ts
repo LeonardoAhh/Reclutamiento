@@ -34,8 +34,20 @@ const ENGLISH_ERRORS: Record<string, string> = {
   'No se pudo eliminar. Revisa tu conexión y vuelve a intentar.':
     'Could not delete. Check your connection and try again.',
   'No se pudo confirmar la eliminación. Vuelve a intentar.': 'Could not confirm deletion. Try again.',
+  'No se pudo cargar el contador de notificaciones.': 'Could not load the notification count.',
 };
 
+const UNKNOWN_ERROR = {
+  es: 'No se pudo completar la acción. Vuelve a intentar.',
+  en: 'Could not complete the action. Try again.',
+} as const;
+
+/**
+ * Solo se muestran los mensajes del catálogo. Un texto que no esté en él viene
+ * de la base de datos o de la red y se sustituye por el aviso propio de la app.
+ */
 export function leaveErrorText(message: string, language: Language): string {
-  return language === 'en' ? (ENGLISH_ERRORS[message] ?? message) : message;
+  const known = ENGLISH_ERRORS[message];
+  if (!known) return language === 'en' ? UNKNOWN_ERROR.en : UNKNOWN_ERROR.es;
+  return language === 'en' ? known : message;
 }

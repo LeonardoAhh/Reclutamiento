@@ -104,8 +104,9 @@ export function useBajas() {
         const message = errorMessage(err);
         console.warn('Supabase upsert bajas failed:', message, err);
         setSaveStatus('error');
-        setError(message);
-        return { ok: false, message };
+        const text = 'No se pudo guardar la baja. Revisa tu conexión y vuelve a intentar.';
+        setError(text);
+        return { ok: false, message: text };
       }
     },
     [isConfigured]
@@ -158,7 +159,7 @@ export function useBajas() {
         if (cancelled) return;
         const msg = errorMessage(err);
         console.warn('Supabase fetch bajas failed, using localStorage:', msg, err);
-        setError(msg);
+        setError('No se pudieron cargar las bajas. Revisa tu conexión y vuelve a intentar.');
         setDataSource(bajasRef.current.length > 0 ? 'local' : 'unknown');
       } finally {
         if (!cancelled) setLoading(false);
@@ -271,7 +272,7 @@ export function useBajas() {
         const message = errorMessage(err);
         console.warn('Supabase upsert (cubierta) failed:', message, err);
         setSaveStatus('error');
-        setError(message);
+        setError('No se pudo actualizar la baja. Revisa tu conexión y vuelve a intentar.');
         return { ok: false };
       }
     },
@@ -305,7 +306,7 @@ export function useBajas() {
         const message = errorMessage(err);
         console.warn('Supabase upsert (desmarcar cubierta) failed:', message, err);
         setSaveStatus('error');
-        setError(message);
+        setError('No se pudo actualizar la baja. Revisa tu conexión y vuelve a intentar.');
         return { ok: false };
       }
     },
@@ -339,7 +340,7 @@ export function useBajas() {
         const message = errorMessage(err);
         console.warn('Supabase upsert (reclutador) failed:', message, err);
         setSaveStatus('error');
-        setError(message);
+        setError('No se pudo actualizar la baja. Revisa tu conexión y vuelve a intentar.');
         return { ok: false };
       }
     },
@@ -359,7 +360,7 @@ export function useBajas() {
       } catch (err) {
         console.warn('Supabase delete all failed:', err);
         setSaveStatus('error');
-        setError(errorMessage(err));
+        setError('No se pudieron eliminar las bajas. Revisa tu conexión y vuelve a intentar.');
       }
     }
   }, [isConfigured]);

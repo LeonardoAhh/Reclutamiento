@@ -105,10 +105,10 @@ export function CandidateAccessCard({ data }: CandidateAccessCardProps) {
       await copyImage(imageBlob);
       playSound('success');
       setCopied(true);
-      toast.success({ title: en ? 'Pass copied' : 'Pase copiado', description: en ? 'You can now paste the image into a chat.' : 'Ya puedes pegar la imagen en un chat.' });
+      toast.success({ title: en ? 'Pass copied' : 'Pase copiado' });
     } catch {
       playSound('error');
-      toast.error({ title: en ? 'Could not copy' : 'No se pudo copiar', description: en ? 'Use Share to send it.' : 'Usa Compartir para enviarlo.' });
+      toast.error({ title: en ? 'Could not copy' : 'No se pudo copiar' });
     }
   };
 
@@ -129,7 +129,7 @@ export function CandidateAccessCard({ data }: CandidateAccessCardProps) {
 
       downloadImage(imageBlob, filename);
       playSound('success');
-      toast.info({ title: en ? 'Pass downloaded' : 'Pase descargado', description: en ? 'You can send it from your files.' : 'Puedes enviarlo desde tus archivos.' });
+      toast.info({ title: en ? 'Pass downloaded' : 'Pase descargado' });
     } catch (error: unknown) {
       if (!isAbortError(error)) {
         playSound('error');

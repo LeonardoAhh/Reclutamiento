@@ -1,45 +1,32 @@
+/* Host de avisos: una sola fila centrada arriba, dentro del contenedor global. */
 .app-toaster {
   position: fixed;
-  inset-block-start: calc(
-    var(--safe-area-top) + var(--design-spacing-xs)
-  );
+  inset-block-start: calc(var(--safe-area-top) + var(--design-spacing-xs));
   inset-inline: 0;
   z-index: var(--layer-toast);
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--design-spacing-xs);
+  justify-content: center;
   inline-size: 100%;
   max-inline-size: var(--container-max);
-  max-block-size: calc(
-    100dvh - var(--safe-area-top) - var(--safe-area-bottom) -
-      var(--design-spacing-md) - var(--design-spacing-xs)
-  );
-  overflow-y: auto;
-  overscroll-behavior: contain;
   margin-inline: auto;
-  padding-inline: max(var(--container-padding), var(--safe-area-left)) max(var(--container-padding), var(--safe-area-right));
+  padding-inline: max(var(--container-padding), var(--safe-area-left))
+    max(var(--container-padding), var(--safe-area-right));
   list-style: none;
   pointer-events: none;
 }
 
 @media (width >= 1080px) {
   .app-toaster {
-    inset-block-start: calc(
-      var(--safe-area-top) + var(--design-spacing-md) +
-        var(--design-spacing-xs)
-    );
-    max-block-size: calc(
-      100dvh - var(--safe-area-top) - var(--safe-area-bottom) -
-        (var(--design-spacing-md) * 2) - var(--design-spacing-xs)
-    );
+    inset-block-start: calc(var(--safe-area-top) + var(--design-spacing-md) + var(--design-spacing-xs));
   }
 }
 
+/* El aviso de actualización queda por debajo de modales y sheets. */
 .app-toaster--system-update {
   z-index: var(--layer-floating-action);
 }
 
+/* Cápsula de una sola línea: marca, mensaje y un control. */
 .app-toaster__item {
   display: flex;
   align-items: center;
@@ -47,61 +34,58 @@
   inline-size: fit-content;
   max-inline-size: min(100%, var(--toast-max-inline-size));
   min-block-size: var(--touch-target-min);
-  padding: var(--design-spacing-xs) var(--design-spacing-xxs) var(--design-spacing-xs) var(--design-spacing-sm);
-  overflow-wrap: anywhere;
-  background-color: var(--color-canvas-elevated);
+  padding-inline: var(--design-spacing-sm) var(--design-spacing-xxs);
+  background: var(--color-canvas-elevated);
   color: var(--color-ink);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-menu);
   box-shadow: var(--shadow-level-2);
   pointer-events: auto;
   animation: app-toaster-enter var(--transition-base) both;
 }
 
-.app-toaster__item--compact {
-  align-items: center;
-  padding-block: 0;
-}
-
-.app-toaster__item--without-avatar {
-  align-items: center;
-}
-
-.app-toaster__item--system-update {
-  gap: var(--design-spacing-sm);
-  padding-block: var(--design-spacing-xs);
-}
-
-.app-toaster__brand-mark {
+/* Marca de estado: icono monocromo; el aviso de sistema usa la marca de producto. */
+.app-toaster__mark {
   display: grid;
   place-items: center;
-  flex: 0 0 calc(var(--touch-target-min) - var(--design-spacing-xs));
-  inline-size: calc(var(--touch-target-min) - var(--design-spacing-xs));
-  block-size: calc(var(--touch-target-min) - var(--design-spacing-xs));
+  flex: 0 0 auto;
+}
+
+.app-toaster__mark svg {
+  inline-size: var(--icon-size-sm);
+  block-size: var(--icon-size-sm);
+}
+
+.app-toaster__item--success .app-toaster__mark {
+  color: var(--color-success-text);
+}
+
+.app-toaster__item--error .app-toaster__mark {
+  color: var(--color-error-text);
+}
+
+.app-toaster__item--warning .app-toaster__mark {
+  color: var(--color-warning-text);
+}
+
+.app-toaster__item--loading .app-toaster__mark {
+  color: var(--color-mute);
+}
+
+.app-toaster__item--system-update .app-toaster__mark {
+  inline-size: var(--icon-size-lg);
+  block-size: var(--icon-size-lg);
   border-radius: var(--radius-brand);
   background: var(--color-primary);
   color: var(--color-on-primary);
 }
 
-.app-toaster__brand-mark svg {
+.app-toaster__item--system-update .app-toaster__mark svg {
   inline-size: 60%;
   block-size: 60%;
 }
 
-.app-toaster__controls {
-  display: flex;
-  flex: 0 0 auto;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--design-spacing-xxs);
-  margin-inline-start: auto;
-}
-
-.app-toaster__item--system-update .app-toaster__controls {
-  flex-direction: row;
-  gap: 0;
-}
-
+/* El mensaje reserva su espacio completo para que el revelado no desplace la fila. */
 .app-toaster__title {
   position: relative;
   display: block;
@@ -111,15 +95,6 @@
   font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
   letter-spacing: var(--type-body-md-tracking);
-  color: var(--color-ink);
-}
-
-.app-toaster__content {
-  display: flex;
-  flex: 0 1 auto;
-  flex-direction: column;
-  gap: var(--design-spacing-xxs);
-  min-inline-size: 0;
 }
 
 .app-toaster__title-measure {
@@ -140,135 +115,18 @@
   white-space: nowrap;
 }
 
-.app-toaster__hint {
-  min-inline-size: 0;
-  overflow: hidden;
-  font-family: var(--font-body);
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-sm-weight);
-  line-height: var(--type-body-sm-line);
-  letter-spacing: var(--type-body-sm-tracking);
-  color: var(--color-ink);
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.app-toaster__avatar {
-  position: relative;
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  inline-size: var(--icon-size-control);
-  block-size: var(--icon-size-control);
-}
-
-.app-toaster__icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.app-toaster__icon svg {
-  width: var(--icon-size-sm);
-  height: var(--icon-size-sm);
-}
-
-.app-toaster__item--success .app-toaster__icon {
-  inline-size: var(--icon-size-control);
-  block-size: var(--icon-size-control);
-  border-radius: var(--rounded-full);
-  background: var(--color-success-text);
-  color: var(--color-on-success);
-}
-
-.app-toaster__item--error .app-toaster__icon {
-  color: var(--color-error-text);
-}
-
-.app-toaster__item--warning .app-toaster__icon {
-  color: var(--color-warning-text);
-}
-
-.app-toaster__item--info .app-toaster__icon {
-  color: var(--color-ink);
-}
-
-.app-toaster__item--loading .app-toaster__icon {
-  color: var(--color-mute);
-}
-
-.app-toaster__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--design-spacing-xs);
-  margin-block-start: var(--design-spacing-xxs);
-}
-
-.app-toaster__action {
-  min-block-size: var(--touch-target-min);
-  max-inline-size: 100%;
-  padding: var(--design-spacing-xs) var(--design-spacing-sm);
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-  border: var(--border-width) solid var(--color-control-border);
-  border-radius: var(--radius-control);
-  overflow-wrap: anywhere;
-  cursor: pointer;
-  transition:
-    background-color var(--transition-fast),
-    border-color var(--transition-fast),
-    color var(--transition-fast);
-}
-
-.app-toaster__action--primary {
-  background: var(--color-primary);
-  color: var(--color-on-primary);
-  border-color: var(--color-primary-border);
-}
-
-.app-toaster__action--primary:hover {
-  background: var(--color-primary-active);
-  border-color: var(--color-primary-border);
-}
-
-.app-toaster__action--secondary {
-  background: transparent;
-  color: var(--color-ink);
-}
-
-.app-toaster__action--secondary:hover {
-  background: var(--color-canvas-soft);
-  border-color: var(--color-control-border);
-}
-
-.app-toaster__action--icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  inline-size: var(--touch-target-min);
-  min-block-size: var(--touch-target-min);
-  padding: 0;
-}
-
-.app-toaster__action--icon svg {
-  inline-size: var(--icon-size-sm);
-  block-size: var(--icon-size-sm);
-}
-
-.app-toaster__dismiss {
+/* Control único al final de la fila. */
+.app-toaster__control {
   display: inline-flex;
   flex: 0 0 auto;
   align-items: center;
   justify-content: center;
-  min-inline-size: var(--touch-target-min);
+  inline-size: var(--touch-target-min);
   min-block-size: var(--touch-target-min);
+  margin-inline-start: auto;
   padding: 0;
   border: 0;
-  border-radius: var(--rounded-full);
+  border-radius: var(--radius-control);
   background: transparent;
   color: var(--color-mute);
   cursor: pointer;
@@ -277,46 +135,33 @@
     color var(--transition-fast);
 }
 
-.app-toaster__dismiss:hover {
-  background: var(--color-canvas-soft);
+.app-toaster__control--action {
   color: var(--color-ink);
 }
 
-.app-toaster__item--without-avatar .app-toaster__dismiss,
-.app-toaster__item--without-avatar .app-toaster__action--icon {
-  border: 0;
-  background: transparent;
-}
-
-.app-toaster__item--without-avatar .app-toaster__dismiss {
-  color: var(--color-mute);
-}
-
-.app-toaster__item--without-avatar .app-toaster__action--icon {
+.app-toaster__control:hover {
+  background: var(--color-surface-hover);
   color: var(--color-ink);
 }
 
-.app-toaster__item--without-avatar .app-toaster__dismiss:hover,
-.app-toaster__item--without-avatar .app-toaster__action--icon:hover {
-  background: transparent;
-}
-
-.app-toaster__dismiss svg {
+.app-toaster__control svg {
   inline-size: var(--icon-size-sm);
   block-size: var(--icon-size-sm);
 }
 
-.app-toaster__icon--spin {
+.app-toaster__spin {
   animation: app-toaster-spin var(--duration-spinner) linear infinite;
 }
 
 @keyframes app-toaster-enter {
   from {
     opacity: 0;
+    transform: translateY(calc(var(--motion-float-distance) * -1));
   }
 
   to {
     opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -328,7 +173,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .app-toaster__item,
-  .app-toaster__icon--spin {
+  .app-toaster__spin {
     animation: none;
   }
 }
@@ -341,18 +186,13 @@
     box-shadow: none;
   }
 
+  .app-toaster__item .app-toaster__mark,
   .app-toaster__title,
-  .app-toaster__hint,
-  .app-toaster__icon,
-  .app-toaster__dismiss {
+  .app-toaster__control {
     color: CanvasText;
   }
 
-  .app-toaster__icon {
+  .app-toaster__item--system-update .app-toaster__mark {
     background: Canvas;
-  }
-
-  .app-toaster__action {
-    border-color: ButtonText;
   }
 }

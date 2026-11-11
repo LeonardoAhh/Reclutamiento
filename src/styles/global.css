@@ -365,7 +365,7 @@
   --radius-field: var(--rounded-sm);
   --radius-card: var(--rounded-lg);
   --radius-media: var(--rounded-lg);
-  --radius-brand: var(--rounded-md);
+  --radius-brand: var(--rounded-xs);
   --radius-dialog: var(--rounded-xl);
   --radius-menu: var(--rounded-md);
 

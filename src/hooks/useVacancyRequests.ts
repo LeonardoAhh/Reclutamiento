@@ -128,7 +128,7 @@ export function useVacancyRequests(
       } catch (err) {
         const msg = formatSupabaseError(err);
         console.warn('Supabase vacancy_requests fetch failed, using localStorage:', msg, err);
-        setError(msg);
+        setError('No se pudieron cargar las vacantes. Revisa tu conexión y vuelve a intentar.');
       } finally {
         setLoading(false);
       }
@@ -157,7 +157,7 @@ export function useVacancyRequests(
         } catch (err) {
           const msg = formatSupabaseError(err);
           console.warn('Supabase vacancy_requests fetch failed, using localStorage:', msg, err);
-          setError(msg);
+          setError('No se pudieron cargar las vacantes. Revisa tu conexión y vuelve a intentar.');
           return vacanciesRef.current;
         } finally {
           pendingLoadRef.current = null;
@@ -237,7 +237,7 @@ export function useVacancyRequests(
         const message = formatSupabaseError(err);
         console.warn('Supabase insert vacancy failed, saved locally:', message, err);
         setSaveStatus('error');
-        return { ok: true, vacancy: draft, message: `Guardado local. Sincronización pendiente: ${message}` };
+        return { ok: true, vacancy: draft, message: 'Guardado local. Sincronización pendiente.' };
       }
     },
     [vacancies, isConfigured]
@@ -441,7 +441,7 @@ export function useVacancyRequests(
         const message = formatSupabaseError(err);
         console.warn('Supabase delete vacancy failed, removed locally:', message, err);
         setSaveStatus('error');
-        return { ok: true, message: `Eliminado local. Sincronización pendiente: ${message}` };
+        return { ok: true, message: 'Eliminado local. Sincronización pendiente.' };
       }
     },
     [vacancies, history, isConfigured]

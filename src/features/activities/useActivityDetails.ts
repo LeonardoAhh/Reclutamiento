@@ -78,11 +78,11 @@ export function useActivityDetails(activityMutations: ActivityDetailsMutations) 
 
     if (file.size > MAX_FILE_SIZE) {
       playSound('warning');
+      const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
       toast.error({
-        title: en ? 'File too large' : 'Archivo demasiado grande',
-        description: en
-          ? `The limit is 10 MB. Your file is ${(file.size / (1024 * 1024)).toFixed(1)} MB.`
-          : `El límite es 10 MB. Tu archivo pesa ${(file.size / (1024 * 1024)).toFixed(1)} MB.`,
+        title: en
+          ? `File too large: ${sizeMb} MB, limit 10 MB`
+          : `Archivo demasiado grande: ${sizeMb} MB, límite 10 MB`,
       });
       event.target.value = '';
       return;

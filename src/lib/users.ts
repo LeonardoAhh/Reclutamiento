@@ -86,16 +86,12 @@ export async function createUser(
           return { ok: false, message: parsed.message };
         }
       } catch {
-        // El body no era JSON; intentamos como texto plano.
-        try {
-          const text = await resp.clone().text();
-          if (text) return { ok: false, message: text };
-        } catch {
-          /* fallthrough */
-        }
+        // El body no es JSON. Su texto crudo puede venir de la infraestructura,
+        // así que no se muestra y se usa el aviso propio de la aplicación.
       }
     }
-    return { ok: false, message: error.message };
+    console.warn('create-user failed:', error);
+    return { ok: false, message: 'No se pudo crear la cuenta. Revisa tu conexión y vuelve a intentar.' };
   }
 
   if (!data || typeof data !== 'object') {
@@ -115,7 +111,8 @@ export async function listProfiles(): Promise<Profile[]> {
     .order('username', { ascending: true });
 
   if (error) {
-    throw new Error(error.message);
+    console.warn('listProfiles failed:', error);
+    throw new Error('No se pudieron cargar las cuentas. Revisa tu conexión y vuelve a intentar.');
   }
   return (data ?? []) as Profile[];
 }
@@ -136,7 +133,8 @@ export async function updateProfileRole(
     .select('id');
 
   if (error) {
-    return { ok: false, message: error.message };
+    console.warn('updateProfileRole failed:', error);
+    return { ok: false, message: 'No se pudo cambiar el rol. Revisa tu conexión y vuelve a intentar.' };
   }
   if (!data || data.length === 0) {
     return {

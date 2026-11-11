@@ -4,22 +4,20 @@ import type { IconInput } from 'morphicons/react';
 export type ToastType = 'success' | 'error' | 'info' | 'warning' | 'loading';
 
 export interface ToastAction {
+  /** Nombre accesible del control; el aviso solo muestra su icono. */
   label: string;
+  icon: IconInput;
   onClick: () => void;
-  variant?: 'primary' | 'secondary';
-  closeOnAction?: boolean;
-  icon?: IconInput;
 }
 
 export interface ToastOptions {
+  /** Mensaje completo en una sola línea; el aviso no tiene segunda línea. */
   title: string;
-  description?: string;
   presentation?: 'system-update';
   duration?: number;
   id?: string | number;
-  actions?: readonly ToastAction[];
+  action?: ToastAction;
   pinned?: boolean;
-  hideAvatar?: boolean;
 }
 
 export interface ToastState extends ToastOptions {
@@ -53,9 +51,7 @@ class ToastStore {
     const id = opts.id !== undefined ? String(opts.id) : crypto.randomUUID();
     const duration =
       opts.duration ??
-      (type === 'loading' || (opts.actions?.length ?? 0) > 0
-        ? Infinity
-        : TOAST_CONFIG.defaultDurationMs);
+      (type === 'loading' || opts.action ? Infinity : TOAST_CONFIG.defaultDurationMs);
 
     const newToast: ToastState = { ...opts, id, type, duration };
 

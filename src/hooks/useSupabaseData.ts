@@ -9,6 +9,9 @@ import {
 } from 'react';
 import { supabase } from '@/lib/supabase';
 import { formatSupabaseError } from '@/lib/errors';
+
+/** Texto por fila cuando una actualización masiva falla; la causa va a consola. */
+const ROW_SAVE_FAILED = 'No se pudo guardar. Revisa tu conexión y vuelve a intentar.';
 import { parseDdMmYyyy, localTodayIso } from '@/lib/dates';
 import { isSoloInduccion, normalizePuesto } from '@/lib/bajas';
 import { isFresh, scheduleIdle } from '@/lib/dataCache';
@@ -243,7 +246,7 @@ function useSupabaseDataStore(
         if (cancelled) return;
         const msg = formatSupabaseError(err);
         console.warn('Supabase fetch failed, using localStorage:', msg, err);
-        setError(msg);
+        setError('No se pudo cargar la plantilla. Revisa tu conexión y vuelve a intentar.');
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -323,7 +326,7 @@ function useSupabaseDataStore(
       setEmployees(employees);
       saveLocal(STORAGE_KEYS.employees, employees);
       setSaveStatus('error');
-      return { ok: false, message: `No se pudo guardar en Supabase: ${message}` };
+      return { ok: false, message: 'No se pudo guardar. Revisa tu conexión y vuelve a intentar.' };
     }
   }, [isConfigured, employees]);
 
@@ -366,7 +369,7 @@ function useSupabaseDataStore(
         setEmployees(employees);
         saveLocal(STORAGE_KEYS.employees, employees);
         setSaveStatus('error');
-        return { ok: false, message: `No se pudo actualizar en Supabase: ${message}` };
+        return { ok: false, message: 'No se pudo actualizar. Revisa tu conexión y vuelve a intentar.' };
       }
     },
     [employees, isConfigured]
@@ -423,12 +426,13 @@ function useSupabaseDataStore(
         return { ok: true, updated };
       } catch (caught) {
         const rawMessage = formatSupabaseError(caught);
+        console.warn('Bulk assignment update failed:', rawMessage, caught);
         const message = rawMessage.includes('bulk_update_employee_assignments')
           || rawMessage.includes('PGRST202')
           ? 'Falta aplicar la migración 049 en Supabase.'
-          : rawMessage;
+          : 'No se pudo actualizar la plantilla. Revisa tu conexión y vuelve a intentar.';
         setSaveStatus('error');
-        return { ok: false, updated: 0, message: `No se pudo actualizar la plantilla: ${message}` };
+        return { ok: false, updated: 0, message };
       }
     },
     [isConfigured],
@@ -517,7 +521,7 @@ function useSupabaseDataStore(
       setEmployees(employees);
       saveLocal(STORAGE_KEYS.employees, employees);
       setSaveStatus('error');
-      return { ok: false, message: `No se pudo eliminar en Supabase: ${message}` };
+      return { ok: false, message: 'No se pudo eliminar. Revisa tu conexión y vuelve a intentar.' };
     }
   }, [isConfigured, employees]);
 
@@ -581,7 +585,7 @@ function useSupabaseDataStore(
         setEmployees(employees);
         saveLocal(STORAGE_KEYS.employees, employees);
         setSaveStatus('error');
-        return { ok: false, message: `No se pudo promover en Supabase: ${message}` };
+        return { ok: false, message: 'No se pudo promover. Revisa tu conexión y vuelve a intentar.' };
       }
     },
     [employees, isConfigured]
@@ -711,7 +715,7 @@ function useSupabaseDataStore(
         setEmployees(employees);
         saveLocal(STORAGE_KEYS.employees, employees);
         setSaveStatus('error');
-        return { ok: false, message: `No se pudo actualizar en Supabase: ${message}` };
+        return { ok: false, message: 'No se pudo actualizar. Revisa tu conexión y vuelve a intentar.' };
       }
     },
     [isConfigured, employees]
@@ -778,7 +782,7 @@ function useSupabaseDataStore(
       setNoCitados(noCitados);
       saveLocal(STORAGE_KEYS.no_citados, noCitados);
       setSaveStatus('error');
-      return { ok: false, message: `No se pudo guardar en Supabase: ${message}` };
+      return { ok: false, message: 'No se pudo guardar. Revisa tu conexión y vuelve a intentar.' };
     }
   }, [isConfigured, noCitados]);
 
@@ -813,7 +817,7 @@ function useSupabaseDataStore(
         setNoCitados(noCitados);
         saveLocal(STORAGE_KEYS.no_citados, noCitados);
         setSaveStatus('error');
-        return { ok: false, message: `No se pudo guardar en Supabase: ${message}` };
+        return { ok: false, message: 'No se pudo guardar. Revisa tu conexión y vuelve a intentar.' };
       }
     },
     [isConfigured, noCitados]
@@ -846,7 +850,7 @@ function useSupabaseDataStore(
         setNoCitados(noCitados);
         saveLocal(STORAGE_KEYS.no_citados, noCitados);
         setSaveStatus('error');
-        return { ok: false, message: `No se pudo guardar en Supabase: ${message}` };
+        return { ok: false, message: 'No se pudo guardar. Revisa tu conexión y vuelve a intentar.' };
       }
     },
     [isConfigured, noCitados]
@@ -892,7 +896,7 @@ function useSupabaseDataStore(
       const message = formatSupabaseError(err);
       console.warn('Supabase purge failed:', message, err);
       setSaveStatus('error');
-      return { ok: false, count: 0, message };
+      return { ok: false, count: 0, message: 'No se pudo depurar la plantilla. Revisa tu conexión y vuelve a intentar.' };
     }
   }, [employees, isConfigured]);
 
@@ -973,15 +977,11 @@ function useSupabaseDataStore(
         results.forEach((r, i) => {
           const num = applicable[i].num_empleado;
           if (r.status === 'rejected') {
-            failed.push({
-              num_empleado: num,
-              message: formatSupabaseError(r.reason),
-            });
+            console.warn('Bulk update failed for', num, formatSupabaseError(r.reason), r.reason);
+            failed.push({ num_empleado: num, message: ROW_SAVE_FAILED });
           } else if (r.value.error) {
-            failed.push({
-              num_empleado: num,
-              message: formatSupabaseError(r.value.error),
-            });
+            console.warn('Bulk update failed for', num, formatSupabaseError(r.value.error), r.value.error);
+            failed.push({ num_empleado: num, message: ROW_SAVE_FAILED });
           } else {
             succeeded += 1;
           }
@@ -1105,15 +1105,11 @@ function useSupabaseDataStore(
         results.forEach((r, i) => {
           const num = applicable[i].num_empleado;
           if (r.status === 'rejected') {
-            failed.push({
-              num_empleado: num,
-              message: formatSupabaseError(r.reason),
-            });
+            console.warn('Bulk update failed for', num, formatSupabaseError(r.reason), r.reason);
+            failed.push({ num_empleado: num, message: ROW_SAVE_FAILED });
           } else if (r.value.error) {
-            failed.push({
-              num_empleado: num,
-              message: formatSupabaseError(r.value.error),
-            });
+            console.warn('Bulk update failed for', num, formatSupabaseError(r.value.error), r.value.error);
+            failed.push({ num_empleado: num, message: ROW_SAVE_FAILED });
           } else {
             succeeded += 1;
           }

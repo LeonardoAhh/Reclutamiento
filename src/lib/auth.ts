@@ -84,7 +84,8 @@ export async function signInWithUsername(
           'Cuenta sin confirmar. Pide al admin que la marque como confirmada en Supabase.',
       };
     }
-    return { ok: false, message: error.message };
+    console.warn('Sign in failed:', error);
+    return { ok: false, message: 'No se pudo iniciar sesión. Revisa tu conexión y vuelve a intentar.' };
   }
 
   if (data?.session?.user) {

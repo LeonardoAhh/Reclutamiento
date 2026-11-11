@@ -67,6 +67,7 @@ export async function archiveTeamMember(id: string) {
   const { error } = await supabase.rpc('archive_recruiter_member', { p_id: id });
   if (error) {
     if (error.code === '42501') throw new Error('No tienes permiso para eliminar integrantes.');
-    throw new Error(error.message || 'No se pudo eliminar al integrante. Vuelve a intentar.');
+    console.warn('archive_recruiter_member failed:', error);
+    throw new Error('No se pudo eliminar al integrante. Vuelve a intentar.');
   }
 }

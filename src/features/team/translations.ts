@@ -141,8 +141,11 @@ export function teamCopy(language: Language) {
   return translations[language];
 }
 
+/**
+ * Solo se muestran los mensajes del catálogo. Un texto ausente viene de la base
+ * de datos o de la red y se sustituye por el aviso propio de la aplicación.
+ */
 export function translateTeamMessage(message: string, language: Language) {
-  if (language === "es") return message;
   const englishBySpanish: Readonly<Record<string, string>> = {
     "No se pudieron cargar las cuentas. Actualiza la página para volver a intentar.": translations.en.accountsError,
     "No fue posible cargar la lista de usuarios.": translations.en.accountLoadFailure,
@@ -162,5 +165,11 @@ export function translateTeamMessage(message: string, language: Language) {
     "No tienes permiso para eliminar integrantes.": translations.en.noPermission,
     "No se pudo eliminar al integrante. Vuelve a intentar.": translations.en.deleteFailure,
   };
-  return englishBySpanish[message] ?? message;
+  const known = englishBySpanish[message];
+  if (!known) {
+    return language === "en"
+      ? "Could not complete the action. Try again."
+      : "No se pudo completar la acción. Vuelve a intentar.";
+  }
+  return language === "en" ? known : message;
 }

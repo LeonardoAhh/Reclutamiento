@@ -30,7 +30,6 @@ export function useSignOut() {
       trigger("error");
       toast.error({
         title: english ? "Could not sign out" : "No se pudo cerrar sesión",
-        description: english ? "Please try again." : "Inténtalo de nuevo.",
       });
     } finally {
       loader.hide();

@@ -37,7 +37,6 @@ export function PWAStatus() {
       toast.warning({
         id: CONNECTION_NOTICE_ID,
         title: copy.offlineTitle,
-        description: copy.offlineHint,
         duration: Infinity,
       });
     } else if (previousOffline.current) {
@@ -58,7 +57,6 @@ export function PWAStatus() {
     toast.success({
       id: OFFLINE_READY_NOTICE_ID,
       title: copy.offlineReadyTitle,
-      description: copy.offlineReadyHint,
     });
   }, [copy, offline, offlineReadyRevision]);
 

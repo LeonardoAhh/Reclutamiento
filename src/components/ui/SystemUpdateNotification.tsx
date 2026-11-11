@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { RefreshCw as RefreshCwIconData } from "lucide";
 import {
   dismissSystemVersion,
   useSystemVersion,
@@ -8,9 +9,8 @@ import {
   SYSTEM_UPDATE_BANNER_CONFIG,
   SYSTEM_UPDATE_BANNER_ENGLISH,
 } from "@/lib/constants";
-import { toast } from "@/lib/notify";
+import { toast, type ToastOptions } from "@/lib/notify";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { RefreshCw as RefreshCwIconData } from "lucide";
 import {
   applyPWAUpdate,
   checkForPWAUpdate,
@@ -18,6 +18,16 @@ import {
 
 const SYSTEM_UPDATE_NOTICE_ID = "system-update";
 const RELEASE_NOTICE_ID = "system-release";
+
+type UpdateNoticeType = "info" | "loading" | "error" | "warning";
+
+/** Todos los estados de actualización comparten id y presentación. */
+function showUpdateNotice(
+  type: UpdateNoticeType,
+  options: Omit<ToastOptions, "id" | "presentation">,
+): void {
+  toast[type]({ ...options, id: SYSTEM_UPDATE_NOTICE_ID, presentation: "system-update" });
+}
 
 export function SystemUpdateNotification() {
   const { language } = useLanguage();
@@ -30,53 +40,30 @@ export function SystemUpdateNotification() {
   }, [hasRemoteUpdate, info?.version]);
 
   useEffect(() => {
+    const retryAction = {
+      label: copy.retryLabel,
+      icon: RefreshCwIconData,
+      onClick: () => void applyPWAUpdate(),
+    };
+
     switch (status) {
       case "available":
         toast.dismiss(RELEASE_NOTICE_ID);
-        toast.info({
-          id: SYSTEM_UPDATE_NOTICE_ID,
+        showUpdateNotice("info", {
           title: copy.availableTitle,
-          description: copy.availableHint,
-          duration: Infinity,
           pinned: true,
-          hideAvatar: true,
-          presentation: "system-update",
-          actions: [
-            {
-              label: copy.actionLabel,
-              variant: "primary",
-              closeOnAction: false,
-              icon: RefreshCwIconData,
-              onClick: () => void applyPWAUpdate(),
-            },
-          ],
+          action: { ...retryAction, label: copy.actionLabel },
         });
         break;
       case "applying":
         toast.dismiss(RELEASE_NOTICE_ID);
-        toastStoreUpdate("loading", {
-          title: copy.preparingLabel,
-        });
+        showUpdateNotice("loading", { title: copy.preparingLabel, pinned: true });
         break;
       case "apply-error":
-        toastStoreUpdate("error", {
-          title: copy.errorHint,
-          actions: [
-            {
-              label: copy.retryLabel,
-              variant: "primary",
-              closeOnAction: false,
-              icon: RefreshCwIconData,
-              onClick: () => void applyPWAUpdate(),
-            },
-          ],
-        });
+        showUpdateNotice("error", { title: copy.errorHint, pinned: true, action: retryAction });
         break;
       case "registration-error":
-        toastStoreUpdate("warning", {
-          title: copy.registrationErrorTitle,
-          description: copy.registrationErrorHint,
-        });
+        showUpdateNotice("warning", { title: copy.registrationErrorTitle });
         break;
       case "idle":
         toast.dismiss(SYSTEM_UPDATE_NOTICE_ID);
@@ -91,10 +78,8 @@ export function SystemUpdateNotification() {
 
     toast.success({
       id: RELEASE_NOTICE_ID,
-      title: copy.appliedTitle,
-      description: `v${info.version}`,
+      title: `${copy.appliedTitle} · v${info.version}`,
       duration: SYSTEM_UPDATE_BANNER_CONFIG.noticeDurationMs,
-      hideAvatar: true,
       presentation: "system-update",
     });
 
@@ -106,20 +91,4 @@ export function SystemUpdateNotification() {
   }, [copy, info, shouldNotify, status]);
 
   return null;
-}
-
-type UpdateToastType = "loading" | "error" | "warning";
-
-function toastStoreUpdate(
-  type: UpdateToastType,
-  options: Omit<Parameters<typeof toast.info>[0], "id">,
-): void {
-  toast[type]({
-    ...options,
-    id: SYSTEM_UPDATE_NOTICE_ID,
-    duration: type === "warning" ? undefined : Infinity,
-    pinned: type !== "warning",
-    hideAvatar: true,
-    presentation: "system-update",
-  });
 }

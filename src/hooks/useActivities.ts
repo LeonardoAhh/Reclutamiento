@@ -82,8 +82,9 @@ export function useActivities() {
       const { data, error } = await query;
       if (error) throw error;
       commitActivities(requestOwnerKey, () => data as Activity[]);
-    } catch (err: any) {
-      toast.error({ title: english ? 'Could not load activities' : 'Error al cargar actividades', description: err.message });
+    } catch (err) {
+      console.warn('Activities fetch failed:', err);
+      toast.error({ title: english ? 'Could not load activities' : 'Error al cargar actividades' });
     } finally {
       if (ownerKeyRef.current === requestOwnerKey) setLoading(false);
     }
@@ -138,8 +139,9 @@ export function useActivities() {
       );
       toast.success({ title: typeCopy[tipo].created });
       return saved;
-    } catch (err: any) {
-      toast.error({ title: typeCopy[tipo].failed, description: err.message });
+    } catch (err) {
+      console.warn('Activity create failed:', err);
+      toast.error({ title: typeCopy[tipo].failed });
       return null;
     }
   };
@@ -157,8 +159,9 @@ export function useActivities() {
       commitActivities(ownerKey, prev => prev.map(a => a.id === id ? saved : a));
       toast.success({ title: english ? 'Status updated' : 'Estado actualizado' });
       return saved;
-    } catch (err: any) {
-      toast.error({ title: english ? 'Could not update the activity' : 'Error al actualizar', description: err.message });
+    } catch (err) {
+      console.warn('Activity status update failed:', err);
+      toast.error({ title: english ? 'Could not update the activity' : 'Error al actualizar' });
       return null;
     }
   };
@@ -193,9 +196,10 @@ export function useActivities() {
       uploadedPath = null;
       toast.success({ title: english ? 'Proof uploaded' : 'Prueba subida exitosamente' });
       return { ...data, file_url: signedUrl } as ActivityProof;
-    } catch (err: any) {
+    } catch (err) {
+      console.warn('Proof upload failed:', err);
       if (uploadedPath) await supabase.storage.from('activity-proofs').remove([uploadedPath]);
-      toast.error({ title: english ? 'Could not upload proof' : 'Error al subir prueba', description: err.message });
+      toast.error({ title: english ? 'Could not upload proof' : 'Error al subir prueba' });
       return null;
     }
   };
@@ -210,8 +214,9 @@ export function useActivities() {
       if (error) throw error;
       const signedUrls = await signActivityProofUrls((data ?? []).map((proof) => proof.file_url));
       return (data ?? []).map((proof, index) => ({ ...proof, file_url: signedUrls[index] })) as ActivityProof[];
-    } catch (err: any) {
-      toast.error({ title: english ? 'Could not load proof' : 'Error al cargar pruebas', description: err.message });
+    } catch (err) {
+      console.warn('Proofs fetch failed:', err);
+      toast.error({ title: english ? 'Could not load proof' : 'Error al cargar pruebas' });
       return [];
     }
   };
@@ -227,8 +232,9 @@ export function useActivities() {
         if (error) throw error;
         toast.success({ title: english ? 'Proof deleted' : 'Prueba eliminada' });
         return true;
-      } catch (err: any) {
-          toast.error({ title: english ? 'Could not delete proof' : 'Error al eliminar', description: err.message });
+      } catch (err) {
+          console.warn('Proof delete failed:', err);
+          toast.error({ title: english ? 'Could not delete proof' : 'Error al eliminar' });
           return false;
       }
   }
@@ -251,8 +257,9 @@ export function useActivities() {
         
       return publicUrlData.publicUrl;
     } catch (err: unknown) {
+      console.warn('Reference image upload failed:', err);
       const coverError = err instanceof CoverError ? err.code : null;
-      const description = coverError === 'format'
+      const coverMessage = coverError === 'format'
         ? (english ? 'Use a JPG, PNG or WebP image.' : 'Usa una imagen JPG, PNG o WebP.')
         : coverError === 'sourceSize'
           ? (english ? 'The original image must be under 10 MB.' : 'La imagen original debe pesar menos de 10 MB.')
@@ -260,8 +267,10 @@ export function useActivities() {
             ? (english ? 'Could not reduce the image to 300 KB. Try another.' : 'No se pudo reducir la imagen a 300 KB. Prueba otra.')
             : coverError === 'processing'
               ? (english ? 'Could not process the image.' : 'No se pudo procesar la imagen.')
-              : err instanceof Error ? err.message : undefined;
-      toast.error({ title: english ? 'Could not upload the photo' : 'Error al subir foto', description });
+              : null;
+      toast.error({
+        title: coverMessage ?? (english ? 'Could not upload the photo' : 'Error al subir foto'),
+      });
       return null;
     }
   };
@@ -298,8 +307,9 @@ export function useActivities() {
       );
       toast.success({ title: english ? 'Activity updated' : 'Actividad actualizada' });
       return saved;
-    } catch (err: any) {
-      toast.error({ title: english ? 'Could not update the activity' : 'Error al actualizar', description: err.message });
+    } catch (err) {
+      console.warn('Activity update failed:', err);
+      toast.error({ title: english ? 'Could not update the activity' : 'Error al actualizar' });
       return null;
     }
   };
@@ -311,8 +321,9 @@ export function useActivities() {
       commitActivities(ownerKey, prev => prev.filter(a => a.id !== id));
       toast.success({ title: english ? 'Activity deleted' : 'Actividad eliminada' });
       return true;
-    } catch (err: any) {
-      toast.error({ title: english ? 'Could not delete the activity' : 'Error al eliminar', description: err.message });
+    } catch (err) {
+      console.warn('Activity delete failed:', err);
+      toast.error({ title: english ? 'Could not delete the activity' : 'Error al eliminar' });
       return false;
     }
   };

@@ -117,7 +117,6 @@ export function useCandidatePipelineActions({
       reportCopiedTimer.current = window.setTimeout(() => setReportCopied(false), TOAST_CONFIG.defaultDurationMs);
       toast.success({
         title: en ? 'Summary copied' : 'Resumen copiado',
-        description: en ? 'You can now paste it into WhatsApp.' : 'Ya puedes pegarlo en WhatsApp.',
       });
     } catch {
       playSound('error');
