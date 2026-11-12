@@ -1,3 +1,7 @@
+.account-palette-popover {
+  inline-size: var(--menu-inline-size-md);
+}
+
 .account-palette-options {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -82,10 +86,4 @@
 
 .account-palette-swatch__ink {
   background: var(--color-ink);
-}
-
-@media (width >= 768px) {
-  .account-palette-options {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }

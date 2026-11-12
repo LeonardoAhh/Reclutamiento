@@ -80,7 +80,9 @@ export const NON_INCIDENT_CODES = new Set(["-", "X", "A", "D", "DF", "B"])
 // Solo se muestran las secciones operativas relevantes.
 export const VISIBLE_SECTIONS = new Set([
     'A. CALIDAD 1ER TURNO',
+    'A. CALIDAD 1ER. TURNO (TAMPOGRAFÍA)',
     'A. CALIDAD 2DO. TURNO',
+    'A. CALIDAD 2DO. TURNO (TAMPOGRAFÍA)',
     'ALMACÉN',
     'ALMACÉN 1ER TURNO',
     'ALMACÉN 2DO TURNO',

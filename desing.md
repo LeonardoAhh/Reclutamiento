@@ -4,14 +4,14 @@ This visual system applies to product interfaces throughout the repository.
 
 ## Overview
 
-The light theme uses a white canvas and soft neutral regions; the dark theme uses a near-black canvas and charcoal surfaces. Primary action fills use #2563EB from the supplied blue scale in both themes, with white labels and dedicated accessible foreground and border tokens. The supplied #3B82F6 remains a reference accent: white text on that blue reaches only 3.68:1.
+The light theme uses a pale graphite canvas and white content surfaces; the dark theme uses a charcoal canvas and stepped graphite surfaces. Each palette keeps its existing primary accent, with dedicated foreground and border tokens.
 
 Typography does the heavy lifting. **Mona Sans** is the interface family for headings, body, controls and labels in both themes; code retains the existing monospace stack. Existing type sizes, weights, line heights and tracking remain unchanged. App buttons, tabs, inputs and navigation controls, including icon-only buttons, use 10px corners; cards use 16px; menus and popovers use 12px; modals and floating panels use 20px. Badge and chip surfaces use compact 4px corners and never pills; only avatars and status dots remain circular. Application brand marks use a fixed 12px radius.
 
 Both themes use canvas as the base page surface, canvas-soft for quiet grouping, surface-card for content, and canvas-elevated for fields and overlays. The authenticated workspace uses the canvas as a continuous page surface, without an outer frame or inset; its low-contrast square grid remains visible and fades toward the edges. The sidebar retains its palette surface. A low-contrast square grid also fades toward the edges of login and within maintenance's visual region, in both themes. Its color and spacing derive from shared tokens. Text roles and the independent document/export palette are preserved.
 
 **Key Characteristics:**
-- White and charcoal surfaces with a shared #2563EB primary, accessible blue text variants and an opaque neutral focus ring.
+- Pale graphite and charcoal surfaces with each palette's existing primary, accessible text variants and an opaque neutral focus ring.
 - Neutral grouping regions and layered cards; controls and overlays retain their existing surfaces.
 - Mona Sans unifies display headings, UI and body in both themes.
 - Compact 10px controls, including icon-only buttons, 16px cards, 12px menus and 20px dialogs. Badges and chips use compact 4px corners, never pills; only avatars and status dots remain circular.
@@ -21,10 +21,10 @@ Both themes use canvas as the base page surface, canvas-soft for quiet grouping,
 ## Colors - Neutral and Blue
 
 ### Brand & Accent
-- Primary fill: `--color-primary` = #2563EB in light and dark; channels = 37 99 235. This is the first supplied blue that supports normal-size white labels at AA.
-- Hover fill: `--color-primary-active` = #1D4ED8. Pressed fill: `--color-primary-pressed` = #1E40AF.
-- Text on solid primary: `--color-on-primary` = #FFFFFF in both themes. Its contrast is 5.17:1 normally, 6.70:1 on hover and 8.72:1 when pressed.
-- Standalone primary text and functional links: `--color-primary-text` / `--color-link` = #1E40AF in light and #BFDBFE in dark. Do not use the fill token as normal-size text on neutral surfaces.
+- Original primary fill: `--color-primary` = #1E40AF in light and dark. Other palettes keep their own primary fill.
+- Original hover fill: `--color-primary-active` = #1E3A8A. Pressed fill: `--color-primary-pressed` = #172554.
+- Text on the Original solid primary: `--color-on-primary` = #FFFFFF in both themes; use each palette's own on-primary token elsewhere.
+- Standalone Original primary text and functional links: `--color-primary-text` / `--color-link` = #1E3A8A in light and #BFDBFE in dark. Do not use the fill token as normal-size text on neutral surfaces.
 - Primary boundaries: `--color-primary-border` follows the accessible text variant. This keeps thin outlines distinguishable on stronger dark surfaces where the fill alone can fall below 3:1.
 - Link hover: #1E3A8A in light and the light foreground in dark. Keep the existing underline/interaction treatment.
 - Focus: opaque neutral ink, 2px, zero offset; inverted surfaces and forced-colors retain their dedicated focus treatment. Translucent decorative rings do not replace this outline.
@@ -34,16 +34,16 @@ Both themes use canvas as the base page surface, canvas-soft for quiet grouping,
 
 | Role | Light | Dark |
 |---|---|---|
-| Canvas | #FFFFFF | #171717 |
-| Quiet region | #F9FAFB | #1F1F1F |
-| Content card | #FFFFFF | #262626 |
-| Elevated field/overlay | #FFFFFF | #262626 |
-| Strong surface | #F3F4F6 | #404040 |
-| Headings | #333333 | #E5E5E5 |
-| Body | #333333 | #E5E5E5 |
-| Secondary text | #4B5563 | #B6B6B6 |
-| Placeholder | #4B5563 | #B6B6B6 |
-| Required control border | #6B7280 | #A3A3A3 |
+| Canvas | #F5F6F7 | #1B1D20 |
+| Quiet region | #ECEEF0 | #222529 |
+| Content card | #FFFFFF | #292D31 |
+| Elevated field/overlay | #FFFFFF | #292D31 |
+| Strong surface | #E4E7EA | #343940 |
+| Headings | #333333 | #F5F5F5 |
+| Body | #333333 | #F5F5F5 |
+| Secondary text | #374151 | #DCE0E4 |
+| Placeholder | #374151 | #DCE0E4 |
+| Required control border | #6B7280 | #949494 |
 
 Hairlines are decorative separators; required boundaries use the control-border or primary-border tokens. Status meaning retains its labels/icons as well as color. Semantic status text uses the enhanced foreground tokens and must maintain at least 4.5:1 against every applicable palette surface; verify light and dark modes independently. Official paper, ink and document headers keep their existing independent tokens.
 
@@ -51,13 +51,12 @@ Hairlines are decorative separators; required boundaries use the control-border 
 
 | Pair | Ratio | Criterion |
 |---|---|---|
-| #FFFFFF label on #2563EB | 5.17:1 | AA text, both themes |
-| #FFFFFF label on #1D4ED8 | 6.70:1 | Hover text |
-| #FFFFFF label on #1E40AF | 8.72:1 | Pressed text |
-| #333333 body on #FFFFFF | 12.63:1 | Light body |
-| #E5E5E5 body on #171717 | 14.23:1 | Dark body |
-| #1E40AF standalone text on #FFFFFF | 8.72:1 | Enhanced text contrast |
-| #BFDBFE standalone text on #404040 | 7.30:1 | Enhanced text contrast |
+| #FFFFFF label on #1E40AF | 8.72:1 | Original primary text |
+| #333333 body on #F5F6F7 | 11.68:1 | Original light body on canvas |
+| #F5F5F5 body on #1B1D20 | 15.49:1 | Original dark body on canvas |
+| #374151 secondary text on #E4E7EA | 8.30:1 | Original light strong surface |
+| #DCE0E4 secondary text on #343940 | 8.77:1 | Original dark strong surface |
+| #BFDBFE standalone text on #343940 | 8.19:1 | Original dark strong surface |
 
 These opaque primary/body pairs meet AA for normal text; some exceed 7:1. This does not certify chart colors, decorative transparency or disabled-state opacity. Disabled controls retain their existing programmatic state and opacity treatment. Typography, spacing and reference radii stay unchanged.
 
@@ -67,11 +66,11 @@ Legacy gradient tokens remain available for existing illustrations. Application 
 
 ## Dark Theme - Charcoal
 
-The optional dark theme extends the same semantic tokens using the supplied charcoal surface hierarchy. It shares the #2563EB primary fill and white on-primary label with light mode, while standalone blue text uses the brighter accessible variant. Theme selection does not change layout, radii, data or permissions.
+The optional dark theme extends the same semantic tokens using the charcoal surface hierarchy. Each palette retains its primary fill and corresponding on-primary label; Original uses brighter blue for standalone text. Theme selection does not change layout, radii, data or permissions.
 
 ### Appearance Preference
 
-- The appearance control lives in /account and in the sidebar account-menu footer from tablet upward. /account uses the shared CustomSelect to choose Sistema, Claro or Oscuro (System, Light or Dark in English); the sidebar footer combines the same three icon choices and direct sign-out in one unlabeled row, with no divider between them. On mobile, sign-out remains available while theme choices are omitted. The row displays the saved preference, including Sistema even while its resolved colors are light or dark. Login shows no theme or language controls and continues to use the existing preference. Both controls keep the shared touch target, keyboard navigation and visible focus. Sistema remains the initial preference when no valid stored choice exists.
+- The appearance mode control lives in the sidebar account menu from tablet upward. It offers Sistema, Claro and Oscuro (System, Light and Dark in English); /account keeps the palette and language controls without repeating the mode selector. On mobile, sign-out remains available while theme choices are omitted. The menu displays the saved preference, including Sistema even while its resolved colors are light or dark. Login shows no theme or language controls and continues to use the existing preference. Controls keep the shared touch target, keyboard navigation and visible focus. Sistema remains the initial preference when no valid stored choice exists.
 - The sidebar appearance footer uses `--icon-size-xs` (12px) for its three secondary icons and `--color-control-border` to mark the selected choice. Each icon-only option retains a 44px target and an accessible name.
 - The browser preference is stored under `reclutamiento_color_scheme`; it is independent of account data and authentication. Sistema follows operating-system changes; other selections override them. Changes synchronize across tabs.
 - `public/theme.js` restores the preference on `html[data-color-scheme]` before the global stylesheet loads. `useTheme` subscribes to this single controller; portals inherit the same tokens.
@@ -80,27 +79,27 @@ The optional dark theme extends the same semantic tokens using the supplied char
 
 ### Paletas seleccionables
 
-- La paleta `Original` conserva los colores actuales. `Ocean Saas`, `Gold Void`, `Sea Glass`, `Claude Amber` y `Supabase` son opciones adicionales con variantes clara y oscura; el modo `Sistema` sigue el ajuste del dispositivo. La selección de paleta es independiente del modo y se guarda en `reclutamiento_color_palette` como `original`, `ocean-saas`, `darkmatter-remix`, `sea-glass`, `claude-amber` o `supabase`. El identificador guardado `darkmatter-remix` se conserva para mantener las preferencias existentes; `chemp` se normaliza a `sea-glass`.
-- `/account` muestra los selectores de modo y paleta apilados en móvil y en una fila de dos columnas desde tablet. El menú de cuenta de la sidebar solo ofrece los tres modos de apariencia. `public/theme.js` restaura `html[data-color-palette]` antes de cargar CSS y sincroniza los cambios entre pestañas.
-- En `/account`, Paleta abre una vista de detalle dentro de Ajustes, como Contraseña, y oculta las demás opciones mientras está abierta. La cabecera nombra la vista activa (`Ajustes`, `Contraseña` o `Paleta`) sin repetir ese título dentro del contenido. Las paletas se ordenan por nombre en el idioma activo. La vista usa una columna en móvil y dos desde tablet; cada opción muestra el nombre arriba, los colores de canvas, primario y tinta debajo y el indicador de selección a la derecha. La selección se aplica inmediatamente mediante controles de radio nativos, con foco visible y retorno al disparador al volver.
+- La paleta `Original` usa neutros grafito claros y oscuros. `Ocean Saas`, `Gold Void`, `Sea Glass`, `Claude Amber` y `Supabase` conservan sus acentos y reciben la misma jerarquía de superficies grafito, con matices propios en cada modo. El modo `Sistema` sigue el ajuste del dispositivo. La selección de paleta es independiente del modo y se guarda en `reclutamiento_color_palette` como `original`, `ocean-saas`, `darkmatter-remix`, `sea-glass`, `claude-amber` o `supabase`. El identificador guardado `darkmatter-remix` se conserva para mantener las preferencias existentes; `chemp` se normaliza a `sea-glass`.
+- `/account` muestra Paleta como fila completa de Ajustes en móvil, tablet y escritorio. El menú de cuenta de la sidebar ofrece los tres modos de apariencia desde tablet. `public/theme.js` restaura `html[data-color-palette]` antes de cargar CSS y sincroniza los cambios entre pestañas.
+- En `/account`, Paleta abre el popover compartido desde su fila de Ajustes; Contraseña conserva su vista de detalle. Las paletas se ordenan por nombre en el idioma activo. El popover usa una lista compacta de una columna en todos los tamaños; cada opción muestra el nombre arriba, los colores de canvas, primario y tinta debajo y el indicador de selección a la derecha. La selección se aplica inmediatamente mediante controles de radio nativos; Escape y el clic exterior cierran el popover y devuelven el foco al disparador.
 - Los colores se definen solo en `src/styles/global.css`, en los bloques `data-color-palette` de cada paleta para claro y oscuro. Adaptan acción primaria, superficies, texto y bordes a las referencias proporcionadas. La sidebar conserva su diseño y utiliza `--color-sidebar-surface` y `--shell-floor` de la paleta y el modo activos; no conserva una superficie clara al cambiar a oscuro. `Gold Void` aplica la paleta oro y pergamino, con tipografía y geometría globales sin cambios; los textos principales y secundarios superan 8.1:1 sobre las superficies de la paleta, los bordes de control superan 3:1 y el foco conserva el token neutral global. `Sea Glass` aplica la propuesta de contraste corregida: textos principales y secundarios conservan al menos 8.1:1 en las superficies de cada modo, y bordes de controles superan 3:1 incluso sobre superficies elevadas; el foco visible conserva el token neutral global. En oscuro usa cian y superficies azul verdosas. `Claude Amber` utiliza superficies crema y ámbar, con texto oscuro sobre su primario claro y texto ámbar más claro en oscuro para mantener AA. `Supabase` usa verde claro con texto oscuro en claro y verde profundo con texto claro en oscuro; los enlaces y el foco usan verdes con contraste suficiente. Los colores de error permanecen semánticos. Conservan Mona Sans, escala tipográfica, espaciado, radios, sombras y tokens de documentos/exportación. Los colores de gráficas no se agregan hasta tener consumidores reales.
-- Estados por paleta: el hover neutro (`--color-surface-hover`) se distingue de canvas, canvas-soft, surface-card y canvas-elevated en ambos modos. El hover y pressed del primario se alejan de la superficie: oscurecen en claro y aclaran en oscuro, y la etiqueta `--color-on-primary` conserva al menos 4.5:1 en los tres estados. En la paleta original en oscuro usan #1D4ED8 y #2563EB. En oscuro el enlace en hover (`--color-link-deep`) usa el texto principal, nunca el relleno primario. El texto de error supera 4.5:1 sobre todas las superficies y sobre su tinte. El hairline decorativo nunca coincide con `--color-surface-strong`.
+- Estados por paleta: el hover neutro (`--color-surface-hover`) se distingue de canvas, canvas-soft, surface-card y canvas-elevated en ambos modos. El hover y pressed del primario siguen los tokens de cada paleta, y la etiqueta `--color-on-primary` conserva al menos 4.5:1 en los tres estados. En oscuro el enlace en hover (`--color-link-deep`) usa el texto principal, nunca el relleno primario. El texto de error supera 4.5:1 sobre todas las superficies y sobre su tinte. El hairline decorativo nunca coincide con `--color-surface-strong`.
 - Las etiquetas blancas sobre el primario, el texto principal y el texto secundario sobre las superficies principales, así como el texto azul independiente, usan pares con contraste AA. La comprobación visual y con tecnología asistiva sigue siendo necesaria antes de certificar toda la interfaz.
 
 ### Dark Semantic Palette
 
 | Role | CSS token | Dark value |
 |---|---|---|
-| Page floor | `--color-canvas` | #171717 |
-| Quiet region | `--color-canvas-soft` | #1F1F1F |
-| Cards | `--color-surface-card` | #262626 |
-| Controls/overlays | `--color-canvas-elevated` | #262626 |
-| Primary fill | `--color-primary` | #2563EB |
+| Page floor | `--color-canvas` | #1B1D20 |
+| Quiet region | `--color-canvas-soft` | #222529 |
+| Cards | `--color-surface-card` | #292D31 |
+| Controls/overlays | `--color-canvas-elevated` | #292D31 |
+| Primary fill | `--color-primary` | #1E40AF |
 | Label on primary | `--color-on-primary` | #FFFFFF |
 | Standalone blue text | `--color-primary-text` | #BFDBFE |
 | Focus | `--color-focus` | #FFFFFF |
 
-Primary remains the sole structural action color in dark mode. The shared blue fill uses white on-primary text; standalone blue text uses the brighter contrast-safe variant on charcoal surfaces. Links retain their existing underline/interaction treatment. Semantic and existing chart/category colors remain localized and retain labels, icons or line patterns. Cards and dividers use subtle hairlines; required control boundaries use the stronger control-border token. The authenticated workspace uses the continuous --workspace-canvas; the sidebar retains --shell-floor. Elevated tokens are reserved for cards, controls and floating surfaces.
+Primary remains the sole structural action color in dark mode for each palette. Original uses white on its blue fill and the brighter contrast-safe blue for standalone text on charcoal surfaces. Links retain their existing underline/interaction treatment. Semantic and existing chart/category colors remain localized and retain labels, icons or line patterns. Cards and dividers use subtle hairlines; required control boundaries use the stronger control-border token. The authenticated workspace uses the continuous --workspace-canvas; the sidebar retains --shell-floor. Elevated tokens are reserved for cards, controls and floating surfaces.
 
 ### Contrast and Shared Tokens
 
@@ -377,12 +376,12 @@ All buttons, including icon-only buttons, are rectangles with soft 10px corners.
 **`header-controls`** - search and account menu typography
 - The footer account trigger shows the user's existing natural-case display name (falling back to username), avatar, authenticated role and a Morphicons double chevron that points up while its menu is closed and down while open. Long names retain ellipsis; the trigger has a complete accessible name and the desktop rail shows its avatar with a tooltip. Its upward menu begins with the same name and role beside ViñoPlastic, then a Mi perfil link to the existing account route and a separate Cerrar sesión action with transparent background at rest and a visible highlighted state on interaction. The existing two-step sign-out confirmation places compact Cancelar and Confirmar actions on one horizontal row; the confirmation action retains its full accessible name. Confirmar closes the account menu immediately, then the shared exit loader shows progress while sign-out completes. Mi perfil identifies the current account route with aria-current="page".
 - Sidebar links are alphabetized by their visible labels in the selected language, except Inicio remains first; account-menu groups are alphabetized by their visible labels in the selected language. Roles, routes and the existing sign-out confirmation flow remain unchanged.
-- The header quick-access trigger and direct account link use transparent, borderless surfaces at rest and hover, retaining their centered alignment, 44px touch targets and visible keyboard focus. The shortcut floating menu uses complete Mona Sans body-md roles for actions and reading/empty/error text; shortcut labels use caption-up. The account link opens /account directly, where Theme and Language use their existing preference controllers. The shared workspace title and shortcut filtering, keyboard shortcuts and navigation remain unchanged.
+- The header quick-access trigger and direct account link use transparent, borderless surfaces at rest and hover, retaining their centered alignment, 44px touch targets and visible keyboard focus. The shortcut floating menu uses complete Mona Sans body-md roles for actions and reading/empty/error text; shortcut labels use caption-up. The account link opens /account directly, where Palette and Language use their existing preference controllers. The shared workspace title and shortcut filtering, keyboard shortcuts and navigation remain unchanged.
 
 **`account-workspace`** - account page layout and typography
 - /account uses the shared PageHeading and owns the main landmark. Its content uses the global container without an account-specific width variant. Mobile uses one column; desktop from 1080px uses two balanced columns. Administrator accounts also use two columns on tablet from 768px: Profile and Administration stack in the first column beside Settings, and Team spans both columns below. Recruiter accounts remain one column through tablet; on desktop, Profile and Settings occupy the first row, with Recognition below Profile; Settings retains its natural height. The page does not display a Sign out action; signing out remains available from the account menu.
 - The profile is a surface-card panel with tokenized padding and hairline. It shows avatar, name, email and photo requirements. The camera opens the existing DropdownMenu with Change picture and, when a saved picture exists, Delete picture. Validation, preview, Cancel/Save, two-step inline deletion, focus return, storage cleanup and feedback keep the existing account behavior.
-- Settings, Administration and Team are separate surface-card panels with section labels in bordered headers and tokenized hairline separators. Password opens its existing form in the Settings detail view; ThemeSelect uses the shared three-option selector, while LanguageToggle remains a direct button. Both show the current preference on the right. Rows have a 60px token-derived minimum and grow for longer content or zoom. Recruiter-only recognition preferences remain available with their existing persistence and feedback.
+- Settings, Administration and Team are separate surface-card panels with section labels in bordered headers and tokenized hairline separators. Password opens its existing form in the Settings detail view; Palette opens the shared popover, while LanguageToggle remains a direct button. Palette and Language show the current preference on the right. Rows have a 60px token-derived minimum and grow for longer content or zoom. Recruiter-only recognition preferences remain available with their existing persistence and feedback.
 - For administrators, Maintenance sits inside Administration below Profile. It applies each change on click and reflects the server-confirmed state, retaining pending/error status and Retry. Team replaces the former inline User activity panel. The separate existing activity modal is unchanged.
 - Password now replaces the Settings option list with the existing form using the transitions.dev Page side-by-side recipe (`t-page-slide` / `t-page`). Cancel returns to the list and restores focus to Password, preserving discard confirmation. Inactive views are inert and hidden from assistive technology; the active view determines natural height. Central `--page-*` tokens define 250ms slide/fade, existing float distance (8px), 3px blur, zero stagger and cubic-bezier(0.22, 1, 0.36, 1). Reduced motion switches immediately. Validation, submission, success/error feedback and authentication remain unchanged.
 - While the password view is open, Cancel and Change appear in the Settings header with the complete body-sm role. Their visible surfaces use a token-derived 32px minimum height (touch-target-min minus spacing.sm), while native buttons retain a 44px minimum touch target. Keyboard focus follows the compact visible surface with the shared neutral outline; forced-colors retains the native button focus indicator. The native submit button uses the form ID across the header portal; Cancel retains inline discard confirmation. The header wraps at narrow widths or increased text sizes. There are no duplicate footer actions.

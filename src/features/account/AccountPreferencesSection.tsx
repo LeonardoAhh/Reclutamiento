@@ -1,27 +1,15 @@
-import { useId, type Ref } from 'react';
-import { ChevronRight, Eclipse, Languages, Palette, Volume2, VolumeX } from 'lucide-react';
+import { useId } from 'react';
+import { ChevronRight, Languages, Palette, Volume2, VolumeX } from 'lucide-react';
 import { LanguageToggle } from '@/components/ui/LanguageToggle';
-import { ThemeSelect } from '@/components/ui/ThemeSelect';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useFeedback } from '@/hooks/useFeedback';
 import { useTheme } from '@/hooks/useTheme';
 import { playSound } from '@/lib/sound';
 import type { AccountCopy } from '@/pages/account-translations';
-import { getAccountPaletteOptions } from './AccountPaletteView';
+import { AccountPaletteView, getAccountPaletteOptions } from './AccountPaletteView';
 
-export function AccountPreferencesSection({
-  copy,
-  onOpenPalette,
-  paletteOpen,
-  palettePanelId,
-  paletteTriggerRef,
-}: {
-  copy: AccountCopy;
-  onOpenPalette: () => void;
-  paletteOpen: boolean;
-  palettePanelId: string;
-  paletteTriggerRef: Ref<HTMLButtonElement>;
-}) {
+export function AccountPreferencesSection({ copy }: { copy: AccountCopy }) {
   const id = useId();
   const { language, storageError } = useLanguage();
   const { soundEnabled, soundStorageError, toggleSound } = useFeedback();
@@ -30,31 +18,21 @@ export function AccountPreferencesSection({
 
   return (
     <div className="account-appearance" data-tour="account-appearance">
-      <ThemeSelect
-        language={language}
-        labels={{ name: copy.theme, system: copy.systemTheme, light: copy.lightTheme, dark: copy.darkTheme }}
-        className="account-appearance__theme"
-      >
-        <Eclipse size="var(--icon-size-sm)" aria-hidden="true" />
-        <span className="account-setting-row__label">{copy.theme}</span>
-      </ThemeSelect>
-      <button
-        ref={paletteTriggerRef}
-        type="button"
-        className="account-appearance__control account-appearance__palette"
-        aria-expanded={paletteOpen}
-        aria-controls={palettePanelId}
-        onClick={onOpenPalette}
-      >
-        <span className="theme-select__content">
-          <Palette size="var(--icon-size-sm)" aria-hidden="true" />
-          <span className="account-setting-row__label">{copy.palette}</span>
-          <span className="account-setting-row__value">
-            {paletteOptions.find((option) => option.value === palette)?.label}
-          </span>
-          <ChevronRight className="theme-select__chevron" aria-hidden="true" />
-        </span>
-      </button>
+      <Popover>
+        <PopoverTrigger asChild>
+          <button type="button" className="account-appearance__control account-appearance__palette">
+            <Palette size="var(--icon-size-sm)" aria-hidden="true" />
+            <span className="account-setting-row__label">{copy.palette}</span>
+            <span className="account-setting-row__value">
+              {paletteOptions.find((option) => option.value === palette)?.label}
+            </span>
+            <ChevronRight className="account-appearance__palette-chevron" aria-hidden="true" />
+          </button>
+        </PopoverTrigger>
+        <PopoverContent align="start" className="account-palette-popover" aria-label={copy.palette}>
+          <AccountPaletteView copy={copy} />
+        </PopoverContent>
+      </Popover>
       <LanguageToggle className="account-appearance__control" sound>
         <Languages size="var(--icon-size-sm)" aria-hidden="true" />
         <span className="account-setting-row__label">{copy.language}</span>

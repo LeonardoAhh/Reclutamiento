@@ -110,7 +110,7 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     plantilla_autorizada: 22,
     bono: true,
     bono_monto: 619,
-    backup: 2,
+    backup: 4,
   },
   {
     area: "CALIDAD",
@@ -157,7 +157,7 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     area: "CALIDAD",
     seccion: "CALIDAD ADMTVO",
     puesto: "INSPECTOR DE CALIDAD",
-    plantilla_autorizada: 15,
+    plantilla_autorizada: 16,
     backup: 4,
   },
   {
@@ -338,7 +338,7 @@ export const PLANTILLA_AUTORIZADA: AuthorizedPosition[] = [
     area: "PRODUCCIÓN",
     seccion: "PRODUCCIÓN 1ER. TURNO (STARLITE)",
     puesto: "OPERADOR DE MÁQUINA",
-    plantilla_autorizada: 10,
+    plantilla_autorizada: 12,
     backup: 0,
     notas: "BackUp:",
     bono: true,

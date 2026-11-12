@@ -1,5 +1,4 @@
-import { useEffect, useId, useRef } from 'react';
-import { createPortal } from 'react-dom';
+import { useId } from 'react';
 import { CircleCheckBig } from 'lucide-react';
 import { useLanguage, type Language } from '@/contexts/LanguageContext';
 import { useTheme, type ThemePalette } from '@/hooks/useTheme';
@@ -22,70 +21,43 @@ export function getAccountPaletteOptions(copy: AccountCopy, language: Language) 
   );
 }
 
-export function AccountPaletteView({
-  copy,
-  actionsTarget,
-  focusReady,
-  onBack,
-}: {
-  copy: AccountCopy;
-  actionsTarget: HTMLElement | null;
-  focusReady: boolean;
-  onBack: () => void;
-}) {
+export function AccountPaletteView({ copy }: { copy: AccountCopy }) {
   const id = useId();
-  const selectedRef = useRef<HTMLInputElement>(null);
   const { language } = useLanguage();
   const { palette, resolvedTheme, setPalette } = useTheme();
   const options = getAccountPaletteOptions(copy, language);
 
-  useEffect(() => {
-    if (focusReady) selectedRef.current?.focus({ preventScroll: true });
-  }, [focusReady]);
-
   return (
-    <>
-      <fieldset className="account-palette-options">
-        <legend className="sr-only">{copy.palette}</legend>
-        {options.map((option) => (
-          <label key={option.value} className="account-palette-option">
-            <input
-              ref={palette === option.value ? selectedRef : undefined}
-              className="sr-only"
-              type="radio"
-              name={`${id}-palette`}
-              value={option.value}
-              checked={palette === option.value}
-              onChange={() => {
-                if (palette !== option.value) playSound('select');
-                setPalette(option.value);
-              }}
-            />
-            <span className="account-palette-option__title">{option.label}</span>
-            <span
-              className="account-palette-swatch"
-              data-palette-preview=""
-              data-color-palette={option.value}
-              data-color-scheme={resolvedTheme}
-              aria-hidden="true"
-            >
-              <span className="account-palette-swatch__canvas" />
-              <span className="account-palette-swatch__primary" />
-              <span className="account-palette-swatch__ink" />
-            </span>
-            {palette === option.value && (
-              <CircleCheckBig className="account-palette-option__check" aria-hidden="true" />
-            )}
-          </label>
-        ))}
-      </fieldset>
-      {actionsTarget &&
-        createPortal(
-          <button type="button" className="password-change-form__action" onClick={onBack}>
-            {copy.back}
-          </button>,
-          actionsTarget,
-        )}
-    </>
+    <fieldset className="account-palette-options">
+      <legend className="sr-only">{copy.palette}</legend>
+      {options.map((option) => (
+        <label key={option.value} className="account-palette-option">
+          <input
+            className="sr-only"
+            type="radio"
+            name={`${id}-palette`}
+            value={option.value}
+            checked={palette === option.value}
+            onChange={() => {
+              if (palette !== option.value) playSound('select');
+              setPalette(option.value);
+            }}
+          />
+          <span className="account-palette-option__title">{option.label}</span>
+          <span
+            className="account-palette-swatch"
+            data-palette-preview=""
+            data-color-palette={option.value}
+            data-color-scheme={resolvedTheme}
+            aria-hidden="true"
+          >
+            <span className="account-palette-swatch__canvas" />
+            <span className="account-palette-swatch__primary" />
+            <span className="account-palette-swatch__ink" />
+          </span>
+          {palette === option.value && <CircleCheckBig className="account-palette-option__check" aria-hidden="true" />}
+        </label>
+      ))}
+    </fieldset>
   );
 }

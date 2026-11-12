@@ -45,12 +45,12 @@
   /* antes #1e3a8a: ahora más oscuro que link */
 
   /* ── Surface ──────────────────────────────────────────────────── */
-  --color-canvas: #fff;
-  --color-canvas-soft: #f9fafb;
-  --color-canvas-elevated: var(--color-canvas);
-  --color-surface-card: var(--color-canvas);
-  --color-surface-strong: #f3f4f6;
-  --color-sidebar-surface: var(--color-canvas);
+  --color-canvas: #f5f6f7;
+  --color-canvas-soft: #eceef0;
+  --color-canvas-elevated: #fff;
+  --color-surface-card: var(--color-canvas-elevated);
+  --color-surface-strong: #e4e7ea;
+  --color-sidebar-surface: var(--color-canvas-soft);
   --color-surface-dark: #171717;
   --color-document-paper: #fff;
 
@@ -75,7 +75,7 @@
   --color-document-table-row-alternate: #e5e5e5;
 
   /* ── Hairlines ──────────────────────────────────────────────── */
-  --color-hairline: #e5e7eb;
+  --color-hairline: #d8dde1;
   /* divisor decorativo */
   --color-hairline-strong: #6b7280;
   /* 4.8:1 sobre canvas (control: >= 3) */
@@ -575,19 +575,19 @@
   --color-link-deep: var(--color-on-dark);
 
   /* Superficies (escalonadas de más oscuro a más claro) */
-  --color-canvas: #161616;
-  --color-canvas-soft: #1e1e1e;
+  --color-canvas: #1b1d20;
+  --color-canvas-soft: #222529;
   --shell-workspace-surface: var(--color-canvas);
-  --color-canvas-elevated: #262626;
+  --color-canvas-elevated: #292d31;
   --color-surface-card: var(--color-canvas-elevated);
-  --color-surface-strong: #303030;
+  --color-surface-strong: #343940;
   --color-surface-dark: var(--color-canvas);
   --color-surface-contrast: var(--color-surface-dark);
   --color-shimmer-overlay: color-mix(in srgb, var(--color-ink) 8%, transparent);
 
   /* Texto */
   --color-ink: #f5f5f5;
-  --color-mute: #d4d4d4;
+  --color-mute: #dce0e4;
   --color-on-dark: var(--color-ink);
   --color-on-dark-soft: var(--color-mute);
   --color-on-neutral: var(--color-canvas);
@@ -598,7 +598,7 @@
   --color-focus: var(--color-focus-on-inverted);
 
   /* Bordes */
-  --color-hairline: #404040;
+  --color-hairline: #454b52;
   /* decorativo, no transmite información */
   --color-hairline-strong: #949494;
   /* >= 3:1 sobre todas las superficies */
@@ -656,15 +656,15 @@
   --color-primary-tint: oklch(95% 0.03 var(--brand-hue));
 
   /* Superficies (una sola familia neutra, matiz de marca) */
-  --color-canvas: oklch(100% 0 0deg);
-  --color-canvas-soft: oklch(98.5% 0.003 var(--brand-hue));
+  --color-canvas: oklch(97% 0.003 var(--brand-hue));
+  --color-canvas-soft: oklch(93% 0.004 var(--brand-hue));
   --color-canvas-elevated: oklch(100% 0 0deg);
-  --color-surface-card: oklch(99% 0.002 var(--brand-hue));
-  --color-surface-strong: oklch(94% 0.006 var(--brand-hue));
-  --color-sidebar-surface: var(--color-canvas);
+  --color-surface-card: var(--color-canvas-elevated);
+  --color-surface-strong: oklch(89% 0.006 var(--brand-hue));
+  --color-sidebar-surface: var(--color-canvas-soft);
 
   /* Bordes */
-  --color-hairline: oklch(90% 0.006 var(--brand-hue));
+  --color-hairline: oklch(85% 0.006 var(--brand-hue));
 
   /* Texto */
   --color-ink: oklch(15% 0.01 var(--brand-hue));
@@ -693,13 +693,13 @@
   /* El relleno primario no sirve como texto en oscuro: el enlace en hover usa ink */
   --color-link-deep: var(--color-ink);
 
-  --color-canvas: oklch(20.5% 0.006 var(--brand-hue));
-  --color-canvas-soft: oklch(24% 0.006 var(--brand-hue));
-  --color-canvas-elevated: oklch(26.9% 0.006 var(--brand-hue));
-  --color-surface-card: oklch(22.6% 0.006 var(--brand-hue));
-  --color-surface-strong: oklch(33% 0.008 var(--brand-hue));
+  --color-canvas: oklch(21% 0.006 var(--brand-hue));
+  --color-canvas-soft: oklch(25% 0.006 var(--brand-hue));
+  --color-canvas-elevated: oklch(28% 0.006 var(--brand-hue));
+  --color-surface-card: var(--color-canvas-elevated);
+  --color-surface-strong: oklch(34% 0.008 var(--brand-hue));
 
-  /* Distinto de surface-strong (33%) para que el divisor no desaparezca */
+  /* Distinto de surface-strong (34%) para que el divisor no desaparezca */
   --color-hairline: oklch(40% 0.008 var(--brand-hue));
   --color-ink: oklch(94% 0.005 var(--brand-hue));
   --color-mute: oklch(89% 0.01 var(--brand-hue));
@@ -717,13 +717,13 @@
   --color-primary-pressed: color-mix(in srgb, var(--color-primary) 70%, var(--color-ink));
   --color-on-primary: var(--color-canvas);
   --color-link-deep: var(--color-primary-text);
-  --color-canvas: hsl(45deg 40% 97%);
-  --color-canvas-soft: hsl(45deg 25% 93%);
+  --color-canvas: hsl(40deg 14% 95%);
+  --color-canvas-soft: hsl(40deg 10% 89%);
   --color-canvas-elevated: hsl(0deg 0% 100%);
   --color-sidebar-surface: var(--color-canvas-soft);
   --shell-floor: var(--color-sidebar-surface);
   --color-surface-card: hsl(0deg 0% 100%);
-  --color-surface-strong: hsl(45deg 25% 90%);
+  --color-surface-strong: hsl(40deg 9% 85%);
   --color-hairline: color-mix(in srgb, var(--color-ink) 12%, var(--color-canvas));
   --color-hairline-strong: color-mix(in srgb, var(--color-ink) 55%, var(--color-surface-card));
   --color-ink: hsl(30deg 15% 6%);
@@ -739,21 +739,21 @@
 :root[data-color-palette='darkmatter-remix'][data-color-scheme='dark'],
 [data-palette-preview][data-color-palette='darkmatter-remix'][data-color-scheme='dark'] {
   --color-primary: hsl(45deg 68% 50%);
-  --color-primary-text: hsl(45deg 68% 55%);
+  --color-primary-text: hsl(45deg 68% 76%);
   --color-primary-active: color-mix(in srgb, var(--color-primary) 85%, var(--color-ink));
   --color-primary-pressed: color-mix(in srgb, var(--color-primary) 70%, var(--color-ink));
   --color-link-deep: var(--color-ink);
-  --color-canvas: hsl(0deg 0% 2%);
-  --color-canvas-soft: hsl(0deg 0% 8%);
+  --color-canvas: hsl(30deg 3% 8%);
+  --color-canvas-soft: hsl(30deg 3% 12%);
   --color-sidebar-surface: var(--color-surface-card);
-  --color-canvas-elevated: hsl(0deg 0% 4%);
-  --color-surface-card: hsl(0deg 0% 4%);
-  --color-surface-strong: hsl(0deg 0% 10%);
-  /* 18%: el divisor sigue visible sobre surface-strong (con 10% se fundía) */
+  --color-canvas-elevated: hsl(30deg 3% 16%);
+  --color-surface-card: var(--color-canvas-elevated);
+  --color-surface-strong: hsl(30deg 3% 22%);
+  /* 18%: el divisor sigue visible sobre surface-strong */
   --color-hairline: color-mix(in srgb, var(--color-ink) 18%, var(--color-canvas));
   --color-hairline-strong: color-mix(in srgb, var(--color-ink) 40%, var(--color-surface-card));
   --color-ink: hsl(45deg 40% 97%);
-  --color-mute: hsl(0deg 0% 72%);
+  --color-mute: hsl(0deg 0% 88%);
   --color-primary-tint: color-mix(in srgb, var(--color-primary) 12%, var(--color-canvas));
   --color-error: hsl(0deg 85% 76%);
   --color-error-rgb: 246 142 142;
@@ -771,13 +771,13 @@
   --color-primary-pressed: #1c2f2a;
   --color-on-primary: #fff;
   --color-link-deep: var(--color-primary-text);
-  --color-canvas: #f8fafc;
-  --color-canvas-soft: #f3f4f6;
+  --color-canvas: #f3f6f5;
+  --color-canvas-soft: #e8edeb;
   --color-canvas-elevated: #fff;
-  --color-sidebar-surface: #f3f4f6;
+  --color-sidebar-surface: var(--color-canvas-soft);
   --shell-floor: var(--color-sidebar-surface);
   --color-surface-card: #fff;
-  --color-surface-strong: #e5e7eb;
+  --color-surface-strong: #dce4e0;
   /* Divisor decorativo; el borde de control conserva el verde con >= 3:1 */
   --color-hairline: #d6ddd8;
   --color-hairline-strong: #64766a;
@@ -791,14 +791,14 @@
   --color-on-error: #fff;
 }
 
-/* Sea Glass · oscuro. Superficies neutras casi negras (estilo Vercel/Notion),
+/* Sea Glass · oscuro. Superficies grafito con matiz verde,
    un solo acento aguamarina. Texto >= 8.1:1 sobre todas las superficies;
    bordes de controles >= 3:1. */
 :root[data-color-palette='sea-glass'][data-color-scheme='dark'],
 [data-palette-preview][data-color-palette='sea-glass'][data-color-scheme='dark'] {
   /* Acento */
   --color-primary: #3ddcc7;
-  --color-primary-text: #7ff0df;
+  --color-primary-text: #92f5e7;
   --color-primary-active: #5eead4;
   --color-primary-pressed: #99f6e4;
   --color-on-primary: #04201b;
@@ -806,20 +806,20 @@
   --color-primary-tint: #0b2522;
 
   /* Superficies neutras */
-  --color-canvas: #0a0a0a;
-  --color-canvas-soft: #111111;
-  --color-canvas-elevated: #171717;
-  --color-sidebar-surface: #0f0f0f;
-  --color-surface-card: #171717;
-  --color-surface-strong: #262626;
+  --color-canvas: #171c1b;
+  --color-canvas-soft: #202625;
+  --color-canvas-elevated: #28302e;
+  --color-sidebar-surface: var(--color-canvas-soft);
+  --color-surface-card: var(--color-canvas-elevated);
+  --color-surface-strong: #343d3a;
 
   /* Bordes: hairline sutil (decorativo), el fuerte es para controles */
-  --color-hairline: #2e2e2e;
+  --color-hairline: #46514d;
   --color-hairline-strong: #8f8f8f;
 
   /* Texto */
   --color-ink: #ededed;
-  --color-mute: #c8c8c8;
+  --color-mute: #dfe5e2;
 
   /* Error */
   --color-error: #ffb1aa;
@@ -835,7 +835,7 @@
 [data-palette-preview][data-color-palette='claude-amber'] {
   /* Acento: terracota oscuro para que el texto blanco del botón llegue a 8.1:1 */
   --color-primary: #863519;
-  --color-primary-text: #6a2812;
+  --color-primary-text: #61200d;
   /* Hover/pressed oscurecen (antes aclaraban hacia la superficie y parecían deshabilitados) */
   --color-primary-active: color-mix(in srgb, var(--color-primary) 85%, var(--color-ink));
   --color-primary-pressed: color-mix(in srgb, var(--color-primary) 70%, var(--color-ink));
@@ -844,13 +844,13 @@
   --color-primary-tint: #f6e7dc;
 
   /* Superficies */
-  --color-canvas: #faf9f5;
-  --color-canvas-soft: #ede9de;
+  --color-canvas: #f5f4f0;
+  --color-canvas-soft: #e9e7e0;
   --color-canvas-elevated: #ffffff;
-  --color-sidebar-surface: #f5f4ee;
+  --color-sidebar-surface: var(--color-canvas-soft);
   --shell-floor: var(--color-sidebar-surface);
-  --color-surface-card: #f5f4ef;
-  --color-surface-strong: #ebe8de;
+  --color-surface-card: var(--color-canvas-elevated);
+  --color-surface-strong: #dddcd5;
 
   /* Bordes: hairline decorativo; el fuerte sirve a controles (>= 3:1) */
   --color-hairline: #dad9d4;
@@ -858,7 +858,7 @@
 
   /* Texto */
   --color-ink: #3d3929;
-  --color-mute: #413f38;
+  --color-mute: #38362f;
 
   /* Error */
   --color-error: #7a1717;
@@ -881,12 +881,12 @@
   --color-primary-tint: #3a2b23;
 
   /* Superficies (de menos a más elevadas) */
-  --color-canvas: #262624;
-  --color-canvas-soft: #1b1b19;
-  --color-canvas-elevated: #30302e;
-  --color-sidebar-surface: #1f1e1d;
-  --color-surface-card: #2c2c2b;
-  --color-surface-strong: #363633;
+  --color-canvas: #1e1e1c;
+  --color-canvas-soft: #262623;
+  --color-canvas-elevated: #30302d;
+  --color-sidebar-surface: var(--color-canvas-soft);
+  --color-surface-card: var(--color-canvas-elevated);
+  --color-surface-strong: #3a3a35;
 
   /* Bordes: el hairline ya no coincide con surface-strong (antes se volvía invisible) */
   --color-hairline: #484741;
@@ -914,12 +914,12 @@
   --color-primary-pressed: color-mix(in srgb, var(--color-primary) 70%, var(--color-surface-card));
   --color-on-primary: #1e2723;
   --color-link-deep: var(--color-primary-text);
-  --color-canvas: #fcfcfc;
-  --color-canvas-soft: #ededed;
-  --color-sidebar-surface: var(--color-canvas);
+  --color-canvas: #f4f6f5;
+  --color-canvas-soft: #e9edeb;
+  --color-sidebar-surface: var(--color-canvas-soft);
   --shell-floor: var(--color-sidebar-surface);
   --color-surface-strong: var(--color-canvas-soft);
-  --color-hairline: #dfdfdf;
+  --color-hairline: #d5dcd8;
   /* divisor decorativo */
   --color-ink: #171717;
   --color-mute: #3a3a3a;
@@ -941,7 +941,7 @@
 [data-palette-preview][data-color-palette='supabase'][data-color-scheme='dark'] {
   --color-primary: #00492a;
   /* antes #006239: texto encima daba 6.0 */
-  --color-primary-text: #6ff0a0;
+  --color-primary-text: #99f8c1;
   /* antes #4ade80 (7.5 sobre strong) -> 9.1 */
   --color-on-primary: #eaf4ef;
 
@@ -949,15 +949,15 @@
   --color-primary-active: color-mix(in srgb, var(--color-primary) 85%, var(--color-canvas));
   --color-primary-pressed: color-mix(in srgb, var(--color-primary) 70%, var(--color-canvas));
   --color-link-deep: var(--color-ink);
-  --color-canvas: #121212;
-  --color-canvas-soft: #1f1f1f;
-  --color-canvas-elevated: #242424;
-  --color-surface-card: #171717;
-  --color-surface-strong: #313131;
-  --color-hairline: #292929;
+  --color-canvas: #171c1a;
+  --color-canvas-soft: #202724;
+  --color-canvas-elevated: #2a312e;
+  --color-surface-card: var(--color-canvas-elevated);
+  --color-surface-strong: #363f3a;
+  --color-hairline: #46504a;
   /* divisor decorativo */
   --color-ink: #e2e8f0;
-  --color-mute: #d4d4d4;
+  --color-mute: #e0e6e2;
   --color-primary-tint: var(--color-surface-strong);
   /* En oscuro el error heredaba el rojo del claro (3.5:1). Ahora se redefine: */
   --color-error: #ffa690;

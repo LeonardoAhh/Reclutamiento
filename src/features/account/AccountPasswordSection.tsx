@@ -2,13 +2,12 @@ import { useId, useRef, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import { ChevronRight, KeyRound } from 'lucide-react';
 import type { AccountCopy } from '@/pages/account-translations';
-import { AccountPaletteView } from './AccountPaletteView';
 import { AccountPreferencesSection } from './AccountPreferencesSection';
 import { PasswordChangeForm } from './PasswordChangeForm';
 
-export type AccountSettingsView = 'settings' | 'password' | 'palette';
+export type AccountSettingsView = 'settings' | 'password';
 
-/** Ajustes, contraseña y paleta comparten navegación entre vistas. */
+/** Ajustes y contraseña comparten navegación entre vistas. */
 export function AccountPasswordSection({
   copy,
   actionsTarget,
@@ -22,10 +21,8 @@ export function AccountPasswordSection({
 }) {
   const id = useId();
   const panelId = `${id}-panel`;
-  const palettePanelId = `${id}-palette`;
   const [focusReady, setFocusReady] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
-  const paletteTriggerRef = useRef<HTMLButtonElement>(null);
   const restoreFocus = useRef<HTMLButtonElement | null>(null);
   const reduce = useReducedMotion();
 
@@ -37,9 +34,9 @@ export function AccountPasswordSection({
     }
   }
 
-  const openDetail = (nextView: Exclude<AccountSettingsView, 'settings'>) => {
+  const openDetail = () => {
     setFocusReady(Boolean(reduce));
-    onViewChange(nextView);
+    onViewChange('password');
   };
 
   const closeDetail = (trigger: HTMLButtonElement | null) => {
@@ -50,10 +47,7 @@ export function AccountPasswordSection({
   };
 
   return (
-    <div
-      className="account-password t-page-slide"
-      data-page={view === 'settings' ? '1' : view === 'password' ? '2' : '3'}
-    >
+    <div className="account-password t-page-slide" data-page={view === 'settings' ? '1' : '2'}>
       <div
         className="t-page account-password__settings"
         data-page-id="1"
@@ -71,19 +65,13 @@ export function AccountPasswordSection({
           data-cuelume-open=""
           aria-expanded={view === 'password'}
           aria-controls={panelId}
-          onClick={() => openDetail('password')}
+          onClick={openDetail}
         >
           <KeyRound size="var(--icon-size-sm)" aria-hidden="true" />
           <span className="account-setting-row__label">{copy.password}</span>
           <ChevronRight size="var(--icon-size-sm)" aria-hidden="true" />
         </button>
-        <AccountPreferencesSection
-          copy={copy}
-          paletteOpen={view === 'palette'}
-          palettePanelId={palettePanelId}
-          paletteTriggerRef={paletteTriggerRef}
-          onOpenPalette={() => openDetail('palette')}
-        />
+        <AccountPreferencesSection copy={copy} />
       </div>
       <div
         id={panelId}
@@ -102,24 +90,6 @@ export function AccountPasswordSection({
           cancelLabel={copy.cancel}
           submitLabel={copy.changePassword}
           onCancel={() => closeDetail(toggleRef.current)}
-        />
-      </div>
-      <div
-        id={palettePanelId}
-        className="t-page account-password__detail"
-        data-page-id="3"
-        inert={view !== 'palette'}
-        aria-hidden={view !== 'palette'}
-        onTransitionEnd={(event) => {
-          if (view === 'palette' && event.target === event.currentTarget && event.propertyName === 'opacity')
-            completeTransition();
-        }}
-      >
-        <AccountPaletteView
-          copy={copy}
-          actionsTarget={view === 'palette' ? actionsTarget : null}
-          focusReady={view === 'palette' && focusReady}
-          onBack={() => closeDetail(paletteTriggerRef.current)}
         />
       </div>
     </div>
