@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 import { Tooltip } from '@/components/ui/Tooltip';
@@ -13,6 +14,29 @@ type SidebarItemProps = {
 export function SidebarItem({ item, collapsed, onNavigate }: SidebarItemProps) {
   const location = useLocation();
   const { to, label, icon: Icon, end } = item;
+  const labelRef = useRef<HTMLSpanElement>(null);
+  const [labelTruncated, setLabelTruncated] = useState(false);
+  const [tooltipOpen, setTooltipOpen] = useState(false);
+  const showTooltip = collapsed || labelTruncated;
+
+  useEffect(() => {
+    const labelElement = labelRef.current;
+    if (!labelElement || collapsed) return;
+
+    let active = true;
+    const update = () => {
+      if (active) setLabelTruncated(labelElement.scrollWidth > labelElement.clientWidth);
+    };
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(labelElement);
+    void document.fonts.ready.then(update);
+    return () => {
+      active = false;
+      observer.disconnect();
+    };
+  }, [collapsed, label]);
+
   const isActive = end ? location.pathname === to : location.pathname === to || location.pathname.startsWith(`${to}/`);
   const link = (
     <NavLink
@@ -38,19 +62,22 @@ export function SidebarItem({ item, collapsed, onNavigate }: SidebarItemProps) {
       onFocus={() => preloadRoute(to)}
     >
       <Icon aria-hidden="true" className="sidebar__item-icon" />
-      <span className="sidebar__item-label">{label}</span>
+      <span ref={labelRef} className="sidebar__item-label">
+        {label}
+      </span>
     </NavLink>
   );
 
   return (
     <li>
-      {collapsed ? (
-        <Tooltip content={label} side="right">
-          {link}
-        </Tooltip>
-      ) : (
-        link
-      )}
+      <Tooltip
+        content={label}
+        side="right"
+        open={tooltipOpen && showTooltip}
+        onOpenChange={(open) => setTooltipOpen(open && showTooltip)}
+      >
+        {link}
+      </Tooltip>
     </li>
   );
 }

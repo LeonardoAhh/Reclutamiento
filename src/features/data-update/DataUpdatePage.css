@@ -160,22 +160,6 @@
   gap: var(--design-spacing-sm);
 }
 
-.data-update-admin__actions {
-  display: grid;
-  width: 100%;
-  min-width: 0;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--design-spacing-sm);
-}
-
-.data-update-admin__shift-import {
-  grid-column: 1 / -1;
-}
-
-.data-update-admin__shift-import[hidden] {
-  display: none;
-}
-
 .data-update-admin .data-update-section-heading {
   flex-wrap: wrap;
 }
@@ -1325,43 +1309,6 @@
   border-radius: var(--rounded-lg);
 }
 
-.data-update-shifts__intro,
-.data-update-shifts__summary {
-  margin: 0;
-}
-
-.data-update-shifts__filename,
-.data-update-shifts__identity {
-  min-width: 0;
-  overflow-wrap: anywhere;
-}
-
-.data-update-shifts__list {
-  display: grid;
-  gap: var(--design-spacing-xs);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.data-update-shifts__item {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--design-spacing-xs);
-  padding: var(--design-spacing-sm);
-  border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-xs);
-}
-
-.data-update-shifts__identity {
-  display: flex;
-  flex-direction: column;
-}
-
-.data-update-shifts__transition {
-  overflow-wrap: anywhere;
-}
-
 .data-update-import__messages--error {
   color: var(--color-error-text);
 }
@@ -1520,22 +1467,6 @@
   .data-update-page__header .page-header__actions,
   .data-update-page__header .page-header__actions > .btn-primary {
     width: auto;
-  }
-
-  .data-update-admin__actions {
-    width: auto;
-    max-width: 100%;
-    grid-template-columns: repeat(3, max-content);
-    justify-self: end;
-  }
-
-  .data-update-admin__shift-import {
-    grid-column: auto;
-  }
-
-  .data-update-shifts__item {
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
   }
 
   .data-update-locker-card .data-update-record-card__footer {

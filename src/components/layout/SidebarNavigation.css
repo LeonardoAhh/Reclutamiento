@@ -27,7 +27,6 @@
     color var(--transition-fast),
     background var(--transition-fast),
     border-color var(--transition-fast),
-    box-shadow var(--transition-fast),
     gap var(--transition-slow);
   min-width: 0;
 }
@@ -42,11 +41,11 @@
   color: var(--color-on-primary);
   border-color: var(--color-primary-border);
   background: var(--color-primary);
-  box-shadow: var(--shadow-sm);
-  font-size: var(--type-body-strong-size);
-  font-weight: var(--type-body-strong-weight);
-  line-height: var(--type-body-strong-line);
-  letter-spacing: var(--type-body-strong-tracking);
+  font-family: var(--font-body);
+  font-size: var(--type-label-sm-size);
+  font-weight: var(--type-label-sm-weight);
+  line-height: var(--type-label-sm-line);
+  letter-spacing: var(--type-label-sm-tracking);
 }
 
 /* Pressed: retroalimentación sutil dentro de la escala de superficies neutras. */
@@ -59,7 +58,6 @@
   color: var(--color-on-primary);
   border-color: var(--color-primary-border);
   background: var(--color-primary);
-  box-shadow: var(--shadow-sm);
 }
 
 .sidebar__item-icon {

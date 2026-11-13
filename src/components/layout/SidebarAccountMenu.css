@@ -3,7 +3,6 @@
   flex: 0 0 auto;
   margin-block-start: var(--design-spacing-sm);
   padding-block-start: var(--design-spacing-sm);
-  border-block-start: var(--border-width) solid var(--color-hairline);
 }
 
 .sidebar__footer .sidebar__account-trigger {

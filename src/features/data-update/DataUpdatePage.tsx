@@ -637,9 +637,7 @@ export function DataUpdatePage() {
                   searchTerm={searchTerm}
                   onSearchChange={changeSearchTerm}
                   busy={busy}
-                  online={online}
                   onBusyChange={setBusy}
-                  onShiftsUpdated={() => void loadDetail(true)}
                   onOpenRecord={(record) => void openRecord(record)}
                   onRecordUpdated={updateDetailRecord}
                   onRecordDeleted={removeDetailRecord}

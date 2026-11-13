@@ -11,8 +11,6 @@ import {
   reopenDataUpdateRecord,
 } from "./api";
 import { compareDataUpdateRecords, DATA_UPDATE_PAGE_SIZE } from "./constants";
-import { DataUpdateAdminToolbar } from "./DataUpdateAdminToolbar";
-import { DataUpdateShiftImportModal } from "./DataUpdateShiftImportModal";
 import { DataUpdateAdminResults } from "./DataUpdateAdminResults";
 import { useDataUpdateText } from "./translations";
 import type { DataUpdateCampaignDetail, DataUpdateProfileOption, DataUpdateRecord } from "./types";
@@ -23,9 +21,7 @@ interface DataUpdateAdminPanelProps {
   searchTerm: string;
   onSearchChange: (value: string) => void;
   busy: boolean;
-  online: boolean;
   onBusyChange: (busy: boolean) => void;
-  onShiftsUpdated: () => void;
   onOpenRecord: (record: DataUpdateRecord) => void;
   onRecordUpdated: (record: DataUpdateRecord) => void;
   onRecordDeleted: (recordId: string) => void;
@@ -37,9 +33,7 @@ export function DataUpdateAdminPanel({
   searchTerm,
   onSearchChange,
   busy,
-  online,
   onBusyChange,
-  onShiftsUpdated,
   onOpenRecord,
   onRecordUpdated,
   onRecordDeleted,
@@ -69,7 +63,6 @@ export function DataUpdateAdminPanel({
   const [pendingDeleteRecord, setPendingDeleteRecord] = useState<DataUpdateRecord | null>(null);
   const [deleteRecordError, setDeleteRecordError] = useState<string | null>(null);
   const [deletingRecord, setDeletingRecord] = useState(false);
-  const [shiftImportOpen, setShiftImportOpen] = useState(false);
 
   useEffect(() => {
     pagination.goToPage(1);
@@ -124,26 +117,6 @@ export function DataUpdateAdminPanel({
   return (
     <section className="data-update-admin" aria-labelledby="data-update-admin-title">
       <h2 id="data-update-admin-title" className="sr-only">{t("Administración")}</h2>
-      <DataUpdateAdminToolbar
-        recordCount={detail.records.length}
-        busy={busy}
-        online={online}
-        onShiftImport={() => setShiftImportOpen(true)}
-      />
-
-      <DataUpdateShiftImportModal
-        key={detail.campaign.id}
-        isOpen={shiftImportOpen}
-        campaignId={detail.campaign.id}
-        campaignName={detail.campaign.name}
-        records={detail.records}
-        busy={busy}
-        online={online}
-        onBusyChange={onBusyChange}
-        onClose={() => setShiftImportOpen(false)}
-        onApplied={onShiftsUpdated}
-      />
-
       {detail.records.length === 0 ? (
         <p className="data-update-message">{t("No hay registros disponibles en esta campaña.")}</p>
       ) : visibleRecords.length === 0 ? (

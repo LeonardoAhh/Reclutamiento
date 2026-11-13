@@ -6,7 +6,6 @@
   align-items: center;
   min-block-size: var(--header-height);
   padding-block-start: var(--safe-area-top);
-  border-block-end: var(--border-width) solid var(--color-hairline);
   background: transparent;
 }
 
