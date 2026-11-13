@@ -5,9 +5,9 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
-  padding: var(--spacing-xxl) var(--spacing-xl);
-  border-radius: var(--rounded-lg);
+  gap: var(--design-spacing-md);
+  padding: var(--design-spacing-xl) var(--design-spacing-lg);
+  border-radius: var(--radius-card);
   border: 1px solid var(--color-hairline);
   background: transparent;
   overflow: hidden;
@@ -30,36 +30,39 @@
 .rh__greeting {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
   position: relative;
 }
 
 .rh__label {
   margin: 0;
+  font-family: var(--font-body);
   font-size: var(--type-caption-up-size);
-  font-weight: var(--type-body-sm-strong-weight);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
   letter-spacing: var(--type-caption-up-tracking);
   text-transform: uppercase;
   color: var(--color-mute);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--design-spacing-xs);
 }
 
 .rh__label::before {
-  content: "";
+  content: '';
   width: 16px;
   height: 1px;
-  background: currentColor;
+  background: currentcolor;
   flex-shrink: 0;
 }
 
 .rh__welcome {
   margin: 0;
+  font-family: var(--font-display);
   font-size: var(--type-display-xl-size);
   font-weight: var(--type-display-xl-weight);
   line-height: var(--type-display-xl-line);
-  letter-spacing: -0.02em;
+  letter-spacing: var(--type-display-xl-tracking);
   color: var(--color-ink);
 }
 
@@ -67,7 +70,7 @@
   display: inline-block;
   border: 1.5px solid var(--color-ink);
   border-radius: var(--rounded-xs);
-  padding: 0 10px;
+  padding: 0 var(--design-spacing-xs);
   font-weight: var(--type-body-md-weight);
   vertical-align: middle;
   position: relative;
@@ -100,14 +103,14 @@
   height: 1px;
   background: var(--color-hairline);
   flex-shrink: 0;
-  margin-bottom: calc(var(--spacing-xs) + 20px); /* aligns with icon center */
+  margin-bottom: calc(var(--design-spacing-xxs) + var(--icon-size-md)); /* aligns with icon center */
 }
 
 .rh__stage {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: var(--design-spacing-xxs);
   cursor: default;
   position: relative;
 }
@@ -126,7 +129,7 @@
   justify-content: center;
   width: 46px;
   height: 46px;
-  border-radius: var(--rounded-full);
+  border-radius: var(--radius-card);
   border: 1px solid var(--color-hairline);
   background: transparent;
   color: var(--color-mute);
@@ -165,7 +168,7 @@
 .rh__footer {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
+  gap: var(--design-spacing-sm);
   position: relative;
 }
 
@@ -173,7 +176,7 @@
   flex: 1;
   height: 1px;
   background: var(--color-hairline);
-  border-radius: var(--border-width);
+  border-radius: var(--radius-control);
   overflow: hidden;
 }
 
@@ -181,7 +184,7 @@
   height: 100%;
   width: 100%;
   background: var(--color-ink);
-  border-radius: var(--border-width);
+  border-radius: var(--radius-control);
   transform: scaleX(0);
   transform-origin: left;
   animation: rh-fill-in 0.6s 1.4s ease forwards;
@@ -194,8 +197,10 @@
 }
 
 .rh__progress-label {
+  font-family: var(--font-body);
   font-size: var(--type-caption-up-size);
-  font-weight: var(--type-body-sm-strong-weight);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
   letter-spacing: var(--type-caption-up-tracking);
   text-transform: uppercase;
   color: var(--color-mute);
@@ -205,15 +210,14 @@
 /* ── Responsive ───────────────────────────────────────────── */
 @media (width <= 767px) {
   .rh {
-    padding: var(--spacing-xl) var(--spacing-md);
+    padding: var(--design-spacing-lg) var(--design-spacing-sm);
   }
 
   .rh__welcome {
     font-size: var(--type-heading-md-size);
-  }
-
-  .rh__connector {
-    width: 14px;
+    font-weight: var(--type-heading-md-weight);
+    line-height: var(--type-heading-md-line);
+    letter-spacing: var(--type-heading-md-tracking);
   }
 
   .rh__icon-ring {
@@ -224,7 +228,7 @@
   .rh__pipeline {
     flex-wrap: wrap;
     justify-content: center;
-    gap: var(--spacing-sm);
+    gap: var(--design-spacing-xs);
   }
 
   .rh__connector {

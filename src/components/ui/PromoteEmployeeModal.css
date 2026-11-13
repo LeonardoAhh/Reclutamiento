@@ -14,7 +14,7 @@
   gap: var(--design-spacing-xxs);
   padding: var(--design-spacing-sm);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-menu);
   background: var(--color-canvas-elevated);
 }
 
@@ -58,7 +58,7 @@
   gap: var(--design-spacing-xxs);
   padding: var(--design-spacing-xxs);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-menu);
   background: var(--color-canvas-elevated);
 }
 
@@ -71,7 +71,7 @@
   gap: var(--design-spacing-xxs);
   padding-inline: var(--design-spacing-xs);
   border: 0;
-  border-radius: var(--rounded-sm);
+  border-radius: var(--radius-control);
   background: transparent;
   color: var(--color-ink);
   font-family: var(--font-body);

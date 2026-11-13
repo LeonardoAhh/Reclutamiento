@@ -49,7 +49,7 @@
   max-inline-size: 100%;
   block-size: var(--design-spacing-xxs);
   margin-block-start: var(--design-spacing-md);
-  border-radius: var(--rounded-full);
+  border-radius: var(--radius-control);
   background: var(--color-hairline);
 }
 

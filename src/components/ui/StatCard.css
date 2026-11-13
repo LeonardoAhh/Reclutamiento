@@ -4,9 +4,9 @@
   display: flex;
   flex-direction: column;
   flex: 1;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-lg);
-  border-radius: var(--rounded-lg);
+  gap: var(--design-spacing-xxs);
+  padding: var(--design-spacing-md);
+  border-radius: var(--radius-card);
   border: 1px solid var(--color-hairline);
   background: var(--color-surface-card);
   transition:

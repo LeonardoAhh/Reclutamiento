@@ -1,8 +1,8 @@
 .bajas-por-puesto {
   background: var(--color-surface-card);
   border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
-  padding: var(--spacing-lg);
+  border-radius: var(--radius-card);
+  padding: var(--design-spacing-md);
   display: flex;
   flex-direction: column;
   gap: var(--design-spacing-md);
@@ -14,7 +14,7 @@
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: var(--spacing-md);
+  gap: var(--design-spacing-sm);
   min-height: var(--design-spacing-xl);
   flex-wrap: wrap;
 }
@@ -122,12 +122,12 @@
 }
 
 .bajas-por-puesto__empty {
-  padding: var(--spacing-xl);
+  padding: var(--design-spacing-lg);
   text-align: center;
   color: var(--color-mute);
   border: 1px dashed var(--color-hairline);
-  border-radius: var(--rounded-md);
-  margin-block: var(--spacing-sm);
+  border-radius: var(--radius-menu);
+  margin-block: var(--design-spacing-xs);
   flex: 1 1 auto;
 }
 

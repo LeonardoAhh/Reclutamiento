@@ -18,7 +18,7 @@
 .candidate-modal__hint {
   display: inline-flex;
   align-items: center;
-  margin-left: var(--spacing-xs);
+  margin-left: var(--design-spacing-xxs);
   color: var(--color-mute);
   text-transform: none;
   font-family: var(--font-body);
@@ -30,7 +30,7 @@
 
 .candidate-modal__hint::before {
   content: '·';
-  margin-right: 6px;
+  margin-right: var(--design-spacing-xxs);
   color: var(--color-mute);
 }
 

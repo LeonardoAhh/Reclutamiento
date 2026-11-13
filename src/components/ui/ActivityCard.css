@@ -144,6 +144,6 @@
   display: flex;
   min-inline-size: 0;
   flex-direction: column;
-  gap: var(--spacing-md);
+  gap: var(--design-spacing-sm);
   margin-block-start: auto;
 }

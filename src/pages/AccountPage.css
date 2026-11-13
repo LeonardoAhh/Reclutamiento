@@ -25,7 +25,7 @@
   align-content: start;
   min-width: 0;
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
   background: var(--color-surface-card);
 }
 .account-card__header {
@@ -77,7 +77,7 @@
   min-width: 0;
   padding: var(--design-spacing-md);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
   background: var(--color-surface-card);
 }
 .account-profile__identity {
@@ -212,8 +212,8 @@
 }
 
 .account-appearance > .account-appearance__control:last-child {
-  border-end-start-radius: var(--rounded-lg);
-  border-end-end-radius: var(--rounded-lg);
+  border-end-start-radius: var(--radius-card);
+  border-end-end-radius: var(--radius-card);
 }
 
 .account-appearance>.account-card__note {

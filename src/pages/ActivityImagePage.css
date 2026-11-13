@@ -52,14 +52,14 @@
 .activity-image-page__skeleton-title {
   inline-size: min(100%, var(--content-min-inline-size));
   block-size: calc(var(--type-body-md-size) * var(--type-body-md-line));
-  border-radius: var(--rounded-sm);
+  border-radius: var(--radius-control);
 }
 
 .activity-image-page__skeleton-image {
   inline-size: 100%;
   aspect-ratio: 16 / 10;
   max-block-size: var(--feature-image-viewer-max-block-size);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
 }
 
 .activity-image-page__figure {
@@ -73,7 +73,7 @@
   block-size: auto;
   margin-inline: auto;
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
   object-fit: contain;
 }
 

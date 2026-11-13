@@ -93,16 +93,10 @@
   text-transform: none;
 }
 
-.status-badge--plantilla .status-badge__icon {
-  color: var(--color-accent-teal);
-}
-
-.status-badge--backup .status-badge__icon {
-  color: var(--color-accent-orange);
-}
-
+.status-badge--plantilla .status-badge__icon,
+.status-badge--backup .status-badge__icon,
 .status-badge--starlite .status-badge__icon {
-  color: var(--color-accent-orange);
+  color: var(--color-primary-text);
 }
 
 .status-badge--incapacidad .status-badge__icon {
@@ -121,12 +115,9 @@
   background: var(--color-mute);
 }
 
-.status-badge--proceso .status-badge__dot {
-  background: var(--color-accent-teal);
-}
-
+.status-badge--proceso .status-badge__dot,
 .status-badge--ingreso .status-badge__dot {
-  background: var(--color-accent-orange);
+  background: var(--color-warning-text);
 }
 
 .status-badge--sin-proceso .status-badge__dot {
@@ -141,12 +132,9 @@
   background: var(--color-mute);
 }
 
-.role-badge[data-role='admin'] .role-badge__dot {
-  background: var(--color-violet);
-}
-
+.role-badge[data-role='admin'] .role-badge__dot,
 .role-badge[data-role='reclutador'] .role-badge__dot {
-  background: var(--color-accent-teal);
+  background: var(--color-primary-text);
 }
 
 .reclutador-badge {
@@ -159,15 +147,7 @@
 }
 
 .reclutador-badge__icon {
-  color: var(--color-accent-teal);
-}
-
-.reclutador-badge--coordinador .reclutador-badge__icon {
-  color: var(--color-violet);
-}
-
-.reclutador-badge--person-daniela .reclutador-badge__icon {
-  color: var(--color-accent-orange);
+  color: var(--color-primary-text);
 }
 
 .reclutador-badge__name {

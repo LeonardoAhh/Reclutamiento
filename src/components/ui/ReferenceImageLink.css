@@ -6,7 +6,7 @@
   aspect-ratio: 16 / 10;
   overflow: hidden;
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
   background: var(--color-canvas-soft);
 }
 

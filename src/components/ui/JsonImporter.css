@@ -3,7 +3,7 @@
 .json-importer {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
   flex-wrap: wrap;
 }
 
@@ -13,8 +13,8 @@
   gap: var(--design-spacing-xxs);
   font-size: var(--type-caption-md-size);
   font-weight: var(--type-body-sm-strong-weight);
-  padding: var(--design-spacing-xxs) var(--spacing-md);
-  border-radius: var(--rounded-pill);
+  padding: var(--design-spacing-xxs) var(--design-spacing-sm);
+  border-radius: var(--radius-control);
 }
 
 .json-importer__status--success {

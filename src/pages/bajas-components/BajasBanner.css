@@ -3,7 +3,7 @@
   align-items: center;
   gap: var(--design-spacing-xs);
   padding: var(--design-spacing-xs) var(--design-spacing-sm);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-menu);
   border: var(--border-width) solid var(--color-hairline);
   margin-bottom: var(--design-spacing-md);
   font-family: var(--font-body);

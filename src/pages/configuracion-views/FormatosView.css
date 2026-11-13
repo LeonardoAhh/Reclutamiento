@@ -1,5 +1,5 @@
 .formatos-page {
-  gap: var(--spacing-lg);
+  gap: var(--design-spacing-md);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
@@ -8,17 +8,17 @@
 }
 
 .formatos-page__error {
-  margin: 0 0 var(--spacing-md);
-  padding: var(--spacing-md);
+  margin: 0 0 var(--design-spacing-sm);
+  padding: var(--design-spacing-sm);
   background: var(--color-error-subtle);
   border: var(--border-width) solid var(--color-error);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-menu);
 }
 
 .formatos-page .config-results-controls {
   margin-bottom: 0;
-  padding: var(--spacing-md);
-  border-radius: var(--rounded-lg);
+  padding: var(--design-spacing-sm);
+  border-radius: var(--radius-card);
 }
 
 .formatos-page .config-filter-select,
@@ -62,8 +62,8 @@
 .recordatorios-routes {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
-  padding-top: var(--spacing-xl);
+  gap: var(--design-spacing-md);
+  padding-top: var(--design-spacing-lg);
 }
 
 .recordatorios-routes__title,
@@ -81,7 +81,7 @@
 }
 
 .recordatorios-routes__subtitle {
-  margin-top: var(--spacing-xs);
+  margin-top: var(--design-spacing-xxs);
   color: var(--color-mute);
   font-size: var(--type-body-sm-size);
   line-height: var(--type-body-sm-line);
@@ -91,7 +91,7 @@
   overflow-x: auto;
   background: var(--color-surface-card);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
 }
 
 .recordatorios-routes > .config-card {
@@ -108,7 +108,7 @@
 .recordatorios-export-canvas {
   width: 100%;
   min-width: var(--recordatorios-route-table-min);
-  padding: var(--spacing-sm);
+  padding: var(--design-spacing-xs);
   background: var(--color-canvas-elevated);
 }
 
@@ -164,7 +164,7 @@
 .recordatorios-missing-data {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
 }
 
 @media (width <= 767px) {
@@ -174,7 +174,7 @@
 
   .recordatorios-export-canvas {
     min-width: 0;
-    padding: var(--spacing-md);
+    padding: var(--design-spacing-sm);
   }
 
   .recordatorios-table {
@@ -203,19 +203,19 @@
 
   .recordatorios-table tbody {
     display: grid;
-    gap: var(--spacing-md);
+    gap: var(--design-spacing-sm);
   }
 
   .recordatorios-table tr {
     overflow: hidden;
     border: var(--border-width) solid var(--color-hairline);
-    border-radius: var(--rounded-lg);
+    border-radius: var(--radius-card);
   }
 
   .recordatorios-table td {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
-    gap: var(--spacing-md);
+    gap: var(--design-spacing-sm);
     text-align: left;
     border: 0;
     border-bottom: var(--border-width) solid var(--color-hairline);
@@ -237,7 +237,7 @@
 
   .recordatorios-export-canvas.is-exporting {
     min-width: var(--recordatorios-route-table-min);
-    padding: var(--spacing-sm);
+    padding: var(--design-spacing-xs);
   }
 
   .recordatorios-export-canvas.is-exporting .recordatorios-table {
@@ -294,7 +294,7 @@
 .weekly-formats {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: var(--design-spacing-md);
 }
 
 .weekly-formats__heading {
@@ -302,7 +302,7 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
 }
 
 .weekly-formats__week-filter {
@@ -365,24 +365,24 @@
 .weekly-formats__grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--spacing-lg);
+  gap: var(--design-spacing-md);
 }
 
 .weekly-format-card {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
-  padding: var(--spacing-lg);
+  gap: var(--design-spacing-md);
+  padding: var(--design-spacing-md);
   background: var(--color-canvas-elevated);
   border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
 }
 
 .weekly-format-card__header {
   display: flex;
   align-items: flex-start;
-  gap: var(--spacing-md);
+  gap: var(--design-spacing-sm);
 }
 
 .weekly-format-card__header > div {
@@ -398,12 +398,12 @@
   color: var(--color-ink);
   background: var(--color-surface-card);
   border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-menu);
 }
 
 .weekly-format-card__icon svg {
-  width: var(--spacing-xl);
-  height: var(--spacing-xl);
+  width: var(--design-spacing-lg);
+  height: var(--design-spacing-lg);
 }
 
 .weekly-format-card__title,
@@ -421,7 +421,7 @@
 }
 
 .weekly-format-card__description {
-  margin-top: var(--spacing-xs);
+  margin-top: var(--design-spacing-xxs);
   color: var(--color-mute);
   font-size: var(--type-body-md-size);
   line-height: var(--type-body-md-line);
@@ -434,7 +434,7 @@
 .weekly-format-card__footer {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
+  gap: var(--design-spacing-sm);
   margin-block-start: auto;
 }
 
@@ -466,11 +466,11 @@
 
 .weekly-formats__empty {
   margin: 0;
-  padding: var(--spacing-lg);
+  padding: var(--design-spacing-md);
   color: var(--color-mute);
   background: var(--color-surface-card);
   border: 1px dashed var(--color-hairline-strong);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-menu);
   text-align: center;
 }
 
@@ -555,7 +555,7 @@
 }
 
 .weekly-review-modal__selector-header p {
-  margin-top: var(--spacing-xs);
+  margin-top: var(--design-spacing-xxs);
   color: var(--color-mute);
   font-size: var(--type-body-md-size);
   line-height: var(--type-body-md-line);
@@ -569,7 +569,7 @@
   min-height: var(--touch-target-min);
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
   cursor: pointer;
 }
 
@@ -585,7 +585,7 @@
 .weekly-review-modal__employee-list {
   list-style: none;
   margin: 0;
-  padding: 0 var(--spacing-sm);
+  padding: 0 var(--design-spacing-xs);
 }
 
 .weekly-review-modal__employee-list li {
@@ -597,8 +597,8 @@
 }
 
 .weekly-review-modal__employee {
-  padding: var(--spacing-sm);
-  border-radius: var(--rounded-sm);
+  padding: var(--design-spacing-xs);
+  border-radius: var(--radius-control);
 }
 
 .weekly-review-modal__employee:hover {
@@ -655,7 +655,7 @@
 
 .weekly-doc__credential-header {
   text-align: center;
-  margin-bottom: var(--spacing-md);
+  margin-bottom: var(--design-spacing-sm);
 }
 
 .weekly-doc__title {

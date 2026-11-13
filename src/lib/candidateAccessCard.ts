@@ -70,6 +70,19 @@ function readCssNumber(name: string): number {
   return value;
 }
 
+function readCssLength(name: string): number {
+  const token = readCssToken(name);
+  const value = Number.parseFloat(token);
+  if (!Number.isFinite(value)) {
+    throw new Error(`El token CSS ${name} no contiene una longitud válida.`);
+  }
+  if (token.endsWith("px")) return value;
+  if (token.endsWith("rem")) {
+    return value * Number.parseFloat(window.getComputedStyle(document.documentElement).fontSize);
+  }
+  throw new Error(`El token CSS ${name} debe estar expresado en px o rem.`);
+}
+
 function getCardTokens(): CardTokens {
   return {
     paper: readCssToken("--color-document-paper"),
@@ -79,13 +92,13 @@ function getCardTokens(): CardTokens {
     hairline: readCssToken("--color-document-hairline"),
     fontFamily: readCssToken("--font-body"),
     borderWidth: readCssNumber("--border-width"),
-    radiusMd: readCssNumber("--rounded-md"),
-    radiusLg: readCssNumber("--rounded-lg"),
-    spaceXs: readCssNumber("--spacing-xs"),
-    spaceSm: readCssNumber("--spacing-sm"),
-    spaceMd: readCssNumber("--spacing-md"),
-    spaceLg: readCssNumber("--spacing-lg"),
-    spaceXl: readCssNumber("--spacing-xl"),
+    radiusMd: readCssNumber("--radius-menu"),
+    radiusLg: readCssNumber("--radius-card"),
+    spaceXs: readCssLength("--design-spacing-xxs"),
+    spaceSm: readCssLength("--design-spacing-xs"),
+    spaceMd: readCssLength("--design-spacing-sm"),
+    spaceLg: readCssLength("--design-spacing-md"),
+    spaceXl: readCssLength("--design-spacing-lg"),
     headingMdSize: readCssNumber("--type-heading-md-size"),
     headingMdWeight: readCssNumber("--type-heading-md-weight"),
     headingMdLine: readCssNumber("--type-heading-md-line"),

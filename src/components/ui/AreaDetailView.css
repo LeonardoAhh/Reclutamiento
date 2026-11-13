@@ -19,7 +19,7 @@
   align-items: center;
   gap: var(--design-spacing-xxs);
   height: var(--icon-size-control);
-  padding: 0 var(--spacing-xs);
+  padding: 0 var(--design-spacing-xxs);
   border-radius: var(--rounded-xs);
   background: var(--color-warning-subtle);
   color: var(--color-warning-text);
@@ -38,7 +38,7 @@
   min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
+  gap: var(--design-spacing-sm);
   padding: 0;
 }
 
@@ -53,7 +53,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-xl);
+  padding: var(--design-spacing-lg);
   color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
@@ -66,7 +66,7 @@
 @media (max-width: 767px) {
   /* Evita que la última fila quede pegada al borde inferior. */
   .area-detail-modal__table-wrapper {
-    padding-bottom: var(--spacing-md);
+    padding-bottom: var(--design-spacing-sm);
   }
 
   .hide-on-mobile {
@@ -82,7 +82,7 @@
 
   .area-detail-modal__table-wrapper {
     border: var(--border-width) solid var(--color-hairline);
-    border-radius: var(--rounded-lg);
+    border-radius: var(--radius-card);
     /* "auto", no "hidden": el wrapper debe poder scrollear (vertical con
        muchos puestos, horizontal en ventanas angostas) y sólo recortar
        visualmente las esquinas para el border-radius. "hidden" recortaba
@@ -102,7 +102,7 @@
   .cell-puesto__inner {
     display: grid;
     grid-template-columns: 1fr auto;
-    gap: var(--spacing-sm);
+    gap: var(--design-spacing-xs);
     align-items: center;
   }
 
@@ -122,7 +122,7 @@
 .area-detail-modal__badge-stack {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
   align-items: center;
 }
 
@@ -140,27 +140,27 @@
   overscroll-behavior: contain;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
   list-style: none;
   margin: 0;
-  padding: 0 0 var(--spacing-md);
+  padding: 0 0 var(--design-spacing-sm);
 }
 
 .area-detail-modal__card {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-md);
+  gap: var(--design-spacing-xs);
+  padding: var(--design-spacing-sm);
   background: var(--color-surface-card);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
 }
 
 .area-detail-modal__card-top {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
 }
 
 .area-detail-modal__card-id {
@@ -184,8 +184,8 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: center;
-  gap: var(--spacing-sm) var(--spacing-md);
-  padding-top: var(--spacing-sm);
+  gap: var(--design-spacing-xs) var(--design-spacing-sm);
+  padding-top: var(--design-spacing-xs);
   border-top: var(--border-width) solid var(--color-hairline);
 }
 
@@ -236,7 +236,7 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: var(--design-spacing-md);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
@@ -250,7 +250,7 @@
   min-width: 0;
   align-items: center;
   justify-content: flex-start;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
 }
 
 .area-detail__title {
@@ -311,7 +311,7 @@
 .area-detail__starlite-badge {
   display: inline-flex;
   align-items: center;
-  margin-inline-start: var(--spacing-xs);
+  margin-inline-start: var(--design-spacing-xxs);
   vertical-align: middle;
 }
 

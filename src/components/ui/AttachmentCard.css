@@ -2,17 +2,17 @@
   display: grid;
   grid-template-columns: var(--touch-target-min) minmax(0, 1fr) auto;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
   width: 100%;
   min-width: 0;
-  padding: var(--spacing-sm);
+  padding: var(--design-spacing-xs);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
   background: var(--color-surface-card);
 }
 
 .attachment-card--compact {
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
   padding: 0;
   border: 0;
   border-radius: 0;
@@ -110,7 +110,7 @@
   flex-shrink: 0;
   padding: 0;
   border: 0;
-  border-radius: var(--rounded-full);
+  border-radius: var(--radius-control);
   background: transparent;
   color: var(--color-mute);
   cursor: pointer;

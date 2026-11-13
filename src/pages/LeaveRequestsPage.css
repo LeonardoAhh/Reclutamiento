@@ -84,7 +84,7 @@
 
 .leave-requests-page__empty {
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
   background: var(--color-surface-card);
   animation: none;
 }
@@ -189,7 +189,7 @@
 .leave-requests-page__skeleton-line {
   inline-size: 72%;
   block-size: var(--type-body-md-line);
-  border-radius: var(--rounded-sm);
+  border-radius: var(--radius-control);
 }
 
 .leave-requests-page__skeleton-line--short {
@@ -204,7 +204,7 @@
   flex: 0 0 var(--touch-target-min);
   inline-size: var(--touch-target-min);
   block-size: var(--touch-target-min);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-menu);
 }
 
 .leave-requests-page__row-actions .leave-requests-page__skeleton-action {
@@ -228,7 +228,7 @@
     min-inline-size: 0;
     padding: var(--design-spacing-sm);
     border: var(--border-width) solid var(--color-hairline);
-    border-radius: var(--rounded-lg);
+    border-radius: var(--radius-card);
     background: var(--color-surface-card);
     color: var(--color-ink);
     font-family: var(--font-body);

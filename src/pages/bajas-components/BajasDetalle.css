@@ -1,8 +1,8 @@
 .bajas-detalle {
   background: var(--color-canvas-elevated);
   border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
-  padding: var(--spacing-lg);
+  border-radius: var(--radius-card);
+  padding: var(--design-spacing-md);
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -13,8 +13,8 @@
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-md);
+  gap: var(--design-spacing-sm);
+  margin-bottom: var(--design-spacing-sm);
   min-height: var(--design-spacing-xl);
   flex-wrap: wrap;
 }
@@ -23,12 +23,18 @@
   font-family: var(--font-display);
   font-size: var(--type-heading-md-size);
   font-weight: var(--type-heading-md-weight);
+  line-height: var(--type-heading-md-line);
+  letter-spacing: var(--type-heading-md-tracking);
   margin: 0;
   color: var(--color-ink);
 }
 
 .bajas-detalle__meta {
+  font-family: var(--font-body);
   font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
   color: var(--color-mute);
 }
 
@@ -36,17 +42,19 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--spacing-xs) var(--spacing-md);
+  padding: var(--design-spacing-xxs) var(--design-spacing-sm);
   border-bottom: 1px solid var(--color-hairline);
   min-height: var(--design-spacing-xl);
   box-sizing: border-box;
 }
 
 .bajas-detalle__th {
-  font-size: var(--type-eyebrow-size, 12px);
-  font-weight: var(--type-body-strong-weight);
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
   color: var(--color-mute);
-  letter-spacing: 0.04em;
+  letter-spacing: var(--type-caption-up-tracking);
   text-transform: uppercase;
   white-space: nowrap;
 }
@@ -76,11 +84,11 @@
   width: 100%;
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-sm) var(--spacing-md);
+  gap: var(--design-spacing-xs);
+  padding: var(--design-spacing-xs) var(--design-spacing-sm);
   background: transparent;
   border: none;
-  border-radius: var(--rounded-sm);
+  border-radius: var(--radius-control);
   font-family: var(--font-body);
   text-align: left;
   cursor: pointer;
@@ -105,7 +113,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
 }
 
 .bajas-detalle__card-name {
@@ -160,18 +168,18 @@
 }
 
 .bajas-detalle__empty {
-  padding: var(--spacing-xl);
+  padding: var(--design-spacing-lg);
   text-align: center;
   color: var(--color-mute);
   border: 1px dashed var(--color-hairline);
-  border-radius: var(--rounded-md);
-  margin-block: var(--spacing-sm);
+  border-radius: var(--radius-menu);
+  margin-block: var(--design-spacing-xs);
   flex: 1 1 auto;
 }
 
 .bajas-detalle__pagination-wrap {
   margin-top: auto;
-  padding-top: var(--spacing-md);
+  padding-top: var(--design-spacing-sm);
   border-top: 1px solid var(--color-hairline);
   display: flex;
   justify-content: center;

@@ -76,7 +76,7 @@
   block-size: var(--design-spacing-xxs);
   grid-column: 1 / -1;
   border: 0;
-  border-radius: var(--rounded-pill);
+  border-radius: var(--radius-control);
   overflow: hidden;
 }
 
@@ -99,13 +99,13 @@
 
 .metrics-weekly .indicadores-mobile-detail__header {
   justify-content: space-between;
-  padding: var(--spacing-md);
+  padding: var(--design-spacing-sm);
 }
 
 .indicadores-mobile-detail__recruiter {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
   min-inline-size: 0;
 }
 
@@ -167,7 +167,7 @@
 .metrics-performance__identity {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
   min-inline-size: 0;
 }
 

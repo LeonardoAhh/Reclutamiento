@@ -1,12 +1,13 @@
 /* FormWizard — asistente por pasos para formularios largos en móvil.
    Tokens-only: colores, tipografías, spacing, radios y transiciones vienen
-   de variables CSS (--color-*, --type-*, --spacing-*, etc.). */
+   de variables CSS (--color-*, --type-*, --design-spacing-*, etc.). */
 
 .form-wizard {
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
   min-height: 0;
+
   /* Previene que el scroll del body "escape" al documento en iOS */
   overflow: hidden;
 }
@@ -14,17 +15,17 @@
 /* ── Progreso ── */
 .form-wizard__progress {
   flex-shrink: 0;
-  padding: var(--spacing-md) var(--spacing-lg) 0;
+  padding: var(--design-spacing-sm) var(--design-spacing-md) 0;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
 }
 
 .form-wizard__progress-info {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
 }
 
 .form-wizard__step-count {
@@ -53,8 +54,8 @@
 
 .form-wizard__seg {
   flex: 1 1 0;
-  height: 4px;
-  border-radius: var(--rounded-pill);
+  height: var(--design-spacing-xxs);
+  border-radius: var(--radius-control);
   background: var(--color-surface-card);
   transition: background var(--transition-base);
 }
@@ -68,22 +69,24 @@
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
-  padding: var(--spacing-lg);
-  padding-left: max(var(--spacing-lg), var(--safe-area-left));
-  padding-right: max(var(--spacing-lg), var(--safe-area-right));
+  padding: var(--design-spacing-md);
+  padding-left: max(var(--design-spacing-md), var(--safe-area-left));
+  padding-right: max(var(--design-spacing-md), var(--safe-area-right));
   display: flex;
   flex-direction: column;
+
   /* CRÍTICO: los items se quedan arriba, no se distribuyen */
   justify-content: flex-start;
-  gap: var(--spacing-lg);
+  gap: var(--design-spacing-md);
   animation: form-wizard-step-in var(--transition-base) both;
 }
 
 @keyframes form-wizard-step-in {
   from {
     opacity: 0;
-    transform: translateX(8px);
+    transform: translateX(var(--design-spacing-xs));
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -93,6 +96,7 @@
 /* En el wizard los campos van siempre en 1 columna (móvil). */
 .form-wizard .form-grid {
   grid-template-columns: 1fr;
+
   /* Las filas del grid se quedan arriba, no se estiran */
   align-content: start;
 }
@@ -101,27 +105,16 @@
   grid-column: auto;
 }
 
-/* Controles táctiles con el mínimo de texto editable compartido. */
-.form-wizard .form-group input,
-.form-wizard .form-group select {
-  height: var(--control-height-lg);
-  font-size: max(var(--type-body-md-size), var(--editable-text-min-size, var(--type-body-md-size)));
-}
-
-.form-wizard .form-group textarea {
-  font-size: max(var(--type-body-md-size), var(--editable-text-min-size, var(--type-body-md-size)));
-}
-
 /* ── Footer (anclado abajo) ── */
 .form-wizard__footer {
   flex-shrink: 0;
   display: flex;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-md) var(--spacing-lg);
-  padding-left: max(var(--spacing-lg), var(--safe-area-left));
-  padding-right: max(var(--spacing-lg), var(--safe-area-right));
-  padding-bottom: calc(var(--spacing-md) + var(--safe-area-bottom));
-  border-top: 1px solid var(--color-hairline);
+  gap: var(--design-spacing-xs);
+  padding: var(--design-spacing-sm) var(--design-spacing-md);
+  padding-left: max(var(--design-spacing-md), var(--safe-area-left));
+  padding-right: max(var(--design-spacing-md), var(--safe-area-right));
+  padding-bottom: calc(var(--design-spacing-sm) + var(--safe-area-bottom));
+  border-top: var(--border-width) solid var(--color-hairline);
   background: var(--color-canvas);
 }
 
@@ -130,7 +123,7 @@
 }
 
 /* ── Wizard dentro de un Modal fullscreen (móvil) ── */
-@media (max-width: 767px) {
+@media (width <= 767px) {
   .modal-content.modal-wizard-mobile {
     display: flex;
     flex-direction: column;
@@ -156,6 +149,7 @@
   .form-wizard__body {
     animation: none;
   }
+
   .form-wizard__seg {
     transition: none;
   }

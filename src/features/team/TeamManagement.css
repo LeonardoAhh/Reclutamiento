@@ -1,4 +1,4 @@
-.team-management { min-width: 0; border: var(--border-width) solid var(--color-hairline); border-radius: var(--rounded-lg); background: var(--color-surface-card); }
+.team-management { min-width: 0; border: var(--border-width) solid var(--color-hairline); border-radius: var(--radius-card); background: var(--color-surface-card); }
 .team-management__header { display: flex; align-items: center; justify-content: space-between; gap: var(--design-spacing-sm); min-width: 0; padding: var(--design-spacing-xs) var(--design-spacing-md); border-block-end: var(--border-width) solid var(--color-hairline); }
 .team-management__heading { display: grid; gap: var(--design-spacing-xxs); min-width: 0; }
 .team-management__title { margin: 0; color: var(--color-ink); font-family: var(--font-body); font-size: var(--type-body-strong-size); font-weight: var(--type-body-strong-weight); line-height: var(--type-body-strong-line); letter-spacing: var(--type-body-strong-tracking); }
@@ -22,8 +22,8 @@
 .team-management__status-dot[data-online="true"] { background: var(--color-success); }
 .team-management__actions { grid-column: 2; grid-row: 1 / span 3; justify-self: end; }
 .team-management__skeleton-list { display: grid; gap: var(--design-spacing-sm); padding: var(--design-spacing-md); }
-.team-management__skeleton-row { display: block; block-size: var(--touch-target-min); border-radius: var(--rounded-sm); }
-.modal-body.team-form { display: grid; gap: var(--space-lg); }
+.team-management__skeleton-row { display: block; block-size: var(--touch-target-min); border-radius: var(--radius-control); }
+.modal-body.team-form { display: grid; gap: var(--design-spacing-md); }
 .team-dialog { font-family: var(--font-body); font-size: var(--type-body-md-size); font-weight: var(--type-body-md-weight); line-height: var(--type-body-md-line); letter-spacing: var(--type-body-md-tracking); }
 .team-dialog :is(.btn-primary,.btn-secondary,.btn-danger) { font-family: var(--font-body); font-size: var(--type-body-md-size); font-weight: var(--type-body-md-weight); line-height: var(--type-body-md-line); letter-spacing: var(--type-body-md-tracking); }
 .team-form .form-group > label { font-family: var(--font-body); font-size: var(--type-caption-up-size); font-weight: var(--type-caption-up-weight); line-height: var(--type-caption-up-line); letter-spacing: var(--type-caption-up-tracking); }

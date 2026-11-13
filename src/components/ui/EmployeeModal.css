@@ -119,7 +119,7 @@
   padding: var(--design-spacing-sm);
   background: var(--color-error-subtle);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
 }
 
 @media (min-width: 768px) {
@@ -162,7 +162,7 @@
   gap: var(--design-spacing-xxs);
   margin-top: var(--design-spacing-xxs);
   padding: var(--design-spacing-xs);
-  border-radius: var(--rounded-sm);
+  border-radius: var(--radius-control);
   font-family: var(--font-body);
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-body-sm-weight);
@@ -200,7 +200,7 @@
   padding: var(--design-spacing-sm);
   background: var(--color-canvas-elevated);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-menu);
   font-size: var(--type-body-sm-size);
   line-height: var(--type-body-sm-line);
   color: var(--color-ink);

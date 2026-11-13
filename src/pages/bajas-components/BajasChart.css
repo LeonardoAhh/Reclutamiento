@@ -1,17 +1,17 @@
 .bajas-chart-section {
   background: var(--color-canvas-elevated);
   border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
-  padding: var(--spacing-lg);
-  margin-bottom: var(--spacing-xl);
+  border-radius: var(--radius-card);
+  padding: var(--design-spacing-md);
+  margin-bottom: var(--design-spacing-lg);
 }
 
 .bajas-chart-section__head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-md);
+  gap: var(--design-spacing-sm);
+  margin-bottom: var(--design-spacing-sm);
   flex-wrap: wrap;
 }
 
@@ -26,7 +26,7 @@
 .bajas-chart-section__legend {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-md);
+  gap: var(--design-spacing-sm);
   font-size: var(--type-caption-md-size);
   color: var(--color-mute);
 }
@@ -55,10 +55,10 @@
 .bajas-chart {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
   align-items: end;
   height: 240px;
-  padding-top: var(--spacing-xl);
+  padding-top: var(--design-spacing-lg);
 }
 
 .bajas-chart__col {
@@ -117,7 +117,7 @@
   flex-direction: column;
   align-items: center;
   border-top: 1px solid var(--color-hairline);
-  padding-top: var(--spacing-xs);
+  padding-top: var(--design-spacing-xxs);
   text-align: center;
 }
 

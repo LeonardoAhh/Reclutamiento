@@ -21,7 +21,7 @@
   gap: var(--design-spacing-md);
   padding: var(--design-spacing-sm) var(--design-spacing-md);
   border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
   background: color-mix(in srgb, var(--color-canvas) 90%, transparent);
   backdrop-filter: blur(8px);
   box-shadow: var(--shadow-xs);
@@ -99,14 +99,6 @@
   cursor: pointer;
 }
 
-.public-careers__language-toggle:focus-visible,
-.button:focus-visible,
-.public-careers__chip:focus-visible,
-.public-careers__search input:focus-visible {
-  outline: var(--focus-ring-width) solid var(--color-focus);
-  outline-offset: var(--focus-ring-offset);
-}
-
 .button {
   display: inline-flex;
   align-items: center;
@@ -146,7 +138,7 @@
 .public-careers__empty-state,
 .public-careers__stat {
   border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-xl);
+  border-radius: var(--radius-dialog);
   background: var(--color-surface-card);
   box-shadow: var(--shadow-xs);
 }
@@ -182,14 +174,21 @@
   margin: 0;
   color: var(--color-ink);
   font-family: var(--font-display);
-  letter-spacing: var(--type-display-lg-tracking);
 }
 
 .public-careers__hero h1,
 .public-careers__jobs-hero h1 {
-  font-size: clamp(2.3rem, 5vw, 4rem);
-  line-height: var(--type-display-xl-line);
-  font-weight: var(--type-display-xl-weight);
+  font-size: var(--type-display-1-size);
+  font-weight: var(--type-display-1-weight);
+  line-height: var(--type-display-1-line);
+  letter-spacing: var(--type-display-1-tracking);
+}
+
+.public-careers__feature-block h2 {
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  line-height: var(--type-heading-md-line);
+  letter-spacing: var(--type-heading-md-tracking);
 }
 
 .public-careers__description,
@@ -224,7 +223,7 @@
   min-height: 5rem;
   padding: var(--design-spacing-md);
   border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
   background: var(--color-canvas-elevated);
 }
 
@@ -281,8 +280,10 @@
 .public-careers__stat strong {
   color: var(--color-ink);
   font-family: var(--font-display);
-  font-size: clamp(1.8rem, 3vw, 2.8rem);
-  line-height: var(--type-display-xl-line);
+  font-size: var(--type-display-2-size);
+  font-weight: var(--type-display-2-weight);
+  line-height: var(--type-display-2-line);
+  letter-spacing: var(--type-display-2-tracking);
 }
 
 .public-careers__stat span {
@@ -410,6 +411,14 @@
   cursor: pointer;
 }
 
+.public-careers__language-toggle:focus-visible,
+.button:focus-visible,
+.public-careers__chip:focus-visible,
+.public-careers__search input:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: var(--focus-ring-offset);
+}
+
 .public-careers__chip.is-active {
   background: var(--color-primary);
   border-color: var(--color-primary-border);
@@ -444,13 +453,15 @@
 }
 
 .public-careers__job-card h2 {
-  font-size: clamp(1.5rem, 2vw, 2rem);
-  line-height: var(--type-heading-sm-line);
+  font-size: var(--type-heading-1-size);
+  font-weight: var(--type-heading-1-weight);
+  line-height: var(--type-heading-1-line);
+  letter-spacing: var(--type-heading-1-tracking);
 }
 
 .public-careers__job-type {
   border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-sm);
+  border-radius: var(--radius-control);
   padding: var(--design-spacing-xxs) var(--design-spacing-sm);
   background: var(--color-canvas-elevated);
   color: var(--color-mute);
@@ -505,7 +516,7 @@
   }
 
   .public-careers__header {
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr);
     justify-items: start;
     gap: var(--design-spacing-sm);
     padding: var(--design-spacing-sm);
@@ -519,7 +530,6 @@
 
   .public-careers__nav {
     display: flex;
-    grid-column: 1;
     flex-direction: row;
     align-items: center;
     gap: var(--design-spacing-md);
@@ -527,8 +537,7 @@
 
   .public-careers__actions {
     display: grid;
-    grid-column: 2;
-    grid-template-columns: auto auto;
+    grid-template-columns: auto minmax(0, 1fr);
     gap: var(--design-spacing-sm);
   }
 
@@ -558,17 +567,9 @@
     align-items: flex-start;
   }
 
-  .public-careers__header {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
   .public-careers__nav,
   .public-careers__actions {
     grid-column: 1;
     width: 100%;
-  }
-
-  .public-careers__actions {
-    grid-template-columns: auto minmax(0, 1fr);
   }
 }

@@ -8,7 +8,7 @@
    ───────────────────────────────────────────────────────────────────────── */
 
 .kpis-page {
-  padding-bottom: var(--spacing-xxl);
+  padding-bottom: var(--design-spacing-xl);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);

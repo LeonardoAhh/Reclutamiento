@@ -4,7 +4,7 @@
 ═══════════════════════════════════════════════════════════ */
 
 .rutas-page {
-  gap: var(--spacing-lg);
+  gap: var(--design-spacing-md);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
@@ -20,7 +20,7 @@
 .rutas-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--spacing-lg) var(--spacing-xl);
+  gap: var(--design-spacing-md) var(--design-spacing-lg);
   align-items: stretch;
   min-width: 0;
 }
@@ -66,13 +66,13 @@
 
 .ruta-section__title-icon,
 .shift-bars__trend svg {
-  width: var(--spacing-lg);
-  height: var(--spacing-lg);
+  width: var(--design-spacing-md);
+  height: var(--design-spacing-md);
 }
 
 @media (width < 768px) {
   .rutas-back-btn {
-    margin-bottom: var(--spacing-md);
+    margin-bottom: var(--design-spacing-sm);
   }
 }
 
@@ -84,7 +84,7 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
+  gap: var(--design-spacing-sm);
 }
 
 .rutas-list-panel__header {
@@ -92,7 +92,7 @@
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: var(--spacing-md);
+  gap: var(--design-spacing-sm);
 }
 
 .rutas-list-panel__header h2 {
@@ -118,7 +118,7 @@
 .rutas-list {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
   width: 100%;
   margin: 0;
   padding: 0;
@@ -149,14 +149,14 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
   grid-column: 1 / -1;
   margin: 0;
-  padding: var(--spacing-lg);
+  padding: var(--design-spacing-md);
   color: var(--color-mute);
   background: var(--color-canvas-elevated);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-menu);
 }
 
 .rutas-empty p {
@@ -165,9 +165,9 @@
 
 .rutas-error {
   grid-column: 1 / -1;
-  padding: var(--spacing-md);
+  padding: var(--design-spacing-sm);
   color: var(--color-error-text);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-menu);
   border: var(--border-width) solid var(--color-error);
   background: var(--color-error-subtle);
 }
@@ -362,12 +362,12 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-xl);
+  gap: var(--design-spacing-xs);
+  padding: var(--design-spacing-lg);
   text-align: center;
   color: var(--color-mute);
   border: var(--border-width) dashed var(--color-hairline-strong);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
   min-height: var(--config-panel-min-height);
 }
 
@@ -380,12 +380,12 @@
   color: var(--color-mute);
   background: var(--color-surface-card);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-menu);
 }
 
 .rutas-placeholder__icon svg {
-  width: var(--spacing-xl);
-  height: var(--spacing-xl);
+  width: var(--design-spacing-lg);
+  height: var(--design-spacing-lg);
 }
 
 .rutas-placeholder h2,
@@ -396,16 +396,16 @@
 .ruta-detail__body {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: var(--design-spacing-md);
 }
 
 /* ─── Section wrapper ─── */
 
 .ruta-section,
 .ruta-search-results {
-  padding: var(--spacing-md) var(--spacing-lg);
+  padding: var(--design-spacing-sm) var(--design-spacing-md);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
   background: var(--color-surface-card);
 }
 
@@ -413,7 +413,7 @@
 @media (width < 768px) {
   .ruta-section,
   .ruta-search-results {
-    padding: var(--spacing-sm) var(--spacing-md);
+    padding: var(--design-spacing-xs) var(--design-spacing-sm);
   }
 }
 
@@ -421,7 +421,7 @@
   display: grid;
   grid-template-columns: 1fr;
   align-items: start;
-  gap: var(--spacing-lg);
+  gap: var(--design-spacing-md);
 }
 
 @media (width >= 1080px) {
@@ -436,8 +436,8 @@
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-md);
+  gap: var(--design-spacing-sm);
+  margin-bottom: var(--design-spacing-sm);
 }
 
 .ruta-search-results__count {
@@ -453,7 +453,7 @@
 .ruta-search-results__list {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -461,9 +461,9 @@
 
 .ruta-search-result {
   min-width: 0;
-  padding: var(--spacing-md);
+  padding: var(--design-spacing-sm);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-menu);
   background: var(--color-canvas-elevated);
 }
 
@@ -496,8 +496,8 @@
 .ruta-search-result__details {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--spacing-sm);
-  margin: var(--spacing-md) 0 0;
+  gap: var(--design-spacing-xs);
+  margin: var(--design-spacing-sm) 0 0;
 }
 
 .ruta-search-result__details div {
@@ -538,8 +538,8 @@
 .ruta-section__title {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
-  margin: 0 0 var(--spacing-md);
+  gap: var(--design-spacing-xs);
+  margin: 0 0 var(--design-spacing-sm);
 }
 
 .ruta-search-results__header .ruta-section__title {
@@ -562,7 +562,7 @@
   min-width: 0;
   padding: var(--design-spacing-sm) var(--design-spacing-md);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-menu);
   background: var(--color-canvas-elevated);
 }
 
@@ -591,7 +591,7 @@
 }
 
 .rutas-error p + p {
-  margin-top: var(--spacing-xs);
+  margin-top: var(--design-spacing-xxs);
 }
 
 .route-itinerary__times {
@@ -625,7 +625,7 @@
 .shift-bars {
   display: grid;
   grid-template-columns: max-content minmax(0, 1fr) max-content;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
   align-items: center;
 }
 
@@ -645,15 +645,15 @@
 
 .shift-bars__track {
   min-width: 0;
-  height: var(--spacing-xs);
+  height: var(--design-spacing-xxs);
   background: var(--color-hairline-strong);
-  border-radius: var(--rounded-pill);
+  border-radius: var(--radius-control);
   overflow: hidden;
 }
 
 .shift-bars__fill {
   height: 100%;
-  border-radius: var(--rounded-pill);
+  border-radius: var(--radius-control);
   background: var(--color-primary);
   width: var(--bar-pct, 0%);
 }
@@ -665,7 +665,7 @@
 .shift-bars__stats {
   display: flex;
   align-items: center;
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
   justify-content: flex-end;
   min-width: 0;
 }
@@ -703,8 +703,8 @@
   gap: var(--design-spacing-xxs);
   min-width: var(--touch-target-min);
   min-height: var(--touch-target-min);
-  padding-inline: var(--spacing-sm);
-  border-radius: var(--rounded-sm);
+  padding-inline: var(--design-spacing-xs);
+  border-radius: var(--radius-control);
   font-size: var(--type-body-strong-size);
   font-weight: var(--type-body-strong-weight);
   line-height: var(--type-body-strong-line);
@@ -730,7 +730,7 @@
 }
 
 .shift-bars__comparison-note {
-  margin-top: var(--spacing-sm);
+  margin-top: var(--design-spacing-xs);
   color: var(--color-mute);
   font-size: var(--type-body-md-size);
   line-height: var(--type-body-md-line);
@@ -747,13 +747,13 @@
 .daily-cards {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
 }
 
 .daily-cards__card {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
   min-width: 0;
   min-height: var(--touch-target-min);
   padding: var(--design-spacing-xs);
@@ -808,7 +808,7 @@
 
 .daily-cards__stats {
   display: flex;
-  gap: var(--spacing-lg);
+  gap: var(--design-spacing-md);
 }
 
 .daily-cards__stat {
@@ -839,11 +839,11 @@
 
 @media (width >= 768px) {
   .daily-cards {
-    gap: var(--spacing-sm);
+    gap: var(--design-spacing-xs);
   }
 
   .daily-cards__card {
-    padding: var(--spacing-sm);
+    padding: var(--design-spacing-xs);
   }
 
   .daily-cards__day-short {
@@ -894,7 +894,7 @@
 
   .rutas-scanner-action {
     display: flex;
-    margin-top: var(--spacing-sm);
+    margin-top: var(--design-spacing-xs);
   }
 
   .rutas-scanner-action > .btn-secondary {

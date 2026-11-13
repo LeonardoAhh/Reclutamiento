@@ -1,5 +1,6 @@
-import { useRef, useEffect } from "react";
-import { List, ListTodo } from "lucide-react";
+import { useRef, useEffect } from 'react';
+import { List, ListTodo } from 'lucide-react';
+import './SmartTextarea.css';
 
 export function SmartTextarea({
   id,
@@ -19,7 +20,7 @@ export function SmartTextarea({
   const handleResize = () => {
     const el = textareaRef.current;
     if (el) {
-      el.style.height = "auto";
+      el.style.height = 'auto';
       el.style.height = `${el.scrollHeight}px`;
     }
   };
@@ -34,14 +35,13 @@ export function SmartTextarea({
     const start = el.selectionStart;
     const end = el.selectionEnd;
 
-    let prefix = "";
-    if (start > 0 && value[start - 1] !== "\n") {
-      prefix = "\n";
+    let prefix = '';
+    if (start > 0 && value[start - 1] !== '\n') {
+      prefix = '\n';
     }
 
     const insertion = prefix + text;
-    const newValue =
-      value.substring(0, start) + insertion + value.substring(end);
+    const newValue = value.substring(0, start) + insertion + value.substring(end);
     onChange(newValue);
     setTimeout(() => {
       el.focus();
@@ -68,7 +68,7 @@ export function SmartTextarea({
             type="button"
             data-cuelume-tap=""
             className="smart-textarea-btn"
-            onClick={() => insertAtCursor("• ")}
+            onClick={() => insertAtCursor('• ')}
             title="Añadir viñeta"
           >
             <List size="var(--icon-size-sm)" aria-hidden="true" />
@@ -78,7 +78,7 @@ export function SmartTextarea({
             type="button"
             data-cuelume-tap=""
             className="smart-textarea-btn"
-            onClick={() => insertAtCursor("- [ ] ")}
+            onClick={() => insertAtCursor('- [ ] ')}
             title="Añadir checklist"
           >
             <ListTodo size="var(--icon-size-sm)" aria-hidden="true" />

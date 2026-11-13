@@ -1,15 +1,10 @@
-import {
-  forwardRef,
-  useId,
-  type InputHTMLAttributes,
-} from 'react';
+import { forwardRef, useId, type InputHTMLAttributes } from 'react';
 import { Search as SearchIconData, X as XIconData } from 'lucide';
 
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import './SearchField.css';
 
-interface SearchFieldProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'> {
+interface SearchFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'> {
   label: string;
   onClear?: () => void;
   clearLabel?: string;
@@ -19,72 +14,52 @@ interface SearchFieldProps
  * Campo de búsqueda visual compartido. El consumidor conserva la búsqueda,
  * los resultados y los atajos; esta primitiva solo unifica presentación y foco.
  */
-export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
-  function SearchField(
-    {
-      id,
-      label,
-      value,
-      onClear,
-      clearLabel = 'Limpiar búsqueda',
-      className = '',
-      inputMode = 'search',
-      ...inputProps
-    },
-    ref,
-  ) {
-    const generatedId = useId();
-    const inputId = id ?? generatedId;
-    const hasValue = typeof value === 'string' && value.length > 0;
+export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(function SearchField(
+  { id, label, value, onClear, clearLabel = 'Limpiar búsqueda', className = '', inputMode = 'search', ...inputProps },
+  ref,
+) {
+  const generatedId = useId();
+  const inputId = id ?? generatedId;
+  const hasValue = typeof value === 'string' && value.length > 0;
 
-    const handleClear = () => {
-      onClear?.();
-      document.getElementById(inputId)?.focus();
-    };
+  const handleClear = () => {
+    onClear?.();
+    document.getElementById(inputId)?.focus();
+  };
 
-    return (
-      <div className={`search-field ${className}`.trim()} data-focus-ring>
-        <label htmlFor={inputId} className="sr-only">
-          {label}
-        </label>
+  return (
+    <div className={`search-field ${className}`.trim()} data-focus-ring>
+      <label htmlFor={inputId} className="sr-only">
+        {label}
+      </label>
 
-        <span
-          className="search-field__icon search-field__leading-icon"
-          aria-hidden="true"
+      <span className="search-field__icon search-field__leading-icon" aria-hidden="true">
+        <MorphingIcon icon={SearchIconData} size="var(--icon-size-sm)" />
+      </span>
+
+      <input
+        {...inputProps}
+        id={inputId}
+        ref={ref}
+        type="search"
+        data-cuelume-type=""
+        inputMode={inputMode}
+        value={value}
+        className="search-field__input"
+      />
+
+      {onClear && hasValue && (
+        <button
+          type="button"
+          className="search-field__icon search-field__clear"
+          onClick={handleClear}
+          disabled={inputProps.disabled}
+          data-cuelume-tap=""
+          aria-label={clearLabel}
         >
-          <MorphingIcon
-            icon={SearchIconData}
-            size="var(--icon-size-sm)"
-          />
-        </span>
-
-        <input
-          {...inputProps}
-          id={inputId}
-          ref={ref}
-          type="search"
-          data-cuelume-type=""
-          inputMode={inputMode}
-          value={value}
-          className="search-field__input"
-        />
-
-        {onClear && hasValue && (
-          <button
-            type="button"
-            className="search-field__icon search-field__clear"
-            onClick={handleClear}
-            data-cuelume-tap=""
-            aria-label={clearLabel}
-          >
-            <MorphingIcon
-              icon={XIconData}
-              size="var(--icon-size-sm)"
-              aria-hidden="true"
-            />
-          </button>
-        )}
-      </div>
-    );
-  },
-);
+          <MorphingIcon icon={XIconData} size="var(--icon-size-sm)" aria-hidden="true" />
+        </button>
+      )}
+    </div>
+  );
+});

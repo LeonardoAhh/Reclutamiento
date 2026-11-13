@@ -26,8 +26,8 @@ const STYLES = {
         width: "100%",
         alignItems: "center",
         justifyContent: "space-between",
-        padding: "var(--spacing-md)",
-        borderRadius: "var(--rounded-lg)",
+        padding: "var(--design-spacing-sm)",
+        borderRadius: "var(--radius-card)",
         border: "1px solid var(--color-hairline)",
         background: "var(--color-surface-card)",
         cursor: "pointer",
@@ -36,7 +36,7 @@ const STYLES = {
     triggerInner: {
         display: "flex",
         alignItems: "center",
-        gap: "var(--spacing-md)",
+        gap: "var(--design-spacing-sm)",
         textAlign: "left" as const,
         minWidth: 0,
     },
@@ -47,7 +47,7 @@ const STYLES = {
         flexShrink: 0,
         alignItems: "center",
         justifyContent: "center",
-        borderRadius: "var(--rounded-md)",
+        borderRadius: "var(--radius-menu)",
         transition: "all var(--transition-fast)",
     },
     triggerIconAlert: {
@@ -68,7 +68,7 @@ const STYLES = {
     triggerCount: {
         color: "var(--color-muted)",
         fontWeight: "var(--type-body-md-weight)",
-        marginLeft: "var(--spacing-xs)",
+        marginLeft: "var(--design-spacing-xxs)",
     },
     triggerChevron: {
         color: "var(--color-muted)",
@@ -77,16 +77,16 @@ const STYLES = {
     modalContent: {
         display: "flex",
         flexDirection: "column" as const,
-        gap: "var(--spacing-sm)",
-        marginTop: "var(--spacing-sm)",
+        gap: "var(--design-spacing-xs)",
+        marginTop: "var(--design-spacing-xs)",
     },
     insightItem: {
         base: {
             display: "flex",
             alignItems: "flex-start",
-            gap: "var(--spacing-md)",
-            padding: "var(--spacing-md)",
-            borderRadius: "var(--rounded-lg)",
+            gap: "var(--design-spacing-sm)",
+            padding: "var(--design-spacing-sm)",
+            borderRadius: "var(--radius-card)",
             border: "1px solid",
         },
         danger: {
@@ -112,12 +112,12 @@ const STYLES = {
     successBanner: {
         display: "flex",
         alignItems: "center",
-        gap: "var(--spacing-md)",
+        gap: "var(--design-spacing-sm)",
         background: "var(--color-success-tint)",
         border: "1px solid var(--color-success)",
         color: "var(--color-success-text)",
-        padding: "var(--spacing-md)",
-        borderRadius: "var(--rounded-lg)",
+        padding: "var(--design-spacing-sm)",
+        borderRadius: "var(--radius-card)",
     },
     successText: {
         fontSize: "var(--type-body-sm-size)",
@@ -128,7 +128,7 @@ const STYLES = {
     modalFooter: {
         display: "flex",
         justifyContent: "flex-end",
-        marginTop: "var(--spacing-lg)",
+        marginTop: "var(--design-spacing-md)",
     },
 } as const;
 

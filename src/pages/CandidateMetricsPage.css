@@ -61,7 +61,7 @@
   border: var(--border-width) solid var(--workspace-border-color);
   border-radius: var(--workspace-radius);
   background: var(--color-surface-card);
-  box-shadow: var(--workspace-shadow);
+  box-shadow: var(--shadow-xs);
   color: var(--color-ink);
   text-decoration: none;
   overflow-wrap: anywhere;
@@ -101,7 +101,7 @@
   background: var(--color-surface-card);
   border: var(--border-width) solid var(--workspace-border-color);
   border-radius: var(--workspace-radius);
-  box-shadow: var(--workspace-shadow);
+  box-shadow: var(--shadow-xs);
 }
 .recruiter-metrics__card-meta,
 .recruiter-metrics__card-totals {
@@ -149,7 +149,7 @@
 .recruiter-metrics__card-bar {
   display: flex;
   block-size: var(--design-spacing-xs);
-  border-radius: var(--rounded-full);
+  border-radius: var(--radius-control);
   overflow: hidden;
   background: var(--color-canvas-elevated);
   margin-block-start: auto;
@@ -174,7 +174,7 @@
   min-inline-size: 0;
   overflow: auto;
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
   background: var(--color-surface-card);
 }
 .recruiter-metrics__table {

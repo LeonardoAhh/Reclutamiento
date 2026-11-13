@@ -3,8 +3,8 @@
   flex-direction: row;
   align-items: flex-start;
   min-inline-size: 0;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-md);
+  gap: var(--design-spacing-xs);
+  padding: var(--design-spacing-sm);
   background: var(--color-surface-card);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--radius-card);
@@ -55,7 +55,7 @@ button.kpi-card--interactive {
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
 }
 
 .kpi-card__value {

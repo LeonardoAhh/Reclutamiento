@@ -5,17 +5,17 @@
    ───────────────────────────────────────────────────────────────────────── */
 
 .settings {
-  padding-block-end: var(--spacing-xl);
+  padding-block-end: var(--design-spacing-lg);
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xl);
+  gap: var(--design-spacing-lg);
 }
 
 /* ── Hero ─────────────────────────────────────────────────────────── */
 .settings__hero {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
 }
 
 .settings__eyebrow {
@@ -39,7 +39,7 @@
 /* ── Grid de paneles ──────────────────────────────────────────────── */
 .settings__grid {
   display: grid;
-  gap: var(--spacing-lg);
+  gap: var(--design-spacing-md);
   grid-template-columns: minmax(0, 360px) minmax(0, 1fr);
   align-items: start;
 }
@@ -54,32 +54,32 @@
 .settings__panel {
   background: var(--color-canvas);
   border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-xl, 16px);
-  padding: var(--spacing-lg);
+  border-radius: var(--radius-card);
+  padding: var(--design-spacing-md);
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
-  box-shadow: var(--shadow-subtle, none);
+  gap: var(--design-spacing-sm);
+  box-shadow: var(--shadow-xs);
 }
 
 .settings__panel-header {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
 }
 
 .settings__panel-header--row {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
   flex-wrap: wrap;
 }
 
 .settings__panel-title {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
   margin: 0;
   font-family: var(--font-display);
   font-size: var(--type-heading-md-size, 16px);
@@ -98,13 +98,13 @@
 .settings__form {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
 }
 
 .settings__field {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
 }
 
 .settings__label {
@@ -119,7 +119,7 @@
 
 .settings__input {
   width: 100%;
-  padding: var(--spacing-sm) var(--spacing-md);
+  padding: var(--design-spacing-xs) var(--design-spacing-sm);
   background: var(--color-surface-card);
   border: var(--border-width) solid var(--color-control-border);
   border-radius: var(--rounded-xs);
@@ -159,7 +159,7 @@
     calc(100% - 13px) 50%;
   background-size: 5px 5px, 5px 5px;
   background-repeat: no-repeat;
-  padding-right: var(--spacing-xxl);
+  padding-right: var(--design-spacing-xl);
 }
 
 .settings__hint {
@@ -175,12 +175,12 @@
 }
 
 .settings__input-wrap .settings__input {
-  padding-right: calc(var(--icon-size-xxl) + var(--spacing-sm));
+  padding-right: calc(var(--icon-size-xxl) + var(--design-spacing-xs));
 }
 
 .settings__visibility {
   position: absolute;
-  right: var(--spacing-sm);
+  right: var(--design-spacing-xs);
   top: 50%;
   transform: translateY(-50%);
   display: inline-flex;
@@ -190,7 +190,7 @@
   height: var(--icon-size-xl);
   background: transparent;
   border: none;
-  border-radius: var(--rounded-sm, 6px);
+  border-radius: var(--radius-control);
   cursor: pointer;
   color: var(--color-mute);
   transition: background var(--transition-fast), color var(--transition-fast);
@@ -210,7 +210,7 @@
   align-self: flex-start;
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
 }
 
 .settings__spinner {
@@ -233,9 +233,9 @@
 .settings__banner {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--rounded-md);
+  gap: var(--design-spacing-xs);
+  padding: var(--design-spacing-xs) var(--design-spacing-sm);
+  border-radius: var(--radius-menu);
   font-size: var(--type-caption-md-size, 12px);
   border: 1px solid transparent;
 }
@@ -256,17 +256,17 @@
 .settings__refresh {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-xs) var(--spacing-sm);
+  gap: var(--design-spacing-xs);
+  padding: var(--design-spacing-xxs) var(--design-spacing-xs);
   font-size: var(--type-caption-md-size, 12px);
 }
 
 /* ── Lista de usuarios ───────────────────────────────────────────── */
 .settings__empty {
   margin: 0;
-  padding: var(--spacing-md);
+  padding: var(--design-spacing-sm);
   background: var(--color-surface-card);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-menu);
   color: var(--color-mute);
   font-size: var(--type-caption-md-size, 12px);
   text-align: center;
@@ -278,18 +278,18 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
 }
 
 .settings__item {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-md) var(--spacing-lg);
+  gap: var(--design-spacing-xs);
+  padding: var(--design-spacing-sm) var(--design-spacing-md);
   background: var(--color-surface-card);
   border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-menu);
   transition: border-color var(--transition-fast);
 }
 
@@ -308,7 +308,7 @@
   margin: 0;
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
   font-family: var(--font-display);
   font-size: var(--type-body-md-size, 14px);
   font-weight: var(--type-body-strong-weight);
@@ -323,8 +323,8 @@
   line-height: var(--type-caption-up-line);
   letter-spacing: var(--type-caption-up-tracking);
   text-transform: uppercase;
-  padding: var(--design-spacing-xxs) var(--spacing-sm);
-  border-radius: var(--rounded-full, 999px);
+  padding: var(--design-spacing-xxs) var(--design-spacing-xs);
+  border-radius: var(--rounded-xs);
   background: var(--color-surface-card);
   color: var(--color-mute);
 }
@@ -339,7 +339,7 @@
 .settings__item-actions {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
 }
 
 .settings__item-role-label {
@@ -366,11 +366,11 @@
 /* ── Responsive ──────────────────────────────────────────────────── */
 @media (width <= 767px) {
   .settings {
-    gap: var(--spacing-lg);
-    padding-block-end: var(--spacing-lg);
+    gap: var(--design-spacing-md);
+    padding-block-end: var(--design-spacing-md);
   }
   .settings__panel {
-    padding: var(--spacing-md);
+    padding: var(--design-spacing-sm);
   }
   .settings__item {
     grid-template-columns: minmax(0, 1fr);

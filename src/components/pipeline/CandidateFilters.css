@@ -13,7 +13,7 @@
 .candidate-filter-select__content {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
   white-space: nowrap;
 }
 

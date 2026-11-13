@@ -4,20 +4,20 @@
    ========================================================================== */
 
 .bajas {
-  padding-bottom: var(--spacing-xxl);
+  padding-bottom: var(--design-spacing-xl);
 }
 
 .bajas__grid {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: var(--design-spacing-md);
 }
 
 @media (min-width: 1080px) {
   .bajas__grid {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: var(--spacing-lg);
+    gap: var(--design-spacing-md);
     align-items: stretch;
   }
 }

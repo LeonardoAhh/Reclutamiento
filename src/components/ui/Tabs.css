@@ -9,8 +9,7 @@
   gap: var(--design-spacing-xs);
   min-inline-size: 0;
   max-inline-size: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
+  overflow: auto hidden;
   padding: var(--focus-ring-width);
   scroll-padding-inline: var(--focus-ring-width);
 }
@@ -23,8 +22,7 @@
 }
 
 .ui-tabs__list[data-variant='underline'] {
-  margin-inline-start: calc(-1 * var(--focus-ring-width));
-  margin-inline-end: calc(-1 * var(--focus-ring-width));
+  margin-inline: calc(-1 * var(--focus-ring-width));
   padding-inline-start: var(--focus-ring-width);
   padding-block-end: var(--focus-ring-width);
 }
@@ -38,8 +36,7 @@
   align-items: stretch;
   inline-size: fit-content;
   max-block-size: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden auto;
   scroll-padding-block: var(--focus-ring-width);
 }
 
@@ -95,11 +92,13 @@
   border-block-end-color: var(--color-primary-border);
 }
 
+/* stylelint-disable-next-line no-descending-specificity -- El foco aplica a todas las variantes y solo modifica el contorno. */
 .ui-tabs__trigger:focus-visible {
   outline: var(--focus-ring-width) solid var(--color-focus);
   outline-offset: 0;
 }
 
+/* stylelint-disable-next-line no-descending-specificity -- El estado deshabilitado debe prevalecer en todas las variantes. */
 .ui-tabs__trigger:disabled,
 .ui-tabs__trigger[data-disabled] {
   color: var(--color-mute);

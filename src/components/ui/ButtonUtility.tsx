@@ -7,14 +7,17 @@ interface ButtonUtilityProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 }
 
 /**
- * Utility button - según design.md:
- * White surface, text ink, typography.button, tighter rounded.md (8px),
- * padding 4px 14px, 1px hairline border.
+ * Utility button - según desing.md:
+ * Reuses the shared secondary button geometry, color and states.
  */
 export function ButtonUtility({ children, icon, className = '', ...props }: ButtonUtilityProps) {
   return (
-    <button className={`btn-utility ${className}`} {...props}>
-      {icon && <span className="btn-utility__icon">{icon}</span>}
+    <button className={`btn-secondary btn-utility ${className}`.trim()} {...props}>
+      {icon && (
+        <span className="btn-utility__icon" aria-hidden="true">
+          {icon}
+        </span>
+      )}
       {children}
     </button>
   );

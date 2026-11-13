@@ -13,7 +13,7 @@
 /* Grid mobile-first: 1 columna por defecto, 2 columnas en ≥768px. */
 .employee-sheet .form-grid {
   grid-template-columns: 1fr;
-  gap: var(--spacing-md);
+  gap: var(--design-spacing-sm);
 }
 
 .employee-sheet .form-group--span-2 {
@@ -21,7 +21,7 @@
 }
 
 .employee-sheet__baja-grid {
-  margin-top: var(--spacing-lg);
+  margin-top: var(--design-spacing-md);
 }
 
 /* Selects: ancho fluido, sin overflow. */
@@ -41,8 +41,8 @@
 .employee-sheet__future-warning {
   display: flex;
   align-items: center;
-  gap: var(--spacing-xs);
-  margin-top: var(--spacing-sm);
+  gap: var(--design-spacing-xxs);
+  margin-top: var(--design-spacing-xs);
   font-size: var(--type-body-sm-size);
   color: var(--color-warning-text);
 }
@@ -54,8 +54,8 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: var(--spacing-xl) var(--spacing-md);
-  gap: var(--spacing-sm);
+  padding: var(--design-spacing-lg) var(--design-spacing-sm);
+  gap: var(--design-spacing-xs);
 }
 
 .delete-warning__icon {
@@ -64,10 +64,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--rounded-full);
+  border-radius: var(--radius-card);
   background: var(--color-error-subtle);
   color: var(--color-error-text);
-  margin-bottom: var(--spacing-xs);
+  margin-bottom: var(--design-spacing-xxs);
 }
 
 .delete-warning__title {
@@ -86,11 +86,11 @@
   display: flex;
   flex-direction: column;
   gap: var(--design-spacing-xxs);
-  padding: var(--spacing-sm) var(--spacing-md);
+  padding: var(--design-spacing-xs) var(--design-spacing-sm);
   background: var(--color-canvas-elevated);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-md);
-  margin-top: var(--spacing-sm);
+  border-radius: var(--radius-menu);
+  margin-top: var(--design-spacing-xs);
   width: 100%;
   max-width: 360px;
 }
@@ -98,7 +98,7 @@
 .delete-warning__meta-row {
   display: flex;
   justify-content: space-between;
-  gap: var(--spacing-md);
+  gap: var(--design-spacing-sm);
   font-size: var(--type-caption-md-size);
 }
 
@@ -120,7 +120,7 @@
 .delete-warning__sub {
   color: var(--color-mute);
   font-size: var(--type-caption-md-size);
-  margin-top: var(--spacing-xs);
+  margin-top: var(--design-spacing-xxs);
 }
 
 /* Helper hint inside the Contratar modal (HireCandidateModal). */
@@ -128,18 +128,18 @@
   font-size: var(--type-caption-md-size);
   color: var(--color-mute);
   line-height: var(--type-body-md-line);
-  padding: var(--spacing-sm) var(--spacing-md);
+  padding: var(--design-spacing-xs) var(--design-spacing-sm);
   background: var(--color-canvas-elevated);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-md);
-  margin-top: var(--spacing-sm);
+  border-radius: var(--radius-menu);
+  margin-top: var(--design-spacing-xs);
 }
 
 .hire-hint code {
   font-family: var(--font-code);
   font-size: var(--type-caption-sm-size);
-  padding: 0 4px;
-  border-radius: var(--rounded-sm);
+  padding: 0 var(--design-spacing-xxs);
+  border-radius: var(--radius-control);
   background: var(--color-canvas);
   color: var(--color-ink);
 }

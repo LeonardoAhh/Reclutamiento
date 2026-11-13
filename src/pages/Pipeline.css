@@ -156,7 +156,7 @@
   flex-direction: column;
   gap: var(--design-spacing-xxs);
   padding: var(--design-spacing-xxs) var(--design-spacing-xs);
-  border-radius: var(--rounded-sm);
+  border-radius: var(--radius-control);
   background: var(--color-surface-card);
   border-left: 3px solid var(--color-mute);
   min-width: 0;
@@ -266,7 +266,7 @@
 
 .pipeline__weekly-scroll::-webkit-scrollbar-thumb {
   background: var(--color-hairline);
-  border-radius: var(--rounded-pill);
+  border-radius: var(--radius-control);
 }
 
 /* Tarjeta de semana individual: compacta, ancho fijo para que el scroll funcione */
@@ -310,7 +310,7 @@
   flex-direction: column;
   gap: var(--design-spacing-xxs);
   padding: var(--design-spacing-xxs);
-  border-radius: var(--rounded-sm);
+  border-radius: var(--radius-control);
   background: var(--color-surface-card);
   border-left: 2px solid var(--color-mute);
   min-width: 0;
@@ -399,8 +399,8 @@
   right: 0;
   background: var(--color-canvas-elevated);
   border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
-  box-shadow: var(--shadow-level-2);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
   z-index: var(--layer-menu);
   overflow: hidden;
   max-height: var(--pipeline-search-results-max-block-size);
@@ -564,7 +564,7 @@
   padding: var(--design-spacing-xl) var(--design-spacing-lg);
   background: var(--color-surface-card);
   border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -864,7 +864,7 @@
   padding: var(--design-spacing-sm);
   background: var(--color-canvas-elevated);
   border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
   transition:
     background var(--transition-fast),
     box-shadow var(--transition-fast),
@@ -923,7 +923,7 @@
 
 .pipeline__ccard:hover {
   background: var(--color-surface-card);
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--shadow-xs);
 }
 
 .pipeline__ccard-puesto-col,
@@ -957,7 +957,7 @@
   gap: var(--design-spacing-xxs);
   height: 20px;
   padding: 0 var(--design-spacing-xs);
-  border-radius: var(--rounded-sm);
+  border-radius: var(--radius-control);
   background: var(--color-surface-card);
   color: var(--color-mute);
   font-family: var(--font-body);

@@ -20,7 +20,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
   min-height: var(--control-min-block-size);
   padding: var(--control-padding-y) var(--control-padding-x);
   border-radius: var(--radius-control);
@@ -72,7 +72,7 @@
    ============================================================================ */
 
 .reporte-incidents__empty--padded {
-  padding: var(--spacing-lg);
+  padding: var(--design-spacing-md);
 }
 
 .reporte-saved__title--uppercase {
@@ -181,7 +181,7 @@
     display: grid;
     grid-template-columns: minmax(0, 1fr) var(--touch-target-min);
     align-items: stretch;
-    gap: var(--spacing-sm);
+    gap: var(--design-spacing-xs);
   }
 
   .reporte-month-picker {

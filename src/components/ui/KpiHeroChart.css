@@ -1,12 +1,12 @@
 .kpi-hero-chart {
   width: 100%;
-  margin: var(--spacing-lg) 0;
+  margin: var(--design-spacing-md) 0;
   display: block;
   position: relative;
   background: var(--color-canvas-elevated);
   border: 1px solid var(--color-hairline-strong);
-  border-radius: var(--rounded-lg);
-  padding: var(--spacing-lg) var(--spacing-md);
+  border-radius: var(--radius-card);
+  padding: var(--design-spacing-md) var(--design-spacing-sm);
   box-sizing: border-box;
   font-family: var(--font-body);
   overflow: hidden;
@@ -17,7 +17,7 @@
 }
 
 .kpi-hero-chart--presentation {
-  padding: var(--spacing-xl) var(--spacing-xxl);
+  padding: var(--design-spacing-lg) var(--design-spacing-xl);
 }
 
 .kpi-hero-chart--interactive {
@@ -32,9 +32,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--spacing-md);
+  margin-bottom: var(--design-spacing-sm);
   flex-wrap: wrap;
-  gap: var(--spacing-lg);
+  gap: var(--design-spacing-md);
 }
 
 .kpi-hero-title {
@@ -62,14 +62,14 @@
 .kpi-hero-heading {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
   min-width: 0;
 }
 
 .kpi-hero-legend {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--spacing-md);
+  gap: var(--design-spacing-sm);
   margin: 0;
   padding: 0;
   color: var(--color-mute);
@@ -84,7 +84,7 @@
 .kpi-hero-legend li {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
 }
 
 .kpi-hero-legend-marker {
@@ -146,7 +146,7 @@
 
 .kpi-hero-metrics {
   display: flex;
-  gap: var(--spacing-lg);
+  gap: var(--design-spacing-md);
   align-items: center;
 }
 
@@ -154,7 +154,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: var(--spacing-md);
+  gap: var(--design-spacing-sm);
 }
 
 .kpi-hero-avg-top {
@@ -178,7 +178,7 @@
   align-items: center;
   justify-content: center;
   color: var(--color-ink);
-  border-radius: var(--rounded-sm);
+  border-radius: var(--radius-control);
   transition:
     color var(--transition-fast),
     background var(--transition-fast),
@@ -244,7 +244,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-md);
+  gap: var(--design-spacing-sm);
   color: var(--color-mute);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
@@ -268,31 +268,31 @@
 }
 
 .kpi-hero-plot {
-  padding: var(--spacing-sm) var(--spacing-xs);
+  padding: var(--design-spacing-xs) var(--design-spacing-xxs);
   background: transparent;
 }
 
 .kpi-hero-plot--presentation {
-  padding: var(--spacing-lg) var(--spacing-md) var(--spacing-md);
+  padding: var(--design-spacing-md) var(--design-spacing-sm) var(--design-spacing-sm);
 }
 
 .kpi-hero-day-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-  gap: var(--spacing-md);
+  gap: var(--design-spacing-sm);
   width: 100%;
   min-width: 0;
-  margin-top: var(--spacing-lg);
+  margin-top: var(--design-spacing-md);
 }
 
 .kpi-hero-day-card {
   min-width: 0;
-  padding: var(--spacing-md) var(--spacing-sm);
+  padding: var(--design-spacing-sm) var(--design-spacing-xs);
   overflow: hidden;
   text-align: center;
   background: var(--color-surface-card);
   border: 1px solid var(--color-hairline-strong);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
   transition: border-color var(--transition-fast);
 }
 
@@ -310,7 +310,7 @@
 }
 
 .kpi-hero-day-card__day {
-  margin: 0 0 var(--spacing-xs);
+  margin: 0 0 var(--design-spacing-xxs);
   font-size: var(--type-caption-up-size);
   font-weight: var(--type-caption-up-weight);
   line-height: var(--type-caption-up-line);
@@ -320,7 +320,7 @@
 }
 
 .kpi-hero-day-card__coverage {
-  margin: 0 0 var(--spacing-xs);
+  margin: 0 0 var(--design-spacing-xxs);
   color: var(--color-ink);
   font-size: var(--type-body-strong-size);
   font-weight: var(--type-body-strong-weight);
@@ -348,7 +348,7 @@
 }
 
 .kpi-hero-footer-label {
-  margin: var(--spacing-md) 0 0;
+  margin: var(--design-spacing-sm) 0 0;
   color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);

@@ -34,7 +34,7 @@
 
 .home-page__leave-progress-track > span {
   block-size: var(--design-spacing-xxs);
-  border-radius: var(--rounded-full);
+  border-radius: var(--radius-control);
   background: var(--color-hairline-strong);
 }
 
@@ -59,7 +59,7 @@
   overflow: hidden;
   list-style: none;
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
   background: var(--color-surface-card);
 }
 
@@ -84,7 +84,7 @@
   place-items: center;
   inline-size: var(--touch-target-min);
   block-size: var(--touch-target-min);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-menu);
   background: var(--color-canvas-soft);
   color: var(--color-ink);
   font-family: var(--font-body);
@@ -101,7 +101,7 @@
   gap: var(--design-spacing-sm);
   padding: var(--design-spacing-md);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
   background: var(--color-warning-subtle);
   color: var(--color-warning-text);
 }
@@ -114,7 +114,7 @@
 .home-page__leave-form-notices {
   overflow: hidden;
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
   background: var(--color-warning-subtle);
 }
 
@@ -158,7 +158,7 @@
 .home-page__leave-review-frame {
   overflow: hidden;
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
   background: var(--color-surface-card);
   box-shadow: var(--shadow-xs);
 }
@@ -188,7 +188,7 @@
   flex: none;
   inline-size: var(--touch-target-min);
   block-size: var(--touch-target-min);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-menu);
   background: var(--color-canvas-soft);
   color: var(--color-ink);
 }
@@ -262,7 +262,7 @@
   gap: var(--design-spacing-xs);
   padding: var(--design-spacing-xs) var(--design-spacing-sm);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
   background: var(--color-error-subtle);
   color: var(--color-error-text);
 }
@@ -336,7 +336,7 @@
   flex: none;
   inline-size: var(--touch-target-min);
   block-size: var(--touch-target-min);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-menu);
   background: var(--color-success-subtle);
   color: var(--color-success-text);
 }
@@ -438,7 +438,7 @@
   max-inline-size: 100%;
   padding: var(--design-spacing-sm);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
   background: var(--color-surface-card);
   overflow-x: auto;
 }
@@ -493,7 +493,7 @@
   min-block-size: var(--control-height);
   padding: 0 var(--design-spacing-sm);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-menu);
   background: var(--color-surface-card);
   color: var(--color-ink);
   font-family: var(--font-body);

@@ -2,7 +2,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
 }
 
 .birth-date-field__control input {
@@ -15,7 +15,7 @@
 }
 
 .birth-date-field__calendar {
-  max-width: calc(100vw - var(--spacing-xxl));
+  max-width: calc(100vw - var(--design-spacing-xl));
 }
 
 .birth-date-field__calendar .rdp-root {
@@ -23,20 +23,22 @@
 }
 
 .birth-date-field__calendar .rdp-dropdowns {
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
 }
 
+/* stylelint-disable-next-line selector-class-pattern -- Nombre de clase de react-day-picker. */
 .birth-date-field__calendar .rdp-dropdown_root {
   min-height: var(--touch-target-min);
-  padding-inline: var(--spacing-xs);
+  padding-inline: var(--design-spacing-xxs);
   color: var(--color-ink);
   background: var(--color-canvas-elevated);
   border: var(--border-width) solid var(--color-control-border);
-  border-radius: var(--rounded-xs);
+  border-radius: var(--radius-field);
 }
 
-@media (max-width: 767px) {
+@media (width <= 767px) {
   .birth-date-field__calendar {
-    padding: var(--spacing-xs);
+    max-width: 100vw;
+    padding: var(--design-spacing-xxs);
   }
 }

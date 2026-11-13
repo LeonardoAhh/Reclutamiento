@@ -7,22 +7,22 @@
   display: flex;
   background: var(--color-canvas-elevated);
   border: var(--border-width) solid var(--color-control-border);
-  padding: 4px;
+  padding: var(--design-spacing-xxs);
   border-radius: var(--radius-control);
-  gap: 4px;
-  margin-bottom: var(--spacing-lg);
+  gap: var(--design-spacing-xxs);
+  margin-bottom: var(--design-spacing-md);
 }
 
 .hire-mode-tabs button {
   flex: 1;
-  padding: var(--spacing-sm) var(--spacing-md);
+  padding: var(--design-spacing-xs) var(--design-spacing-sm);
   border: var(--border-width) solid transparent;
   background: transparent;
   color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-body-sm-strong-weight);
-  border-radius: var(--rounded-sm);
+  border-radius: var(--radius-control);
   cursor: pointer;
   transition: all var(--transition-fast);
 }
@@ -38,7 +38,7 @@
 }
 
 .hire-hint {
-  margin-top: var(--spacing-md);
+  margin-top: var(--design-spacing-sm);
   color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);

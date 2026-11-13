@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { CalendarDays } from "lucide-react";
-import { maskDdMmYyyyInput } from "@/lib/dates";
-import { Calendar } from "./Calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "./Popover";
-import "./BirthDateField.css";
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { CalendarDays } from 'lucide-react';
+import { maskDdMmYyyyInput } from '@/lib/dates';
+import { Calendar } from './Calendar';
+import { Popover, PopoverContent, PopoverTrigger } from './Popover';
+import './BirthDateField.css';
 
 interface BirthDateFieldProps {
   id: string;
@@ -15,7 +15,7 @@ interface BirthDateFieldProps {
 
 function isoToDisplay(value: string): string {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
-  return match ? `${match[3]}/${match[2]}/${match[1]}` : "";
+  return match ? `${match[3]}/${match[2]}/${match[1]}` : '';
 }
 
 function displayToIso(value: string): string | null {
@@ -26,11 +26,7 @@ function displayToIso(value: string): string | null {
   const month = Number(match[2]);
   const year = Number(match[3]);
   const parsed = new Date(year, month - 1, day);
-  if (
-    parsed.getFullYear() !== year
-    || parsed.getMonth() !== month - 1
-    || parsed.getDate() !== day
-  ) return null;
+  if (parsed.getFullYear() !== year || parsed.getMonth() !== month - 1 || parsed.getDate() !== day) return null;
 
   return `${match[3]}-${match[2]}-${match[1]}`;
 }
@@ -42,9 +38,9 @@ function isoToLocalDate(value: string): Date | undefined {
 }
 
 function localDateToIso(value: Date): string {
-  const year = String(value.getFullYear()).padStart(4, "0");
-  const month = String(value.getMonth() + 1).padStart(2, "0");
-  const day = String(value.getDate()).padStart(2, "0");
+  const year = String(value.getFullYear()).padStart(4, '0');
+  const month = String(value.getMonth() + 1).padStart(2, '0');
+  const day = String(value.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
 }
 
@@ -58,10 +54,7 @@ export function BirthDateField({ id, label, value, onChange, error }: BirthDateF
     const current = new Date();
     return new Date(current.getFullYear(), current.getMonth(), current.getDate());
   }, []);
-  const startMonth = useMemo(
-    () => new Date(today.getFullYear() - 100, 0, 1),
-    [today],
-  );
+  const startMonth = useMemo(() => new Date(today.getFullYear() - 100, 0, 1), [today]);
   const visibleError = inputError ?? error;
   const helpId = `${id}-help`;
   const errorId = `${id}-error`;
@@ -77,22 +70,22 @@ export function BirthDateField({ id, label, value, onChange, error }: BirthDateF
 
   const commitDisplayValue = (nextDisplayValue: string) => {
     if (!nextDisplayValue) {
-      onChange("");
+      onChange('');
       setInputError(null);
       return;
     }
 
     const isoValue = displayToIso(nextDisplayValue);
     if (!isoValue) {
-      setInputError("Escribe una fecha válida en formato DD/MM/AAAA.");
+      setInputError('Escribe una fecha válida en formato DD/MM/AAAA.');
       preserveInvalidDraftRef.current = true;
-      onChange("");
+      onChange('');
       return;
     }
     if (isoValue > localDateToIso(today)) {
-      setInputError("La fecha de nacimiento no puede ser futura.");
+      setInputError('La fecha de nacimiento no puede ser futura.');
       preserveInvalidDraftRef.current = true;
-      onChange("");
+      onChange('');
       return;
     }
 
@@ -114,7 +107,7 @@ export function BirthDateField({ id, label, value, onChange, error }: BirthDateF
           maxLength={10}
           value={displayValue}
           aria-invalid={Boolean(visibleError) || undefined}
-          aria-describedby={`${helpId}${visibleError ? ` ${errorId}` : ""}`}
+          aria-describedby={`${helpId}${visibleError ? ` ${errorId}` : ''}`}
           onChange={(event) => {
             const nextDisplayValue = maskDdMmYyyyInput(event.target.value);
             setDisplayValue(nextDisplayValue);
@@ -131,7 +124,7 @@ export function BirthDateField({ id, label, value, onChange, error }: BirthDateF
             <button
               type="button"
               className="btn-icon birth-date-field__calendar-trigger"
-              aria-label={`Abrir calendario para ${label.toLocaleLowerCase("es-MX")}`}
+              aria-label={`Abrir calendario para ${label.toLocaleLowerCase('es-MX')}`}
               aria-controls={calendarId}
               aria-expanded={isCalendarOpen}
             >
@@ -142,7 +135,8 @@ export function BirthDateField({ id, label, value, onChange, error }: BirthDateF
             id={calendarId}
             className="birth-date-field__calendar"
             align="end"
-            aria-label={`Calendario para ${label.toLocaleLowerCase("es-MX")}`}
+            collisionPadding={0}
+            aria-label={`Calendario para ${label.toLocaleLowerCase('es-MX')}`}
           >
             <Calendar
               mode="single"
@@ -170,7 +164,11 @@ export function BirthDateField({ id, label, value, onChange, error }: BirthDateF
       <span id={helpId} className="form-help">
         Escribe día, mes y año. Los separadores se agregan automáticamente.
       </span>
-      {visibleError && <p id={errorId} className="form-error-text">{visibleError}</p>}
+      {visibleError && (
+        <p id={errorId} className="form-error-text">
+          {visibleError}
+        </p>
+      )}
     </div>
   );
 }

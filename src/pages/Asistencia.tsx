@@ -138,15 +138,15 @@ export function Asistencia() {
       </PageHeading>
 
       {!data ? (
-        <div className="feature-card" style={{ marginTop: 'var(--spacing-xl)', maxWidth: '800px' }}>
-          <h2 className="type-heading-3" style={{ marginBottom: 'var(--spacing-xs)' }}>
+        <div className="feature-card" style={{ marginTop: 'var(--design-spacing-lg)', maxWidth: '800px' }}>
+          <h2 className="type-heading-3" style={{ marginBottom: 'var(--design-spacing-xxs)' }}>
             Pegar JSON
           </h2>
-          <p className="type-body-sm color-ink-muted" style={{ marginBottom: 'var(--spacing-lg)' }}>
+          <p className="type-body-sm color-ink-muted" style={{ marginBottom: 'var(--design-spacing-md)' }}>
             Pega aquí el contenido del reporte de asistencia generado en formato JSON.
           </p>
 
-          <div className="form-group" style={{ marginBottom: 'var(--spacing-lg)' }}>
+          <div className="form-group" style={{ marginBottom: 'var(--design-spacing-md)' }}>
             <textarea
               placeholder='[\n  {\n    "numero empleado": "..."\n  }\n]'
               value={jsonInput}
@@ -163,7 +163,7 @@ export function Asistencia() {
             />
           </div>
 
-          <div style={{ display: 'flex', gap: 'var(--spacing-md)', alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: 'var(--design-spacing-sm)', alignItems: 'center' }}>
             <button className="btn-primary" onClick={handlePasteSubmit}>
               Procesar Asistencia
             </button>
@@ -179,27 +179,27 @@ export function Asistencia() {
       ) : (
         <div className="asistencia-content">
           {summaryByProyecto.length > 0 && (
-            <div style={{ marginBottom: 'var(--spacing-xl)' }}>
-              <h2 className="type-heading-sm" style={{ marginBottom: 'var(--spacing-md)' }}>
+            <div style={{ marginBottom: 'var(--design-spacing-lg)' }}>
+              <h2 className="type-heading-sm" style={{ marginBottom: 'var(--design-spacing-sm)' }}>
                 Resumen por Proyecto
               </h2>
               <div
                 style={{
                   display: 'grid',
                   gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
-                  gap: 'var(--spacing-md)',
+                  gap: 'var(--design-spacing-sm)',
                 }}
               >
                 {summaryByProyecto.map((summary, i) => (
-                  <div key={`proyecto-${i}`} className="feature-card" style={{ padding: 'var(--spacing-lg)' }}>
-                    <h3 className="type-caption-up color-muted" style={{ marginBottom: 'var(--spacing-xs)' }}>
+                  <div key={`proyecto-${i}`} className="feature-card" style={{ padding: 'var(--design-spacing-md)' }}>
+                    <h3 className="type-caption-up color-muted" style={{ marginBottom: 'var(--design-spacing-xxs)' }}>
                       {summary.proyecto}
                     </h3>
-                    <div className="type-display-lg color-ink" style={{ marginBottom: 'var(--spacing-md)' }}>
+                    <div className="type-display-lg color-ink" style={{ marginBottom: 'var(--design-spacing-sm)' }}>
                       {summary.total}
                     </div>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xs)' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--design-spacing-xxs)' }}>
                       {Object.entries(summary.breakdown)
                         .sort((a, b) => b[1] - a[1])
                         .map(([label, count]) => (
@@ -224,27 +224,27 @@ export function Asistencia() {
           )}
 
           {summaryByPuesto.length > 0 && (
-            <div style={{ marginBottom: 'var(--spacing-xl)' }}>
-              <h2 className="type-heading-sm" style={{ marginBottom: 'var(--spacing-md)' }}>
+            <div style={{ marginBottom: 'var(--design-spacing-lg)' }}>
+              <h2 className="type-heading-sm" style={{ marginBottom: 'var(--design-spacing-sm)' }}>
                 Resumen por Puesto
               </h2>
               <div
                 style={{
                   display: 'grid',
                   gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
-                  gap: 'var(--spacing-md)',
+                  gap: 'var(--design-spacing-sm)',
                 }}
               >
                 {summaryByPuesto.map((summary, i) => (
-                  <div key={`puesto-${i}`} className="feature-card" style={{ padding: 'var(--spacing-lg)' }}>
-                    <h3 className="type-caption-up color-muted" style={{ marginBottom: 'var(--spacing-xs)' }}>
+                  <div key={`puesto-${i}`} className="feature-card" style={{ padding: 'var(--design-spacing-md)' }}>
+                    <h3 className="type-caption-up color-muted" style={{ marginBottom: 'var(--design-spacing-xxs)' }}>
                       {summary.puesto}
                     </h3>
-                    <div className="type-display-lg color-ink" style={{ marginBottom: 'var(--spacing-md)' }}>
+                    <div className="type-display-lg color-ink" style={{ marginBottom: 'var(--design-spacing-sm)' }}>
                       {summary.total}
                     </div>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xs)' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--design-spacing-xxs)' }}>
                       {Object.entries(summary.breakdown)
                         .sort((a, b) => b[1] - a[1])
                         .map(([label, count]) => (

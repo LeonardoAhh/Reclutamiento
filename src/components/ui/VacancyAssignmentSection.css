@@ -1,4 +1,4 @@
-﻿.vacancy-assignment-section {
+.vacancy-assignment-section {
   display: flex;
   min-inline-size: 0;
   flex-direction: column;
@@ -8,8 +8,8 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: var(--spacing-md);
-  margin-block-end: var(--spacing-lg);
+  gap: var(--design-spacing-sm);
+  margin-block-end: var(--design-spacing-md);
 }
 
 .vacancy-assignment-section__title {
@@ -35,18 +35,18 @@
 }
 
 .vacancy-assignment-groups {
-  gap: var(--spacing-xl);
+  gap: var(--design-spacing-lg);
 }
 
 .vacancy-assignment-group {
-  gap: var(--spacing-md);
+  gap: var(--design-spacing-sm);
 }
 
 .vacancy-assignment-group__header {
   display: flex;
   min-inline-size: 0;
   align-items: baseline;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
 }
 
 .vacancy-assignment-group__title {
@@ -79,7 +79,7 @@
   list-style: none;
   align-items: start;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--spacing-md);
+  gap: var(--design-spacing-sm);
 }
 
 @media (width >= 768px) {
@@ -194,15 +194,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: var(--spacing-xxl) var(--spacing-lg);
+  padding: var(--design-spacing-xl) var(--design-spacing-md);
   border: var(--border-width) dashed var(--color-hairline-strong);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
   background: var(--color-surface-card);
   text-align: center;
 }
 
 .vacancy-assignment-section__empty-icon {
-  margin-block-end: var(--spacing-md);
+  margin-block-end: var(--design-spacing-sm);
   color: var(--color-mute);
 }
 

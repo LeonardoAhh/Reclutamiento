@@ -53,7 +53,7 @@
 .reporte-incidents__table-wrap {
   display: none;
   overflow-x: auto;
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
   border: 1px solid var(--color-hairline);
 }
 
@@ -297,11 +297,11 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
   text-align: center;
-  padding: var(--spacing-xl) var(--spacing-lg);
+  padding: var(--design-spacing-lg) var(--design-spacing-md);
   border: 1px dashed var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
   background: var(--color-surface-card);
   color: var(--color-mute);
 }
@@ -471,7 +471,7 @@
 }
 
 .reporte-cal__holiday {
-  border-radius: var(--rounded-sm);
+  border-radius: var(--radius-control);
   padding: var(--design-spacing-xxs);
   font-size: var(--type-caption-up-size);
   font-weight: var(--type-caption-up-weight);

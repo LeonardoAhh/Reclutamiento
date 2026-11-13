@@ -265,7 +265,7 @@ La calidad del sistema de tokens es un requisito, no un extra.
 - Los tokens numéricos de una misma familia DEBEN seguir una progresión coherente y documentada. No se permiten saltos arbitrarios ni valores intermedios inventados.
 - Cuando un token deje de usarse, DEBE eliminarse en el mismo cambio autorizado. No se acumulan tokens legacy.
 - La fuente central de tokens es única. **PROHIBIDO** definir tokens locales de feature que repliquen tokens globales.
-- Los alias obsoletos (`--spacing-*` en px, `--tracking-*`) no deben propagarse a código nuevo.
+- Los alias obsoletos de tracking no deben propagarse a código nuevo. El espaciado usa exclusivamente `--design-spacing-*`.
 
 ---
 
@@ -327,18 +327,18 @@ Antes de utilizar texto muted o faint, se DEBE comprobar su contraste sobre la s
 ## 10. Espaciado, geometría y elevación
 
 - Usar exclusivamente la escala de `desing.md` (base 4px): 4 · 8 · 12 · 16 · 24 · 32 · 40 · 64 · 96 · 128, expuesta como `--design-spacing-*`.
-- La escala `--spacing-*` es legado: conserva valores en px porque el generador del pase en canvas la lee como número; `--spacing-xxs` y `--spacing-2xl` son alias obsoletos.
+- La única escala de espaciado es `--design-spacing-*`; el pase en canvas convierte sus longitudes `rem` a píxeles al dibujar.
 - Las distancias equivalentes deben utilizar el mismo token.
 - Los componentes hermanos deben compartir ritmo y dimensiones.
 - Radios según la geometría compacta aprobada en `desing.md`:
-  - Botones, tabs y navegación: 10px mediante `--radius-control`.
-  - Inputs, selects, textareas y buscadores: 10px mediante `--radius-field`.
-  - Cards y medios: 16px mediante `--radius-card` y `--radius-media`.
-  - Menús y popovers: 12px mediante `--radius-menu`.
-  - Modales y paneles flotantes: 20px mediante `--radius-dialog`.
-  - Marca de aplicación: 12px mediante `--radius-brand`, sin porcentajes.
+  - Botones, tabs y navegación: 4px mediante `--radius-control`.
+  - Inputs, selects, textareas y buscadores: 4px mediante `--radius-field`.
+  - Cards y medios: 8px mediante `--radius-card` y `--radius-media`.
+  - Menús y popovers: 8px mediante `--radius-menu`.
+  - Modales y paneles flotantes: 12px mediante `--radius-dialog`.
+  - Marca de aplicación: 8px mediante `--radius-brand`, sin porcentajes.
   - Indicadores de checkbox: 4px.
-  - Badges de estado: `--rounded-xs` (4px). Botones solo-icono: `--radius-control` (10px). Avatares y puntos de estado pueden conservar su forma circular.
+  - Badges de estado: `--rounded-xs` (4px). Botones solo-icono: `--radius-control` (4px). Avatares y puntos de estado pueden conservar su forma circular.
 - Los controles y badges son rectangulares con esquinas suaves. Los campos conservan su radio propio; no se usan píldoras.
 - Todo control interactivo tiene un mínimo explícito de 44px (`--touch-target-min`); la altura nunca se infiere solo del line-height.
 - Las cards deben utilizar hairline y la elevación definida: Level 0 plano, Level 1 `{shadows.xs}`, Level 2 `{shadows.sm}` solo para menús, modales y popovers.
@@ -351,7 +351,7 @@ Antes de utilizar texto muted o faint, se DEBE comprobar su contraste sobre la s
 
 - **PROHIBIDO** usar `border-radius: 9999px`, `50%` o cualquier valor que produzca forma de píldora en: botones (incluidos los solo-icono), inputs, selects, textareas, cards, tabs, badges, menús, modales, popovers, paneles, filas de navegación y segmented controls.
 - Los avatares y puntos de estado son las únicas formas circulares; no establecen una excepción para controles o badges.
-- La marca de aplicación usa `--radius-brand` (12px), nunca forma circular completa.
+- La marca de aplicación usa `--radius-brand` (8px), nunca forma circular completa.
 - Un checkbox no se redondea a píldora; su indicador usa el radio definido.
 
 Si una dimensión nueva se repite o representa una función estable, debe convertirse en token semántico.

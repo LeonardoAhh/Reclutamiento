@@ -17,7 +17,7 @@
   margin: 0;
   padding: 0;
   border: 0;
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-control);
   background: transparent;
   cursor: pointer;
   z-index: 1;
@@ -58,6 +58,6 @@
 
 .ui-checkbox__input:disabled ~ .ui-checkbox__indicator {
   background: var(--color-surface-strong);
-  border-color: var(--color-hairline-strong);
-  opacity: var(--opacity-disabled);
+  border-color: var(--color-control-border);
+  color: var(--color-ink);
 }

@@ -3,7 +3,7 @@
 .incapacidad-modal .modal-body {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: var(--design-spacing-md);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
@@ -15,7 +15,7 @@
   display: flex;
   min-block-size: var(--touch-target-min);
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
   cursor: pointer;
   user-select: none;
 }
@@ -32,7 +32,7 @@
 .incapacidad-modal__error {
   display: flex;
   align-items: center;
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
   margin: 0;
 }
 

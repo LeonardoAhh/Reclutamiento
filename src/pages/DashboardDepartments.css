@@ -2,9 +2,9 @@
 .dashboard__departments {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--spacing-md);
+  gap: var(--design-spacing-sm);
   align-items: stretch;
-  padding-bottom: var(--spacing-xxl);
+  padding-bottom: var(--design-spacing-xl);
 }
 
 .dashboard__search-hint,
@@ -17,7 +17,7 @@
   margin: 0;
   padding: var(--design-spacing-sm) var(--design-spacing-md);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-menu);
   background: var(--color-canvas-elevated);
   color: var(--color-mute);
   font-size: var(--type-body-md-size);
@@ -58,7 +58,7 @@
 .dept-card {
   background: var(--color-surface-card);
   border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
   overflow: hidden;
   transition:
     border-color var(--transition-fast),
@@ -79,9 +79,9 @@
   flex-direction: row;
   align-items: flex-start;
   justify-content: space-between;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
   width: 100%;
-  padding: var(--spacing-md, 16px) var(--spacing-md, 16px) 0;
+  padding: var(--design-spacing-sm) var(--design-spacing-sm) 0;
   background: none;
   border: none;
   cursor: pointer;
@@ -97,7 +97,7 @@
 .dept-card__header-left {
   display: flex;
   align-items: center;
-  gap: var(--spacing-xs, 8px);
+  gap: var(--design-spacing-xxs);
   flex-wrap: wrap;
   flex: 1;
 }
@@ -111,12 +111,12 @@
   letter-spacing: var(--type-body-strong-tracking);
   color: var(--color-ink);
   text-transform: uppercase;
-  margin-right: 4px;
+  margin-right: var(--design-spacing-xxs);
 }
 
 .dept-card__meta {
   display: flex;
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
   flex-wrap: wrap;
 }
 
@@ -163,7 +163,7 @@
 }
 
 .dept-card__body {
-  padding: var(--spacing-sm, 12px) var(--spacing-md, 16px) var(--spacing-md, 16px);
+  padding: var(--design-spacing-xs) var(--design-spacing-sm) var(--design-spacing-sm);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -173,7 +173,7 @@
 .dept-card__coverage {
   width: 100%;
   min-width: 0;
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
 }
 
 .dept-card__coverage-heading {
@@ -181,7 +181,7 @@
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: baseline;
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
   color: var(--color-ink);
 }
 
@@ -202,11 +202,11 @@
 
 .dept-card__coverage-bar {
   width: 100%;
-  height: var(--spacing-xs);
+  height: var(--design-spacing-xxs);
   appearance: none;
   overflow: hidden;
   border: 0;
-  border-radius: var(--rounded-full);
+  border-radius: var(--radius-control);
   background: var(--color-hairline);
   color: var(--color-primary-text);
 }
@@ -233,10 +233,11 @@
 
 .dept-card__headcount {
   font-family: var(--font-body);
-  font-size: var(--type-body-lg-size, 16px);
+  font-size: var(--type-heading-sm-size);
   font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
   color: var(--color-ink);
-  letter-spacing: -0.01em;
+  letter-spacing: var(--type-heading-sm-tracking);
 }
 
 .dept-card__bottom {
@@ -251,56 +252,6 @@
 
 .dept-card--alert:hover {
   background: var(--color-surface-card);
-}
-
-/* ── Department Table (compartido con AreaDetailModal) ── */
-.dept-card__table-wrapper {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-.dept-card__table {
-  width: 100%;
-  border-collapse: collapse;
-  font-family: var(--font-body);
-  font-size: var(--type-caption-md-size);
-}
-
-.dept-card__table thead {
-  background: var(--color-surface-card);
-}
-
-.dept-card__table th {
-  padding: var(--spacing-sm) var(--spacing-md);
-  font-family: var(--font-body);
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  line-height: var(--type-caption-up-line);
-  letter-spacing: var(--type-caption-up-tracking);
-  text-transform: uppercase;
-  color: var(--color-mute);
-  text-align: left;
-  white-space: nowrap;
-  border-bottom: 1px solid var(--color-hairline);
-}
-
-.dept-card__table td {
-  padding: var(--spacing-xs) var(--spacing-sm);
-  color: var(--color-ink);
-  border-bottom: 1px solid var(--color-hairline);
-  vertical-align: middle;
-}
-
-.dept-card__table tr:last-child td {
-  border-bottom: none;
-}
-
-.dept-card__table tr.row--has-vacancy {
-  background: var(--color-vacancy-tint);
-}
-
-.dept-card__table tr.row--urgent {
-  box-shadow: inset 3px 0 0 0 var(--color-error);
 }
 
 .text-center {
@@ -330,7 +281,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
 }
 
 .cell-puesto__name {
@@ -363,8 +314,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: var(--spacing-lg);
-  height: var(--spacing-lg);
+  width: var(--design-spacing-md);
+  height: var(--design-spacing-md);
   border-radius: var(--rounded-xs);
   background: var(--color-vacancy-chip-bg);
   color: var(--color-error-text);

@@ -13,6 +13,7 @@
   --sheet-padding-safe-area-bottom: var(--safe-area-bottom);
   --sheet-padding-safe-area-left: var(--safe-area-left);
   --sheet-slide-distance: 100%;
+
   position: fixed;
   inset-block: 0;
   inset-inline-end: 0;
@@ -58,15 +59,15 @@
 /* Variante flotante: marco y elevación del workspace con separación de las safe areas. */
 .sheet-content--floating {
   --sheet-available-inline-size: calc(
-    100% - max(var(--design-spacing-sm), var(--safe-area-left)) -
-      max(var(--design-spacing-sm), var(--safe-area-right))
+    100% - max(var(--design-spacing-sm), var(--safe-area-left)) - max(var(--design-spacing-sm), var(--safe-area-right))
   );
   --sheet-padding-safe-area-top: 0px;
   --sheet-padding-safe-area-right: 0px;
   --sheet-padding-safe-area-bottom: 0px;
   --sheet-padding-safe-area-left: 0px;
-  inset-block-start: max(var(--design-spacing-sm), var(--safe-area-top));
-  inset-block-end: max(var(--design-spacing-sm), var(--safe-area-bottom));
+
+  inset-block: max(var(--design-spacing-sm), var(--safe-area-top))
+    max(var(--design-spacing-sm), var(--safe-area-bottom));
   inset-inline-end: max(var(--design-spacing-sm), var(--safe-area-right));
   border: var(--border-width) solid var(--workspace-border-color);
   border-radius: var(--radius-dialog);
@@ -156,10 +157,9 @@
   flex: 1 1 auto;
   min-block-size: 0;
   min-inline-size: 0;
-  padding-block-start: var(--design-spacing-md);
-  padding-block-end: max(var(--design-spacing-md), var(--sheet-padding-safe-area-bottom));
-  padding-inline-start: max(var(--design-spacing-md), var(--sheet-padding-safe-area-left));
-  padding-inline-end: max(var(--design-spacing-md), var(--sheet-padding-safe-area-right));
+  padding-block: var(--design-spacing-md) max(var(--design-spacing-md), var(--sheet-padding-safe-area-bottom));
+  padding-inline: max(var(--design-spacing-md), var(--sheet-padding-safe-area-left))
+    max(var(--design-spacing-md), var(--sheet-padding-safe-area-right));
   overflow-y: auto;
   overscroll-behavior: contain;
 }
@@ -172,48 +172,66 @@
   gap: var(--design-spacing-xs);
   flex: 0 0 auto;
   min-inline-size: 0;
-  padding-block-start: var(--design-spacing-md);
-  padding-block-end: max(var(--design-spacing-md), var(--sheet-padding-safe-area-bottom));
-  padding-inline-start: max(var(--design-spacing-md), var(--sheet-padding-safe-area-left));
-  padding-inline-end: max(var(--design-spacing-md), var(--sheet-padding-safe-area-right));
+  padding-block: var(--design-spacing-md) max(var(--design-spacing-md), var(--sheet-padding-safe-area-bottom));
+  padding-inline: max(var(--design-spacing-md), var(--sheet-padding-safe-area-left))
+    max(var(--design-spacing-md), var(--sheet-padding-safe-area-right));
   border-block-start: var(--border-width) solid var(--color-hairline);
 }
 
-.sheet-overlay[data-state="open"] {
+.sheet-overlay[data-state='open'] {
   animation: sheet-overlay-enter var(--transition-base) both;
 }
 
-.sheet-overlay[data-state="closed"] {
+.sheet-overlay[data-state='closed'] {
   animation: sheet-overlay-exit var(--transition-fast) both;
 }
 
-.sheet-content[data-state="open"] {
+.sheet-content[data-state='open'] {
   animation: sheet-content-enter var(--transition-base) both;
 }
 
-.sheet-content[data-state="closed"] {
+.sheet-content[data-state='closed'] {
   animation: sheet-content-exit var(--transition-fast) both;
 }
 
+/* stylelint-disable rule-empty-line-before -- Prettier compacta las paradas de estos keyframes. */
 @keyframes sheet-overlay-enter {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes sheet-overlay-exit {
-  from { opacity: 1; }
-  to { opacity: 0; }
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 
 @keyframes sheet-content-enter {
-  from { transform: translateX(var(--sheet-slide-distance)); }
-  to { transform: translateX(0); }
+  from {
+    transform: translateX(var(--sheet-slide-distance));
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 
 @keyframes sheet-content-exit {
-  from { transform: translateX(0); }
-  to { transform: translateX(var(--sheet-slide-distance)); }
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(var(--sheet-slide-distance));
+  }
 }
+
+/* stylelint-enable rule-empty-line-before */
 
 @media (prefers-reduced-motion: reduce) {
   .sheet-overlay[data-state],

@@ -10,7 +10,7 @@
 .report-day-page__title-link {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
   color: inherit;
   text-decoration: none;
   overflow-wrap: anywhere;
@@ -23,7 +23,7 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  column-gap: var(--spacing-xs);
+  column-gap: var(--design-spacing-xxs);
   min-inline-size: 0;
 }
 .report-day-page__title-week {

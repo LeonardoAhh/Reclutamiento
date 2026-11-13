@@ -8,8 +8,8 @@
 /* ── Tablet portrait (≥ 768px) ──────────────────────────────────────── */
 @media (width >= 768px) {
   .dashboard__hero {
-    padding-block: var(--spacing-xl);
-    margin-bottom: var(--spacing-lg);
+    padding-block: var(--design-spacing-lg);
+    margin-bottom: var(--design-spacing-md);
   }
 
   .dashboard__hero-actions {
@@ -44,12 +44,12 @@
 
   .dept-card__table th,
   .dept-card__table td {
-    padding: var(--spacing-sm) var(--spacing-md);
+    padding: var(--design-spacing-xs) var(--design-spacing-sm);
   }
 
   .dashboard__departments {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--spacing-lg);
+    gap: var(--design-spacing-md);
   }
 }
 
@@ -62,7 +62,7 @@
 
   .dashboard__departments {
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: var(--spacing-lg);
+    gap: var(--design-spacing-md);
     justify-items: stretch;
   }
 
@@ -84,14 +84,14 @@
 
 /* ── Refactored classes from Dashboard.tsx inline styles ── */
 .dashboard-sidebar__header {
-  margin-bottom: var(--spacing-md);
+  margin-bottom: var(--design-spacing-sm);
 }
 
 .dashboard-sidebar__header-content {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
   flex-wrap: wrap;
   width: 100%;
 }
@@ -99,13 +99,13 @@
 .dashboard-sidebar__title-group {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
   color: var(--color-ink);
 }
 
 .dashboard__hero-actions {
   display: flex;
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
   width: auto;
   flex-wrap: nowrap;
 }
@@ -195,7 +195,7 @@
   flex-direction: column;
   min-width: 0;
   width: 100%;
-  padding-block-end: var(--spacing-lg);
+  padding-block-end: var(--design-spacing-md);
 }
 
 /* ── Sidebar Internal Overrides ───────────────────────────────── */
@@ -209,7 +209,7 @@
   width: 100%;
   justify-content: space-between;
   align-items: stretch;
-  gap: var(--spacing-md);
+  gap: var(--design-spacing-sm);
 }
 
 @media (width <= 767px) {
@@ -220,7 +220,7 @@
 
 @media (width >= 768px) {
   .dashboard__content-area {
-    padding-block-end: var(--spacing-xxl);
+    padding-block-end: var(--design-spacing-xl);
   }
 
   .dashboard-sidebar__hero-content {

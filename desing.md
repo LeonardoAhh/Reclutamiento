@@ -6,7 +6,7 @@ This visual system applies to product interfaces throughout the repository.
 
 The light theme uses a pale graphite canvas and white content surfaces; the dark theme uses a charcoal canvas and stepped graphite surfaces. Each palette keeps its existing primary accent, with dedicated foreground and border tokens.
 
-Typography does the heavy lifting. **Mona Sans** is the interface family for headings, body, controls and labels in both themes; code retains the existing monospace stack. Existing type sizes, weights, line heights and tracking remain unchanged. App buttons, tabs, inputs and navigation controls, including icon-only buttons, use 10px corners; cards use 16px; menus and popovers use 12px; modals and floating panels use 20px. Badge and chip surfaces use compact 4px corners and never pills; only avatars and status dots remain circular. Application brand marks use a fixed 12px radius.
+Typography does the heavy lifting. **Mona Sans** is the interface family for headings, body, controls and labels in both themes; code retains the existing monospace stack. Existing type sizes, weights, line heights and tracking remain unchanged. App buttons, tabs, inputs and navigation controls, including icon-only buttons, use 4px corners; cards use 8px; menus and popovers use 8px; modals and floating panels use 12px. Badge and chip surfaces use compact 4px corners and never pills; only avatars and status dots remain circular. Application brand marks use a fixed 8px radius.
 
 Both themes use canvas as the base page surface, canvas-soft for quiet grouping, surface-card for content, and canvas-elevated for fields and overlays. On desktop, the authenticated sidebar and workspace share one inset frame with the same border, radius and elevation as login; on mobile and tablet, the workspace remains edge-to-edge for the sliding sidebar. The workspace's low-contrast square grid remains visible and fades toward the edges. The sidebar retains its palette surface. A low-contrast square grid also fades toward the edges of login and within maintenance's visual region, in both themes. Its color and spacing derive from shared tokens. Text roles and the independent document/export palette are preserved.
 
@@ -14,7 +14,7 @@ Both themes use canvas as the base page surface, canvas-soft for quiet grouping,
 - Pale graphite and charcoal surfaces with each palette's existing primary, accessible text variants and an opaque neutral focus ring.
 - Neutral grouping regions and layered cards; controls and overlays retain their existing surfaces.
 - Mona Sans unifies display headings, UI and body in both themes.
-- Compact 10px controls, including icon-only buttons, 16px cards, 12px menus and 20px dialogs. Badges and chips use compact 4px corners, never pills; only avatars and status dots remain circular.
+- Compact 4px controls, including icon-only buttons, 8px cards and menus, and 12px dialogs. Badges and chips use compact 4px corners, never pills; only avatars and status dots remain circular.
 - Default depth is flat or a 1px hairline. Floating menus and dialogs use only a subtle shadow.
 - Controls keep the application's 44px minimum touch target.
 
@@ -105,6 +105,10 @@ Primary remains the sole structural action color in dark mode for each palette. 
 
 Primary contrast pairs are verified above. Use dedicated foregrounds for neutral backgrounds and on-primary for filled controls; these values do not replace rendered-state verification.
 
+### Badges & Avatars
+
+Badges and avatar fallbacks share at most five semantic color families: neutral for default, new and open states; warning for pending or in-progress states; success for completed or approved states; error for rejected or critical states; and identity for people, roles or projects. Badges use the existing subtle background and matching text tokens for each state. Project and role badges keep a neutral surface with the identity accent limited to their icon or status dot. Avatar fallbacks assign one of these five tones consistently from the person's name; this decorative color never communicates status. Photos retain their original colors. Badge corners remain 4px, and only avatars and status dots are circular. Text and non-text contrast must be checked against each palette in light and dark modes.
+
 - `--color-on-neutral`, `--color-on-error`, `--color-on-success` and `--color-on-warning` describe text on solid status fills; `--color-on-dark` remains text on a dark surface.
 - `--color-on-dark-hover` describes the hover fill for a light action inside a dark surface.
 - `--color-shadow-rgb` keeps shadow channels separate from text, avoiding light halos when ink becomes light.
@@ -123,16 +127,23 @@ Primary contrast pairs are verified above. Use dedicated foregrounds for neutral
 | Token | Size | Weight | Line Height | Letter Spacing | Use |
 |---|---|---|---|---|---|
 | `{typography.display-xl}` | 48px | 600 | 48px | -2.4px | Editorial hero headline |
+| `{typography.display-1}` | fluid 40–48px | 600 | 1 | -0.05em | Responsive public hero headline |
+| `{typography.display-2}` | fluid 32–40px | 600 | 1.1 | -0.04em | Responsive numeric display |
+| `{typography.heading-1}` | fluid 28–32px | 600 | 1.25 | -0.04em | Responsive public card heading |
 | `{typography.heading-lg}` | 32px | 600 | 40px | -1.28px | Major page and section headings |
 | `{typography.heading-md}` | 20px | 600 | 28px | -0.4px | Sub-section / card headings |
-| `{typography.brand}` | 24px | 600 | 34px | -0.48px | Brand wordmark |
+| `{typography.brand}` | 24px | 600 | 34px | -0.48px | Canvas card name size; its numeric CSS token is read at runtime |
+| `{typography.heading-sm}` | 16px | 600 | 24px | -0.16px | Card and dialog titles; compact sidebar brand |
 | `{typography.label-sm}` | 14px | 500 | 20px | -0.28px | Strong labels, nav emphasis |
-| `{typography.mono-eyebrow}` | 12px | 500 | 16px | 0 | Uppercase technical section eyebrows; legacy token name, Mona Sans family |
 | `{typography.caption-up}` | 12px | 600 | 16px | 0.72px | Short uppercase labels: table headers, eyebrows, tags |
 | `{typography.body-lg}` | 16px | 400 | 24px | 0 | Lead paragraphs, large body |
 | `{typography.body-md}` | 14px | 400 | 20px | 0 | Default body, nav links, table cells |
+| `{typography.body-strong}` | 14px | 600 | 1.4 | -0.084px | Names, compact headings and emphasized copy |
+| `{typography.body-sm-strong}` | 14px | 500 | 1.4 | 0 | Dense emphasized body copy |
 | `{typography.body-sm}` | 12px | 400 | 16px | 0 | Captions, footnotes, metadata |
 | `{typography.body-sm-semibold}` | 12px | 600 | 16px | 0 | Compact emphasized body text |
+| `{typography.caption-sm}` | 12px | 400 | 1.43 | 0 | Small captions with a relaxed line height |
+| `{typography.caption-xs}` | 12px | 400 | 16px | 0 | Compact account metadata |
 | `{typography.button-lg}` | 16px | 600 | 20px | Large action labels |
 | `{typography.button-md}` | 14px | 600 | 20px | Navigation and app action labels |
 | `{typography.code}` | 14px | 400 | 20px | Code blocks and inline code |
@@ -152,8 +163,22 @@ Mona Sans is self-hosted as variable WOFF2 files for normal and italic text. The
 ### Spacing System
 - **Base unit**: 4px. The scale steps 4 → 8 → 12 → 16 → 24 → 32 → 40 → 64 → 96 → 128px.
 - **Tokens**: `{spacing.xxs}` 4px · `{spacing.xs}` 8px · `{spacing.sm}` 12px · `{spacing.md}` 16px · `{spacing.lg}` 24px · `{spacing.xl}` 32px · `{spacing.2xl}` 40px · `{spacing.3xl}` 64px · `{spacing.4xl}` 96px · `{spacing.section}` 128px.
+- **Implementation**: use only `--design-spacing-xxs`, `--design-spacing-xs`, `--design-spacing-sm`, `--design-spacing-md`, `--design-spacing-lg`, `--design-spacing-xl`, `--design-spacing-xxl`, `--design-spacing-3xl`, `--design-spacing-4xl` and `--design-spacing-section` respectively. The candidate pass converts these `rem` values to pixels when drawing on canvas; there is no separate pixel spacing scale.
 - **Card interiors** sit at `{spacing.lg}`–`{spacing.xl}` (24–32px); **section bands** run `{spacing.4xl}`–`{spacing.section}` (96–128px) of vertical rhythm.
 - **Button sizing**: every interactive control has `min-height: 44px`. In-app controls use the shared horizontal-padding token. Height is never inferred from line-height alone.
+
+### Button Variants
+
+| Variant | Shared class | Use | Surface |
+|---|---|---|---|
+| Primary | `.btn-primary` | Main action in a task | Primary fill and its paired foreground |
+| Secondary | `.btn-secondary` | Alternative or supporting action | Elevated surface and control border |
+| Danger | `.btn-danger` | Confirmed destructive action | Error fill and its paired foreground |
+| Ghost | `.btn-ghost` | Quiet contextual action | Transparent, with a subtle hover surface |
+| Text | `.btn-text` | Inline action without a frame | Neutral text; link color remains exclusive to links |
+| Icon | `.btn-icon` | Compact icon action with an accessible name | Elevated surface and control border |
+
+All variants use the shared control radius, complete button typography role, tokenized spacing, at least a 44px touch target, visible focus, and disabled states. `ButtonUtility` composes the secondary variant with an optional leading icon. The primary fill is reserved for the main action; semantic status colors do not decorate unrelated actions. Icons beside visible labels are decorative; icon-only buttons require an accessible name. Existing page actions and permissions remain unchanged.
 
 ### Grid & Container
 - Pages use the shared `.container` with a 90rem maximum width and responsive gutters. This is the only global page-container width; narrower or wider limits belong to specific content regions and must use their existing semantic tokens.
@@ -195,9 +220,11 @@ Images and illustrations scale within their containers and preserve intrinsic pr
 
 Depth is deliberately minimal. The system prefers a crisp 1px hairline and small changes between neutral surfaces; floating surfaces use a low-alpha shadow rather than a heavy drop.
 
+Reference mapping: “Flat” and “Card with hairline” are Level 0; a soft card changes to `{colors.surface-card}` without adding a shadow; “Subtle shadow” is Level 1 (`--shadow-xs`). Menus and dialogs use Level 2 (`--shadow-sm`). A featured dark surface is a color inversion within an explicitly designed feature, not a new elevation level. Keyboard focus keeps the existing opaque 2px `--color-focus` outline; an 8%-opacity halo cannot replace it because focus must remain perceptible on every palette.
+
 ### Data tables
 
-Product data tables use the shared `data-table` primitive: `{colors.surface-card}` for the body, `{colors.canvas-soft}` for the column header and total row, `{colors.hairline}` for quiet row separators, `caption-up` for column labels, and `body-md` for cells. Row headers use `body-strong` without uppercase styling. The surrounding panel uses `{colors.hairline}` and `{rounded.lg}` when a frame is needed. Paginated tables frame the table wrapper only; the shared `Pagination` follows outside that frame with tokenized spacing. The same relationship applies when a table becomes a stacked card list on narrow screens. The same tokenized cell spacing applies across desktop tables; numeric alignment and emphasis follow the meaning of each column. Tables that become stacked cards on narrow screens keep their existing mobile layout through `data-table--cards`. Printable and exported documents retain their separate `document-*` palette and layout.
+Product data tables use the shared `data-table` primitive: `{colors.surface-card}` for the body, `{colors.canvas-soft}` for the column header and total row, `{colors.hairline}` for quiet row separators, `caption-up` for column labels, and `body-md` for cells. Row headers use `body-strong` without uppercase styling. The surrounding panel uses `{colors.hairline}` and `{rounded.sm}` when a frame is needed. Paginated tables frame the table wrapper only; the shared `Pagination` follows outside that frame with tokenized spacing. The same relationship applies when a table becomes a stacked card list on narrow screens. The same tokenized cell spacing applies across desktop tables; numeric alignment and emphasis follow the meaning of each column. Tables that become stacked cards on narrow screens keep their existing mobile layout through `data-table--cards`. Printable and exported documents retain their separate `document-*` palette and layout.
 
 ### Decorative Depth
 Decorative color is optional and localized. Product UI, data, and semantic states must remain understandable without gradients or color-only signals. No glows or heavy gradients.
@@ -209,17 +236,15 @@ Decorative color is optional and localized. Product UI, data, and semantic state
 | Token | Value | Use |
 |---|---|---|
 | `{rounded.none}` | 0px | Full-bleed regions and continuous calendar bands |
-| `{rounded.xs}` | 4px | Badge and chip surfaces, checkbox indicators |
-| `{rounded.sm}` | 10px | Buttons, tabs, navigation, inputs, selects and search fields |
-| `{rounded.md}` | 12px | Menus, popovers and application brand marks |
-| `{rounded.lg}` | 16px | Content cards and media |
-| `{rounded.xl}` | 20px | Modals and floating detail panels |
+| `{rounded.xs}` | 4px | Controls, fields, badge and chip surfaces, checkbox indicators |
+| `{rounded.sm}` | 8px | Menus, popovers, application brand marks, content cards and media |
+| `{rounded.md}` | 12px | Modals and floating detail panels |
 | `{rounded.full}` | 9999px | Avatars and status dots only; never controls or badges |
 
-Both themes use the same compact geometry. Semantic roles: `--radius-control` and `--radius-field` = 10px; `--radius-card` and `--radius-media` = 16px; `--radius-menu` and `--radius-brand` = 12px; `--radius-dialog` = 20px. Legacy pill-control aliases now resolve to the control radius. The legacy squircle alias resolves to the fixed brand radius, never a percentage. A select trigger remains a field even when implemented as a button.
+Both themes use the same compact 4/8/12px geometry. Semantic roles: `--radius-control` and `--radius-field` = 4px; `--radius-card`, `--radius-media`, `--radius-menu` and `--radius-brand` = 8px; `--radius-dialog` = 12px. A select trigger remains a field even when implemented as a button. Circular radii remain exclusive to avatars and status dots.
 
 ### Geometry
-All buttons, including icon-only buttons, are rectangles with soft 10px corners. Content cards use 16px, menus 12px and dialogs/floating panels 20px. Status and assignment badges keep compact 4px corners instead of pills. Only avatars and status dots remain circular. Preserve continuous calendar-range bands, edge-attached sheets and document/export geometry. The approved blue palette and contrast, typography, spacing, touch targets, motion, data and permissions remain unchanged.
+All buttons, including icon-only buttons, are rectangles with 4px corners. Content cards and menus use 8px, while dialogs and floating panels use 12px. Status and assignment badges keep compact 4px corners instead of pills. Only avatars and status dots remain circular. Preserve continuous calendar-range bands, edge-attached sheets and document/export geometry. The approved blue palette and contrast, typography, spacing, touch targets, motion, data and permissions remain unchanged.
 
 ## Components
 
@@ -260,7 +285,7 @@ All buttons, including icon-only buttons, are rectangles with soft 10px corners.
 - Background `{colors.canvas}`, bottom hairline `{colors.hairline}`, text `{colors.body}`, type `{typography.body-md}`, and tokenized padding. It contains the product identity, navigation links, and existing account actions.
 
 **`nav-link`** — individual nav item
-- Body-grey text `{colors.body}`, type `{typography.body-md}`, control-radius hit area `{rounded.sm}`, padding `{spacing.xs} {spacing.sm}`. Transparent until interacted; the selected item uses a solid primary fill, accessible on-primary text and floating Level-2 `{shadows.sm}` elevation.
+- Body-grey text `{colors.body}`, type `{typography.body-md}`, control-radius hit area `{rounded.xs}`, padding `{spacing.xs} {spacing.sm}`. Transparent until interacted; the selected item uses a solid primary fill, accessible on-primary text and floating Level-2 `{shadows.sm}` elevation.
 
 **`app-workspace`** — authenticated application shell
 - On desktop, the sidebar is a full-height rail flush with the left viewport edge. Its brand row starts with the workspace header, and the navigation divider aligns with the header's bottom edge using the shared `--header-height` and safe-area inset. It uses `--shell-floor` (canvas-soft in the Original palette and the selected sidebar surface in other palettes), with a hairline at its inline end and no radius or shadow; it remains fixed while the workspace scrolls. Mobile and tablet use the same palette-specific sidebar surface behind a viewport-height workspace; the workspace translates horizontally by the sidebar width and its corner radius and shadow follow the same 0–1 drag progress, without a border. Its content scrolls inside the workspace, independent of the page body. A left-edge swipe opens it, a reverse swipe closes it, and release settles by velocity or halfway progress. The menu button remains available; tapping the transparent scrim or pressing Escape also closes the sidebar. The scrim stays within the safe area so it does not dim system status or home-indicator regions. A closed sidebar is inert and hidden from assistive technology; opening focuses its close button and closing restores focus to the trigger without a modal focus trap.
@@ -281,19 +306,19 @@ All buttons, including icon-only buttons, are rectangles with soft 10px corners.
 - Free-text search fields across authenticated pages use the shared `SearchField` primitive and the concise localized placeholder `Buscar` / `Search`; contextual accessible labels continue to identify what each field searches, and existing keyboard shortcuts remain unchanged. Salary scale, Routes and Analysis use its `search-field--intrinsic` modifier: natural input width that can shrink to the available space, without a fixed width, maximum width or full-width stretching; height follows the shared control token. Routes fills the available search width below 768px, keeping its natural width on larger screens. From 1080px, the search sits above the route list in the left column and the detail pane aligns with its top; active search keeps results below the search in one column. On mobile below 640px, Analysis uses a full-width search row and a full-width group of wrapping quick filters; buttons grow to fill each row. Salary scale keeps search above the tabs on mobile (below 640px), with both rows filling the available width and equal-width tabs; from 640px, search and tabs share one horizontal row beneath the title.
 
 **`button-primary`** — the theme's primary app action
-- Background `{colors.primary}`, text `{colors.on-primary}`, type `{typography.button-md}` at weight 600, `{rounded.sm}` (10px), min-height `44px`, padding `{spacing.xs} {spacing.sm}`.
+- Background `{colors.primary}`, text `{colors.on-primary}`, type `{typography.button-md}` at weight 600, `{rounded.xs}` (4px), min-height `44px`, padding `{spacing.xs} {spacing.sm}`.
 
 **`button-secondary`** — the elevated secondary app action
-- Background `{colors.canvas-elevated}`, text `{colors.ink}`, border `{colors.control-border}`, type `{typography.button-md}` at weight 600, `{rounded.md}`, min-height `44px`, padding `{spacing.xs} {spacing.sm}`.
+- Background `{colors.canvas-elevated}`, text `{colors.ink}`, border `{colors.control-border}`, type `{typography.button-md}` at weight 600, `{rounded.xs}`, min-height `44px`, padding `{spacing.xs} {spacing.sm}`.
 
 **`button-primary-sm`** — the standard app CTA
-- Background `{colors.primary}`, text `{colors.on-primary}`, type `{typography.button-md}` at weight 600, `{rounded.sm}` (10px), min-height `44px`, padding `0px 12px`.
+- Background `{colors.primary}`, text `{colors.on-primary}`, type `{typography.button-md}` at weight 600, `{rounded.xs}` (4px), min-height `44px`, padding `0px 12px`.
 
 **`button-ghost-sm`** — the neutral secondary app button
-- Background `{colors.canvas-elevated}`, text `{colors.ink}`, 1px `{colors.control-border}`, type `{typography.button-md}` at weight 600, `{rounded.md}`, min-height `44px`, padding `0px 12px`.
+- Background `{colors.canvas-elevated}`, text `{colors.ink}`, 1px `{colors.control-border}`, type `{typography.button-md}` at weight 600, `{rounded.xs}`, min-height `44px`, padding `0px 12px`.
 
 **`button-category-pill`** — grouped category navigation
-- Background `{colors.canvas-elevated}`, text `{colors.ink}`, type `{typography.button-md}`, rounded `{rounded.pill-category}`. Use only inside a grouped-navigation container, never as a generic action.
+- Background `{colors.canvas-elevated}`, text `{colors.ink}`, type `{typography.button-md}`, rounded `{rounded.xs}`. Use only inside a grouped-navigation container, never as a generic action.
 
 **`button-icon`** — icon / carousel control
 - Background `{colors.canvas-elevated}`, text `{colors.ink}`, 1px `{colors.control-border}`, type `{typography.body-lg}`, radius `--radius-control`, no padding.
@@ -306,7 +331,10 @@ All buttons, including icon-only buttons, are rectangles with soft 10px corners.
 - On iOS WebKit, editable fields use the shared `--editable-text-min-size` floor mapped to `--type-body-lg-size` (16px), including search fields at tablet widths. Their existing typography remains unchanged elsewhere. Keep manual viewport zoom enabled.
 
 **`text-input`** — default form field
-- Background `{colors.canvas-elevated}`, ink text `{colors.ink}`, 1px `{colors.control-border}`, type `{typography.body-md}`, rounded `{rounded.md}`, padding `{spacing.xs} {spacing.sm}`, min-height `44px`.
+- Background `{colors.canvas-elevated}`, ink text `{colors.ink}`, 1px `{colors.control-border}`, type `{typography.body-md}`, rounded `{rounded.xs}`, padding `{spacing.xs} {spacing.sm}`, min-height `44px`.
+- Native inputs, selects and textareas in `.form-group` apply the complete `body-md` role, including weight, line height and tracking. Editable text retains the iOS minimum size. Labels use `caption-up`; error and help text stay associated with the control.
+- `CustomSelect` owns option-list keyboard and focus behavior through Radix, while `SearchField` owns the accessible search control and its clear action. Both use the shared field surface, radius and 44px target; the clear action is unavailable when its field is disabled.
+- `BirthDateField` keeps its labeled DD/MM/AAAA entry and calendar trigger; `Calendar` is the shared day picker. Their controls use the same field and touch tokens. `SmartTextarea` owns its field, toolbar and styling in `src/components/ui`; its expanding content is capped by `--textarea-content-max-block-size` (25rem) and its toolbar buttons keep 44px targets.
 
 **`auth-workspace`** — sign-in workspace
 - `/login` keeps the sign-in form in a single column on mobile and tablet. At the desktop breakpoint, a quiet `{colors.canvas-soft}` panel on the left displays 23rd Live Orb at a token-derived 224px diameter, then the greeting personalized with the remembered username when available and the localized welcome message. The orb follows the resolved light or dark theme, uses its built-in CSS fallback when WebGL is unavailable, and is never mounted below the desktop breakpoint. Other uses of Wave elsewhere in the app remain unchanged.
@@ -369,7 +397,7 @@ All buttons, including icon-only buttons, are rectangles with soft 10px corners.
 - When valid credentials belong to an inactive account, the login replaces the form with a compact localized status and a return-to-sign-in action. The transition uses existing motion tokens, with a fade-only reduced-motion path; authentication and access checks remain unchanged.
 
 **`team-workspace`** - account team directory
-- Administrators manage the complete team directory inside /account. The old /team route redirects to /account. The panel shows every non-archived team member, including members without a linked account, with a count and Add member action. It uses the existing surface-card, hairline and rounded.lg tokens. Its rows show an avatar, full name, job title and live presence or relative last access for linked active accounts; inactive members show Inactive and unlinked members show No account. From tablet upward the rows align under Member, Role and Status labels; mobile stacks the information without horizontal page scrolling.
+- Administrators manage the complete team directory inside /account. The old /team route redirects to /account. The panel shows every non-archived team member, including members without a linked account, with a count and Add member action. It uses the existing surface-card, hairline and rounded.sm tokens. Its rows show an avatar, full name, job title and live presence or relative last access for linked active accounts; inactive members show Inactive and unlinked members show No account. From tablet upward the rows align under Member, Role and Status labels; mobile stacks the information without horizontal page scrolling.
 - Each eligible row has direct icon actions for Activate/Deactivate and, only when inactive, Delete. Editing existing members is unavailable. The first click replaces that action with its icon and Confirm text and exposes an adjacent icon to cancel; the second click confirms. Action names identify the member and operation. Escape or leaving the action group cancels. The account owner and linked administrators cannot be deactivated. Success and recoverable error feedback remain inside the panel. Adding a member keeps the existing mobile Modal and tablet/desktop FormSheet, validation, account linking and persistence.
 - Team content uses complete Mona Sans roles: caption-up for column and form labels, body-md for role, status and controls, body-strong for member names, and body-sm for the count. Buttons keep the 44px touch minimum. Permissions and server operations remain unchanged.
 
@@ -466,7 +494,7 @@ All buttons, including icon-only buttons, are rectangles with soft 10px corners.
 - Existing field validation, dependent position selectors, recruiter permissions, submission, errors and interview-pass confirmation stay unchanged. Candidate editing uses the same compact floating Sheet in one column from tablet upward and retains its existing Modal/wizard on mobile, with role-based field restrictions unchanged. Candidate deletion retains the separate DeleteConfirmModal.
 - Selecting a candidate row with pointer or keyboard, or selecting a search result, opens the profile preview in an edge-attached bottom Modal across the available mobile width and a compact floating Sheet from tablet upward. The desktop table has no process or actions column; the process selector remains available in the preview. The former mobile detail page is replaced by the preview, which retains the process selector. The identity, position and process lead; available candidate details follow as aligned labeled rows, with missing optional values omitted. Edit stays in the header; Delete (administrator only), View pass (when data permits) and the existing conditional Hire action stay in the footer. Editing and deletion keep their existing forms, permissions and confirmation.
 - The desktop table keeps four columns — Candidate, Position, Recruiter and Interview — under a `caption-up` header strip on `{colors.canvas-soft}` that shares the row grid, so header labels and cells stay aligned. Rows stay grouped by status under a full-width group heading that carries the group count, and the position cell shows only the position. The Interview cell shows a single compact localized label built from shortened weekday, day, shortened month and two-digit year, for example `Jue 29 Oct 26`, evaluated in America/Mexico_City; it does not add a separate relative day.
-- On smaller screens the candidate card stacks the identity first, with the interview date aligned to the end of the name row. The date only adds a relative day when the appointment is today, tomorrow or yesterday (`Mañana · 29/10`); any other date shows day and month alone (`12/11`). The position follows in the strong body role and the optional section uses the muted small body role, omitted when the record has none. The footer pairs the status badge with the recruiter chip: the badge uses the shared geometry with a state icon instead of a dot, and the recruiter shows a circular initial plus the normalized name. The whole card keeps one 16px surface, a hairline, the existing 44px touch target and a single keyboard target.
+- On smaller screens the candidate card stacks the identity first, with the interview date aligned to the end of the name row. The date only adds a relative day when the appointment is today, tomorrow or yesterday (`Mañana · 29/10`); any other date shows day and month alone (`12/11`). The position follows in the strong body role and the optional section uses the muted small body role, omitted when the record has none. The footer pairs the status badge with the recruiter chip: the badge uses the shared geometry with a state icon instead of a dot, and the recruiter shows a circular initial plus the normalized name. The whole card keeps one 8px surface, a hairline, the existing 44px touch target and a single keyboard target.
 - On mobile, the toolbar shows a full-width candidate search, then the primary New action and, for administrators, an overflow menu that holds Metrics and Summary (copy report); no separate filter control is rendered. From tablet upward, search lives in the app header. Desktop keeps the existing Todos, Activos and Contratados count-bearing tabs in the toolbar, with Metrics, Summary and New as direct icon-and-text actions. Desktop results use compact continuous rows grouped by status within each page, preserving order inside each group; smaller screens retain their candidate cards and order.
 - Search results stay deliberately sparse: each row keeps the initial avatar, the candidate name and the shared status badge, which reuses the state icon from the candidate cards. Phone and recruiter are not repeated there, so the name never competes for inline space and no line is truncated mid-word. Selecting a result keeps opening the profile preview with its existing sound cue.
 
@@ -475,7 +503,7 @@ All buttons, including icon-only buttons, are rectangles with soft 10px corners.
 - The preview follows the application's active light or dark theme. After candidate creation and when opened from the candidate list, the interview pass uses the compact floating Sheet from tablet upward and retains the shared Modal on mobile. Only the exported document remains white. The dialog shows one short instruction, a centered responsive image and two touch-sized actions: secondary Copy and primary Share. Feedback uses app toasts, keeping the dialog geometry stable. The preview reserves its 4:5 area while loading and fits taller documents within it; it has no scale entrance animation. Short viewports scroll inside the shared modal region with contained overscroll. In the floating Sheet, only the instruction and preview body scroll; the native Copy/Share footer stays at the bottom of the available sheet height, separated by the shared hairline and with safe-area clearance. Mobile keeps its existing content-led Modal layout. The generated image has descriptive alternative text, and loading or generation errors are announced in place.
 
 **`feature-card`** — flat hairline content card
-- Background `{colors.surface-card}`, 1px hairline `{colors.hairline}`, ink text `{colors.ink}`, type `{typography.body-md}`, rounded `{rounded.lg}`, padding `{spacing.lg}`.
+- Background `{colors.surface-card}`, 1px hairline `{colors.hairline}`, ink text `{colors.ink}`, type `{typography.body-md}`, rounded `{rounded.sm}`, padding `{spacing.lg}`.
 
 **`onboarding-document-review`** — credential and contract delivery
 - “Entrega de credencial” and “Entrega de contratos” retain the shared Modal on mobile and use the compact floating FormSheet from tablet upward. Both reuse the same employee-selection content, counts, select/remove-all control and Cancel/Print actions. The list scrolls inside the dialog body while the header and footer remain accessible.
@@ -500,7 +528,7 @@ All buttons, including icon-only buttons, are rectangles with soft 10px corners.
 - White background, hairline, and Level-1 shadow. Level-2 is reserved for floating menus, dialogs, and popovers.
 
 **`code-block`** — code / terminal surface
-- Background `{colors.canvas-elevated}`, ink text `{colors.ink}`, 1px hairline `{colors.hairline}`, monospace `{typography.code}`, rounded `{rounded.md}`, padding `{spacing.md}`. Syntax rendered in the ink-and-accent palette.
+- Background `{colors.canvas-elevated}`, ink text `{colors.ink}`, 1px hairline `{colors.hairline}`, monospace `{typography.code}`, rounded `{rounded.sm}`, padding `{spacing.md}`. Syntax rendered in the ink-and-accent palette.
 
 ## Copiable and shareable content
 
@@ -517,7 +545,7 @@ All buttons, including icon-only buttons, are rectangles with soft 10px corners.
 ### Do
 - Keep one continuous canvas across pages; separate card and elevated surfaces with semantic tokens and hairlines.
 - Reserve `{colors.link}` for links and use `{colors.focus}` for visible focus; decorative accents must stay local and optional.
-- Use 8px app controls, 12px cards, and full circles only for avatars or status dots; icon-only buttons use the control radius.
+- Use 4px app controls, 8px cards and menus, 12px dialogs, and full circles only for avatars or status dots; icon-only buttons use the control radius.
 - Define cards and inputs with a 1px hairline (`{colors.hairline}`) before any shadow — flat is the default.
 - Set display headings in Mona Sans with the existing weight and tight negative tracking; label technical sections with the technical eyebrow token.
 - Step the grey text ladder deliberately: `{colors.ink}` → `{colors.body}` → `{colors.mute}` → `{colors.faint}`.

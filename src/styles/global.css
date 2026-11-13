@@ -178,7 +178,7 @@
   --type-heading-md-line: 1.4;
   --type-heading-md-tracking: -0.02em;
 
-  /* Marca de la navegación: jerarquía propia dentro del ancho del rail. */
+  /* Tamaño numérico leído por el generador de tarjetas en canvas. */
   --type-brand-size: 24px;
 
   /* heading-sm — card titles */
@@ -241,12 +241,6 @@
   --type-caption-up-line: 1.33;
   --type-caption-up-tracking: 0.06em;
 
-  /* mono-eyebrow — uppercase technical section labels */
-  --type-mono-eyebrow-size: 0.75rem;
-  --type-mono-eyebrow-weight: 500;
-  --type-mono-eyebrow-line: 1.33;
-  --type-mono-eyebrow-tracking: 0;
-
   /* button — shared application action (desing.md {typography.button}) */
   --type-button-size: 0.875rem;
   --type-button-weight: 600;
@@ -303,7 +297,7 @@
 
   /* 32px: solo para elementos compactos NO interactivos (icon tiles, badges).
      Un control interactivo nunca debe quedar por debajo de --touch-target-min. */
-  --control-height-sm: var(--spacing-xxl);
+  --control-height-sm: var(--design-spacing-xl);
   --control-height-lg: var(--touch-target-min);
   --control-padding-x: var(--design-spacing-sm);
   --control-padding-y: var(--design-spacing-xs);
@@ -312,6 +306,7 @@
   --control-min-block-size: max(var(--touch-target-min),
       calc(var(--type-button-size) * var(--type-button-line) + var(--control-padding-y) * 2 + var(--border-width) * 2));
   --textarea-min-block-size: calc(var(--touch-target-min) * 2);
+  --textarea-content-max-block-size: 25rem;
   --select-content-max-block-size: 15.625rem;
   --icon-size-xs: 0.75rem;
   --icon-size-sm: 1rem;
@@ -323,24 +318,7 @@
   --feature-avatar-size: var(--icon-size-xxl);
   --feature-avatar-initials-size: var(--type-caption-md-size);
 
-  /* ── Spacing legado — se conserva durante migración ───────────
-     Se mantiene en px literal: candidateAccessCard.ts lo lee como número
-     para dibujar el pase en canvas. Equivalencias con la escala canónica:
-     xs=design-xxs · sm=design-xs · md=design-sm · lg=design-md · xl=design-lg · xxl=design-xl.
-     xxs y 2xl son alias obsoletos de la escala canónica: no usar en código nuevo. */
-
-  /* Obsoleto: 2px no pertenece a la base de 4px. Alias al paso mínimo. */
-  --spacing-xs: 4px;
-  --spacing-sm: 8px;
-  --spacing-md: 12px;
-  --spacing-lg: 16px;
-  --spacing-xl: 24px;
-  --spacing-xxl: 32px;
-
-  /* Obsoleto: 48px no pertenece a la escala. Alias a {spacing.2xl} (40px). */
-  --spacing-section: 96px;
-
-  /* Escala canónica de desing.md para primitivas nuevas/migradas. */
+  /* Escala de espaciado de desing.md. */
   --design-spacing-xxs: 0.25rem;
   --design-spacing-xs: 0.5rem;
   --design-spacing-sm: 0.75rem;
@@ -352,22 +330,19 @@
   --design-spacing-4xl: 6rem;
   --design-spacing-section: 8rem;
 
-  /* Border radius: compact controls, cards and overlays. */
+  /* Border radius: approved 4 / 8 / 12 px scale. */
   --rounded-none: 0;
   --rounded-xs: 4px;
-  --rounded-sm: 10px;
+  --rounded-sm: 8px;
   --rounded-md: 12px;
-  --rounded-lg: 16px;
-  --rounded-xl: 20px;
-  --rounded-pill: var(--radius-control);
   --rounded-full: 9999px;
-  --radius-control: var(--rounded-sm);
-  --radius-field: var(--rounded-sm);
-  --radius-card: var(--rounded-lg);
-  --radius-media: var(--rounded-lg);
-  --radius-brand: var(--rounded-xs);
-  --radius-dialog: var(--rounded-xl);
-  --radius-menu: var(--rounded-md);
+  --radius-control: var(--rounded-xs);
+  --radius-field: var(--rounded-xs);
+  --radius-card: var(--rounded-sm);
+  --radius-media: var(--rounded-sm);
+  --radius-brand: var(--rounded-sm);
+  --radius-dialog: var(--rounded-md);
+  --radius-menu: var(--rounded-sm);
 
   /* ── Shadows — hairline first, restrained elevation ───────────── */
   --focus-ring-width: 2px;
@@ -485,7 +460,7 @@
 
   /* Anchura mínima legible para las dos series de un tooltip de gráfico. */
   --tooltip-chart-min-inline-size: 20ch;
-  --scrollbar-size: var(--spacing-sm);
+  --scrollbar-size: var(--design-spacing-xs);
   --toggle-track-inline-size: 2.25rem;
   --toggle-track-block-size: 1.25rem;
   --toggle-thumb-size: 1rem;
@@ -530,19 +505,11 @@
   --chart-height-md: 18rem;
   --chart-dash-short: 4px 4px;
   --chart-dash-dotted: 1px 4px;
-  --space-lg: var(--spacing-lg);
   --color-focus: var(--color-ink);
 
   /* Level 0 = flat. Level 1 = whisper. Level 2 = floating surface. */
   --shadow-xs: 0 1px 1px rgb(var(--color-shadow-rgb) / 4%);
   --shadow-sm: 0 1px 2px rgb(var(--color-shadow-rgb) / 5%), 0 4px 12px rgb(var(--color-shadow-rgb) / 8%);
-  --shadow-subtle: var(--shadow-sm);
-  --shadow-card: var(--shadow-xs);
-
-  /* desing.md solo define Level 1 (xs) y Level 2 (sm); los alias no crean niveles nuevos. */
-  --shadow-prominent: var(--shadow-sm);
-  --shadow-elevated: var(--shadow-prominent);
-  --shadow-level-2: var(--shadow-elevated);
 
   /* Contrato estable del workspace; evita que una migración de primitivas
      desarme la superficie continua del shell y del login. */
@@ -550,7 +517,7 @@
   --shell-floor: var(--color-canvas-soft);
   --shell-workspace-surface: var(--color-canvas-elevated);
   --workspace-border-color: var(--color-hairline);
-  --workspace-radius: var(--rounded-md);
+  --workspace-radius: var(--radius-card);
   --workspace-shadow: var(--shadow-sm);
   --color-workspace-pattern: color-mix(in srgb, var(--color-mute) 14%, transparent);
   --workspace-grid-spacing: var(--design-spacing-xxl);
@@ -1186,7 +1153,7 @@ pre {
 pre {
   background: var(--color-canvas-elevated);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-card);
   padding: var(--design-spacing-md);
   overflow-x: auto;
 }
@@ -1195,7 +1162,7 @@ code:not(pre code) {
   background: var(--color-canvas-soft);
   color: var(--color-ink);
   padding: 0 var(--design-spacing-xxs);
-  border-radius: var(--rounded-sm);
+  border-radius: var(--rounded-xs);
   font-size: var(--type-code-sm-size);
 }
 
@@ -1297,15 +1264,6 @@ code:not(pre code) {
   font-weight: var(--type-caption-up-weight);
   line-height: var(--type-caption-up-line);
   letter-spacing: var(--type-caption-up-tracking);
-  text-transform: uppercase;
-}
-
-.type-mono-eyebrow {
-  font-family: var(--font-code);
-  font-size: var(--type-mono-eyebrow-size);
-  font-weight: var(--type-mono-eyebrow-weight);
-  line-height: var(--type-mono-eyebrow-line);
-  letter-spacing: var(--type-mono-eyebrow-tracking);
   text-transform: uppercase;
 }
 
@@ -1612,6 +1570,9 @@ code:not(pre code) {
   border-radius: var(--radius-field);
   font-family: var(--font-body);
   font-size: max(var(--type-body-md-size), var(--editable-text-min-size, var(--type-body-md-size)));
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
   color: var(--color-ink);
   background: var(--color-canvas-elevated);
   transition:
@@ -1739,8 +1700,8 @@ code:not(pre code) {
 
 /* ========================================
    BUTTONS — sistema de controles
-   Los botones usan radio de 10px y altura táctil de 44px.
-   Primaria azul; secundaria plana con hairline.
+   Los botones usan radio y altura táctil definidos por tokens.
+   Primaria estructural; secundaria plana con borde de control.
    ======================================== */
 
 .btn-primary,
@@ -1832,8 +1793,15 @@ code:not(pre code) {
 .btn-ghost:disabled,
 .btn-text:disabled,
 .btn-icon:disabled {
-  opacity: var(--opacity-disabled);
+  color: var(--color-mute);
   cursor: not-allowed;
+}
+
+.btn-secondary:disabled,
+.btn-danger:disabled {
+  background: var(--color-canvas-soft);
+  border-color: var(--color-control-border);
+  box-shadow: none;
 }
 
 /* Danger */
@@ -1879,21 +1847,23 @@ code:not(pre code) {
   display: inline-flex;
   align-items: center;
   gap: var(--design-spacing-xxs);
-  background: none;
+  background: transparent;
   border: none;
-  color: var(--color-link);
+  color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
   padding: var(--design-spacing-xxs);
   border-radius: var(--radius-control);
   cursor: pointer;
-  transition: color var(--transition-fast);
-  text-decoration: underline;
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast);
+  text-decoration: none;
 }
 
 .btn-text:hover:not(:disabled) {
-  color: var(--color-link-deep);
+  background: var(--color-surface-hover);
 }
 
 /* Icon button */
@@ -2066,7 +2036,7 @@ code:not(pre code) {
   transform: translateX(-50%);
   display: flex;
   flex-direction: column;
-  box-shadow: var(--shadow-level-2);
+  box-shadow: var(--shadow-sm);
 }
 
 .modal-overlay[data-state='open'] {
@@ -2533,7 +2503,7 @@ code:not(pre code) {
 
 ::-webkit-scrollbar-thumb {
   background: var(--color-hairline-strong);
-  border-radius: var(--rounded-full);
+  border-radius: var(--radius-control);
 }
 
 /* ========================================
@@ -2663,7 +2633,7 @@ label>input.sr-only:focus-visible,
 
   /* WCAG 1.4.11: el riel apagado usa el borde de control (≥3:1), no un hairline. */
   background-color: var(--color-control-border);
-  border-radius: var(--rounded-full);
+  border-radius: var(--radius-control);
   transition: background-color var(--transition-fast);
   flex-shrink: 0;
 }
@@ -2676,9 +2646,9 @@ label>input.sr-only:focus-visible,
   inset-inline-start: var(--toggle-thumb-inset);
   inset-block-end: var(--toggle-thumb-inset);
   background-color: var(--color-canvas-elevated);
-  border-radius: var(--rounded-full);
+  border-radius: var(--radius-control);
   transition: transform var(--transition-fast);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-xs);
 }
 
 .toggle-switch input[type='checkbox']:checked+.toggle-switch__slider {

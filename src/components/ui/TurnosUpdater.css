@@ -3,7 +3,7 @@
 .turnos-updater {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
 }
 
 /* ── Preview Modal ──────────────────────────────────────────────────── */
@@ -28,8 +28,8 @@
 .turnos-updater__preview-content {
   position: relative;
   background: var(--color-canvas);
-  border-radius: var(--rounded-lg);
-  box-shadow: var(--shadow-prominent);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
   max-width: 800px;
   width: 90%;
   max-height: 80vh;
@@ -43,8 +43,8 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: var(--spacing-md);
-  padding: var(--spacing-lg);
+  gap: var(--design-spacing-sm);
+  padding: var(--design-spacing-md);
   border-bottom: 1px solid var(--color-hairline);
 }
 
@@ -69,7 +69,7 @@
   color: var(--color-mute);
   cursor: pointer;
   padding: var(--design-spacing-xxs);
-  border-radius: var(--rounded-sm);
+  border-radius: var(--radius-control);
   transition: all 0.15s ease;
 }
 
@@ -82,13 +82,13 @@
 .turnos-updater__preview-body {
   flex: 1;
   overflow-y: auto;
-  padding: var(--spacing-lg);
+  padding: var(--design-spacing-md);
 }
 
 .turnos-updater__empty {
   text-align: center;
   color: var(--color-mute);
-  padding: var(--spacing-xl);
+  padding: var(--design-spacing-lg);
   font-size: var(--type-body-md-size);
 }
 
@@ -113,8 +113,8 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-lg);
+  gap: var(--design-spacing-xs);
+  padding: var(--design-spacing-md);
   border-top: 1px solid var(--color-hairline);
   background: var(--color-surface-card);
 }

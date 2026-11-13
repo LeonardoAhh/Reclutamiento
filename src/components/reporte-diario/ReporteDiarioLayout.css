@@ -24,13 +24,13 @@
 .reporte-container {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: var(--design-spacing-md);
   width: 100%;
 }
 
 @media (width >= 768px) {
   .reporte-container {
-    gap: var(--spacing-xl);
+    gap: var(--design-spacing-lg);
   }
 }
 
@@ -42,8 +42,8 @@
   align-items: stretch;
   width: 100%;
   box-sizing: border-box;
-  gap: var(--spacing-md);
-  padding: var(--spacing-md);
+  gap: var(--design-spacing-sm);
+  padding: var(--design-spacing-sm);
   background: transparent;
   margin: 0;
 }
@@ -53,7 +53,7 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding: var(--spacing-lg);
+    padding: var(--design-spacing-md);
   }
 }
 
@@ -63,9 +63,9 @@
   justify-content: flex-end;
   width: 100%;
   min-width: 0;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
   flex-wrap: nowrap;
-  margin-top: var(--spacing-sm);
+  margin-top: var(--design-spacing-xs);
 }
 
 .reporte-head__month-group,
@@ -217,14 +217,14 @@
 .reporte-head {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
-  padding: var(--spacing-md);
+  gap: var(--design-spacing-sm);
+  padding: var(--design-spacing-sm);
 }
 
 @media (width >= 768px) {
   .reporte-head {
-    gap: var(--spacing-lg);
-    padding: var(--spacing-lg);
+    gap: var(--design-spacing-md);
+    padding: var(--design-spacing-md);
   }
 }
 
@@ -233,13 +233,13 @@
   flex-flow: row nowrap;
   justify-content: space-between;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
 }
 
 .reporte-head__launchers {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
 }
 
 /* ── Cards ────────────────────────────────────────────────────────────────── */
@@ -247,7 +247,7 @@
 .reporte-card {
   background: var(--color-surface-card);
   border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
   overflow: hidden;
 }
 
@@ -276,16 +276,16 @@ button.reporte-card:hover,
 }
 
 .reporte-card__header {
-  padding: var(--spacing-md);
+  padding: var(--design-spacing-sm);
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
   border-bottom: 1px solid var(--color-hairline);
 }
 
 @media (width >= 768px) {
   .reporte-card__header {
-    padding: var(--spacing-lg);
+    padding: var(--design-spacing-md);
   }
 }
 
@@ -298,7 +298,7 @@ button.reporte-card:hover,
   color: var(--color-ink);
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
   margin: 0;
   min-width: 0;
 }
@@ -314,16 +314,16 @@ button.reporte-card:hover,
 }
 
 .reporte-card__content {
-  padding: var(--spacing-md);
+  padding: var(--design-spacing-sm);
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: var(--design-spacing-md);
   flex: 1;
 }
 
 @media (width >= 768px) {
   .reporte-card__content {
-    padding: var(--spacing-lg);
+    padding: var(--design-spacing-md);
   }
 }
 
@@ -333,7 +333,7 @@ button.reporte-card:hover,
 .reporte-grid-4 {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--spacing-md);
+  gap: var(--design-spacing-sm);
 }
 
 @media (width >= 768px) {
@@ -358,14 +358,14 @@ button.reporte-card:hover,
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
   flex-wrap: wrap;
 }
 
 .reporte-flex-center {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
   min-width: 0;
 }
 
@@ -374,9 +374,9 @@ button.reporte-card:hover,
 .reporte-status-banner {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--rounded-md);
+  gap: var(--design-spacing-xxs);
+  padding: var(--design-spacing-xxs) var(--design-spacing-xs);
+  border-radius: var(--radius-menu);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   line-height: var(--type-body-md-line);

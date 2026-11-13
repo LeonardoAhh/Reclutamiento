@@ -7,7 +7,6 @@
   overflow: hidden;
   width: var(--feature-avatar-size);
   height: var(--feature-avatar-size);
-
   background: var(--color-surface-card);
   border: var(--border-width) solid var(--color-hairline-strong);
   border-radius: var(--rounded-full);
@@ -16,7 +15,6 @@
   font-size: var(--feature-avatar-initials-size);
   font-weight: var(--font-bold);
   text-transform: uppercase;
-  
   user-select: none;
 }
 
@@ -26,6 +24,26 @@
   height: 100%;
   align-items: center;
   justify-content: center;
+}
+
+.ui-avatar[data-tone='warning'] .ui-avatar__fallback {
+  background: var(--color-warning-subtle);
+  color: var(--color-warning-text);
+}
+
+.ui-avatar[data-tone='success'] .ui-avatar__fallback {
+  background: var(--color-success-subtle);
+  color: var(--color-success-text);
+}
+
+.ui-avatar[data-tone='error'] .ui-avatar__fallback {
+  background: var(--color-error-subtle);
+  color: var(--color-error-text);
+}
+
+.ui-avatar[data-tone='identity'] .ui-avatar__fallback {
+  background: var(--color-primary-tint);
+  color: var(--color-primary-text);
 }
 
 .ui-avatar__img {

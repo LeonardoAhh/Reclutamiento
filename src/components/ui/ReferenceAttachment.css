@@ -5,8 +5,8 @@
   min-block-size: var(--touch-target-min);
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: var(--spacing-md);
-  padding: var(--spacing-sm);
+  gap: var(--design-spacing-sm);
+  padding: var(--design-spacing-xs);
   border: var(--border-width) solid var(--color-control-border);
   border-radius: var(--radius-media);
   background: var(--color-canvas-elevated);
@@ -30,7 +30,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  border-radius: var(--rounded-sm);
+  border-radius: var(--radius-control);
   background: var(--color-surface-card);
 }
 

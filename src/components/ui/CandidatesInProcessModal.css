@@ -9,20 +9,20 @@
 .candidates-in-process-modal__body {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: var(--design-spacing-md);
 }
 
 .candidates-in-process-modal__empty {
   text-align: center;
   color: var(--color-mute);
-  padding: var(--spacing-xl) 0;
+  padding: var(--design-spacing-lg) 0;
 }
 
 .candidates-in-process-modal__section-title {
   font-family: var(--font-body);
   font-size: var(--type-body-strong-size);
   font-weight: var(--type-body-strong-weight);
-  margin: 0 0 var(--spacing-sm);
+  margin: 0 0 var(--design-spacing-xs);
   color: var(--color-ink);
   line-height: var(--type-body-strong-line);
   letter-spacing: var(--type-body-strong-tracking);
@@ -41,11 +41,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--spacing-md);
-  padding: var(--spacing-sm);
+  gap: var(--design-spacing-sm);
+  padding: var(--design-spacing-xs);
   background: var(--color-surface-card);
   border: 1px solid var(--color-hairline);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-menu);
 }
 
 .candidates-in-process-modal__puesto-main {
@@ -59,7 +59,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
 }
 
 .candidates-in-process-modal__puesto-name {
@@ -78,7 +78,7 @@
 .candidates-in-process-modal__puesto-badges {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
   margin-top: var(--design-spacing-xxs);
 }
 

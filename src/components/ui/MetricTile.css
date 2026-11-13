@@ -108,6 +108,10 @@
   overflow-wrap: anywhere;
 }
 
+.metric-tile__note strong {
+  font-weight: var(--type-body-strong-weight);
+}
+
 /* El color vive en el fragmento destacado, nunca en el fondo de la nota. */
 .metric-tile__note[data-tone='good'] strong {
   color: var(--color-success-text);
@@ -115,10 +119,6 @@
 
 .metric-tile__note[data-tone='bad'] strong {
   color: var(--color-error-text);
-}
-
-.metric-tile__note strong {
-  font-weight: var(--type-body-strong-weight);
 }
 
 /* En móvil la etiqueta más larga no cabe con el interletrado de caption-up, así

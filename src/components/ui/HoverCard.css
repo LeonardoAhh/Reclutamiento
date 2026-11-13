@@ -9,5 +9,5 @@
   border-radius: var(--radius-menu);
   background: var(--color-surface-card);
   color: var(--color-ink);
-  box-shadow: var(--shadow-elevated);
+  box-shadow: var(--shadow-sm);
 }

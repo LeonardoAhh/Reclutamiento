@@ -5,7 +5,7 @@
 .user-activity-panel__list {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -15,9 +15,9 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   align-content: start;
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
   min-width: 0;
-  padding: var(--spacing-lg);
+  padding: var(--design-spacing-md);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--radius-card);
   background: var(--color-canvas-elevated);
@@ -44,7 +44,7 @@
   block-size: var(--touch-target-min);
   padding: 0;
   border: 0;
-  border-radius: var(--rounded-full);
+  border-radius: var(--radius-control);
   background: transparent;
   color: var(--color-ink);
   cursor: pointer;
@@ -109,16 +109,16 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
   margin: 0;
-  padding: var(--spacing-lg);
-  border-radius: var(--rounded-md);
+  padding: var(--design-spacing-md);
+  border-radius: var(--radius-menu);
   background: var(--color-surface-card);
   text-align: center;
 }
 
 .user-activity-panel__warning {
-  margin-bottom: var(--spacing-md);
+  margin-bottom: var(--design-spacing-sm);
 }
 
 .user-activity-panel__state p,

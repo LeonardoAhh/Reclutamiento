@@ -35,7 +35,7 @@
   background: var(--color-surface-card);
   border: var(--border-width) solid var(--workspace-border-color);
   border-radius: var(--workspace-radius);
-  box-shadow: var(--workspace-shadow);
+  box-shadow: var(--shadow-xs);
 }
 .reporte-cmp__quarter-header {
   display: flex;
@@ -99,7 +99,7 @@
   min-inline-size: 0;
   overflow: auto;
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
   background: var(--color-surface-card);
 }
 .reporte-cmp__table {
@@ -183,17 +183,17 @@
 .report-comparison-skeleton__heading {
   inline-size: 50%;
   block-size: var(--type-heading-md-size);
-  border-radius: var(--rounded-sm);
+  border-radius: var(--radius-control);
 }
 .report-comparison-skeleton__line {
   inline-size: 100%;
   block-size: var(--type-body-md-size);
-  border-radius: var(--rounded-sm);
+  border-radius: var(--radius-control);
 }
 .report-comparison-skeleton__row {
   inline-size: 100%;
   block-size: var(--touch-target-min);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-menu);
 }
 
 .report-comparison-page .btn-secondary {

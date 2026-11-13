@@ -22,7 +22,7 @@
 .employee-bulk-update__errors {
   padding: var(--design-spacing-sm);
   border: var(--border-width) solid var(--color-error);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-menu);
   color: var(--color-error-text);
 }
 
@@ -44,14 +44,14 @@
   gap: var(--design-spacing-xxs);
   padding: var(--design-spacing-sm);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-menu);
   background: var(--color-canvas-elevated);
 }
 
 .employee-bulk-update__missing {
   padding: var(--design-spacing-sm);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-menu);
 }
 
 .employee-bulk-update__missing summary {
@@ -100,7 +100,7 @@
   .employee-bulk-update__table tr {
     padding: var(--design-spacing-sm);
     border: var(--border-width) solid var(--color-hairline);
-    border-radius: var(--rounded-lg);
+    border-radius: var(--radius-card);
   }
 
   .employee-bulk-update__table th,
@@ -163,7 +163,7 @@
   .employee-bulk-update__table-wrap {
     overflow: auto;
     border: var(--border-width) solid var(--color-hairline);
-    border-radius: var(--rounded-lg);
+    border-radius: var(--radius-card);
   }
 
   .employee-bulk-update__table {

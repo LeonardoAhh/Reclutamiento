@@ -25,7 +25,7 @@ const STYLES = {
   titleRow: {
     display: 'flex',
     alignItems: 'center',
-    gap: 'var(--spacing-sm)',
+    gap: 'var(--design-spacing-xs)',
   },
   employeeId: {
     color: 'var(--color-mute)',
@@ -33,14 +33,14 @@ const STYLES = {
   kpiGrid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(3, 1fr)',
-    gap: 'var(--spacing-sm)',
-    marginTop: 'var(--spacing-sm)',
+    gap: 'var(--design-spacing-xs)',
+    marginTop: 'var(--design-spacing-xs)',
   },
   kpiCard: {
-    borderRadius: 'var(--rounded-lg)',
+    borderRadius: 'var(--radius-card)',
     border: '1px solid var(--color-hairline)',
     background: 'var(--color-surface-card)',
-    padding: 'var(--spacing-sm)',
+    padding: 'var(--design-spacing-xs)',
     textAlign: 'center' as const,
   },
   kpiLabel: {
@@ -52,22 +52,22 @@ const STYLES = {
     margin: 0,
   },
   incidentSection: {
-    marginTop: 'var(--spacing-lg)',
+    marginTop: 'var(--design-spacing-md)',
   },
   incidentLabel: {
     color: 'var(--color-mute)',
     textTransform: 'uppercase' as const,
-    marginBottom: 'var(--spacing-sm)',
+    marginBottom: 'var(--design-spacing-xs)',
   },
   incidentTableWrapper: {
-    borderRadius: 'var(--rounded-lg)',
+    borderRadius: 'var(--radius-card)',
     border: 'var(--border-width) solid var(--color-hairline)',
     overflow: 'hidden',
   },
   modalFooter: {
     display: 'flex',
     justifyContent: 'flex-end',
-    marginTop: 'var(--spacing-lg)',
+    marginTop: 'var(--design-spacing-md)',
   },
 } as const;
 
@@ -282,7 +282,7 @@ export default function ReporteEmployeeDetail({
           aria-labelledby={activeTab === 'overview' ? 'emp-tab-overview' : 'emp-tab-incidencias'}
         >
           {activeTab === 'overview' ? (
-            <div style={{ marginTop: 'var(--spacing-md)' }}>
+            <div style={{ marginTop: 'var(--design-spacing-sm)' }}>
               <KpiCards stats={stats} />
             </div>
           ) : (

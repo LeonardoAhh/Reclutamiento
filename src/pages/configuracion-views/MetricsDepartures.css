@@ -9,7 +9,7 @@
 }
 
 .metrics-departures .indicadores-table-header {
-  padding: var(--spacing-md);
+  padding: var(--design-spacing-sm);
 }
 
 .metrics-departures__expand {

@@ -20,25 +20,29 @@ function getInitials(name: string) {
   return base.slice(0, 2).toUpperCase();
 }
 
+const avatarTones = ['neutral', 'warning', 'success', 'error', 'identity'] as const;
+
+function getAvatarTone(name: string): (typeof avatarTones)[number] {
+  const normalizedName = name.trim().toLowerCase();
+  if (!normalizedName) return 'neutral';
+
+  let hash = 0;
+  for (const character of normalizedName) {
+    hash = (hash * 31 + (character.codePointAt(0) ?? 0)) >>> 0;
+  }
+
+  return avatarTones[hash % avatarTones.length];
+}
+
 /**
  * Avatar UI
  * Muestra una imagen si src carga correctamente. Radix gestiona el fallback
- * accesible; sin imagen, las iniciales usan la superficie neutral del sistema.
+ * accesible; sin imagen, las iniciales usan un tono decorativo estable por nombre.
  */
 export function Avatar({ name, src, fallback, title = name }: AvatarProps) {
   return (
-    <AvatarPrimitive.Root
-      className="ui-avatar"
-      aria-hidden="true"
-      title={title}
-    >
-      {src && (
-        <AvatarPrimitive.Image
-          src={src}
-          alt=""
-          className="ui-avatar__img"
-        />
-      )}
+    <AvatarPrimitive.Root className="ui-avatar" data-tone={getAvatarTone(name)} aria-hidden="true" title={title}>
+      {src && <AvatarPrimitive.Image src={src} alt="" className="ui-avatar__img" />}
       <AvatarPrimitive.Fallback className="ui-avatar__fallback">
         {fallback ?? (getInitials(name) || 'U')}
       </AvatarPrimitive.Fallback>

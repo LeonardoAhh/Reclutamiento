@@ -1,24 +1,19 @@
-import * as React from "react";
-import { DayPicker } from "@daypicker/react";
-import { es } from "date-fns/locale";
+import * as React from 'react';
+import { DayPicker } from '@daypicker/react';
+import { es } from 'date-fns/locale';
 
-import { cn } from "@/lib/utils-shadcn";
-import "@daypicker/react/style.css";
-import "./Calendar.css";
+import { cn } from '@/lib/utils-shadcn';
+import '@daypicker/react/style.css';
+import './Calendar.css';
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
-function Calendar({
-  className,
-  classNames,
-  showOutsideDays = true,
-  ...props
-}: CalendarProps) {
+function Calendar({ className, classNames, showOutsideDays = true, ...props }: CalendarProps) {
   return (
     <DayPicker
       locale={es}
       showOutsideDays={showOutsideDays}
-      className={cn("p-3", props.mode === "range" && "calendar--range", className)}
+      className={cn(props.mode === 'range' && 'calendar--range', className)}
       classNames={{
         ...classNames,
       }}
@@ -26,6 +21,6 @@ function Calendar({
     />
   );
 }
-Calendar.displayName = "Calendar";
+Calendar.displayName = 'Calendar';
 
 export { Calendar };

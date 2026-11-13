@@ -1,7 +1,7 @@
 .candidate-group-tabs {
   display: none;
   align-items: stretch;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
   min-inline-size: 0;
   overflow-x: auto;
 }
@@ -17,9 +17,9 @@
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
   min-block-size: var(--touch-target-min);
-  padding-inline: var(--spacing-sm);
+  padding-inline: var(--design-spacing-xs);
   border: 0;
   border-bottom: var(--border-width) solid transparent;
   background: transparent;
@@ -44,8 +44,8 @@
 }
 
 .candidate-group-tabs__count {
-  padding-inline: var(--spacing-xs);
-  border-radius: var(--rounded-full);
+  padding-inline: var(--design-spacing-xxs);
+  border-radius: var(--rounded-xs);
   background: var(--color-surface-card);
   color: var(--color-mute);
   font-size: var(--type-body-sm-size);

@@ -1,6 +1,6 @@
 .kpi-reveal {
   position: relative;
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -19,7 +19,7 @@
   display: flex;
   flex-direction: column;
   flex: 1;
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
   transition:
     filter var(--transition-base),
     opacity var(--transition-base),
@@ -42,7 +42,7 @@
 
 .kpi-reveal__hint {
   position: absolute;
-  inset: auto var(--spacing-md) var(--spacing-md) auto;
+  inset: auto var(--design-spacing-sm) var(--design-spacing-sm) auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -50,8 +50,8 @@
   height: var(--icon-size-xl);
   color: var(--color-on-dark);
   background: var(--color-surface-contrast);
-  border-radius: var(--rounded-full);
-  box-shadow: var(--shadow-card);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-xs);
   pointer-events: none;
   transition: opacity var(--transition-base);
 }

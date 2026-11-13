@@ -1,0 +1,82 @@
+.smart-textarea-wrapper {
+  display: flex;
+  flex-direction: column;
+  border: var(--border-width) solid var(--color-control-border);
+  border-radius: var(--radius-field);
+  background: var(--color-canvas-elevated);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.smart-textarea-wrapper .smart-textarea {
+  width: 100%;
+  min-height: var(--textarea-min-block-size);
+  max-height: var(--textarea-content-max-block-size);
+  padding: var(--design-spacing-xs);
+  border: 0;
+  background: transparent;
+  resize: none;
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: max(var(--type-body-md-size), var(--editable-text-min-size, var(--type-body-md-size)));
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.smart-textarea::placeholder {
+  color: var(--color-mute);
+}
+
+.smart-textarea-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--design-spacing-xxs) var(--design-spacing-xs);
+  border-top: var(--border-width) solid var(--color-hairline);
+  background: var(--color-surface-card);
+  border-end-start-radius: var(--radius-field);
+  border-end-end-radius: var(--radius-field);
+}
+
+.smart-textarea-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--design-spacing-xxs);
+}
+
+.smart-textarea-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--design-spacing-xxs);
+  min-height: var(--touch-target-min);
+  padding: var(--design-spacing-xxs) var(--design-spacing-xs);
+  border: 0;
+  background: transparent;
+  border-radius: var(--radius-control);
+  color: var(--color-mute);
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.smart-textarea-btn:hover {
+  background: var(--color-canvas-soft);
+  color: var(--color-ink);
+}
+
+.smart-textarea-counter {
+  color: var(--color-mute);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}

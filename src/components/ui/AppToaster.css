@@ -39,7 +39,7 @@
   color: var(--color-ink);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--radius-menu);
-  box-shadow: var(--shadow-level-2);
+  box-shadow: var(--shadow-sm);
   pointer-events: auto;
   animation: app-toaster-enter var(--transition-base) both;
 }

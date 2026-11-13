@@ -256,7 +256,7 @@
   block-size: var(--touch-target-min);
   background: transparent;
   border: none;
-  border-radius: var(--rounded-sm);
+  border-radius: var(--radius-control);
   color: var(--color-mute);
   cursor: pointer;
   transition:

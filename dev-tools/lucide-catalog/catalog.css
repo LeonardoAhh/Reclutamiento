@@ -11,18 +11,18 @@ body {
 .icon-catalog {
   width: min(100%, var(--container-max));
   margin-inline: auto;
-  padding: var(--spacing-lg);
+  padding: var(--design-spacing-md);
 }
 
 .icon-catalog__header {
   display: grid;
-  gap: var(--spacing-lg);
-  margin-block-end: var(--spacing-xl);
+  gap: var(--design-spacing-md);
+  margin-block-end: var(--design-spacing-lg);
 }
 
 .icon-catalog__intro {
   display: grid;
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
   max-inline-size: var(--content-reading-max-inline-size);
 }
 
@@ -43,18 +43,18 @@ body {
   display: flex;
   flex-wrap: wrap;
   align-items: end;
-  gap: var(--spacing-md);
-  padding: var(--spacing-md);
+  gap: var(--design-spacing-sm);
+  padding: var(--design-spacing-sm);
   background: var(--color-surface);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
-  box-shadow: var(--shadow-card);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-xs);
 }
 
 .icon-catalog__field {
   display: grid;
   flex: 1 1 var(--catalog-card-min);
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
   min-inline-size: 0;
 }
 
@@ -73,7 +73,7 @@ body {
 .icon-catalog__field select {
   inline-size: 100%;
   block-size: var(--touch-target-min);
-  padding-inline: var(--spacing-md);
+  padding-inline: var(--design-spacing-sm);
   color: var(--color-body);
   background: var(--color-surface);
   border: var(--border-width) solid var(--color-hairline-strong);
@@ -85,7 +85,7 @@ body {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
   color: var(--color-muted);
   font-size: var(--type-caption-sm-size);
   line-height: var(--type-caption-sm-line);
@@ -96,7 +96,7 @@ body {
 }
 
 .icon-catalog__feedback {
-  min-block-size: var(--spacing-lg);
+  min-block-size: var(--design-spacing-md);
   color: var(--color-success);
   font-weight: var(--type-body-sm-strong-weight);
 }
@@ -104,7 +104,7 @@ body {
 .icon-catalog__grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--catalog-card-min)), 1fr));
-  gap: var(--spacing-md);
+  gap: var(--design-spacing-sm);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -117,16 +117,16 @@ body {
 .icon-catalog__card {
   display: grid;
   grid-template-rows: var(--catalog-preview-size) auto auto;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
   inline-size: 100%;
   min-block-size: 100%;
-  padding: var(--spacing-md);
+  padding: var(--design-spacing-sm);
   color: var(--color-body);
   text-align: start;
   background: var(--color-surface);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
-  box-shadow: var(--shadow-card);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-xs);
   cursor: pointer;
 }
 
@@ -163,11 +163,11 @@ body {
 }
 
 .icon-catalog__empty {
-  padding: var(--spacing-2xl);
+  padding: var(--design-spacing-xxl);
   text-align: center;
   background: var(--color-surface);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
 }
 
 .icon-catalog__empty h2,
@@ -181,7 +181,7 @@ body {
   color: var(--color-on-primary);
   background: var(--color-primary);
   border: 0;
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-control);
   font: inherit;
   cursor: pointer;
 }
@@ -189,8 +189,8 @@ body {
 .icon-catalog__copy-source {
   position: fixed;
   inset: 0 auto auto 0;
-  inline-size: var(--spacing-xxs);
-  block-size: var(--spacing-xxs);
+  inline-size: var(--design-spacing-xxs);
+  block-size: var(--design-spacing-xxs);
   opacity: 0;
   pointer-events: none;
 }

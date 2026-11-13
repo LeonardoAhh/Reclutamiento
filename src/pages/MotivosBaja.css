@@ -199,7 +199,7 @@
 .motivos-baja__bar-track {
   height: var(--design-spacing-xs);
   overflow: hidden;
-  border-radius: var(--rounded-full);
+  border-radius: var(--radius-control);
   background: var(--color-surface-card);
 }
 

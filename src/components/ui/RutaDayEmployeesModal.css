@@ -67,7 +67,7 @@
   margin: 0;
   padding: var(--design-spacing-lg);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
   background: var(--color-surface-card);
 }
 
@@ -86,13 +86,13 @@
   gap: var(--design-spacing-xs);
   padding: var(--design-spacing-lg);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
   background: var(--color-surface-card);
 }
 
 .ruta-day-page__skeleton-cell {
   block-size: var(--type-body-sm-size);
-  border-radius: var(--rounded-sm);
+  border-radius: var(--radius-control);
 }
 
 .ruta-day-page__skeleton-cell--number {
@@ -132,7 +132,7 @@
   gap: var(--design-spacing-xs);
   padding: var(--design-spacing-lg);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
   background: var(--color-surface-card);
 }
 
@@ -177,7 +177,7 @@
 
   .ruta-day-page__table-wrapper {
     border: var(--border-width) solid var(--color-hairline);
-    border-radius: var(--rounded-lg);
+    border-radius: var(--radius-card);
     background: var(--color-surface-card);
     overflow: auto;
   }

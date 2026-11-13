@@ -9,8 +9,8 @@
   min-inline-size: 0;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: var(--spacing-md);
-  margin-block-end: var(--spacing-lg);
+  gap: var(--design-spacing-sm);
+  margin-block-end: var(--design-spacing-md);
 }
 
 .activity-tracking-section__title {
@@ -32,7 +32,7 @@
   display: flex;
   min-inline-size: 0;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: var(--design-spacing-md);
 }
 
 .activity-tracking-section__status-filters {
@@ -95,7 +95,7 @@
 .activity-tracking-section__filter-content {
   display: inline-flex;
   align-items: baseline;
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
 }
 
 .activity-tracking-section__filter-count {
@@ -114,7 +114,7 @@
   list-style: none;
   align-items: start;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--spacing-md);
+  gap: var(--design-spacing-sm);
 }
 
 @media (width >= 768px) {
@@ -133,15 +133,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: var(--spacing-xxl) var(--spacing-lg);
+  padding: var(--design-spacing-xl) var(--design-spacing-md);
   border: var(--border-width) dashed var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
   background: var(--color-surface-card);
   text-align: center;
 }
 
 .activity-tracking-section__empty-icon {
-  margin-block-end: var(--spacing-md);
+  margin-block-end: var(--design-spacing-sm);
   color: var(--color-mute);
 }
 
@@ -168,5 +168,5 @@
 }
 
 .activity-tracking-section__clear {
-  margin-block-start: var(--spacing-md);
+  margin-block-start: var(--design-spacing-sm);
 }

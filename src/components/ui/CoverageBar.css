@@ -3,7 +3,7 @@
 .coverage-bar {
   display: flex;
   align-items: center;
-  gap: var(--spacing-xs);
+  gap: var(--design-spacing-xxs);
   width: 100%;
 }
 
@@ -19,13 +19,13 @@
 .coverage-bar__track {
   flex: 1;
   background: var(--color-hairline);
-  border-radius: var(--rounded-pill);
+  border-radius: var(--radius-control);
   overflow: hidden;
 }
 
 .coverage-bar__fill {
   height: 100%;
-  border-radius: var(--rounded-pill);
+  border-radius: var(--radius-control);
   transition: width 2000ms cubic-bezier(0.25, 1, 0.5, 1);
   position: relative;
   overflow: hidden;

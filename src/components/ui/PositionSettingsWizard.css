@@ -28,7 +28,7 @@
   flex-direction: column;
   gap: var(--design-spacing-xxs);
   padding: var(--design-spacing-xs) var(--design-spacing-sm);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-menu);
   background: var(--color-surface-card);
   border: var(--border-width) solid var(--color-hairline);
 }

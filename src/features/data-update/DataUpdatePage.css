@@ -59,7 +59,7 @@
   color: var(--color-warning-text);
   background: var(--color-warning-subtle);
   border: var(--border-width) solid var(--color-warning-text);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
 }
 
 .data-update-campaign-toolbar {
@@ -437,23 +437,23 @@
   overflow: hidden;
   appearance: none;
   border: 0;
-  border-radius: var(--rounded-full);
+  border-radius: var(--radius-control);
   background: var(--color-hairline-strong);
 }
 
 .data-update-summary-progress__bar::-webkit-progress-bar {
   background: var(--color-hairline-strong);
-  border-radius: var(--rounded-full);
+  border-radius: var(--radius-control);
 }
 
 .data-update-summary-progress__bar::-webkit-progress-value {
   background: var(--color-primary);
-  border-radius: var(--rounded-full);
+  border-radius: var(--radius-control);
 }
 
 .data-update-summary-progress__bar::-moz-progress-bar {
   background: var(--color-primary);
-  border-radius: var(--rounded-full);
+  border-radius: var(--radius-control);
 }
 
 .data-update-summary-progress p {
@@ -693,7 +693,7 @@
 
 .data-update-loading__bone {
   display: block;
-  border-radius: var(--rounded-sm);
+  border-radius: var(--radius-control);
   background: var(--color-hairline);
   opacity: var(--opacity-skeleton-rest);
   animation: data-update-skeleton-fade var(--duration-skeleton) ease-in-out infinite;
@@ -707,13 +707,13 @@
 .data-update-loading__bone--field {
   inline-size: 100%;
   block-size: var(--touch-target-min);
-  border-radius: var(--rounded-md);
+  border-radius: var(--radius-menu);
 }
 
 .data-update-loading__bone--content {
   inline-size: 100%;
   block-size: var(--control-min-block-size);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
 }
 
 @keyframes data-update-skeleton-fade {
@@ -752,7 +752,7 @@
   flex-direction: column;
   background: var(--color-surface-card);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
   overflow: hidden;
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
@@ -853,7 +853,7 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--design-spacing-xs);
-  margin-block-start: var(--spacing-xs);
+  margin-block-start: var(--design-spacing-xxs);
 }
 
 .data-update-binary-field__options label {
@@ -891,7 +891,7 @@
   margin: 0;
   padding: var(--design-spacing-md);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
 }
 
 .data-update-children legend {
@@ -981,7 +981,7 @@
   margin: 0;
   overflow: hidden;
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
 }
 
 .data-update-identity-list > div:nth-child(even) {
@@ -1150,7 +1150,7 @@
   margin: 0;
   padding: var(--design-spacing-md);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
 }
 
 .data-update-review-choice legend,
@@ -1266,7 +1266,7 @@
   padding: var(--design-spacing-md);
   background: var(--color-surface-card);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
 }
 
 .data-update-import__section h3,
@@ -1306,7 +1306,7 @@
 .data-update-import__preview {
   padding: var(--design-spacing-md);
   border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-card);
 }
 
 .data-update-import__messages--error {
@@ -1390,17 +1390,17 @@
   flex-direction: column;
   gap: var(--design-spacing-xxs);
   min-inline-size: 10rem;
-  padding: var(--spacing-xs);
+  padding: var(--design-spacing-xxs);
 }
 
 /* Ítems del popover — mismo patrón que .dropdown-menu-item */
 .data-update-admin-card__action {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--design-spacing-xs);
   min-block-size: var(--touch-target-min);
-  padding-inline: var(--spacing-sm);
-  border-radius: var(--rounded-sm);
+  padding-inline: var(--design-spacing-xs);
+  border-radius: var(--radius-control);
   width: 100%;
   color: var(--color-ink);
   font-family: var(--font-body);

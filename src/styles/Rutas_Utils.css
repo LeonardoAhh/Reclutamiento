@@ -1,6 +1,6 @@
 /* ── Error & Empty States ─────────────────────────────────────────────── */
 .rutas-empty-state {
-  padding: var(--spacing-xl);
+  padding: var(--design-spacing-lg);
   text-align: center;
   color: var(--color-mute);
 }
@@ -11,47 +11,47 @@
 
 /* ── Centered Mockup Animation ──────────────────────────────────────── */
 .mockup-animation--centered {
-  margin: var(--spacing-lg) auto;
+  margin: var(--design-spacing-md) auto;
 }
 
 /* ── Stops List ──────────────────────────────────────────────────────── */
 .ruta-stops-container {
-  margin-top: var(--spacing-md);
+  margin-top: var(--design-spacing-sm);
 }
 
 .ruta-stops-title {
-  margin-bottom: var(--spacing-xs);
+  margin-bottom: var(--design-spacing-xxs);
 }
 
 .ruta-stops-list {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--design-spacing-xxs);
   max-height: 120px;
   overflow-y: auto;
-  padding-right: 8px;
+  padding-right: var(--design-spacing-xs);
 }
 
 .ruta-stops-item {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--design-spacing-xs);
 }
 
 .ruta-stops-dot {
-  width: 6px;
-  height: 6px;
+  width: var(--design-spacing-xxs);
+  height: var(--design-spacing-xxs);
   border-radius: 50%;
   background: var(--color-primary);
 }
 
 .ruta-stops-more {
-  margin-left: 14px;
+  margin-left: calc(var(--design-spacing-xxs) + var(--design-spacing-xs));
 }
 
 /* ── Info Rows ───────────────────────────────────────────────────────── */
 .info-row--header {
   border-bottom: 2px solid var(--color-hairline-strong);
-  padding-bottom: var(--spacing-sm);
-  margin-bottom: var(--spacing-xs);
+  padding-bottom: var(--design-spacing-xs);
+  margin-bottom: var(--design-spacing-xxs);
 }

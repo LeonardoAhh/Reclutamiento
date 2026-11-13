@@ -5,7 +5,7 @@
 
 .cell-chart {
   display: grid;
-  grid-template-columns: var(--spacing-xxl) minmax(0, 1fr);
+  grid-template-columns: var(--design-spacing-xl) minmax(0, 1fr);
   grid-template-rows: var(--chart-height-md) auto;
   column-gap: var(--design-spacing-xs);
   min-inline-size: 0;
