@@ -70,7 +70,7 @@
 .kpis-page__kpis {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--design-spacing-md);
+  gap: var(--design-spacing-sm);
   min-inline-size: 0;
 }
 
@@ -84,11 +84,19 @@
   .kpis-page__vacancies-action-label {
     display: inline;
   }
+
+  /* Desde tablet las cuatro cifras caben en una sola fila; repartirlas en dos
+     obligaba a comparar en vertical lo que se lee de un vistazo en horizontal.
+     La separación cede un escalón para que las tarjetas no se estrechen. */
+  .kpis-page__kpis {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--design-spacing-sm);
+  }
 }
 
 @media (width >= 1080px) {
   .kpis-page__kpis {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--design-spacing-md);
   }
 }
 

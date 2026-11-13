@@ -10,6 +10,14 @@
   display: flex;
   flex-direction: column;
 
+  /* El rail es una capa fija propia. Al abrirse una superficie flotante encima,
+     el compositor llegaba a pintar su fondo hasta la caja de padding: una franja
+     de 12px pasada la hairline, sin que la geometría cambiara. Recortar al borde
+     lo impide, y el margen deja salir el anillo de foco; el menú de cuenta y los
+     tooltips van por portal al body, así que nada necesita desbordar el rail. */
+  overflow: clip;
+  overflow-clip-margin: var(--focus-ring-width);
+
   /* Ancho compartido con .app-shell (fuente única de verdad, ver abajo). */
   width: min(var(--feature-navigation-rail-inline-size), 100%);
   padding-block: var(--safe-area-top) calc(var(--design-spacing-sm) + var(--safe-area-bottom));

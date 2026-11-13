@@ -1,26 +1,26 @@
+/* Tarjeta de vacantes por día: encabezado, rejilla de celdas y una tira de
+   pestañas, una por serie. La tarjeta pone el marco; la rejilla y las fichas
+   son primitivas y no saben dónde viven. */
+
 .overview-chart {
-  display: flex;
-  flex-direction: column;
-  gap: var(--design-spacing-md);
+  display: grid;
   min-inline-size: 0;
   margin: 0;
-  padding: var(--design-spacing-md);
   border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--radius-card);
-  background: var(--color-canvas-elevated);
+  background: var(--color-surface-card);
+  color: var(--color-ink);
   font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
+  overflow: clip;
 }
 
 .overview-chart__header {
   display: flex;
-  flex-direction: column;
   align-items: flex-start;
-  gap: var(--design-spacing-md);
+  justify-content: space-between;
+  gap: var(--design-spacing-sm);
   min-inline-size: 0;
+  padding: var(--design-spacing-md) var(--design-spacing-md) 0;
 }
 
 .overview-chart__heading {
@@ -30,145 +30,101 @@
 .overview-chart__title {
   margin: 0;
   color: var(--color-ink);
-  font-family: var(--font-body);
-  font-size: var(--type-body-strong-size);
-  font-weight: var(--type-body-strong-weight);
-  line-height: var(--type-body-strong-line);
-  letter-spacing: var(--type-body-strong-tracking);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+  letter-spacing: var(--type-heading-sm-tracking);
 }
 
-@media (width >= 768px) {
-  .overview-chart {
-    padding: var(--design-spacing-lg);
-  }
-
-  .overview-chart__header {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
-}
-
-.overview-chart__legend {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  gap: var(--design-spacing-xxs);
-  min-inline-size: 0;
+.overview-chart__caption {
   margin: 0;
-  padding: 0;
+  margin-block-start: var(--design-spacing-xxs);
   color: var(--color-mute);
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-  list-style: none;
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
 }
 
-.overview-chart__legend li {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--design-spacing-xxs);
+/* Nombra la serie visible; repite la pestaña activa para quien llega al
+   encabezado sin haber visto la tira. */
+.overview-chart__badge {
+  flex: 0 0 auto;
+  padding: var(--design-spacing-xxs) var(--design-spacing-xs);
+  border-radius: var(--rounded-xs);
+  background: var(--color-surface-strong);
+  color: var(--color-mute);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
   white-space: nowrap;
 }
 
-.overview-chart__marker {
-  flex-shrink: 0;
-  inline-size: var(--icon-size-md);
-  block-size: var(--design-spacing-sm);
-}
-
-@media (width >= 768px) {
-  .overview-chart__legend {
-    justify-content: flex-end;
-    gap: var(--design-spacing-md);
-  }
-
-  .overview-chart__legend li {
-    gap: var(--design-spacing-xs);
-  }
-
-  .overview-chart__marker {
-    inline-size: var(--design-spacing-xxl);
-  }
-}
-
-.overview-chart__marker line,
-.overview-chart__marker circle {
-  stroke: currentcolor;
-  stroke-width: var(--chart-line-width);
-  stroke-linecap: round;
-}
-
-.overview-chart__marker circle {
-  r: var(--chart-point-radius);
-  fill: var(--color-canvas-elevated);
-}
-
-.overview-chart__marker--plantilla {
-  color: var(--color-error-text);
-}
-
-.overview-chart__marker--backup {
-  color: var(--color-warning-text);
-}
-
-.overview-chart__marker--starlite {
-  color: var(--color-accent-purple-deep);
-}
-
 .overview-chart__plot {
-  block-size: var(--chart-height-md);
-  min-block-size: 0;
   min-inline-size: 0;
-}
-
-.overview-chart__axis {
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-}
-
-.overview-chart__dot {
-  r: var(--chart-point-radius);
-  stroke-width: var(--chart-line-width);
-  stroke-dasharray: none;
-}
-
-.overview-chart__dot--active {
-  r: var(--chart-active-point-radius);
-}
-
-.overview-chart__swatch {
-  flex-shrink: 0;
-  inline-size: var(--design-spacing-xs);
-  block-size: var(--design-spacing-xs);
-  border-radius: var(--rounded-xs);
-}
-
-.overview-chart__swatch--plantilla {
-  background: var(--color-error);
-}
-
-.overview-chart__swatch--backup {
-  background: var(--color-warning);
-}
-
-.overview-chart__swatch--starlite {
-  background: var(--color-accent-purple-deep);
+  padding: var(--design-spacing-md);
 }
 
 .overview-chart__empty {
   margin: 0;
-  padding-block: var(--design-spacing-xl);
+  padding: var(--design-spacing-md);
   color: var(--color-mute);
-  font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
   letter-spacing: var(--type-body-md-tracking);
-  text-align: center;
+}
+
+/* Tira de pestañas: una columna por serie, separadas por la hairline. */
+.overview-chart__tabs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  grid-auto-flow: column;
+  min-inline-size: 0;
+  border-block-start: var(--border-width) solid var(--color-hairline);
+}
+
+.overview-chart__tabs > .metric-tile + .metric-tile {
+  border-inline-start: var(--border-width) solid var(--color-hairline);
+}
+
+/* En reposo la pestaña cede la cifra; al activarse recupera la tinta y marca
+   su borde superior con el color de su serie. */
+.overview-chart__tabs > .metric-tile:not([data-selected]) .metric-tile__value {
+  color: var(--color-mute);
+}
+
+.overview-chart__tabs > .metric-tile[data-selected] {
+  box-shadow: inset 0 var(--border-width-strong, 2px) 0 0 var(--metric-tile-accent);
+}
+
+@media (hover: hover) {
+  .overview-chart__tabs > .metric-tile:hover {
+    background: var(--color-surface-hover);
+  }
+}
+
+/* La muestra lleva siempre el color de su serie. La pestaña activa se reconoce
+   por el filo superior, la tinta de la cifra y el distintivo del encabezado,
+   no por invertir la muestra: ningún color de serie garantiza contraste
+   suficiente contra el blanco en las seis paletas. */
+.overview-chart__tab-swatch {
+  inline-size: var(--design-spacing-xs);
+  block-size: var(--design-spacing-xs);
+  border-radius: var(--rounded-xs);
+  background: var(--metric-tile-accent);
+}
+
+@media (width < 768px) {
+  .overview-chart__tabs {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .overview-chart__tabs > .metric-tile + .metric-tile {
+    border-inline-start: 0;
+    border-block-start: var(--border-width) solid var(--color-hairline);
+  }
 }

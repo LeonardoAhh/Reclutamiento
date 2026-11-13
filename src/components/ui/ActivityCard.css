@@ -90,7 +90,9 @@
   cursor: pointer;
 }
 
-.activity-card:focus-within {
+/* El realce acompaña al teclado: `:focus-within` también se activaba al
+   pulsar un control de la tarjeta con el ratón y marcaba la tarjeta entera. */
+.activity-card:has(:focus-visible) {
   outline: var(--focus-ring-width) solid var(--color-focus);
   outline-offset: var(--focus-ring-offset);
 }

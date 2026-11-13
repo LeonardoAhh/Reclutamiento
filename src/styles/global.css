@@ -75,7 +75,7 @@
   --color-document-table-row-alternate: #e5e5e5;
 
   /* ── Hairlines ──────────────────────────────────────────────── */
-  --color-hairline: #d8dde1;
+  --color-hairline: #d1d6da;
   /* divisor decorativo */
   --color-hairline-strong: #6b7280;
   /* 4.8:1 sobre canvas (control: >= 3) */
@@ -388,6 +388,9 @@
   --transition-decorative-float: 3000ms ease-in-out;
   --motion-float-distance: var(--design-spacing-xs);
 
+  /* Paso de retardo de una cascada; cada pieza lo multiplica por su posición. */
+  --motion-stagger-step: 16ms;
+
   /* Page side-by-side: shared list/detail navigation (transitions.dev). */
   --page-slide-dur: 250ms;
   --page-fade-dur: var(--page-slide-dur);
@@ -437,6 +440,7 @@
   /* Anchura máxima del espacio inicial para cargar y consultar reportes diarios. */
   --feature-report-onboarding-max-inline-size: var(--container-standard-max-inline-size);
   --feature-navigation-rail-inline-size: 14rem;
+  --feature-cell-column-max-inline-size: 3.5rem;
 
   /* Altura legible para detalles extensos de validación antes de scroll interno. */
   --feature-validation-details-max-block-size: 12rem;
@@ -555,6 +559,9 @@
   --mobile-nav-height: calc(var(--touch-target-min) + var(--design-spacing-sm));
   --duration-skeleton: 1500ms;
   --opacity-disabled: 0.5;
+  /* Contenido que cede protagonismo sin quedar inactivo, como las columnas
+     de una gráfica mientras se lee otra. */
+  --opacity-muted: 0.55;
   --opacity-skeleton-rest: 0.4;
   --opacity-skeleton-active: 0.9;
   --duration-spinner: 800ms;
@@ -724,7 +731,9 @@
   --shell-floor: var(--color-sidebar-surface);
   --color-surface-card: hsl(0deg 0% 100%);
   --color-surface-strong: hsl(40deg 9% 85%);
-  --color-hairline: color-mix(in srgb, var(--color-ink) 12%, var(--color-canvas));
+  /* 18%: la hairline se mezcla contra canvas pero se dibuja sobre canvas-soft,
+     surface-strong y el rail; calibrada para separarse de todas ellas. */
+  --color-hairline: color-mix(in srgb, var(--color-ink) 18%, var(--color-canvas));
   --color-hairline-strong: color-mix(in srgb, var(--color-ink) 55%, var(--color-surface-card));
   --color-ink: hsl(30deg 15% 6%);
   --color-mute: hsl(40deg 8% 22%);
@@ -749,9 +758,11 @@
   --color-canvas-elevated: hsl(30deg 3% 16%);
   --color-surface-card: var(--color-canvas-elevated);
   --color-surface-strong: hsl(30deg 3% 22%);
-  /* 18%: el divisor sigue visible sobre surface-strong */
-  --color-hairline: color-mix(in srgb, var(--color-ink) 18%, var(--color-canvas));
-  --color-hairline-strong: color-mix(in srgb, var(--color-ink) 40%, var(--color-surface-card));
+  /* 24%: la hairline se mezcla contra canvas pero se dibuja sobre canvas-soft,
+     surface-strong y el rail; calibrada para separarse de todas ellas.
+     44% en hairline-strong deja el borde de control en 3:1 sobre surface-strong. */
+  --color-hairline: color-mix(in srgb, var(--color-ink) 24%, var(--color-canvas));
+  --color-hairline-strong: color-mix(in srgb, var(--color-ink) 44%, var(--color-surface-card));
   --color-ink: hsl(45deg 40% 97%);
   --color-mute: hsl(0deg 0% 88%);
   --color-primary-tint: color-mix(in srgb, var(--color-primary) 12%, var(--color-canvas));
@@ -779,7 +790,7 @@
   --color-surface-card: #fff;
   --color-surface-strong: #dce4e0;
   /* Divisor decorativo; el borde de control conserva el verde con >= 3:1 */
-  --color-hairline: #d6ddd8;
+  --color-hairline: #cfd6d1;
   --color-hairline-strong: #64766a;
   --color-ink: #16222a;
   --color-mute: #2f3e36;
@@ -853,7 +864,7 @@
   --color-surface-strong: #dddcd5;
 
   /* Bordes: hairline decorativo; el fuerte sirve a controles (>= 3:1) */
-  --color-hairline: #dad9d4;
+  --color-hairline: #d0cfca;
   --color-hairline-strong: #716f66;
 
   /* Texto */
@@ -919,7 +930,7 @@
   --color-sidebar-surface: var(--color-canvas-soft);
   --shell-floor: var(--color-sidebar-surface);
   --color-surface-strong: var(--color-canvas-soft);
-  --color-hairline: #d5dcd8;
+  --color-hairline: #cfd6d2;
   /* divisor decorativo */
   --color-ink: #171717;
   --color-mute: #3a3a3a;

@@ -1,0 +1,89 @@
+/* Renglón de recuento: grupo a la izquierda, cuántos a la derecha. Sin marco
+   interno ni rejillas: la fila entera es la unidad de lectura. */
+
+.count-row-list {
+  display: grid;
+  gap: var(--design-spacing-xs);
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.count-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--design-spacing-sm);
+  min-inline-size: 0;
+  padding: var(--design-spacing-sm) var(--design-spacing-md);
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-card);
+}
+
+.count-row__heading {
+  display: grid;
+  gap: var(--design-spacing-xxs);
+  min-inline-size: 0;
+}
+
+.count-row__title {
+  display: flex;
+  align-items: center;
+  gap: var(--design-spacing-xs);
+  min-inline-size: 0;
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+  overflow-wrap: anywhere;
+}
+
+.count-row__title > span {
+  min-inline-size: 0;
+}
+
+.count-row__meta {
+  min-inline-size: 0;
+  color: var(--color-mute);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
+  overflow-wrap: anywhere;
+}
+
+.count-row__count {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: baseline;
+  gap: var(--design-spacing-xxs);
+}
+
+.count-row__value {
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-line);
+  letter-spacing: var(--type-heading-sm-tracking);
+  font-variant-numeric: tabular-nums;
+}
+
+/* El color marca la lectura que resta; la cifra no cambia de peso ni de caja. */
+.count-row[data-tone='negative'] .count-row__value {
+  color: var(--color-error-text);
+}
+
+.count-row__unit {
+  color: var(--color-mute);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
+}

@@ -1,42 +1,20 @@
-import { useId, useMemo } from 'react';
-import {
-  CartesianGrid,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-  type TooltipProps,
-} from 'recharts';
+import { useId, useMemo, useState, type KeyboardEvent } from 'react';
+import { CellColumnChart } from '@/components/ui/CellColumnChart';
+import { MetricTile, type MetricTileTone } from '@/components/ui/MetricTile';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { TooltipSurface, type ChartTooltipEntry } from '@/components/ui/Tooltip';
 import type { IsoWeekRange } from '@/lib/dates';
 import type { AuthorizedPosition, Baja, Employee } from '@/lib/types';
 import { workforceText } from '@/pages/workforce-translations';
 import { buildVacancySeries, type VacancySeriesPoint } from './overview-vacancy-series';
 import './OverviewVacancyChart.css';
 
-const SERIES = [
-  {
-    key: 'plantilla',
-    label: 'Plantilla',
-    color: 'var(--color-error)',
-    dash: undefined,
-  },
-  {
-    key: 'backup',
-    label: 'Backup',
-    color: 'var(--color-warning)',
-    dash: 'var(--chart-dash-short)',
-  },
-  {
-    key: 'starlite',
-    label: 'Starlite',
-    color: 'var(--color-accent-purple-deep)',
-    dash: 'var(--chart-dash-dotted)',
-  },
-] as const;
+type SeriesKey = 'plantilla' | 'backup' | 'starlite';
+
+const SERIES: readonly { key: SeriesKey; label: string; accent: string }[] = [
+  { key: 'plantilla', label: 'Plantilla', accent: 'var(--color-error)' },
+  { key: 'backup', label: 'Backup', accent: 'var(--color-warning)' },
+  { key: 'starlite', label: 'Starlite', accent: 'var(--color-accent-purple-deep)' },
+];
 
 interface Props {
   week: IsoWeekRange;
@@ -48,75 +26,22 @@ interface Props {
   locale: string;
 }
 
-interface DotProps {
-  cx?: number;
-  cy?: number;
-  fill: string;
-  stroke?: string;
-  active?: boolean;
+/** Vacantes menos al cierre es una buena noticia; más, una mala. */
+function changeTone(change: number): MetricTileTone {
+  if (change === 0) return 'neutral';
+  return change < 0 ? 'good' : 'bad';
 }
 
-function isFinitePair(cx?: number, cy?: number): cx is number {
-  return typeof cx === 'number' && Number.isFinite(cx) && typeof cy === 'number' && Number.isFinite(cy);
+function formatChange(change: number): string {
+  if (change === 0) return '±0';
+  return `${change < 0 ? '−' : '+'}${Math.abs(change)}`;
 }
 
-function SeriesDot({ cx, cy, fill, stroke, active = false }: DotProps) {
-  if (!isFinitePair(cx, cy)) return <g />;
-  return (
-    <circle
-      className={`overview-chart__dot${active ? ' overview-chart__dot--active' : ''}`}
-      cx={cx}
-      cy={cy}
-      fill={fill}
-      stroke={stroke}
-    />
-  );
-}
-
-function SeriesMarker({ dataKey }: { dataKey: string }) {
-  const series = SERIES.find((item) => item.key === dataKey);
-  if (!series) return null;
-  return (
-    <svg
-      className={`overview-chart__marker overview-chart__marker--${series.key}`}
-      viewBox="0 0 24 8"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <line x1="0" y1="4" x2="24" y2="4" strokeDasharray={series.dash} />
-      <circle cx="12" cy="4" />
-    </svg>
-  );
-}
-
-interface CustomTooltipProps extends TooltipProps<number, string> {
-  active?: boolean;
-  payload?: ChartTooltipEntry[];
-  label?: string | number;
-}
-
-function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
-  const { language } = useLanguage();
-  if (!active || !payload?.length) return null;
-
-  return (
-    <TooltipSurface role="tooltip" variant="chart">
-      <p className="tooltip-surface__title tooltip-surface__title--eyebrow">{String(label ?? '')}</p>
-      {payload.map((entry) => (
-        <p key={entry.dataKey} className="tooltip-surface__row">
-          <span className={`overview-chart__swatch overview-chart__swatch--${entry.dataKey}`} aria-hidden="true" />
-          <span>{entry.name}</span>
-          <strong>{Number(entry.value).toLocaleString(language === 'en' ? 'en-US' : 'es-MX')}</strong>
-        </p>
-      ))}
-    </TooltipSurface>
-  );
-}
-
-function formatAxisValue(value: number): string {
-  return Number.isInteger(value) ? String(value) : '';
-}
-
+/**
+ * Vacantes por día. La rejilla pinta una sola serie y la tira de pestañas de
+ * abajo decide cuál: cada pestaña lleva su cierre de semana y cuánto se movió
+ * desde el lunes, ambos leídos de la misma serie que dibuja.
+ */
 export function OverviewVacancyChart({
   week,
   rangeLabel,
@@ -129,108 +54,91 @@ export function OverviewVacancyChart({
   const { language } = useLanguage();
   const t = (text: string) => workforceText(language, text);
   const titleId = useId();
-  const descriptionId = useId();
+  const plotId = useId();
+  const [activeSeries, setActiveSeries] = useState(0);
 
   const data = useMemo<VacancySeriesPoint[]>(
     () =>
-      buildVacancySeries({
-        week,
-        employees,
-        bajas,
-        positions,
-        dismissedKeys,
-        locale,
-      }),
+      buildVacancySeries({ week, employees, bajas, positions, dismissedKeys, locale }),
     [week, employees, bajas, positions, dismissedKeys, locale],
   );
 
-  const isEmpty = data.length === 0;
+  const days = useMemo(() => data.map((point) => point.day), [data]);
+  const current = SERIES[activeSeries];
+  const values = useMemo(() => data.map((point) => point[current.key]), [data, current.key]);
+
+  function onTabsKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
+    event.preventDefault();
+    const step = event.key === 'ArrowRight' ? 1 : SERIES.length - 1;
+    const next = (activeSeries + step) % SERIES.length;
+    setActiveSeries(next);
+    event.currentTarget.querySelectorAll<HTMLButtonElement>('[role="tab"]')[next]?.focus();
+  }
 
   return (
-    <figure className="overview-chart" aria-labelledby={titleId} aria-describedby={descriptionId}>
+    <figure className="overview-chart" aria-labelledby={titleId}>
       <header className="overview-chart__header">
         <div className="overview-chart__heading">
           <h2 id={titleId} className="overview-chart__title">
             {t('Vacantes por día')}
           </h2>
+          <p className="overview-chart__caption">
+            {t('Semana')} {week.week} · {rangeLabel}
+          </p>
         </div>
-        <ul className="overview-chart__legend" aria-label={t('Series de vacantes')}>
-          {SERIES.map((series) => (
-            <li key={series.key}>
-              <SeriesMarker dataKey={series.key} />
-              {t(series.label)}
-            </li>
-          ))}
-        </ul>
+        <span className="overview-chart__badge">{t(current.label)}</span>
       </header>
 
-      <p id={descriptionId} className="sr-only">
-        {t('Semana')} {week.week} · {rangeLabel}. {t('Series de vacantes')}:{' '}
-        {SERIES.map((series) => t(series.label)).join(', ')}.
-      </p>
-
-      {isEmpty ? (
+      {data.length === 0 ? (
         <p className="overview-chart__empty">{t('Sin datos para mostrar')}</p>
       ) : (
-        <div className="overview-chart__plot">
-          <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
-            <LineChart
-              data={data}
-              margin={{ top: 16, right: 16, left: 0, bottom: 8 }}
-              accessibilityLayer
-              aria-label={t('Vacantes por día')}
-            >
-              <CartesianGrid
-                strokeDasharray="var(--chart-dash-short)"
-                vertical={false}
-                stroke="var(--color-hairline)"
-              />
-              <XAxis
-                dataKey="day"
-                axisLine={false}
-                tickLine={false}
-                dy={8}
-                tick={{
-                  fill: 'var(--color-mute)',
-                  className: 'overview-chart__axis',
-                }}
-              />
-              <YAxis
-                axisLine={false}
-                tickLine={false}
-                width={40}
-                allowDecimals={false}
-                tickFormatter={formatAxisValue}
-                tick={{
-                  fill: 'var(--color-mute)',
-                  className: 'overview-chart__axis',
-                }}
-              />
-              <Tooltip
-                content={<CustomTooltip />}
-                cursor={{
-                  stroke: 'var(--color-mute)',
-                  strokeDasharray: 'var(--chart-dash-short)',
-                }}
-              />
-              {SERIES.map((series) => (
-                <Line
+        <>
+          <div className="overview-chart__plot">
+            <CellColumnChart
+              id={plotId}
+              values={values}
+              labels={days}
+              ticks={days}
+              accent={current.accent}
+              label={`${t('Vacantes por día')} · ${t(current.label)}`}
+              revision={current.key}
+            />
+          </div>
+
+          <div
+            className="overview-chart__tabs"
+            role="tablist"
+            aria-label={t('Series de vacantes')}
+            onKeyDown={onTabsKeyDown}
+          >
+            {SERIES.map((series, index) => {
+              const seriesValues = data.map((point) => point[series.key]);
+              const close = seriesValues[seriesValues.length - 1] ?? 0;
+              const change = close - (seriesValues[0] ?? 0);
+              return (
+                <MetricTile
                   key={series.key}
-                  type="linear"
-                  dataKey={series.key}
-                  name={t(series.label)}
-                  stroke={series.color}
-                  strokeWidth="var(--chart-line-width)"
-                  strokeDasharray={series.dash}
-                  strokeLinecap="round"
-                  dot={<SeriesDot fill="var(--color-canvas-elevated)" stroke={series.color} />}
-                  activeDot={<SeriesDot active fill={series.color} stroke="var(--color-canvas-elevated)" />}
-                  isAnimationActive={false}
+                  role="tab"
+                  controls={plotId}
+                  selected={index === activeSeries}
+                  accent={series.accent}
+                  label={t(series.label)}
+                  mark={<span className="overview-chart__tab-swatch" />}
+                  value={close}
+                  tone={changeTone(change)}
+                  note={
+                    <>
+                      <strong>{formatChange(change)}</strong>{' '}
+                      {language === 'en' ? 'vs start of week' : 'vs inicio de semana'}
+                    </>
+                  }
+                  onClick={() => setActiveSeries(index)}
                 />
-              ))}
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
+              );
+            })}
+          </div>
+        </>
       )}
     </figure>
   );

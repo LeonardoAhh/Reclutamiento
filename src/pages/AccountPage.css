@@ -60,7 +60,7 @@
 .account-section__body {
   min-width: 0;
 }
-.account-section__body>*+*,.account-appearance>*+*,.account-row+.account-row {
+.account-section__body>*+*,.account-row+.account-row {
   border-block-start: var(--border-width) solid var(--color-hairline);
 }
 .account-card__note {
@@ -204,7 +204,10 @@
   color: var(--color-mute);
 }
 
-.account-appearance > .account-appearance__control:not(:first-child) {
+/* Un solo separador por fila. Pesa más que el reset de borde del control y
+   alcanza también a la nota de error, así que sustituye a la regla genérica
+   `> * + *`, que quedaba muerta bajo ese reset. */
+.account-appearance > :not(:first-child) {
   border-block-start: var(--border-width) solid var(--color-hairline);
 }
 
@@ -236,14 +239,17 @@
     opacity   var(--page-fade-dur)  var(--page-fade-ease),
     transform var(--page-slide-dur) var(--page-slide-ease),
     filter    var(--page-slide-dur) var(--page-slide-ease);
-  will-change: opacity, transform, filter;
 }
 .t-page-slide[data-page="1"] .t-page[data-page-id="1"],
 .t-page-slide[data-page="2"] .t-page[data-page-id="2"] {
   opacity: 1;
   pointer-events: auto;
   transform: translateX(0);
-  filter: blur(0);
+
+  /* En reposo la página no lleva filtro: `blur(0)` seguía siendo un filtro y
+     mantenía la capa compuesta, donde las hairlines de 1px se pierden al
+     repintar con escalado fraccionario. */
+  filter: none;
   transition-delay: var(--page-stagger);
 }
 

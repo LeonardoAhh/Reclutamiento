@@ -15,7 +15,6 @@
 .account-palette-option {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  grid-template-rows: auto auto;
   align-items: center;
   gap: var(--design-spacing-xs);
   min-block-size: var(--touch-target-min);
@@ -27,11 +26,9 @@
   cursor: pointer;
 }
 
-.account-palette-option:focus-within {
-  outline: var(--focus-ring-width) solid var(--color-focus);
-  outline-offset: 0;
-}
-
+/* El anillo de foco lo pone la regla compartida `label:has(> input.sr-only:
+   focus-visible)` de global.css, que solo responde al teclado. La regla local
+   usaba `:focus-within` y marcaba una opción al abrir con el ratón. */
 .account-palette-option:has(input:checked) {
   border-color: var(--color-control-border);
 }
@@ -56,34 +53,7 @@
 
 .account-palette-option__check {
   grid-column: 2;
-  grid-row: 1 / 3;
+  grid-row: 1;
   inline-size: var(--icon-size-sm);
   block-size: var(--icon-size-sm);
-}
-
-.account-palette-swatch {
-  display: flex;
-  grid-column: 1;
-  grid-row: 2;
-  inline-size: 100%;
-  block-size: var(--design-spacing-sm);
-  overflow: hidden;
-  border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--rounded-xs);
-}
-
-.account-palette-swatch > span {
-  flex: 1 1 0;
-}
-
-.account-palette-swatch__canvas {
-  background: var(--color-canvas);
-}
-
-.account-palette-swatch__primary {
-  background: var(--color-primary);
-}
-
-.account-palette-swatch__ink {
-  background: var(--color-ink);
 }

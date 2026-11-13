@@ -1,0 +1,146 @@
+/* Ficha de métrica. No trae marco propio: el contenedor decide si es una
+   tarjeta suelta o una pestaña dentro de una tira, y la ficha solo aporta
+   ritmo tipográfico y estados. Los roles de texto son los que ya usaban las
+   tarjetas de la semana, para que ambas filas lean igual. */
+
+.metric-tile {
+  display: grid;
+  gap: var(--design-spacing-xxs);
+  justify-items: start;
+  inline-size: 100%;
+  min-inline-size: 0;
+  min-block-size: var(--touch-target-min);
+  padding: var(--design-spacing-sm);
+  border: 0;
+  background: transparent;
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  text-align: start;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.metric-tile__head {
+  display: flex;
+  align-items: center;
+  gap: var(--design-spacing-xs);
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
+/* La marca acepta un icono o una muestra de color; ambos ocupan la misma caja
+   para que las fichas conserven su línea base con y sin ella. */
+.metric-tile__mark {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--control-height-sm);
+  block-size: var(--control-height-sm);
+  border-radius: var(--rounded-xs);
+  background: var(--color-surface-strong);
+  color: var(--color-mute);
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.metric-tile__mark svg {
+  inline-size: var(--icon-size-sm);
+  block-size: var(--icon-size-sm);
+}
+
+/* La etiqueta de una métrica vive en una línea: partida en dos compite con la
+   cifra y desordena la altura de las tarjetas vecinas. */
+.metric-tile__label {
+  min-inline-size: 0;
+  overflow: hidden;
+  color: var(--color-mute);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* La cifra y su apunte comparten línea base: el apunte describe el número, no
+   la etiqueta, y así deja de abrir un hueco en la fila de arriba. */
+.metric-tile__figure {
+  display: flex;
+  align-items: baseline;
+  gap: var(--design-spacing-xs);
+  min-inline-size: 0;
+}
+
+.metric-tile__corner {
+  flex: 0 1 auto;
+  min-inline-size: 0;
+  color: var(--color-mute);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
+  text-align: end;
+}
+
+.metric-tile__value {
+  min-inline-size: 0;
+  color: var(--color-ink);
+  font-size: var(--type-display-lg-size);
+  font-weight: var(--type-display-lg-weight);
+  line-height: var(--type-display-lg-line);
+  letter-spacing: var(--type-display-lg-tracking);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+  transition: color var(--transition-fast);
+}
+
+.metric-tile__note {
+  min-inline-size: 0;
+  color: var(--color-mute);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+/* El color vive en el fragmento destacado, nunca en el fondo de la nota. */
+.metric-tile__note[data-tone='good'] strong {
+  color: var(--color-success-text);
+}
+
+.metric-tile__note[data-tone='bad'] strong {
+  color: var(--color-error-text);
+}
+
+.metric-tile__note strong {
+  font-weight: var(--type-body-strong-weight);
+}
+
+/* En móvil la etiqueta más larga no cabe con el interletrado de caption-up, así
+   que toma el rol de 12px sin tracking, que conserva el peso, y la tarjeta cede
+   un escalón de relleno. Con eso entra completa en la columna más estrecha. */
+@media (width < 768px) {
+  .metric-tile {
+    padding: var(--design-spacing-xs);
+  }
+
+  .metric-tile__label {
+    font-size: var(--type-body-sm-semibold-size);
+    font-weight: var(--type-body-sm-semibold-weight);
+    line-height: var(--type-body-sm-semibold-line);
+    letter-spacing: var(--type-body-sm-semibold-tracking);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .metric-tile,
+  .metric-tile__mark,
+  .metric-tile__value {
+    transition: none;
+  }
+}

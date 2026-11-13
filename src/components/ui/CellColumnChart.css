@@ -1,0 +1,193 @@
+/* Gráfica de columnas de celdas. El alto lo fija el token compartido de
+   gráficas; el resto es porcentual, así que el componente no mide el layout.
+   La cascada recorre la diagonal: el retardo de cada celda es su columna más
+   su fila, por un único paso tokenizado. */
+
+.cell-chart {
+  display: grid;
+  grid-template-columns: var(--spacing-xxl) minmax(0, 1fr);
+  grid-template-rows: var(--chart-height-md) auto;
+  column-gap: var(--design-spacing-xs);
+  min-inline-size: 0;
+}
+
+.cell-chart__axis {
+  position: relative;
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.cell-chart__axis > span {
+  position: absolute;
+  inset-inline-end: 0;
+  color: var(--color-mute);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
+  font-variant-numeric: tabular-nums;
+  transform: translateY(-50%);
+}
+
+.cell-chart__plot {
+  position: relative;
+  grid-column: 2;
+  grid-row: 1;
+  min-inline-size: 0;
+  border-radius: var(--radius-control);
+}
+
+/* Las guías comparten el trazo discontinuo del resto de gráficas. */
+.cell-chart__rule {
+  position: absolute;
+  inset-inline: 0;
+  border-block-start: var(--border-width) dashed var(--color-hairline);
+  pointer-events: none;
+}
+
+.cell-chart__columns {
+  display: flex;
+  gap: var(--design-spacing-xxs);
+  block-size: 100%;
+  min-inline-size: 0;
+}
+
+/* Las pistas se reparten el ancho por igual, así que las etiquetas del eje caen
+   en el centro de cada una. Lo que no crece sin límite es la celda: con pocos
+   periodos, una celda a todo lo ancho se leería como franja y no como ficha. */
+.cell-chart__column {
+  display: flex;
+  flex: 1 1 0;
+  min-inline-size: 0;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: var(--design-spacing-xxs);
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
+}
+
+/* Mientras se lee una columna, las demás ceden protagonismo. */
+.cell-chart[data-reading] .cell-chart__column {
+  opacity: var(--opacity-muted);
+}
+
+.cell-chart[data-reading] .cell-chart__column[data-active] {
+  opacity: 1;
+}
+
+.cell-chart__cell {
+  flex: 1 1 0;
+  min-block-size: 0;
+  inline-size: 100%;
+  max-inline-size: var(--feature-cell-column-max-inline-size);
+  border-radius: var(--rounded-xs);
+  background: var(--color-surface-hover);
+  transform-origin: 50% 100%;
+  animation: cell-chart-raise var(--transition-base) var(--ease-spring) both;
+  animation-delay: calc((var(--cell-col) + var(--cell-row)) * var(--motion-stagger-step));
+  transition: background-color var(--transition-fast);
+}
+
+.cell-chart__cell[data-on] {
+  background: var(--cell-chart-accent);
+}
+
+/* La celda de remate se aclara para que el borde del valor se lea de un vistazo. */
+.cell-chart__cell[data-cap] {
+  background: color-mix(in srgb, var(--cell-chart-accent) 55%, var(--color-canvas-elevated));
+}
+
+.cell-chart__column[data-active] .cell-chart__cell:not([data-on]) {
+  background: var(--color-surface-strong);
+}
+
+.cell-chart__cursor {
+  position: absolute;
+  inset-block: 0;
+  inline-size: 0;
+  border-inline-start: var(--border-width) dashed var(--color-mute);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    inset-inline-start var(--transition-base),
+    opacity var(--transition-fast);
+}
+
+.cell-chart[data-reading] .cell-chart__cursor {
+  opacity: 1;
+}
+
+/* El tooltip sigue la altura del valor, no la del cursor. */
+.cell-chart__tip {
+  position: absolute;
+  z-index: var(--layer-tooltip);
+  margin-inline-start: var(--design-spacing-xs);
+  transform: translateY(-50%);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    inset-inline-start var(--transition-base),
+    inset-block-start var(--transition-base),
+    opacity var(--transition-fast);
+}
+
+.cell-chart__tip--flip {
+  margin-inline-start: 0;
+  transform: translate(calc(-100% - var(--design-spacing-xs)), -50%);
+}
+
+.cell-chart[data-reading] .cell-chart__tip {
+  opacity: 1;
+}
+
+.cell-chart__tip-swatch {
+  flex: 0 0 auto;
+  inline-size: var(--design-spacing-xs);
+  block-size: var(--design-spacing-xs);
+  border-radius: var(--rounded-xs);
+  background: var(--cell-chart-accent);
+}
+
+.cell-chart__ticks {
+  position: relative;
+  grid-column: 2;
+  grid-row: 2;
+  block-size: var(--touch-target-min);
+}
+
+.cell-chart__ticks > span {
+  position: absolute;
+  inset-block-start: var(--design-spacing-xs);
+  color: var(--color-mute);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+
+@keyframes cell-chart-raise {
+  from {
+    opacity: 0;
+    transform: scaleY(0.2);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cell-chart__cell {
+    animation: none;
+  }
+
+  .cell-chart__cell,
+  .cell-chart__column,
+  .cell-chart__cursor,
+  .cell-chart__tip {
+    transition: none;
+  }
+}

@@ -65,9 +65,13 @@
     background var(--transition-fast);
 }
 
+/* Realce al apuntar y al enfocar con teclado. Pintaba `surface-card`, el mismo
+   color que la tarjeta en reposo, así que no hacía nada; ahora usa el token de
+   hover compartido. `:focus-within` marcaba además la tarjeta entera al pulsar
+   un control con el ratón. */
 .dept-card:hover,
-.dept-card:focus-within {
-  background: var(--color-surface-card);
+.dept-card:has(:focus-visible) {
+  background: var(--color-surface-hover);
 }
 
 .dept-card__header {

@@ -24,7 +24,7 @@ export function getAccountPaletteOptions(copy: AccountCopy, language: Language) 
 export function AccountPaletteView({ copy }: { copy: AccountCopy }) {
   const id = useId();
   const { language } = useLanguage();
-  const { palette, resolvedTheme, setPalette } = useTheme();
+  const { palette, setPalette } = useTheme();
   const options = getAccountPaletteOptions(copy, language);
 
   return (
@@ -44,17 +44,6 @@ export function AccountPaletteView({ copy }: { copy: AccountCopy }) {
             }}
           />
           <span className="account-palette-option__title">{option.label}</span>
-          <span
-            className="account-palette-swatch"
-            data-palette-preview=""
-            data-color-palette={option.value}
-            data-color-scheme={resolvedTheme}
-            aria-hidden="true"
-          >
-            <span className="account-palette-swatch__canvas" />
-            <span className="account-palette-swatch__primary" />
-            <span className="account-palette-swatch__ink" />
-          </span>
           {palette === option.value && <CircleCheckBig className="account-palette-option__check" aria-hidden="true" />}
         </label>
       ))}

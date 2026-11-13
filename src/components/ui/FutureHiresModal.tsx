@@ -3,12 +3,14 @@ import { Copy } from 'lucide-react';
 import { Modal } from './Modal';
 import { FormSheet } from './FormSheet';
 import { StarliteBadge } from './Badge';
+import { CountRow } from './CountRow';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import type { Employee } from '@/lib/types';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { workforceText } from '@/pages/workforce-translations';
 import { formatReadableDate, formatShortDate } from '@/lib/dates';
 import { toast } from '@/lib/notify';
+import { groupMovements, type MovementGroup } from '@/lib/movementGroups';
 import { toNaturalCase } from '@/lib/utils';
 import {
   buildWhatsAppReport,
@@ -30,6 +32,7 @@ interface FutureHireReportRow {
   label: string;
   count: number;
 }
+
 
 function buildFutureHiresMessage(futureHires: Employee[], language: 'es' | 'en'): string {
   const t = (text: string) => workforceText(language, text);
@@ -133,6 +136,20 @@ export function FutureHiresModal({
     [sortedFutureHires, language],
   );
 
+  const groupedFutureHires = useMemo<MovementGroup[]>(
+    () =>
+      groupMovements(
+        futureHires.map((employee) => ({
+          puesto: employee.puesto,
+          turno: employee.turno,
+          dateIso: employee.fecha_ingreso,
+          isStarlite: employee.is_starlite,
+        })),
+        workforceText(language, 'Sin puesto'),
+      ),
+    [futureHires, language],
+  );
+
   const handleCopy = async () => {
     try {
       await copyTextToClipboard(message);
@@ -142,29 +159,18 @@ export function FutureHiresModal({
     }
   };
 
-  const renderHiresList = (hiresToRender: Employee[]) => (
+  const renderHiresList = (groupsToRender: MovementGroup[]) => (
     <div className="future-hires-modal__section">
-      <ul className="future-hires-modal__list">
-        {hiresToRender.map((employee) => (
-          <li
-            key={employee.num_empleado}
-            className="future-hires-modal__card"
-          >
-            <h3 className="future-hires-modal__position">
-              <span>{employee.puesto}</span>
-              {employee.is_starlite && <StarliteBadge compact />}
-            </h3>
-            <dl className="future-hires-modal__details">
-              <div className="future-hires-modal__detail">
-                <dt>{t('Turno')}</dt>
-                <dd>{employee.turno || '-'}</dd>
-              </div>
-              <div className="future-hires-modal__detail">
-                <dt>{t('Fecha')}</dt>
-                <dd>{formatShortDate(employee.fecha_ingreso, locale)}</dd>
-              </div>
-            </dl>
-          </li>
+      <ul className="count-row-list">
+        {groupsToRender.map((group) => (
+          <CountRow
+            key={group.key}
+            title={group.puesto}
+            badge={group.isStarlite ? <StarliteBadge compact /> : undefined}
+            meta={`${t('Turno')} ${group.turno || '-'} · ${formatShortDate(group.dateIso, locale)}`}
+            count={group.count}
+            unit={t(group.count === 1 ? 'persona' : 'personas')}
+          />
         ))}
       </ul>
     </div>
@@ -191,7 +197,7 @@ export function FutureHiresModal({
       }
     >
       <div className="modal-body future-hires-modal">
-        {futureHires.length > 0 ? renderHiresList(sortedFutureHires) : (
+        {futureHires.length > 0 ? renderHiresList(groupedFutureHires) : (
           <div className="future-hires-modal__empty">
             {t('No hay ingresos programados.')}
           </div>

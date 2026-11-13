@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { useId, useRef } from 'react';
 import { ChevronRight, Languages, Palette, Volume2, VolumeX } from 'lucide-react';
 import { LanguageToggle } from '@/components/ui/LanguageToggle';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
@@ -11,6 +11,7 @@ import { AccountPaletteView, getAccountPaletteOptions } from './AccountPaletteVi
 
 export function AccountPreferencesSection({ copy }: { copy: AccountCopy }) {
   const id = useId();
+  const paletteContentRef = useRef<HTMLDivElement>(null);
   const { language, storageError } = useLanguage();
   const { soundEnabled, soundStorageError, toggleSound } = useFeedback();
   const { palette } = useTheme();
@@ -29,7 +30,20 @@ export function AccountPreferencesSection({ copy }: { copy: AccountCopy }) {
             <ChevronRight className="account-appearance__palette-chevron" aria-hidden="true" />
           </button>
         </PopoverTrigger>
-        <PopoverContent align="start" className="account-palette-popover" aria-label={copy.palette}>
+        <PopoverContent
+          ref={paletteContentRef}
+          align="start"
+          className="account-palette-popover"
+          aria-label={copy.palette}
+          /* El foco entra por la opción activa, no por la primera de la lista:
+             es donde está el usuario y desde donde navega con las flechas. */
+          onOpenAutoFocus={(event) => {
+            const checked = paletteContentRef.current?.querySelector<HTMLInputElement>('input:checked');
+            if (!checked) return;
+            event.preventDefault();
+            checked.focus({ preventScroll: true });
+          }}
+        >
           <AccountPaletteView copy={copy} />
         </PopoverContent>
       </Popover>

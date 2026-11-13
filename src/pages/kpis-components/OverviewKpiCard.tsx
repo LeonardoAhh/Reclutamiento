@@ -1,3 +1,4 @@
+import { MetricTile } from '@/components/ui/MetricTile';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { workforceText } from '@/pages/workforce-translations';
 import './OverviewKpiCard.css';
@@ -10,24 +11,23 @@ interface Props {
   onClick: () => void;
 }
 
+/**
+ * Tarjeta de la semana: la misma ficha que las pestañas, con marco propio y
+ * sin marca. La cifra y su etiqueta bastan; un icono por tarjeta solo añadiría
+ * ruido a una fila que ya se lee de un vistazo.
+ */
 export function OverviewKpiCard({ label, value, cornerNote, note, onClick }: Props) {
   const { language } = useLanguage();
-  const t = (text: string) => workforceText(language, text);
 
   return (
-    <button
-      data-cuelume-tap=""
-      type="button"
-      className={cornerNote ? 'overview-kpi overview-kpi--dated' : 'overview-kpi'}
+    <MetricTile
+      className="overview-kpi"
+      label={label}
+      value={value}
+      cornerNote={cornerNote}
+      note={note}
+      description={workforceText(language, 'Ver detalle')}
       onClick={onClick}
-    >
-      <span className="overview-kpi__header">
-        <span className="overview-kpi__label">{label}</span>
-      </span>
-      <span className="overview-kpi__value">{value}</span>
-      {cornerNote && <span className="overview-kpi__corner-note">{cornerNote}</span>}
-      {note && <span className="overview-kpi__footer">{note}</span>}
-      <span className="sr-only">{t('Ver detalle')}</span>
-    </button>
+    />
   );
 }
