@@ -28,20 +28,26 @@
 
   /* ── Brand & Accent ───────────────────────────────────────────── */
   --color-primary: #1e40af;
+
   /* antes #2563eb: texto blanco daba 5.2 -> 8.7 */
   --color-primary-border: var(--color-primary-text);
   --color-primary-text: #1e3a8a;
+
   /* antes #1e40af: 7.6 sobre tint -> 9.0 */
   --color-primary-text-on-dark: #bfdbfe;
+
   /* 12.6 sobre #171717 */
 
   --color-primary-active: #1e3a8a;
+
   /* blanco encima: 10.4 */
   --color-primary-pressed: #172554;
+
   /* blanco encima: 14.7 */
   --color-primary-disabled: var(--color-surface-strong);
   --color-link: var(--color-primary-text);
   --color-link-deep: #172554;
+
   /* antes #1e3a8a: ahora más oscuro que link */
 
   /* ── Surface ──────────────────────────────────────────────────── */
@@ -59,6 +65,7 @@
 
   /* Texto secundario de salidas oficiales */
   --color-document-muted: #403d3a;
+
   /* antes #615d59: 5.2 sobre fila alterna -> 8.6 */
 
   /* Panel secundario de salidas oficiales */
@@ -69,6 +76,7 @@
 
   /* Encabezados de tablas imprimibles (asume texto negro encima) */
   --color-document-table-header: #c4c4c4;
+
   /* antes #8c8c8c: negro daba 6.3 -> 12.0 */
 
   /* Filas alternas imprimibles */
@@ -76,27 +84,32 @@
 
   /* ── Hairlines ──────────────────────────────────────────────── */
   --color-hairline: #d1d6da;
+
   /* divisor decorativo */
   --color-hairline-strong: #6b7280;
+
   /* 4.8:1 sobre canvas (control: >= 3) */
   --color-control-border: var(--color-hairline-strong);
 
   /* ── Text ───────────────────────────────────────────────────── */
+
   /* Escalera de texto: ink para títulos y cuerpo, mute para texto secundario. */
   --color-ink: #333;
   --color-mute: #374151;
+
   /* antes #4b5563: 6.6 sobre tint -> 9.0 */
   --color-on-primary: #fff;
   --color-on-neutral: #fff;
   --color-on-error: #fff;
+
   /* antes #171717 sobre #ef4444: 4.8 */
   --color-on-success: #fff;
   --color-on-error-deep: #fff;
   --color-on-warning: #fff;
   --color-shadow-rgb: 27 29 32;
-
   --color-on-dark: #e5e5e5;
   --color-on-dark-soft: #b6b6b6;
+
   /* 8.8 sobre #171717 */
   --color-focus-on-inverted: #fff;
 
@@ -109,30 +122,40 @@
 
   /* ── Semantic ───────────────────────────────────────────────── */
   --color-success: #064e3b;
+
   /* antes #047857: blanco daba 5.5 -> 9.7 */
   --color-success-text: #043d2e;
+
   /* 11.6 sobre success-subtle */
   --color-success-subtle: #ecfdf5;
   --color-warning: #78350f;
+
   /* antes #b45309: blanco daba 5.0 -> 9.1 */
   --color-warning-text: #5c2a0b;
+
   /* 11.3 sobre warning-subtle */
   --color-warning-subtle: #fffbeb;
   --color-error: #8a1616;
+
   /* antes #ef4444: 3.8 como texto -> 9.5 */
   --color-error-deep: #6e1212;
   --color-error-text: #5f1414;
+
   /* 12.0 sobre error-subtle */
   --color-error-subtle: #fef2f2;
 
   /* Ilustración/gradiente solamente; nunca chrome funcional. */
+
   /* 7.1: solo decorativo; para texto usar purple-deep */
   --color-violet: #7928ca;
   --color-accent-purple-deep: #4c1680;
+
   /* 12.1 */
   --color-accent-orange: #7a2f00;
+
   /* antes #c75000: 4.6 -> 9.4 */
   --color-accent-teal: #04524e;
+
   /* antes #087f7a: 4.9 -> 9.0 */
 
   /* ── Channel values ─────────────────────────────────────────── */
@@ -303,8 +326,10 @@
   --control-padding-y: var(--design-spacing-xs);
 
   /* Campo y botón comparten altura exterior; el texto puede crecer con el zoom. */
-  --control-min-block-size: max(var(--touch-target-min),
-      calc(var(--type-button-size) * var(--type-button-line) + var(--control-padding-y) * 2 + var(--border-width) * 2));
+  --control-min-block-size: max(
+    var(--touch-target-min),
+    calc(var(--type-button-size) * var(--type-button-line) + var(--control-padding-y) * 2 + var(--border-width) * 2)
+  );
   --textarea-min-block-size: calc(var(--touch-target-min) * 2);
   --textarea-content-max-block-size: 25rem;
   --select-content-max-block-size: 15.625rem;
@@ -522,10 +547,10 @@
   --color-workspace-pattern: color-mix(in srgb, var(--color-mute) 14%, transparent);
   --workspace-grid-spacing: var(--design-spacing-xxl);
   --header-height: var(--design-spacing-3xl);
-
   --mobile-nav-height: calc(var(--touch-target-min) + var(--design-spacing-sm));
   --duration-skeleton: 1500ms;
   --opacity-disabled: 0.5;
+
   /* Contenido que cede protagonismo sin quedar inactivo, como las columnas
      de una gráfica mientras se lee otra. */
   --opacity-muted: 0.55;
@@ -573,8 +598,10 @@
 
   /* Bordes */
   --color-hairline: #454b52;
+
   /* decorativo, no transmite información */
   --color-hairline-strong: #949494;
+
   /* >= 3:1 sobre todas las superficies */
 
   /* Sombras y overlays */
@@ -587,11 +614,9 @@
   --color-success: #86efac;
   --color-success-subtle: #14301f;
   --color-success-text: #dcfce7;
-
   --color-warning: #fcd34d;
   --color-warning-subtle: #33290a;
   --color-warning-text: #fef3c7;
-
   --color-error: #ffbdb6;
   --color-error-rgb: 255 189 182;
   --color-error-deep: var(--color-error);
@@ -618,6 +643,7 @@
   /* light: oscurece en hover/active */
 
   /* Marca */
+
   /* Etiqueta blanca y texto azul independiente >= 8.1:1 */
   --color-primary: oklch(36% 0.134 var(--brand-hue));
   --color-on-primary: oklch(100% 0 0deg);
@@ -666,7 +692,6 @@
 
   /* El relleno primario no sirve como texto en oscuro: el enlace en hover usa ink */
   --color-link-deep: var(--color-ink);
-
   --color-canvas: oklch(21% 0.006 var(--brand-hue));
   --color-canvas-soft: oklch(25% 0.006 var(--brand-hue));
   --color-canvas-elevated: oklch(28% 0.006 var(--brand-hue));
@@ -698,6 +723,7 @@
   --shell-floor: var(--color-sidebar-surface);
   --color-surface-card: hsl(0deg 0% 100%);
   --color-surface-strong: hsl(40deg 9% 85%);
+
   /* 18%: la hairline se mezcla contra canvas pero se dibuja sobre canvas-soft,
      surface-strong y el rail; calibrada para separarse de todas ellas. */
   --color-hairline: color-mix(in srgb, var(--color-ink) 18%, var(--color-canvas));
@@ -725,6 +751,7 @@
   --color-canvas-elevated: hsl(30deg 3% 16%);
   --color-surface-card: var(--color-canvas-elevated);
   --color-surface-strong: hsl(30deg 3% 22%);
+
   /* 24%: la hairline se mezcla contra canvas pero se dibuja sobre canvas-soft,
      surface-strong y el rail; calibrada para separarse de todas ellas.
      44% en hairline-strong deja el borde de control en 3:1 sobre surface-strong. */
@@ -756,6 +783,7 @@
   --shell-floor: var(--color-sidebar-surface);
   --color-surface-card: #fff;
   --color-surface-strong: #dce4e0;
+
   /* Divisor decorativo; el borde de control conserva el verde con >= 3:1 */
   --color-hairline: #cfd6d1;
   --color-hairline-strong: #64766a;
@@ -814,17 +842,18 @@
   /* Acento: terracota oscuro para que el texto blanco del botón llegue a 8.1:1 */
   --color-primary: #863519;
   --color-primary-text: #61200d;
+
   /* Hover/pressed oscurecen (antes aclaraban hacia la superficie y parecían deshabilitados) */
   --color-primary-active: color-mix(in srgb, var(--color-primary) 85%, var(--color-ink));
   --color-primary-pressed: color-mix(in srgb, var(--color-primary) 70%, var(--color-ink));
-  --color-on-primary: #ffffff;
+  --color-on-primary: #fff;
   --color-link-deep: var(--color-primary-text);
   --color-primary-tint: #f6e7dc;
 
   /* Superficies */
   --color-canvas: #f5f4f0;
   --color-canvas-soft: #e9e7e0;
-  --color-canvas-elevated: #ffffff;
+  --color-canvas-elevated: #fff;
   --color-sidebar-surface: var(--color-canvas-soft);
   --shell-floor: var(--color-sidebar-surface);
   --color-surface-card: var(--color-canvas-elevated);
@@ -887,6 +916,7 @@
 [data-palette-preview][data-color-palette='supabase'] {
   --color-primary: #72e3ad;
   --color-primary-text: #004c2b;
+
   /* Relleno claro con etiqueta oscura: hover y pressed aclaran para no comerse su contraste */
   --color-primary-active: color-mix(in srgb, var(--color-primary) 85%, var(--color-surface-card));
   --color-primary-pressed: color-mix(in srgb, var(--color-primary) 70%, var(--color-surface-card));
@@ -898,28 +928,35 @@
   --shell-floor: var(--color-sidebar-surface);
   --color-surface-strong: var(--color-canvas-soft);
   --color-hairline: #cfd6d2;
+
   /* divisor decorativo */
   --color-ink: #171717;
   --color-mute: #3a3a3a;
+
   /* antes #525252 (6.7 sobre soft) -> 9.7 */
   --color-primary-tint: var(--color-canvas-soft);
   --color-error: #7f1c05;
+
   /* antes #ca3214 (5.2) -> 9.9 */
   --color-error-rgb: 127 28 5;
   --color-error-deep: var(--color-error);
   --color-error-text: var(--color-error);
   --color-error-subtle: #fdeeea;
+
   /* faltaba en claro */
   --color-on-error: var(--color-canvas);
   --color-on-error-deep: var(--color-on-error);
+
   /* faltaba en claro */
 }
 
 :root[data-color-palette='supabase'][data-color-scheme='dark'],
 [data-palette-preview][data-color-palette='supabase'][data-color-scheme='dark'] {
   --color-primary: #00492a;
+
   /* antes #006239: texto encima daba 6.0 */
   --color-primary-text: #99f8c1;
+
   /* antes #4ade80 (7.5 sobre strong) -> 9.1 */
   --color-on-primary: #eaf4ef;
 
@@ -933,10 +970,12 @@
   --color-surface-card: var(--color-canvas-elevated);
   --color-surface-strong: #363f3a;
   --color-hairline: #46504a;
+
   /* divisor decorativo */
   --color-ink: #e2e8f0;
   --color-mute: #e0e6e2;
   --color-primary-tint: var(--color-surface-strong);
+
   /* En oscuro el error heredaba el rojo del claro (3.5:1). Ahora se redefine: */
   --color-error: #ffa690;
 
@@ -944,8 +983,10 @@
   --color-error-text: #ffc8b1;
   --color-error-rgb: 255 166 144;
   --color-error-subtle: #3a1410;
+
   /* antes #541c15: el texto error daba 2.6 */
   --color-on-error: #1a0a07;
+
   /* antes #fff sobre #ca3214 (5.3) -> 10.2 */
 }
 
@@ -1114,7 +1155,9 @@ select {
 
 /* WebKit en iOS amplía al enfocar campos con texto menor que body-lg. */
 @supports (-webkit-touch-callout: none) {
-  :where(input:not([type='checkbox'],
+  :where(
+    input:not(
+      [type='checkbox'],
       [type='radio'],
       [type='file'],
       [type='hidden'],
@@ -1122,11 +1165,13 @@ select {
       [type='submit'],
       [type='reset'],
       [type='range'],
-      [type='color']),
+      [type='color']
+    ),
     textarea,
     select,
     [contenteditable='true'],
-    [contenteditable='']) {
+    [contenteditable='']
+  ) {
     --editable-text-min-size: var(--type-body-lg-size);
   }
 
@@ -1382,8 +1427,8 @@ code:not(pre code) {
   overflow-wrap: anywhere;
 }
 
-.app-page-title> :is(a, button),
-.app-page-title> :is(a, button):is(:hover, :focus, :active, :visited) {
+.app-page-title > :is(a, button),
+.app-page-title > :is(a, button):is(:hover, :focus, :active, :visited) {
   color: inherit;
   text-decoration: none;
 }
@@ -1404,7 +1449,8 @@ code:not(pre code) {
   width: 100%;
   max-width: var(--container-max);
   margin: 0 auto;
-  padding-inline: max(var(--container-padding), var(--safe-area-left)) max(var(--container-padding), var(--safe-area-right));
+  padding-inline: max(var(--container-padding), var(--safe-area-left))
+    max(var(--container-padding), var(--safe-area-right));
 }
 
 .data-table {
@@ -1452,7 +1498,7 @@ code:not(pre code) {
   text-transform: none;
 }
 
-.data-table tbody tr:last-child>* {
+.data-table tbody tr:last-child > * {
   border-block-end: 0;
 }
 
@@ -1606,12 +1652,15 @@ code:not(pre code) {
   opacity: 1;
 }
 
-.form-group :is(input, select, textarea):hover:not( :focus-visible,
-  :disabled,
-  [aria-invalid='true'],
-  :user-invalid,
-  .input-error,
-  .input-success) {
+.form-group
+  :is(input, select, textarea):hover:not(
+    :focus-visible,
+    :disabled,
+    [aria-invalid='true'],
+    :user-invalid,
+    .input-error,
+    .input-success
+  ) {
   border-color: var(--color-ink);
 }
 
@@ -2106,21 +2155,21 @@ code:not(pre code) {
 
 /* Base móvil: se conserva el sheet existente y se respetan las safe areas. */
 
-.modal-content>.modal-header {
+.modal-content > .modal-header {
   padding-left: max(var(--modal-content-padding), var(--safe-area-left));
   padding-right: max(var(--modal-content-padding), var(--safe-area-right));
 }
 
-.modal-content>.modal-scroll-region>.modal-body {
+.modal-content > .modal-scroll-region > .modal-body {
   padding-left: max(var(--modal-content-padding), var(--safe-area-left));
   padding-right: max(var(--modal-content-padding), var(--safe-area-right));
 }
 
-.modal-content .modal-body>* {
+.modal-content .modal-body > * {
   flex-shrink: 0;
 }
 
-.modal-content>.modal-footer {
+.modal-content > .modal-footer {
   padding-left: max(var(--modal-content-padding), var(--safe-area-left));
   padding-right: max(var(--modal-content-padding), var(--safe-area-right));
   padding-bottom: calc(var(--modal-content-padding) + var(--safe-area-bottom));
@@ -2159,11 +2208,11 @@ code:not(pre code) {
     animation: slide-down-modal var(--transition-fast) both;
   }
 
-  .modal-content .modal-body>* {
+  .modal-content .modal-body > * {
     flex-shrink: 1;
   }
 
-  .modal-content>.modal-footer {
+  .modal-content > .modal-footer {
     padding-block: var(--design-spacing-sm);
   }
 }
@@ -2171,7 +2220,8 @@ code:not(pre code) {
 /* Posiciones compactas explícitas: conservan gutters, radios y safe areas. */
 .modal-overlay--bottom,
 .modal-overlay--center {
-  padding: max(var(--design-spacing-md), var(--safe-area-top)) max(var(--design-spacing-md), var(--safe-area-right)) max(var(--design-spacing-md), var(--safe-area-bottom)) max(var(--design-spacing-md), var(--safe-area-left));
+  padding: max(var(--design-spacing-md), var(--safe-area-top)) max(var(--design-spacing-md), var(--safe-area-right))
+    max(var(--design-spacing-md), var(--safe-area-bottom)) max(var(--design-spacing-md), var(--safe-area-left));
 }
 
 .modal-overlay--bottom {
@@ -2184,13 +2234,17 @@ code:not(pre code) {
 
 .modal-content--placement-bottom {
   inset-block-end: max(var(--design-spacing-md), var(--safe-area-bottom));
-  inline-size: calc(100% - max(var(--design-spacing-md), var(--safe-area-left)) - max(var(--design-spacing-md), var(--safe-area-right)));
+  inline-size: calc(
+    100% - max(var(--design-spacing-md), var(--safe-area-left)) - max(var(--design-spacing-md), var(--safe-area-right))
+  );
 }
 
 .modal-content--placement-center {
   inset-block: 50% auto;
   transform: translate(-50%, -50%);
-  inline-size: calc(100% - max(var(--design-spacing-md), var(--safe-area-left)) - max(var(--design-spacing-md), var(--safe-area-right)));
+  inline-size: calc(
+    100% - max(var(--design-spacing-md), var(--safe-area-left)) - max(var(--design-spacing-md), var(--safe-area-right))
+  );
 }
 
 .modal-content--placement-bottom,
@@ -2298,9 +2352,9 @@ code:not(pre code) {
   background: var(--color-canvas-elevated);
 }
 
-.modal-footer>.btn-primary,
-.modal-footer>.btn-secondary,
-.modal-footer>.btn-danger {
+.modal-footer > .btn-primary,
+.modal-footer > .btn-secondary,
+.modal-footer > .btn-danger {
   flex: 1 1 auto;
 }
 
@@ -2310,9 +2364,9 @@ code:not(pre code) {
     justify-content: flex-end;
   }
 
-  .modal-footer>.btn-primary,
-  .modal-footer>.btn-secondary,
-  .modal-footer>.btn-danger {
+  .modal-footer > .btn-primary,
+  .modal-footer > .btn-secondary,
+  .modal-footer > .btn-danger {
     flex: 0 1 auto;
   }
 }
@@ -2552,13 +2606,17 @@ code:not(pre code) {
 
 /* Un único indicador. Los campos compuestos lo delegan al contenedor solo
    mientras su input tiene foco; sus botones mantienen un indicador propio. */
-:focus-visible:not( :where([data-focus-ring] > input,
+:focus-visible:not(
+  :where(
+    [data-focus-ring] > input,
     [data-focus-ring] > textarea,
     label > input.sr-only,
     .toggle-switch input,
-    .ui-checkbox__input)),
-.toggle-switch input:focus-visible+.toggle-switch__slider,
-.ui-checkbox__input:focus-visible~.ui-checkbox__indicator {
+    .ui-checkbox__input
+  )
+),
+.toggle-switch input:focus-visible + .toggle-switch__slider,
+.ui-checkbox__input:focus-visible ~ .ui-checkbox__indicator {
   outline: var(--focus-ring-width) solid var(--color-focus);
   outline-offset: 0;
 }
@@ -2572,8 +2630,8 @@ label:has(> input.sr-only:focus-visible) {
 
 /* El input conserva el foco real; su superficie visible dibuja el anillo.
    Se mantiene también en forced-colors para evitar un segundo indicador. */
-[data-focus-ring]> :is(input, textarea):focus-visible,
-label>input.sr-only:focus-visible,
+[data-focus-ring] > :is(input, textarea):focus-visible,
+label > input.sr-only:focus-visible,
 .toggle-switch input:focus-visible,
 .ui-checkbox__input:focus-visible {
   outline: none;
@@ -2651,15 +2709,15 @@ label>input.sr-only:focus-visible,
   box-shadow: var(--shadow-xs);
 }
 
-.toggle-switch input[type='checkbox']:checked+.toggle-switch__slider {
+.toggle-switch input[type='checkbox']:checked + .toggle-switch__slider {
   background-color: var(--color-primary);
 }
 
-.toggle-switch input[type='checkbox']:checked+.toggle-switch__slider::before {
+.toggle-switch input[type='checkbox']:checked + .toggle-switch__slider::before {
   transform: translateX(var(--toggle-thumb-travel));
 }
 
-.toggle-switch input[type='checkbox']:disabled+.toggle-switch__slider {
+.toggle-switch input[type='checkbox']:disabled + .toggle-switch__slider {
   opacity: var(--opacity-disabled);
   cursor: not-allowed;
 }
@@ -2695,13 +2753,17 @@ label>input.sr-only:focus-visible,
 }
 
 @media (forced-colors: active) {
-  :focus-visible:not( :where([data-focus-ring] > input,
+  :focus-visible:not(
+    :where(
+      [data-focus-ring] > input,
       [data-focus-ring] > textarea,
       label > input.sr-only,
       .toggle-switch input,
-      .ui-checkbox__input)),
-  .toggle-switch input:focus-visible+.toggle-switch__slider,
-  .ui-checkbox__input:focus-visible~.ui-checkbox__indicator {
+      .ui-checkbox__input
+    )
+  ),
+  .toggle-switch input:focus-visible + .toggle-switch__slider,
+  .ui-checkbox__input:focus-visible ~ .ui-checkbox__indicator {
     outline: var(--focus-ring-width) solid Highlight !important;
     outline-offset: 0 !important;
     box-shadow: none !important;
@@ -2727,11 +2789,11 @@ label>input.sr-only:focus-visible,
     background: ButtonText;
   }
 
-  .toggle-switch input[type='checkbox']:checked+.toggle-switch__slider {
+  .toggle-switch input[type='checkbox']:checked + .toggle-switch__slider {
     background: Highlight;
   }
 
-  .toggle-switch input[type='checkbox']:checked+.toggle-switch__slider::before {
+  .toggle-switch input[type='checkbox']:checked + .toggle-switch__slider::before {
     background: HighlightText;
   }
 }
