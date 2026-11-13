@@ -8,7 +8,7 @@ import type { AuthorizedPosition, PuestoHabilidades } from "./types";
 export const CATEGORIAS = ["N/A", "A", "B", "C", "D"] as const;
 
 /**
- * PLANTILLA AUTORIZADA — Números inamovibles
+ * DATOS REAL DE PLANTILLA AUTORIZADA — Catálogo editable
  *
  * Cada entrada define el headcount aprobado por puesto/área/sección.
  * Modificar solo con autorización de Dirección.

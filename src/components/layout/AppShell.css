@@ -80,9 +80,13 @@
 
 @media (width >= 1080px) {
   .app-shell {
-    block-size: 100dvh;
-    overflow: hidden;
-    background: var(--workspace-canvas);
+    position: fixed;
+    inset: var(--design-spacing-md);
+    overflow: clip;
+    border: var(--border-width) solid var(--workspace-border-color);
+    border-radius: var(--workspace-radius);
+    background: var(--shell-workspace-surface);
+    box-shadow: var(--workspace-shadow);
   }
 
   .app-shell__workspace {

@@ -149,6 +149,7 @@ button.sidebar__desktop-toggle:hover {
 
 @media (width >=1080px) {
   .sidebar {
+    position: absolute;
     inset-block: 0;
     inset-inline-start: 0;
     z-index: var(--layer-navigation);
@@ -243,11 +244,9 @@ button.sidebar__desktop-toggle:hover {
       transform var(--transition-slow),
       visibility 0s linear var(--transition-slow);
   }
-
 }
 
 @media (prefers-reduced-motion: reduce) {
-
   .sidebar,
   .sidebar__brand,
   .sidebar__item,
@@ -263,5 +262,4 @@ button.sidebar__desktop-toggle:hover {
   .app-shell[data-sidebar-collapsed='true'] .sidebar__brand {
     transition: none;
   }
-
 }
