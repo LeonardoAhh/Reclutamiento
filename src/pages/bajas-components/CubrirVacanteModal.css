@@ -87,7 +87,7 @@
   padding: var(--design-spacing-xxs) var(--design-spacing-xs);
   background: var(--color-canvas-elevated);
   border: 1px solid var(--color-control-border);
-  border-radius: var(--rounded-xs);
+  border-radius: var(--radius-field);
   font-family: var(--font-body);
   font-size: max(var(--type-body-md-size), var(--editable-text-min-size, var(--type-body-md-size)));
   color: var(--color-ink);

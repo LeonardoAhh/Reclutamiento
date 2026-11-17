@@ -125,7 +125,7 @@
   min-inline-size: 0;
   padding: 0;
   border: 0;
-  border-radius: var(--rounded-xs);
+  border-radius: var(--radius-control);
   background: transparent;
   color: inherit;
   font: inherit;
@@ -867,7 +867,7 @@
   color: var(--color-ink);
   background: var(--color-canvas-elevated);
   border: var(--border-width) solid var(--color-control-border);
-  border-radius: var(--rounded-xs);
+  border-radius: var(--radius-control);
   cursor: pointer;
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
@@ -948,7 +948,7 @@
   gap: var(--design-spacing-sm);
   padding: var(--design-spacing-sm);
   background: var(--color-surface-card);
-  border-radius: var(--rounded-xs);
+  border-radius: var(--radius-card);
 }
 
 .data-update-step > div:first-child {
@@ -1203,7 +1203,7 @@
   flex-direction: column;
   padding: var(--design-spacing-xs);
   background: var(--color-surface-card);
-  border-radius: var(--rounded-xs);
+  border-radius: var(--radius-card);
 }
 
 .data-update-admin svg,
@@ -1295,7 +1295,7 @@
 .data-update-import__participant {
   padding-inline: var(--design-spacing-sm);
   background: var(--color-surface-card);
-  border-radius: var(--rounded-xs);
+  border-radius: var(--radius-card);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);

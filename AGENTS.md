@@ -331,14 +331,14 @@ Antes de utilizar texto muted o faint, se DEBE comprobar su contraste sobre la s
 - Las distancias equivalentes deben utilizar el mismo token.
 - Los componentes hermanos deben compartir ritmo y dimensiones.
 - Radios según la geometría compacta aprobada en `desing.md`:
-  - Botones, tabs y navegación: 4px mediante `--radius-control`.
-  - Inputs, selects, textareas y buscadores: 4px mediante `--radius-field`.
+  - Botones, tabs y navegación: 6px mediante `--radius-control`.
+  - Inputs, selects, textareas y buscadores: 6px mediante `--radius-field`.
   - Cards y medios: 8px mediante `--radius-card` y `--radius-media`.
   - Menús y popovers: 8px mediante `--radius-menu`.
   - Modales y paneles flotantes: 12px mediante `--radius-dialog`.
   - Marca de aplicación: 8px mediante `--radius-brand`, sin porcentajes.
   - Indicadores de checkbox: 4px.
-  - Badges de estado: `--rounded-xs` (4px). Botones solo-icono: `--radius-control` (4px). Avatares y puntos de estado pueden conservar su forma circular.
+  - Badges de estado: `--rounded-xs` (4px). Botones solo-icono: `--radius-control` (6px). Avatares y puntos de estado pueden conservar su forma circular.
 - Los controles y badges son rectangulares con esquinas suaves. Los campos conservan su radio propio; no se usan píldoras.
 - Todo control interactivo tiene un mínimo explícito de 44px (`--touch-target-min`); la altura nunca se infiere solo del line-height.
 - Las cards deben utilizar hairline y la elevación definida: Level 0 plano, Level 1 `{shadows.xs}`, Level 2 `{shadows.sm}` solo para menús, modales y popovers.

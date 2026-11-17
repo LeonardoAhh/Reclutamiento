@@ -69,11 +69,10 @@
 }
 
 .settings__panel-header--row {
-  flex-direction: row;
+  flex-flow: row wrap;
   align-items: center;
   justify-content: space-between;
   gap: var(--design-spacing-xs);
-  flex-wrap: wrap;
 }
 
 .settings__panel-title {
@@ -122,7 +121,7 @@
   padding: var(--design-spacing-xs) var(--design-spacing-sm);
   background: var(--color-surface-card);
   border: var(--border-width) solid var(--color-control-border);
-  border-radius: var(--rounded-xs);
+  border-radius: var(--radius-field);
   color: var(--color-ink);
   font-family: var(--font-body);
   font-size: max(var(--type-body-md-size), var(--editable-text-min-size, var(--type-body-md-size)));
@@ -133,10 +132,6 @@
 
 .settings__input::placeholder {
   color: var(--color-mute, var(--color-mute));
-}
-
-.settings__input:hover:not(:disabled) {
-  border-color: var(--color-control-border);
 }
 
 .settings__input:focus-visible {
@@ -150,7 +145,6 @@
 
 .settings__input--select {
   appearance: none;
-  -webkit-appearance: none;
   background-image:
     linear-gradient(45deg, transparent 50%, var(--color-mute) 50%),
     linear-gradient(135deg, var(--color-mute) 50%, transparent 50%);
@@ -178,6 +172,10 @@
   padding-right: calc(var(--icon-size-xxl) + var(--design-spacing-xs));
 }
 
+.settings__input:hover:not(:disabled) {
+  border-color: var(--color-control-border);
+}
+
 .settings__visibility {
   position: absolute;
   right: var(--design-spacing-xs);
@@ -196,14 +194,14 @@
   transition: background var(--transition-fast), color var(--transition-fast);
 }
 
-.settings__visibility:hover:not(:disabled) {
-  background: var(--color-surface-card);
-  color: var(--color-ink);
-}
-
 .settings__visibility:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.settings__visibility:hover:not(:disabled) {
+  background: var(--color-surface-card);
+  color: var(--color-ink);
 }
 
 .settings__submit {
@@ -333,7 +331,7 @@
   margin: 0;
   color: var(--color-mute);
   font-size: var(--type-caption-md-size, 12px);
-  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .settings__item-actions {
@@ -369,16 +367,20 @@
     gap: var(--design-spacing-md);
     padding-block-end: var(--design-spacing-md);
   }
+
   .settings__panel {
     padding: var(--design-spacing-sm);
   }
+
   .settings__item {
     grid-template-columns: minmax(0, 1fr);
     align-items: stretch;
   }
+
   .settings__item-actions {
     justify-content: space-between;
   }
+
   .settings__item-role {
     flex: 1 1 auto;
     min-width: 0;

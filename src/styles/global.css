@@ -355,19 +355,20 @@
   --design-spacing-4xl: 6rem;
   --design-spacing-section: 8rem;
 
-  /* Border radius: approved 4 / 8 / 12 px scale. */
+  /* Border radius: 4 for compact indicators, 6 for controls, 8 for surfaces, 12 for dialogs. */
   --rounded-none: 0;
   --rounded-xs: 4px;
-  --rounded-sm: 8px;
-  --rounded-md: 12px;
+  --rounded-sm: 6px;
+  --rounded-md: 8px;
+  --rounded-lg: 12px;
   --rounded-full: 9999px;
-  --radius-control: var(--rounded-xs);
-  --radius-field: var(--rounded-xs);
-  --radius-card: var(--rounded-sm);
-  --radius-media: var(--rounded-sm);
-  --radius-brand: var(--rounded-sm);
-  --radius-dialog: var(--rounded-md);
-  --radius-menu: var(--rounded-sm);
+  --radius-control: var(--rounded-sm);
+  --radius-field: var(--rounded-sm);
+  --radius-card: var(--rounded-md);
+  --radius-media: var(--rounded-md);
+  --radius-brand: var(--rounded-md);
+  --radius-dialog: var(--rounded-lg);
+  --radius-menu: var(--rounded-md);
 
   /* ── Shadows — hairline first, restrained elevation ───────────── */
   --focus-ring-width: 2px;

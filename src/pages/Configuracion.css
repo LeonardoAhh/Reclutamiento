@@ -8,10 +8,9 @@
 
 .config-page__header {
   display: flex;
-  flex-direction: row;
+  flex-flow: row wrap;
   align-items: flex-end;
   justify-content: space-between;
-  flex-wrap: wrap;
   gap: var(--design-spacing-sm);
 }
 
@@ -46,13 +45,13 @@
   margin-bottom: 0;
 }
 
-@media (min-width: 768px) {
+@media (width >= 768px) {
   .config-page__header-container {
     margin-bottom: var(--design-spacing-md);
   }
 }
 
-@media (min-width: 1080px) {
+@media (width >= 1080px) {
   .config-page__header-container {
     flex-direction: row;
     align-items: center;
@@ -190,24 +189,24 @@
   background: transparent;
 }
 
+.analisis-select-filter .custom-select-trigger--unstyled:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: 0;
+}
+
 .analisis-select-filter .custom-select-trigger--unstyled:hover:not(:focus-visible) {
   color: var(--color-ink);
 }
 
-.analisis-select-filter .custom-select-trigger--unstyled:focus-visible {
-  outline: var(--focus-ring-width) solid var(--color-focus);
-  outline-offset: 0;
+.analisis-select-filter .custom-select-container.is-active .custom-select-trigger {
+  color: var(--color-primary-text);
+  border-block-end-color: var(--color-primary-border);
 }
 
 .analisis-select-filter
   .custom-select-container.is-active
   .custom-select-trigger:hover:not(:focus-visible) {
   color: var(--color-primary-text);
-}
-
-.analisis-select-filter .custom-select-container.is-active .custom-select-trigger {
-  color: var(--color-primary-text);
-  border-block-end-color: var(--color-primary-border);
 }
 
 @media (forced-colors: active) {
@@ -226,16 +225,13 @@
 
 .config-segmented-control {
   display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   min-block-size: var(--touch-target-min);
   align-items: stretch;
   gap: var(--design-spacing-xs);
   padding: var(--focus-ring-width);
   background: transparent;
   border: 0;
-}
-
-.config-segmented-control {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .config-segmented-control__button {
@@ -256,9 +252,6 @@
   font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
   letter-spacing: var(--type-body-md-tracking);
-}
-
-.config-segmented-control__button {
   white-space: nowrap;
 }
 
@@ -299,7 +292,7 @@
   color: var(--color-ink);
   background: var(--color-canvas-elevated);
   border: var(--border-width) solid var(--color-control-border);
-  border-radius: var(--rounded-xs);
+  border-radius: var(--radius-field);
 }
 
 .config-filter-reset {
@@ -309,7 +302,7 @@
   align-self: flex-end;
 }
 
-@media (min-width: 768px) {
+@media (width >= 768px) {
   .config-results-controls__filters {
     grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
     align-items: end;
@@ -355,7 +348,7 @@
   }
 }
 
-@media (min-width: 1080px) {
+@media (width >= 1080px) {
   .config-results-controls {
     grid-template-columns: minmax(0, 1fr) max-content;
     align-items: end;
@@ -555,11 +548,12 @@
 }
 
 .analysis-employee-calendar__grid.rdp-root {
+  --rdp-day-height: auto;
+  --rdp-day-width: auto;
+
   inline-size: 100%;
   max-inline-size: none;
   padding: 0;
-  --rdp-day-height: auto;
-  --rdp-day-width: auto;
 }
 
 .analysis-employee-calendar__grid .rdp-months,
@@ -569,6 +563,7 @@
   max-inline-size: none;
 }
 
+/* stylelint-disable selector-class-pattern -- React Day Picker owns these class names. */
 .analysis-employee-calendar__grid .rdp-month_caption,
 .analysis-employee-calendar__grid .rdp-nav {
   display: none;
@@ -585,6 +580,8 @@
   padding-block: var(--design-spacing-xs);
   text-align: start;
 }
+
+/* stylelint-enable selector-class-pattern */
 
 .analysis-employee-calendar__grid .rdp-day {
   inline-size: auto;
@@ -752,7 +749,7 @@
     padding: 0;
     margin: -1px;
     overflow: hidden;
-    clip: rect(0, 0, 0, 0);
+    clip-path: inset(50%);
     white-space: nowrap;
     border: 0;
   }
@@ -974,7 +971,7 @@
   width: 100%;
 }
 
-@media (min-width: 1080px) {
+@media (width >= 1080px) {
   .config-main {
     padding-block-end: var(--design-spacing-xxl);
   }
@@ -1069,7 +1066,7 @@
   gap: var(--design-spacing-sm);
 }
 
-@media (max-width: 767px) {
+@media (width <= 767px) {
   :is(.indicadores-kpi-grid--summary, .indicadores-kpi-grid--compact) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1089,13 +1086,13 @@
   }
 }
 
-@media (min-width: 768px) {
+@media (width >= 768px) {
   .indicadores-kpi-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-@media (min-width: 1080px) {
+@media (width >= 1080px) {
   .indicadores-kpi-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
@@ -1114,10 +1111,11 @@
   display: block;
 }
 
-@media (min-width: 768px) {
+@media (width >= 768px) {
   .indicadores-desktop-only {
     display: block;
   }
+
   .indicadores-mobile-only {
     display: none;
   }
@@ -1146,7 +1144,7 @@
   color: var(--color-mute);
 }
 
-@media (min-width: 768px) {
+@media (width >= 768px) {
   .indicadores-kpi-card {
     padding: var(--design-spacing-md);
   }
@@ -1299,7 +1297,7 @@
   display: none;
 }
 
-@media (min-width: 768px) {
+@media (width >= 768px) {
   .indicadores-table-header {
     padding: var(--design-spacing-md) var(--design-spacing-lg);
   }
@@ -1322,6 +1320,7 @@
   -webkit-overflow-scrolling: touch;
 }
 
+/* stylelint-disable-next-line no-descending-specificity -- Header and calendar cells belong to separate tables. */
 .indicadores-table thead th {
   text-align: center;
   white-space: nowrap;
@@ -1343,10 +1342,12 @@
   text-align: center;
 }
 
+/* stylelint-disable no-descending-specificity -- Table body cells do not overlap header cells. */
 .indicadores-table tbody td:first-child,
 .indicadores-table tbody th {
   text-align: start;
 }
+/* stylelint-enable no-descending-specificity */
 
 .indicadores-table tbody td:last-child {
   text-align: end;
@@ -1365,14 +1366,14 @@
   letter-spacing: var(--type-body-strong-tracking);
 }
 
+.indicadores-recruiter-icon {
+  color: var(--color-mute);
+}
+
 .indicadores-table-row-header .indicadores-recruiter-icon {
   display: inline-block;
   vertical-align: middle;
   margin-inline-end: var(--design-spacing-xs);
-}
-
-.indicadores-recruiter-icon {
-  color: var(--color-mute);
 }
 
 /* Hover fila */
@@ -1408,11 +1409,13 @@
 }
 
 /* Footer / Total por fecha */
+/* stylelint-disable no-descending-specificity -- Table footer does not overlap header or body cells. */
 .indicadores-table tfoot th,
 .indicadores-table tfoot td {
   text-align: center;
   font-weight: var(--type-body-strong-weight);
 }
+/* stylelint-enable no-descending-specificity */
 
 .indicadores-table tfoot th:first-child {
   text-align: start;
@@ -1604,6 +1607,10 @@
   color: var(--color-mute);
 }
 
+.analisis-filter-panel .config-filter-reset {
+  align-self: flex-start;
+}
+
 .analisis-view .config-filter-reset:hover,
 .analisis-filter-panel .config-filter-reset:hover {
   color: var(--color-ink);
@@ -1647,7 +1654,7 @@
   color: var(--color-error-text);
 }
 
-@media (min-width: 768px) {
+@media (width >= 768px) {
   .analisis-view .config-initial-state,
   .analisis-view .config-empty {
     padding-block: var(--design-spacing-4xl);
@@ -1697,6 +1704,12 @@
   font-weight: var(--type-body-md-weight);
   line-height: var(--type-body-md-line);
   letter-spacing: var(--type-body-md-tracking);
+}
+
+.config-tabs {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
 }
 
 .tabulador-header {
@@ -1749,12 +1762,6 @@
     justify-self: stretch;
     inline-size: auto;
   }
-}
-
-.config-tabs {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 1fr;
 }
 
 .tabulador-results {
@@ -1821,12 +1828,15 @@
   width: 25%;
 }
 
+/* stylelint-disable no-descending-specificity -- Salary and indicator tables are distinct components. */
 .tabulador-table th,
 .tabulador-table td {
   text-align: right;
   overflow-wrap: anywhere;
 }
+/* stylelint-enable no-descending-specificity */
 
+/* stylelint-disable-next-line no-descending-specificity -- Salary and indicator tables are distinct components. */
 .tabulador-table th:first-child {
   text-align: start;
 }
@@ -1884,7 +1894,7 @@
   margin: 0;
 }
 
-@media (min-width: 768px) {
+@media (width >= 768px) {
   .tabulador-desktop-table {
     display: block;
   }
@@ -1895,7 +1905,7 @@
 }
 
 /* ── Mobile Menu / Drill-down UX ──────────────────────────────── */
-@media (max-width: 767px) {
+@media (width <= 767px) {
   .mobile-hidden {
     display: none !important;
   }
@@ -1907,7 +1917,7 @@
   align-self: flex-start;
 }
 
-@media (min-width: 768px) {
+@media (width >= 768px) {
   .config-mobile-back {
     display: none;
   }
@@ -2012,10 +2022,6 @@
   margin-inline-start: 0;
 }
 
-.analisis-filter-panel .config-filter-reset {
-  align-self: flex-start;
-}
-
 .analisis-filter-panel .config-segmented-control {
   height: auto;
 }
@@ -2024,7 +2030,7 @@
   min-block-size: var(--touch-target-min);
 }
 
-@media (max-width: 767px) {
+@media (width <= 767px) {
   .analisis-view .config-results-controls {
     display: none;
   }
