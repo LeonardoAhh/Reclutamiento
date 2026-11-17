@@ -36,7 +36,7 @@ export function ReportDayPage(props: ReportDayPageProps) {
   return (
     <div className="report-day-page">
       <PageHeading ref={headingRef} tabIndex={-1} id="reporte-page-title" className="app-page-title report-day-page__heading" data-testid="selected-day-title">
-        <Link to="/reports" className="report-day-page__title-link" data-cuelume-navigate="" aria-label={title + ': ' + copy('volver a Reporte diario', 'back to Daily report')}>
+        <Link to="/reports" className="report-day-page__title-link" data-cuelume-navigate="" aria-label={title + ': ' + copy('volver al Reporte', 'back to Report')}>
           <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
           <span className="report-day-page__title-copy">
             <span>{compactDateTitle}</span>
@@ -53,7 +53,7 @@ export function ReportDayPage(props: ReportDayPageProps) {
       </LoadingSkeleton> : props.hasError ? <div>
         <p className="form-error-text" role="alert">{copy('No se pudo cargar el reporte del día.', 'Could not load the day report.')}</p>
         <button type="button" className="btn-secondary" data-cuelume-tap="" onClick={props.onRetry}>{copy('Reintentar', 'Retry')}</button>
-      </div> : !props.hasData ? <p role="status">{copy('El reporte de este día no está disponible. Vuelve a Reporte diario para seleccionar un reporte.', 'This day report is unavailable. Return to Daily report to select a report.')}</p> : (
+      </div> : !props.hasData ? <p role="status">{copy('El reporte de este día no está disponible. Vuelve al Reporte para seleccionar otro.', 'This day report is unavailable. Return to Report to select another.')}</p> : (
         <div className="report-day-page__content">
           <div className="report-day-page__section">
             <div className="report-day-page__section-header">

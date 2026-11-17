@@ -12,7 +12,7 @@ const EN: Record<string, string> = {
   'Compartimos conocimientos, aprendemos de nuestros errores y reconocemos que cada integrante del equipo tiene algo valioso que aportar.': 'We share what we know, learn from our mistakes, and recognize that every team member has something valuable to contribute.',
   '«No solo conectamos talento con oportunidades. Conectamos historias con nuevos comienzos».': '“We do more than connect talent with opportunities. We connect stories with new beginnings.”',
   'Eso es lo que nos une como equipo.': 'That is what brings us together as a team.',
-  'Vacaciones y permisos': 'Vacation and leave requests',
+  Ausencias: 'Time off',
   'Solicita autorización para vacaciones o permisos.': 'Request approval for vacation or leave.',
   'Solicita vacaciones con al menos 14 días naturales de anticipación.': 'Request vacation at least 14 calendar days in advance.',
   'El primer periodo vacacional debe ser de al menos 6 días continuos.': 'The first vacation period must be at least 6 consecutive days.',

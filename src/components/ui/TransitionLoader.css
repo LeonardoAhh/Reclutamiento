@@ -1,17 +1,35 @@
+/* Mismo workspace unificado que el shell: lienzo continuo con cuadrícula en
+   móvil y tablet, y desde escritorio un marco separado de la ventana con la
+   hairline, el radio y la sombra del workspace. */
 .transition-loader {
   position: fixed;
   inset: 0;
   z-index: var(--layer-splash);
   display: grid;
+  background: var(--color-canvas);
+}
+
+.transition-loader__workspace {
+  position: relative;
+  isolation: isolate;
+  display: grid;
   place-items: center;
+  min-inline-size: 0;
   padding-block: max(var(--design-spacing-lg), var(--safe-area-top))
     max(var(--design-spacing-lg), var(--safe-area-bottom));
   padding-inline: max(var(--design-spacing-lg), var(--safe-area-left))
     max(var(--design-spacing-lg), var(--safe-area-right));
-  background: var(--color-canvas);
+  background: var(--workspace-canvas);
 }
 
 .transition-loader__content {
+  /* El orbe usa el diámetro del login y cede ante ventanas angostas o bajas. */
+  --transition-loader-orb-size: min(
+    calc(var(--design-spacing-section) + var(--design-spacing-4xl)),
+    calc(100vi - max(var(--design-spacing-lg), var(--safe-area-left)) - max(var(--design-spacing-lg), var(--safe-area-right))),
+    50dvb
+  );
+
   display: flex;
   inline-size: 100%;
   min-inline-size: 0;
@@ -20,6 +38,19 @@
   align-items: center;
   gap: var(--design-spacing-sm);
   text-align: center;
+}
+
+@media (width >= 1080px) {
+  .transition-loader {
+    padding: var(--design-spacing-md);
+  }
+
+  .transition-loader__workspace {
+    overflow: clip;
+    border: var(--border-width) solid var(--workspace-border-color);
+    border-radius: var(--workspace-radius);
+    box-shadow: var(--workspace-shadow);
+  }
 }
 
 .transition-loader__brand {
@@ -78,7 +109,8 @@
 }
 
 @media (forced-colors: active) {
-  .transition-loader {
+  .transition-loader,
+  .transition-loader__workspace {
     background: Canvas;
   }
 

@@ -1,6 +1,6 @@
 export const LEAVE_POLICY_NOTICE = {
   buttonLabel: "Solicita aqui!",
-  title: "Vacaciones y permisos",
+  title: "Ausencias",
   introduction: "Solicita autorización para vacaciones o permisos.",
   firstPeriodDays: 6,
   advanceNotice: "Solicita vacaciones con al menos 14 días naturales de anticipación.",

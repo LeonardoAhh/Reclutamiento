@@ -1,5 +1,6 @@
 import {
   Suspense,
+  createContext,
   useCallback,
   useEffect,
   useMemo,
@@ -13,7 +14,9 @@ import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { ACCOUNT_PATH, HOME_PATH, getLocalizedNavigation, localizeNavigationText } from './navigation';
 import { isPlantillaPath, PLANTILLA_PATH } from '@/lib/plantillaNavigation';
-import { FEATURES, getConfiguracionHref } from '@/lib/configuracionNavigation';
+import { FEATURES, getConfiguracionHref, ROUTE_DAY_EMPLOYEES_PATH, ROUTE_SCANNER_PATH } from '@/lib/configuracionNavigation';
+import { getRouteDayEmployeesTitle } from '@/pages/configuracion-views/configuracion-translations';
+import { ACTIVITY_IMAGE_ROUTE } from '@/pages/activityImageNavigation';
 import { DATA_UPDATE_PATH } from '@/features/data-update/types';
 import { DESKTOP_MEDIA_QUERY } from '@/lib/layout';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
@@ -21,9 +24,11 @@ import { SessionNotice } from './SessionNotice';
 import { RouteLoadingFallback } from './RouteLoadingFallback';
 import { RouteErrorBoundary } from '@/components/ui/RouteErrorBoundary';
 import { DotGrid } from '@/components/ui/DotGrid';
-import { REPORT_COMPARISON_PATH, REPORT_DAY_PATTERN } from '@/components/reporte-diario/navigation';
+import { isValidReportDayRoute, REPORT_COMPARISON_PATH, REPORT_DAY_PATTERN } from '@/components/reporte-diario/navigation';
+import { getReportDayHeading } from '@/components/reporte-diario/reportDayHeading';
 import { CANDIDATE_METRICS_PATH } from '@/pages/candidate-metrics/navigation';
 import { REPORT_SGI_LABEL, REPORT_SGI_PATH } from '@/pages/report-sgi/navigation';
+import { LEAVE_REQUESTS_PATH } from '@/features/leave/requests';
 import { bindSoundInteractions } from '@/lib/sound';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSidebarCollapsed } from './useSidebarCollapsed';
@@ -35,11 +40,14 @@ import './AppShell.css';
 const PAGE_TITLES: Readonly<Record<string, string>> = {
   [HOME_PATH]: 'Inicio',
   '/employee-turnover': 'Rotación',
-  '/departure-reasons': 'Motivos de baja',
-  [DATA_UPDATE_PATH]: 'Actualización de datos',
-  [ACCOUNT_PATH]: 'Cuenta',
+  '/departure-reasons': 'Bajas',
+  [DATA_UPDATE_PATH]: 'Actualizar datos',
+  [ACCOUNT_PATH]: 'Mi cuenta',
+  [LEAVE_REQUESTS_PATH]: 'Ausencias',
   [REPORT_SGI_PATH]: REPORT_SGI_LABEL,
 };
+
+export const PageTitleOverrideContext = createContext<(title: string | null) => void>(() => {});
 
 /**
  * Shell de la app autenticada.
@@ -69,6 +77,10 @@ export function AppShell(props: { children: ReactNode }) {
   const { collapsed, toggleCollapsed } = useSidebarCollapsed();
   const isMobileMenuOpen = mobileMenuOpen && !isDesktop;
   const location = useLocation();
+  const [titleOverride, setTitleOverride] = useState<{ pathname: string; title: string } | null>(null);
+  const setPageTitleOverride = useCallback((title: string | null) => {
+    setTitleOverride(title ? { pathname: location.pathname, title } : null);
+  }, [location.pathname]);
 
   const resolveSessionNotice = useCallback(() => setSessionNoticeReady(true), []);
 
@@ -103,12 +115,24 @@ export function AppShell(props: { children: ReactNode }) {
   } = useProductTourController({ isDesktop, setDrawerProgress, setMobileMenuOpen });
 
   const pageTitle = useMemo(() => {
+    if (titleOverride?.pathname === location.pathname) return titleOverride.title;
+    if (location.pathname === ROUTE_SCANNER_PATH) return localizeNavigationText(language, 'Escáner');
+    if (location.pathname === ROUTE_DAY_EMPLOYEES_PATH) {
+      return getRouteDayEmployeesTitle(new URLSearchParams(location.search).get('day'), language);
+    }
+    if (matchPath(ACTIVITY_IMAGE_ROUTE, location.pathname)) return localizeNavigationText(language, 'Imagen');
     if (location.pathname === getConfiguracionHref('analisis')) {
       return localizeNavigationText(language, 'Análisis');
     }
-    if (matchPath(REPORT_DAY_PATTERN, location.pathname)) return localizeNavigationText(language, 'Detalle del día');
-    if (location.pathname === REPORT_COMPARISON_PATH) return localizeNavigationText(language, 'Comparativa mensual');
-    if (location.pathname === CANDIDATE_METRICS_PATH) return localizeNavigationText(language, 'Métricas y KPIs');
+    const reportDayRoute = matchPath(REPORT_DAY_PATTERN, location.pathname);
+    if (reportDayRoute) {
+      const { month = '', day = '' } = reportDayRoute.params;
+      if (!isValidReportDayRoute(month, day)) return localizeNavigationText(language, 'Detalle del día');
+      const heading = getReportDayHeading(month, day, language === 'en');
+      return `${heading.compactDate} · ${heading.compactWeek}`;
+    }
+    if (location.pathname === REPORT_COMPARISON_PATH) return localizeNavigationText(language, 'Comparativa');
+    if (location.pathname === CANDIDATE_METRICS_PATH) return localizeNavigationText(language, 'Métricas');
     const currentNavItem = getLocalizedNavigation(language).find((item) => {
       if (item.to === PLANTILLA_PATH) return isPlantillaPath(location.pathname);
       if (item.end) return location.pathname === item.to;
@@ -119,7 +143,7 @@ export function AppShell(props: { children: ReactNode }) {
       language,
       currentNavItem?.label ?? PAGE_TITLES[location.pathname] ?? feature?.label ?? 'App',
     );
-  }, [language, location.pathname]);
+  }, [language, location.pathname, location.search, titleOverride]);
 
   useEffect(() => {
     document.title = pageTitle;
@@ -292,7 +316,9 @@ export function AppShell(props: { children: ReactNode }) {
         <div className="app-shell__main" id="app-shell-main" tabIndex={-1}>
           {/* La carga de código de una página no desmonta el shell ni muestra el splash. */}
           <RouteErrorBoundary key={location.pathname}>
-            <Suspense fallback={<RouteLoadingFallback />}>{children}</Suspense>
+            <PageTitleOverrideContext.Provider value={setPageTitleOverride}>
+              <Suspense fallback={<RouteLoadingFallback />}>{children}</Suspense>
+            </PageTitleOverrideContext.Provider>
           </RouteErrorBoundary>
         </div>
       </div>

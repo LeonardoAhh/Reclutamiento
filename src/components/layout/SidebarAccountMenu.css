@@ -1,19 +1,26 @@
+/* El pie comparte el sangrado lateral de la navegación, así que el disparador
+   mide lo mismo que un item y su hover cubre la misma caja. */
 .sidebar__footer {
   display: block;
   flex: 0 0 auto;
   margin-block-start: var(--design-spacing-sm);
   padding-block-start: var(--design-spacing-sm);
+  padding-inline: var(--design-spacing-xxs);
 }
 
+/* El avatar se centra en el mismo cuadrado de 44px que los iconos de la
+   navegación, y el hueco cede lo que el avatar crece respecto al icono: así el
+   nombre arranca en la misma columna que las etiquetas. */
 .sidebar__footer .sidebar__account-trigger {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: var(--design-spacing-sm);
+  gap: calc(var(--design-spacing-sm) - (var(--icon-size-lg) - var(--icon-size-md)) / 2);
   inline-size: 100%;
   min-block-size: var(--touch-target-min);
   min-inline-size: 0;
-  padding: var(--design-spacing-xs);
+  padding-block: var(--design-spacing-xs);
+  padding-inline: calc((var(--touch-target-min) - var(--icon-size-lg)) / 2 - var(--border-width));
   border: var(--border-width) solid transparent;
   border-radius: var(--radius-control);
   background: transparent;
@@ -28,7 +35,7 @@
 
 .sidebar__account-trigger:hover,
 .sidebar__account-trigger[data-state='open'] {
-  background: var(--color-surface-card);
+  background: var(--color-sidebar-hover);
 }
 
 .sidebar__account-trigger .ui-avatar {
@@ -123,13 +130,15 @@
   letter-spacing: var(--type-body-md-tracking);
 }
 
+/* Mismo resalte que cualquier otro item de menú. Pintaba surface-card, que es
+   el propio fondo del menú: ni el hover ni la opción elegida se distinguían. */
 .sidebar__theme-option[data-highlighted] {
-  background: var(--color-surface-card);
+  background: var(--color-surface-hover);
   color: var(--color-ink);
 }
 
 .sidebar__theme-option[data-state='checked'] {
-  background: var(--color-surface-card);
+  background: var(--color-surface-hover);
   color: var(--color-ink);
   font-weight: var(--type-body-strong-weight);
 }

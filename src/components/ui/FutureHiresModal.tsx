@@ -101,7 +101,7 @@ function buildFutureHiresMessage(futureHires: Employee[], language: 'es' | 'en')
     }));
 
   return buildWhatsAppReport({
-    title: t('Próximos ingresos'),
+    title: t('Por ingresar'),
     date: scheduledDates.length === 1
       ? `${t('Fecha de ingreso programado')}: ${scheduledDates[0]}`
       : t('Fechas programadas de ingreso'),
@@ -180,7 +180,7 @@ export function FutureHiresModal({
     <Dialog
       isOpen={isOpen}
       onClose={onClose}
-      title={t("Próximos ingresos")}
+      title={t("Por ingresar")}
       size="sm"
       footerActions={
         <button

@@ -1,5 +1,6 @@
 import { BajasImporter } from '@/components/ui/BajasImporter';
 import { PageHeaderAccessory, PageHeading } from '@/components/layout/PageHeading';
+import { localizeNavigationText } from '@/components/layout/navigation';
 import { TurnosUpdater } from '@/components/ui/TurnosUpdater';
 import { toast } from '@/lib/notify';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -33,7 +34,7 @@ export function BajasHero({
   const english = language === 'en';
   return (
     <>
-      <PageHeading className="app-page-title">Rotación</PageHeading>
+      <PageHeading className="app-page-title">{localizeNavigationText(language, 'Rotación')}</PageHeading>
       {showActions && (
         <PageHeaderAccessory>
         <div className="bajas-hero__actions">

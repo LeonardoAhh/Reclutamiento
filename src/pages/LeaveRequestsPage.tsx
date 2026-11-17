@@ -37,7 +37,7 @@ import './LeaveRequestsPage.css';
 const copy = {
   es: {
     loading: 'Cargando solicitudes…',
-    title: 'Vacaciones y permisos',
+    title: 'Ausencias',
     team: 'Solicitudes del equipo',
     retry: 'Reintentar',
     emptyTitle: 'Aún no hay solicitudes',
@@ -69,7 +69,7 @@ const copy = {
   },
   en: {
     loading: 'Loading requests…',
-    title: 'Vacation and leave requests',
+    title: 'Time off',
     team: 'Team requests',
     retry: 'Retry',
     emptyTitle: 'No requests yet',

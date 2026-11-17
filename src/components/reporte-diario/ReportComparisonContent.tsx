@@ -60,7 +60,7 @@ export function ReportComparisonContent({ summaries }: { summaries: ReporteDiari
       <h2 className="reporte-cmp__heading">{copy('Detalle mensual', 'Monthly details')}</h2>
       <div className="reporte-cmp__table-wrap">
         <table className="reporte-cmp__table data-table">
-          <caption className="sr-only">{copy('Comparativa mensual', 'Monthly comparison')}</caption>
+          <caption className="sr-only">{copy('Comparativa', 'Comparison')}</caption>
           <thead>
             <tr>
               <th scope="col">{copy('Mes', 'Month')}</th>
@@ -111,7 +111,7 @@ export function ReportComparisonContent({ summaries }: { summaries: ReporteDiari
       </div>
 
       {/* Mobile cards with inline expand */}
-      <ul className="reporte-cmp__cards" aria-label={copy('Comparativa mensual', 'Monthly comparison')}>
+      <ul className="reporte-cmp__cards" aria-label={copy('Comparativa', 'Comparison')}>
         {rows.map((s) => {
           const prev = prevByMes.get(s.mes) ?? null;
           const incDiff = prev ? s.total_incidencias - prev.total_incidencias : 0;

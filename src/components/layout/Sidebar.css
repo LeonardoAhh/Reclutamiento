@@ -10,20 +10,13 @@
   display: flex;
   flex-direction: column;
 
-  /* El rail es una capa fija propia. Al abrirse una superficie flotante encima,
-     el compositor llegaba a pintar su fondo hasta la caja de padding: una franja
-     de 12px pasada la hairline, sin que la geometría cambiara. Recortar al borde
-     lo impide, y el margen deja salir el anillo de foco; el menú de cuenta y los
-     tooltips van por portal al body, así que nada necesita desbordar el rail. */
-  overflow: clip;
-  overflow-clip-margin: var(--focus-ring-width);
-
   /* Ancho compartido con .app-shell (fuente única de verdad, ver abajo). */
   width: min(var(--feature-navigation-rail-inline-size), 100%);
   padding-block: var(--safe-area-top) calc(var(--design-spacing-sm) + var(--safe-area-bottom));
   padding-inline: max(var(--design-spacing-sm), var(--safe-area-left)) max(var(--design-spacing-sm), var(--safe-area-right));
   color: var(--color-mute);
-  background: var(--color-sidebar-surface, var(--workspace-canvas));
+  /* Misma superficie que el workspace: la hairline marca el límite. */
+  background: var(--workspace-canvas);
 }
 
 .sidebar__top {
@@ -38,7 +31,8 @@
   flex-shrink: 0;
 }
 
-/* La marca comparte la fila superior con el control de menú o pliegue. */
+/* La marca comparte la fila superior con el control de menú o pliegue, y su
+   texto arranca en el borde izquierdo de la columna de iconos. */
 .sidebar__brand {
   grid-column: 1;
   grid-row: 1;
@@ -46,7 +40,8 @@
   align-items: center;
   min-inline-size: 0;
   gap: var(--design-spacing-sm);
-  padding: var(--design-spacing-xs) var(--design-spacing-xxs);
+  padding-block: var(--design-spacing-xs);
+  padding-inline: calc((var(--touch-target-min) - var(--icon-size-md)) / 2) var(--design-spacing-xxs);
   border: 0;
   background: transparent;
   transition: opacity var(--transition-fast);
@@ -115,7 +110,7 @@ button.sidebar__desktop-toggle:hover {
 
 @media (hover: hover) {
   button.sidebar__close-btn:hover {
-    background-color: var(--color-surface-card);
+    background-color: var(--color-sidebar-hover);
   }
 }
 
@@ -154,17 +149,16 @@ button.sidebar__desktop-toggle:hover {
     inset-inline-start: 0;
     z-index: var(--layer-navigation);
     width: var(--app-sidebar-width);
-    padding: var(--design-spacing-sm);
+    /* El margen lateral es el mismo abierto y plegado: así la columna de iconos
+       no se desplaza al plegar y solo cambia el ancho. */
+    padding: var(--design-spacing-sm) var(--design-spacing-xs);
     padding-block-start: var(--safe-area-top);
-    background: var(--shell-floor);
     box-shadow: none;
     border-inline-end: var(--border-width) solid var(--color-hairline);
 
-    /* El ancho y el padding cambian con la preferencia; el workspace acompaña
-       el pliegue y el rail conserva su columna interna de 44px. */
-    transition:
-      width var(--transition-slow),
-      padding-inline var(--transition-slow);
+    /* Solo cambia el ancho con la preferencia; el workspace acompaña el pliegue
+       y el rail conserva su columna interna de 44px. */
+    transition: width var(--transition-slow);
   }
 
   .sidebar__top {
@@ -184,10 +178,6 @@ button.sidebar__desktop-toggle:hover {
     grid-column: 2;
     grid-row: 1;
     justify-self: end;
-  }
-
-  .app-shell[data-sidebar-collapsed='true'] .sidebar {
-    padding-inline: var(--design-spacing-xs);
   }
 
   .app-shell[data-sidebar-collapsed='true'] .sidebar__top {

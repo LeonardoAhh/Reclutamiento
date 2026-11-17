@@ -106,10 +106,10 @@ export function MissingPositionsPage({ onBack, coverage }: MissingPositionsPageP
           type="button"
           className="missing-positions-page__back-link"
           onClick={onBack}
-          aria-label={`${t('Volver al resumen')}: ${t('Vacantes Pendientes')}`}
+          aria-label={`${t('Volver al resumen')}: ${t('Vacantes')}`}
         >
           <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
-          {t('Vacantes Pendientes')}
+          {t('Vacantes')}
         </button>
       </PageHeading>
       <div className="missing-positions-page__body">

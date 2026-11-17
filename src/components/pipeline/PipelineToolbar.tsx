@@ -113,8 +113,8 @@ export function PipelineToolbar({
               className="btn-secondary pipeline__report-btn pipeline__action--desktop"
               to={CANDIDATE_METRICS_PATH}
               data-cuelume-navigate=""
-              aria-label={en ? 'Open metrics and KPIs' : 'Abrir métricas y KPIs'}
-              title={en ? 'Metrics and KPIs' : 'Métricas y KPIs'}
+              aria-label={en ? 'Open metrics' : 'Abrir métricas'}
+              title={en ? 'Metrics' : 'Métricas'}
             >
               <BarChart3 size={16} aria-hidden="true" />
               <span>{en ? 'Metrics' : 'Métricas'}</span>
@@ -167,7 +167,7 @@ export function PipelineToolbar({
                 <DropdownMenuItem asChild>
                   <Link to={CANDIDATE_METRICS_PATH} data-cuelume-navigate="">
                     <BarChart3 size={16} aria-hidden="true" />
-                    <span>{en ? 'Metrics and KPIs' : 'Métricas y KPIs'}</span>
+                    <span>{en ? 'Metrics' : 'Métricas'}</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem data-cuelume-select="" onSelect={() => void onCopyReport()}>

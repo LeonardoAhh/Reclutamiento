@@ -262,10 +262,10 @@ const copy = {
     tabulator: {
       loading: 'Loading salary scales…',
       loadError: 'Could not load the salary scale. Please try again later.',
-      title: 'Salary scale',
+      title: 'Pay scale',
       searchLabel: 'Search by position, area, or type',
       searchPlaceholder: 'Search',
-      tabList: 'Salary scale type',
+      tabList: 'Pay scale type',
       union: 'Union',
       nonUnion: 'Non-union',
       noPositions: 'No positions found',
@@ -521,17 +521,28 @@ export function getConfiguracionCopy(language: Language) {
   return copy[language];
 }
 
+const ENGLISH_DAYS: Readonly<Record<string, string>> = {
+  Lunes: 'Monday',
+  Martes: 'Tuesday',
+  Miércoles: 'Wednesday',
+  Jueves: 'Thursday',
+  Viernes: 'Friday',
+  Sábado: 'Saturday',
+  Domingo: 'Sunday',
+};
+
 export function getEnglishDay(day: string) {
-  const days: Readonly<Record<string, string>> = {
-    Lunes: 'Monday',
-    Martes: 'Tuesday',
-    Miércoles: 'Wednesday',
-    Jueves: 'Thursday',
-    Viernes: 'Friday',
-    Sábado: 'Saturday',
-    Domingo: 'Sunday',
-  };
-  return days[day] ?? day;
+  return ENGLISH_DAYS[day] ?? day;
+}
+
+export function findRouteDay(day: string | null): string | undefined {
+  return Object.entries(ENGLISH_DAYS).find(([, englishDay]) => englishDay.toLowerCase() === day)?.[0];
+}
+
+export function getRouteDayEmployeesTitle(day: string | null, language: Language): string {
+  const routes = getConfiguracionCopy(language).routes;
+  const validDay = findRouteDay(day);
+  return validDay ? formatRouteDay(validDay, language) : routes.employeesByDayPage;
 }
 
 export function formatRouteDay(day: string, language: Language) {

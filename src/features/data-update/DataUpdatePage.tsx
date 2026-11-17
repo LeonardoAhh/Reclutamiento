@@ -360,7 +360,7 @@ export function DataUpdatePage() {
       <main className="data-update-page container" aria-labelledby="data-update-title">
         <header className="page-header data-update-page__header">
           <div className="page-header__content">
-            <PageHeading id="data-update-title" className="app-page-title">{t("Actualización de datos")}</PageHeading>
+            <PageHeading id="data-update-title" className="app-page-title">{t("Actualizar datos")}</PageHeading>
             <p>{t("No tienes acceso a este módulo.")}</p>
           </div>
         </header>
@@ -400,7 +400,7 @@ export function DataUpdatePage() {
 
   return (
     <main className="data-update-page container" aria-labelledby="data-update-title">
-      <PageHeading id="data-update-title" className="app-page-title">{t("Actualización de datos")}</PageHeading>
+      <PageHeading id="data-update-title" className="app-page-title">{t("Actualizar datos")}</PageHeading>
       {detail && activeSearchCount > 0 && showHeaderSearch && (
         <PageHeaderAccessory>
           <search aria-label={activeSearchLabel}>

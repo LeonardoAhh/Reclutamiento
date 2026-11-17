@@ -1,8 +1,15 @@
+import { daysInMonth } from './helpers';
+
 export const REPORTS_PATH = '/reports';
 export const DEPARTURE_REASONS_PATH = '/departure-reasons';
 export const REPORT_COMPARISON_PATH = `${REPORTS_PATH}/comparison`;
 export const REPORT_DAY_ROUTE = 'day/:month/:day';
 export const REPORT_DAY_PATTERN = `${REPORTS_PATH}/${REPORT_DAY_ROUTE}`;
+export function isValidReportDayRoute(month: string, day: string) {
+  return /^\d{4}-(0[1-9]|1[0-2])$/.test(month)
+    && /^(0[1-9]|[12]\d|3[01])$/.test(day)
+    && Number(day) <= daysInMonth(month);
+}
 export function getReportDayPath(month: string, day: string) {
   return `${REPORTS_PATH}/day/${encodeURIComponent(month)}/${encodeURIComponent(day)}`;
 }

@@ -127,14 +127,14 @@ export default function ReporteKpiDashboard({
             tone: (kpis.totalIncidencias > 0 ? "warning" : "default") as KpiTone,
         },
         {
-            label: copy("Día con más incidencias", "Day with most incidents"),
+            label: copy("Día pico", "Peak day"),
             value: getWorstDayLabel(kpis.worstDay, currentMonth, en),
             valueSize: "compact" as const,
             icon: <CalendarX2 size="var(--icon-size-sm)" />,
             tone: getTone(kpis.worstDayCount, { warning: 1, destructive: 6 }),
         },
         {
-            label: copy("Área con más incidencias", "Area with most incidents"),
+            label: copy("Más incidencias", "Most incidents"),
             value: kpis.worstArea || "—",
             valueSize: "compact" as const,
             icon: <Building2 size="var(--icon-size-sm)" />,

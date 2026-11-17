@@ -26,7 +26,7 @@ import { useIsMobile } from '@/hooks/useIsMobile';
 import { preloadRoute } from '@/lib/routePages';
 import { playSound } from '@/lib/sound';
 import { toNaturalCase } from '@/lib/utils';
-import { ACCOUNT_PATH } from './navigation';
+import { ACCOUNT_PATH, localizeNavigationText } from './navigation';
 import type { SidebarQuickActionsControls } from './SidebarQuickActions';
 import { SidebarAccountMenuFooter } from './SidebarAccountMenuFooter';
 import './SidebarAccountMenu.css';
@@ -113,7 +113,7 @@ export function SidebarAccountMenu({
               onClick={() => playSound('navigate')}
             >
               <CircleUserRound aria-hidden="true" />
-              {language === 'en' ? 'My profile' : 'Mi perfil'}
+              {accountCopy(language).title}
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem
@@ -143,7 +143,7 @@ export function SidebarAccountMenu({
                       onFocus={() => preloadRoute(LEAVE_REQUESTS_PATH)}
                     >
                       <CalendarDays aria-hidden="true" />
-                      {language === 'en' ? 'Requests' : 'Gestionar'}
+                      {localizeNavigationText(language, 'Ausencias')}
                     </Link>
                   </DropdownMenuItem>
                 ) : (

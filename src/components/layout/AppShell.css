@@ -6,8 +6,12 @@
 }
 
 .app-shell[data-sidebar-collapsed='true'] {
-  /* 44px de control + padding del rail (xs) y de sus regiones internas (xxs). */
-  --app-sidebar-width: calc(var(--touch-target-min) + 2 * var(--design-spacing-xs) + 2 * var(--design-spacing-xxs));
+  /* 44px de control + padding del rail (xs) y de sus regiones internas (xxs)
+     + la hairline del borde. Sin ella la columna interna quedaba en 43px: los
+     items dejaban de ser cuadrados y el toggle desbordaba un píxel. */
+  --app-sidebar-width: calc(
+    var(--touch-target-min) + 2 * var(--design-spacing-xs) + 2 * var(--design-spacing-xxs) + var(--border-width)
+  );
 }
 
 .app-shell__workspace {

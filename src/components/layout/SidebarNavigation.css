@@ -6,12 +6,17 @@
   padding: 0;
 }
 
+/* Columna de glifos: cada icono va centrado en un cuadrado de 44px al inicio de
+   su fila, así que el relleno lateral sale de ese cuadrado y no de la escala.
+   El icono no depende de centrar el contenido, de modo que la etiqueta oculta
+   en el riel plegado ya no lo empuja fuera del eje. */
 .sidebar__item {
   display: flex;
   align-items: center;
   gap: var(--design-spacing-sm);
   min-height: var(--touch-target-min);
-  padding: var(--design-spacing-xs) var(--design-spacing-xs);
+  padding-block: var(--design-spacing-xs);
+  padding-inline: calc((var(--touch-target-min) - var(--icon-size-md)) / 2 - var(--border-width));
   border-radius: var(--radius-control);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
@@ -33,7 +38,7 @@
 
 .sidebar__item:hover {
   color: var(--color-ink);
-  background: var(--color-surface-card);
+  background: var(--color-sidebar-hover);
 }
 
 .sidebar__item--active,

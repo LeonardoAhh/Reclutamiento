@@ -45,11 +45,11 @@ export function CandidateMetricsPage() {
               to={view ? CANDIDATE_METRICS_PATH : '/candidates'}
               data-cuelume-navigate=""
               aria-label={view
-                ? (en ? 'Back to metrics: Metrics and KPIs' : 'Volver a métricas: Métricas y KPIs')
-                : (en ? 'Back to candidates: Metrics and KPIs' : 'Volver a candidatos: Métricas y KPIs')}
+                ? (en ? 'Back to metrics' : 'Volver a métricas')
+                : (en ? 'Back to candidates' : 'Volver a candidatos')}
             >
               <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
-              {en ? 'Metrics and KPIs' : 'Métricas y KPIs'}
+              {en ? 'Metrics' : 'Métricas'}
             </Link>
           </PageHeading>
       {metrics.loading && <p role="status">{en ? 'Loading metrics…' : 'Cargando métricas…'}</p>}

@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { ClipboardList } from 'lucide-react';
 import { PageHeading } from '@/components/layout/PageHeading';
+import { PageTitleOverrideContext } from '@/components/layout/AppShell';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { workforceText } from '@/pages/workforce-translations';
 import { WeeklyHiresModal } from '@/components/ui/WeeklyHiresModal';
@@ -54,8 +55,14 @@ export function KpisPage() {
   const [candidatesModalOpen, setCandidatesModalOpen] = useState(false);
   const [citedTodayModalOpen, setCitedTodayModalOpen] = useState(false);
   const [missingPositionsPageOpen, setMissingPositionsPageOpen] = useState(false);
+  const setPageTitleOverride = useContext(PageTitleOverrideContext);
   const overviewTitleRef = useRef<HTMLHeadingElement>(null);
   const wasMissingPositionsPageOpenRef = useRef(false);
+
+  useEffect(() => {
+    setPageTitleOverride(missingPositionsPageOpen ? workforceText(language, 'Vacantes') : null);
+    return () => setPageTitleOverride(null);
+  }, [missingPositionsPageOpen, language, setPageTitleOverride]);
 
   useEffect(() => {
     if (!missingPositionsPageOpen && wasMissingPositionsPageOpenRef.current) {
@@ -108,7 +115,7 @@ export function KpisPage() {
               onClick={() => setWeeklyModalOpen(true)}
             />
             <OverviewKpiCard
-              label={t('Próximos ingresos')}
+              label={t('Por ingresar')}
               value={weeklyFutureHires.length}
               onClick={() => setFutureHiresModalOpen(true)}
             />

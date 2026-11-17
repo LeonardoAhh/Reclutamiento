@@ -2,11 +2,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PageHeading } from '@/components/layout/PageHeading';
 import { Link, useMatch, useNavigate } from "react-router-dom";
 import { ReportDayPage } from "@/pages/ReportDayPage";
-import { getReportDayPath, REPORT_DAY_PATTERN, REPORTS_PATH } from "./navigation";
+import { getReportDayPath, isValidReportDayRoute, REPORT_DAY_PATTERN, REPORTS_PATH } from "./navigation";
 import { getConfiguracionHref } from "@/lib/configuracionNavigation";
 import "./ReporteDiario.css";
 import { BoneyardSkeleton } from "@/components/ui/BoneyardSkeleton";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { toast } from "@/lib/notify";
 import { AnimatedSubmitButton } from "@/components/ui/AnimatedSubmitButton";
 import {
@@ -18,16 +18,11 @@ import {
   ChartSpline,
   Eraser,
 } from "lucide-react";
-import {
-  PanelLeftClose,
-  PanelLeftOpen,
-  Save as SaveIconData,
-} from "lucide";
+import { Save as SaveIconData } from "lucide";
 
 import {
   VISIBLE_SECTIONS,
 } from "./constants";
-import { MorphingIcon } from "@/components/ui/MorphingIcon";
 import {
   daysInMonth,
   parseReporteJSON,
@@ -46,8 +41,7 @@ import ReportesGuardadosDialog from "./reportes-guardados-dialog";
 import { ReporteFormatErrors } from "./ReporteFormatErrors";
 import { ReporteUploadPanel } from "./ReporteUploadPanel";
 
-import { useReporteDiario } from "@/hooks/useReporteDiario";
-import type { ReporteDiarioSummary } from "@/hooks/useReporteDiario";
+import { useReporteDiario, type ReporteDiarioSummary } from "@/hooks/useReporteDiario";
 import { useReportLocale } from "./useReportLocale";
 import { useReportDayDetails } from "./useReportDayDetails";
 import { useReportDayRouteLoading } from "./useReportDayRouteLoading";
@@ -58,8 +52,7 @@ const SAVE_SUCCESS_DURATION_MS = 1500;
 export default function ReporteDiarioContent() {
   useEffect(() => bindSoundInteractions(document), []);
   const { en, copy, month, shortMonth } = useReportLocale();
-  const departureLinkLabel = copy("Motivos de baja", "Reasons");
-  const departureAccessibleLabel = copy("Motivos de baja", "Reasons for leaving");
+  const departureLinkLabel = copy("Bajas", "Departures");
   const [rows, setRows] = useState<ReporteRow[]>([]);
   const [selectedMes, setSelectedMes] = useState("");
   const [selectedEmployee, setSelectedEmployee] = useState<string>("");
@@ -71,9 +64,7 @@ export default function ReporteDiarioContent() {
   const [calendarDay, setCalendarDay] = useState("");
   const routeMonth = dayRoute?.params.month ?? '';
   const routeDay = dayRoute?.params.day ?? '';
-  const validDayRoute = /^\d{4}-(0[1-9]|1[0-2])$/.test(routeMonth)
-    && /^(0[1-9]|[12]\d|3[01])$/.test(routeDay)
-    && Number(routeDay) <= daysInMonth(routeMonth);
+  const validDayRoute = isValidReportDayRoute(routeMonth, routeDay);
   const selectedDay = dayRoute ? (validDayRoute ? routeDay : '') : calendarDay;
   useEffect(() => {
     if (validDayRoute) {
@@ -90,8 +81,6 @@ export default function ReporteDiarioContent() {
   const reduceMotion = useReducedMotion();
 
   const enterFromBelow = reduceMotion ? false : { opacity: 0, y: 8 };
-  const enterFromLeft = reduceMotion ? false : { opacity: 0, x: -24 };
-  const exitToLeft = reduceMotion ? undefined : { opacity: 0, x: -24 };
 
   const {
     saving: dbSaving,
@@ -169,12 +158,6 @@ export default function ReporteDiarioContent() {
         return true;
       });
   }, [rows, currentMonth, departamentoFilter, turnoFilter]);
-
-  const openEmployeeModal = useCallback((employeeId: string) => {
-    playSound('open');
-    setSelectedEmployee(employeeId);
-    setEmpDetailOpen(true);
-  }, []);
 
   const daySummaries = useMemo(() => {
     return dayHeaders.reduce<Record<string, number>>((acc, day) => {
@@ -319,19 +302,6 @@ export default function ReporteDiarioContent() {
       return { totalIncidencias, tasaAsistencia };
     },
     [],
-  );
-
-  const heroKpis = useMemo(
-    () =>
-      computeKpis(
-        selectedRows.filter(
-          (r) =>
-            VISIBLE_SECTIONS.has(r.departamento) ||
-            VISIBLE_SECTIONS.has(r.area),
-        ),
-        dayHeaders,
-      ),
-    [computeKpis, selectedRows, dayHeaders],
   );
 
   const handleSaveToDb = useCallback(async () => {
@@ -532,7 +502,7 @@ export default function ReporteDiarioContent() {
           aria-labelledby="reporte-page-title"
         >
             <PageHeading id="reporte-page-title" className="app-page-title">
-              {copy("Reporte Diario", "Daily Report")}
+              {copy("Reporte", "Report")}
             </PageHeading>
 
           <div className="reporte-hero__workspace">
@@ -620,7 +590,7 @@ export default function ReporteDiarioContent() {
                       className="btn-secondary reporte-hero__recent-link"
                       to="/departure-reasons"
                       data-cuelume-navigate=""
-                      aria-label={departureAccessibleLabel}
+                      aria-label={departureLinkLabel}
                     >
                       <BarChart3 size="var(--icon-size-sm)" aria-hidden="true" />
                       {departureLinkLabel}
@@ -670,9 +640,9 @@ export default function ReporteDiarioContent() {
       )}
       <header className="reporte-header__top">
         <PageHeading id="reporte-page-title" className="app-page-title">
-          <span className="reporte-page-title--desktop">{copy("Reporte Diario", "Daily Report")}</span>
+          <span className="reporte-page-title--desktop">{copy("Reporte", "Report")}</span>
           <span className="reporte-page-title--mobile">
-            {hasData ? month(currentMonth) : copy("Reporte Diario", "Daily Report")}
+            {hasData ? month(currentMonth) : copy("Reporte", "Report")}
           </span>
         </PageHeading>
 

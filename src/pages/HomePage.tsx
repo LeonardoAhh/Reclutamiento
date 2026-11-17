@@ -32,11 +32,11 @@ export function HomePage() {
           <Link
             className="home-page__quick-link"
             to={getConfiguracionHref('tabulador')}
-            aria-label={en ? 'Pay Scale' : 'Tabulador'}
+            aria-label={en ? 'Pay scale' : 'Tabulador'}
             data-cuelume-navigate=""
           >
             <BadgeDollarSign aria-hidden="true" />
-            <span aria-hidden="true">{en ? 'Pay Scale' : 'Tabulador'}</span>
+            <span aria-hidden="true">{en ? 'Pay scale' : 'Tabulador'}</span>
           </Link>
           {profile.role === 'admin' && (
             <Link

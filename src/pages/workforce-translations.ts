@@ -77,7 +77,6 @@ const englishCopy: Record<string, string> = {
   "Candidatos": "Candidates",
   "Bajas": "Departures",
   "Ingresos": "Hires",
-  "Proximos Ingresos": "Upcoming Hires",
   "Entrevistas": "Interviews",
   "Abiertas": "Open",
   "En tiempo": "On Time",
@@ -156,7 +155,7 @@ const englishCopy: Record<string, string> = {
   "Resumen por puesto y sección": "By Position and Section",
 
   // Próximos ingresos y reporte
-  "Próximos ingresos": "Upcoming Hires",
+  "Por ingresar": "Joining soon",
   "Fechas programadas": "Scheduled Dates",
   "Fecha de ingreso programado": "Scheduled Hire Date",
   "Fechas programadas de ingreso": "Scheduled Hire Dates",
@@ -193,7 +192,6 @@ const englishCopy: Record<string, string> = {
   "Motivo del backup / contexto…": "Reason / Context…",
 
   // Vacantes
-  "Vacantes Pendientes": "Open Vacancies",
   "Tabla de puestos faltantes": "Unfilled Positions",
   "En plantilla": "In Workforce",
   "En backup": "In Backup",

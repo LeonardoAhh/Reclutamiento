@@ -6,7 +6,7 @@ export type MexicoHolidayRule =
     | { label: string; month: number; day: number; fixed: true }
     | { label: string; month: number; weekday: number; occurrence: number }
 
-/** Resumen de personal por sección para el grid del Reporte Diario */
+/** Resumen de personal por sección para el grid del Reporte */
 export interface AreaStaffSummary {
     /** Nombre de la sección (ej. 'PRODUCCIÓN 1ER. TURNO') */
     area: string

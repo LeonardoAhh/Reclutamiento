@@ -2,7 +2,7 @@ import type { Language } from '@/contexts/LanguageContext';
 
 const translations = {
   es: {
-    title: 'Motivos de baja',
+    title: 'Bajas',
     register: 'Registrar',
     loadError: 'No se pudieron cargar los registros del indicador:',
     retry: 'Reintentar',
@@ -19,7 +19,7 @@ const translations = {
     departure: 'baja',
     departures: 'bajas',
     noDeparturesForPeriod: 'No hay bajas para el periodo seleccionado.',
-    reasons: 'Motivos de baja',
+    reasons: 'Motivos',
     noReasonsForFilters: 'No hay motivos para los filtros seleccionados.',
     chartLabel: 'Bajas por mes:',
     chartTrend: 'La línea discontinua muestra la tendencia lineal del periodo.',
@@ -57,7 +57,7 @@ const translations = {
     pagination: 'Paginación de bajas por motivo',
   },
   en: {
-    title: 'Reasons for leaving',
+    title: 'Departures',
     register: 'Add record',
     loadError: 'Could not load indicator records:',
     retry: 'Retry',
@@ -74,7 +74,7 @@ const translations = {
     departure: 'departure',
     departures: 'departures',
     noDeparturesForPeriod: 'There are no departures for the selected period.',
-    reasons: 'Reasons for leaving',
+    reasons: 'Reasons',
     noReasonsForFilters: 'There are no reasons for the selected filters.',
     chartLabel: 'Departures by month:',
     chartTrend: 'The dashed line shows the linear trend for the period.',

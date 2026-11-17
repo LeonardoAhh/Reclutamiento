@@ -69,10 +69,10 @@ export function DataUpdateProgressPage({
           type="button"
           className="data-update-progress-page__back-link"
           onClick={onBack}
-          aria-label={`${t("Volver")}: ${t("Avance de la campaña")}`}
+          aria-label={`${t("Volver")}: ${t("Avance")}`}
         >
           <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
-          {t("Avance de la campaña")}
+          {t("Avance")}
         </button>
       </PageHeading>
       <div className="data-update-progress-page__sections">

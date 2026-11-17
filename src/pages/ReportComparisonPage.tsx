@@ -27,9 +27,9 @@ export function ReportComparisonPage() {
   return (
     <main className="report-comparison-page container" aria-labelledby="report-comparison-title">
           <PageHeading ref={headingRef} tabIndex={-1} id="report-comparison-title" className="app-page-title">
-            <Link to="/reports" className="report-comparison-page__title-link" data-cuelume-navigate="" aria-label={copy('Comparativa mensual: volver a Reporte diario', 'Monthly comparison: back to Daily report')}>
+            <Link to="/reports" className="report-comparison-page__title-link" data-cuelume-navigate="" aria-label={copy('Comparativa: volver al Reporte', 'Comparison: back to Report')}>
               <ArrowLeft size="var(--icon-size-md)" aria-hidden="true" />
-              {copy('Comparativa mensual', 'Monthly comparison')}
+              {copy('Comparativa', 'Comparison')}
             </Link>
           </PageHeading>
       {loading || summaries === null ? (

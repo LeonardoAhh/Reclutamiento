@@ -10,8 +10,8 @@ export default function ReporteComparison({ triggerVariant = 'icon' }: { trigger
       to={REPORT_COMPARISON_PATH}
       data-cuelume-navigate=""
       className={'reporte-saved__trigger reporte-saved__trigger--' + triggerVariant}
-      aria-label={copy('Comparativa mensual', 'Monthly comparison')}
-      title={copy('Comparativa mensual', 'Monthly comparison')}
+      aria-label={copy('Comparativa', 'Comparison')}
+      title={copy('Comparativa', 'Comparison')}
       data-testid="open-comparison-btn"
     >
       <ChartNoAxesCombined size="var(--icon-size-sm)" aria-hidden="true" />

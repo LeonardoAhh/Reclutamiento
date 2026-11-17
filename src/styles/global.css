@@ -22,8 +22,7 @@
 
 /* Paleta azul corregida: todo texto >= 8.1:1 sobre las superficies donde se usa.
    Los comentarios "antes" indican el valor original. */
-:root,
-[data-palette-preview][data-color-palette] {
+:root {
   accent-color: var(--color-primary);
 
   /* ── Brand & Accent ───────────────────────────────────────────── */
@@ -56,7 +55,10 @@
   --color-canvas-elevated: #fff;
   --color-surface-card: var(--color-canvas-elevated);
   --color-surface-strong: #e4e7ea;
-  --color-sidebar-surface: var(--color-canvas-soft);
+
+  /* Hover sobre la barra lateral: el rail comparte el lienzo del workspace, así
+     que el item resaltado sube a la superficie de las tarjetas en ambos modos. */
+  --color-sidebar-hover: var(--color-canvas-elevated);
   --color-surface-dark: #171717;
   --color-document-paper: #fff;
 
@@ -540,7 +542,6 @@
   /* Contrato estable del workspace; evita que una migración de primitivas
      desarme la superficie continua del shell y del login. */
   --workspace-canvas: var(--color-canvas);
-  --shell-floor: var(--color-canvas-soft);
   --shell-workspace-surface: var(--color-canvas-elevated);
   --workspace-border-color: var(--color-hairline);
   --workspace-radius: var(--radius-card);
@@ -565,8 +566,7 @@
 /* Tema oscuro neutro: los tokens de documento conservan su salida clara.
    Texto >= 8.1:1 sobre canvas, canvas-soft, canvas-elevated y surface-strong/hover.
    Bordes de controles y foco >= 3:1. */
-:root[data-color-scheme='dark'],
-[data-palette-preview][data-color-scheme='dark'] {
+:root[data-color-scheme='dark'] {
   color-scheme: dark;
 
   --color-primary-text-on-dark: #bfdbfe;
@@ -634,8 +634,7 @@
 /* Ocean Saas cambia solo colores; conserva geometría, tipografía y sombras del sistema. */
 
 /* ───────── Light (por defecto) ───────── */
-:root[data-color-palette='ocean-saas'],
-[data-palette-preview][data-color-palette='ocean-saas'] {
+:root[data-color-palette='ocean-saas'] {
   color-scheme: light;
 
   --brand-hue: 243;
@@ -662,7 +661,6 @@
   --color-canvas-elevated: oklch(100% 0 0deg);
   --color-surface-card: var(--color-canvas-elevated);
   --color-surface-strong: oklch(89% 0.006 var(--brand-hue));
-  --color-sidebar-surface: var(--color-canvas-soft);
 
   /* Bordes */
   --color-hairline: oklch(85% 0.006 var(--brand-hue));
@@ -678,8 +676,7 @@
 }
 
 /* ───────── Dark ───────── */
-:root[data-color-palette='ocean-saas'][data-color-scheme='dark'],
-[data-palette-preview][data-color-palette='ocean-saas'][data-color-scheme='dark'] {
+:root[data-color-palette='ocean-saas'][data-color-scheme='dark'] {
   color-scheme: dark;
 
   --state-step: 1;
@@ -709,8 +706,7 @@
 }
 
 /* Gold Void conserva geometría, tipografía y sombras del sistema. */
-:root[data-color-palette='darkmatter-remix'],
-[data-palette-preview][data-color-palette='darkmatter-remix'] {
+:root[data-color-palette='darkmatter-remix'] {
   --color-primary: hsl(42deg 80% 18%);
   --color-primary-text: hsl(42deg 80% 16%);
   --color-primary-active: color-mix(in srgb, var(--color-primary) 85%, var(--color-ink));
@@ -720,8 +716,6 @@
   --color-canvas: hsl(40deg 14% 95%);
   --color-canvas-soft: hsl(40deg 10% 89%);
   --color-canvas-elevated: hsl(0deg 0% 100%);
-  --color-sidebar-surface: var(--color-canvas-soft);
-  --shell-floor: var(--color-sidebar-surface);
   --color-surface-card: hsl(0deg 0% 100%);
   --color-surface-strong: hsl(40deg 9% 85%);
 
@@ -739,8 +733,7 @@
   --color-on-error: var(--color-canvas);
 }
 
-:root[data-color-palette='darkmatter-remix'][data-color-scheme='dark'],
-[data-palette-preview][data-color-palette='darkmatter-remix'][data-color-scheme='dark'] {
+:root[data-color-palette='darkmatter-remix'][data-color-scheme='dark'] {
   --color-primary: hsl(45deg 68% 50%);
   --color-primary-text: hsl(45deg 68% 76%);
   --color-primary-active: color-mix(in srgb, var(--color-primary) 85%, var(--color-ink));
@@ -748,7 +741,6 @@
   --color-link-deep: var(--color-ink);
   --color-canvas: hsl(30deg 3% 8%);
   --color-canvas-soft: hsl(30deg 3% 12%);
-  --color-sidebar-surface: var(--color-surface-card);
   --color-canvas-elevated: hsl(30deg 3% 16%);
   --color-surface-card: var(--color-canvas-elevated);
   --color-surface-strong: hsl(30deg 3% 22%);
@@ -769,8 +761,7 @@
 }
 
 /* Sea Glass cambia colores, sin alterar la geometría ni la tipografía del producto. */
-:root[data-color-palette='sea-glass'],
-[data-palette-preview][data-color-palette='sea-glass'] {
+:root[data-color-palette='sea-glass'] {
   --color-primary: #2b4630;
   --color-primary-text: #263b2b;
   --color-primary-active: #243e2a;
@@ -780,8 +771,6 @@
   --color-canvas: #f3f6f5;
   --color-canvas-soft: #e8edeb;
   --color-canvas-elevated: #fff;
-  --color-sidebar-surface: var(--color-canvas-soft);
-  --shell-floor: var(--color-sidebar-surface);
   --color-surface-card: #fff;
   --color-surface-strong: #dce4e0;
 
@@ -801,8 +790,7 @@
 /* Sea Glass · oscuro. Superficies grafito con matiz verde,
    un solo acento aguamarina. Texto >= 8.1:1 sobre todas las superficies;
    bordes de controles >= 3:1. */
-:root[data-color-palette='sea-glass'][data-color-scheme='dark'],
-[data-palette-preview][data-color-palette='sea-glass'][data-color-scheme='dark'] {
+:root[data-color-palette='sea-glass'][data-color-scheme='dark'] {
   /* Acento */
   --color-primary: #3ddcc7;
   --color-primary-text: #92f5e7;
@@ -816,7 +804,6 @@
   --color-canvas: #171c1b;
   --color-canvas-soft: #202625;
   --color-canvas-elevated: #28302e;
-  --color-sidebar-surface: var(--color-canvas-soft);
   --color-surface-card: var(--color-canvas-elevated);
   --color-surface-strong: #343d3a;
 
@@ -838,8 +825,7 @@
 /* Claude Amber adapta únicamente los colores del sistema existente.
    Texto >= 8.1:1 sobre canvas, soft, elevated, sidebar, card, strong/hover y tint.
    Bordes de controles >= 3:1. */
-:root[data-color-palette='claude-amber'],
-[data-palette-preview][data-color-palette='claude-amber'] {
+:root[data-color-palette='claude-amber'] {
   /* Acento: terracota oscuro para que el texto blanco del botón llegue a 8.1:1 */
   --color-primary: #863519;
   --color-primary-text: #61200d;
@@ -855,8 +841,6 @@
   --color-canvas: #f5f4f0;
   --color-canvas-soft: #e9e7e0;
   --color-canvas-elevated: #fff;
-  --color-sidebar-surface: var(--color-canvas-soft);
-  --shell-floor: var(--color-sidebar-surface);
   --color-surface-card: var(--color-canvas-elevated);
   --color-surface-strong: #dddcd5;
 
@@ -877,8 +861,7 @@
   --color-on-error-deep: var(--color-on-error);
 }
 
-:root[data-color-palette='claude-amber'][data-color-scheme='dark'],
-[data-palette-preview][data-color-palette='claude-amber'][data-color-scheme='dark'] {
+:root[data-color-palette='claude-amber'][data-color-scheme='dark'] {
   /* Acento: coral más claro para que el texto oscuro del botón llegue a 8.1:1 */
   --color-primary: #ec9a76;
   --color-primary-text: #ffd5be;
@@ -892,7 +875,6 @@
   --color-canvas: #1e1e1c;
   --color-canvas-soft: #262623;
   --color-canvas-elevated: #30302d;
-  --color-sidebar-surface: var(--color-canvas-soft);
   --color-surface-card: var(--color-canvas-elevated);
   --color-surface-strong: #3a3a35;
 
@@ -913,8 +895,7 @@
 
 /* Supabase mantiene la geometría del proyecto y alterna sus verdes por modo.
    Corregido: texto >= 8.1:1 sobre todas las superficies donde se usa. */
-:root[data-color-palette='supabase'],
-[data-palette-preview][data-color-palette='supabase'] {
+:root[data-color-palette='supabase'] {
   --color-primary: #72e3ad;
   --color-primary-text: #004c2b;
 
@@ -925,8 +906,6 @@
   --color-link-deep: var(--color-primary-text);
   --color-canvas: #f4f6f5;
   --color-canvas-soft: #e9edeb;
-  --color-sidebar-surface: var(--color-canvas-soft);
-  --shell-floor: var(--color-sidebar-surface);
   --color-surface-strong: var(--color-canvas-soft);
   --color-hairline: #cfd6d2;
 
@@ -951,8 +930,7 @@
   /* faltaba en claro */
 }
 
-:root[data-color-palette='supabase'][data-color-scheme='dark'],
-[data-palette-preview][data-color-palette='supabase'][data-color-scheme='dark'] {
+:root[data-color-palette='supabase'][data-color-scheme='dark'] {
   --color-primary: #00492a;
 
   /* antes #006239: texto encima daba 6.0 */
@@ -992,8 +970,7 @@
 }
 
 @media (prefers-contrast: more) {
-  :root[data-color-palette][data-color-scheme],
-  [data-palette-preview][data-color-palette][data-color-scheme] {
+  :root[data-color-palette][data-color-scheme] {
     --color-hairline: var(--color-mute);
   }
 }

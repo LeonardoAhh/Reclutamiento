@@ -2,9 +2,9 @@ import { useEffect, useMemo, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton';
-import { getEmpleadosPorDia, ROUTE_DAYS, useRutas, type EmpleadoRuta } from '@/hooks/useRutas';
+import { getEmpleadosPorDia, useRutas, type EmpleadoRuta } from '@/hooks/useRutas';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { formatRouteDay, getConfiguracionCopy } from '@/pages/configuracion-views/configuracion-translations';
+import { findRouteDay, formatRouteDay, getConfiguracionCopy, getRouteDayEmployeesTitle } from '@/pages/configuracion-views/configuracion-translations';
 import './RutaDayEmployeesModal.css';
 
 function compareBySeccion(a: EmpleadoRuta, b: EmpleadoRuta): number {
@@ -26,7 +26,7 @@ export function RutaDayEmployeesPage() {
   const headingRef = useRef<HTMLAnchorElement>(null);
   const { rutas, loading, errorMsg } = useRutas();
   const route = rutas.find((item) => item.nombreRuta === routeName);
-  const validDay = ROUTE_DAYS.find((item) => formatRouteDay(item, 'en').toLowerCase() === day);
+  const validDay = findRouteDay(day);
   const employees = useMemo(() => {
     if (!route || !validDay) return [];
     return [...getEmpleadosPorDia(route.empleados, validDay)].sort(compareBySeccion);
@@ -35,7 +35,7 @@ export function RutaDayEmployeesPage() {
     ? `/routes?${new URLSearchParams({ route: routeName, ...(searchTerm ? { search: searchTerm } : {}) })}`
     : '/routes';
   const displayDay = validDay ? formatRouteDay(validDay, language).toLowerCase() : '';
-  const title = validDay ? `${copy.employeesOfDay} ${displayDay}` : copy.employeesByDayPage;
+  const title = getRouteDayEmployeesTitle(day, language);
   const compactRouteName = route?.nombreRuta.match(/^\s*(R\d+)\s*-/i)?.[1] ?? route?.nombreRuta;
 
   useEffect(() => {
@@ -106,7 +106,7 @@ export function RutaDayEmployeesPage() {
         >
           <div className="ruta-day-page__table-wrapper">
             <table className="ruta-day-page__table data-table data-table--cards">
-              <caption className="sr-only">{title}</caption>
+              <caption className="sr-only">{copy.employeesOfDay} {displayDay}</caption>
               <thead>
                 <tr>
                   <th scope="col">{copy.number}</th>
