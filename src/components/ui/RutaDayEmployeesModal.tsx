@@ -5,6 +5,8 @@ import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton';
 import { getEmpleadosPorDia, useRutas, type EmpleadoRuta } from '@/hooks/useRutas';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { findRouteDay, formatRouteDay, getConfiguracionCopy, getRouteDayEmployeesTitle } from '@/pages/configuracion-views/configuracion-translations';
+import { RouteDayCapacitySummary } from '@/pages/configuracion-views/RouteDayCapacitySummary';
+import { RouteDayEmployeesTable } from '@/pages/configuracion-views/RouteDayEmployeesTable';
 import './RutaDayEmployeesModal.css';
 
 function compareBySeccion(a: EmpleadoRuta, b: EmpleadoRuta): number {
@@ -101,43 +103,21 @@ export function RutaDayEmployeesPage() {
           {copy.noEmployeesAssigned} {displayDay}.
         </p>
       ) : (
-        <section
-          aria-label={`${language === 'en' ? 'Employees on' : 'Empleados de'} ${route.nombreRuta} ${language === 'en' ? 'on' : 'el'} ${displayDay}`}
-        >
-          <div className="ruta-day-page__table-wrapper">
-            <table className="ruta-day-page__table data-table data-table--cards">
-              <caption className="sr-only">{copy.employeesOfDay} {displayDay}</caption>
-              <thead>
-                <tr>
-                  <th scope="col">{copy.number}</th>
-                  <th scope="col">{copy.employeeName}</th>
-                  <th scope="col">{copy.section}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {employees.map((emp) => (
-                  <tr key={emp.numeroEmpleado}>
-                    <td className="ruta-day-page__number">
-                      <span className="ruta-day-page__mobile-label" aria-hidden="true">
-                        {copy.number}{' '}
-                      </span>
-                      {emp.numeroEmpleado}
-                    </td>
-                    <th scope="row" className="ruta-day-page__name">
-                      {emp.nombre}
-                    </th>
-                    <td className="ruta-day-page__section">
-                      <span className="ruta-day-page__mobile-label" aria-hidden="true">
-                        {copy.section}{' '}
-                      </span>
-                      {emp.seccion || copy.noSection}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
+        <>
+          <RouteDayCapacitySummary
+            employees={employees}
+            day={validDay}
+            dayLabel={displayDay}
+            routeName={route.nombreRuta}
+            capacities={route.maxCapacityPerShift}
+          />
+          <RouteDayEmployeesTable
+            key={`${route.nombreRuta}::${validDay}`}
+            employees={employees}
+            routeName={route.nombreRuta}
+            displayDay={displayDay}
+          />
+        </>
       )}
     </main>
   );

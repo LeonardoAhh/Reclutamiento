@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { getShortName } from '@/lib/names';
 import { formatReadableDate } from '@/lib/dates';
+import { TRANSPORTE_TURNOS } from '@/lib/transporte-routes';
 import { useRutas, ROUTE_DAYS, RutaAgrupada, type EmpleadoRuta } from '@/hooks/useRutas';
 import { ROUTE_DAY_EMPLOYEES_PATH, ROUTE_SCANNER_PATH } from '@/lib/configuracionNavigation';
 import { Tooltip } from '@/components/ui/Tooltip';
@@ -131,8 +132,8 @@ function ShiftBars({
   const { language } = useLanguage();
   const copy = getConfiguracionCopy(language).routes;
   const english = language === 'en';
-  const entries = Array.from(new Set([...Object.keys(turnosCount), ...Object.keys(turnosCountPrev)])).sort((a, b) =>
-    a.localeCompare(b, undefined, { numeric: true }),
+  const entries = TRANSPORTE_TURNOS.filter(
+    (turno) => turno !== '5' && (turnosCount[turno] !== undefined || turnosCountPrev[turno] !== undefined),
   );
 
   return (

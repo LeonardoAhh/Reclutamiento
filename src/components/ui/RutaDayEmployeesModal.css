@@ -108,8 +108,32 @@
   inline-size: 52%;
 }
 
+.ruta-day-page__capacity {
+  min-inline-size: 0;
+  overflow: hidden;
+  border: var(--border-width) solid var(--color-hairline);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-card);
+}
+
+.ruta-day-page__capacity-table {
+  table-layout: fixed;
+}
+
+.ruta-day-page__capacity-table :is(th, td) {
+  padding-inline: var(--design-spacing-sm);
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+
 .ruta-day-page__table-wrapper {
   min-inline-size: 0;
+}
+
+.ruta-day-page__employees {
+  display: grid;
+  min-inline-size: 0;
+  gap: var(--design-spacing-sm);
 }
 
 .ruta-day-page__table tbody {

@@ -4,6 +4,7 @@ export interface EmpleadoRuta {
   numeroEmpleado: string;
   nombre: string;
   turno: string;
+  claveHorario?: string;
   nombreRuta: string;
   colonia: string;
   parada: string;
@@ -47,13 +48,15 @@ export function normalizeEmpleadoRuta(value: unknown): EmpleadoRuta | null {
   if (!nombreRuta.trim()) return null;
 
   const seccion = getRouteField(fields, ['seccion']).trim();
+  const claveHorario = getRouteField(fields, ['turno']).trim();
   return {
     numeroEmpleado: getRouteField(fields, [
       'numero empleado',
       'num empleado',
     ]),
     nombre: getRouteField(fields, ['nombre']),
-    turno: mapClaveHorarioToTurno(getRouteField(fields, ['turno'])),
+    turno: mapClaveHorarioToTurno(claveHorario),
+    claveHorario,
     nombreRuta,
     colonia: getRouteField(fields, ['colonia']),
     parada: getRouteField(fields, ['parada']),

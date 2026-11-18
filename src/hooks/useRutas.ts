@@ -27,15 +27,37 @@ const T2_LUN_SAB_SECTIONS = new Set([
 ]);
 
 const SCHEDULE_LUN_SAB = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+const SCHEDULE_LUN_VIE = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
+
+/** Días usados en rutas para claves del turno 2; 30 y 31 omiten el sábado alterno sin fecha. */
+const T2_SCHEDULE_BY_CLAVE: Readonly<Record<string, string[]>> = {
+  '6': SCHEDULE_LUN_VIE,
+  '7': SCHEDULE_LUN_SAB,
+  '13': SCHEDULE_LUN_SAB,
+  '30': SCHEDULE_LUN_VIE,
+  '31': SCHEDULE_LUN_VIE,
+  '36': ['Sábado', 'Domingo', 'Lunes', 'Martes', 'Miércoles'],
+};
+
+/** Días confirmados para claves del turno 3 con calendario distinto al estándar. */
+const T3_SCHEDULE_BY_CLAVE: Readonly<Record<string, string[]>> = {
+  '16': SCHEDULE_LUN_VIE,
+};
 
 /**
- * Devuelve los días laborales de un empleado según su turno y sección.
- * La mayoría de las secciones siguen el calendario estándar del turno,
- * pero algunas secciones de T2 trabajan Lun–Sáb en vez de Mié–Dom.
+ * Devuelve los días laborales según el turno, la sección y la clave de horario.
+ * Las excepciones de sección del turno 2 prevalecen sobre la clave.
+ * Las claves aún no definidas conservan el calendario estándar del turno.
  */
-export function getWorkingDays(turno: string, seccion?: string): string[] {
+export function getWorkingDays(turno: string, seccion?: string, claveHorario?: string): string[] {
   if (turno === '2' && seccion && T2_LUN_SAB_SECTIONS.has(seccion.trim())) {
     return SCHEDULE_LUN_SAB;
+  }
+  if (turno === '2' && claveHorario && T2_SCHEDULE_BY_CLAVE[claveHorario]) {
+    return T2_SCHEDULE_BY_CLAVE[claveHorario];
+  }
+  if (turno === '3' && claveHorario && T3_SCHEDULE_BY_CLAVE[claveHorario]) {
+    return T3_SCHEDULE_BY_CLAVE[claveHorario];
   }
   return DEFAULT_SCHEDULE[turno] || [];
 }
@@ -84,7 +106,7 @@ export function getEmpleadosPorDia(
   dia: string,
 ): EmpleadoRuta[] {
   return empleados.filter((emp) =>
-    getWorkingDays(emp.turno, emp.seccion).includes(dia),
+    getWorkingDays(emp.turno, emp.seccion, emp.claveHorario).includes(dia),
   );
 }
 
@@ -95,7 +117,7 @@ export function getTurnosPorDia(
 ): string[] {
   const turnos = new Set<string>();
   for (const emp of empleados) {
-    if (getWorkingDays(emp.turno, emp.seccion).includes(dia)) turnos.add(emp.turno);
+    if (getWorkingDays(emp.turno, emp.seccion, emp.claveHorario).includes(dia)) turnos.add(emp.turno);
   }
   return Array.from(turnos).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
 }
@@ -132,7 +154,7 @@ function groupByRuta(empleados: EmpleadoRuta[], empleadosPrev: EmpleadoRuta[] = 
     group.turnosCount[emp.turno] = (group.turnosCount[emp.turno] ?? 0) + 1;
     
     // Add to daily capacity based on shift schedule and section.
-    const schedule = getWorkingDays(emp.turno, emp.seccion);
+    const schedule = getWorkingDays(emp.turno, emp.seccion, emp.claveHorario);
     for (const day of schedule) {
       if (group.capacityPerDay[day] !== undefined) {
         group.capacityPerDay[day] += 1;
