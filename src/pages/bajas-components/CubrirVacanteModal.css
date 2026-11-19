@@ -13,7 +13,7 @@
 /* Tarjeta de contexto del colaborador y vacante */
 .cubrir-vacante-modal__context {
   background: var(--color-canvas-elevated);
-  border: 1px solid var(--color-hairline);
+  border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--radius-menu);
   padding: var(--design-spacing-xs) var(--design-spacing-sm);
   display: flex;
@@ -36,10 +36,12 @@
 }
 
 .cubrir-vacante-modal__empleado-num {
-  font-size: var(--type-caption-md-size);
+  font-size: var(--type-body-sm-semibold-size);
+  font-weight: var(--type-body-sm-semibold-weight);
+  line-height: var(--type-body-sm-semibold-line);
+  letter-spacing: var(--type-body-sm-semibold-tracking);
   color: var(--color-mute);
   font-variant-numeric: tabular-nums;
-  font-weight: var(--type-body-sm-strong-weight);
   flex-shrink: 0;
 }
 
@@ -48,9 +50,11 @@
   align-items: center;
   flex-wrap: wrap;
   gap: var(--design-spacing-xxs);
-  font-size: var(--type-caption-md-size);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
   color: var(--color-mute);
-  line-height: var(--type-caption-md-line);
 }
 
 .cubrir-vacante-modal__dot {
@@ -70,8 +74,10 @@
 }
 
 .cubrir-vacante-modal__label {
-  font-size: var(--type-caption-md-size);
-  font-weight: var(--type-body-sm-strong-weight);
+  font-size: var(--type-body-sm-semibold-size);
+  font-weight: var(--type-body-sm-semibold-weight);
+  line-height: var(--type-body-sm-semibold-line);
+  letter-spacing: var(--type-body-sm-semibold-tracking);
   color: var(--color-ink);
 }
 
@@ -86,7 +92,7 @@
   min-height: var(--control-min-block-size);
   padding: var(--design-spacing-xxs) var(--design-spacing-xs);
   background: var(--color-canvas-elevated);
-  border: 1px solid var(--color-control-border);
+  border: var(--border-width) solid var(--color-control-border);
   border-radius: var(--radius-field);
   font-family: var(--font-body);
   font-size: max(var(--type-body-md-size), var(--editable-text-min-size, var(--type-body-md-size)));
@@ -99,7 +105,6 @@
   color: var(--color-mute);
 }
 
-
 .cubrir-vacante-modal__input[aria-invalid="true"] {
   border-color: var(--color-error);
 }
@@ -111,11 +116,13 @@
   gap: var(--design-spacing-xxs);
   padding: var(--design-spacing-xxs) var(--design-spacing-xs);
   background: var(--color-error-subtle);
-  border: 1px solid var(--color-hairline);
+  border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--rounded-xs);
   color: var(--color-error-text);
-  font-size: var(--type-caption-md-size);
-  line-height: var(--type-caption-md-line);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
 }
 
 /* Acciones en el footer */

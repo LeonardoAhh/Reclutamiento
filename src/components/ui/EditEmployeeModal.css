@@ -24,12 +24,6 @@
   }
 }
 
-@media (min-width: 768px) {
-  .edit-employee-modal:not(.form-sheet) .form-grid.form-grid--3-cols {
-    grid-template-columns: 1fr 1fr 1fr;
-  }
-}
-
 /* ── Controles: nunca desborden la celda ── */
 .edit-employee-modal .form-group {
   min-width: 0;
@@ -43,11 +37,3 @@
   min-width: 0;
 }
 
-.edit-employee-modal .btn-primary,
-.edit-employee-modal .btn-secondary {
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-}

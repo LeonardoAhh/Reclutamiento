@@ -1,5 +1,5 @@
 import { useCallback, useState, type Dispatch, type SetStateAction } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ACCOUNT_PATH } from '@/components/layout/navigation';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -16,6 +16,7 @@ export function useProductTourController({
 }: ProductTourControllerOptions) {
   const { profile } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const [tourReplayRequest, setTourReplayRequest] = useState(0);
   const [tourStepIndex, setTourStepIndex] = useState<number | null>(null);
@@ -33,7 +34,9 @@ export function useProductTourController({
   }, []);
   const openAccountMenuForTour = useCallback(() => setAccountMenuOpen(true), []);
   const closeAccountMenuForTour = useCallback(() => setAccountMenuOpen(false), []);
-  const navigateToAccountForTour = useCallback(() => navigate(ACCOUNT_PATH), [navigate]);
+  const navigateToAccountForTour = useCallback(() => navigate(ACCOUNT_PATH, {
+    state: { accountBackgroundLocation: location },
+  }), [navigate, location]);
   const prepareAccountTourTarget = useCallback(() => {
     if (isDesktop) return;
     setDrawerProgress(1);

@@ -23,7 +23,7 @@
 
 .candidate-metrics__title-link:focus-visible {
   outline: var(--focus-ring-width) solid var(--color-focus);
-  outline-offset: var(--focus-ring-offset);
+  outline-offset: 0;
 }
 
 .candidate-metrics__menu,
@@ -289,10 +289,3 @@
   }
 }
 
-.candidate-metrics :is(.btn-utility, .btn-secondary) {
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-}

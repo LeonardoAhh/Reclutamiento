@@ -390,8 +390,7 @@
 }
 
 .leave-requests-page__card-type,
-.leave-requests-page__card-requested,
-.leave-requests-page .btn-secondary {
+.leave-requests-page__card-requested {
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);

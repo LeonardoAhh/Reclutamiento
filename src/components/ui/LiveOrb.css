@@ -7,7 +7,7 @@
   position: absolute;
   inset: 2%;
   overflow: hidden;
-  border-radius: 50%;
+  border-radius: var(--rounded-full);
 }
 
 .live-orb__eye {
@@ -15,7 +15,7 @@
   top: 34%;
   width: 13%;
   height: 28%;
-  border-radius: 9999px;
+  border-radius: var(--rounded-full);
 }
 
 .live-orb__eye--left { left: 31%; }

@@ -146,7 +146,7 @@
 }
 
 .app-toaster__spin {
-  animation: app-toaster-spin var(--duration-spinner) linear infinite;
+  animation: spin var(--transition-spinner) infinite;
 }
 
 @keyframes app-toaster-enter {
@@ -158,12 +158,6 @@
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-@keyframes app-toaster-spin {
-  to {
-    transform: rotate(1turn);
   }
 }
 

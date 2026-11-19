@@ -196,10 +196,3 @@
   border-radius: var(--radius-menu);
 }
 
-.report-comparison-page .btn-secondary {
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-}

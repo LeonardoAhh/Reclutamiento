@@ -972,12 +972,3 @@ export const COMMENT_TYPE_LABELS: Record<string, string> = {
   otro: "Otro",
 };
 
-/**
- * Comment type colors using design tokens
- */
-export const COMMENT_TYPE_COLORS: Record<string, string> = {
-  proceso_activo: "var(--color-accent-amber)",
-  entrevista: "var(--color-accent-teal)",
-  entrega_documentos: "var(--color-primary)",
-  otro: "var(--color-muted)",
-};

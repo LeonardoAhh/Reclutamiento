@@ -15,6 +15,7 @@ import { useProductTourKeyboard } from '@/features/onboarding/useProductTourKeyb
 import { toast, toastStore } from '@/lib/notify';
 
 interface ProductTourProps {
+  accountModal?: boolean;
   profileId: string;
   showRecognition: boolean;
   startupOverlaysReady: boolean;
@@ -27,6 +28,7 @@ interface ProductTourProps {
 }
 
 export function ProductTour({
+  accountModal = false,
   profileId,
   showRecognition,
   startupOverlaysReady,
@@ -71,7 +73,8 @@ export function ProductTour({
   const stepIndexRef = useRef<number | null>(null);
   const waitControllerRef = useRef<AbortController | null>(null);
   const previousReplayRequestRef = useRef(replayRequest);
-  const previousPathRef = useRef(location.pathname);
+  const accountPath = accountModal ? ACCOUNT_PATH : location.pathname;
+  const previousPathRef = useRef(accountPath);
   const autoStartProfileRef = useRef<string | null>(null);
   const returnFocusRef = useRef<HTMLElement | null>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -238,10 +241,10 @@ export function ProductTour({
   }, [profileId, replayRequest, startTour]);
 
   useEffect(() => {
-    if (previousPathRef.current === location.pathname) return;
-    previousPathRef.current = location.pathname;
-    if (stepIndex === 2 && location.pathname === ACCOUNT_PATH) void activateStep(3);
-  }, [activateStep, location.pathname, stepIndex]);
+    if (previousPathRef.current === accountPath) return;
+    previousPathRef.current = accountPath;
+    if (stepIndex === 2 && accountPath === ACCOUNT_PATH) void activateStep(3);
+  }, [activateStep, accountPath, stepIndex]);
 
   useEffect(() => {
     return () => {

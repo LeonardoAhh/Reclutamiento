@@ -13,7 +13,7 @@
    pulsar un control de la tarjeta con el ratón y marcaba la tarjeta entera. */
 .assignment-card:has(:focus-visible) {
   outline: var(--focus-ring-width) solid var(--color-focus);
-  outline-offset: var(--focus-ring-offset);
+  outline-offset: 0;
 }
 
 .assignment-card__open {

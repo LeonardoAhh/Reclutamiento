@@ -43,12 +43,7 @@
 .report-day-page__navigation > .btn-ghost {
   flex: 0 1 auto;
   padding-inline: var(--design-spacing-sm);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
   white-space: nowrap;
-  font-family: var(--font-body);
 }
 .report-day-page__navigation svg {
   flex-shrink: 0;
@@ -111,10 +106,3 @@
   color: var(--color-ink);
 }
 
-.report-day-page .btn-secondary {
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-}

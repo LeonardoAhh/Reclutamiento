@@ -79,14 +79,6 @@
   gap: var(--design-spacing-sm);
 }
 
-.maintenance-actions > :is(.btn-primary, .btn-secondary) {
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-}
-
 .maintenance-status {
   min-block-size: 1lh;
   margin: 0;

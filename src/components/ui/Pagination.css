@@ -50,7 +50,3 @@
   letter-spacing: var(--type-body-md-tracking);
 }
 
-.pagination__input:focus-visible {
-  border-block-end: var(--focus-ring-width) solid var(--color-focus);
-  outline: none;
-}

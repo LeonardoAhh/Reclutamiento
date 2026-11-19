@@ -84,7 +84,7 @@
 
 .weekly-hires-modal__week-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(var(--design-spacing-section), 1fr));
   gap: var(--design-spacing-sm);
   padding: var(--design-spacing-sm);
   background: var(--color-surface-card);

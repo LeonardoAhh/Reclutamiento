@@ -28,7 +28,7 @@
 }
 
 .formatos-page .btn-utility:disabled {
-  opacity: 0.5;
+  opacity: var(--opacity-disabled);
   cursor: not-allowed;
   box-shadow: none;
 }
@@ -66,8 +66,7 @@
   padding-top: var(--design-spacing-lg);
 }
 
-.recordatorios-routes__title,
-.recordatorios-routes__subtitle {
+.recordatorios-routes__title {
   margin: 0;
 }
 
@@ -78,13 +77,6 @@
   font-weight: var(--type-body-strong-weight);
   line-height: var(--type-body-strong-line);
   letter-spacing: var(--type-body-strong-tracking);
-}
-
-.recordatorios-routes__subtitle {
-  margin-top: var(--design-spacing-xxs);
-  color: var(--color-mute);
-  font-size: var(--type-body-sm-size);
-  line-height: var(--type-body-sm-line);
 }
 
 .recordatorios-table-region {
@@ -183,8 +175,8 @@
 
   .recordatorios-table thead {
     position: absolute;
-    width: 1px;
-    height: 1px;
+    width: var(--border-width);
+    height: var(--border-width);
     padding: 0;
     margin: -1px;
     overflow: hidden;
@@ -375,7 +367,7 @@
   gap: var(--design-spacing-md);
   padding: var(--design-spacing-md);
   background: var(--color-canvas-elevated);
-  border: 1px solid var(--color-hairline);
+  border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--radius-card);
 }
 
@@ -397,7 +389,7 @@
   place-items: center;
   color: var(--color-ink);
   background: var(--color-surface-card);
-  border: 1px solid var(--color-hairline);
+  border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--radius-menu);
 }
 
@@ -469,7 +461,7 @@
   padding: var(--design-spacing-md);
   color: var(--color-mute);
   background: var(--color-surface-card);
-  border: 1px dashed var(--color-hairline-strong);
+  border: var(--border-width) dashed var(--color-hairline-strong);
   border-radius: var(--radius-menu);
   text-align: center;
 }
@@ -698,7 +690,7 @@
 .weekly-doc__table th,
 .weekly-doc__table td {
   color: var(--color-document-ink);
-  border: 1px solid var(--color-document-ink);
+  border: var(--border-width) solid var(--color-document-ink);
   overflow-wrap: anywhere;
 }
 
@@ -769,11 +761,6 @@
   display: flex;
   align-items: flex-start;
   justify-content: flex-end;
-}
-
-.weekly-doc__logo {
-  object-fit: contain;
-  filter: grayscale(1);
 }
 
 .weekly-doc__company-copy {
@@ -894,17 +881,6 @@
     gap: 8mm;
   }
 
-  .weekly-doc__logo,
-  .weekly-doc__credential-logo,
-  .weekly-doc__credential-header-spacer {
-    width: 34mm;
-  }
-
-  .weekly-doc__logo,
-  .weekly-doc__credential-logo {
-    height: 16mm;
-  }
-
   .weekly-doc__company-copy {
     gap: 2mm;
     font-size: var(--type-caption-up-size);
@@ -930,15 +906,6 @@
 }
 
 .weekly-review-modal {
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-}
-
-.formatos-page .btn-utility,
-.weekly-review-modal :is(.btn-primary, .btn-secondary) {
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);

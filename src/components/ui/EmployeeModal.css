@@ -147,68 +147,10 @@
   color: var(--color-error-text);
 }
 
-
 .delete-warning__sub {
   font-size: var(--type-body-sm-size);
   color: var(--color-mute);
   line-height: var(--type-body-sm-line);
-}
-
-/* ── Form notice ── */
-/* Texto con tokens *-text (AA ≥4.5:1); el color de indicador queda en el icono. */
-.form-notice {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--design-spacing-xxs);
-  margin-top: var(--design-spacing-xxs);
-  padding: var(--design-spacing-xs);
-  border-radius: var(--radius-control);
-  font-family: var(--font-body);
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-sm-weight);
-  line-height: var(--type-body-sm-line);
-  letter-spacing: var(--type-body-sm-tracking);
-}
-
-/* Alinea el icono con la primera línea: (line-height − icono) / 2. */
-.form-notice svg {
-  flex-shrink: 0;
-  margin-top: calc((var(--type-body-sm-size) * var(--type-body-sm-line) - var(--icon-size-sm)) / 2);
-}
-
-.form-notice--warning {
-  color: var(--color-warning-text);
-  background: var(--color-warning-subtle);
-}
-
-.form-notice--warning svg {
-  color: var(--color-warning-text);
-}
-
-.form-notice--success {
-  color: var(--color-success-text);
-  background: var(--color-success-subtle);
-}
-
-.form-notice--success svg {
-  color: var(--color-success-text);
-}
-
-/* ── Form hint ── */
-.form-hint {
-  margin-top: var(--design-spacing-sm);
-  padding: var(--design-spacing-sm);
-  background: var(--color-canvas-elevated);
-  border: var(--border-width) solid var(--color-hairline);
-  border-radius: var(--radius-menu);
-  font-size: var(--type-body-sm-size);
-  line-height: var(--type-body-sm-line);
-  color: var(--color-ink);
-}
-
-.form-hint strong {
-  font-weight: var(--type-body-strong-weight);
-  color: var(--color-ink);
 }
 
 .employee-future-date-tooltip {
@@ -245,12 +187,3 @@
   letter-spacing: var(--type-body-strong-tracking);
 }
 
-.employee-modal .btn-primary,
-.employee-modal .btn-secondary,
-.employee-modal .btn-danger {
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-}

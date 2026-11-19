@@ -14,13 +14,16 @@
   flex-wrap: wrap;
   padding: var(--design-spacing-sm);
   background: var(--color-canvas-elevated);
-  border: 1px solid var(--color-hairline);
+  border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--radius-menu);
 }
 
 .baja-detail-sheet__ident {
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--font-medium);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-semibold-size);
+  font-weight: var(--type-body-sm-semibold-weight);
+  line-height: var(--type-body-sm-semibold-line);
+  letter-spacing: var(--type-body-sm-semibold-tracking);
   color: var(--color-ink);
   min-width: 0;
 }
@@ -37,7 +40,7 @@
   flex-direction: column;
   gap: var(--design-spacing-xxs);
   padding: var(--design-spacing-sm) 0;
-  border-bottom: 1px solid var(--color-hairline);
+  border-bottom: var(--border-width) solid var(--color-hairline);
 }
 
 .baja-detail-sheet__field:first-child {
@@ -66,7 +69,11 @@
 
 .baja-detail-sheet__tipo {
   display: block;
-  font-weight: var(--font-semibold);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .baja-detail-sheet__motivo {

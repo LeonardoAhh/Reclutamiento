@@ -57,7 +57,7 @@
 
 .dept-card {
   background: var(--color-surface-card);
-  border: 1px solid var(--color-hairline);
+  border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--radius-card);
   overflow: hidden;
   transition:
@@ -112,42 +112,6 @@
   color: var(--color-ink);
   text-transform: uppercase;
   margin-right: var(--design-spacing-xxs);
-}
-
-.dept-card__meta {
-  display: flex;
-  gap: var(--design-spacing-xxs);
-  flex-wrap: wrap;
-}
-
-.dept-card__header-right {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-}
-
-.dept-card__hero {
-  display: none;
-}
-
-.dept-card__hero-img {
-  display: none;
-}
-
-.dept-card__hero-overlay {
-  display: none;
-}
-
-.dept-card__hero-copy {
-  display: none;
-}
-
-.dept-card__hero-top {
-  display: none;
-}
-
-.dept-card__hero-badges {
-  display: none;
 }
 
 .dept-card__button {
@@ -231,19 +195,6 @@
   background: var(--color-success);
 }
 
-.dept-card__headcount {
-  font-family: var(--font-body);
-  font-size: var(--type-heading-sm-size);
-  font-weight: var(--type-heading-sm-weight);
-  line-height: var(--type-heading-sm-line);
-  color: var(--color-ink);
-  letter-spacing: var(--type-heading-sm-tracking);
-}
-
-.dept-card__bottom {
-  display: none;
-}
-
 /* Alert state: cuando el depto tiene vacantes o urgentes pendientes,
    el border-left se oscurece para indicar urgencia */
 .dept-card--alert {
@@ -270,7 +221,7 @@
 .cell-puesto {
   font-weight: var(--type-body-md-weight);
   color: var(--color-ink);
-  min-width: 140px;
+  min-width: var(--design-spacing-section);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   line-height: var(--type-body-md-line);
@@ -292,38 +243,28 @@
   letter-spacing: var(--type-body-strong-tracking);
 }
 
-.cell-puesto__flags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--design-spacing-xxs);
-}
-
-.cell-backup-hint {
-  color: var(--color-accent-teal);
-  font-weight: var(--type-body-strong-weight);
-  font-size: var(--type-caption-md-size);
-  cursor: help;
-}
-
-.cell-seccion {
-  color: var(--color-mute);
-  font-size: var(--type-caption-md-size);
-}
-
-.vacancy-count {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--design-spacing-md);
-  height: var(--design-spacing-md);
-  border-radius: var(--rounded-xs);
-  background: var(--color-vacancy-chip-bg);
-  color: var(--color-error-text);
-  font-weight: var(--type-body-strong-weight);
-  font-size: var(--type-caption-md-size);
-  font-variant-numeric: tabular-nums;
-}
-
 .no-vacancy {
   color: var(--color-mute);
+}
+
+@media (width >= 768px) {
+  .dashboard__departments {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--design-spacing-md);
+  }
+}
+
+@media (width >= 1080px) {
+  .dashboard__departments {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    justify-items: stretch;
+  }
+
+  .dept-card {
+    min-width: 0;
+  }
+
+  .cell-puesto {
+    min-width: calc(var(--design-spacing-section) + var(--design-spacing-3xl));
+  }
 }

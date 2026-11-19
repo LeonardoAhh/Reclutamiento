@@ -26,49 +26,6 @@
   flex-direction: column;
 }
 
-.config-page__heading-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.config-page__header-container {
-  display: flex;
-  flex-direction: column;
-  gap: var(--design-spacing-md);
-  margin: 0 0 var(--design-spacing-sm);
-}
-
-/* Cuando el header vive dentro de un header-container, éste ya
-   provee el ritmo vertical: el header interno se aplana. */
-.config-page__header-container .config-page__header {
-  padding-block: 0;
-  margin-bottom: 0;
-}
-
-@media (width >= 768px) {
-  .config-page__header-container {
-    margin-bottom: var(--design-spacing-md);
-  }
-}
-
-@media (width >= 1080px) {
-  .config-page__header-container {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .config-page__header-container .config-page__header {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .config-page__header-container .config-page__toolbar {
-    width: min(100%, var(--feature-result-card-min));
-    flex-shrink: 0;
-  }
-}
-
 /* ── Toolbar & Search ─────────────────────────────────────────── */
 
 .config-page__toolbar {
@@ -112,7 +69,6 @@
   border-radius: var(--radius-menu);
 }
 
-.config-results-controls__heading,
 .config-results-controls__filters,
 .config-filter-field,
 .config-filter-group {
@@ -614,7 +570,7 @@
   display: block;
   inline-size: var(--design-spacing-xs);
   block-size: var(--design-spacing-xs);
-  border-radius: 50%;
+  border-radius: var(--rounded-full);
   background: var(--color-success-text);
 }
 
@@ -744,8 +700,8 @@
 
   .analisis-results-table__head {
     position: absolute;
-    inline-size: 1px;
-    block-size: 1px;
+    inline-size: var(--border-width);
+    block-size: var(--border-width);
     padding: 0;
     margin: -1px;
     overflow: hidden;
@@ -880,7 +836,7 @@
   padding: var(--design-spacing-lg);
   text-align: center;
   background: var(--color-canvas-elevated);
-  border: 1px solid var(--color-hairline);
+  border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--radius-card);
 }
 
@@ -911,34 +867,6 @@
   margin: 0;
 }
 
-.config-initial-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: var(--design-spacing-4xl) var(--design-spacing-md);
-  margin-top: var(--design-spacing-xxl);
-  text-align: center;
-}
-
-.config-initial-state__icon {
-  width: 64px;
-  height: 64px;
-  border-radius: var(--radius-card);
-  background: var(--color-canvas-elevated);
-  border: 1px solid var(--color-hairline);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: var(--design-spacing-md);
-  box-shadow: var(--shadow-xs);
-}
-
-.config-initial-state__copy {
-  max-width: 400px;
-  margin: 0;
-}
-
 /* Configuración: contenido en el contenedor global */
 .config-layout {
   display: flex;
@@ -956,11 +884,6 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
-}
-
-.config-main--loading {
-  align-items: center;
-  justify-content: center;
 }
 
 .config-view-transition {
@@ -1481,13 +1404,6 @@
   min-width: 0;
 }
 
-.indicadores-mobile-list__text {
-  display: flex;
-  flex-direction: column;
-  gap: var(--design-spacing-xxs);
-  min-width: 0;
-}
-
 .indicadores-mobile-list__right {
   display: flex;
   align-items: center;
@@ -1616,12 +1532,6 @@
   color: var(--color-ink);
 }
 
-.analisis-view > .config-page__header-container {
-  width: 100%;
-  max-width: var(--container-max);
-  margin-inline: auto;
-}
-
 .analisis-view__empty {
   min-height: var(--config-panel-min-height);
   padding-inline: var(--design-spacing-md);
@@ -1637,7 +1547,6 @@
   letter-spacing: var(--type-body-md-tracking);
 }
 
-.analisis-view .config-initial-state,
 .analisis-view .config-empty {
   padding-block: var(--design-spacing-xxl);
   margin-top: 0;
@@ -1655,47 +1564,12 @@
 }
 
 @media (width >= 768px) {
-  .analisis-view .config-initial-state,
   .analisis-view .config-empty {
     padding-block: var(--design-spacing-4xl);
   }
 }
 
 /* ── Documentos View Toolbar ──────────────────────────────────── */
-
-.documentos-view {
-  gap: var(--design-spacing-lg);
-}
-
-.documentos-toolbar {
-  display: flex;
-  flex-direction: column;
-  gap: var(--design-spacing-sm);
-  width: 100%;
-}
-
-.documentos-preview {
-  overflow: auto;
-  padding: var(--design-spacing-sm);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--radius-card);
-  background: var(--color-surface-card);
-  overscroll-behavior: contain;
-}
-
-.documentos-capture {
-  width: fit-content;
-  margin-inline: auto;
-  background: var(--color-document-paper);
-}
-
-@media (width >= 768px) {
-  .documentos-toolbar {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
-}
 
 .tabulador-view {
   gap: var(--design-spacing-md);
@@ -1905,11 +1779,6 @@
 }
 
 /* ── Mobile Menu / Drill-down UX ──────────────────────────────── */
-@media (width <= 767px) {
-  .mobile-hidden {
-    display: none !important;
-  }
-}
 
 .config-mobile-back {
   display: flex;
@@ -1955,19 +1824,6 @@
   cursor: default;
 }
 
-.indicadores-mobile-stat-col {
-  display: flex;
-  flex-direction: column;
-  gap: var(--design-spacing-xxs);
-}
-
-.indicadores-mobile-stat-right {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: var(--design-spacing-xxs);
-}
-
 .analisis-view__empty .animated-empty-state__title {
   font-family: var(--font-body);
   font-size: var(--type-body-strong-size);
@@ -1976,23 +1832,7 @@
   letter-spacing: var(--type-body-strong-tracking);
 }
 
-.analisis-view .btn-utility {
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-}
-
 .indicadores-view .config-mobile-back {
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-}
-
-.tabulador-view .btn-utility {
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);

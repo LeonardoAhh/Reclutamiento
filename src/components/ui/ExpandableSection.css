@@ -87,7 +87,7 @@
 }
 
 .expandable-section--list:first-child {
-  border-top: 1px solid var(--color-hairline);
+  border-top: var(--border-width) solid var(--color-hairline);
 }
 
 /* ── Mobile optimizations ── */

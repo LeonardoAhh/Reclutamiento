@@ -23,7 +23,7 @@ import './TeamManagement.css';
 
 type PendingAction = { member: TeamMember; kind: 'status' | 'remove' };
 
-export function TeamManagement() {
+export function TeamManagement({ headingLevel = 2 }: { headingLevel?: 2 | 3 } = {}) {
   const { language } = useLanguage();
   const copy = teamCopy(language);
   const { profile } = useAuth();
@@ -108,7 +108,9 @@ export function TeamManagement() {
   return <section className="team-management" aria-labelledby={`${id}-title`} aria-busy={!profiles && !error}>
     <header className="team-management__header">
       <div className="team-management__heading">
-        <h2 id={`${id}-title`} className="team-management__title">{copy.teamMembers}</h2>
+        {headingLevel === 3
+          ? <h3 id={`${id}-title`} className="team-management__title">{copy.teamMembers}</h3>
+          : <h2 id={`${id}-title`} className="team-management__title">{copy.teamMembers}</h2>}
         <span className="team-management__count type-body-sm">{visibleMembers.length} {language === 'en' ? visibleMembers.length === 1 ? 'person' : 'people' : visibleMembers.length === 1 ? 'persona' : 'personas'}</span>
       </div>
       <button data-cuelume-tap="" ref={addButtonRef} type="button" className="team-management__add" disabled={!profiles || busy} onClick={() => setAdding(true)}>{copy.add}</button>

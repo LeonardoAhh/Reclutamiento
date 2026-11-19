@@ -44,7 +44,7 @@
   gap: var(--design-spacing-sm);
   padding: var(--design-spacing-xs);
   background: var(--color-surface-card);
-  border: 1px solid var(--color-hairline);
+  border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--radius-menu);
 }
 
@@ -86,7 +86,7 @@
   font-family: var(--font-body);
   font-size: var(--type-body-strong-size);
   font-weight: var(--type-body-strong-weight);
-  min-width: 28px;
+  min-width: var(--design-spacing-xl);
   text-align: right;
   color: var(--color-primary-text);
   line-height: var(--type-body-strong-line);

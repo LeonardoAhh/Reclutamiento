@@ -65,11 +65,7 @@
 
 .candidate-access-card__spinner {
   color: var(--color-primary-text);
-  animation: candidate-access-card-spin var(--duration-spinner) linear infinite;
-}
-
-@keyframes candidate-access-card-spin {
-  to { transform: rotate(1turn); }
+  animation: spin var(--transition-spinner) infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

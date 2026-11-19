@@ -1,52 +1,74 @@
-import { useId, useRef } from 'react';
-import { ChevronRight, Languages, Palette, Volume2, VolumeX } from 'lucide-react';
+import { useId } from 'react';
+import { Languages, Palette, SunMoon, Volume2, VolumeX } from 'lucide-react';
+import { CustomSelect } from '@/components/ui/CustomSelect';
 import { LanguageToggle } from '@/components/ui/LanguageToggle';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useFeedback } from '@/hooks/useFeedback';
-import { useTheme } from '@/hooks/useTheme';
+import { useTheme, type ThemePalette, type ThemePreference } from '@/hooks/useTheme';
 import { playSound } from '@/lib/sound';
 import type { AccountCopy } from '@/pages/account-translations';
-import { AccountPaletteView, getAccountPaletteOptions } from './AccountPaletteView';
 
 export function AccountPreferencesSection({ copy }: { copy: AccountCopy }) {
   const id = useId();
-  const paletteContentRef = useRef<HTMLDivElement>(null);
   const { language, storageError } = useLanguage();
   const { soundEnabled, soundStorageError, toggleSound } = useFeedback();
-  const { palette } = useTheme();
-  const paletteOptions = getAccountPaletteOptions(copy, language);
+  const { palette, preference, storageError: themeStorageError, setPalette, setPreference } = useTheme();
+  const themeOptions: { value: ThemePreference; label: string }[] = [
+    { value: 'light', label: copy.lightTheme },
+    { value: 'dark', label: copy.darkTheme },
+    { value: 'system', label: copy.systemTheme },
+  ];
+  const paletteOptions: { value: ThemePalette; label: string }[] = [
+    { value: 'original', label: copy.originalPalette },
+    { value: 'ocean-saas', label: copy.oceanPalette },
+    { value: 'darkmatter-remix', label: copy.goldVoidPalette },
+    { value: 'sea-glass', label: copy.seaGlassPalette },
+    { value: 'claude-amber', label: copy.claudeAmberPalette },
+    { value: 'supabase', label: copy.supabasePalette },
+  ];
+  paletteOptions.sort((first, second) =>
+    first.label.localeCompare(second.label, language === 'en' ? 'en' : 'es', { sensitivity: 'base' }),
+  );
 
   return (
     <div className="account-appearance" data-tour="account-appearance">
-      <Popover>
-        <PopoverTrigger asChild>
-          <button type="button" className="account-appearance__control account-appearance__palette">
-            <Palette size="var(--icon-size-sm)" aria-hidden="true" />
-            <span className="account-setting-row__label">{copy.palette}</span>
-            <span className="account-setting-row__value">
-              {paletteOptions.find((option) => option.value === palette)?.label}
-            </span>
-            <ChevronRight className="account-appearance__palette-chevron" aria-hidden="true" />
-          </button>
-        </PopoverTrigger>
-        <PopoverContent
-          ref={paletteContentRef}
-          align="start"
-          className="account-palette-popover"
-          aria-label={copy.palette}
-          /* El foco entra por la opción activa, no por la primera de la lista:
-             es donde está el usuario y desde donde navega con las flechas. */
-          onOpenAutoFocus={(event) => {
-            const checked = paletteContentRef.current?.querySelector<HTMLInputElement>('input:checked');
-            if (!checked) return;
-            event.preventDefault();
-            checked.focus({ preventScroll: true });
+      <div className="account-appearance__palette-block">
+        <div id={`${id}-theme-label`} className="account-appearance__palette-heading">
+          <SunMoon size="var(--icon-size-sm)" aria-hidden="true" />
+          <span className="account-setting-row__label">{copy.theme}</span>
+        </div>
+        <CustomSelect
+          id={`${id}-theme`}
+          className="account-appearance__palette-select"
+          aria-labelledby={`${id}-theme-label`}
+          aria-describedby={themeStorageError ? `${id}-storage` : undefined}
+          value={preference}
+          options={themeOptions}
+          showPlaceholderOption={false}
+          onChange={(value) => {
+            const selected = themeOptions.find((option) => option.value === value);
+            if (selected) setPreference(selected.value);
           }}
-        >
-          <AccountPaletteView copy={copy} />
-        </PopoverContent>
-      </Popover>
+        />
+      </div>
+      <div className="account-appearance__palette-block">
+        <div id={`${id}-palette-label`} className="account-appearance__palette-heading">
+          <Palette size="var(--icon-size-sm)" aria-hidden="true" />
+          <span className="account-setting-row__label">{copy.palette}</span>
+        </div>
+        <CustomSelect
+          id={`${id}-palette`}
+          className="account-appearance__palette-select"
+          aria-labelledby={`${id}-palette-label`}
+          value={palette}
+          options={paletteOptions}
+          showPlaceholderOption={false}
+          onChange={(value) => {
+            const selected = paletteOptions.find((option) => option.value === value);
+            if (selected) setPalette(selected.value);
+          }}
+        />
+      </div>
       <LanguageToggle className="account-appearance__control" sound>
         <Languages size="var(--icon-size-sm)" aria-hidden="true" />
         <span className="account-setting-row__label">{copy.language}</span>
@@ -74,7 +96,7 @@ export function AccountPreferencesSection({ copy }: { copy: AccountCopy }) {
           {soundEnabled ? copy.soundOn : copy.soundOff}
         </span>
       </button>
-      {(storageError || soundStorageError) && (
+      {(storageError || soundStorageError || themeStorageError) && (
         <output id={`${id}-storage`} className="account-card__note">
           {copy.preferenceStorageFailed}
         </output>

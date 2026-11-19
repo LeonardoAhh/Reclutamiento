@@ -11,7 +11,8 @@ type FormError = { field: Field; message: string } | null;
 
 interface PasswordChangeFormProps {
   actionsTarget: HTMLElement | null;
-  onCancel: () => void;
+  inlineActions?: boolean;
+  onCancel?: () => void;
   /** Enfoca la contraseña actual cuando el panel ya terminó de abrirse. */
   focusOnMount?: boolean;
   onChanged?: () => void | Promise<void>;
@@ -20,7 +21,7 @@ interface PasswordChangeFormProps {
 }
 
 export function PasswordChangeForm({
-  actionsTarget, onCancel, focusOnMount = false, onChanged, submitLabel = 'Cambiar contraseña', cancelLabel = 'Cancelar',
+  actionsTarget, inlineActions = false, onCancel, focusOnMount = false, onChanged, submitLabel = 'Cambiar contraseña', cancelLabel = 'Cancelar',
 }: PasswordChangeFormProps) {
   const { language } = useLanguage();
   const english = language === 'en';
@@ -68,7 +69,7 @@ export function PasswordChangeForm({
     playSound('close');
     discard.cancel();
     resetForm();
-    onCancel();
+    onCancel?.();
   }
 
   function showError(field: Field, message: string) {
@@ -203,7 +204,7 @@ export function PasswordChangeForm({
       <p id={discardNoticeId} className="sr-only" role="status">
         {discard.confirming ? (english ? 'Press again to discard the entered passwords.' : 'Pulsa de nuevo para descartar las contraseñas ingresadas.') : ''}
       </p>
-      {actionsTarget && createPortal(<div className="password-change-form__actions">
+      {actionsTarget ? createPortal(<div className="password-change-form__actions">
         <button type="button" className="password-change-form__action" onClick={handleClose} disabled={submitting}
           data-confirming={discard.confirming || undefined}
           aria-describedby={discard.confirming ? discardNoticeId : undefined} {...discard.triggerProps}>
@@ -215,7 +216,11 @@ export function PasswordChangeForm({
           aria-label={submitLabel}>
           <span className="password-change-form__action-label">{submitting ? (english ? 'Saving…' : 'Guardando…') : (english ? 'Change' : 'Cambiar')}</span>
         </button>
-      </div>, actionsTarget)}
+      </div>, actionsTarget) : inlineActions ? <div className="password-change-form__actions">
+        <button type="submit" className="password-change-form__action password-change-form__action--primary" disabled={submitting} aria-busy={submitting}>
+          <span className="password-change-form__action-label">{submitting ? (english ? 'Saving…' : 'Guardando…') : submitLabel}</span>
+        </button>
+      </div> : null}
     </form>
   );
 }

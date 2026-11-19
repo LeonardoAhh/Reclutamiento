@@ -18,18 +18,8 @@
   background: var(--color-canvas-elevated);
 }
 
-.requisicion-sheet__footer {
-  border-top: 1px solid var(--color-hairline);
-}
-
 .requisicion-sheet__btn-label {
   margin-left: var(--design-spacing-xxs);
-}
-
-@media (width <= 767px) {
-  .modal-header-actions .requisicion-sheet__btn-label {
-    display: none;
-  }
 }
 
 /* ── Documento (contenedor de hojas) ── */
@@ -42,7 +32,7 @@
 /* ── La "hoja" ── */
 .requisicion-doc__page {
   background: var(--color-canvas);
-  border: 1px solid var(--color-hairline);
+  border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--radius-menu);
   box-shadow: var(--shadow-xs);
   padding: var(--design-spacing-lg);
@@ -59,7 +49,7 @@
   justify-content: space-between;
   gap: var(--design-spacing-md);
   flex-wrap: wrap;
-  border-bottom: 1px solid var(--color-hairline);
+  border-bottom: var(--border-width) solid var(--color-hairline);
   padding-bottom: var(--design-spacing-sm);
 }
 
@@ -138,20 +128,11 @@
   color: var(--color-ink);
   margin: 0;
   padding-bottom: var(--design-spacing-xxs);
-  border-bottom: 1px solid var(--color-hairline);
+  border-bottom: var(--border-width) solid var(--color-hairline);
   display: flex;
   align-items: baseline;
   gap: var(--design-spacing-xs);
   flex-wrap: wrap;
-}
-
-.requisicion-doc__section-hint {
-  font-family: var(--font-body);
-  font-size: var(--type-caption-md-size);
-  font-weight: var(--type-body-md-weight);
-  color: var(--color-mute);
-  text-transform: none;
-  letter-spacing: 0;
 }
 
 .requisicion-doc__grid {
@@ -206,7 +187,7 @@
   color: var(--color-ink);
   font-weight: var(--type-body-sm-strong-weight);
   padding: var(--design-spacing-xxs) 0;
-  border-bottom: 1px solid var(--color-hairline);
+  border-bottom: var(--border-width) solid var(--color-hairline);
   min-height: calc(var(--type-body-md-size) * var(--type-body-md-line));
   overflow-wrap: anywhere;
   hyphens: auto;
@@ -217,7 +198,7 @@
    "raya" donde el reclutador escribe a mano. */
 .requisicion-doc__field--blank .requisicion-doc__field-blank {
   display: block;
-  border-bottom: 1px solid var(--color-ink);
+  border-bottom: var(--border-width) solid var(--color-ink);
   width: 100%;
 }
 
@@ -227,9 +208,9 @@
 
 .requisicion-doc__field--blank[data-lines="2"] .requisicion-doc__field-blank {
   height: calc(var(--type-body-md-size) * 3.6);
-  background-image: linear-gradient(transparent calc(50% - 1px),
+  background-image: linear-gradient(transparent calc(50% - var(--border-width)),
       var(--color-hairline) 50%,
-      transparent calc(50% + 1px));
+      transparent calc(50% + var(--border-width)));
   background-size: 100% 100%;
   background-repeat: no-repeat;
 }
@@ -237,12 +218,12 @@
 .requisicion-doc__field--blank[data-lines="3"] .requisicion-doc__field-blank {
   height: calc(var(--type-body-md-size) * 5.4);
   background-image:
-    linear-gradient(transparent calc(33% - 1px),
+    linear-gradient(transparent calc(33% - var(--border-width)),
       var(--color-hairline) 33%,
-      transparent calc(33% + 1px)),
-    linear-gradient(transparent calc(66% - 1px),
+      transparent calc(33% + var(--border-width))),
+    linear-gradient(transparent calc(66% - var(--border-width)),
       var(--color-hairline) 66%,
-      transparent calc(66% + 1px));
+      transparent calc(66% + var(--border-width)));
 }
 
 /* ── Bono Sí / No (casillas) ── */
@@ -261,9 +242,9 @@
 }
 
 .requisicion-doc__checkbox-box {
-  width: 14px;
-  height: 14px;
-  border: 1px solid var(--color-ink);
+  width: var(--design-spacing-md);
+  height: var(--design-spacing-md);
+  border: var(--border-width) solid var(--color-ink);
   border-radius: var(--rounded-xs);
   display: inline-block;
 }
@@ -281,40 +262,6 @@
   gap: var(--design-spacing-xxs);
 }
 
-/* ── Bloque "Habilidades requeridas" pre-llenado ── */
-.requisicion-doc__habilidades {
-  margin: 0;
-  display: grid;
-  grid-template-columns: max-content 1fr;
-  column-gap: var(--design-spacing-sm);
-  row-gap: var(--design-spacing-xxs);
-  padding: var(--design-spacing-xxs) 0;
-  border-bottom: 1px solid var(--color-hairline);
-}
-
-.requisicion-doc__habilidades dt {
-  font-family: var(--font-body);
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  line-height: var(--type-caption-up-line);
-  letter-spacing: var(--type-caption-up-tracking);
-  color: var(--color-mute);
-  text-transform: uppercase;
-  padding-top: var(--design-spacing-xxs);
-  vertical-align: top;
-}
-
-.requisicion-doc__habilidades dd {
-  margin: 0;
-  font-size: var(--type-body-md-size);
-  color: var(--color-ink);
-  font-weight: var(--type-body-sm-strong-weight);
-  line-height: var(--type-body-md-line);
-  overflow-wrap: anywhere;
-  word-break: break-word;
-  vertical-align: top;
-}
-
 /* ── Campos de texto para Competencias y Conocimientos Técnicos ── */
 .requisicion-doc__field-value-text {
   margin: 0;
@@ -326,7 +273,7 @@
   overflow-wrap: anywhere;
   word-break: break-word;
   hyphens: auto;
-  border-bottom: 1px solid var(--color-hairline);
+  border-bottom: var(--border-width) solid var(--color-hairline);
   height: auto;
   min-height: calc(var(--type-body-md-size) * 3.5);
   white-space: pre-wrap;
@@ -357,8 +304,8 @@
 /* La "Fecha de recepción" se renderiza como un BlankField estrecho,
    alineado con la línea base del título. */
 .requisicion-doc__leyenda-fecha {
-  flex: 0 0 200px;
-  min-width: 160px;
+  flex: 0 0 calc(var(--design-spacing-section) + var(--design-spacing-3xl));
+  min-width: var(--design-spacing-section);
 }
 
 .requisicion-doc__leyenda-fecha .requisicion-doc__field {
@@ -370,13 +317,15 @@
   margin: 0;
   padding: var(--design-spacing-xs) var(--design-spacing-sm);
   font-family: var(--font-body);
-  font-size: var(--type-caption-md-size);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
   font-style: italic;
-  line-height: var(--type-body-md-line);
   color: var(--color-mute);
-  opacity: 0.55;
+  opacity: var(--opacity-muted);
   text-align: justify;
-  border-left: 2px solid var(--color-hairline);
+  border-left: var(--border-width) solid var(--color-hairline);
 }
 
 /* ── Firmas ── */
@@ -414,7 +363,7 @@
 .requisicion-doc__sig-line {
   display: block;
   width: 100%;
-  border-bottom: 1px solid var(--color-ink);
+  border-bottom: var(--border-width) solid var(--color-ink);
   height: calc(var(--type-body-md-size) * 2.2);
 }
 
@@ -431,9 +380,12 @@
 
 /* ── Pie ── */
 .requisicion-doc__foot {
-  border-top: 1px solid var(--color-hairline);
+  border-top: var(--border-width) solid var(--color-hairline);
   padding-top: var(--design-spacing-xs);
-  font-size: var(--type-caption-md-size);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  line-height: var(--type-body-sm-line);
+  letter-spacing: var(--type-body-sm-tracking);
   color: var(--color-mute);
   text-align: right;
 }
@@ -535,7 +487,7 @@
   /* Aprieta firmas, leyenda y pie para que la hoja 1 quepa en una sola página. */
   #requisicion-print-root .requisicion-doc__leyenda {
     padding: var(--design-spacing-xxs) var(--design-spacing-xs) !important;
-    font-size: calc(var(--type-caption-md-size) * 0.8);
+    font-size: calc(var(--type-body-sm-size) * 0.8);
     line-height: var(--type-body-md-line);
   }
 
@@ -568,7 +520,7 @@
   }
 
   #requisicion-print-root .requisicion-doc__field-label {
-    font-size: calc(var(--type-caption-md-size) * 0.80);
+    font-size: calc(var(--type-body-sm-size) * 0.80);
   }
 
   /* Campos de texto largo (Competencias y Conocimientos Técnicos) en impresión */

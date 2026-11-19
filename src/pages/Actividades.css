@@ -64,31 +64,6 @@
 }
 
 /* ── Empty states ────────────────────────────────────────────────────── */
-.actividades-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: var(--design-spacing-xxl) var(--design-spacing-md);
-  border: 1px dashed var(--color-hairline);
-  border-radius: var(--radius-card);
-  background: var(--color-surface-card);
-}
-
-.actividades-empty__icon {
-  color: var(--color-mute);
-  margin-bottom: var(--design-spacing-sm);
-}
-
-.actividades-empty__title {
-  color: var(--color-ink);
-  margin: 0 0 var(--design-spacing-xxs);
-  font-family: var(--font-body);
-  font-size: var(--type-body-strong-size);
-  font-weight: var(--type-body-strong-weight);
-  line-height: var(--type-body-strong-line);
-  letter-spacing: var(--type-body-strong-tracking);
-}
 
 .actividades-empty__subtitle {
   color: var(--color-mute);
@@ -116,7 +91,7 @@
   padding: var(--design-spacing-md);
   border-radius: var(--radius-menu);
   color: var(--color-ink);
-  border: 1px solid var(--color-hairline);
+  border: var(--border-width) solid var(--color-hairline);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
@@ -167,7 +142,7 @@
   align-items: center;
   justify-content: center;
   gap: var(--design-spacing-xs);
-  border: 1px dashed var(--color-control-border);
+  border: var(--border-width) dashed var(--color-control-border);
   padding: var(--design-spacing-lg) var(--design-spacing-md);
   text-align: center;
   border-radius: var(--radius-card);
@@ -182,9 +157,8 @@
   border-color: var(--color-primary-border);
 }
 
-
 .file-upload-wrapper:has(input:disabled) {
-  opacity: 0.5;
+  opacity: var(--opacity-disabled);
   cursor: not-allowed;
 }
 
@@ -213,55 +187,7 @@
   letter-spacing: var(--type-body-md-tracking);
 }
 
-/* ── Responsive ──────────────────────────────────────────────────────── */
 /* ── Reference Image ─────────────────────────────────────────────────── */
-.activity-reference-image-full {
-  margin-top: var(--design-spacing-lg);
-  display: flex;
-  flex-direction: column;
-  gap: var(--design-spacing-xs);
-}
-
-.activity-reference-image-full h4 {
-  margin: 0;
-  color: var(--color-ink);
-  font-family: var(--font-body);
-  font-size: var(--type-body-strong-size);
-  font-weight: var(--type-body-strong-weight);
-  line-height: var(--type-body-strong-line);
-  letter-spacing: var(--type-body-strong-tracking);
-}
-
-.reference-image-well {
-  background: var(--color-canvas);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--radius-card);
-  padding: var(--design-spacing-xs);
-  /* A little well padding if desired, or no padding for full bleed */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.reference-image-button {
-  display: flex;
-  max-width: 100%;
-  padding: 0;
-  border: 0;
-  border-radius: var(--radius-control);
-  background: transparent;
-  cursor: pointer;
-}
-
-.reference-image-button img {
-  max-width: 100%;
-  border-radius: var(--radius-control);
-  transition: opacity var(--transition-fast);
-}
-
-.reference-image-button:hover img {
-  opacity: 0.85;
-}
 
 .reference-upload-area {
   display: flex;

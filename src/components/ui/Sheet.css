@@ -147,7 +147,7 @@
 .sheet-content:focus-visible,
 .sheet-close:focus-visible {
   outline: var(--focus-ring-width) solid var(--color-focus);
-  outline-offset: var(--focus-ring-offset);
+  outline-offset: 0;
 }
 
 .sheet-body {

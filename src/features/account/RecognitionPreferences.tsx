@@ -15,7 +15,7 @@ import { playSound } from '@/lib/sound';
 import { AccountSection } from './AccountSection';
 
 /** Preferencias de reconocimientos del reclutador, editables en línea. */
-export function RecognitionPreferences({ copy, profileId }: { copy: AccountCopy; profileId: string }) {
+export function RecognitionPreferences({ copy, profileId, headingLevel = 2 }: { copy: AccountCopy; profileId: string; headingLevel?: 2 | 3 }) {
   const id = useId();
   const [frequency, setFrequency] = useState<RecognitionFrequency>(() => readRecognitionPreferences(profileId).frequency);
   const [dismissedThisMonth, setDismissedThisMonth] = useState(() => isRecognitionMonthDismissed(profileId));
@@ -41,7 +41,7 @@ export function RecognitionPreferences({ copy, profileId }: { copy: AccountCopy;
   }
 
   return (
-    <AccountSection id={id} title={copy.recognition} description={copy.recognitionDescription} className="account-recognition">
+    <AccountSection id={id} title={copy.recognition} description={copy.recognitionDescription} className="account-recognition" headingLevel={headingLevel}>
       <div className="account-preferences">
         <div className="form-group account-preferences__field">
           <label htmlFor={`${id}-frequency`}>{copy.frequency}</label>

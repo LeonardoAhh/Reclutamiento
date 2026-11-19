@@ -49,46 +49,7 @@
   }
 }
 
-/* Desktop data table — hidden on mobile */
-.reporte-incidents__table-wrap {
-  display: none;
-  overflow-x: auto;
-  border-radius: var(--radius-card);
-  border: 1px solid var(--color-hairline);
-}
-
-.reporte-incidents__table {
-  table-layout: auto;
-}
-
-.reporte-incidents__table td {
-  white-space: normal;
-  overflow-wrap: anywhere;
-}
-
-.reporte-incidents__td-name {
-  font-weight: var(--type-body-strong-weight);
-  font-family: var(--font-body);
-  font-size: var(--type-body-strong-size);
-  line-height: var(--type-body-strong-line);
-  letter-spacing: var(--type-body-strong-tracking);
-}
-
-.reporte-incidents__td-num {
-  color: var(--color-mute);
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-}
-
 /* Mobile card list — shown on mobile, hidden on desktop */
-.reporte-incidents__cards {
-  display: flex;
-  flex-direction: column;
-  gap: var(--design-spacing-xs);
-}
 
 .reporte-incidents__card {
   border: var(--border-width) solid var(--color-hairline);
@@ -130,17 +91,6 @@
   color: var(--color-ink);
   white-space: normal;
   letter-spacing: var(--type-body-strong-tracking);
-}
-
-.reporte-incidents__card-sub {
-  font-size: var(--type-body-md-size);
-  line-height: var(--type-body-md-line);
-  color: var(--color-mute);
-  white-space: normal;
-  overflow-wrap: anywhere;
-  font-family: var(--font-body);
-  font-weight: var(--type-body-md-weight);
-  letter-spacing: var(--type-body-md-tracking);
 }
 
 .reporte-incidents__chevron {
@@ -300,7 +250,7 @@
   gap: var(--design-spacing-xs);
   text-align: center;
   padding: var(--design-spacing-lg) var(--design-spacing-md);
-  border: 1px dashed var(--color-hairline);
+  border: var(--border-width) dashed var(--color-hairline);
   border-radius: var(--radius-card);
   background: var(--color-surface-card);
   color: var(--color-mute);
@@ -313,16 +263,6 @@
   font-family: var(--font-body);
   font-weight: var(--type-body-md-weight);
   letter-spacing: var(--type-body-md-tracking);
-}
-
-/* Breakpoint switch: table from md up, cards below */
-@media (min-width: 768px) {
-  .reporte-incidents__cards {
-    display: none;
-  }
-  .reporte-incidents__table-wrap {
-    display: block;
-  }
 }
 
 /* ============================================================================
@@ -383,6 +323,11 @@
   text-align: left;
   background: var(--color-surface-card);
   color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
   cursor: pointer;
   transition:
     background-color var(--transition-fast),
@@ -493,8 +438,7 @@
 /* ── Reduced motion ───────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .reporte-card,
-  .reporte-tab-trigger,
-  .reporte-cal__cell {
+.reporte-cal__cell {
     transition: none;
   }
 }

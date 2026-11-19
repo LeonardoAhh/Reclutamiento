@@ -100,30 +100,19 @@ function DayCell({
         .join(" ");
 
     return (
-        <div
-            role="button"
-            tabIndex={hasData ? 0 : -1}
+        <button
+            type="button"
             aria-label={ariaLabel}
             aria-pressed={active}
-            aria-selected={active}
-            aria-disabled={!hasData}
+            disabled={!hasData}
             className={cellClass}
-            onClick={() => {
-                if (hasData) onSelectDay(day);
-            }}
-            onKeyDown={(e) => {
-                if (!hasData) return;
-                if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    onSelectDay(day);
-                }
-            }}
+            onClick={() => onSelectDay(day)}
         >
-            <div className="reporte-cal__top">
-                <div className="reporte-cal__kpi">
+            <span className="reporte-cal__top">
+                <span className="reporte-cal__kpi">
                     <span className="reporte-cal__daynum">{dayNumber}</span>
-                </div>
-                <div className="reporte-cal__kpi reporte-cal__kpi--right">
+                </span>
+                <span className="reporte-cal__kpi reporte-cal__kpi--right">
                     <span className="sr-only">{copy("Incidencias", "Incidents")}:</span>
                     {count > 0 ? (
                         <Badge
@@ -147,15 +136,15 @@ function DayCell({
                     ) : (
                         <span aria-hidden="true" className="reporte-cal__empty-dash">—</span>
                     )}
-                </div>
-            </div>
+                </span>
+            </span>
 
             {holidayLabel && (
                 <span title={holiday(holidayLabel)} className="reporte-cal__holiday">
                     {holiday(holidayLabel)}
                 </span>
             )}
-        </div>
+        </button>
     );
 }
 

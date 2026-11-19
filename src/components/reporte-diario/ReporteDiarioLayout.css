@@ -149,10 +149,10 @@
   min-width: 0;
   padding-inline: var(--design-spacing-xxs);
   font-family: var(--font-body);
-  font-size: var(--type-button-md-size);
-  font-weight: var(--type-button-md-weight);
-  line-height: var(--type-button-md-line);
-  letter-spacing: var(--type-button-md-tracking);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  line-height: var(--type-button-line);
+  letter-spacing: var(--type-button-tracking);
   text-transform: capitalize;
   white-space: nowrap;
 }
@@ -202,51 +202,11 @@
   }
 }
 
-.reporte-subtitle {
-  color: var(--color-mute);
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  line-height: var(--type-body-md-line);
-  margin: 0;
-  font-weight: var(--type-body-md-weight);
-  letter-spacing: var(--type-body-md-tracking);
-}
-
-/* ── Sección superior unificada (desing.md: una sola tarjeta minimalista) ──── */
-
-.reporte-head {
-  display: flex;
-  flex-direction: column;
-  gap: var(--design-spacing-sm);
-  padding: var(--design-spacing-sm);
-}
-
-@media (width >= 768px) {
-  .reporte-head {
-    gap: var(--design-spacing-md);
-    padding: var(--design-spacing-md);
-  }
-}
-
-.reporte-head__row {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--design-spacing-xs);
-}
-
-.reporte-head__launchers {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--design-spacing-xs);
-}
-
 /* ── Cards ────────────────────────────────────────────────────────────────── */
 
 .reporte-card {
   background: var(--color-surface-card);
-  border: 1px solid var(--color-hairline);
+  border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--radius-card);
   overflow: hidden;
 }
@@ -259,8 +219,7 @@
 }
 
 /* Interactive card (button rendered as card) */
-button.reporte-card,
-.reporte-card--interactive {
+button.reporte-card {
   text-align: left;
   cursor: pointer;
   transition:
@@ -269,48 +228,9 @@ button.reporte-card,
     transform var(--transition-fast);
 }
 
-button.reporte-card:hover,
-.reporte-card--interactive:hover {
+button.reporte-card:hover {
   border-color: var(--color-hairline-strong);
   background: var(--color-surface-card);
-}
-
-.reporte-card__header {
-  padding: var(--design-spacing-sm);
-  display: flex;
-  flex-direction: column;
-  gap: var(--design-spacing-xxs);
-  border-bottom: 1px solid var(--color-hairline);
-}
-
-@media (width >= 768px) {
-  .reporte-card__header {
-    padding: var(--design-spacing-md);
-  }
-}
-
-.reporte-card__title {
-  font-family: var(--font-body);
-  font-size: var(--type-body-strong-size);
-  font-weight: var(--type-body-strong-weight);
-  line-height: var(--type-body-strong-line);
-  letter-spacing: var(--type-body-strong-tracking);
-  color: var(--color-ink);
-  display: flex;
-  align-items: center;
-  gap: var(--design-spacing-xs);
-  margin: 0;
-  min-width: 0;
-}
-
-.reporte-card__description {
-  color: var(--color-mute);
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  line-height: var(--type-body-md-line);
-  margin: 0;
-  font-weight: var(--type-body-md-weight);
-  letter-spacing: var(--type-body-md-tracking);
 }
 
 .reporte-card__content {
@@ -325,48 +245,6 @@ button.reporte-card:hover,
   .reporte-card__content {
     padding: var(--design-spacing-md);
   }
-}
-
-/* ── Layout grids (semantic, responsive) ──────────────────────────────────── */
-
-.reporte-grid-2,
-.reporte-grid-4 {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--design-spacing-sm);
-}
-
-@media (width >= 768px) {
-  .reporte-grid-2 {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .reporte-grid-4 {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (width >= 1080px) {
-  .reporte-grid-4 {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-/* ── Flex helpers ─────────────────────────────────────────────────────────── */
-
-.reporte-flex-between {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--design-spacing-xs);
-  flex-wrap: wrap;
-}
-
-.reporte-flex-center {
-  display: flex;
-  align-items: center;
-  gap: var(--design-spacing-xs);
-  min-width: 0;
 }
 
 /* ── Status banner / chip ─────────────────────────────────────────────────── */
@@ -398,11 +276,4 @@ button.reporte-card:hover,
   background: var(--color-error-subtle);
   color: var(--color-error-text);
   border-color: var(--color-error-text);
-}
-
-.reporte-status-banner--warn {
-  background: var(--color-warning-subtle);
-  color: var(--color-warning-text);
-  border-color: var(--color-warning-text);
-  font-weight: var(--type-body-strong-weight);
 }

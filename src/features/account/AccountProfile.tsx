@@ -13,12 +13,13 @@ interface AccountProfileProps {
   copy: AccountCopy;
   displayName: string;
   email?: string | null;
+  headingLevel?: 2 | 3;
 }
 
 type FocusTarget = 'save' | 'camera' | null;
 
 /** Identidad de la cuenta con edición de foto en línea (sin diálogos). */
-export function AccountProfile({ copy, displayName, email }: AccountProfileProps) {
+export function AccountProfile({ copy, displayName, email, headingLevel = 2 }: AccountProfileProps) {
   const id = useId();
   const editor = useAvatarEditor(copy);
   const confirmDelete = useInlineConfirm();
@@ -114,7 +115,9 @@ export function AccountProfile({ copy, displayName, email }: AccountProfileProps
           </DropdownMenu>
         </span>
         <div className="account-profile__copy">
-          <h2 id={`${id}-name`} className="account-profile__name">{displayName}</h2>
+          {headingLevel === 3
+            ? <h3 id={`${id}-name`} className="account-profile__name">{displayName}</h3>
+            : <h2 id={`${id}-name`} className="account-profile__name">{displayName}</h2>}
           {email && <p className="account-profile__email">{email}</p>}
         </div>
       </div>

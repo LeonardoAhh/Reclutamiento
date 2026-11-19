@@ -97,7 +97,7 @@
 }
 
 .overview-chart__tabs > .metric-tile[data-selected] {
-  box-shadow: inset 0 var(--border-width-strong, 2px) 0 0 var(--metric-tile-accent);
+  box-shadow: inset 0 var(--border-width) 0 0 var(--metric-tile-accent);
 }
 
 @media (hover: hover) {

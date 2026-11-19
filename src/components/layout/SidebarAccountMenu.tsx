@@ -1,13 +1,7 @@
 import { Fragment, useRef } from 'react';
-import { Link, useMatch } from 'react-router-dom';
+import { Link, useLocation, useMatch } from 'react-router-dom';
 import { ChevronsDown, ChevronsUp } from 'lucide';
-import {
-  BookOpenCheck,
-  CalendarDays,
-  CalendarPlus,
-  CircleUserRound,
-  UserRound,
-} from 'lucide-react';
+import { BookOpenCheck, CalendarDays, CalendarPlus, CircleUserRound, UserRound } from 'lucide-react';
 import { Avatar } from '@/components/ui/Avatar';
 import { MorphingIcon } from '@/components/ui/MorphingIcon';
 import { Tooltip } from '@/components/ui/Tooltip';
@@ -22,7 +16,6 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useSignOut } from '@/features/account/useSignOut';
 import { LEAVE_REQUESTS_PATH } from '@/features/leave/requests';
 import { accountCopy } from '@/pages/account-translations';
-import { useIsMobile } from '@/hooks/useIsMobile';
 import { preloadRoute } from '@/lib/routePages';
 import { playSound } from '@/lib/sound';
 import { toNaturalCase } from '@/lib/utils';
@@ -59,8 +52,8 @@ export function SidebarAccountMenu({
   tourActive,
 }: SidebarAccountMenuProps) {
   const { language } = useLanguage();
-  const isMobileViewport = useIsMobile();
   const accountActive = Boolean(useMatch(ACCOUNT_PATH));
+  const location = useLocation();
   const leaveRequestsActive = Boolean(useMatch(LEAVE_REQUESTS_PATH));
   const triggerRef = useRef<HTMLButtonElement>(null);
   const openingLeavePolicyRef = useRef(false);
@@ -92,11 +85,7 @@ export function SidebarAccountMenu({
           <span className="sidebar__account-name">{name}</span>
           {roleLabel && <span className="sidebar__account-role">{roleLabel}</span>}
         </span>
-        <MorphingIcon
-          icon={open ? ChevronsDown : ChevronsUp}
-          className="sidebar__account-chevron"
-          aria-hidden="true"
-        />
+        <MorphingIcon icon={open ? ChevronsDown : ChevronsUp} className="sidebar__account-chevron" aria-hidden="true" />
       </button>
     </DropdownMenuTrigger>
   );
@@ -108,6 +97,7 @@ export function SidebarAccountMenu({
           <DropdownMenuItem asChild>
             <Link
               to={ACCOUNT_PATH}
+              state={{ accountBackgroundLocation: location }}
               data-tour="account-profile-link"
               aria-current={accountActive ? 'page' : undefined}
               onClick={() => playSound('navigate')}
@@ -197,7 +187,6 @@ export function SidebarAccountMenu({
         <SidebarAccountMenuFooter
           language={language}
           isSigningOut={isLoading}
-          showTheme={!isMobileViewport}
           onSignOut={() => {
             onOpenChange(false);
             void handleSignOut();

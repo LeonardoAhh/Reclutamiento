@@ -11,8 +11,10 @@
   display: inline-flex;
   align-items: center;
   gap: var(--design-spacing-xxs);
-  font-size: var(--type-caption-md-size);
-  font-weight: var(--type-body-sm-strong-weight);
+  font-size: var(--type-body-sm-semibold-size);
+  font-weight: var(--type-body-sm-semibold-weight);
+  line-height: var(--type-body-sm-semibold-line);
+  letter-spacing: var(--type-body-sm-semibold-tracking);
   padding: var(--design-spacing-xxs) var(--design-spacing-sm);
   border-radius: var(--radius-control);
 }

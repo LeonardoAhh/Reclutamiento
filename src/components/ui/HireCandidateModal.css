@@ -3,40 +3,6 @@
    Sin hardcoding - solo tokens CSS
    ======================================== */
 
-.hire-mode-tabs {
-  display: flex;
-  background: var(--color-canvas-elevated);
-  border: var(--border-width) solid var(--color-control-border);
-  padding: var(--design-spacing-xxs);
-  border-radius: var(--radius-control);
-  gap: var(--design-spacing-xxs);
-  margin-bottom: var(--design-spacing-md);
-}
-
-.hire-mode-tabs button {
-  flex: 1;
-  padding: var(--design-spacing-xs) var(--design-spacing-sm);
-  border: var(--border-width) solid transparent;
-  background: transparent;
-  color: var(--color-mute);
-  font-family: var(--font-body);
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-sm-strong-weight);
-  border-radius: var(--radius-control);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.hire-mode-tabs button:hover:not(.hire-mode-active) {
-  color: var(--color-ink);
-}
-
-.hire-mode-tabs .hire-mode-active {
-  background: var(--color-canvas-elevated);
-  color: var(--color-ink);
-  border-color: var(--color-control-border);
-}
-
 .hire-hint {
   margin-top: var(--design-spacing-sm);
   color: var(--color-mute);
@@ -91,10 +57,3 @@
   letter-spacing: var(--type-body-md-tracking);
 }
 
-.hire-candidate-modal :is(.btn-primary, .btn-secondary) {
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-}

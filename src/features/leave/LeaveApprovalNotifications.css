@@ -86,7 +86,7 @@
 
 .leave-approval-notifications__mobile-close:focus-visible {
   outline: var(--focus-ring-width) solid var(--color-focus);
-  outline-offset: var(--focus-ring-offset);
+  outline-offset: 0;
 }
 
 .leave-approval-notifications__mobile-popover > .sheet-body.leave-approval-notifications__sheet-body {

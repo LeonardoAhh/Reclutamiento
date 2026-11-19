@@ -87,34 +87,6 @@
   gap: var(--design-spacing-sm);
 }
 
-.rutas-list-panel__header {
-  min-width: 0;
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--design-spacing-sm);
-}
-
-.rutas-list-panel__header h2 {
-  margin: 0;
-  color: var(--color-ink);
-  font-size: var(--type-body-strong-size);
-  font-weight: var(--type-body-strong-weight);
-  line-height: var(--type-body-strong-line);
-  letter-spacing: var(--type-body-strong-tracking);
-  font-family: var(--font-body);
-}
-
-.rutas-list-panel__count {
-  flex-shrink: 0;
-  color: var(--color-mute);
-  font-size: var(--type-body-md-size);
-  line-height: var(--type-body-md-line);
-  font-family: var(--font-body);
-  font-weight: var(--type-body-md-weight);
-  letter-spacing: var(--type-body-md-tracking);
-}
-
 .rutas-list {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -180,7 +152,7 @@
 
 .ruta-card {
   display: grid;
-  grid-template-columns: var(--control-height-sm) minmax(0, 1fr);
+  grid-template-columns: var(--icon-size-xl) minmax(0, 1fr);
   grid-template-areas:
     'icon copy'
     'indicators indicators';
@@ -219,8 +191,8 @@
   grid-area: icon;
   display: grid;
   place-items: center;
-  inline-size: var(--control-height-sm);
-  block-size: var(--control-height-sm);
+  inline-size: var(--icon-size-xl);
+  block-size: var(--icon-size-xl);
   color: var(--color-mute);
   transition:
     background var(--transition-fast),

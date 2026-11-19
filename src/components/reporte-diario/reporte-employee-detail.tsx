@@ -38,7 +38,7 @@ const STYLES = {
   },
   kpiCard: {
     borderRadius: 'var(--radius-card)',
-    border: '1px solid var(--color-hairline)',
+    border: 'var(--border-width) solid var(--color-hairline)',
     background: 'var(--color-surface-card)',
     padding: 'var(--design-spacing-xs)',
     textAlign: 'center' as const,

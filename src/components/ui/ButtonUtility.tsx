@@ -12,7 +12,7 @@ interface ButtonUtilityProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
  */
 export function ButtonUtility({ children, icon, className = '', ...props }: ButtonUtilityProps) {
   return (
-    <button className={`btn-secondary btn-utility ${className}`.trim()} {...props}>
+    <button type="button" className={`btn-secondary btn-utility ${className}`.trim()} {...props}>
       {icon && (
         <span className="btn-utility__icon" aria-hidden="true">
           {icon}

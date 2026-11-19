@@ -184,53 +184,7 @@
   letter-spacing: var(--type-body-strong-tracking);
 }
 
-/* ── Mejora del header cuando SÍ hay datos: mejor jerarquía ─────── */
-.reporte-head__meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--design-spacing-xs);
-  row-gap: var(--design-spacing-xxs);
-  margin-top: var(--design-spacing-xxs);
-}
-
-.reporte-head__meta--center {
-  justify-content: center;
-}
-
-.reporte-head__meta > * {
-  min-width: 0;
-}
-
-.reporte-top-bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--design-spacing-sm);
-  margin-bottom: var(--design-spacing-md);
-}
-
-.reporte-top-bar > * {
-  min-width: 0;
-}
-
-.reporte-controls-group {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--design-spacing-xs);
-}
-
-.reporte-controls-group > * {
-  min-width: 0;
-}
-
 /* Ocultar el toggle cuando el layout permanece apilado en móvil/tablet. */
-@media (width <= 1079px) {
-  .reporte-panel-toggle {
-    display: none;
-  }
-}
 
 .reporte-errors__content {
   flex: 1;
@@ -240,12 +194,8 @@
 /* ── Motion: respeto a prefers-reduced-motion ─────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .reporte-layout,
-  .reporte-panel,
-  .ras-card {
+.reporte-panel {
     transition: none;
-  }
-  .ras-card--selected {
-    transform: none;
   }
   .reporte-errors__details-icon {
     transition: none;

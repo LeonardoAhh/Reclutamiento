@@ -33,6 +33,7 @@ import { bindSoundInteractions } from '@/lib/sound';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSidebarCollapsed } from './useSidebarCollapsed';
 import { ProductTour } from '@/components/ui/ProductTour';
+import { AccountPage } from '@/lib/routePages';
 import { SkipLink } from '@/components/ui/SkipLink';
 import { useProductTourController } from '@/features/onboarding/useProductTourController';
 import './AppShell.css';
@@ -54,8 +55,8 @@ export const PageTitleOverrideContext = createContext<(title: string | null) => 
  *  - Desktop (>=1080px): Sidebar fijo y header dentro del workspace.
  *  - Tablet/movil (<1080px): Header superior + Sidebar deslizable.
  */
-export function AppShell(props: { children: ReactNode }) {
-  const { children } = props;
+export function AppShell(props: { children: ReactNode; accountModal?: boolean; onCloseAccount?: () => void }) {
+  const { children, accountModal = false, onCloseAccount } = props;
   const { language } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [sessionNoticeReady, setSessionNoticeReady] = useState(false);
@@ -322,8 +323,10 @@ export function AppShell(props: { children: ReactNode }) {
           </RouteErrorBoundary>
         </div>
       </div>
+      {accountModal && onCloseAccount && <AccountPage modal onClose={onCloseAccount} tourStepIndex={tourStepIndex} />}
       {profile && (
         <ProductTour
+          accountModal={accountModal}
           profileId={profile.id}
           showRecognition={profile.role === 'reclutador'}
           startupOverlaysReady={sessionNoticeReady}

@@ -115,13 +115,6 @@
   /* 8.8 sobre #171717 */
   --color-focus-on-inverted: #fff;
 
-  /* Superficie invertida de los bloques destacados (KPI hero). */
-  --color-surface-contrast: var(--color-ink);
-
-  /* Iluminación neutral de la escena decorativa y brillo de progreso. */
-  --color-scene-light: #fff;
-  --color-shimmer-overlay: color-mix(in srgb, var(--color-scene-light) 30%, transparent);
-
   /* ── Semantic ───────────────────────────────────────────────── */
   --color-success: #064e3b;
 
@@ -152,21 +145,12 @@
   --color-violet: #7928ca;
   --color-accent-purple-deep: #4c1680;
 
-  /* 12.1 */
-  --color-accent-orange: #7a2f00;
-
-  /* antes #c75000: 4.6 -> 9.4 */
   --color-accent-teal: #04524e;
 
   /* antes #087f7a: 4.9 -> 9.0 */
 
-  /* ── Channel values ─────────────────────────────────────────── */
-  --color-error-rgb: 138 22 22;
-
   /* ── Derived overlays ───────────────────────────────────────── */
   --color-modal-scrim: rgb(var(--color-shadow-rgb) / 32%);
-  --color-vacancy-tint: rgb(var(--color-error-rgb) / 5%);
-  --color-vacancy-chip-bg: rgb(var(--color-error-rgb) / 10%);
   --color-primary-tint: #e0f2fe;
 
   /* Hover de controles neutros: se separa de surface-strong para que el estado
@@ -181,12 +165,6 @@
   --type-display-xl-weight: 600;
   --type-display-xl-line: 1;
   --type-display-xl-tracking: -0.05em;
-
-  /* display-lg — large section headlines */
-  --type-display-lg-size: var(--type-heading-lg-size);
-  --type-display-lg-weight: var(--type-heading-lg-weight);
-  --type-display-lg-line: var(--type-heading-lg-line);
-  --type-display-lg-tracking: var(--type-heading-lg-tracking);
 
   /* heading-lg — section headlines */
   --type-heading-lg-size: 2rem;
@@ -277,10 +255,6 @@
   --type-button-lg-weight: 600;
   --type-button-lg-line: 1.25;
   --type-button-lg-tracking: 0;
-  --type-button-md-size: var(--type-button-size);
-  --type-button-md-weight: var(--type-button-weight);
-  --type-button-md-line: var(--type-button-line);
-  --type-button-md-tracking: var(--type-button-tracking);
 
   /* code */
   --type-code-sm-size: 0.875rem;
@@ -302,27 +276,12 @@
   --type-heading-1-weight: 600;
   --type-heading-1-line: 1.25;
   --type-heading-1-tracking: -0.04em;
-  --type-heading-2-size: 1.25rem;
-  --type-heading-2-weight: 600;
-  --type-heading-2-line: 1.4;
-  --type-heading-2-tracking: -0.02em;
-  --type-heading-3-size: 1rem;
-  --type-heading-3-weight: 600;
-  --type-heading-3-line: 1.5;
-  --type-heading-3-tracking: -0.01em;
-  --type-title-size: 1.25rem;
-  --type-title-weight: 600;
-  --type-title-line: 1.4;
-  /* stylelint-disable-next-line number-max-precision -- Conserva el tracking exacto de 1/160 em. */
-  --type-title-tracking: -0.00625em;
-
   /* ── Control sizing ─────────────────────────────────────────── */
   --touch-target-min: 44px;
   --control-height: var(--touch-target-min);
 
   /* 32px: solo para elementos compactos NO interactivos (icon tiles, badges).
      Un control interactivo nunca debe quedar por debajo de --touch-target-min. */
-  --control-height-sm: var(--design-spacing-xl);
   --control-height-lg: var(--touch-target-min);
   --control-padding-x: var(--design-spacing-sm);
   --control-padding-y: var(--design-spacing-xs);
@@ -343,7 +302,7 @@
   --icon-size-xl: 2rem;
   --icon-size-xxl: 2.5rem;
   --feature-avatar-size: var(--icon-size-xxl);
-  --feature-avatar-initials-size: var(--type-caption-md-size);
+  --feature-avatar-initials-size: var(--type-body-sm-size);
 
   /* Escala de espaciado de desing.md. */
   --design-spacing-xxs: 0.25rem;
@@ -432,8 +391,6 @@
 
   /* Ancho máximo de búsquedas compactas en encabezados de página. */
   --search-field-compact-max-inline-size: 24rem;
-  --feature-reference-attachment-thumbnail-inline-size: 7.5rem;
-  --feature-reference-attachment-thumbnail-block-size: 4.5rem;
   --feature-image-viewer-max-block-size: 55dvh;
   --candidate-access-preview-max: 20rem;
   --feature-calendar-column-max: 13rem;
@@ -489,15 +446,7 @@
   /* Anchura mínima legible para las dos series de un tooltip de gráfico. */
   --tooltip-chart-min-inline-size: 20ch;
   --scrollbar-size: var(--design-spacing-xs);
-  --toggle-track-inline-size: 2.25rem;
-  --toggle-track-block-size: 1.25rem;
-  --toggle-thumb-size: 1rem;
-  --toggle-thumb-inset: 0.125rem;
-  --toggle-thumb-travel: 1rem;
 
-  /* Contador superpuesto de acciones: tamaño y solape independientes del texto. */
-  --action-count-size: 1.125rem;
-  --action-count-offset: calc(-1 * var(--design-spacing-xxs));
   --empty-state-description-max-inline-size: 18.75rem;
   --config-panel-min-height: calc(var(--design-spacing-4xl) + var(--design-spacing-xxl));
 
@@ -506,33 +455,25 @@
   --safe-area-right: env(safe-area-inset-right, 0px);
   --safe-area-bottom: env(safe-area-inset-bottom, 0px);
   --safe-area-left: env(safe-area-inset-left, 0px);
-  --tab-bar-height: 0px;
 
   /* ── Tokens extra / alias ────────────────────────────────────── */
-  --type-caption-md-size: 0.8125rem;
-  --type-caption-md-weight: 500;
-  --type-caption-md-line: 1.4;
-  --type-caption-md-tracking: 0;
   --type-body-lg-size: 1rem;
   --type-body-lg-weight: 400;
   --type-body-lg-line: 1.5;
   --type-body-lg-tracking: 0;
+  /* Pesos sueltos reservados a documentos imprimibles y exportados; la
+     interfaz toma el peso de su rol tipográfico completo. */
   --font-medium: 500;
   --font-semibold: 600;
   --font-bold: 700;
-  --font-regular: 400;
-  --font-mono: var(--font-code);
   --border-width: 1px;
 
   /* Trazos y puntos compartidos de gráficas; patrones distinguibles sin color. */
   --chart-line-width: 2px;
-  --chart-point-radius: 3px;
-  --chart-active-point-radius: 6px;
 
   /* Altura media reutilizable para gráficas de indicadores en paneles. */
   --chart-height-md: 18rem;
   --chart-dash-short: 4px 4px;
-  --chart-dash-dotted: 1px 4px;
   --color-focus: var(--color-ink);
 
   /* Level 0 = flat. Level 1 = whisper. Level 2 = floating surface. */
@@ -556,9 +497,11 @@
   /* Contenido que cede protagonismo sin quedar inactivo, como las columnas
      de una gráfica mientras se lee otra. */
   --opacity-muted: 0.55;
+  /* Realce al apuntar sobre medios y marcas de gráfica, que no tienen superficie
+     propia que cambiar de color. */
+  --opacity-hover: 0.85;
   --opacity-skeleton-rest: 0.4;
   --opacity-skeleton-active: 0.9;
-  --duration-spinner: 800ms;
 
   color-scheme: light;
 }
@@ -582,8 +525,6 @@
   --color-surface-card: var(--color-canvas-elevated);
   --color-surface-strong: #343940;
   --color-surface-dark: var(--color-canvas);
-  --color-surface-contrast: var(--color-surface-dark);
-  --color-shimmer-overlay: color-mix(in srgb, var(--color-ink) 8%, transparent);
 
   /* Texto */
   --color-ink: #f5f5f5;
@@ -619,7 +560,6 @@
   --color-warning-subtle: #33290a;
   --color-warning-text: #fef3c7;
   --color-error: #ffbdb6;
-  --color-error-rgb: 255 189 182;
   --color-error-deep: var(--color-error);
   --color-error-subtle: #3a1816;
   --color-error-text: #ffe4e1;
@@ -627,7 +567,6 @@
   /* Alias de indicadores y series existentes, sin añadir acentos a la navegación. */
   --color-violet: #d8c4f5;
   --color-accent-purple-deep: var(--color-violet);
-  --color-accent-orange: #ffc08a;
   --color-accent-teal: #8fe0d8;
 }
 
@@ -727,7 +666,6 @@
   --color-mute: hsl(40deg 8% 22%);
   --color-primary-tint: color-mix(in srgb, var(--color-primary) 14%, var(--color-surface-card));
   --color-error: hsl(0deg 82% 26%);
-  --color-error-rgb: 121 12 12;
   --color-error-deep: var(--color-error);
   --color-error-text: hsl(0deg 82% 24%);
   --color-on-error: var(--color-canvas);
@@ -754,7 +692,6 @@
   --color-mute: hsl(0deg 0% 88%);
   --color-primary-tint: color-mix(in srgb, var(--color-primary) 12%, var(--color-canvas));
   --color-error: hsl(0deg 85% 76%);
-  --color-error-rgb: 246 142 142;
 
   /* El rojo claro de esta paleta no sirve como texto en oscuro */
   --color-error-text: #ffe4e1;
@@ -781,15 +718,13 @@
   --color-mute: #2f3e36;
   --color-primary-tint: #d1edd1;
   --color-error: #8f1d06;
-  --color-error-rgb: 143 29 6;
   --color-error-deep: var(--color-error);
   --color-error-text: #72180d;
   --color-on-error: #fff;
 }
 
-/* Sea Glass · oscuro. Superficies grafito con matiz verde,
-   un solo acento aguamarina. Texto >= 8.1:1 sobre todas las superficies;
-   bordes de controles >= 3:1. */
+/* Sea Glass · oscuro. Acento aguamarina sobre superficies grafito neutras.
+   Texto >= 8.1:1 sobre todas las superficies; bordes de controles >= 3:1. */
 :root[data-color-palette='sea-glass'][data-color-scheme='dark'] {
   /* Acento */
   --color-primary: #3ddcc7;
@@ -798,26 +733,25 @@
   --color-primary-pressed: #99f6e4;
   --color-on-primary: #04201b;
   --color-link-deep: var(--color-ink);
-  --color-primary-tint: #0b2522;
+  --color-primary-tint: var(--color-canvas-soft);
 
   /* Superficies neutras */
-  --color-canvas: #171c1b;
-  --color-canvas-soft: #202625;
-  --color-canvas-elevated: #28302e;
+  --color-canvas: #1b1d20;
+  --color-canvas-soft: #222529;
+  --color-canvas-elevated: #292d31;
   --color-surface-card: var(--color-canvas-elevated);
-  --color-surface-strong: #343d3a;
+  --color-surface-strong: #343940;
 
   /* Bordes: hairline sutil (decorativo), el fuerte es para controles */
-  --color-hairline: #46514d;
-  --color-hairline-strong: #8f8f8f;
+  --color-hairline: #454b52;
+  --color-hairline-strong: #949494;
 
   /* Texto */
-  --color-ink: #ededed;
-  --color-mute: #dfe5e2;
+  --color-ink: #f5f5f5;
+  --color-mute: #dce0e4;
 
   /* Error */
   --color-error: #ffb1aa;
-  --color-error-rgb: 255 177 170;
   --color-error-text: #ffd9d5;
   --color-on-error: #1a0504;
 }
@@ -854,7 +788,6 @@
 
   /* Error */
   --color-error: #7a1717;
-  --color-error-rgb: 122 23 23;
   --color-error-deep: var(--color-error);
   --color-error-text: #6b1414;
   --color-on-error: var(--color-canvas);
@@ -888,13 +821,12 @@
 
   /* Error */
   --color-error: #ffc8c2;
-  --color-error-rgb: 255 200 194;
   --color-error-text: #ffd9d5;
   --color-on-error: #141413;
 }
 
-/* Supabase mantiene la geometría del proyecto y alterna sus verdes por modo.
-   Corregido: texto >= 8.1:1 sobre todas las superficies donde se usa. */
+/* Supabase conserva su acento verde con superficies grafito neutras en oscuro.
+   Texto >= 8.1:1 sobre todas las superficies donde se usa. */
 :root[data-color-palette='supabase'] {
   --color-primary: #72e3ad;
   --color-primary-text: #004c2b;
@@ -918,7 +850,6 @@
   --color-error: #7f1c05;
 
   /* antes #ca3214 (5.2) -> 9.9 */
-  --color-error-rgb: 127 28 5;
   --color-error-deep: var(--color-error);
   --color-error-text: var(--color-error);
   --color-error-subtle: #fdeeea;
@@ -927,7 +858,6 @@
   --color-on-error: var(--color-canvas);
   --color-on-error-deep: var(--color-on-error);
 
-  /* faltaba en claro */
 }
 
 :root[data-color-palette='supabase'][data-color-scheme='dark'] {
@@ -943,24 +873,23 @@
   --color-primary-active: color-mix(in srgb, var(--color-primary) 85%, var(--color-canvas));
   --color-primary-pressed: color-mix(in srgb, var(--color-primary) 70%, var(--color-canvas));
   --color-link-deep: var(--color-ink);
-  --color-canvas: #171c1a;
-  --color-canvas-soft: #202724;
-  --color-canvas-elevated: #2a312e;
+  --color-canvas: #1b1d20;
+  --color-canvas-soft: #222529;
+  --color-canvas-elevated: #292d31;
   --color-surface-card: var(--color-canvas-elevated);
-  --color-surface-strong: #363f3a;
-  --color-hairline: #46504a;
+  --color-surface-strong: #343940;
+  --color-hairline: #454b52;
 
   /* divisor decorativo */
-  --color-ink: #e2e8f0;
-  --color-mute: #e0e6e2;
-  --color-primary-tint: var(--color-surface-strong);
+  --color-ink: #f5f5f5;
+  --color-mute: #dce0e4;
+  --color-primary-tint: var(--color-canvas-soft);
 
   /* En oscuro el error heredaba el rojo del claro (3.5:1). Ahora se redefine: */
   --color-error: #ffa690;
 
   /* Texto de error >= 8.1:1 sobre surface-strong, hover y tint */
   --color-error-text: #ffc8b1;
-  --color-error-rgb: 255 166 144;
   --color-error-subtle: #3a1410;
 
   /* antes #541c15: el texto error daba 2.6 */
@@ -1036,8 +965,7 @@ video {
 }
 
 /* Breakpoints de desing.md. Las variables CSS no se evalúan en media queries. */
-/* stylelint-disable-next-line media-feature-range-notation -- Conserva la sintaxis de media queries del proyecto. */
-@media (min-width: 768px) {
+@media (width >= 768px) {
   body {
     padding-bottom: 0;
   }
@@ -1076,10 +1004,10 @@ h1 {
 }
 
 h2 {
-  font-size: var(--type-display-lg-size);
-  font-weight: var(--type-display-lg-weight);
-  line-height: var(--type-display-lg-line);
-  letter-spacing: var(--type-display-lg-tracking);
+  font-size: var(--type-heading-lg-size);
+  font-weight: var(--type-heading-lg-weight);
+  line-height: var(--type-heading-lg-line);
+  letter-spacing: var(--type-heading-lg-tracking);
 }
 
 h3 {
@@ -1193,30 +1121,6 @@ code:not(pre code) {
    TYPE UTILITY CLASSES
    ======================================== */
 
-.type-display-xl {
-  font-family: var(--font-display);
-  font-size: var(--type-display-xl-size);
-  font-weight: var(--type-display-xl-weight);
-  line-height: var(--type-display-xl-line);
-  letter-spacing: var(--type-display-xl-tracking);
-}
-
-.type-display-lg {
-  font-family: var(--font-display);
-  font-size: var(--type-display-lg-size);
-  font-weight: var(--type-display-lg-weight);
-  line-height: var(--type-display-lg-line);
-  letter-spacing: var(--type-display-lg-tracking);
-}
-
-.type-heading-lg {
-  font-family: var(--font-display);
-  font-size: var(--type-heading-lg-size);
-  font-weight: var(--type-heading-lg-weight);
-  line-height: var(--type-heading-lg-line);
-  letter-spacing: var(--type-heading-lg-tracking);
-}
-
 .type-heading-md {
   font-family: var(--font-display);
   font-size: var(--type-heading-md-size);
@@ -1257,30 +1161,6 @@ code:not(pre code) {
   letter-spacing: var(--type-body-strong-tracking);
 }
 
-.type-body-sm-strong {
-  font-family: var(--font-body);
-  font-size: var(--type-body-sm-strong-size);
-  font-weight: var(--type-body-sm-strong-weight);
-  line-height: var(--type-body-sm-strong-line);
-  letter-spacing: var(--type-body-sm-strong-tracking);
-}
-
-.type-label-sm {
-  font-family: var(--font-body);
-  font-size: var(--type-label-sm-size);
-  font-weight: var(--type-label-sm-weight);
-  line-height: var(--type-label-sm-line);
-  letter-spacing: var(--type-label-sm-tracking);
-}
-
-.type-caption-sm {
-  font-family: var(--font-body);
-  font-size: var(--type-caption-sm-size);
-  font-weight: var(--type-caption-sm-weight);
-  line-height: var(--type-caption-sm-line);
-  letter-spacing: var(--type-caption-sm-tracking);
-}
-
 .type-caption-up {
   font-family: var(--font-body);
   font-size: var(--type-caption-up-size);
@@ -1288,79 +1168,6 @@ code:not(pre code) {
   line-height: var(--type-caption-up-line);
   letter-spacing: var(--type-caption-up-tracking);
   text-transform: uppercase;
-}
-
-.type-button {
-  font-family: var(--font-body);
-  font-size: var(--type-button-size);
-  font-weight: var(--type-button-weight);
-  line-height: var(--type-button-line);
-  letter-spacing: var(--type-button-tracking);
-}
-
-.type-button-lg {
-  font-family: var(--font-body);
-  font-size: var(--type-button-lg-size);
-  font-weight: var(--type-button-lg-weight);
-  line-height: var(--type-button-lg-line);
-  letter-spacing: var(--type-button-lg-tracking);
-}
-
-.type-button-md {
-  font-family: var(--font-body);
-  font-size: var(--type-button-md-size);
-  font-weight: var(--type-button-md-weight);
-  line-height: var(--type-button-md-line);
-  letter-spacing: var(--type-button-md-tracking);
-}
-
-/* Roles canónicos de desing.md. Nuevas vistas deben preferirlos. */
-.type-display-1 {
-  font-family: var(--font-display);
-  font-size: var(--type-display-1-size);
-  font-weight: var(--type-display-1-weight);
-  line-height: var(--type-display-1-line);
-  letter-spacing: var(--type-display-1-tracking);
-}
-
-.type-display-2 {
-  font-family: var(--font-display);
-  font-size: var(--type-display-2-size);
-  font-weight: var(--type-display-2-weight);
-  line-height: var(--type-display-2-line);
-  letter-spacing: var(--type-display-2-tracking);
-}
-
-.type-heading-1 {
-  font-family: var(--font-display);
-  font-size: var(--type-heading-1-size);
-  font-weight: var(--type-heading-1-weight);
-  line-height: var(--type-heading-1-line);
-  letter-spacing: var(--type-heading-1-tracking);
-}
-
-.type-heading-2 {
-  font-family: var(--font-display);
-  font-size: var(--type-heading-2-size);
-  font-weight: var(--type-heading-2-weight);
-  line-height: var(--type-heading-2-line);
-  letter-spacing: var(--type-heading-2-tracking);
-}
-
-.type-heading-3 {
-  font-family: var(--font-display);
-  font-size: var(--type-heading-3-size);
-  font-weight: var(--type-heading-3-weight);
-  line-height: var(--type-heading-3-line);
-  letter-spacing: var(--type-heading-3-tracking);
-}
-
-.type-title {
-  font-family: var(--font-display);
-  font-size: var(--type-title-size);
-  font-weight: var(--type-title-weight);
-  line-height: var(--type-title-line);
-  letter-spacing: var(--type-title-tracking);
 }
 
 /* ========================================
@@ -1393,7 +1200,6 @@ code:not(pre code) {
   min-width: 0;
 }
 
-.page-title,
 .app-page-title {
   font-family: var(--font-display);
   font-size: var(--type-heading-1-size);
@@ -1411,8 +1217,7 @@ code:not(pre code) {
   text-decoration: none;
 }
 
-/* stylelint-disable-next-line media-feature-range-notation -- Conserva la sintaxis de media queries del proyecto. */
-@media (min-width: 768px) {
+@media (width >= 768px) {
   .page-header {
     padding-block-end: var(--design-spacing-lg);
     margin-bottom: var(--design-spacing-md);
@@ -1480,22 +1285,19 @@ code:not(pre code) {
   border-block-end: 0;
 }
 
-/* stylelint-disable-next-line media-feature-range-notation -- Conserva la sintaxis de media queries del proyecto. */
-@media (min-width: 768px) {
+@media (width >= 768px) {
   :root {
     --container-padding: var(--design-spacing-lg);
   }
 }
 
-/* stylelint-disable-next-line media-feature-range-notation -- Conserva la sintaxis de media queries del proyecto. */
-@media (min-width: 1080px) {
+@media (width >= 1080px) {
   :root {
     --container-padding: var(--design-spacing-xxl);
   }
 }
 
-/* stylelint-disable-next-line media-feature-range-notation -- Conserva la sintaxis de media queries del proyecto. */
-@media (min-width: 1440px) {
+@media (width >= 1440px) {
   :root {
     --container-padding: var(--design-spacing-3xl);
   }
@@ -1507,10 +1309,6 @@ code:not(pre code) {
 }
 
 .text-body {
-  color: var(--color-ink);
-}
-
-.text-body-strong {
   color: var(--color-ink);
 }
 
@@ -1542,13 +1340,6 @@ code:not(pre code) {
   color: var(--color-error-text);
 }
 
-/* Section divider — hairline pura, sin sombras */
-.section-divider {
-  border: none;
-  border-top: var(--border-width) solid var(--color-hairline);
-  margin: 0;
-}
-
 /* ========================================
    FORM SYSTEM
    ======================================== */
@@ -1559,8 +1350,7 @@ code:not(pre code) {
   gap: var(--design-spacing-md);
 }
 
-/* stylelint-disable-next-line media-feature-range-notation -- Conserva la sintaxis de media queries del proyecto. */
-@media (min-width: 768px) {
+@media (width >= 768px) {
   .form-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1636,8 +1426,7 @@ code:not(pre code) {
     :disabled,
     [aria-invalid='true'],
     :user-invalid,
-    .input-error,
-    .input-success
+    .input-error
   ) {
   border-color: var(--color-ink);
 }
@@ -1691,11 +1480,6 @@ code:not(pre code) {
 :is(input, select, textarea).input-error {
   border-color: var(--color-error);
   background: var(--color-error-subtle);
-}
-
-:is(input, select, textarea).input-success {
-  border-color: var(--color-success);
-  background: var(--color-success-subtle);
 }
 
 /* Mensajes de campo: mismo rol body-md que .form-error, sin mayúsculas. */
@@ -1765,10 +1549,10 @@ code:not(pre code) {
 .btn-sm {
   min-height: var(--touch-target-min);
   padding-inline: var(--control-padding-x);
-  font-size: var(--type-button-md-size);
-  font-weight: var(--type-button-md-weight);
-  line-height: var(--type-button-md-line);
-  letter-spacing: var(--type-button-md-tracking);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  line-height: var(--type-button-line);
+  letter-spacing: var(--type-button-tracking);
 }
 
 /* stylelint-disable no-descending-specificity -- Los estados hover:not(:disabled) y :disabled son excluyentes; se conserva la cascada de botones existente. */
@@ -1916,10 +1700,6 @@ code:not(pre code) {
   background: var(--color-surface-hover);
 }
 
-.btn-icon--danger:hover:not(:disabled) {
-  color: var(--color-error-text);
-}
-
 .step-nav-control {
   display: inline-flex;
   flex: 0 0 var(--touch-target-min);
@@ -1958,25 +1738,6 @@ code:not(pre code) {
   }
 }
 
-.btn-icon__count {
-  position: absolute;
-  inset-block-start: var(--action-count-offset);
-  inset-inline-end: var(--action-count-offset);
-  min-width: var(--action-count-size);
-  min-height: var(--action-count-size);
-  padding: 0 var(--design-spacing-xxs);
-  border-radius: var(--rounded-xs);
-  background: var(--color-primary);
-  color: var(--color-on-primary);
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  line-height: var(--type-caption-up-line);
-  letter-spacing: var(--type-caption-up-tracking);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 /* ========================================
    CARDS
    Border 1px + rounded-lg. Sin sombra.
@@ -1996,8 +1757,7 @@ code:not(pre code) {
 
 /* Card inverted — isla oscura (KPI hero, featured) */
 .surface-inverted,
-.card--dark,
-.stat-card--dark {
+.card--dark {
   --color-ink: var(--color-on-dark);
   --color-mute: var(--color-on-dark-soft);
   --color-focus: var(--color-focus-on-inverted);
@@ -2118,8 +1878,7 @@ code:not(pre code) {
   max-width: var(--modal-inline-size-xl);
 }
 
-/* stylelint-disable-next-line media-feature-range-notation -- Conserva la sintaxis de media queries del proyecto. */
-@media (max-width: 767px) {
+@media (width <= 767px) {
   .modal-content:not(.modal-content--placement-bottom, .modal-content--placement-center) {
     max-width: none;
   }
@@ -2153,8 +1912,7 @@ code:not(pre code) {
   padding-bottom: calc(var(--modal-content-padding) + var(--safe-area-bottom));
 }
 
-/* stylelint-disable-next-line media-feature-range-notation -- Conserva la sintaxis de media queries del proyecto. */
-@media (min-width: 768px) {
+@media (width >= 768px) {
   .modal-overlay {
     padding: var(--design-spacing-lg);
     align-items: center;
@@ -2336,8 +2094,7 @@ code:not(pre code) {
   flex: 1 1 auto;
 }
 
-/* stylelint-disable-next-line media-feature-range-notation -- Conserva la sintaxis de media queries del proyecto. */
-@media (min-width: 768px) {
+@media (width >= 768px) {
   .modal-footer {
     justify-content: flex-end;
   }
@@ -2545,8 +2302,8 @@ code:not(pre code) {
 /* Recorte accesible de 1px: excepción técnica, no una dimensión visual. */
 .sr-only {
   position: absolute;
-  width: 1px;
-  height: 1px;
+  width: var(--border-width);
+  height: var(--border-width);
   padding: 0;
   margin: -1px;
   overflow: hidden;
@@ -2589,11 +2346,9 @@ code:not(pre code) {
     [data-focus-ring] > input,
     [data-focus-ring] > textarea,
     label > input.sr-only,
-    .toggle-switch input,
     .ui-checkbox__input
   )
 ),
-.toggle-switch input:focus-visible + .toggle-switch__slider,
 .ui-checkbox__input:focus-visible ~ .ui-checkbox__indicator {
   outline: var(--focus-ring-width) solid var(--color-focus);
   outline-offset: 0;
@@ -2610,7 +2365,6 @@ label:has(> input.sr-only:focus-visible) {
    Se mantiene también en forced-colors para evitar un segundo indicador. */
 [data-focus-ring] > :is(input, textarea):focus-visible,
 label > input.sr-only:focus-visible,
-.toggle-switch input:focus-visible,
 .ui-checkbox__input:focus-visible {
   outline: none;
 }
@@ -2619,93 +2373,12 @@ label > input.sr-only:focus-visible,
    COLOR ALIASES (retrocompatibilidad)
    ======================================== */
 
-.color-error {
-  color: var(--color-error-text);
-}
-
-.color-success {
-  color: var(--color-success-text);
-}
-
 .color-warning {
   color: var(--color-warning-text);
 }
 
 .color-primary {
   color: var(--color-primary-text);
-}
-
-/* --- TOGGLE SWITCH --- */
-.toggle-switch {
-  position: relative;
-  min-width: var(--touch-target-min);
-  min-height: var(--touch-target-min);
-  display: inline-flex;
-  align-items: center;
-  gap: var(--design-spacing-xs);
-  cursor: pointer;
-  user-select: none;
-  font-family: var(--font-body);
-  font-size: var(--type-caption-sm-size);
-  font-weight: var(--type-caption-sm-weight);
-  line-height: var(--type-caption-sm-line);
-  letter-spacing: var(--type-caption-sm-tracking);
-  color: var(--color-ink);
-}
-
-.toggle-switch input[type='checkbox'] {
-  position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-/* stylelint-disable-next-line no-descending-specificity -- El foco del control y la base del switch son estados distintos. */
-.toggle-switch__slider {
-  position: relative;
-  display: inline-block;
-  width: var(--toggle-track-inline-size);
-  height: var(--toggle-track-block-size);
-
-  /* WCAG 1.4.11: el riel apagado usa el borde de control (≥3:1), no un hairline. */
-  background-color: var(--color-control-border);
-  border-radius: var(--radius-control);
-  transition: background-color var(--transition-fast);
-  flex-shrink: 0;
-}
-
-.toggle-switch__slider::before {
-  content: '';
-  position: absolute;
-  height: var(--toggle-thumb-size);
-  width: var(--toggle-thumb-size);
-  inset-inline-start: var(--toggle-thumb-inset);
-  inset-block-end: var(--toggle-thumb-inset);
-  background-color: var(--color-canvas-elevated);
-  border-radius: var(--radius-control);
-  transition: transform var(--transition-fast);
-  box-shadow: var(--shadow-xs);
-}
-
-.toggle-switch input[type='checkbox']:checked + .toggle-switch__slider {
-  background-color: var(--color-primary);
-}
-
-.toggle-switch input[type='checkbox']:checked + .toggle-switch__slider::before {
-  transform: translateX(var(--toggle-thumb-travel));
-}
-
-.toggle-switch input[type='checkbox']:disabled + .toggle-switch__slider {
-  opacity: var(--opacity-disabled);
-  cursor: not-allowed;
-}
-
-.toggle-switch__label {
-  overflow-wrap: anywhere;
-}
-
-.toggle-switch:has(input:disabled) {
-  cursor: not-allowed;
 }
 
 /* La clase solo dibuja el spinner; el consumidor anuncia el estado de carga. */
@@ -2723,11 +2396,6 @@ label > input.sr-only:focus-visible,
   .spin {
     animation: none;
   }
-
-  .toggle-switch__slider,
-  .toggle-switch__slider::before {
-    transition: none;
-  }
 }
 
 @media (forced-colors: active) {
@@ -2736,11 +2404,9 @@ label > input.sr-only:focus-visible,
       [data-focus-ring] > input,
       [data-focus-ring] > textarea,
       label > input.sr-only,
-      .toggle-switch input,
-      .ui-checkbox__input
+        .ui-checkbox__input
     )
   ),
-  .toggle-switch input:focus-visible + .toggle-switch__slider,
   .ui-checkbox__input:focus-visible ~ .ui-checkbox__indicator {
     outline: var(--focus-ring-width) solid Highlight !important;
     outline-offset: 0 !important;
@@ -2752,26 +2418,5 @@ label > input.sr-only:focus-visible,
     outline: var(--focus-ring-width) solid Highlight !important;
     outline-offset: 0 !important;
     box-shadow: none !important;
-  }
-
-  /* Los colores del sistema conservan la posición y el contraste del switch. */
-  /* stylelint-disable-next-line no-descending-specificity -- El color forzado sustituye la base, no el estado de foco. */
-  .toggle-switch__slider {
-    forced-color-adjust: none;
-    color: ButtonText;
-    background: Canvas;
-    border: var(--border-width) solid ButtonText;
-  }
-
-  .toggle-switch__slider::before {
-    background: ButtonText;
-  }
-
-  .toggle-switch input[type='checkbox']:checked + .toggle-switch__slider {
-    background: Highlight;
-  }
-
-  .toggle-switch input[type='checkbox']:checked + .toggle-switch__slider::before {
-    background: HighlightText;
   }
 }

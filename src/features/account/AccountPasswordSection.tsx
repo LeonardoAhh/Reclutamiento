@@ -27,7 +27,7 @@ export function AccountPasswordSection({
   const reduce = useReducedMotion();
 
   function completeTransition() {
-    if (view !== 'settings') setFocusReady(true);
+    if (view === 'password') setFocusReady(true);
     else if (restoreFocus.current) {
       restoreFocus.current.focus({ preventScroll: true });
       restoreFocus.current = null;
@@ -77,10 +77,10 @@ export function AccountPasswordSection({
         id={panelId}
         className="t-page account-password__detail"
         data-page-id="2"
-        inert={view !== 'password'}
-        aria-hidden={view !== 'password'}
+        inert={view === 'settings'}
+        aria-hidden={view === 'settings'}
         onTransitionEnd={(event) => {
-          if (view === 'password' && event.target === event.currentTarget && event.propertyName === 'opacity')
+          if (view !== 'settings' && event.target === event.currentTarget && event.propertyName === 'opacity')
             completeTransition();
         }}
       >

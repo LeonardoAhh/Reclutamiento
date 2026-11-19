@@ -18,12 +18,9 @@
   color: var(--color-mute);
   font-family: var(--font-body);
   font-size: var(--type-heading-md-size);
-  font-weight: var(--font-bold);
-  /* CORRECCIÓN: antes usaba el interlineado y el tracking de body con un
-     tamaño de heading. Ahora usa los de heading, con fallback a body si el
-     token de heading no existe en el sistema de diseño. */
-  line-height: var(--type-heading-md-line, var(--type-body-md-line));
-  letter-spacing: var(--type-heading-md-tracking, var(--type-body-md-tracking));
+  font-weight: var(--type-heading-md-weight);
+  line-height: var(--type-heading-md-line);
+  letter-spacing: var(--type-heading-md-tracking);
 }
 
 .home-page__quick-links {
@@ -47,10 +44,10 @@
   background: transparent;
   color: var(--color-mute);
   font-family: var(--font-body);
-  font-size: var(--type-button-md-size);
-  font-weight: var(--type-button-md-weight);
-  line-height: var(--type-button-md-line);
-  letter-spacing: var(--type-button-md-tracking);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  line-height: var(--type-button-line);
+  letter-spacing: var(--type-button-tracking);
   text-decoration: none;
   transition:
     border-color var(--transition-fast),
@@ -62,11 +59,9 @@
   color: var(--color-ink);
 }
 
-/* CORRECCIÓN: antes solo había :hover, así que un usuario de teclado no veía
-   dónde estaba el foco. Si el reset global quita el outline, esto lo devuelve. */
 .home-page__quick-link:focus-visible {
-  outline: 2px solid var(--color-focus, var(--color-ink));
-  outline-offset: 2px;
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: 0;
   border-color: var(--color-hairline-strong);
   color: var(--color-ink);
 }

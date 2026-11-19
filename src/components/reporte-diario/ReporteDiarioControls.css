@@ -1,45 +1,3 @@
-/* ── Control group (toolbar) ──────────────────────────────────────────────── */
-
-.reporte-control-group {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: var(--design-spacing-xs);
-}
-
-/* ── Tab / icon trigger button ────────────────────────────────────────────── */
-
-.reporte-tab-trigger {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--design-spacing-xxs);
-  min-height: var(--control-height);
-  min-width: var(--control-height);
-  padding: var(--design-spacing-xxs) var(--design-spacing-xs);
-  border-radius: var(--radius-control);
-  border: var(--border-width) solid var(--color-control-border);
-  background: var(--color-surface-card);
-  color: var(--color-ink);
-  font-family: var(--font-body);
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--type-body-strong-weight);
-  line-height: var(--type-body-sm-line);
-  cursor: pointer;
-  text-decoration: none;
-  transition:
-    color var(--transition-fast),
-    background-color var(--transition-fast),
-    border-color var(--transition-fast);
-}
-
-.reporte-tab-trigger:hover {
-  color: var(--color-ink);
-  background: var(--color-surface-card);
-  border-color: var(--color-control-border);
-}
-
 /* ── Primary button — uses global .btn-primary ─────────────────────────────── */
 
 .reporte-employee-detail__tabs {
@@ -50,7 +8,7 @@
 .reporte-employee-detail__tab {
   padding: var(--design-spacing-xs) 0;
   border: none;
-  border-bottom: 2px solid transparent;
+  border-bottom: var(--border-width) solid transparent;
   border-radius: 0;
   background: transparent;
   color: var(--color-mute);
@@ -83,93 +41,6 @@
   display: flex;
   flex-direction: column;
   gap: var(--design-spacing-md);
-}
-
-.reporte-employee-detail__meta-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--design-spacing-sm);
-}
-
-@media (width <= 767px) {
-  .reporte-employee-detail__meta-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.reporte-employee-detail__info-item {
-  padding: var(--design-spacing-xs);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--radius-card);
-  background: var(--color-surface-card);
-  display: flex;
-  flex-direction: column;
-  gap: var(--design-spacing-xxs);
-}
-
-.reporte-employee-detail__info-label {
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  letter-spacing: var(--type-caption-up-tracking);
-  text-transform: uppercase;
-  color: var(--color-mute);
-  font-family: var(--font-body);
-  line-height: var(--type-caption-up-line);
-}
-
-/* ── Icon-only divider used in toolbars ───────────────────────────────────── */
-.reporte-divider-v {
-  width: 1px;
-  align-self: stretch;
-  min-height: var(--design-spacing-lg);
-  background: var(--color-hairline);
-  margin-inline: var(--design-spacing-xxs);
-}
-
-/* Hide non-essential toolbar dividers on very small screens */
-@media (width <= 767px) {
-  .reporte-divider-v {
-    display: none;
-  }
-}
-
-/* ── Day-detail header (title + nav + actions) ────────────────────────────── */
-
-.reporte-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  gap: var(--design-spacing-xxs);
-  padding: var(--design-spacing-xxl) var(--design-spacing-md);
-  border: 2px dashed var(--color-hairline);
-  border-radius: var(--radius-card);
-  background: var(--color-surface-card);
-  cursor: pointer;
-  transition:
-    border-color var(--transition-fast),
-    background-color var(--transition-fast);
-}
-
-.reporte-empty:hover {
-  border-color: var(--color-primary-border);
-  background: var(--color-surface-card);
-}
-
-.reporte-empty__icon {
-  color: var(--color-mute);
-  margin-bottom: var(--design-spacing-xs);
-}
-
-.reporte-overlay__title {
-  margin: 0;
-  color: var(--color-ink);
-  font-family: var(--font-body);
-  font-size: var(--type-body-strong-size);
-  font-weight: var(--type-body-strong-weight);
-  line-height: var(--type-body-strong-line);
-  letter-spacing: var(--type-body-strong-tracking);
 }
 
 /* ── Errors list ──────────────────────────────────────────────────────────── */
@@ -216,7 +87,7 @@
 
 .reporte-errors__group {
   padding-top: var(--design-spacing-xs);
-  border-top: 1px solid var(--color-hairline);
+  border-top: var(--border-width) solid var(--color-hairline);
 }
 
 .reporte-errors__group-heading {
@@ -286,7 +157,7 @@
   overflow-y: auto;
   overflow-wrap: anywhere;
   background: var(--color-canvas-elevated);
-  border: 1px solid var(--color-hairline);
+  border: var(--border-width) solid var(--color-hairline);
   border-radius: var(--radius-card);
 }
 

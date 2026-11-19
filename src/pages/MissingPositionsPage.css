@@ -26,7 +26,7 @@
 
 .missing-positions-page__back-link:focus-visible {
   outline: var(--focus-ring-width) solid var(--color-focus);
-  outline-offset: var(--focus-ring-offset);
+  outline-offset: 0;
 }
 
 .missing-positions-page__body {
@@ -76,8 +76,8 @@
 
 .missing-positions-page__table thead {
   position: absolute;
-  inline-size: 1px;
-  block-size: 1px;
+  inline-size: var(--border-width);
+  block-size: var(--border-width);
   padding: 0;
   margin: -1px;
   overflow: hidden;
@@ -158,7 +158,7 @@
 
 .missing-positions-page__row-toggle:focus-visible {
   outline: var(--focus-ring-width) solid var(--color-focus);
-  outline-offset: var(--focus-ring-offset);
+  outline-offset: 0;
 }
 
 .missing-positions-page__puesto {

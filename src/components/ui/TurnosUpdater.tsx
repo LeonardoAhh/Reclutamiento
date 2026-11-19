@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
-import { CircleAlert, CircleCheckBig, Upload, X } from 'lucide-react';
+import { CircleAlert, CircleCheckBig, Upload } from 'lucide-react';
+import { Modal } from '@/components/ui/Modal';
 import type { BajaRaw } from '@/lib/types';
 import './JsonImporter.css';
 import './TurnosUpdater.css';
@@ -139,61 +140,14 @@ export function TurnosUpdater({ onPreview, onApply }: TurnosUpdaterProps) {
         </output>
       )}
 
-      {status === 'preview' && previewData && (
-        <div className="turnos-updater__preview-modal">
-          <button
-            type="button"
-            className="turnos-updater__preview-backdrop"
-            onClick={handleCancel}
-            aria-label="Cerrar vista previa"
-            tabIndex={-1}
-          />
-          <div className="turnos-updater__preview-content">
-            <header className="turnos-updater__preview-header">
-              <div>
-                <h3>Preview de Actualización de Turnos</h3>
-                <p className="turnos-updater__preview-subtitle">{message}</p>
-              </div>
-              <button type="button" className="turnos-updater__close-btn" onClick={handleCancel} aria-label="Cerrar">
-                <X size={20} />
-              </button>
-            </header>
-
-            <div className="turnos-updater__preview-body">
-              {previewData.preview.length === 0 ? (
-                <p className="turnos-updater__empty">No hay cambios para aplicar.</p>
-              ) : (
-                <table className="turnos-updater__table data-table data-table--cards">
-                  <caption className="sr-only">Vista previa de cambios de turno</caption>
-                  <thead>
-                    <tr>
-                      <th scope="col">Num. Empleado</th>
-                      <th scope="col">Nombre</th>
-                      <th scope="col">Turno Anterior</th>
-                      <th scope="col">Turno Nuevo</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {previewData.preview.map((item) => (
-                      <tr key={item.num_empleado}>
-                        <td data-label="Num. Empleado">{item.num_empleado}</td>
-                        <th scope="row" data-label="Nombre">
-                          {item.nombre}
-                        </th>
-                        <td data-label="Turno Anterior" className="turnos-updater__turno-old">
-                          {item.turno_anterior || '—'}
-                        </td>
-                        <td data-label="Turno Nuevo" className="turnos-updater__turno-new">
-                          {item.turno_nuevo}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
-            </div>
-
-            <footer className="turnos-updater__preview-footer">
+      <Modal
+        isOpen={status === 'preview' && previewData !== null}
+        title="Preview de Actualización de Turnos"
+        onClose={handleCancel}
+        size="lg"
+        footerActions={
+          previewData && (
+            <>
               <button type="button" className="btn-secondary" onClick={handleCancel}>
                 Cancelar
               </button>
@@ -203,13 +157,50 @@ export function TurnosUpdater({ onPreview, onApply }: TurnosUpdaterProps) {
                 onClick={handleApply}
                 disabled={previewData.preview.length === 0}
               >
-                <CircleCheckBig size={16} />
+                <CircleCheckBig size={16} aria-hidden="true" />
                 Aplicar {previewData.updated} cambio(s)
               </button>
-            </footer>
+            </>
+          )
+        }
+      >
+        {previewData && (
+          <div className="turnos-updater__preview-body">
+            <p className="turnos-updater__preview-subtitle">{message}</p>
+            {previewData.preview.length === 0 ? (
+              <p className="turnos-updater__empty">No hay cambios para aplicar.</p>
+            ) : (
+              <table className="turnos-updater__table data-table data-table--cards">
+                <caption className="sr-only">Vista previa de cambios de turno</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Num. Empleado</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Turno Anterior</th>
+                    <th scope="col">Turno Nuevo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {previewData.preview.map((item) => (
+                    <tr key={item.num_empleado}>
+                      <td data-label="Num. Empleado">{item.num_empleado}</td>
+                      <th scope="row" data-label="Nombre">
+                        {item.nombre}
+                      </th>
+                      <td data-label="Turno Anterior" className="turnos-updater__turno-old">
+                        {item.turno_anterior || '—'}
+                      </td>
+                      <td data-label="Turno Nuevo" className="turnos-updater__turno-new">
+                        {item.turno_nuevo}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
-        </div>
-      )}
+        )}
+      </Modal>
     </div>
   );
 }

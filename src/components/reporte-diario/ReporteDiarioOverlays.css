@@ -5,9 +5,6 @@
    ============================================================================ */
 
 /* Chip resaltado cuando hay muchas incidencias (>50). Semántico, no rojo puro. */
-.reporte-saved__count:has(.reporte-saved__count-value--high) {
-  background: var(--color-warning-subtle);
-}
 
 @media (prefers-reduced-motion: reduce) {
   .reporte-saved__item {
@@ -28,16 +25,16 @@
   background: var(--color-canvas-elevated);
   color: var(--color-ink);
   font-family: var(--font-body);
-  font-size: var(--type-button-md-size);
-  font-weight: var(--type-button-md-weight);
-  line-height: var(--type-button-md-line);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  line-height: var(--type-button-line);
   cursor: pointer;
   transition:
     border-color var(--transition-fast),
     background var(--transition-fast),
     color var(--transition-fast);
   white-space: nowrap;
-  letter-spacing: var(--type-button-md-tracking);
+  letter-spacing: var(--type-button-tracking);
 }
 
 .reporte-saved__trigger--labeled:hover {
@@ -79,87 +76,10 @@
   text-transform: uppercase;
 }
 
-/* Valor numérico protagonista (ej. "543") */
-.reporte-head__grid-value {
-  font-family: var(--font-display);
-  font-weight: var(--type-body-strong-weight);
-  font-variant-numeric: tabular-nums;
-  flex-shrink: 0;
-}
-
 /* Los dialogs (Comparison, Guardados) en el grid ya no forzan 100% de width */
-.reporte-employee-detail-modal {
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-}
-
-.reporte-page :is(.btn-primary, .btn-secondary, .animated-submit-button) {
-  font-family: var(--font-body);
-  font-size: var(--type-button-md-size);
-  font-weight: var(--type-button-md-weight);
-  line-height: var(--type-button-md-line);
-  letter-spacing: var(--type-button-md-tracking);
-}
-
-.reporte-kpi__grid .kpi-card__label {
-  font-family: var(--font-body);
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  line-height: var(--type-caption-up-line);
-  letter-spacing: var(--type-caption-up-tracking);
-}
-
-.reporte-kpi__grid .kpi-card__value {
-  font-family: var(--font-body);
-  font-size: var(--type-body-strong-size);
-  font-weight: var(--type-body-strong-weight);
-  line-height: var(--type-body-strong-line);
-  letter-spacing: var(--type-body-strong-tracking);
-}
-
-.reporte-kpi__grid .kpi-card__sub {
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-}
-
-.reporte-employee-detail__employee-id {
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-}
-
-.reporte-employee-detail__metric-label {
-  font-family: var(--font-body);
-  font-size: var(--type-caption-up-size);
-  font-weight: var(--type-caption-up-weight);
-  line-height: var(--type-caption-up-line);
-  letter-spacing: var(--type-caption-up-tracking);
-}
-
-.reporte-employee-detail__metric-value {
-  font-family: var(--font-body);
-  font-size: var(--type-body-strong-size);
-  font-weight: var(--type-body-strong-weight);
-  line-height: var(--type-body-strong-line);
-  letter-spacing: var(--type-body-strong-tracking);
-}
-
-.reporte-employee-detail__incident-label {
-  font-family: var(--font-body);
-  font-size: var(--type-body-strong-size);
-  font-weight: var(--type-body-strong-weight);
-  line-height: var(--type-body-strong-line);
-  letter-spacing: var(--type-body-strong-tracking);
-}
-
+.reporte-employee-detail-modal,
+.reporte-kpi__grid .kpi-card__sub,
+.reporte-employee-detail__employee-id,
 .report-dialog {
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
@@ -168,12 +88,31 @@
   letter-spacing: var(--type-body-md-tracking);
 }
 
-.report-dialog :is(.btn-primary, .btn-secondary, .btn-danger) {
+.reporte-page .animated-submit-button {
   font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  line-height: var(--type-button-line);
+  letter-spacing: var(--type-button-tracking);
+}
+
+.reporte-kpi__grid .kpi-card__label,
+.reporte-employee-detail__metric-label {
+  font-family: var(--font-body);
+  font-size: var(--type-caption-up-size);
+  font-weight: var(--type-caption-up-weight);
+  line-height: var(--type-caption-up-line);
+  letter-spacing: var(--type-caption-up-tracking);
+}
+
+.reporte-kpi__grid .kpi-card__value,
+.reporte-employee-detail__metric-value,
+.reporte-employee-detail__incident-label {
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 @media (width <= 767px) {

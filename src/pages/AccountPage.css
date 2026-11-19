@@ -8,18 +8,24 @@
   line-height: var(--type-body-md-line);
   letter-spacing: var(--type-body-md-tracking);
 }
-.account-page :is(h2,h3,p) {
+
+.account-page :is(h2, h3, p) {
   margin: 0;
 }
-.account-page__layout,.account-page__aside,.account-page__stack {
+
+.account-page__layout,
+.account-page__aside,
+.account-page__stack {
   display: grid;
   align-content: start;
   gap: var(--design-spacing-lg);
   min-width: 0;
 }
+
 .account-page__stack:empty {
   display: none;
 }
+
 .account-section {
   display: grid;
   align-content: start;
@@ -28,6 +34,7 @@
   border-radius: var(--radius-card);
   background: var(--color-surface-card);
 }
+
 .account-card__header {
   display: flex;
   align-items: center;
@@ -38,9 +45,11 @@
   padding: var(--design-spacing-xs) var(--design-spacing-md);
   border-block-end: var(--border-width) solid var(--color-hairline);
 }
+
 .account-card__heading {
   min-width: 0;
 }
+
 .account-card__title {
   color: var(--color-ink);
   font-family: var(--font-body);
@@ -50,26 +59,34 @@
   letter-spacing: var(--type-caption-up-tracking);
   text-transform: uppercase;
 }
-.account-card__description,.account-row__description {
+
+.account-card__description,
+.account-row__description {
   color: var(--color-ink);
   overflow-wrap: anywhere;
 }
+
 .account-card__description {
   margin-block-start: var(--design-spacing-xxs);
 }
+
 .account-section__body {
   min-width: 0;
 }
-.account-section__body>*+*,.account-row+.account-row {
+
+.account-section__body > * + * {
   border-block-start: var(--border-width) solid var(--color-hairline);
 }
+
 .account-card__note {
   color: var(--color-mute);
+  font-family: var(--font-body);
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-body-sm-weight);
   line-height: var(--type-body-sm-line);
   letter-spacing: var(--type-body-sm-tracking);
 }
+
 .account-profile {
   display: grid;
   align-content: start;
@@ -80,19 +97,23 @@
   border-radius: var(--radius-card);
   background: var(--color-surface-card);
 }
+
 .account-profile__identity {
   display: grid;
-  grid-template-columns: auto minmax(0,1fr);
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
   gap: var(--design-spacing-md);
   min-width: 0;
 }
+
 .account-profile__avatar {
   position: relative;
   display: inline-flex;
+
   --feature-avatar-size: var(--design-spacing-3xl);
   --feature-avatar-initials-size: var(--type-heading-sm-size);
 }
+
 .account-profile__avatar-badge {
   position: absolute;
   inset-inline-end: 0;
@@ -107,9 +128,11 @@
   background: transparent;
   cursor: pointer;
 }
-.account-profile__avatar-badge.dropdown-menu-trigger:is(:hover, [data-state="open"]) {
+
+.account-profile__avatar-badge.dropdown-menu-trigger:is(:hover, [data-state='open']) {
   background: transparent;
 }
+
 .account-profile__camera-mark {
   display: grid;
   place-items: center;
@@ -120,15 +143,18 @@
   background: var(--color-primary);
   color: var(--color-on-primary);
 }
+
 .account-profile__avatar-badge:disabled {
   opacity: var(--opacity-disabled);
   cursor: not-allowed;
 }
+
 .account-profile__copy {
   display: grid;
   gap: var(--design-spacing-xxs);
   min-width: 0;
 }
+
 .account-profile__name {
   color: var(--color-ink);
   font-family: var(--font-body);
@@ -138,32 +164,48 @@
   letter-spacing: var(--type-heading-sm-tracking);
   overflow-wrap: anywhere;
 }
+
 .account-profile__email {
   color: var(--color-ink);
   overflow-wrap: anywhere;
 }
+
 .account-profile__input {
   display: none;
 }
+
+/* Ayuda del campo: mismo rol que la ayuda del formulario de contraseña. */
 .account-profile__hint {
   color: var(--color-mute);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
+
 .account-profile__actions {
   display: grid;
-  grid-template-columns: repeat(2,minmax(0,1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--design-spacing-xs);
 }
-.account-profile__actions>button {
+
+.account-profile__actions > button {
   min-width: 0;
 }
-.account-setting-row,.account-appearance__control,.account-row {
+
+.account-setting-row,
+.account-appearance__control,
+.account-row {
   min-block-size: calc(var(--touch-target-min) + var(--design-spacing-md));
   min-inline-size: 0;
   padding: var(--design-spacing-xs) var(--design-spacing-md);
 }
-.account-setting-row,.account-appearance__control {
+
+.account-setting-row,
+.account-appearance__control {
   display: grid;
-  grid-template-columns: auto minmax(0,1fr) auto;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: var(--design-spacing-sm);
   inline-size: 100%;
@@ -174,6 +216,7 @@
   text-align: start;
   cursor: pointer;
 }
+
 .account-appearance__control {
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
@@ -181,7 +224,9 @@
   line-height: var(--type-body-md-line);
   letter-spacing: var(--type-body-md-tracking);
 }
-.account-setting-row__label,.account-row__title {
+
+.account-setting-row__label,
+.account-row__title {
   min-width: 0;
   color: var(--color-ink);
   font-family: var(--font-body);
@@ -191,17 +236,31 @@
   letter-spacing: var(--type-body-strong-tracking);
   overflow-wrap: anywhere;
 }
+
 .account-setting-row__value {
   color: var(--color-ink);
   text-align: end;
 }
-.account-appearance__palette {
-  grid-template-columns: auto minmax(0, 1fr) auto auto;
+
+.account-appearance__palette-block {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, var(--menu-min-inline-size));
+  align-items: center;
+  gap: var(--design-spacing-sm);
+  min-width: 0;
+  min-block-size: calc(var(--touch-target-min) + var(--design-spacing-md));
+  padding: var(--design-spacing-xs) var(--design-spacing-md);
 }
-.account-appearance__palette-chevron {
-  inline-size: var(--icon-size-sm);
-  block-size: var(--icon-size-sm);
-  color: var(--color-mute);
+
+.account-appearance__palette-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--design-spacing-sm);
+  min-width: 0;
+}
+
+.account-appearance__palette-select {
+  min-width: 0;
 }
 
 /* Un solo separador por fila. Pesa más que el reset de borde del control y
@@ -216,18 +275,22 @@
   border-end-end-radius: var(--radius-card);
 }
 
-.account-appearance>.account-card__note {
+.account-appearance > .account-card__note {
   padding: var(--design-spacing-xs) var(--design-spacing-md);
 }
+
 .t-page-slide {
   position: relative;
 }
-.t-page-slide .t-page[data-page-id="1"] {
+
+.t-page-slide .t-page[data-page-id='1'] {
   --t-page-from-x: calc(var(--page-slide-distance) * -1);
 }
-.t-page-slide .t-page[data-page-id="2"] {
+
+.t-page-slide .t-page[data-page-id='2'] {
   --t-page-from-x: var(--page-slide-distance);
 }
+
 .t-page-slide .t-page {
   position: absolute;
   inset: 0;
@@ -236,12 +299,13 @@
   transform: translateX(calc(var(--t-page-from-x, 0px) * var(--page-exit-enabled)));
   filter: blur(calc(var(--page-blur) * var(--page-exit-enabled)));
   transition:
-    opacity   var(--page-fade-dur)  var(--page-fade-ease),
+    opacity var(--page-fade-dur) var(--page-fade-ease),
     transform var(--page-slide-dur) var(--page-slide-ease),
-    filter    var(--page-slide-dur) var(--page-slide-ease);
+    filter var(--page-slide-dur) var(--page-slide-ease);
 }
-.t-page-slide[data-page="1"] .t-page[data-page-id="1"],
-.t-page-slide[data-page="2"] .t-page[data-page-id="2"] {
+
+.t-page-slide[data-page='1'] .t-page[data-page-id='1'],
+.t-page-slide[data-page='2'] .t-page[data-page-id='2'] {
   opacity: 1;
   pointer-events: auto;
   transform: translateX(0);
@@ -258,8 +322,9 @@
   overflow: clip;
   overflow-clip-margin: var(--focus-ring-width);
 }
-.account-password[data-page="1"] > .t-page[data-page-id="1"],
-.account-password[data-page="2"] > .t-page[data-page-id="2"] {
+
+.account-password[data-page='1'] > .t-page[data-page-id='1'],
+.account-password[data-page='2'] > .t-page[data-page-id='2'] {
   position: relative;
 }
 
@@ -274,31 +339,43 @@
   min-width: 0;
   padding: var(--design-spacing-md);
 }
+
 .account-settings > .account-card__header {
   flex-wrap: wrap;
 }
+
 .account-password__header-actions {
   min-width: 0;
   margin-inline-start: auto;
 }
+
 .account-password__header-actions:empty {
   display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .t-page-slide .t-page { transition: none !important; }
+  .t-page-slide .t-page {
+    transition: none !important;
+  }
 }
+
 .account-row {
   display: grid;
-  grid-template-columns: minmax(0,1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: var(--design-spacing-sm);
 }
+
+.account-row + .account-row {
+  border-block-start: var(--border-width) solid var(--color-hairline);
+}
+
 .account-row__copy {
   display: grid;
   gap: var(--design-spacing-xxs);
   min-width: 0;
 }
+
 .account-maintenance__controls {
   display: flex;
   flex-wrap: wrap;
@@ -307,6 +384,7 @@
   gap: var(--design-spacing-xs);
   min-width: 0;
 }
+
 .account-maintenance__retry {
   min-block-size: var(--touch-target-min);
   padding-inline: var(--design-spacing-xs);
@@ -316,92 +394,47 @@
   color: var(--color-ink);
   cursor: pointer;
 }
+
 .account-maintenance__retry:disabled {
   opacity: var(--opacity-disabled);
   cursor: not-allowed;
 }
+
 .account-maintenance__error {
   grid-column: 1/-1;
   color: var(--color-error-text);
 }
-@media (hover:hover) {
-  .account-setting-row:hover:not(:disabled),.account-appearance__control:hover {
+
+@media (hover: hover) {
+  .account-setting-row:hover:not(:disabled),
+  .account-appearance__control:hover {
     background: var(--color-canvas-soft);
   }
 }
-@media (min-width:768px) and (max-width:1079px) {
-  .account-page__layout[data-admin="true"] {
-    grid-template-columns: repeat(2, minmax(0,1fr));
-  }
-  .account-page__layout[data-admin="true"] > .account-page__aside {
-    grid-column: 1;
-    grid-row: 1;
-  }
-  .account-page__layout[data-admin="true"] > .account-page__stack {
-    grid-column: 2;
-    grid-row: 1;
-  }
-  .account-page__layout[data-admin="true"] > .team-management {
-    grid-column: 1 / -1;
-    grid-row: 2;
-  }
-}
-@media (min-width:1080px) {
-  .account-page__layout[data-recruiter="true"] {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .account-page__layout[data-recruiter="true"] > .account-page__aside {
-    display: contents;
-  }
-  .account-page__layout[data-recruiter="true"] .account-profile {
-    grid-column: 1;
-    grid-row: 1;
-  }
-  .account-page__layout[data-recruiter="true"] .account-settings {
-    grid-column: 2;
-    grid-row: 1 / span 2;
-    align-self: start;
-  }
-  .account-page__layout[data-recruiter="true"] .account-recognition {
-    grid-column: 1;
-    grid-row: 2;
-  }
-  .account-page__layout[data-admin="true"] {
-    grid-template-columns: minmax(0,1fr) minmax(0,1fr);
-  }
-  .account-page__layout[data-admin="true"] > .account-page__aside {
-    grid-column: 1;
-    grid-row: 1;
-  }
-  .account-page__layout[data-admin="true"] > .account-page__stack {
-    grid-column: 2;
-    grid-row: 1;
-  }
-  .account-page__layout[data-admin="true"] > .team-management {
-    grid-column: 1 / -1;
-    grid-row: 2;
-  }
+
+@media (width >= 1080px) {
   .account-profile {
     padding: var(--design-spacing-lg);
   }
-  .account-page__layout[data-admin="true"] .account-profile {
-    padding-block: var(--design-spacing-sm);
-  }
+
   .account-profile__avatar {
     --feature-avatar-size: var(--design-spacing-4xl);
     --feature-avatar-initials-size: var(--type-heading-md-size);
   }
 }
+
 .account-recognition .account-section__body {
   display: grid;
   gap: var(--design-spacing-sm);
   padding: var(--design-spacing-md);
 }
+
 .account-preferences {
   display: grid;
   gap: var(--design-spacing-sm);
   min-width: 0;
 }
+
 .account-preferences__field label {
   font-family: var(--font-body);
   font-size: var(--type-caption-up-size);
@@ -409,6 +442,7 @@
   line-height: var(--type-caption-up-line);
   letter-spacing: var(--type-caption-up-tracking);
 }
+
 .account-preferences__check {
   display: inline-flex;
   align-items: center;
@@ -417,9 +451,126 @@
   color: var(--color-ink);
   cursor: pointer;
 }
-@media (min-width:768px) {
+
+/* Cuenta en tablet y escritorio: el diálogo conserva los paneles existentes. */
+.account-dialog {
+  block-size: var(--modal-max-block-size);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+}
+
+.account-dialog > .modal-scroll-region {
+  overflow: hidden;
+}
+
+/* La columna de secciones mide lo que el riel de navegación de la app, y nav y
+   contenido comparten el interior del modal: sus primeras filas arrancan a la
+   misma altura y la etiqueta de cada sección queda alineada con el título. */
+.account-dialog__layout {
+  display: grid;
+  grid-template-columns: var(--feature-navigation-rail-inline-size) minmax(0, 1fr);
+  flex: 1 1 auto;
+  min-block-size: 0;
+}
+
+.account-dialog__nav {
+  display: grid;
+  align-content: start;
+  gap: var(--design-spacing-xxs);
+  min-inline-size: 0;
+  padding-block: var(--modal-content-padding);
+  padding-inline: calc(var(--modal-content-padding) - var(--design-spacing-sm));
+  border-inline-end: var(--border-width) solid var(--color-hairline);
+  overflow-y: auto;
+}
+
+.account-dialog__nav-item {
+  min-block-size: var(--touch-target-min);
+  min-inline-size: 0;
+  padding: var(--design-spacing-xs) var(--design-spacing-sm);
+  border: 0;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
+  text-align: start;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+
+.account-dialog__nav-item:hover {
+  background: var(--color-surface-hover);
+}
+
+.account-dialog__nav-item[aria-current] {
+  background: var(--color-primary-tint);
+  color: var(--color-primary-text);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
+}
+
+.account-dialog__content {
+  min-inline-size: 0;
+  min-block-size: 0;
+  padding: var(--modal-content-padding);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.account-dialog__panel:not([hidden]) {
+  display: grid;
+  align-content: start;
+  gap: var(--design-spacing-md);
+  min-inline-size: 0;
+}
+
+.account-dialog .account-profile {
+  padding: var(--design-spacing-md);
+}
+
+.account-dialog .account-profile__avatar {
+  --feature-avatar-size: var(--design-spacing-3xl);
+  --feature-avatar-initials-size: var(--type-heading-sm-size);
+}
+
+.account-dialog__password .account-section__body {
+  padding: var(--design-spacing-md);
+}
+
+.account-dialog .password-change-form {
+  gap: var(--design-spacing-sm);
+}
+
+/* En el diálogo la acción comparte geometría con los campos y con los botones
+   del sistema: altura de control completa y relleno de control. */
+.account-dialog .password-change-form__action {
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  line-height: var(--type-button-line);
+  letter-spacing: var(--type-button-tracking);
+}
+
+.account-dialog .password-change-form__action-label {
+  min-block-size: var(--control-min-block-size);
+  padding: var(--control-padding-y) var(--control-padding-x);
+}
+
+.account-dialog__content :is(h3, p) {
+  margin: 0;
+}
+
+@media (width >= 768px) {
   .account-preferences {
-    grid-template-columns: repeat(2,minmax(0,1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: end;
   }
 }

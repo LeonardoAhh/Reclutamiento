@@ -277,8 +277,8 @@
 
   .motivos-baja__records thead {
     position: absolute;
-    width: 1px;
-    height: 1px;
+    width: var(--border-width);
+    height: var(--border-width);
     padding: 0;
     margin: -1px;
     overflow: hidden;
@@ -345,15 +345,6 @@
 }
 
 .motivos-baja__capture-dialog {
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-}
-
-.motivos-baja .btn-secondary,
-.motivos-baja__capture-dialog :is(.btn-primary, .btn-secondary) {
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);

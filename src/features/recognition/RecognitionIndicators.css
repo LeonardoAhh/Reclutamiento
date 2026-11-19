@@ -50,7 +50,7 @@
   display: flex;
   align-items: center;
   min-block-size: var(--touch-target-min);
-  color: var(--color-body);
+  color: var(--color-ink);
   cursor: pointer;
 }
 
@@ -73,7 +73,7 @@
   gap: var(--design-spacing-xxs);
   margin: 0;
   padding-inline-start: var(--design-spacing-md);
-  color: var(--color-body);
+  color: var(--color-ink);
 }
 
 .admin-recruiter-indicators__list {

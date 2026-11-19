@@ -1,4 +1,5 @@
-/* TurnosUpdater — Actualización selectiva de turnos con preview */
+/* TurnosUpdater — Actualización selectiva de turnos con vista previa en el
+   Modal compartido, que aporta foco, Escape, scrim y geometría. */
 
 .turnos-updater {
   display: flex;
@@ -6,90 +7,27 @@
   gap: var(--design-spacing-xs);
 }
 
-/* ── Preview Modal ──────────────────────────────────────────────────── */
-.turnos-updater__preview-modal {
-  position: fixed;
-  inset: 0;
-  z-index: var(--layer-modal);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.turnos-updater__preview-backdrop {
-  position: absolute;
-  inset: 0;
-  padding: 0;
-  border: 0;
-  background: var(--color-modal-scrim);
-  backdrop-filter: blur(2px);
-}
-
-.turnos-updater__preview-content {
-  position: relative;
-  background: var(--color-canvas);
-  border-radius: var(--radius-card);
-  box-shadow: var(--shadow-sm);
-  max-width: 800px;
-  width: 90%;
-  max-height: 80vh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-/* ── Header ──────────────────────────────────────────────────────────── */
-.turnos-updater__preview-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--design-spacing-sm);
-  padding: var(--design-spacing-md);
-  border-bottom: 1px solid var(--color-hairline);
-}
-
-.turnos-updater__preview-header h3 {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: var(--type-heading-md-size);
-  font-weight: var(--type-heading-md-weight);
-  color: var(--color-ink);
-}
-
-.turnos-updater__preview-subtitle {
-  margin: var(--design-spacing-xxs) 0 0;
-  font-size: var(--type-body-md-size);
-  color: var(--color-mute);
-}
-
-.turnos-updater__close-btn {
-  flex-shrink: 0;
-  background: none;
-  border: none;
-  color: var(--color-mute);
-  cursor: pointer;
-  padding: var(--design-spacing-xxs);
-  border-radius: var(--radius-control);
-  transition: all 0.15s ease;
-}
-
-.turnos-updater__close-btn:hover {
-  background: var(--color-surface-card);
-  color: var(--color-ink);
-}
-
-/* ── Body / Table ────────────────────────────────────────────────────── */
 .turnos-updater__preview-body {
-  flex: 1;
-  overflow-y: auto;
-  padding: var(--design-spacing-md);
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--design-spacing-sm);
+}
+
+.turnos-updater__preview-subtitle,
+.turnos-updater__empty {
+  margin: 0;
+  color: var(--color-mute);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-body-md-weight);
+  line-height: var(--type-body-md-line);
+  letter-spacing: var(--type-body-md-tracking);
 }
 
 .turnos-updater__empty {
-  text-align: center;
-  color: var(--color-mute);
   padding: var(--design-spacing-lg);
-  font-size: var(--type-body-md-size);
+  text-align: center;
 }
 
 .turnos-updater__table thead {
@@ -99,38 +37,21 @@
 }
 
 .turnos-updater__turno-old {
-  color: var(--color-mute) !important;
+  color: var(--color-mute);
   font-style: italic;
 }
 
 .turnos-updater__turno-new {
+  color: var(--color-primary-text);
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
   font-weight: var(--type-body-strong-weight);
-  color: var(--color-primary-text) !important;
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
-/* ── Footer ──────────────────────────────────────────────────────────── */
-.turnos-updater__preview-footer {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: var(--design-spacing-xs);
-  padding: var(--design-spacing-md);
-  border-top: 1px solid var(--color-hairline);
-  background: var(--color-surface-card);
-}
-
-/* ── Responsive ──────────────────────────────────────────────────────── */
+/* Móvil: cada cambio se lee como tarjeta con sus etiquetas. */
 @media (width <= 767px) {
-  .turnos-updater__preview-content {
-    width: 95%;
-    max-height: 90vh;
-  }
-
-  .turnos-updater__preview-body {
-    min-width: 0;
-    padding: var(--design-spacing-sm);
-  }
-
   .turnos-updater__table {
     display: block;
     overflow-wrap: anywhere;

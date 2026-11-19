@@ -12,7 +12,7 @@
   justify-content: space-between;
   gap: var(--design-spacing-sm);
   padding: var(--design-spacing-xs) 0;
-  border-bottom: 1px solid var(--color-hairline);
+  border-bottom: var(--border-width) solid var(--color-hairline);
 }
 
 .candidates-cited-today-modal__list > .candidates-cited-today-modal__item:last-child {

@@ -35,8 +35,8 @@
   flex: 0 0 auto;
   align-items: center;
   justify-content: center;
-  inline-size: var(--control-height-sm);
-  block-size: var(--control-height-sm);
+  inline-size: var(--icon-size-xl);
+  block-size: var(--icon-size-xl);
   border-radius: var(--rounded-xs);
   background: var(--color-surface-strong);
   color: var(--color-mute);
@@ -88,10 +88,10 @@
 .metric-tile__value {
   min-inline-size: 0;
   color: var(--color-ink);
-  font-size: var(--type-display-lg-size);
-  font-weight: var(--type-display-lg-weight);
-  line-height: var(--type-display-lg-line);
-  letter-spacing: var(--type-display-lg-tracking);
+  font-size: var(--type-heading-lg-size);
+  font-weight: var(--type-heading-lg-weight);
+  line-height: var(--type-heading-lg-line);
+  letter-spacing: var(--type-heading-lg-tracking);
   font-variant-numeric: tabular-nums;
   overflow-wrap: anywhere;
   transition: color var(--transition-fast);

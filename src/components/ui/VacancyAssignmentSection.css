@@ -159,7 +159,7 @@
 
 .vacancy-assignment-card__menu-trigger:focus-visible {
   outline: var(--focus-ring-width) solid var(--color-focus);
-  outline-offset: var(--focus-ring-offset);
+  outline-offset: 0;
 }
 
 .vacancy-assignment-card__menu-trigger:disabled {

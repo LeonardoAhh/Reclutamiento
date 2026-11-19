@@ -1,5 +1,5 @@
 import { lazy, Suspense, type ReactNode } from 'react';
-import { Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom';
+import { Navigate, Outlet, Route, Routes, useLocation, useNavigate, type Location } from 'react-router-dom';
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 
 import { AppShell } from '@/components/layout/AppShell';
@@ -33,6 +33,8 @@ import { LEAVE_REQUESTS_PATH } from '@/features/leave/requests';
 import { ACTIVITY_IMAGE_ROUTE } from '@/pages/activityImageNavigation';
 import { REPORT_SGI_PATH } from '@/pages/report-sgi/navigation';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
+import { LAYOUT_BREAKPOINTS } from '@/lib/layout';
 import {
   AccountPage,
   Actividades,
@@ -56,7 +58,7 @@ const Login = lazy(() =>
   import('@/pages/Login').then(({ Login }) => ({ default: Login })),
 );
 
-function ProtectedContent() {
+function ProtectedContent({ accountModal, onCloseAccount }: { accountModal: boolean; onCloseAccount: () => void }) {
   const { pathname } = useLocation();
   const { profile } = useAuth();
   const normalizedPath = pathname.replace(/\/+$/, '');
@@ -72,7 +74,7 @@ function ProtectedContent() {
       <PositionsProvider>
         <MaintenanceGuard>
           <TeamProvider>
-            <AppShell><Outlet /></AppShell>
+            <AppShell accountModal={accountModal} onCloseAccount={onCloseAccount}><Outlet /></AppShell>
           </TeamProvider>
         </MaintenanceGuard>
       </PositionsProvider>
@@ -80,12 +82,12 @@ function ProtectedContent() {
   );
 }
 
-function ProtectedShell() {
+function ProtectedShell({ accountModal, onCloseAccount }: { accountModal: boolean; onCloseAccount: () => void }) {
   if (isBoneyardBuild()) {
     return (
       <CandidatesProvider>
         <PositionsProvider>
-          <TeamProvider><AppShell><Outlet /></AppShell></TeamProvider>
+          <TeamProvider><AppShell accountModal={accountModal} onCloseAccount={onCloseAccount}><Outlet /></AppShell></TeamProvider>
         </PositionsProvider>
       </CandidatesProvider>
     );
@@ -93,7 +95,7 @@ function ProtectedShell() {
 
   return (
     <AuthGuard>
-      <ProtectedContent />
+      <ProtectedContent accountModal={accountModal} onCloseAccount={onCloseAccount} />
     </AuthGuard>
   );
 }
@@ -149,6 +151,23 @@ function SessionExpiredRoute() {
 }
 
 function App() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const tabletOrLarger = useMediaQuery(`(min-width: ${LAYOUT_BREAKPOINTS.tablet}px)`);
+  const routeState: unknown = location.state;
+  const savedLocation = routeState && typeof routeState === 'object' && 'accountBackgroundLocation' in routeState
+    ? routeState.accountBackgroundLocation
+    : null;
+  const previousLocation = savedLocation && typeof savedLocation === 'object' && 'pathname' in savedLocation
+    && typeof savedLocation.pathname === 'string' && savedLocation.pathname.startsWith('/')
+    && savedLocation.pathname !== ACCOUNT_PATH && savedLocation.pathname !== '/login'
+    ? savedLocation as Location
+    : null;
+  const accountModal = tabletOrLarger && location.pathname === ACCOUNT_PATH;
+  const backgroundLocation = accountModal
+    ? previousLocation ?? { ...location, pathname: HOME_PATH, search: '', hash: '', state: null }
+    : undefined;
+  const closeAccount = () => navigate(backgroundLocation ?? HOME_PATH, { replace: true });
   return (
     <TooltipPrimitive.Provider delayDuration={200}>
       <>
@@ -156,7 +175,7 @@ function App() {
           <SystemUpdateNotification />
           <AppToaster />
           <Suspense fallback={<AppLoadingFallback />}>
-            <Routes>
+            <Routes location={backgroundLocation ?? location}>
               <Route
                 path="/login"
                 element={
@@ -166,7 +185,7 @@ function App() {
                 }
               />
               <Route path="/session-expired" element={<SessionExpiredRoute />} />
-              <Route element={<ProtectedShell />}>
+              <Route element={<ProtectedShell accountModal={accountModal} onCloseAccount={closeAccount} />}>
                 <Route path={HOME_PATH} element={<HomePage />} />
                 <Route path={LEAVE_REQUESTS_PATH} element={<LeaveRequestsPage />} />
                 <Route path="/overview" element={<WithSupabaseData resources={WORKFORCE_DATA}><KpisPage /></WithSupabaseData>} />

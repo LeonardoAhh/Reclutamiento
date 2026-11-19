@@ -43,14 +43,6 @@
   letter-spacing: var(--type-body-strong-tracking);
 }
 
-.candidate-modal :is(.btn-primary, .btn-secondary) {
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-body-md-weight);
-  line-height: var(--type-body-md-line);
-  letter-spacing: var(--type-body-md-tracking);
-}
-
 .candidate-modal__field-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr);

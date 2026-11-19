@@ -18,7 +18,7 @@
 
 .plantilla-main {
   min-width: 0;
-  padding-inline: calc(var(--focus-ring-width) + var(--focus-ring-offset));
+  padding-inline: var(--focus-ring-width);
 }
 
 /* ── Hero Band ── */
@@ -40,12 +40,6 @@
   flex: 1 1 auto;
 }
 
-.dashboard__hero-status {
-  display: flex;
-  align-items: center;
-  gap: var(--design-spacing-xxs);
-}
-
 /* ── Copia del resumen de vacantes para WhatsApp ────── */
 .dashboard__report-btn {
   gap: var(--design-spacing-xxs);
@@ -59,44 +53,15 @@
   letter-spacing: var(--type-body-md-tracking);
 }
 
+/* En móvil las acciones se integran en la cuadrícula de utilidades del hero;
+   desde tablet forman su propia fila compacta. */
 .dashboard__hero-actions {
-  display: flex;
-  align-items: center;
-  gap: var(--design-spacing-xs);
-  flex-wrap: wrap;
-  width: 100%;
+  display: contents;
 }
 
-.dashboard__hero-actions > *,
-.dashboard__hero-actions .json-importer {
-  flex: 1 1 auto;
-}
-
-/* ── Search & Filter Controls ── */
-.dashboard__controls {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: var(--design-spacing-sm);
-  margin-bottom: var(--design-spacing-md);
-}
-
-.dashboard__filter {
-  display: flex;
-  align-items: center;
-  gap: var(--design-spacing-xxs);
-  color: var(--color-mute);
-  width: 100%;
-}
-
-/* Wrapper que envuelve al CustomSelect. NO debe pintar borde/fondo/radius
-   propios: el trigger interno de CustomSelect ya trae su propio chrome
-   (pill con border, background y focus ring). Aquí solo controlamos el
-   layout (ancho y min-width). Duplicar estilos crea el efecto "rectángulo
-   detrás + pill delante". */
-.dashboard__filter-select {
-  width: 100%;
-  min-width: 0;
+.dashboard__hero-actions > * {
+  flex: 0 0 auto;
+  min-inline-size: var(--touch-target-min);
 }
 
 /* ── Empty State ── */
@@ -111,12 +76,36 @@
   color: var(--color-mute);
 }
 
-.dashboard__empty h3 {
-  font-family: var(--font-display);
-  color: var(--color-mute);
+.dashboard__empty h2 {
+  font-family: var(--font-body);
+  font-size: var(--type-body-strong-size);
+  font-weight: var(--type-body-strong-weight);
+  line-height: var(--type-body-strong-line);
+  letter-spacing: var(--type-body-strong-tracking);
 }
 
 .dashboard__empty p {
   color: var(--color-mute);
-  max-width: 360px;
+  max-inline-size: var(--empty-state-description-max-inline-size);
+}
+
+@media (width >= 768px) {
+  .dashboard__hero {
+    padding-block: var(--design-spacing-lg);
+    margin-bottom: var(--design-spacing-md);
+  }
+
+  .dashboard__hero-actions {
+    display: flex;
+    flex-shrink: 0;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: var(--design-spacing-xxs);
+  }
+}
+
+@media (width >= 1080px) {
+  .dashboard__hero {
+    width: 100%;
+  }
 }

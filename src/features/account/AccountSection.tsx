@@ -10,10 +10,11 @@ interface AccountSectionProps {
   action?: ReactNode;
   className?: string;
   children?: ReactNode;
+  headingLevel?: 2 | 3;
 }
 
 /** Sección de /account con encabezado y contenido agrupado. */
-export function AccountSection({ id, title, description, action, className, children }: AccountSectionProps) {
+export function AccountSection({ id, title, description, action, className, children, headingLevel = 2 }: AccountSectionProps) {
   const motionTokens = useMotionTokens('--transition-slow');
   return (
     <motion.section
@@ -25,7 +26,9 @@ export function AccountSection({ id, title, description, action, className, chil
     >
       <header className="account-card__header">
         <div className="account-card__heading">
-          <h2 id={`${id}-title`} className="account-card__title">{title}</h2>
+          {headingLevel === 3
+            ? <h3 id={`${id}-title`} className="account-card__title">{title}</h3>
+            : <h2 id={`${id}-title`} className="account-card__title">{title}</h2>}
           {description && <p id={`${id}-description`} className="account-card__description">{description}</p>}
         </div>
         {action}

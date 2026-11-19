@@ -95,13 +95,7 @@
 }
 
 .animated-submit-button__spinner {
-  animation: animated-submit-spin var(--duration-spinner) linear infinite;
-}
-
-@keyframes animated-submit-spin {
-  to {
-    transform: rotate(1turn);
-  }
+  animation: spin var(--transition-spinner) infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
