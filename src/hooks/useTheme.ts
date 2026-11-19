@@ -4,10 +4,7 @@ export type ThemePreference = 'light' | 'dark' | 'system';
 export type ThemePalette =
   | 'original'
   | 'ocean-saas'
-  | 'darkmatter-remix'
-  | 'sea-glass'
-  | 'claude-amber'
-  | 'supabase';
+  | 'darkmatter-remix';
 
 interface ThemeSnapshot {
   preference: ThemePreference;

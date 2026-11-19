@@ -4,15 +4,15 @@ This visual system applies to product interfaces throughout the repository.
 
 ## Overview
 
-The light theme uses a pale graphite canvas and white content surfaces; the dark theme uses a charcoal canvas and stepped graphite surfaces. Each palette keeps its existing primary accent, with dedicated foreground and border tokens.
+The light theme uses a pale graphite canvas and white content surfaces; the dark theme uses a flat charcoal canvas for cards, fields and overlays, with canvas-soft reserved for quiet grouping. Each palette keeps its existing primary accent, with dedicated foreground and border tokens.
 
 Typography does the heavy lifting. **Mona Sans** is the interface family for headings, body, controls and labels in both themes; code retains the existing monospace stack. Existing type sizes, weights, line heights and tracking remain unchanged. App buttons, tabs, inputs and navigation controls, including icon-only buttons, use 6px corners; cards use 8px; menus and popovers use 8px; modals and floating panels use 12px. Badge and chip surfaces use compact 4px corners and never pills; only avatars and status dots remain circular. Application brand marks use a fixed 8px radius.
 
-Both themes use canvas as the base page surface, canvas-soft for quiet grouping, surface-card for content, and canvas-elevated for fields and overlays. On desktop, the authenticated sidebar and workspace share one inset frame with the same border, radius and elevation as login; on mobile and tablet, the workspace remains edge-to-edge for the sliding sidebar. The workspace's low-contrast square grid remains visible and fades toward the edges. The sidebar shares the workspace canvas. A low-contrast square grid also fades toward the edges of login and within maintenance's visual region, in both themes. Its color and spacing derive from shared tokens. Text roles and the independent document/export palette are preserved.
+Both themes use canvas as the base page surface and canvas-soft for quiet grouping. In light mode, surface-card remains the content surface and canvas-elevated remains the field and overlay surface; in dark mode, cards, fields and overlays use canvas for a flat treatment. On desktop, the authenticated sidebar and workspace share one inset frame with the same border, radius and elevation as login; on mobile and tablet, the workspace remains edge-to-edge for the sliding sidebar. The workspace's low-contrast square grid remains visible and fades toward the edges. The sidebar shares the workspace canvas. A low-contrast square grid also fades toward the edges of login and within maintenance's visual region, in both themes. Its color and spacing derive from shared tokens. Text roles and the independent document/export palette are preserved.
 
 **Key Characteristics:**
 - Pale graphite and charcoal surfaces with each palette's existing primary, accessible text variants and an opaque neutral focus ring.
-- Neutral grouping regions and layered cards; controls and overlays retain their existing surfaces.
+- Neutral grouping regions; light mode retains white cards and elevated controls/overlays, while dark mode keeps cards, fields and overlays flat on canvas.
 - Mona Sans unifies display headings, UI and body in both themes.
 - Compact 6px controls, including icon-only buttons, 8px cards and menus, and 12px dialogs. Badges and chips use compact 4px corners, never pills; only avatars and status dots remain circular.
 - Default depth is flat or a 1px hairline. Floating menus and dialogs use only a subtle shadow.
@@ -24,8 +24,9 @@ Both themes use canvas as the base page surface, canvas-soft for quiet grouping,
 - Original primary fill: `--color-primary` = #1E40AF in light and dark. Other palettes keep their own primary fill.
 - Original hover fill: `--color-primary-active` = #1E3A8A. Pressed fill: `--color-primary-pressed` = #172554.
 - Text on the Original solid primary: `--color-on-primary` = #FFFFFF in both themes; use each palette's own on-primary token elsewhere.
+- Vercel primary fill is monochromatic: black with a white label in light mode, white with a near-black label in dark mode. Hover and pressed tones mix the fill with the canvas; its primary tint uses canvas-soft. Functional links retain their blue text token.
 - Standalone Original primary text and functional links: `--color-primary-text` / `--color-link` = #1E3A8A in light and #BFDBFE in dark. Do not use the fill token as normal-size text on neutral surfaces.
-- Primary boundaries: `--color-primary-border` follows the accessible text variant. This keeps thin outlines distinguishable on stronger dark surfaces where the fill alone can fall below 3:1.
+- Original primary boundaries: `--color-primary-border` follows the accessible text variant. Vercel primary boundaries follow the monochromatic fill, which contrasts with its canvas in both modes.
 - Link hover: #1E3A8A in light and the light foreground in dark. Keep the existing underline/interaction treatment.
 - Focus: opaque neutral ink, 2px, zero offset; inverted surfaces and forced-colors retain their dedicated focus treatment. Translucent decorative rings do not replace this outline.
 - Semantic status fills/labels and document/export tokens remain independent from the primary foreground.
@@ -61,12 +62,12 @@ Hairlines are decorative separators; required boundaries use the control-border 
 These opaque primary/body pairs meet AA for normal text; some exceed 7:1. This does not certify chart colors, decorative transparency or disabled-state opacity. Disabled controls retain their existing programmatic state and opacity treatment. Typography, spacing and reference radii stay unchanged.
 
 ### Decorative Compatibility
-Legacy gradient tokens remain available for existing illustrations. Application UI uses light and charcoal neutrals, blue actions and accessible blue text variants.
+Legacy gradient tokens remain available for existing illustrations. Application UI uses light and charcoal neutrals, palette-specific actions, and accessible blue text variants for functional links.
 
 
 ## Dark Theme - Charcoal
 
-The optional dark theme extends the same semantic tokens using the charcoal surface hierarchy. Each palette retains its primary fill and corresponding on-primary label; Original uses brighter blue for standalone text. Theme selection does not change layout, radii, data or permissions.
+The optional dark theme extends the same semantic tokens using charcoal surfaces. Each palette retains its primary fill and corresponding on-primary label; Vercel uses a white monochromatic fill with a near-black label, while Original uses brighter blue for standalone text. Theme selection does not change layout, radii, data or permissions.
 
 ### Appearance Preference
 
@@ -78,10 +79,10 @@ The optional dark theme extends the same semantic tokens using the charcoal surf
 
 ### Paletas seleccionables
 
-- La paleta `Original` usa neutros grafito claros y oscuros. `Ocean Saas`, `Gold Void`, `Sea Glass`, `Claude Amber` y `Supabase` conservan sus acentos y reciben la misma jerarquía de superficies grafito, con matices propios en cada modo. El modo `Sistema` sigue el ajuste del dispositivo. La selección de paleta es independiente del modo y se guarda en `reclutamiento_color_palette` como `original`, `ocean-saas`, `darkmatter-remix`, `sea-glass`, `claude-amber` o `supabase`. El identificador guardado `darkmatter-remix` se conserva para mantener las preferencias existentes; `chemp` se normaliza a `sea-glass`.
+- La paleta `Original` usa neutros grafito claros y oscuros. `Ocean Saas` y `Vercel` conservan sus acentos y colores de canvas. En modo claro, todas mantienen las superficies actuales; en oscuro, cards, campos y overlays usan el color del canvas en las tres paletas, mientras canvas-soft conserva la agrupación tranquila. Vercel conserva superficies monocromáticas en claro y carbón en oscuro, con primario negro en claro y blanco en oscuro; los enlaces funcionales mantienen texto azul. El modo `Sistema` sigue el ajuste del dispositivo. La selección de paleta es independiente del modo y se guarda en `reclutamiento_color_palette` como `original`, `ocean-saas` o `darkmatter-remix`. El identificador guardado `darkmatter-remix` se conserva para mantener las preferencias existentes; los valores heredados `sea-glass`, `claude-amber`, `chemp` y `supabase` se muestran como `original` sin borrar la clave local.
 - `/account` muestra Tema y Paleta como filas de Ajustes en móvil, tablet y escritorio. `public/theme.js` restaura `html[data-color-palette]` antes de cargar CSS y sincroniza los cambios entre pestañas.
 - En `/account`, Paleta ocupa una fila compacta dentro de Ajustes con la etiqueta y el select compartido. No usa grid de vistas previas, popover ni vista aparte. Las opciones se ordenan por nombre en el idioma activo y el cambio se aplica inmediatamente. Idioma y Sonido conservan sus filas separadas.
-- Los colores se definen solo en `src/styles/global.css`, en los bloques `data-color-palette` de cada paleta para claro y oscuro. Adaptan acción primaria, superficies, texto y bordes a las referencias proporcionadas. La sidebar comparte `--workspace-canvas` con el contenido en cada paleta y modo; no conserva una superficie clara al cambiar a oscuro. `Gold Void` aplica la paleta oro y pergamino, con tipografía y geometría globales sin cambios; los textos principales y secundarios superan 8.1:1 sobre las superficies de la paleta, los bordes de control superan 3:1 y el foco conserva el token neutral global. `Sea Glass` aplica la propuesta de contraste corregida: textos principales y secundarios conservan al menos 8.1:1 en las superficies de cada modo, y bordes de controles superan 3:1 incluso sobre superficies elevadas; el foco visible conserva el token neutral global. En oscuro conserva el acento cian sobre superficies grafito neutras. `Claude Amber` utiliza superficies crema y ámbar, con texto oscuro sobre su primario claro y texto ámbar más claro en oscuro para mantener AA. `Supabase` usa verde claro con texto oscuro en claro y conserva su acento verde accesible en oscuro sobre superficies grafito neutras; los enlaces y el foco conservan contraste suficiente. Los colores de error permanecen semánticos. Conservan Mona Sans, escala tipográfica, espaciado, radios, sombras y tokens de documentos/exportación. Los colores de gráficas no se agregan hasta tener consumidores reales.
+- Los colores se definen solo en `src/styles/global.css`, en los bloques `data-color-palette` de cada paleta para claro y oscuro. Adaptan acción primaria, superficies, texto y bordes a las referencias proporcionadas. La sidebar comparte `--workspace-canvas` con el contenido en cada paleta y modo; no conserva una superficie clara al cambiar a oscuro. `Vercel` usa superficies neutras, primario monocromático y enlaces azules; sus textos principales y secundarios superan 8.1:1 sobre las superficies y estados hover de la paleta, los bordes de control superan 3:1 y el foco conserva el token neutral global. Los colores de error permanecen semánticos. Conservan Mona Sans, escala tipográfica, espaciado, radios, sombras y tokens de documentos/exportación. Los colores de gráficas no se agregan hasta tener consumidores reales.
 - Estados por paleta: el hover neutro (`--color-surface-hover`) se distingue de canvas, canvas-soft, surface-card y canvas-elevated en ambos modos. El hover y pressed del primario siguen los tokens de cada paleta, y la etiqueta `--color-on-primary` conserva al menos 4.5:1 en los tres estados. En oscuro el enlace en hover (`--color-link-deep`) usa el texto principal, nunca el relleno primario. El texto de error supera 4.5:1 sobre todas las superficies y sobre su tinte. El hairline decorativo nunca coincide con `--color-surface-strong`.
 - Las etiquetas blancas sobre el primario, el texto principal y el texto secundario sobre las superficies principales, así como el texto azul independiente, usan pares con contraste AA. La comprobación visual y con tecnología asistiva sigue siendo necesaria antes de certificar toda la interfaz.
 
@@ -91,8 +92,8 @@ The optional dark theme extends the same semantic tokens using the charcoal surf
 |---|---|---|
 | Page floor | `--color-canvas` | #1B1D20 |
 | Quiet region | `--color-canvas-soft` | #222529 |
-| Cards | `--color-surface-card` | #292D31 |
-| Controls/overlays | `--color-canvas-elevated` | #292D31 |
+| Cards | `--color-surface-card` | #1B1D20 |
+| Fields/overlays | `--color-canvas-elevated` | #1B1D20 |
 | Primary fill | `--color-primary` | #1E40AF |
 | Label on primary | `--color-on-primary` | #FFFFFF |
 | Standalone blue text | `--color-primary-text` | #BFDBFE |

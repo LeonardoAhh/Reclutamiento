@@ -13,6 +13,7 @@ import { listProfiles } from '@/lib/users';
 import { subscribeOnlineUserIds } from '@/lib/presence';
 import { supabase } from '@/lib/supabase';
 import { formatAccountLastAccess, formatLastAccess } from '@/lib/userActivity';
+import { toast } from '@/lib/notify';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTeamDirectory } from './TeamProvider';
 import { archiveTeamMember, setTeamMemberStatus } from './api';
@@ -40,7 +41,6 @@ export function TeamManagement({ headingLevel = 2 }: { headingLevel?: 2 | 3 } = 
   const [pending, setPending] = useState<PendingAction | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
-  const [message, setMessage] = useState('');
 
   useEffect(() => {
     if (profile?.role !== 'admin') return;
@@ -80,16 +80,16 @@ export function TeamManagement({ headingLevel = 2 }: { headingLevel?: 2 | 3 } = 
       setOpenActionsFor(null);
       return;
     }
-    setBusy(true); setError(''); setMessage('');
+    setBusy(true); setError('');
     try {
       if (kind === 'status') {
         await setTeamMemberStatus(current.id, !current.active);
         await refresh();
-        setMessage(copy.statusChanged(member.short_name, member.active));
+        toast.success({ title: copy.statusChanged(member.short_name, member.active) });
       } else {
         await archiveTeamMember(current.id);
         await refresh();
-        setMessage(copy.removedFromTeam(member.short_name));
+        toast.success({ title: copy.removedFromTeam(member.short_name) });
         requestAnimationFrame(() => addButtonRef.current?.focus());
       }
       setPending(null);
@@ -116,20 +116,18 @@ export function TeamManagement({ headingLevel = 2 }: { headingLevel?: 2 | 3 } = 
       <button data-cuelume-tap="" ref={addButtonRef} type="button" className="team-management__add" disabled={!profiles || busy} onClick={() => setAdding(true)}>{copy.add}</button>
     </header>
     {error && <p className="team-management__feedback form-error-text" role="alert">{error}</p>}
-    {message && <p className="team-management__feedback type-body-md" role="status">{message}</p>}
     {!profiles && !error && <LoadingSkeleton label={copy.loadingAccounts} className="team-management__skeleton">
       <div className="team-management__skeleton-list" aria-hidden="true">
         {['first', 'second', 'third'].map(key => <span key={key} className="loading-skeleton__bone team-management__skeleton-row" />)}
       </div>
     </LoadingSkeleton>}
     {(profiles || error) && visibleMembers.length === 0 && <p className="team-management__feedback type-body-md">{copy.empty}</p>}
-    {profiles && visibleMembers.length > 0 && <div className="team-management__list" role="list">
-      <div className="team-management__columns" aria-hidden="true">
+    {profiles && visibleMembers.length > 0 && <ul className="team-management__list">
+      <li className="team-management__columns" aria-hidden="true">
         <span>{language === 'en' ? 'Member' : 'Integrante'}</span>
-        <span>{language === 'en' ? 'Role' : 'Puesto'}</span>
         <span>{language === 'en' ? 'Status' : 'Estado'}</span>
-        <span className="sr-only">{copy.actions}</span>
-      </div>
+        <span>{copy.actions}</span>
+      </li>
       {visibleMembers.map(member => {
         const linked = profiles.find(row => row.id === member.profile_id);
         const online = Boolean(member.active && linked && onlineUsers.has(linked.id));
@@ -137,7 +135,7 @@ export function TeamManagement({ headingLevel = 2 }: { headingLevel?: 2 | 3 } = 
         const presence = !member.active ? copy.inactive : !linked ? copy.unlinkedStatus : online ? language === 'en' ? 'Online now' : 'En línea ahora' : formatAccountLastAccess(lastAccess ?? '', language);
         const canChange = member.profile_id !== profile.id && member.profile_role !== 'admin' && linked?.role !== 'admin';
         const isPending = pending?.member.id === member.id;
-        return <div className="team-management__member" role="listitem" key={member.id}>
+        return <li className="team-management__member" key={member.id}>
           <div className="team-management__row">
             <div className="team-management__person">
               <Avatar name={member.full_name} src={linked?.avatar_url} title="" />
@@ -145,7 +143,6 @@ export function TeamManagement({ headingLevel = 2 }: { headingLevel?: 2 | 3 } = 
                 <strong className="type-body-strong">{member.full_name}</strong>
               </div>
             </div>
-            <span className="team-management__role type-body-md">{member.job_title || member.short_name}</span>
             <span className="team-management__status type-body-md" data-online={online} title={lastAccess && !online ? lastAccess : undefined}>
               {online || !linked || !member.active ? <span className="team-management__status-dot" data-online={online} aria-hidden="true" /> : <Clock size="var(--icon-size-sm)" aria-hidden="true" />}
               {presence}
@@ -172,7 +169,7 @@ export function TeamManagement({ headingLevel = 2 }: { headingLevel?: 2 | 3 } = 
                   {isPending ? <>
                     <DropdownMenuItem ref={confirmMenuItemRef} disabled={busy} aria-label={`${copy.confirm} ${pending.kind === 'remove' ? copy.delete.toLowerCase() : (member.active ? copy.giveAccess : copy.reactivate).toLowerCase()}`} onSelect={event => { event.preventDefault(); void confirmAction(); }}>
                       <Check aria-hidden="true" />
-                      <span>{copy.confirm}: {pending.kind === 'remove' ? copy.delete : member.active ? copy.giveAccess : copy.reactivate}</span>
+                      <span>{copy.confirm}</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem disabled={busy} onSelect={() => setPending(null)}>
                       <X aria-hidden="true" />
@@ -196,9 +193,9 @@ export function TeamManagement({ headingLevel = 2 }: { headingLevel?: 2 | 3 } = 
               </DropdownMenu>
             </div>
           </div>
-        </div>;
+        </li>;
       })}
-    </div>}
+    </ul>}
     {adding && profiles && <TeamMemberForm member={null} profiles={availableProfiles} onClose={() => setAdding(false)} onSaved={refresh} />}
     {editing && profiles && <TeamMemberForm member={editing} profiles={availableProfiles} onClose={() => setEditing(null)} onSaved={refresh} />}
   </section>;

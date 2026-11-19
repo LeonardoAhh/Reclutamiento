@@ -21,10 +21,7 @@ export function AccountPreferencesSection({ copy }: { copy: AccountCopy }) {
   const paletteOptions: { value: ThemePalette; label: string }[] = [
     { value: 'original', label: copy.originalPalette },
     { value: 'ocean-saas', label: copy.oceanPalette },
-    { value: 'darkmatter-remix', label: copy.goldVoidPalette },
-    { value: 'sea-glass', label: copy.seaGlassPalette },
-    { value: 'claude-amber', label: copy.claudeAmberPalette },
-    { value: 'supabase', label: copy.supabasePalette },
+    { value: 'darkmatter-remix', label: copy.vercelPalette },
   ];
   paletteOptions.sort((first, second) =>
     first.label.localeCompare(second.label, language === 'en' ? 'en' : 'es', { sensitivity: 'base' }),

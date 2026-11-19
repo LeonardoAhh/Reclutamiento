@@ -8,13 +8,13 @@
   const isPalette = (value) =>
     value === 'original' ||
     value === 'ocean-saas' ||
-    value === 'darkmatter-remix' ||
-    value === 'sea-glass' ||
-    value === 'claude-amber' ||
-    value === 'supabase';
+    value === 'darkmatter-remix';
 
   function normalizePalette(value) {
-    return value === 'chemp' ? 'sea-glass' : value;
+    if (value === 'chemp' || value === 'sea-glass' || value === 'claude-amber' || value === 'supabase') {
+      return 'original';
+    }
+    return value;
   }
 
   function readPreference() {

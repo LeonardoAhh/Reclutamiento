@@ -385,6 +385,10 @@
   min-width: 0;
 }
 
+.account-maintenance__select {
+  inline-size: var(--menu-min-inline-size);
+}
+
 .account-maintenance__retry {
   min-block-size: var(--touch-target-min);
   padding-inline: var(--design-spacing-xs);
@@ -454,7 +458,6 @@
 
 /* Cuenta en tablet y escritorio: el diálogo conserva los paneles existentes. */
 .account-dialog {
-  block-size: var(--modal-max-block-size);
   font-family: var(--font-body);
   font-size: var(--type-body-md-size);
   font-weight: var(--type-body-md-weight);
@@ -466,9 +469,8 @@
   overflow: hidden;
 }
 
-/* La columna de secciones mide lo que el riel de navegación de la app, y nav y
-   contenido comparten el interior del modal: sus primeras filas arrancan a la
-   misma altura y la etiqueta de cada sección queda alineada con el título. */
+/* En escritorio, la columna lateral conserva el ancho del riel de navegación;
+   en tablet cede espacio al contenido. Ambas columnas comparten su alineación. */
 .account-dialog__layout {
   display: grid;
   grid-template-columns: var(--feature-navigation-rail-inline-size) minmax(0, 1fr);
@@ -572,5 +574,15 @@
   .account-preferences {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: end;
+  }
+}
+
+@media (width >= 768px) and (width < 1080px) {
+  .modal-content.account-dialog {
+    inline-size: calc(100% - var(--design-spacing-lg) - var(--design-spacing-lg));
+  }
+
+  .account-dialog__layout {
+    grid-template-columns: minmax(var(--menu-min-inline-size), 1fr) minmax(0, 4fr);
   }
 }

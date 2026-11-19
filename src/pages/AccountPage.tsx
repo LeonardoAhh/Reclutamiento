@@ -121,7 +121,7 @@ export function AccountPage({ modal = false, onClose, tourStepIndex }: AccountPa
         isOpen
         title={copy.title}
         onClose={onClose}
-        size="xl"
+        size="lg"
         presentation="modal"
         className="account-dialog"
         onCloseAutoFocus={(event) => {
